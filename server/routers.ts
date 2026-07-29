@@ -70,6 +70,15 @@ import { sendSupportMessage } from "./supportEmail";
 import { checkSupportAttachmentRateLimit, checkSupportSubmissionRateLimit } from "./supportRateLimit";
 import { helpAssistantRouter } from "./helpAssistant";
 import {
+  CONTACT_SEARCH_LOCALES,
+  enforceContactSearchRateLimit,
+  runNaturalContactSearch,
+} from "./contactNaturalSearch";
+import {
+  buildContactExportSnapshot,
+  CONTACT_CSV_EXPORT_LIMIT,
+} from "./contactExport";
+import {
   getSupportAttachmentExtension,
   getSupportSlaTargetAt,
   isSupportEscalation,
@@ -1505,6 +1514,31 @@ export const appRouter = router({
     list: protectedProcedure.query(async ({ ctx }) => {
       return listSavedContacts(ctx.user.id);
     }),
+
+    naturalSearch: protectedProcedure
+      .input(z.object({
+        query: z.string().trim().min(3).max(300),
+        locale: z.enum(CONTACT_SEARCH_LOCALES).default("en"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        enforceContactSearchRateLimit(ctx.user.id);
+        const contacts = await listSavedContacts(ctx.user.id);
+        return runNaturalContactSearch({ ...input, contacts });
+      }),
+
+    prepareExport: protectedProcedure
+      .input(z.object({
+        contactIds: z.array(z.number().int().positive()).min(1).max(CONTACT_CSV_EXPORT_LIMIT),
+        format: z.enum(["csv", "pdf"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const contacts = await listSavedContacts(ctx.user.id);
+        return buildContactExportSnapshot({
+          contacts,
+          requestedIds: input.contactIds,
+          format: input.format,
+        });
+      }),
 
     getDailyStatus: protectedProcedure.query(async ({ ctx }) => {
       return getAdaptiveSendStatus(ctx.user.id);

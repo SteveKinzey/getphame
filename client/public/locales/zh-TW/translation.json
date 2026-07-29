@@ -679,6 +679,82 @@
   "logout": {
     "button": "退出登入"
   },
+  "contactsTools": {
+    "search": {
+      "eyebrow": "智慧搜尋",
+      "title": "用自然語言尋找聯絡人",
+      "label": "對話式聯絡人搜尋",
+      "description": "描述您需要的聯絡人。Get Phame 會將要求轉換為安全篩選條件，並顯示解析方式。",
+      "help": "可依來源、同意狀態、標籤、封鎖狀態、日期或追蹤間隔進行搜尋。",
+      "inputLabel": "描述要尋找的聯絡人",
+      "placeholder": "例如：已記錄同意且從未聯絡過的 Stripe 客戶",
+      "searching": "正在解析…",
+      "action": "尋找聯絡人",
+      "submit": "尋找聯絡人",
+      "clear": "清除智慧搜尋",
+      "examplesLabel": "搜尋範例",
+      "examples": {
+        "dormant": "90 天內未聯絡的 Stripe 聯絡人",
+        "consent": "已記錄同意的聯絡人",
+        "optedOut": "顯示已取消訂閱的聯絡人"
+      },
+      "exampleNever": "從未收到請求的聯絡人",
+      "exampleConsent": "已記錄同意的 Stripe 聯絡人",
+      "exampleDormant": "90 天內未聯絡的客戶",
+      "interpreted": "已解析的篩選條件",
+      "interpretedAs": "已解析的篩選條件",
+      "noFilters": "未偵測到限制條件，因此顯示所有聯絡人。",
+      "matches": "找到 {{count}} 位相符聯絡人",
+      "truncated": "顯示前 {{count}} 筆結果。",
+      "complete": "已顯示所有相符聯絡人。",
+      "redacted": "解析前已移除一個疑似密鑰的值。",
+      "matched": "找到 {{count}} 位聯絡人。",
+      "matchedTruncated": "顯示 {{count}} 位聯絡人。請進一步縮小搜尋條件。",
+      "matchedDeterministic": "使用內建安全篩選找到 {{count}} 位聯絡人。",
+      "minimum": "請至少使用 3 個字元描述要尋找的內容。",
+      "noMatches": "找不到符合項目"
+    },
+    "filters": {
+      "text": "符合「{{value}}」",
+      "source": "來源：{{value}}",
+      "tag": "標籤：{{value}}",
+      "neverSent": "從未聯絡",
+      "sent": "曾經聯絡",
+      "dormant": "{{count}} 天內未聯絡",
+      "consentRecorded": "已記錄同意",
+      "consentMissing": "未記錄同意",
+      "active": "有效聯絡人",
+      "optedOut": "已取消訂閱",
+      "createdFrom": "新增於 {{value}} 之後",
+      "createdTo": "新增於 {{value}} 之前"
+    },
+    "loading": { "contacts": "正在載入已儲存的聯絡人" },
+    "export": {
+      "empty": "沒有可匯出的可見聯絡人。",
+      "unavailable": "這些聯絡人已無法匯出。",
+      "success": "已下載 {{count}} 位聯絡人。",
+      "successTruncated": "已下載 {{count}} 位聯絡人，並套用匯出上限。",
+      "failed": "無法準備匯出檔案。",
+      "csvTitle": "將目前可見聯絡人下載為安全 CSV",
+      "pdfTitle": "將目前可見聯絡人下載為 PDF",
+      "preparing": "正在準備…",
+      "csv": "匯出 CSV",
+      "pdfButton": "匯出 PDF",
+      "pdf": {
+        "title": "聯絡人匯出",
+        "generated": "產生時間",
+        "contacts": "聯絡人",
+        "truncated": "僅限前 750 位聯絡人",
+        "contact": "聯絡人",
+        "sourceAndTags": "來源 / 標籤",
+        "consent": "同意",
+        "sends": "傳送次數 / 最近傳送",
+        "status": "狀態",
+        "created": "建立時間",
+        "page": "第 {{current}} 頁，共 {{total}} 頁"
+      }
+    }
+  },
   "pageHeader": {
     "title": "已儲存的聯絡人",
     "addContact": "新增聯絡人",

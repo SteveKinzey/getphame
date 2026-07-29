@@ -678,6 +678,82 @@
   "logout": {
     "button": "退出登录"
   },
+  "contactsTools": {
+    "search": {
+      "eyebrow": "智能搜索",
+      "title": "用自然语言查找联系人",
+      "label": "对话式联系人搜索",
+      "description": "描述您需要的联系人。Get Phame 会将请求转换为安全筛选条件，并显示解析方式。",
+      "help": "可按来源、同意状态、标签、屏蔽状态、日期或跟进间隔进行搜索。",
+      "inputLabel": "描述要查找的联系人",
+      "placeholder": "例如：已记录同意且从未联系过的 Stripe 客户",
+      "searching": "正在解析…",
+      "action": "查找联系人",
+      "submit": "查找联系人",
+      "clear": "清除智能搜索",
+      "examplesLabel": "搜索示例",
+      "examples": {
+        "dormant": "90 天内未联系的 Stripe 联系人",
+        "consent": "已记录同意的联系人",
+        "optedOut": "显示已退订的联系人"
+      },
+      "exampleNever": "从未收到请求的联系人",
+      "exampleConsent": "已记录同意的 Stripe 联系人",
+      "exampleDormant": "90 天内未联系的客户",
+      "interpreted": "已解析的筛选条件",
+      "interpretedAs": "已解析的筛选条件",
+      "noFilters": "未检测到限制条件，因此显示所有联系人。",
+      "matches": "找到 {{count}} 位匹配联系人",
+      "truncated": "显示前 {{count}} 条结果。",
+      "complete": "已显示所有匹配联系人。",
+      "redacted": "解析前已移除一个疑似密钥的值。",
+      "matched": "找到 {{count}} 位联系人。",
+      "matchedTruncated": "显示 {{count}} 位联系人。请进一步细化请求。",
+      "matchedDeterministic": "使用内置安全筛选找到 {{count}} 位联系人。",
+      "minimum": "请至少使用 3 个字符描述要查找的内容。",
+      "noMatches": "未找到匹配项"
+    },
+    "filters": {
+      "text": "匹配“{{value}}”",
+      "source": "来源：{{value}}",
+      "tag": "标签：{{value}}",
+      "neverSent": "从未联系",
+      "sent": "曾经联系",
+      "dormant": "{{count}} 天内未联系",
+      "consentRecorded": "已记录同意",
+      "consentMissing": "未记录同意",
+      "active": "有效联系人",
+      "optedOut": "已退订",
+      "createdFrom": "添加于 {{value}} 之后",
+      "createdTo": "添加于 {{value}} 之前"
+    },
+    "loading": { "contacts": "正在加载已保存的联系人" },
+    "export": {
+      "empty": "没有可导出的可见联系人。",
+      "unavailable": "这些联系人已无法导出。",
+      "success": "已下载 {{count}} 位联系人。",
+      "successTruncated": "已下载 {{count}} 位联系人，并应用了导出上限。",
+      "failed": "无法准备导出文件。",
+      "csvTitle": "将当前可见联系人下载为安全 CSV",
+      "pdfTitle": "将当前可见联系人下载为 PDF",
+      "preparing": "正在准备…",
+      "csv": "导出 CSV",
+      "pdfButton": "导出 PDF",
+      "pdf": {
+        "title": "联系人导出",
+        "generated": "生成时间",
+        "contacts": "联系人",
+        "truncated": "仅限前 750 位联系人",
+        "contact": "联系人",
+        "sourceAndTags": "来源 / 标签",
+        "consent": "同意",
+        "sends": "发送次数 / 最近发送",
+        "status": "状态",
+        "created": "创建时间",
+        "page": "第 {{current}} 页，共 {{total}} 页"
+      }
+    }
+  },
   "pageHeader": {
     "title": "已保存的联系人",
     "addContact": "添加联系人",

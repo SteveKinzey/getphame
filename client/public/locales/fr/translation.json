@@ -916,6 +916,82 @@
   "logout": {
     "button": "Se déconnecter"
   },
+  "contactsTools": {
+    "search": {
+      "eyebrow": "Recherche intelligente",
+      "title": "Trouvez des contacts avec vos propres mots",
+      "label": "Recherche conversationnelle de contacts",
+      "description": "Décrivez les contacts recherchés. Get Phame transforme votre demande en filtres sûrs et montre son interprétation.",
+      "help": "Essayez une source, un état de consentement, une étiquette, un état d’exclusion, une date ou un intervalle de suivi.",
+      "inputLabel": "Décrivez les contacts à trouver",
+      "placeholder": "Exemple : clients Stripe avec consentement jamais contactés",
+      "searching": "Interprétation…",
+      "action": "Trouver des contacts",
+      "submit": "Trouver des contacts",
+      "clear": "Effacer la recherche intelligente",
+      "examplesLabel": "Exemples de recherche",
+      "examples": {
+        "dormant": "Contacts Stripe non contactés depuis 90 jours",
+        "consent": "Contacts avec consentement enregistré",
+        "optedOut": "Afficher les contacts désabonnés"
+      },
+      "exampleNever": "Contacts n’ayant jamais reçu de demande",
+      "exampleConsent": "Contacts Stripe avec consentement enregistré",
+      "exampleDormant": "Clients non contactés depuis 90 jours",
+      "interpreted": "Filtres interprétés",
+      "interpretedAs": "Filtres interprétés",
+      "noFilters": "Aucun filtre restrictif n’a été détecté ; tous les contacts sont affichés.",
+      "matches": "{{count}} contacts correspondants",
+      "truncated": "Affichage des {{count}} premiers résultats.",
+      "complete": "Tous les contacts correspondants sont affichés.",
+      "redacted": "Une valeur ressemblant à un secret a été supprimée avant l’interprétation.",
+      "matched": "{{count}} contacts trouvés.",
+      "matchedTruncated": "{{count}} contacts affichés. Affinez votre demande pour réduire les résultats.",
+      "matchedDeterministic": "{{count}} contacts trouvés avec les filtres sécurisés intégrés.",
+      "minimum": "Décrivez votre recherche avec au moins 3 caractères.",
+      "noMatches": "Aucun résultat"
+    },
+    "filters": {
+      "text": "Correspond à « {{value}} »",
+      "source": "Source : {{value}}",
+      "tag": "Étiquette : {{value}}",
+      "neverSent": "Jamais contacté",
+      "sent": "Déjà contacté",
+      "dormant": "Non contacté depuis {{count}} jours",
+      "consentRecorded": "Consentement enregistré",
+      "consentMissing": "Consentement non enregistré",
+      "active": "Contacts actifs",
+      "optedOut": "Désabonné",
+      "createdFrom": "Ajouté après le {{value}}",
+      "createdTo": "Ajouté avant le {{value}}"
+    },
+    "loading": { "contacts": "Chargement des contacts enregistrés" },
+    "export": {
+      "empty": "Aucun contact visible à exporter.",
+      "unavailable": "Ces contacts ne sont plus disponibles pour l’exportation.",
+      "success": "{{count}} contacts téléchargés.",
+      "successTruncated": "{{count}} contacts téléchargés. La limite d’exportation a été appliquée.",
+      "failed": "L’exportation n’a pas pu être préparée.",
+      "csvTitle": "Télécharger les contacts visibles au format CSV sécurisé",
+      "pdfTitle": "Télécharger les contacts visibles au format PDF",
+      "preparing": "Préparation…",
+      "csv": "Exporter en CSV",
+      "pdfButton": "Exporter en PDF",
+      "pdf": {
+        "title": "Exportation des contacts",
+        "generated": "Généré",
+        "contacts": "Nombre de contacts",
+        "truncated": "Limité aux 750 premiers contacts",
+        "contact": "Coordonnées",
+        "sourceAndTags": "Source / étiquettes",
+        "consent": "Consentement",
+        "sends": "Envois / dernier envoi",
+        "status": "Statut",
+        "created": "Créé",
+        "page": "Page {{current}} sur {{total}}"
+      }
+    }
+  },
   "pageHeader": {
     "title": "Contacts enregistrés",
     "addContact": "Ajouter un contact",
