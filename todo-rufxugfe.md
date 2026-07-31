@@ -32,8 +32,8 @@
 - [x] Refine and validate the reusable Get Phame release-workflow skill with the completed workflow’s reusable comparison and verification guidance.
 - [x] Add an accessible before-and-after diff view to the AI tone-approval modal without replacing the original draft until approval.
 - [x] Localize the tone-diff labels and add focused source, behavior, and regression coverage.
-- [ ] Run focused tests, the full Vitest suite, TypeScript validation, a production build, responsive QA, checkpoint release, and GitHub synchronization for the tone-diff update.
+- [x] Run focused tests, the full Vitest suite, TypeScript validation, a production build, responsive QA, checkpoint release, and GitHub synchronization for the tone-diff update.
 - [x] Replace the unsupported Unicode-regex tokenizer flag so the tone-diff helper passes the project TypeScript target.
 - [x] Synchronize all stale phame51 localization cache-version assertions with the phame52 tone-diff release.
-- [ ] Save the validated tone-diff update as a managed checkpoint.
-- [ ] Synchronize the exact tone-diff checkpoint to GitHub through a release branch, passing pull request, protected-main merge, and remote-main parity verification.
+- [x] Save the validated tone-diff update as a managed checkpoint.
+- [x] Synchronize the exact tone-diff checkpoint to GitHub through a release branch, passing pull request, protected-main merge, and remote-main parity verification.
