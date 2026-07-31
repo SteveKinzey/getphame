@@ -408,7 +408,16 @@
     "tonePreviewComparisonTitle": "比較變更",
     "tonePreviewOriginalDraft": "原始草稿",
     "tonePreviewAdjustedDraft": "AI 調整後的草稿",
-    "tonePreviewDiffLegend": "刪除的文字會以紅色醒目顯示，新增的文字會以綠色醒目顯示。"
+    "tonePreviewDiffLegend": "刪除的文字會以紅色醒目顯示，新增的文字會以綠色醒目顯示。",
+    "tonePreviewChangedOnly": "僅顯示已變更的行",
+    "tonePreviewShowFullDraft": "顯示完整草稿",
+    "tonePreviewChangedOnlyDescription": "篩選兩份草稿，僅顯示含有醒目變更的完整行。",
+    "tonePreviewNoChangedLines": "此部分沒有已變更的行。",
+    "tonePreviewCopyRevised": "複製修訂後的草稿",
+    "tonePreviewCopySuccess": "修訂後的草稿已複製到剪貼簿。",
+    "tonePreviewCopyError": "無法複製修訂後的草稿。請手動選取並複製。",
+    "tonePreviewRationaleTitle": "AI 建議這些調整的原因",
+    "tonePreviewRationaleDescription": "每個調整欄位的簡短說明。AI 會保留請求詳細資料、預留位置和連結。"
   },
   "page": {
     "title": "設定",

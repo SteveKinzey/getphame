@@ -97,11 +97,13 @@ describe("email.adjustTone", () => {
     mocks.adjustEmailTone.mockResolvedValue({
       subject: "A warm request from {{businessName}}",
       body: "Hi {{customerName}}, please share feedback at {{platformLinks}}. Reply unsubscribe to opt out.",
+      rationales: [{ field: "subject", rationale: "Uses a friendlier opening." }],
     });
     const caller = appRouter.createCaller(context(entitledUser));
 
     await expect(caller.email.adjustTone(input)).resolves.toMatchObject({
       subject: "A warm request from {{businessName}}",
+      rationales: [{ field: "subject", rationale: "Uses a friendlier opening." }],
     });
     expect(mocks.adjustEmailTone).toHaveBeenCalledWith({
       ...input,

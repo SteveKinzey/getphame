@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine, Sparkles, GitCompareArrows } from "lucide-react";
+import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine, Sparkles, GitCompareArrows, Copy, ListFilter, Lightbulb } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
 import {
@@ -23,7 +23,7 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 import { completeSuccessfulRequest } from "@/lib/onboardingFlow";
 import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
-import { getToneTextDiff, type ToneDiffSegment } from "@/lib/toneDraftDiff";
+import { getChangedToneLineSegments, getToneTextDiff, type ToneDiffSegment } from "@/lib/toneDraftDiff";
 import {
   buildSafePlatformLinks,
   containsDirectYelpLink,
@@ -54,6 +54,11 @@ function ToneDiffText({ segments, mode }: { segments: ToneDiffSegment[]; mode: "
   );
 }
 
+type TonePreviewRationale = {
+  field: "subject" | "body";
+  rationale: string;
+};
+
 export default function SendRequestPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
@@ -75,6 +80,8 @@ export default function SendRequestPage() {
   const [loadedDraftSourceKey, setLoadedDraftSourceKey] = useState("");
   const [tonePreviewDraft, setTonePreviewDraft] = useState<{ subject: string; body: string } | null>(null);
   const [tonePreviewSourceDraft, setTonePreviewSourceDraft] = useState<{ subject: string; body: string } | null>(null);
+  const [tonePreviewRationales, setTonePreviewRationales] = useState<TonePreviewRationale[]>([]);
+  const [tonePreviewChangedOnly, setTonePreviewChangedOnly] = useState(false);
   const [tonePreviewOpen, setTonePreviewOpen] = useState(false);
   const [finalPreviewOpen, setFinalPreviewOpen] = useState(false);
   const [complianceChecked, setComplianceChecked] = useState({
@@ -155,10 +162,13 @@ export default function SendRequestPage() {
     onSuccess: (draft, sourceDraft) => {
       setTonePreviewSourceDraft({ subject: sourceDraft.subject, body: sourceDraft.body });
       setTonePreviewDraft(draft);
+      setTonePreviewRationales(draft.rationales);
+      setTonePreviewChangedOnly(false);
       setTonePreviewOpen(true);
     },
     onError: (err) => {
       setTonePreviewSourceDraft(null);
+      setTonePreviewRationales([]);
       if (err.data?.code === "FORBIDDEN") {
         openUpgradeModal("plans");
         return;
@@ -177,6 +187,22 @@ export default function SendRequestPage() {
       body: getToneTextDiff(tonePreviewSourceDraft.body, tonePreviewDraft.body),
     };
   }, [tonePreviewSourceDraft, tonePreviewDraft]);
+  const renderedTonePreviewComparison = useMemo(() => {
+    if (!tonePreviewComparison) return null;
+    const project = (segments: ToneDiffSegment[], changedKind: "removed" | "added") => (
+      tonePreviewChangedOnly ? getChangedToneLineSegments(segments, changedKind) : segments
+    );
+    return {
+      subject: {
+        before: project(tonePreviewComparison.subject.before, "removed"),
+        after: project(tonePreviewComparison.subject.after, "added"),
+      },
+      body: {
+        before: project(tonePreviewComparison.body.before, "removed"),
+        after: project(tonePreviewComparison.body.after, "added"),
+      },
+    };
+  }, [tonePreviewChangedOnly, tonePreviewComparison]);
 
   function handleToneAdjustment() {
     if (!profile?.businessName) {
@@ -202,6 +228,9 @@ export default function SendRequestPage() {
     setErrors((current) => ({ ...current, subject: undefined, body: undefined }));
     setTonePreviewOpen(false);
     setTonePreviewDraft(null);
+    setTonePreviewSourceDraft(null);
+    setTonePreviewRationales([]);
+    setTonePreviewChangedOnly(false);
     toast.success(t("mainForm.toneApplied", { defaultValue: "Tone applied. Review the message before sending." }));
   }
 
@@ -210,6 +239,18 @@ export default function SendRequestPage() {
     if (!open) {
       setTonePreviewDraft(null);
       setTonePreviewSourceDraft(null);
+      setTonePreviewRationales([]);
+      setTonePreviewChangedOnly(false);
+    }
+  }
+
+  async function handleCopyTonePreviewDraft() {
+    if (!tonePreviewDraft) return;
+    try {
+      await navigator.clipboard.writeText(`${tonePreviewDraft.subject}\n\n${tonePreviewDraft.body}`);
+      toast.success(t("mainForm.tonePreviewCopySuccess", { defaultValue: "Revised draft copied to your clipboard." }));
+    } catch {
+      toast.error(t("mainForm.tonePreviewCopyError", { defaultValue: "Could not copy the revised draft. Please select and copy it manually." }));
     }
   }
 
@@ -1185,7 +1226,7 @@ export default function SendRequestPage() {
           </DialogDescription>
         </DialogHeader>
 
-        {tonePreviewSourceDraft && tonePreviewDraft && tonePreviewComparison && (
+        {tonePreviewSourceDraft && tonePreviewDraft && tonePreviewComparison && renderedTonePreviewComparison && (
           <section
             className="overflow-hidden rounded-2xl bg-white"
             style={{ border: "1px solid oklch(0.90 0.02 260)" }}
@@ -1197,7 +1238,25 @@ export default function SendRequestPage() {
               <p className="text-sm font-black rr-text-navy">
                 {t("mainForm.tonePreviewComparisonTitle", { defaultValue: "Compare the changes" })}
               </p>
-              <p className="basis-full text-xs leading-relaxed rr-text-navy-mid sm:basis-auto sm:ml-auto">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={tonePreviewChangedOnly}
+                aria-describedby="tone-preview-filter-description"
+                onClick={() => setTonePreviewChangedOnly((current) => !current)}
+                className="ml-auto inline-flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ background: tonePreviewChangedOnly ? "oklch(0.74 0.15 83)" : "oklch(0.93 0.02 260)", color: "oklch(0.20 0.04 260)" }}
+                data-testid="ai-tone-preview-changed-only-toggle"
+              >
+                <ListFilter size={14} aria-hidden="true" />
+                {tonePreviewChangedOnly
+                  ? t("mainForm.tonePreviewShowFullDraft", { defaultValue: "Show full drafts" })
+                  : t("mainForm.tonePreviewChangedOnly", { defaultValue: "Changed lines only" })}
+              </button>
+              <p id="tone-preview-filter-description" className="basis-full text-xs leading-relaxed rr-text-navy-mid">
+                {t("mainForm.tonePreviewChangedOnlyDescription", { defaultValue: "Filters both drafts to the full lines that contain a highlighted change." })}
+              </p>
+              <p className="basis-full text-xs leading-relaxed rr-text-navy-mid">
                 {t("mainForm.tonePreviewDiffLegend", { defaultValue: "Removed text is highlighted in red. Added text is highlighted in green." })}
               </p>
             </div>
@@ -1210,35 +1269,81 @@ export default function SendRequestPage() {
                 <div className="mb-4">
                   <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</p>
                   <p className="mt-1 break-words text-sm font-bold leading-relaxed rr-text-navy">
-                    <ToneDiffText segments={tonePreviewComparison.subject.before} mode="before" />
+                    {renderedTonePreviewComparison.subject.before.length > 0
+                      ? <ToneDiffText segments={renderedTonePreviewComparison.subject.before} mode="before" />
+                      : <span className="italic rr-text-navy-mid">{t("mainForm.tonePreviewNoChangedLines", { defaultValue: "No changed lines in this section." })}</span>}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</p>
                   <div className="mt-1 break-words text-sm leading-relaxed rr-text-navy">
-                    <ToneDiffText segments={tonePreviewComparison.body.before} mode="before" />
+                    {renderedTonePreviewComparison.body.before.length > 0
+                      ? <ToneDiffText segments={renderedTonePreviewComparison.body.before} mode="before" />
+                      : <span className="italic rr-text-navy-mid">{t("mainForm.tonePreviewNoChangedLines", { defaultValue: "No changed lines in this section." })}</span>}
                   </div>
                 </div>
               </section>
 
               <section className="min-w-0 bg-white p-4" data-testid="ai-tone-preview-adjusted" aria-label={t("mainForm.tonePreviewAdjustedDraft", { defaultValue: "AI-adjusted draft" })}>
-                <p className="mb-4 text-xs font-black uppercase tracking-wide rr-text-navy-mid">
-                  {t("mainForm.tonePreviewAdjustedDraft", { defaultValue: "AI-adjusted draft" })}
-                </p>
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs font-black uppercase tracking-wide rr-text-navy-mid">
+                    {t("mainForm.tonePreviewAdjustedDraft", { defaultValue: "AI-adjusted draft" })}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => { buttonPressHaptic(); void handleCopyTonePreviewDraft(); }}
+                    className="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs font-black rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    style={{ background: "oklch(0.93 0.02 260)" }}
+                    data-testid="ai-tone-preview-copy-revised"
+                  >
+                    <Copy size={14} aria-hidden="true" />
+                    {t("mainForm.tonePreviewCopyRevised", { defaultValue: "Copy revised draft" })}
+                  </button>
+                </div>
                 <div className="mb-4">
                   <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</p>
                   <p className="mt-1 break-words text-sm font-bold leading-relaxed rr-text-navy">
-                    <ToneDiffText segments={tonePreviewComparison.subject.after} mode="after" />
+                    {renderedTonePreviewComparison.subject.after.length > 0
+                      ? <ToneDiffText segments={renderedTonePreviewComparison.subject.after} mode="after" />
+                      : <span className="italic rr-text-navy-mid">{t("mainForm.tonePreviewNoChangedLines", { defaultValue: "No changed lines in this section." })}</span>}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</p>
                   <div className="mt-1 break-words text-sm leading-relaxed rr-text-navy">
-                    <ToneDiffText segments={tonePreviewComparison.body.after} mode="after" />
+                    {renderedTonePreviewComparison.body.after.length > 0
+                      ? <ToneDiffText segments={renderedTonePreviewComparison.body.after} mode="after" />
+                      : <span className="italic rr-text-navy-mid">{t("mainForm.tonePreviewNoChangedLines", { defaultValue: "No changed lines in this section." })}</span>}
                   </div>
                 </div>
               </section>
             </div>
+
+            {tonePreviewRationales.length > 0 && (
+              <section className="border-t p-4" style={{ borderColor: "oklch(0.90 0.02 260)" }} aria-labelledby="tone-preview-rationales-title" data-testid="ai-tone-preview-rationales">
+                <div className="flex items-start gap-2">
+                  <Lightbulb size={17} className="mt-0.5 rr-text-gold" aria-hidden="true" />
+                  <div>
+                    <h3 id="tone-preview-rationales-title" className="text-sm font-black rr-text-navy">
+                      {t("mainForm.tonePreviewRationaleTitle", { defaultValue: "Why AI suggested these adjustments" })}
+                    </h3>
+                    <p className="mt-1 text-xs leading-relaxed rr-text-navy-mid">
+                      {t("mainForm.tonePreviewRationaleDescription", { defaultValue: "A brief explanation for each adjusted field. AI keeps request details, placeholders, and links intact." })}
+                    </p>
+                  </div>
+                </div>
+                <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {tonePreviewRationales.map((entry) => (
+                    <li key={entry.field} className="rounded-xl p-3 rr-bg-cream-warm" style={{ border: "1px solid oklch(0.90 0.03 83)" }}>
+                      <p className="text-xs font-black uppercase tracking-wide rr-text-navy-mid">
+                        {entry.field === "subject" ? t("mainForm.subject") : t("mainForm.body")}
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed rr-text-navy">{entry.rationale}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </section>
         )}
 

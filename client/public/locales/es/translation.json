@@ -519,7 +519,16 @@
     "tonePreviewComparisonTitle": "Compara los cambios",
     "tonePreviewOriginalDraft": "Borrador original",
     "tonePreviewAdjustedDraft": "Borrador ajustado por IA",
-    "tonePreviewDiffLegend": "El texto eliminado se resalta en rojo. El texto añadido se resalta en verde."
+    "tonePreviewDiffLegend": "El texto eliminado se resalta en rojo. El texto añadido se resalta en verde.",
+    "tonePreviewChangedOnly": "Solo líneas modificadas",
+    "tonePreviewShowFullDraft": "Mostrar borradores completos",
+    "tonePreviewChangedOnlyDescription": "Filtra ambos borradores para mostrar las líneas completas que contienen un cambio resaltado.",
+    "tonePreviewNoChangedLines": "No hay líneas modificadas en esta sección.",
+    "tonePreviewCopyRevised": "Copiar borrador revisado",
+    "tonePreviewCopySuccess": "El borrador revisado se copió al portapapeles.",
+    "tonePreviewCopyError": "No se pudo copiar el borrador revisado. Selecciónalo y cópialo manualmente.",
+    "tonePreviewRationaleTitle": "Por qué la IA sugirió estos ajustes",
+    "tonePreviewRationaleDescription": "Una breve explicación de cada campo ajustado. La IA conserva los detalles de la solicitud, los marcadores y los enlaces."
   },
   "page": {
     "title": "Configuración",

@@ -37,3 +37,10 @@
 - [x] Synchronize all stale phame51 localization cache-version assertions with the phame52 tone-diff release.
 - [x] Save the validated tone-diff update as a managed checkpoint.
 - [x] Synchronize the exact tone-diff checkpoint to GitHub through a release branch, passing pull request, protected-main merge, and remote-main parity verification.
+- [x] Refine and validate the reusable Get Phame release-workflow skill with the latest final-ledger synchronization pattern.
+- [x] Add an accessible changed-lines-only toggle to the AI tone comparison view without hiding required original/revised context by default.
+- [x] Add a localized Copy to Clipboard control for the revised AI draft with success and failure feedback.
+- [x] Extend the AI tone-adjustment contract with concise, safe rationales and render them with each suggested diff adjustment.
+- [x] Localize the new filter, clipboard, and rationale UI across every supported language and add focused regression coverage.
+- [ ] Run focused tests, full Vitest, TypeScript validation, production build, responsive QA, checkpoint release, and GitHub synchronization for the tone-diff enhancement.
+- [x] Complete TypeScript validation using a memory-aware release-check strategy after the bounded compiler process exhausted its heap.
