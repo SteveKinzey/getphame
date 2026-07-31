@@ -455,3 +455,5 @@
 - [x] Verify the enhanced Activity Trend and Automation Health interfaces at 1440 × 1000 and 375 × 812 in English, Spanish, and Simplified Chinese, including export-control wrapping, chart containment, localized copy, Recharts keyboard contracts, alert semantics, and recent browser-console and network logs.
 - [ ] Save and auto-publish the validated checkpoint, verify production origins, synchronize the exact tree through a history-preserving protected-main pull request, resolve review feedback, and prove checkpoint-to-main parity.
 - [ ] Deliver the released enhancements, validation evidence, final checkpoint, protected-main proof, and updated installable skill.
+- [x] Resolve pull request #65 accessibility review by marking the decorative pulsing drift-status dot hidden from assistive technology and add focused contract coverage; the replacement release gate passes.
+- [x] Resolve pull request #65 localization review by formatting the drift timestamp with the active resolved locale fallback used elsewhere and add focused contract coverage; the replacement release gate passes.

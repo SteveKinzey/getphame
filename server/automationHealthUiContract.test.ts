@@ -97,6 +97,9 @@ describe("Automation Health administrator UI contracts", () => {
     expect(alert).toContain('role="alert"');
     expect(alert).toContain('aria-live="assertive"');
     expect(alert).toContain('aria-atomic="true"');
+    expect(alert).toContain("i18n.resolvedLanguage || i18n.language");
+    expect(alert).toContain('motion-safe:animate-pulse"');
+    expect(alert).toContain('aria-hidden="true"');
     expect(alert).toContain('t("automationHealth.alert.badge"');
     expect(alert).toContain('t("automationHealth.alert.workflow"');
     expect(alert).toContain('t("automationHealth.alert.observedAt"');
