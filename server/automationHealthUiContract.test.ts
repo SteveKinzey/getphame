@@ -12,14 +12,24 @@ const requiredAutomationHealthPaths = [
   "dashboardCardBody",
   "alert.title",
   "alert.body",
+  "alert.badge",
+  "alert.observedAt",
   "alert.recovery",
   "alert.viewDetails",
+  "alert.workflow",
   "alert.acknowledge",
   "alert.acknowledged",
+  "charts.dailyTotal",
   "charts.driftTitle",
   "charts.driftDescription",
+  "charts.driftSummary",
+  "charts.interactionHint",
+  "charts.mergeSummary",
   "charts.mergesTitle",
   "charts.mergesDescription",
+  "charts.passRate",
+  "charts.rangeShare",
+  "charts.tooltipDate",
   "filters.title",
   "filters.custom",
   "filters.from",
@@ -54,6 +64,14 @@ const requiredActivityTrendPaths = [
   "rangeTooLong",
   "activeRange",
   "emptyRange",
+  "exportFilterLabel",
+  "exportFilterHelp",
+  "exportTypeSent",
+  "exportTypeOpens",
+  "exportTypeClicks",
+  "exportSelection",
+  "exportSelectAtLeastOne",
+  "exportSelectionEmpty",
 ] as const;
 
 function valueAtPath(input: unknown, path: string): unknown {
@@ -78,6 +96,13 @@ describe("Automation Health administrator UI contracts", () => {
     expect(alert).toContain('data-testid="automation-drift-alert"');
     expect(alert).toContain('role="alert"');
     expect(alert).toContain('aria-live="assertive"');
+    expect(alert).toContain('aria-atomic="true"');
+    expect(alert).toContain("i18n.resolvedLanguage || i18n.language");
+    expect(alert).toContain('motion-safe:animate-pulse"');
+    expect(alert).toContain('aria-hidden="true"');
+    expect(alert).toContain('t("automationHealth.alert.badge"');
+    expect(alert).toContain('t("automationHealth.alert.workflow"');
+    expect(alert).toContain('t("automationHealth.alert.observedAt"');
     expect(alert).toContain("automationHealth.acknowledgeAlert.useMutation");
     expect(alert).toContain('navigate("/admin/automation-health")');
     expect(layout).toContain(
@@ -102,7 +127,15 @@ describe("Automation Health administrator UI contracts", () => {
     expect(page).toContain('result === "all" ? undefined : result');
     expect(page).toContain("<BarChart");
     expect(page).toContain("<LineChart");
-    expect(page).toContain('role="img"');
+    expect(page).toContain("accessibilityLayer");
+    expect(page).toContain("<DriftChartTooltip");
+    expect(page).toContain("<MergeChartTooltip");
+    expect(page).toContain('role="status"');
+    expect(page).toContain('aria-live="polite"');
+    expect(page).toContain('t("automationHealth.charts.interactionHint"');
+    expect(page).toContain('t("automationHealth.charts.dailyTotal"');
+    expect(page).toContain('t("automationHealth.charts.passRate"');
+    expect(page).toContain('t("automationHealth.charts.rangeShare"');
     expect(page).toContain('role="alert"');
     expect(page).toContain("href={event.runUrl}");
     expect(page).toContain('target="_blank"');
@@ -111,6 +144,31 @@ describe("Automation Health administrator UI contracts", () => {
     expect(admin).toContain('path: "/admin/automation-health"');
     expect(admin).toContain('t("automationHealth.dashboardCardTitle"');
     expect(admin).toContain('t("automationHealth.dashboardCardBody"');
+  });
+
+  it("keeps Activity Trend export filtering administrator-only and restores the visible chart", () => {
+    const card = readProjectFile(
+      "../client/src/components/dashboard/ActivityTrendCard.tsx"
+    );
+
+    expect(card).toContain('const isAdmin = user?.role === "admin"');
+    expect(card).toContain("ACTIVITY_TREND_EXPORT_SERIES.map");
+    expect(card).toContain(
+      'aria-describedby="activity-trend-export-filter-help activity-trend-export-filter-status"'
+    );
+    expect(card).toContain('aria-live="polite"');
+    expect(card).toContain("hasActivityTrendData(");
+    expect(card).toContain("selectedExportSeries");
+    expect(card).toContain(
+      "serializeActivityTrendCsv(dailyTrend, selectedExportSeries)"
+    );
+    expect(card).toContain("chart.setDatasetVisibility(");
+    expect(card).toContain(
+      "const previousVisibility = chart.data.datasets.map"
+    );
+    expect(card).toContain("} finally {");
+    expect(card).toContain('t("activityTrend.exportSelectAtLeastOne"');
+    expect(card).toContain('t("activityTrend.exportSelectionEmpty"');
   });
 });
 

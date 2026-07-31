@@ -33,15 +33,17 @@ GitHub Actions requests a short-lived token with the exact audience `https://get
 
 ## Alert Lifecycle
 
-The global authenticated shell requests the latest drift state only for administrators. A warning banner appears when the newest drift event is failed and that administrator has not acknowledged that exact event. A later successful drift event clears the active warning for every administrator. Acknowledgement dismisses only the current event for the current administrator; the Automation Health page continues to show its failed history.
+The global authenticated shell requests the latest drift state only for administrators. When the newest drift event is failed and that administrator has not acknowledged that exact event, a high-contrast warning banner appears above the current page with an **Action required** badge, an assertive live-region announcement, the failed workflow and timestamp, a direct link to Automation Health, and an acknowledgement control. A later successful drift event clears the active warning for every administrator. Acknowledgement dismisses only the current event for the current administrator; the Automation Health page continues to show its failed history. The alert remains a single shell-level signal rather than spawning duplicate notifications.
 
 ## Administrator Dashboard Contract
 
-The `/admin/automation-health` route uses an `adminProcedure` query with preset windows of 7, 30, 90, or 366 days. The response contains summary metrics, daily Dependabot merge counts, daily drift pass/fail counts, latest drift status, and a newest-first bounded history list. Charts use real persisted events only, provide keyboard-accessible controls and an adjacent tabular/text summary, and never manufacture empty-state values.
+The `/admin/automation-health` route uses an `adminProcedure` query with preset windows of 7, 30, 90, or 366 days. The response contains summary metrics, daily Dependabot merge counts, daily drift pass/fail counts, latest drift status, and a newest-first bounded history list. Charts use real persisted events only and never manufacture empty-state values. Each chart exposes a custom tooltip on pointer hover and through Recharts' accessibility layer during keyboard navigation. The tooltip identifies the local date, each visible series value, the daily total, and the drift pass rate when applicable. A concise adjacent summary remains available so the chart is not the only source of operational information.
 
 ## Activity Trend Export Contract
 
-Activity Trend keeps the current 7, 30, and 90-day presets and adds an explicit custom date range. Custom dates are interpreted as inclusive user-local calendar days and converted to UTC boundaries before the query. The server requires both endpoints, rejects inverted or future-ending windows, and limits the range to 366 days. CSV and PNG exports use the active filtered snapshot. Export filenames include `YYYY-MM-DD_to_YYYY-MM-DD`; empty or all-zero snapshots remain non-exportable.
+Activity Trend keeps the current 30, 60, and 90-day presets plus its explicit custom date range. Custom dates are interpreted as inclusive user-local calendar days and converted to UTC boundaries before the query. The server requires both endpoints, rejects inverted or future-ending windows, and limits the range to 366 days.
+
+Administrators can choose any non-empty subset of the three real activity series—sent requests, email opens, and review-link clicks—before exporting. The default is all three. The selector filters only the generated CSV or PNG; it does not mutate the dashboard chart or trigger a second analytics query. CSV files contain `Date` plus the selected columns. PNG generation temporarily masks unselected Chart.js datasets, captures the image, and restores the visible dashboard chart immediately. Export filenames always retain `YYYY-MM-DD-to-YYYY-MM-DD`; subset exports append a canonical series suffix such as `-opens-clicks`, while all-series exports preserve the existing filename. An export remains unavailable when every selected series is zero throughout the active date range.
 
 ## Failure Recovery
 

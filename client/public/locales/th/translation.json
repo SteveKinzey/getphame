@@ -60,16 +60,26 @@
     "alert": {
       "acknowledge": "รับทราบ",
       "acknowledged": "รับทราบ",
+      "badge": "ต้องดำเนินการ",
       "body": "การตรวจสอบการเบี่ยงเบนของเวิร์กโฟลว์ล่าสุดไม่ผ่าน โปรดทบทวนการรันก่อนเปลี่ยนแปลงการทำงานอัตโนมัติของรีโพสิทอรี",
+      "observedAt": "ตรวจพบเมื่อ {{time}}",
       "recovery": "คำเตือนนี้จะคงอยู่จนกว่าจะมีผลการตรวจสอบที่ผ่านการยืนยัน",
       "title": "ตรวจพบการเบี่ยงเบนของเวิร์กโฟลว์",
-      "viewDetails": "ดูรายละเอียด"
+      "viewDetails": "ดูรายละเอียด",
+      "workflow": "เวิร์กโฟลว์: {{workflow}}"
     },
     "charts": {
+      "dailyTotal": "ยอดรวมรายวัน",
       "driftDescription": "ผลการยืนยันรายวัน (สำเร็จ/ล้มเหลว)",
+      "driftSummary": "การตรวจสอบ {{audits}} ครั้ง · ล้มเหลว {{failures}} ครั้ง · อัตราผ่าน {{rate}}",
       "driftTitle": "ผลการตรวจสอบการเบี่ยงเบน",
+      "interactionHint": "เลื่อนตัวชี้ไปเหนือจุด หรือโฟกัสกราฟแล้วใช้ปุ่มลูกศร เพื่อดูค่ารายวัน",
       "mergesDescription": "การอัปเดต dependency ที่ผสานสำเร็จ แยกตามวัน",
-      "mergesTitle": "การผสานของ Dependabot"
+      "mergeSummary": "ผสาน {{count}} ครั้ง · เวลาเฉลี่ยในการผสาน {{duration}}",
+      "mergesTitle": "การผสานของ Dependabot",
+      "passRate": "อัตราผ่าน",
+      "rangeShare": "สัดส่วนของช่วงที่เลือก",
+      "tooltipDate": "{{date}}"
     },
     "filters": {
       "allEvents": "เหตุการณ์ทั้งหมด",
@@ -127,6 +137,16 @@
   "activityTrend": {
     "exportCsvAria": "ส่งออกข้อมูลกิจกรรมเป็น CSV",
     "exportPngAria": "ส่งออกแผนภูมิกิจกรรมเป็น PNG",
+    "exportFilterLabel": "ประเภทระบบอัตโนมัติสำหรับส่งออก",
+    "exportFilterHelp": "เลือกชุดข้อมูลกิจกรรมที่จะรวม แผนภูมิบนแดชบอร์ดจะไม่เปลี่ยนแปลง",
+    "exportTypeSent": "คำขอที่ส่งแล้ว",
+    "exportTypeOpens": "การเปิดอีเมล",
+    "exportTypeClicks": "การคลิกลิงก์รีวิว",
+    "exportSelection_one": "เลือก {{count}} จาก 3 รายการ",
+    "exportSelection_other": "เลือก {{count}} จาก 3 รายการ",
+    "exportSelection": "เลือก {{count}} จาก 3 รายการ",
+    "exportSelectAtLeastOne": "ต้องเลือกประเภทระบบอัตโนมัติไว้อย่างน้อยหนึ่งประเภท",
+    "exportSelectionEmpty": "ประเภทระบบอัตโนมัติที่เลือกไม่มีกิจกรรมในช่วงวันที่นี้",
     "exportUnavailable": "ยังไม่มีข้อมูลกิจกรรมในแผนภูมิสำหรับส่งออก",
     "exported": "ส่งออกแนวโน้มกิจกรรมแล้ว",
     "csvDownloaded": "ดาวน์โหลด CSV แนวโน้มกิจกรรมแล้ว",

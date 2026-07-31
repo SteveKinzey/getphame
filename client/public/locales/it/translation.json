@@ -60,16 +60,26 @@
     "alert": {
       "acknowledge": "Riconosci",
       "acknowledged": "Riconosciuto",
+      "badge": "Azione richiesta",
       "body": "L’ultimo audit sul drift del workflow è fallito. Revisiona l’esecuzione prima di modificare l’automazione del repository.",
+      "observedAt": "Rilevato {{time}}",
       "recovery": "Questo avviso rimane finché non viene ricevuto un audit verificato e riuscito.",
       "title": "Drift del workflow rilevato",
-      "viewDetails": "Visualizza dettagli"
+      "viewDetails": "Visualizza dettagli",
+      "workflow": "Flusso di lavoro: {{workflow}}"
     },
     "charts": {
+      "dailyTotal": "Totale giornaliero",
       "driftDescription": "Successi e fallimenti verificati giornalieri",
+      "driftSummary": "{{audits}} audit · {{failures}} falliti · tasso di successo {{rate}}",
       "driftTitle": "Esiti degli audit di drift",
+      "interactionHint": "Passa il puntatore su un punto oppure attiva il grafico e usa i tasti freccia per consultare i valori giornalieri.",
       "mergesDescription": "Aggiornamenti delle dipendenze uniti con successo per giorno",
-      "mergesTitle": "Merge di Dependabot"
+      "mergeSummary": "{{count}} merge · tempo medio di merge {{duration}}",
+      "mergesTitle": "Merge di Dependabot",
+      "passRate": "Tasso di successo",
+      "rangeShare": "Quota dell’intervallo selezionato",
+      "tooltipDate": "{{date}}"
     },
     "filters": {
       "allEvents": "Tutti gli eventi",
@@ -127,6 +137,16 @@
   "activityTrend": {
     "exportCsvAria": "Esporta i dati sull’attività come CSV",
     "exportPngAria": "Esporta il grafico dell’attività come PNG",
+    "exportFilterLabel": "Tipi di automazione da esportare",
+    "exportFilterHelp": "Seleziona le serie di attività da includere. Il grafico della dashboard non cambia.",
+    "exportTypeSent": "Richieste inviate",
+    "exportTypeOpens": "Aperture email",
+    "exportTypeClicks": "Clic sui link di recensione",
+    "exportSelection_one": "{{count}} di 3 selezionato",
+    "exportSelection_other": "{{count}} di 3 selezionati",
+    "exportSelection": "{{count}} di 3 selezionati",
+    "exportSelectAtLeastOne": "Mantieni selezionato almeno un tipo di automazione.",
+    "exportSelectionEmpty": "I tipi di automazione selezionati non hanno attività in questo intervallo di date.",
     "exportUnavailable": "Non ci sono ancora dati del grafico da esportare.",
     "exported": "Andamento dell’attività esportato.",
     "csvDownloaded": "CSV dell’andamento attività scaricato.",

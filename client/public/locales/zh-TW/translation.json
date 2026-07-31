@@ -60,16 +60,26 @@
     "alert": {
       "acknowledge": "確認",
       "acknowledged": "已確認",
+      "badge": "需要處理",
       "body": "最近一次工作流程漂移稽核失敗。變更儲存庫自動化前請檢查該次執行紀錄。",
+      "observedAt": "偵測時間：{{time}}",
       "recovery": "此警示將持續顯示，直到收到經驗證的成功稽核為止。",
       "title": "偵測到工作流程漂移",
-      "viewDetails": "檢視詳細資料"
+      "viewDetails": "檢視詳細資料",
+      "workflow": "工作流程：{{workflow}}"
     },
     "charts": {
+      "dailyTotal": "當日總數",
       "driftDescription": "每日經驗證的成功與失敗",
+      "driftSummary": "{{audits}} 次稽核 · {{failures}} 次失敗 · 通過率 {{rate}}",
       "driftTitle": "漂移稽核結果",
+      "interactionHint": "將指標停留在資料點上，或聚焦圖表並使用方向鍵，以查看每日數值。",
       "mergesDescription": "每日成功合併的相依性更新",
-      "mergesTitle": "Dependabot 合併"
+      "mergeSummary": "{{count}} 次合併 · 平均合併時間 {{duration}}",
+      "mergesTitle": "Dependabot 合併",
+      "passRate": "通過率",
+      "rangeShare": "佔所選區間的比例",
+      "tooltipDate": "{{date}}"
     },
     "filters": {
       "allEvents": "所有事件",
@@ -127,6 +137,16 @@
   "activityTrend": {
     "exportCsvAria": "將活動趨勢資料匯出為 CSV",
     "exportPngAria": "將活動趨勢圖匯出為 PNG",
+    "exportFilterLabel": "要匯出的自動化類型",
+    "exportFilterHelp": "選擇要包含的活動系列。儀表板圖表不會變更。",
+    "exportTypeSent": "已傳送要求",
+    "exportTypeOpens": "電子郵件開啟次數",
+    "exportTypeClicks": "評論連結點擊次數",
+    "exportSelection_one": "已選取 3 項中的 {{count}} 項",
+    "exportSelection_other": "已選取 3 項中的 {{count}} 項",
+    "exportSelection": "已選取 3 項中的 {{count}} 項",
+    "exportSelectAtLeastOne": "請至少保留一種自動化類型。",
+    "exportSelectionEmpty": "所選自動化類型在此日期範圍內沒有活動。",
     "exportUnavailable": "目前沒有可匯出的圖表活動資料。",
     "exported": "活動趨勢已匯出。",
     "csvDownloaded": "活動趨勢 CSV 已下載。",

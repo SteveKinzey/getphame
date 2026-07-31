@@ -60,16 +60,26 @@
     "alert": {
       "acknowledge": "Acknowledge",
       "acknowledged": "Acknowledged",
+      "badge": "Action required",
       "body": "The latest workflow drift audit failed. Review the run before changing repository automation.",
+      "observedAt": "Observed {{time}}",
       "recovery": "This warning remains until a verified successful audit is received.",
       "title": "Workflow drift detected",
-      "viewDetails": "View details"
+      "viewDetails": "View details",
+      "workflow": "Workflow: {{workflow}}"
     },
     "charts": {
+      "dailyTotal": "Daily total",
       "driftDescription": "Daily verified successes and failures",
+      "driftSummary": "{{audits}} audits · {{failures}} failed · {{rate}} pass rate",
       "driftTitle": "Drift-audit outcomes",
+      "interactionHint": "Hover over a point, or focus the chart and use the arrow keys, to inspect daily values.",
       "mergesDescription": "Successfully merged dependency updates by day",
-      "mergesTitle": "Dependabot merges"
+      "mergeSummary": "{{count}} merges · {{duration}} average merge time",
+      "mergesTitle": "Dependabot merges",
+      "passRate": "Pass rate",
+      "rangeShare": "Share of selected range",
+      "tooltipDate": "{{date}}"
     },
     "filters": {
       "allEvents": "All events",
@@ -479,7 +489,15 @@
     "rangeFutureEnd": "The end date cannot be in the future.",
     "rangeTooLong": "Choose a range of {{count}} days or fewer.",
     "activeRange": "Exporting {{start}} through {{end}} ({{count}} days).",
-    "emptyRange": "No activity from {{start}} through {{end}}."
+    "emptyRange": "No activity from {{start}} through {{end}}.",
+    "exportFilterLabel": "Export automation types",
+    "exportFilterHelp": "Select which activity series to include. The dashboard chart stays unchanged.",
+    "exportTypeSent": "Sent requests",
+    "exportTypeOpens": "Email opens",
+    "exportTypeClicks": "Review-link clicks",
+    "exportSelection": "{{count}} of 3 selected",
+    "exportSelectAtLeastOne": "Keep at least one automation type selected.",
+    "exportSelectionEmpty": "The selected automation types have no activity in this date range."
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
