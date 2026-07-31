@@ -31,10 +31,13 @@ export default function AutomationDriftAlert() {
   if (!isAdmin || !alert.data?.active || !alert.data.event) return null;
 
   const event = alert.data.event;
-  const eventTime = new Intl.DateTimeFormat(i18n.language, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(event.eventAt));
+  const eventTime = new Intl.DateTimeFormat(
+    i18n.resolvedLanguage || i18n.language,
+    {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }
+  ).format(new Date(event.eventAt));
 
   return (
     <section
@@ -49,7 +52,10 @@ export default function AutomationDriftAlert() {
         <div className="flex min-w-0 items-start gap-3">
           <span className="relative mt-0.5 flex size-12 shrink-0 items-center justify-center rounded-full bg-red-800 text-white ring-4 ring-red-200">
             <AlertTriangle size={24} aria-hidden="true" />
-            <span className="absolute -right-1 -top-1 size-3 rounded-full bg-amber-400 ring-2 ring-white motion-safe:animate-pulse" />
+            <span
+              className="absolute -right-1 -top-1 size-3 rounded-full bg-amber-400 ring-2 ring-white motion-safe:animate-pulse"
+              aria-hidden="true"
+            />
           </span>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
