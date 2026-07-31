@@ -897,7 +897,16 @@
       "tonePreviewComparisonTitle": "Compare the changes",
       "tonePreviewOriginalDraft": "Original draft",
       "tonePreviewAdjustedDraft": "AI-adjusted draft",
-      "tonePreviewDiffLegend": "Removed text is highlighted in red. Added text is highlighted in green."
+      "tonePreviewDiffLegend": "Removed text is highlighted in red. Added text is highlighted in green.",
+      "tonePreviewChangedOnly": "Changed lines only",
+      "tonePreviewShowFullDraft": "Show full drafts",
+      "tonePreviewChangedOnlyDescription": "Filters both drafts to the full lines that contain a highlighted change.",
+      "tonePreviewNoChangedLines": "No changed lines in this section.",
+      "tonePreviewCopyRevised": "Copy revised draft",
+      "tonePreviewCopySuccess": "Revised draft copied to your clipboard.",
+      "tonePreviewCopyError": "Could not copy the revised draft. Please select and copy it manually.",
+      "tonePreviewRationaleTitle": "Why AI suggested these adjustments",
+      "tonePreviewRationaleDescription": "A brief explanation for each adjusted field. AI keeps request details, placeholders, and links intact."
     },
     "pwaInstallBanner": {
       "dismiss": "Dismiss install banner",
@@ -2398,7 +2407,16 @@
       "tonePreviewComparisonTitle": "Compara los cambios",
       "tonePreviewOriginalDraft": "Borrador original",
       "tonePreviewAdjustedDraft": "Borrador ajustado por IA",
-      "tonePreviewDiffLegend": "El texto eliminado se resalta en rojo. El texto añadido se resalta en verde."
+      "tonePreviewDiffLegend": "El texto eliminado se resalta en rojo. El texto añadido se resalta en verde.",
+      "tonePreviewChangedOnly": "Solo líneas modificadas",
+      "tonePreviewShowFullDraft": "Mostrar borradores completos",
+      "tonePreviewChangedOnlyDescription": "Filtra ambos borradores para mostrar las líneas completas que contienen un cambio resaltado.",
+      "tonePreviewNoChangedLines": "No hay líneas modificadas en esta sección.",
+      "tonePreviewCopyRevised": "Copiar borrador revisado",
+      "tonePreviewCopySuccess": "El borrador revisado se copió al portapapeles.",
+      "tonePreviewCopyError": "No se pudo copiar el borrador revisado. Selecciónalo y cópialo manualmente.",
+      "tonePreviewRationaleTitle": "Por qué la IA sugirió estos ajustes",
+      "tonePreviewRationaleDescription": "Una breve explicación de cada campo ajustado. La IA conserva los detalles de la solicitud, los marcadores y los enlaces."
     },
     "pwaInstallBanner": {
       "dismiss": "Descartar banner de instalación",
@@ -4085,7 +4103,16 @@
       "tonePreviewComparisonTitle": "Comparer les modifications",
       "tonePreviewOriginalDraft": "Brouillon d’origine",
       "tonePreviewAdjustedDraft": "Brouillon ajusté par l’IA",
-      "tonePreviewDiffLegend": "Le texte supprimé est mis en évidence en rouge. Le texte ajouté est mis en évidence en vert."
+      "tonePreviewDiffLegend": "Le texte supprimé est mis en évidence en rouge. Le texte ajouté est mis en évidence en vert.",
+      "tonePreviewChangedOnly": "Lignes modifiées uniquement",
+      "tonePreviewShowFullDraft": "Afficher les brouillons complets",
+      "tonePreviewChangedOnlyDescription": "Filtre les deux brouillons pour n’afficher que les lignes complètes contenant une modification mise en évidence.",
+      "tonePreviewNoChangedLines": "Aucune ligne modifiée dans cette section.",
+      "tonePreviewCopyRevised": "Copier le brouillon révisé",
+      "tonePreviewCopySuccess": "Le brouillon révisé a été copié dans votre presse-papiers.",
+      "tonePreviewCopyError": "Impossible de copier le brouillon révisé. Sélectionnez-le et copiez-le manuellement.",
+      "tonePreviewRationaleTitle": "Pourquoi l’IA a suggéré ces ajustements",
+      "tonePreviewRationaleDescription": "Une brève explication pour chaque champ ajusté. L’IA conserve les détails de la demande, les espaces réservés et les liens."
     },
     "pwaInstallBanner": {
       "dismiss": "Fermer la bannière d'installation",
@@ -5766,7 +5793,16 @@
       "tonePreviewComparisonTitle": "Confronta le modifiche",
       "tonePreviewOriginalDraft": "Bozza originale",
       "tonePreviewAdjustedDraft": "Bozza modificata dall’IA",
-      "tonePreviewDiffLegend": "Il testo rimosso è evidenziato in rosso. Il testo aggiunto è evidenziato in verde."
+      "tonePreviewDiffLegend": "Il testo rimosso è evidenziato in rosso. Il testo aggiunto è evidenziato in verde.",
+      "tonePreviewChangedOnly": "Solo righe modificate",
+      "tonePreviewShowFullDraft": "Mostra bozze complete",
+      "tonePreviewChangedOnlyDescription": "Filtra entrambe le bozze per mostrare solo le righe complete che contengono una modifica evidenziata.",
+      "tonePreviewNoChangedLines": "Nessuna riga modificata in questa sezione.",
+      "tonePreviewCopyRevised": "Copia bozza revisionata",
+      "tonePreviewCopySuccess": "La bozza revisionata è stata copiata negli appunti.",
+      "tonePreviewCopyError": "Impossibile copiare la bozza revisionata. Selezionala e copiala manualmente.",
+      "tonePreviewRationaleTitle": "Perché l’IA ha suggerito queste modifiche",
+      "tonePreviewRationaleDescription": "Una breve spiegazione per ogni campo modificato. L’IA mantiene dettagli della richiesta, segnaposto e link invariati."
     },
     "pwaInstallBanner": {
       "dismiss": "Chiudi banner di installazione",
@@ -7302,7 +7338,16 @@
       "tonePreviewComparisonTitle": "เปรียบเทียบการเปลี่ยนแปลง",
       "tonePreviewOriginalDraft": "ร่างต้นฉบับ",
       "tonePreviewAdjustedDraft": "ร่างที่ AI ปรับแล้ว",
-      "tonePreviewDiffLegend": "ข้อความที่ลบจะแสดงเป็นสีแดง ข้อความที่เพิ่มจะแสดงเป็นสีเขียว"
+      "tonePreviewDiffLegend": "ข้อความที่ลบจะแสดงเป็นสีแดง ข้อความที่เพิ่มจะแสดงเป็นสีเขียว",
+      "tonePreviewChangedOnly": "แสดงเฉพาะบรรทัดที่เปลี่ยน",
+      "tonePreviewShowFullDraft": "แสดงฉบับร่างทั้งหมด",
+      "tonePreviewChangedOnlyDescription": "กรองทั้งสองฉบับร่างให้แสดงเฉพาะบรรทัดเต็มที่มีการเปลี่ยนแปลงที่ไฮไลต์ไว้",
+      "tonePreviewNoChangedLines": "ไม่มีบรรทัดที่เปลี่ยนในส่วนนี้",
+      "tonePreviewCopyRevised": "คัดลอกฉบับร่างที่แก้ไขแล้ว",
+      "tonePreviewCopySuccess": "คัดลอกฉบับร่างที่แก้ไขแล้วไปยังคลิปบอร์ดแล้ว",
+      "tonePreviewCopyError": "ไม่สามารถคัดลอกฉบับร่างที่แก้ไขแล้วได้ โปรดเลือกและคัดลอกด้วยตนเอง",
+      "tonePreviewRationaleTitle": "เหตุผลที่ AI แนะนำการปรับเหล่านี้",
+      "tonePreviewRationaleDescription": "คำอธิบายสั้น ๆ สำหรับแต่ละส่วนที่ปรับ AI จะคงรายละเอียดคำขอ ตัวแทนข้อความ และลิงก์ไว้"
     },
     "pwaInstallBanner": {
       "dismiss": "ปิดแบนเนอร์ติดตั้ง",
@@ -8835,7 +8880,16 @@
       "tonePreviewComparisonTitle": "比较更改",
       "tonePreviewOriginalDraft": "原始草稿",
       "tonePreviewAdjustedDraft": "AI 调整后的草稿",
-      "tonePreviewDiffLegend": "删除的文本以红色突出显示。新增的文本以绿色突出显示。"
+      "tonePreviewDiffLegend": "删除的文本以红色突出显示。新增的文本以绿色突出显示。",
+      "tonePreviewChangedOnly": "仅显示已更改的行",
+      "tonePreviewShowFullDraft": "显示完整草稿",
+      "tonePreviewChangedOnlyDescription": "筛选两个草稿，仅显示含有高亮更改的完整行。",
+      "tonePreviewNoChangedLines": "此部分没有已更改的行。",
+      "tonePreviewCopyRevised": "复制修订后的草稿",
+      "tonePreviewCopySuccess": "修订后的草稿已复制到剪贴板。",
+      "tonePreviewCopyError": "无法复制修订后的草稿。请手动选择并复制。",
+      "tonePreviewRationaleTitle": "AI 建议这些调整的原因",
+      "tonePreviewRationaleDescription": "每个调整字段的简要说明。AI 会保留请求详情、占位符和链接。"
     },
     "pwaInstallBanner": {
       "dismiss": "关闭安装横幅",
@@ -10361,7 +10415,16 @@
       "tonePreviewComparisonTitle": "比較變更",
       "tonePreviewOriginalDraft": "原始草稿",
       "tonePreviewAdjustedDraft": "AI 調整後的草稿",
-      "tonePreviewDiffLegend": "刪除的文字會以紅色醒目顯示，新增的文字會以綠色醒目顯示。"
+      "tonePreviewDiffLegend": "刪除的文字會以紅色醒目顯示，新增的文字會以綠色醒目顯示。",
+      "tonePreviewChangedOnly": "僅顯示已變更的行",
+      "tonePreviewShowFullDraft": "顯示完整草稿",
+      "tonePreviewChangedOnlyDescription": "篩選兩份草稿，僅顯示含有醒目變更的完整行。",
+      "tonePreviewNoChangedLines": "此部分沒有已變更的行。",
+      "tonePreviewCopyRevised": "複製修訂後的草稿",
+      "tonePreviewCopySuccess": "修訂後的草稿已複製到剪貼簿。",
+      "tonePreviewCopyError": "無法複製修訂後的草稿。請手動選取並複製。",
+      "tonePreviewRationaleTitle": "AI 建議這些調整的原因",
+      "tonePreviewRationaleDescription": "每個調整欄位的簡短說明。AI 會保留請求詳細資料、預留位置和連結。"
     },
     "pwaInstallBanner": {
       "dismiss": "關閉安裝橫幅",

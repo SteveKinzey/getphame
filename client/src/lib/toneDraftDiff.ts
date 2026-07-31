@@ -102,3 +102,33 @@ export function getToneTextDiff(before: string, after: string): ToneTextDiff {
 
   return { before: beforeSegments, after: afterSegments, hasChanges: true };
 }
+
+/**
+ * Returns only full lines that contain a highlighted change for one side of a comparison.
+ * It keeps unchanged words on a changed line so the edit remains understandable in isolation.
+ */
+export function getChangedToneLineSegments(
+  segments: ToneDiffSegment[],
+  changedKind: Extract<ToneDiffKind, "removed" | "added">,
+): ToneDiffSegment[] {
+  const lines: ToneDiffSegment[][] = [[]];
+
+  for (const segment of segments) {
+    for (const part of segment.text.split(/(\n)/)) {
+      if (!part) continue;
+      if (part === "\n") {
+        lines.push([]);
+        continue;
+      }
+      appendSegment(lines[lines.length - 1], segment.kind, part);
+    }
+  }
+
+  const changedLines = lines.filter((line) => line.some((segment) => segment.kind === changedKind));
+  const result: ToneDiffSegment[] = [];
+  changedLines.forEach((line, index) => {
+    line.forEach((segment) => appendSegment(result, segment.kind, segment.text));
+    if (index < changedLines.length - 1) appendSegment(result, "unchanged", "\n");
+  });
+  return result;
+}

@@ -25,6 +25,19 @@ const requestTimesByUser = new Map<number, number[]>();
 const placeholderPattern = /\{\{[a-zA-Z][a-zA-Z0-9_]*\}\}/g;
 const urlPattern = /https?:\/\/[^\s<>"')\]]+/gi;
 const secretPattern = /\b(?:password|passcode|api[\s_-]?key|secret|access[\s_-]?token|refresh[\s_-]?token)\s*[:=]\s*[^\s,;]{6,}/i;
+const placeholderDetectionPattern = /\{\{[a-zA-Z][a-zA-Z0-9_]*\}\}/;
+const urlDetectionPattern = /https?:\/\/[^\s<>"')\]]+/i;
+
+export interface ToneAdjustmentRationale {
+  field: "subject" | "body";
+  rationale: string;
+}
+
+export interface ToneAdjustmentResult {
+  subject: string;
+  body: string;
+  rationales: ToneAdjustmentRationale[];
+}
 
 type ToneAdjustmentInvoker = (request: Parameters<typeof invokeLLM>[0]) => ReturnType<typeof invokeLLM>;
 
@@ -45,6 +58,40 @@ function preservesRequiredFragments(source: string, rewritten: string, pattern: 
   const original = uniqueMatches(source, pattern);
   const returned = uniqueMatches(rewritten, pattern);
   return original.every((fragment) => returned.includes(fragment)) && returned.every((fragment) => original.includes(fragment));
+}
+
+function normalizeToneRationales(input: {
+  rationales: ToneAdjustmentRationale[];
+  sourceSubject: string;
+  sourceBody: string;
+  adjustedSubject: string;
+  adjustedBody: string;
+}): ToneAdjustmentRationale[] {
+  const changedFields = {
+    subject: input.sourceSubject !== input.adjustedSubject,
+    body: input.sourceBody !== input.adjustedBody,
+  };
+  const seenFields = new Set<ToneAdjustmentRationale["field"]>();
+  const safeRationales: ToneAdjustmentRationale[] = [];
+
+  for (const entry of input.rationales) {
+    const rationale = entry.rationale.trim();
+    if (
+      !changedFields[entry.field]
+      || seenFields.has(entry.field)
+      || !rationale
+      || secretPattern.test(rationale)
+      || placeholderDetectionPattern.test(rationale)
+      || urlDetectionPattern.test(rationale)
+    ) {
+      continue;
+    }
+
+    seenFields.add(entry.field);
+    safeRationales.push({ field: entry.field, rationale });
+  }
+
+  return safeRationales;
 }
 
 export function enforceEmailToneAdjustmentRateLimit(userId: number, now = Date.now()): void {
@@ -101,7 +148,7 @@ export function validateAdjustedReviewDraft(input: {
 export async function adjustEmailTone(input: z.infer<typeof emailToneAdjustmentInputSchema> & {
   userId: number;
   invoke?: ToneAdjustmentInvoker;
-}): Promise<{ subject: string; body: string }> {
+}): Promise<ToneAdjustmentResult> {
   const validated = emailToneAdjustmentInputSchema.parse(input);
   if (secretPattern.test(validated.subject) || secretPattern.test(validated.body)) {
     throw new TRPCError({ code: "BAD_REQUEST", message: "Remove private values before using AI assistance." });
@@ -120,7 +167,7 @@ export async function adjustEmailTone(input: z.infer<typeof emailToneAdjustmentI
       messages: [
         {
           role: "system",
-          content: `You rewrite a single Get Phame review-request email for tone only. Return JSON matching the provided schema. Make it ${validated.tone}; do not change the intended request, recipient facts, business identity, review links, or required placeholders. Preserve every {{placeholder}} and every URL exactly. Do not add ratings, testimonials, incentives, discounts, urgency, false claims, legal claims, fabricated customer experiences, or new contact details. Yelp must remain a plain-language search instruction, never a direct Yelp link. Keep the message compliant, individual, respectful, and opt-out friendly.`,
+          content: `You rewrite a single Get Phame review-request email for tone only. Return JSON matching the provided schema. Make it ${validated.tone}; do not change the intended request, recipient facts, business identity, review links, or required placeholders. Preserve every {{placeholder}} and every URL exactly. Do not add ratings, testimonials, incentives, discounts, urgency, false claims, legal claims, fabricated customer experiences, or new contact details. Yelp must remain a plain-language search instruction, never a direct Yelp link. Keep the message compliant, individual, respectful, and opt-out friendly. For every changed field, include one concise rationale (3–180 characters) that explains only the tone adjustment. Do not repeat message content, placeholders, URLs, customer information, or instructions in a rationale.`,
         },
         {
           role: "user",
@@ -133,26 +180,64 @@ export async function adjustEmailTone(input: z.infer<typeof emailToneAdjustmentI
         schema: {
           type: "object",
           additionalProperties: false,
-          required: ["subject", "body"],
+          required: ["subject", "body", "rationales"],
           properties: {
             subject: { type: "string", minLength: 1, maxLength: MAX_REVIEW_REQUEST_SUBJECT_CHARS },
             body: { type: "string", minLength: 1, maxLength: MAX_REVIEW_REQUEST_BODY_CHARS },
+            rationales: {
+              type: "array",
+              minItems: 0,
+              maxItems: 2,
+              items: {
+                type: "object",
+                additionalProperties: false,
+                required: ["field", "rationale"],
+                properties: {
+                  field: { type: "string", enum: ["subject", "body"] },
+                  rationale: { type: "string", minLength: 3, maxLength: 180 },
+                },
+              },
+            },
           },
         },
       },
     });
 
     const content = extractCompletionText(response.choices[0]?.message?.content);
-    const result = z.object({ subject: z.string(), body: z.string() }).safeParse(JSON.parse(content));
+    const result = z.object({
+      subject: z.string(),
+      body: z.string(),
+      rationales: z.array(z.object({
+        field: z.enum(["subject", "body"]),
+        rationale: z.string().trim().min(3).max(180),
+      })).max(2),
+    }).safeParse(JSON.parse(content));
     if (!result.success) throw new Error("Invalid structured response");
 
-    return validateAdjustedReviewDraft({
+    const adjustedDraft = validateAdjustedReviewDraft({
       sourceSubject,
       sourceBody,
       adjustedSubject: result.data.subject,
       adjustedBody: result.data.body,
       businessName: validated.businessName,
     });
+    const rationales = normalizeToneRationales({
+      rationales: result.data.rationales,
+      sourceSubject,
+      sourceBody,
+      adjustedSubject: adjustedDraft.subject,
+      adjustedBody: adjustedDraft.body,
+    });
+    const changedFields = (["subject", "body"] as const).filter((field) => (
+      field === "subject"
+        ? sourceSubject !== adjustedDraft.subject
+        : sourceBody !== adjustedDraft.body
+    ));
+    if (!changedFields.every((field) => rationales.some((entry) => entry.field === field))) {
+      throw new Error("Missing safe rationales for the adjusted fields");
+    }
+
+    return { ...adjustedDraft, rationales };
   } catch (error) {
     if (error instanceof TRPCError) throw error;
     console.warn("[Email tone adjustment] Failed to produce a safe rewrite.", error instanceof Error ? error.message : error);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getToneTextDiff } from "./toneDraftDiff";
+import { getChangedToneLineSegments, getToneTextDiff } from "./toneDraftDiff";
 
 const join = (segments: Array<{ text: string }>) => segments.map((segment) => segment.text).join("");
 
@@ -31,5 +31,20 @@ describe("getToneTextDiff", () => {
 
     expect(diff.before).toEqual([{ kind: "removed", text: before }]);
     expect(diff.after).toEqual([{ kind: "added", text: after }]);
+  });
+
+  it("projects only full lines containing highlighted changes for a focused comparison", () => {
+    const diff = getToneTextDiff(
+      "Keep this line.\nPlease leave feedback soon.\nKeep this closing.",
+      "Keep this line.\nPlease share feedback when convenient.\nKeep this closing.",
+    );
+
+    const before = getChangedToneLineSegments(diff.before, "removed");
+    const after = getChangedToneLineSegments(diff.after, "added");
+
+    expect(join(before)).toContain("Please leave feedback soon.");
+    expect(join(before)).not.toContain("Keep this line.");
+    expect(join(after)).toContain("Please share feedback when convenient.");
+    expect(join(after)).not.toContain("Keep this closing.");
   });
 });

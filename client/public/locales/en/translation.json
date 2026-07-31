@@ -452,7 +452,16 @@
     "tonePreviewComparisonTitle": "Compare the changes",
     "tonePreviewOriginalDraft": "Original draft",
     "tonePreviewAdjustedDraft": "AI-adjusted draft",
-    "tonePreviewDiffLegend": "Removed text is highlighted in red. Added text is highlighted in green."
+    "tonePreviewDiffLegend": "Removed text is highlighted in red. Added text is highlighted in green.",
+    "tonePreviewChangedOnly": "Changed lines only",
+    "tonePreviewShowFullDraft": "Show full drafts",
+    "tonePreviewChangedOnlyDescription": "Filters both drafts to the full lines that contain a highlighted change.",
+    "tonePreviewNoChangedLines": "No changed lines in this section.",
+    "tonePreviewCopyRevised": "Copy revised draft",
+    "tonePreviewCopySuccess": "Revised draft copied to your clipboard.",
+    "tonePreviewCopyError": "Could not copy the revised draft. Please select and copy it manually.",
+    "tonePreviewRationaleTitle": "Why AI suggested these adjustments",
+    "tonePreviewRationaleDescription": "A brief explanation for each adjusted field. AI keeps request details, placeholders, and links intact."
   },
   "page": {
     "title": "Settings",

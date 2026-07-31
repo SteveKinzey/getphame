@@ -519,7 +519,16 @@
     "tonePreviewComparisonTitle": "Comparer les modifications",
     "tonePreviewOriginalDraft": "Brouillon d’origine",
     "tonePreviewAdjustedDraft": "Brouillon ajusté par l’IA",
-    "tonePreviewDiffLegend": "Le texte supprimé est mis en évidence en rouge. Le texte ajouté est mis en évidence en vert."
+    "tonePreviewDiffLegend": "Le texte supprimé est mis en évidence en rouge. Le texte ajouté est mis en évidence en vert.",
+    "tonePreviewChangedOnly": "Lignes modifiées uniquement",
+    "tonePreviewShowFullDraft": "Afficher les brouillons complets",
+    "tonePreviewChangedOnlyDescription": "Filtre les deux brouillons pour n’afficher que les lignes complètes contenant une modification mise en évidence.",
+    "tonePreviewNoChangedLines": "Aucune ligne modifiée dans cette section.",
+    "tonePreviewCopyRevised": "Copier le brouillon révisé",
+    "tonePreviewCopySuccess": "Le brouillon révisé a été copié dans votre presse-papiers.",
+    "tonePreviewCopyError": "Impossible de copier le brouillon révisé. Sélectionnez-le et copiez-le manuellement.",
+    "tonePreviewRationaleTitle": "Pourquoi l’IA a suggéré ces ajustements",
+    "tonePreviewRationaleDescription": "Une brève explication pour chaque champ ajusté. L’IA conserve les détails de la demande, les espaces réservés et les liens."
   },
   "page": {
     "title": "Paramètres",

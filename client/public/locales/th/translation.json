@@ -408,7 +408,16 @@
     "tonePreviewComparisonTitle": "เปรียบเทียบการเปลี่ยนแปลง",
     "tonePreviewOriginalDraft": "ร่างต้นฉบับ",
     "tonePreviewAdjustedDraft": "ร่างที่ AI ปรับแล้ว",
-    "tonePreviewDiffLegend": "ข้อความที่ลบจะแสดงเป็นสีแดง ข้อความที่เพิ่มจะแสดงเป็นสีเขียว"
+    "tonePreviewDiffLegend": "ข้อความที่ลบจะแสดงเป็นสีแดง ข้อความที่เพิ่มจะแสดงเป็นสีเขียว",
+    "tonePreviewChangedOnly": "แสดงเฉพาะบรรทัดที่เปลี่ยน",
+    "tonePreviewShowFullDraft": "แสดงฉบับร่างทั้งหมด",
+    "tonePreviewChangedOnlyDescription": "กรองทั้งสองฉบับร่างให้แสดงเฉพาะบรรทัดเต็มที่มีการเปลี่ยนแปลงที่ไฮไลต์ไว้",
+    "tonePreviewNoChangedLines": "ไม่มีบรรทัดที่เปลี่ยนในส่วนนี้",
+    "tonePreviewCopyRevised": "คัดลอกฉบับร่างที่แก้ไขแล้ว",
+    "tonePreviewCopySuccess": "คัดลอกฉบับร่างที่แก้ไขแล้วไปยังคลิปบอร์ดแล้ว",
+    "tonePreviewCopyError": "ไม่สามารถคัดลอกฉบับร่างที่แก้ไขแล้วได้ โปรดเลือกและคัดลอกด้วยตนเอง",
+    "tonePreviewRationaleTitle": "เหตุผลที่ AI แนะนำการปรับเหล่านี้",
+    "tonePreviewRationaleDescription": "คำอธิบายสั้น ๆ สำหรับแต่ละส่วนที่ปรับ AI จะคงรายละเอียดคำขอ ตัวแทนข้อความ และลิงก์ไว้"
   },
   "page": {
     "title": "การตั้งค่า",
