@@ -116,6 +116,30 @@
       "dependabotMerge": "Fusion Dependabot",
       "driftAudit": "Audit de dérive"
     },
+    "ackHistory": {
+      "acknowledgedAt": "Acquittée le {{date}}",
+      "actorFallback": "Administrateur {{id}}",
+      "awaitingRecovery": "En attente de récupération",
+      "description": "L’acquittement indique qui a examiné une alerte. La récupération n’apparaît qu’après un audit de dérive ultérieur réussi.",
+      "empty": "Aucune alerte de dérive n’a encore été acquittée.",
+      "error": "Impossible de charger l’historique des acquittements.",
+      "eyebrow": "Piste d’audit des alertes",
+      "loading": "Chargement de l’historique des acquittements…",
+      "noFailureSummary": "Aucun résumé de l’échec n’a été enregistré.",
+      "openAlertRun": "Ouvrir l’exécution d’alerte n° {{number}}",
+      "recovered": "Rétablie",
+      "recoveredAt": "Rétablie le {{date}}",
+      "title": "Historique des acquittements d’alertes de dérive"
+    },
+    "drilldown": {
+      "description": "Exécutions vérifiées du {{date}}. Jusqu’aux 50 enregistrements les plus récents sont affichés.",
+      "empty": "Aucune exécution vérifiée n’a été enregistrée ce jour-là.",
+      "error": "Impossible de charger le détail des exécutions.",
+      "loading": "Chargement du détail des exécutions…",
+      "openRun": "Ouvrir l’exécution GitHub vérifiée",
+      "title": "Exécutions quotidiennes d’automatisation",
+      "viewRuns": "Voir les exécutions du jour"
+    },
     "metrics": {
       "auditCount": "{{count}} vérifications dans la période",
       "auditCount_one": "{{count}} audit dans la période",

@@ -1,4 +1,8 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import AutomationAcknowledgementHistory from "@/components/AutomationAcknowledgementHistory";
+import AutomationRunDetailsDialog, {
+  type AutomationRunSelection,
+} from "@/components/AutomationRunDetailsDialog";
 import { trpc } from "@/lib/trpc";
 import type { TFunction } from "i18next";
 import {
@@ -76,6 +80,8 @@ export default function AdminAutomationHealth() {
   const [toDate, setToDate] = useState(() => toInputDate(now));
   const [kind, setKind] = useState<KindFilter>("all");
   const [result, setResult] = useState<ResultFilter>("all");
+  const [runSelection, setRunSelection] =
+    useState<AutomationRunSelection>(null);
 
   useEffect(() => {
     if (user && user.role !== "admin") navigate("/");
@@ -528,12 +534,16 @@ export default function AdminAutomationHealth() {
                     <Tooltip
                       isAnimationActive="auto"
                       cursor={{ fill: "#f1f5f9" }}
+                      wrapperStyle={{ pointerEvents: "auto" }}
                       content={props => (
                         <DriftChartTooltip
                           {...props}
                           t={t}
                           numberFormatter={number}
                           percentFormatter={percent}
+                          onOpen={date =>
+                            setRunSelection({ date, kind: "drift_audit" })
+                          }
                         />
                       )}
                     />
@@ -596,6 +606,7 @@ export default function AdminAutomationHealth() {
                     <Tooltip
                       isAnimationActive="auto"
                       cursor={{ stroke: "#64748b", strokeDasharray: "4 4" }}
+                      wrapperStyle={{ pointerEvents: "auto" }}
                       content={props => (
                         <MergeChartTooltip
                           {...props}
@@ -603,6 +614,12 @@ export default function AdminAutomationHealth() {
                           numberFormatter={number}
                           percentFormatter={percent}
                           rangeTotal={dashboard.data.dependabot.mergedCount}
+                          onOpen={date =>
+                            setRunSelection({
+                              date,
+                              kind: "dependabot_merge",
+                            })
+                          }
                         />
                       )}
                     />
@@ -621,6 +638,8 @@ export default function AdminAutomationHealth() {
                 </ResponsiveContainer>
               </ChartPanel>
             </section>
+
+            <AutomationAcknowledgementHistory />
 
             <section
               aria-labelledby="automation-history-title"
@@ -775,6 +794,10 @@ export default function AdminAutomationHealth() {
           </>
         )}
       </main>
+      <AutomationRunDetailsDialog
+        selection={runSelection}
+        onClose={() => setRunSelection(null)}
+      />
     </div>
   );
 }
@@ -783,6 +806,7 @@ type NumberTooltipProps = TooltipContentProps & {
   t: TFunction;
   numberFormatter: Intl.NumberFormat;
   percentFormatter: Intl.NumberFormat;
+  onOpen: (date: string) => void;
 };
 
 function DriftChartTooltip({
@@ -792,6 +816,7 @@ function DriftChartTooltip({
   t,
   numberFormatter,
   percentFormatter,
+  onOpen,
 }: NumberTooltipProps) {
   if (!active || !payload?.length) return null;
   const successes = Number(
@@ -801,6 +826,7 @@ function DriftChartTooltip({
     payload.find(entry => entry.dataKey === "driftFailures")?.value ?? 0
   );
   const total = successes + failures;
+  const point = payload[0]?.payload as { date?: string } | undefined;
 
   return (
     <div
@@ -848,6 +874,16 @@ function DriftChartTooltip({
           }
         />
       </dl>
+      <button
+        type="button"
+        disabled={!point?.date}
+        onClick={() => point?.date && onOpen(point.date)}
+        className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-lg rr-bg-navy px-3 text-xs font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+      >
+        {t("automationHealth.drilldown.viewRuns", {
+          defaultValue: "View daily runs",
+        })}
+      </button>
     </div>
   );
 }
@@ -860,9 +896,11 @@ function MergeChartTooltip({
   numberFormatter,
   percentFormatter,
   rangeTotal,
+  onOpen,
 }: NumberTooltipProps & { rangeTotal: number }) {
   if (!active || !payload?.length) return null;
   const merges = Number(payload[0]?.value ?? 0);
+  const point = payload[0]?.payload as { date?: string } | undefined;
 
   return (
     <div
@@ -897,6 +935,16 @@ function MergeChartTooltip({
           bordered
         />
       </dl>
+      <button
+        type="button"
+        disabled={!point?.date}
+        onClick={() => point?.date && onOpen(point.date)}
+        className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-lg rr-bg-navy px-3 text-xs font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50"
+      >
+        {t("automationHealth.drilldown.viewRuns", {
+          defaultValue: "View daily runs",
+        })}
+      </button>
     </div>
   );
 }

@@ -116,6 +116,30 @@
       "dependabotMerge": "Fusión de Dependabot",
       "driftAudit": "Auditoría de deriva"
     },
+    "ackHistory": {
+      "acknowledgedAt": "Reconocida el {{date}}",
+      "actorFallback": "Administrador {{id}}",
+      "awaitingRecovery": "En espera de recuperación",
+      "description": "El reconocimiento registra quién revisó una alerta. La recuperación solo se muestra después de una auditoría de deriva posterior correcta.",
+      "empty": "Aún no se ha reconocido ninguna alerta de deriva.",
+      "error": "No se pudo cargar el historial de reconocimientos.",
+      "eyebrow": "Registro de auditoría de alertas",
+      "loading": "Cargando historial de reconocimientos…",
+      "noFailureSummary": "No se registró un resumen del fallo.",
+      "openAlertRun": "Abrir ejecución de alerta n.º {{number}}",
+      "recovered": "Recuperada",
+      "recoveredAt": "Recuperada el {{date}}",
+      "title": "Historial de reconocimientos de alertas de deriva"
+    },
+    "drilldown": {
+      "description": "Ejecuciones verificadas del {{date}}. Se muestran hasta los 50 registros más recientes.",
+      "empty": "No se registraron ejecuciones verificadas para este día.",
+      "error": "No se pudieron cargar los detalles de las ejecuciones.",
+      "loading": "Cargando detalles de las ejecuciones…",
+      "openRun": "Abrir ejecución verificada en GitHub",
+      "title": "Ejecuciones diarias de automatización",
+      "viewRuns": "Ver ejecuciones diarias"
+    },
     "metrics": {
       "auditCount": "{{count}} auditorías en el intervalo",
       "auditCount_one": "{{count}} auditoría en el intervalo",

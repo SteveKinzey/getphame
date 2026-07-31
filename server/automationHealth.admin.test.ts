@@ -5,6 +5,8 @@ const mocks = vi.hoisted(() => ({
   getAutomationDashboard: vi.fn(),
   getAutomationAlert: vi.fn(),
   acknowledgeAutomationAlert: vi.fn(),
+  getAutomationRunsForDay: vi.fn(),
+  getAutomationAlertAcknowledgementHistory: vi.fn(),
 }));
 
 vi.mock("./automationHealthDb", async importOriginal => ({
@@ -12,6 +14,9 @@ vi.mock("./automationHealthDb", async importOriginal => ({
   getAutomationDashboard: mocks.getAutomationDashboard,
   getAutomationAlert: mocks.getAutomationAlert,
   acknowledgeAutomationAlert: mocks.acknowledgeAutomationAlert,
+  getAutomationRunsForDay: mocks.getAutomationRunsForDay,
+  getAutomationAlertAcknowledgementHistory:
+    mocks.getAutomationAlertAcknowledgementHistory,
 }));
 
 import { appRouter } from "./routers";
@@ -41,6 +46,8 @@ describe("Automation Health administrator API", () => {
     mocks.getAutomationDashboard.mockResolvedValue({ history: [], daily: [] });
     mocks.getAutomationAlert.mockResolvedValue({ active: false });
     mocks.acknowledgeAutomationAlert.mockResolvedValue({ acknowledged: true });
+    mocks.getAutomationRunsForDay.mockResolvedValue([]);
+    mocks.getAutomationAlertAcknowledgementHistory.mockResolvedValue([]);
   });
 
   afterEach(() => {
@@ -60,9 +67,22 @@ describe("Automation Health administrator API", () => {
     await expect(
       caller.automationHealth.acknowledgeAlert({ eventId: 7 })
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.automationHealth.runDetails({
+        date: "2026-07-01",
+        kind: "drift_audit",
+      })
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.automationHealth.acknowledgementHistory()
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
     expect(mocks.getAutomationDashboard).not.toHaveBeenCalled();
     expect(mocks.getAutomationAlert).not.toHaveBeenCalled();
     expect(mocks.acknowledgeAutomationAlert).not.toHaveBeenCalled();
+    expect(mocks.getAutomationRunsForDay).not.toHaveBeenCalled();
+    expect(
+      mocks.getAutomationAlertAcknowledgementHistory
+    ).not.toHaveBeenCalled();
   });
 
   it("forwards bounded date, kind, outcome, and history filters", async () => {
@@ -126,5 +146,53 @@ describe("Automation Health administrator API", () => {
       adminUserId: 11,
       acknowledgedAt: expect.any(Number),
     });
+  });
+
+  it("forwards bounded UTC-day run drilldowns and acknowledgement history", async () => {
+    vi.spyOn(Date, "now").mockReturnValue(Date.UTC(2026, 6, 31));
+    const caller = appRouter.createCaller(context("admin"));
+
+    await caller.automationHealth.runDetails({
+      date: "2026-07-01",
+      kind: "dependabot_merge",
+      limit: 25,
+    });
+    await caller.automationHealth.acknowledgementHistory({ limit: 30 });
+
+    expect(mocks.getAutomationRunsForDay).toHaveBeenCalledWith({
+      date: "2026-07-01",
+      kind: "dependabot_merge",
+      limit: 25,
+    });
+    expect(mocks.getAutomationAlertAcknowledgementHistory).toHaveBeenCalledWith(
+      30
+    );
+  });
+
+  it("rejects future run days and out-of-bounds detail limits before querying", async () => {
+    vi.spyOn(Date, "now").mockReturnValue(Date.UTC(2026, 6, 31));
+    const caller = appRouter.createCaller(context("admin"));
+
+    await expect(
+      caller.automationHealth.runDetails({
+        date: "2026-08-01",
+        kind: "drift_audit",
+      })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(
+      caller.automationHealth.runDetails({
+        date: "2026-07-01",
+        kind: "drift_audit",
+        limit: 51,
+      })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(
+      caller.automationHealth.acknowledgementHistory({ limit: 101 })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+
+    expect(mocks.getAutomationRunsForDay).not.toHaveBeenCalled();
+    expect(
+      mocks.getAutomationAlertAcknowledgementHistory
+    ).not.toHaveBeenCalled();
   });
 });

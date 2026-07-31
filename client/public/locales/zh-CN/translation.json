@@ -116,6 +116,30 @@
       "dependabotMerge": "Dependabot 合并",
       "driftAudit": "漂移审计"
     },
+    "ackHistory": {
+      "acknowledgedAt": "确认于 {{date}}",
+      "actorFallback": "管理员 {{id}}",
+      "awaitingRecovery": "等待恢复",
+      "description": "确认记录由谁审查了警报。只有后续漂移审计成功后才会显示恢复状态。",
+      "empty": "尚未确认任何漂移警报。",
+      "error": "无法加载确认历史。",
+      "eyebrow": "警报审计记录",
+      "loading": "正在加载确认历史…",
+      "noFailureSummary": "未记录失败摘要。",
+      "openAlertRun": "打开警报运行 #{{number}}",
+      "recovered": "已恢复",
+      "recoveredAt": "恢复于 {{date}}",
+      "title": "漂移警报确认历史"
+    },
+    "drilldown": {
+      "description": "{{date}} 的已验证运行。最多显示最新 50 条记录。",
+      "empty": "当天没有已验证的运行记录。",
+      "error": "无法加载运行详情。",
+      "loading": "正在加载运行详情…",
+      "openRun": "打开已验证的 GitHub 运行",
+      "title": "每日自动化运行",
+      "viewRuns": "查看每日运行"
+    },
     "metrics": {
       "auditCount": "{{count}} 次审计在所选范围内",
       "auditCount_one": "{{count}} 次审计在所选范围内",

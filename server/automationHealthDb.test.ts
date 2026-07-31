@@ -233,4 +233,43 @@ describe("Automation Health dashboard aggregation", () => {
     );
     expect(source.match(/\.where\(rangeCondition\)/g)).toHaveLength(2);
   });
+
+  it("keeps daily run drilldowns bounded and privacy-minimal", () => {
+    const source = readFileSync(
+      new URL("./automationHealthDb.ts", import.meta.url),
+      "utf8"
+    );
+    const drilldown = source.slice(
+      source.indexOf("export async function getAutomationRunsForDay"),
+      source.indexOf(
+        "export async function getAutomationAlertAcknowledgementHistory"
+      )
+    );
+
+    expect(drilldown).toContain(".limit(filters.limit)");
+    expect(drilldown).toContain("runUrl: automationEvents.runUrl");
+    expect(drilldown).toContain(
+      "failureSummary: automationEvents.failureSummary"
+    );
+    expect(drilldown).not.toContain("oidcJtiHash");
+    expect(drilldown).not.toContain("repositoryOwnerId");
+  });
+
+  it("records a privacy-safe actor label and requires a later successful drift audit for recovery", () => {
+    const source = readFileSync(
+      new URL("./automationHealthDb.ts", import.meta.url),
+      "utf8"
+    );
+    const history = source.slice(
+      source.indexOf(
+        "export async function getAutomationAlertAcknowledgementHistory"
+      )
+    );
+
+    expect(history).toContain("actorName: users.name");
+    expect(history).not.toContain("users.email");
+    expect(history).toContain('eq(automationEvents.result, "success")');
+    expect(history).toContain("recovery.eventAt > row.eventAt");
+    expect(history).toContain(".limit(500)");
+  });
 });

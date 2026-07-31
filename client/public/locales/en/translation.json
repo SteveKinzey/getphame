@@ -116,6 +116,30 @@
       "dependabotMerge": "Dependabot merge",
       "driftAudit": "Drift audit"
     },
+    "ackHistory": {
+      "acknowledgedAt": "Acknowledged {{date}}",
+      "actorFallback": "Administrator {{id}}",
+      "awaitingRecovery": "Awaiting recovery",
+      "description": "Acknowledgement records who reviewed an alert. Recovery is shown only after a later successful drift audit.",
+      "empty": "No drift alerts have been acknowledged yet.",
+      "error": "Acknowledgement history could not be loaded.",
+      "eyebrow": "Alert audit trail",
+      "loading": "Loading acknowledgement history…",
+      "noFailureSummary": "No failure summary was recorded.",
+      "openAlertRun": "Open alert run #{{number}}",
+      "recovered": "Recovered",
+      "recoveredAt": "Recovered {{date}}",
+      "title": "Drift-alert acknowledgement history"
+    },
+    "drilldown": {
+      "description": "Verified runs for {{date}}. Up to 50 newest records are shown.",
+      "empty": "No verified runs were recorded for this day.",
+      "error": "Run details could not be loaded.",
+      "loading": "Loading run details…",
+      "openRun": "Open verified GitHub run",
+      "title": "Daily automation runs",
+      "viewRuns": "View daily runs"
+    },
     "metrics": {
       "auditCount": "{{count}} audits in range",
       "auditCount_one": "{{count}} audit in range",
