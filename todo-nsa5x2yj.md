@@ -457,3 +457,5 @@
 - [x] Prepare the final delivery of the released enhancements, validation evidence, evidence-only checkpoint, protected-main proof, and validated installable skill for the closing response.
 - [x] Resolve pull request #65 accessibility review by marking the decorative pulsing drift-status dot hidden from assistive technology and add focused contract coverage; the replacement release gate passes.
 - [x] Resolve pull request #65 localization review by formatting the drift timestamp with the active resolved locale fallback used elsewhere and add focused contract coverage; the replacement release gate passes.
+- [x] Resolve pull request #66 evidence review by distinguishing the 40-test implementation gate from the 20-test review-remediation subset; the corrected evidence passes formatting, whitespace, and credential checks.
+- [x] Resolve pull request #66 evidence review by recording the full managed evidence-only checkpoint and target tree while clarifying that the managed checkpoint is not a public GitHub commit; the corrected evidence passes formatting, whitespace, and credential checks.
