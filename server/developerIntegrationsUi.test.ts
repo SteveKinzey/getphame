@@ -3,7 +3,10 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 function readProjectFile(relativePath: string) {
-  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+  return readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    "utf8"
+  );
 }
 
 describe("Developer Integrations workspace", () => {
@@ -11,9 +14,13 @@ describe("Developer Integrations workspace", () => {
     const app = readProjectFile("../client/src/App.tsx");
     const layout = readProjectFile("../client/src/components/AppLayout.tsx");
 
-    expect(app).toContain('lazy(() => import("./pages/DeveloperIntegrations"))');
-    expect(app).toContain('<Route path="/developer" component={DeveloperIntegrationsPage} />');
-    expect(layout).toContain('{ path: "/developer"');
+    expect(app).toMatch(
+      /lazy\(\s*\(\)\s*=>\s*import\("\.\/pages\/DeveloperIntegrations"\)\s*\)/
+    );
+    expect(app).toMatch(
+      /<Route\s+path="\/developer"\s+component=\{DeveloperIntegrationsPage\}\s*\/>/
+    );
+    expect(layout).toMatch(/\{\s*path:\s*"\/developer"/);
     expect(layout).toContain('defaultValue: "Developer"');
   });
 
@@ -26,21 +33,25 @@ describe("Developer Integrations workspace", () => {
   });
 
   it("supports scoped creation, optional expiry, rotation, revocation, and one-time secret display", () => {
-    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
 
     expect(page).toContain('data-testid="developer-key-form"');
     expect(page).toContain('"contacts:write"');
     expect(page).toContain('"review_requests:send"');
-    expect(page).toContain('trpc.apiKey.generate.useMutation');
-    expect(page).toContain('trpc.apiKey.rotate.useMutation');
-    expect(page).toContain('trpc.apiKey.revoke.useMutation');
+    expect(page).toContain("trpc.apiKey.generate.useMutation");
+    expect(page).toContain("trpc.apiKey.rotate.useMutation");
+    expect(page).toContain("trpc.apiKey.revoke.useMutation");
     expect(page).toContain('data-testid="revealed-api-key"');
-    expect(page).toContain('setRevealedSecret(null)');
+    expect(page).toContain("setRevealedSecret(null)");
     expect(page).not.toContain('localStorage.setItem("api');
   });
 
   it("explains and surfaces inactive-key expiration plus temporary abuse suspension", () => {
-    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
     const keys = readProjectFile("./developerApiKeys.ts");
 
     expect(keys).toContain("365 * 24 * 60 * 60 * 1000");
@@ -50,27 +61,35 @@ describe("Developer Integrations workspace", () => {
     expect(page).toContain('defaultValue: "Expires within 30 days"');
     expect(page).toContain('defaultValue: "Expires within 7 days"');
     expect(page).toContain('defaultValue: "Inactive-key expiry"');
-    expect(page).toContain('defaultValue: "Temporarily suspended by abuse protection.');
+    expect(page).toContain(
+      'defaultValue: "Temporarily suspended by abuse protection.'
+    );
     expect(page).toContain('key.statusReason === "inactivity"');
     expect(page).toContain('key.status === "suspended"');
   });
 
   it("renders and exports only masked import-history metadata", () => {
-    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
     const db = readProjectFile("./db.ts");
 
     expect(page).toContain('defaultValue: "Masked email"');
     expect(page).toContain("row.email");
-    expect(page).toContain('defaultValue: "A privacy-safe operational record. Customer emails are masked');
+    expect(page).toContain(
+      'defaultValue: "A privacy-safe operational record. Customer emails are masked'
+    );
     expect(page).toContain('status === "abuse_blocked"');
     expect(db).toContain("emailMasked: apiImportEvents.emailMasked");
     expect(db).toContain('email: row.emailMasked ?? "Not available"');
   });
 
   it("documents the canonical consent-aware import endpoint for every approved builder without embedding a raw key", () => {
-    const guide = readProjectFile("../client/src/components/IntegrationGuide.tsx");
+    const guide = readProjectFile(
+      "../client/src/components/IntegrationGuide.tsx"
+    );
 
-    expect(guide).toContain('`${BASE_URL}/api/v1/contacts`');
+    expect(guide).toContain("`${BASE_URL}/api/v1/contacts`");
     expect(guide).not.toContain("/api/public/send");
     expect(guide).toContain('"wsform"');
     expect(guide).toContain('"gravity"');
@@ -80,32 +99,52 @@ describe("Developer Integrations workspace", () => {
     expect(guide).toContain('"curl"');
     expect(guide).toContain("consentConfirmed");
     expect(guide).toContain("Idempotency-Key");
-    expect(guide).toContain('const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>"');
+    expect(guide).toContain(
+      'const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>"'
+    );
     expect(guide).not.toContain("gp_live_");
     expect(guide).not.toContain("apiKeyRaw");
     expect(guide).toContain("never inserts an existing raw key");
   });
 
   it("turns generic WordPress pairing failures into accessible recovery guidance without exposing raw server errors", () => {
-    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
 
-    expect(page).toContain('return code === "NOT_FOUND" ? "not_found" : "unavailable"');
-    expect(page).toContain('{ enabled: Boolean(wordpressPairingId), retry: false }');
+    expect(page).toContain(
+      'return code === "NOT_FOUND" ? "not_found" : "unavailable"'
+    );
+    expect(page).toContain(
+      "{ enabled: Boolean(wordpressPairingId), retry: false }"
+    );
     expect(page).toContain('role="alert"');
-    expect(page).toContain('data-testid={`wordpress-pairing-${wordpressPairingFailure}`}');
-    expect(page).toContain('developerIntegrations.wordpressPairing.notFoundDescription');
-    expect(page).toContain('developerIntegrations.wordpressPairing.failurePrivacy');
-    expect(page).toContain('wordpressPairingFailure === "not_found" ? "bg-rose-100 text-rose-800"');
-    expect(page).toContain('wordpressPairingFailure === "unavailable" ? "bg-amber-100 text-amber-900"');
+    expect(page).toContain(
+      "data-testid={`wordpress-pairing-${wordpressPairingFailure}`}"
+    );
+    expect(page).toContain(
+      "developerIntegrations.wordpressPairing.notFoundDescription"
+    );
+    expect(page).toContain(
+      "developerIntegrations.wordpressPairing.failurePrivacy"
+    );
+    expect(page).toContain(
+      'wordpressPairingFailure === "not_found" ? "bg-rose-100 text-rose-800"'
+    );
+    expect(page).toContain(
+      'wordpressPairingFailure === "unavailable" ? "bg-amber-100 text-amber-900"'
+    );
     expect(page).toContain("focus-visible:ring-amber-700");
     expect(page).toContain("focus-visible:ring-offset-2");
-    expect(page).not.toContain('wordpressPairingQuery.error.message');
-    expect(page).not.toContain('approveWordPressPairing.error.message');
+    expect(page).not.toContain("wordpressPairingQuery.error.message");
+    expect(page).not.toContain("approveWordPressPairing.error.message");
   });
 
   it("ships pairing recovery copy in every served locale", () => {
     for (const locale of ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"]) {
-      const catalog = JSON.parse(readProjectFile(`../client/public/locales/${locale}/translation.json`));
+      const catalog = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/translation.json`)
+      );
       const pairing = catalog.developerIntegrations?.wordpressPairing;
 
       expect(pairing?.notFoundTitle).toBeTypeOf("string");
