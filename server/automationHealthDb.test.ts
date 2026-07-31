@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import type { AutomationEvent } from "../drizzle/schema";
 import { summarizeAutomationEvents } from "./automationHealthDb";
 
@@ -159,5 +160,77 @@ describe("Automation Health dashboard aggregation", () => {
           point.driftFailures === 0
       )
     ).toBe(true);
+  });
+
+  it("applies kind and result filters to history-aligned metrics and daily series", () => {
+    const failedDrift = event({
+      id: 2,
+      eventKey: "drift_audit:filtered-failure:1",
+      result: "failure",
+      eventAt: fromMs + dayMs,
+      failureCode: "workflow_failed",
+    });
+    const successfulDrift = event({
+      id: 3,
+      eventKey: "drift_audit:filtered-success:1",
+      eventAt: fromMs + dayMs,
+    });
+    const successfulMerge = event({
+      id: 4,
+      eventKey: "dependabot_merge:filtered:1",
+      kind: "dependabot_merge",
+      result: "success",
+      eventAt: fromMs + dayMs,
+      pullRequestCreatedAt: fromMs - dayMs,
+      pullRequestMergedAt: fromMs,
+    });
+
+    const summary = summarizeAutomationEvents({
+      filters: {
+        fromMs,
+        toMs,
+        kind: "drift_audit",
+        result: "failure",
+        limit: 10,
+      },
+      history: [failedDrift],
+      allRangeEvents: [failedDrift, successfulDrift, successfulMerge],
+      latestDrift: failedDrift,
+    });
+
+    expect(summary.dependabot).toEqual({
+      mergedCount: 0,
+      averageMergeDurationMs: null,
+      medianMergeDurationMs: null,
+    });
+    expect(summary.drift).toMatchObject({
+      auditCount: 1,
+      successCount: 0,
+      failureCount: 1,
+      successRate: 0,
+    });
+    expect(
+      summary.daily.reduce(
+        (totals, point) => ({
+          dependabotMerges: totals.dependabotMerges + point.dependabotMerges,
+          driftSuccesses: totals.driftSuccesses + point.driftSuccesses,
+          driftFailures: totals.driftFailures + point.driftFailures,
+        }),
+        { dependabotMerges: 0, driftSuccesses: 0, driftFailures: 0 }
+      )
+    ).toEqual({
+      dependabotMerges: 0,
+      driftSuccesses: 0,
+      driftFailures: 1,
+    });
+    expect(summary.history).toEqual([failedDrift]);
+  });
+
+  it("reuses the same filter-aware range condition for history and aggregates", () => {
+    const source = readFileSync(
+      new URL("./automationHealthDb.ts", import.meta.url),
+      "utf8"
+    );
+    expect(source.match(/\.where\(rangeCondition\)/g)).toHaveLength(2);
   });
 });
