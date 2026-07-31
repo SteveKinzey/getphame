@@ -88,31 +88,61 @@ export default function AdminDashboard() {
   const { t } = useTranslation("translation");
   const { user, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
-  const [smtpRetestResults, setSmtpRetestResults] = useState<Record<number, { ok: boolean; checkedAt: number; error: string | null }>>({});
-  const [supportReportingPeriod, setSupportReportingPeriod] = useState<"7" | "30" | "90">("30");
+  const [smtpRetestResults, setSmtpRetestResults] = useState<
+    Record<number, { ok: boolean; checkedAt: number; error: string | null }>
+  >({});
+  const [supportReportingPeriod, setSupportReportingPeriod] = useState<
+    "7" | "30" | "90"
+  >("30");
   const [supportReportStartDate, setSupportReportStartDate] = useState("");
   const [supportReportEndDate, setSupportReportEndDate] = useState("");
-  const [onboardingFunnelPeriod, setOnboardingFunnelPeriod] = useState<"7" | "30" | "90" | "custom">("30");
-  const [onboardingFunnelStartDate, setOnboardingFunnelStartDate] = useState("");
+  const [onboardingFunnelPeriod, setOnboardingFunnelPeriod] = useState<
+    "7" | "30" | "90" | "custom"
+  >("30");
+  const [onboardingFunnelStartDate, setOnboardingFunnelStartDate] =
+    useState("");
   const [onboardingFunnelEndDate, setOnboardingFunnelEndDate] = useState("");
-  const [grantTarget, setGrantTarget] = useState<{ email: string; name: string | null } | null>(null);
+  const [grantTarget, setGrantTarget] = useState<{
+    email: string;
+    name: string | null;
+  } | null>(null);
   const [grantPlan, setGrantPlan] = useState<SubscriptionPlan>("monthly");
-  const [revokeTarget, setRevokeTarget] = useState<{ email: string; name: string | null } | null>(null);
+  const [revokeTarget, setRevokeTarget] = useState<{
+    email: string;
+    name: string | null;
+  } | null>(null);
   const supportMetricsInput = useMemo(
-    () => supportReportStartDate && supportReportEndDate
-      ? { startDate: supportReportStartDate, endDate: supportReportEndDate }
-      : { periodDays: supportReportingPeriod },
-    [supportReportEndDate, supportReportStartDate, supportReportingPeriod],
+    () =>
+      supportReportStartDate && supportReportEndDate
+        ? { startDate: supportReportStartDate, endDate: supportReportEndDate }
+        : { periodDays: supportReportingPeriod },
+    [supportReportEndDate, supportReportStartDate, supportReportingPeriod]
   );
   const onboardingFunnelInput = useMemo(() => {
-    if (onboardingFunnelPeriod !== "custom") return { periodDays: onboardingFunnelPeriod } as const;
-    if (!onboardingFunnelStartDate || !onboardingFunnelEndDate) return undefined;
-    return { startDate: onboardingFunnelStartDate, endDate: onboardingFunnelEndDate };
-  }, [onboardingFunnelEndDate, onboardingFunnelPeriod, onboardingFunnelStartDate]);
-  const onboardingFunnelRangeValid = onboardingFunnelPeriod !== "custom"
-    || (Boolean(onboardingFunnelStartDate) && Boolean(onboardingFunnelEndDate) && onboardingFunnelEndDate >= onboardingFunnelStartDate);
+    if (onboardingFunnelPeriod !== "custom")
+      return { periodDays: onboardingFunnelPeriod } as const;
+    if (!onboardingFunnelStartDate || !onboardingFunnelEndDate)
+      return undefined;
+    return {
+      startDate: onboardingFunnelStartDate,
+      endDate: onboardingFunnelEndDate,
+    };
+  }, [
+    onboardingFunnelEndDate,
+    onboardingFunnelPeriod,
+    onboardingFunnelStartDate,
+  ]);
+  const onboardingFunnelRangeValid =
+    onboardingFunnelPeriod !== "custom" ||
+    (Boolean(onboardingFunnelStartDate) &&
+      Boolean(onboardingFunnelEndDate) &&
+      onboardingFunnelEndDate >= onboardingFunnelStartDate);
 
-  const { data: stats, isLoading, error } = trpc.admin.stats.useQuery(undefined, {
+  const {
+    data: stats,
+    isLoading,
+    error,
+  } = trpc.admin.stats.useQuery(undefined, {
     enabled: !!user,
     refetchInterval: 30_000,
   });
@@ -122,52 +152,81 @@ export default function AdminDashboard() {
     refetchInterval: 60_000,
   });
 
-  const { data: pwaConversionStats } = trpc.admin.pwaConversionStats.useQuery(undefined, {
-    enabled: user?.role === "admin",
-    refetchInterval: 60_000,
-  });
-
-  const { data: captionLanguageStats } = trpc.admin.captionLanguageStats.useQuery(undefined, {
-    enabled: user?.role === "admin",
-    refetchInterval: 60_000,
-  });
-
-  const { data: onboardingChecklistFunnel } = trpc.admin.onboardingChecklistFunnel.useQuery(onboardingFunnelInput, {
-    enabled: user?.role === "admin" && onboardingFunnelRangeValid && Boolean(onboardingFunnelInput),
-    refetchInterval: 60_000,
-  });
-
-  const { data: failingSmtpUsers, isLoading: failingSmtpLoading } = trpc.admin.failingSmtpUsers.useQuery(undefined, {
-    enabled: user?.role === "admin",
-    refetchInterval: 30_000,
-  });
-
-  const { data: systemHealthTrend, isLoading: systemHealthLoading } = trpc.admin.systemHealthTrend.useQuery(
-    { hours: 24 },
-    { enabled: user?.role === "admin", refetchInterval: 5 * 60_000 }
+  const { data: pwaConversionStats } = trpc.admin.pwaConversionStats.useQuery(
+    undefined,
+    {
+      enabled: user?.role === "admin",
+      refetchInterval: 60_000,
+    }
   );
 
-  const { data: operationsAlerts } = trpc.admin.operationsAlerts.useQuery(undefined, {
-    enabled: user?.role === "admin",
-    refetchInterval: 5 * 60_000,
-  });
+  const { data: captionLanguageStats } =
+    trpc.admin.captionLanguageStats.useQuery(undefined, {
+      enabled: user?.role === "admin",
+      refetchInterval: 60_000,
+    });
 
-  const { data: supportMetrics, isLoading: supportMetricsLoading } = trpc.support.adminMetrics.useQuery(
-    supportMetricsInput,
-    { enabled: user?.role === "admin", refetchInterval: 60_000 },
+  const { data: onboardingChecklistFunnel } =
+    trpc.admin.onboardingChecklistFunnel.useQuery(onboardingFunnelInput, {
+      enabled:
+        user?.role === "admin" &&
+        onboardingFunnelRangeValid &&
+        Boolean(onboardingFunnelInput),
+      refetchInterval: 60_000,
+    });
+
+  const { data: failingSmtpUsers, isLoading: failingSmtpLoading } =
+    trpc.admin.failingSmtpUsers.useQuery(undefined, {
+      enabled: user?.role === "admin",
+      refetchInterval: 30_000,
+    });
+
+  const { data: systemHealthTrend, isLoading: systemHealthLoading } =
+    trpc.admin.systemHealthTrend.useQuery(
+      { hours: 24 },
+      { enabled: user?.role === "admin", refetchInterval: 5 * 60_000 }
+    );
+
+  const { data: operationsAlerts } = trpc.admin.operationsAlerts.useQuery(
+    undefined,
+    {
+      enabled: user?.role === "admin",
+      refetchInterval: 5 * 60_000,
+    }
   );
 
-  const operationsExport = trpc.admin.operationsAnalyticsExport.useQuery(undefined, { enabled: false });
+  const { data: supportMetrics, isLoading: supportMetricsLoading } =
+    trpc.support.adminMetrics.useQuery(supportMetricsInput, {
+      enabled: user?.role === "admin",
+      refetchInterval: 60_000,
+    });
+
+  const operationsExport = trpc.admin.operationsAnalyticsExport.useQuery(
+    undefined,
+    { enabled: false }
+  );
   const supportMetricsExport = trpc.support.exportMetricsCsv.useQuery(
     supportMetricsInput,
-    { enabled: false },
+    { enabled: false }
   );
-  const onboardingFunnelExport = trpc.admin.onboardingChecklistFunnelExport.useQuery(onboardingFunnelInput, { enabled: false });
-  const { data: onboardingFunnelInsight, isFetching: onboardingFunnelInsightLoading } = trpc.admin.onboardingChecklistFunnelInsight.useQuery(onboardingFunnelInput, {
-    enabled: user?.role === "admin" && onboardingFunnelRangeValid && Boolean(onboardingFunnelInput),
-    staleTime: 5 * 60_000,
-    refetchOnWindowFocus: false,
-  });
+  const onboardingFunnelExport =
+    trpc.admin.onboardingChecklistFunnelExport.useQuery(onboardingFunnelInput, {
+      enabled: false,
+    });
+  const {
+    data: onboardingFunnelInsight,
+    isFetching: onboardingFunnelInsightLoading,
+  } = trpc.admin.onboardingChecklistFunnelInsight.useQuery(
+    onboardingFunnelInput,
+    {
+      enabled:
+        user?.role === "admin" &&
+        onboardingFunnelRangeValid &&
+        Boolean(onboardingFunnelInput),
+      staleTime: 5 * 60_000,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const onboardingFunnelComparisonData = useMemo(() => {
     const steps = [
@@ -177,8 +236,16 @@ export default function AdminDashboard() {
       ["send", "First send"],
     ] as const;
     return steps.map(([step, label]) => {
-      const currentRate = Math.max(0, 100 - (onboardingChecklistFunnel?.steps[step]?.continuationRate ?? 0));
-      const previousRate = Math.max(0, 100 - (onboardingChecklistFunnel?.comparison.previous.steps[step]?.continuationRate ?? 0));
+      const currentRate = Math.max(
+        0,
+        100 - (onboardingChecklistFunnel?.steps[step]?.continuationRate ?? 0)
+      );
+      const previousRate = Math.max(
+        0,
+        100 -
+          (onboardingChecklistFunnel?.comparison.previous.steps[step]
+            ?.continuationRate ?? 0)
+      );
       return { label, currentRate, previousRate };
     });
   }, [onboardingChecklistFunnel]);
@@ -186,21 +253,24 @@ export default function AdminDashboard() {
   const healthTrendData = useMemo(() => {
     if (!systemHealthTrend) return [];
     return [
-      ...systemHealthTrend.smtp.map((point) => ({
+      ...systemHealthTrend.smtp.map(point => ({
         timestamp: point.checkedAt,
         smtp: point.successRate,
         authentication: null as number | null,
       })),
-      ...systemHealthTrend.authentication.map((point) => ({
+      ...systemHealthTrend.authentication.map(point => ({
         timestamp: point.checkedAt,
         smtp: null as number | null,
         authentication: point.successRate,
       })),
     ]
       .sort((a, b) => a.timestamp - b.timestamp)
-      .map((point) => ({
+      .map(point => ({
         ...point,
-        time: new Date(point.timestamp).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+        time: new Date(point.timestamp).toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+        }),
       }));
   }, [systemHealthTrend]);
 
@@ -210,48 +280,60 @@ export default function AdminDashboard() {
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [debouncedSearch] = useDebounce(searchInput, 300);
   const utils = trpc.useUtils();
-  const { data: searchResults, isFetching: isSearching } = trpc.admin.searchUsers.useQuery(
-    { query: debouncedSearch },
-    { enabled: !!user && debouncedSearch.trim().length >= 2 }
-  );
+  const { data: searchResults, isFetching: isSearching } =
+    trpc.admin.searchUsers.useQuery(
+      { query: debouncedSearch },
+      { enabled: !!user && debouncedSearch.trim().length >= 2 }
+    );
 
   const grantSubscription = trpc.admin.grantSubscription.useMutation({
-    onSuccess: (result) => {
-      toast.success(t("adminSubscription.grantSuccess", {
-        defaultValue: "{{plan}} access granted to {{email}}.",
-        plan: t(`adminSubscription.${result.plan}`),
-        email: result.email,
-      }));
+    onSuccess: result => {
+      toast.success(
+        t("adminSubscription.grantSuccess", {
+          defaultValue: "{{plan}} access granted to {{email}}.",
+          plan: t(`adminSubscription.${result.plan}`),
+          email: result.email,
+        })
+      );
       setGrantTarget(null);
       utils.admin.searchUsers.invalidate();
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
 
   const revokeSubscription = trpc.admin.revokeSubscription.useMutation({
-    onSuccess: (result) => {
-      toast.success(t("adminSubscription.revokeSuccess", {
-        defaultValue: "Paid access revoked for {{email}}.",
-        email: result.email,
-      }));
+    onSuccess: result => {
+      toast.success(
+        t("adminSubscription.revokeSuccess", {
+          defaultValue: "Paid access revoked for {{email}}.",
+          email: result.email,
+        })
+      );
       setRevokeTarget(null);
       utils.admin.searchUsers.invalidate();
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
 
   const retestSmtp = trpc.admin.retestUserSmtp.useMutation({
     onSuccess: (result, variables) => {
-      setSmtpRetestResults((current) => ({ ...current, [variables.userId]: result }));
+      setSmtpRetestResults(current => ({
+        ...current,
+        [variables.userId]: result,
+      }));
       result.ok
         ? toast.success("SMTP connection passed its re-test.")
         : toast.error(result.error || "SMTP connection failed its re-test.");
       utils.admin.failingSmtpUsers.invalidate();
     },
     onError: (error, variables) => {
-      setSmtpRetestResults((current) => ({
+      setSmtpRetestResults(current => ({
         ...current,
-        [variables.userId]: { ok: false, checkedAt: Date.now(), error: error.message || "SMTP re-test failed." },
+        [variables.userId]: {
+          ok: false,
+          checkedAt: Date.now(),
+          error: error.message || "SMTP re-test failed.",
+        },
       }));
       toast.error(error.message || "SMTP re-test failed.");
     },
@@ -260,7 +342,8 @@ export default function AdminDashboard() {
   const downloadOperationsAnalytics = async () => {
     try {
       const result = await operationsExport.refetch();
-      if (!result.data) throw new Error("The analytics export could not be generated.");
+      if (!result.data)
+        throw new Error("The analytics export could not be generated.");
       const blob = new Blob([result.data.csv], { type: result.data.mimeType });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -272,22 +355,36 @@ export default function AdminDashboard() {
       URL.revokeObjectURL(url);
       toast.success(`Downloaded ${result.data.rowCount} analytics rows.`);
     } catch (exportError) {
-      toast.error(exportError instanceof Error ? exportError.message : "Analytics export failed.");
+      toast.error(
+        exportError instanceof Error
+          ? exportError.message
+          : "Analytics export failed."
+      );
     }
   };
 
   const downloadSupportMetricsCsv = async () => {
-    if ((supportReportStartDate || supportReportEndDate) && (!supportReportStartDate || !supportReportEndDate)) {
+    if (
+      (supportReportStartDate || supportReportEndDate) &&
+      (!supportReportStartDate || !supportReportEndDate)
+    ) {
       toast.error("Choose both a start and end date for a custom SLA export.");
       return;
     }
-    if (supportReportStartDate && supportReportEndDate && supportReportEndDate < supportReportStartDate) {
-      toast.error("The SLA report end date must be on or after the start date.");
+    if (
+      supportReportStartDate &&
+      supportReportEndDate &&
+      supportReportEndDate < supportReportStartDate
+    ) {
+      toast.error(
+        "The SLA report end date must be on or after the start date."
+      );
       return;
     }
     try {
       const result = await supportMetricsExport.refetch();
-      if (!result.data) throw new Error("The support SLA export could not be generated.");
+      if (!result.data)
+        throw new Error("The support SLA export could not be generated.");
       const blob = new Blob([result.data.csv], { type: result.data.mimeType });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -299,18 +396,25 @@ export default function AdminDashboard() {
       URL.revokeObjectURL(url);
       toast.success(`Downloaded ${result.data.rowCount} support SLA metrics.`);
     } catch (exportError) {
-      toast.error(exportError instanceof Error ? exportError.message : "Support SLA export failed.");
+      toast.error(
+        exportError instanceof Error
+          ? exportError.message
+          : "Support SLA export failed."
+      );
     }
   };
 
   const downloadOnboardingFunnelCsv = async () => {
     if (!onboardingFunnelRangeValid || !onboardingFunnelInput) {
-      toast.error("Choose a valid onboarding funnel date range before exporting.");
+      toast.error(
+        "Choose a valid onboarding funnel date range before exporting."
+      );
       return;
     }
     try {
       const result = await onboardingFunnelExport.refetch();
-      if (!result.data) throw new Error("The onboarding funnel export could not be generated.");
+      if (!result.data)
+        throw new Error("The onboarding funnel export could not be generated.");
       const blob = new Blob([result.data.csv], { type: result.data.mimeType });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -320,9 +424,15 @@ export default function AdminDashboard() {
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-      toast.success(`Downloaded ${result.data.rowCount} aggregate onboarding funnel metrics.`);
+      toast.success(
+        `Downloaded ${result.data.rowCount} aggregate onboarding funnel metrics.`
+      );
     } catch (exportError) {
-      toast.error(exportError instanceof Error ? exportError.message : "Onboarding funnel export failed.");
+      toast.error(
+        exportError instanceof Error
+          ? exportError.message
+          : "Onboarding funnel export failed."
+      );
     }
   };
 
@@ -339,8 +449,17 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center rr-bg-cream-warm">
         <div className="text-center px-6">
-          <ShieldAlert size={48} className="mx-auto mb-3" style={{ color: "oklch(0.55 0.18 25)" }} />
-          <h2 className="text-xl font-black" style={{ fontFamily: "'Poppins', sans-serif" }}>Access Denied</h2>
+          <ShieldAlert
+            size={48}
+            className="mx-auto mb-3"
+            style={{ color: "oklch(0.55 0.18 25)" }}
+          />
+          <h2
+            className="text-xl font-black"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
+            Access Denied
+          </h2>
           <p className="text-sm mt-1 text-gray-500">Admin only.</p>
         </div>
       </div>
@@ -359,9 +478,7 @@ export default function AdminDashboard() {
         </button>
         <div className="flex items-center gap-2 mb-1">
           <Star size={16} className="rr-text-gold" />
-          <span
-            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
-          >
+          <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
             Get Phame
           </span>
         </div>
@@ -369,7 +486,8 @@ export default function AdminDashboard() {
           Administration hub
         </h1>
         <p className="mt-1 text-base font-normal text-white/90">
-          Platform operations, account controls, diagnostics, and business analytics
+          Platform operations, account controls, diagnostics, and business
+          analytics
         </p>
       </div>
 
@@ -383,7 +501,10 @@ export default function AdminDashboard() {
         {error && (
           <div
             className="rounded-2xl px-4 py-4 text-sm"
-            style={{ background: "oklch(0.95 0.03 25)", color: "oklch(0.45 0.18 25)" }}
+            style={{
+              background: "oklch(0.95 0.03 25)",
+              color: "oklch(0.45 0.18 25)",
+            }}
           >
             Failed to load stats: {error.message}
           </div>
@@ -391,14 +512,26 @@ export default function AdminDashboard() {
 
         {stats && (
           <>
-            <section data-testid="admin-operations-hub" aria-labelledby="admin-operations-title">
+            <section
+              data-testid="admin-operations-hub"
+              aria-labelledby="admin-operations-title"
+            >
               <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Operations</p>
-                  <h2 id="admin-operations-title" className="mt-1 text-xl font-semibold rr-text-navy">System control center</h2>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">
+                    Operations
+                  </p>
+                  <h2
+                    id="admin-operations-title"
+                    className="mt-1 text-xl font-semibold rr-text-navy"
+                  >
+                    System control center
+                  </h2>
                 </div>
                 <div className="flex flex-col items-stretch gap-2 sm:items-end">
-                  <span className="hidden text-xs font-normal rr-text-navy-muted sm:block">Live summaries refresh automatically</span>
+                  <span className="hidden text-xs font-normal rr-text-navy-muted sm:block">
+                    Live summaries refresh automatically
+                  </span>
                   <button
                     type="button"
                     data-testid="admin-operations-csv-export"
@@ -406,25 +539,108 @@ export default function AdminDashboard() {
                     disabled={operationsExport.isFetching}
                     className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl rr-bg-navy px-4 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 sm:w-auto"
                   >
-                    {operationsExport.isFetching ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-                    {operationsExport.isFetching ? "Preparing CSV…" : "Export analytics CSV"}
+                    {operationsExport.isFetching ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <Download size={16} />
+                    )}
+                    {operationsExport.isFetching
+                      ? "Preparing CSV…"
+                      : "Export analytics CSV"}
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {[
-                  { path: "/admin/users", label: "User management", detail: `${stats.totalUsers} accounts`, Icon: Users },
-                  { path: "/admin/auth-diagnostics", label: "Authentication health", detail: "24-hour checks and magic links", Icon: ShieldAlert },
-                  { path: "/admin/reminder-performance", label: "Reminder operations", detail: `${stats.pendingReminders} pending · ${stats.dueReminders} due`, Icon: TrendingUp },
-                  { path: "/admin/smtp-stats", label: "SMTP health", detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`, Icon: Wifi },
-                  { path: "/admin/codes", label: "System access codes", detail: "Create, review, and revoke codes", Icon: KeyRound },
-                  { path: "/admin/support", label: "Support inbox", detail: "Prioritize, assign, and resolve customer tickets", Icon: Inbox },
-                  { path: "/admin/revenue-controls", label: "Revenue controls", detail: "Create Stripe promotions and temporary access grants", Icon: BadgePercent },
-                  { path: "/admin/revenue", label: "Revenue analytics", detail: "MRR, ARR, conversion, and growth", Icon: DollarSign },
-                  { path: "/admin/churn", label: "Churn analytics", detail: "Cancellation reasons and retention signals", Icon: AlertTriangle },
-                  { path: "/admin/referral-rewards", label: "Referral operations", detail: "Review deferred rewards", Icon: Gift },
-                  { path: "/admin/koalendar-retry", label: "Koalendar recovery", detail: "Inspect and retry failed contact imports", Icon: RotateCcw },
-                  { path: "/admin/github-cleanup", label: t("adminGithubCleanup.dashboardCardTitle", { defaultValue: "GitHub cleanup skill" }), detail: t("adminGithubCleanup.dashboardCardBody", { defaultValue: "Review ancestry, unique work, safety gates, and the presentation script" }), Icon: GitBranch },
+                  {
+                    path: "/admin/users",
+                    label: "User management",
+                    detail: `${stats.totalUsers} accounts`,
+                    Icon: Users,
+                  },
+                  {
+                    path: "/admin/auth-diagnostics",
+                    label: "Authentication health",
+                    detail: "24-hour checks and magic links",
+                    Icon: ShieldAlert,
+                  },
+                  {
+                    path: "/admin/automation-health",
+                    label: t("automationHealth.dashboardCardTitle", {
+                      defaultValue: "Automation health",
+                    }),
+                    detail: t("automationHealth.dashboardCardBody", {
+                      defaultValue:
+                        "Dependabot merge metrics, drift audits, and active warnings",
+                    }),
+                    Icon: Activity,
+                  },
+                  {
+                    path: "/admin/reminder-performance",
+                    label: "Reminder operations",
+                    detail: `${stats.pendingReminders} pending · ${stats.dueReminders} due`,
+                    Icon: TrendingUp,
+                  },
+                  {
+                    path: "/admin/smtp-stats",
+                    label: "SMTP health",
+                    detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
+                    Icon: Wifi,
+                  },
+                  {
+                    path: "/admin/codes",
+                    label: "System access codes",
+                    detail: "Create, review, and revoke codes",
+                    Icon: KeyRound,
+                  },
+                  {
+                    path: "/admin/support",
+                    label: "Support inbox",
+                    detail: "Prioritize, assign, and resolve customer tickets",
+                    Icon: Inbox,
+                  },
+                  {
+                    path: "/admin/revenue-controls",
+                    label: "Revenue controls",
+                    detail:
+                      "Create Stripe promotions and temporary access grants",
+                    Icon: BadgePercent,
+                  },
+                  {
+                    path: "/admin/revenue",
+                    label: "Revenue analytics",
+                    detail: "MRR, ARR, conversion, and growth",
+                    Icon: DollarSign,
+                  },
+                  {
+                    path: "/admin/churn",
+                    label: "Churn analytics",
+                    detail: "Cancellation reasons and retention signals",
+                    Icon: AlertTriangle,
+                  },
+                  {
+                    path: "/admin/referral-rewards",
+                    label: "Referral operations",
+                    detail: "Review deferred rewards",
+                    Icon: Gift,
+                  },
+                  {
+                    path: "/admin/koalendar-retry",
+                    label: "Koalendar recovery",
+                    detail: "Inspect and retry failed contact imports",
+                    Icon: RotateCcw,
+                  },
+                  {
+                    path: "/admin/github-cleanup",
+                    label: t("adminGithubCleanup.dashboardCardTitle", {
+                      defaultValue: "GitHub cleanup skill",
+                    }),
+                    detail: t("adminGithubCleanup.dashboardCardBody", {
+                      defaultValue:
+                        "Review ancestry, unique work, safety gates, and the presentation script",
+                    }),
+                    Icon: GitBranch,
+                  },
                 ].map(({ path, label, detail, Icon }) => (
                   <button
                     key={path}
@@ -432,22 +648,43 @@ export default function AdminDashboard() {
                     onClick={() => navigate(path)}
                     className="group flex min-h-28 items-start gap-3 rounded-2xl bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]"
                   >
-                    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Icon size={21} strokeWidth={2} /></span>
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+                      <Icon size={21} strokeWidth={2} />
+                    </span>
                     <span className="min-w-0">
-                      <span className="block text-base font-semibold rr-text-navy">{label}</span>
-                      <span className="mt-1 block text-sm font-normal leading-5 rr-text-navy-muted">{detail}</span>
-                      <span className="mt-2 block text-xs font-medium rr-text-gold">Open operations →</span>
+                      <span className="block text-base font-semibold rr-text-navy">
+                        {label}
+                      </span>
+                      <span className="mt-1 block text-sm font-normal leading-5 rr-text-navy-muted">
+                        {detail}
+                      </span>
+                      <span className="mt-2 block text-xs font-medium rr-text-gold">
+                        Open operations →
+                      </span>
                     </span>
                   </button>
                 ))}
               </div>
             </section>
 
-            <section data-testid="admin-pwa-conversion" aria-labelledby="admin-pwa-conversion-title">
+            <section
+              data-testid="admin-pwa-conversion"
+              aria-labelledby="admin-pwa-conversion-title"
+            >
               <div className="mb-3">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Install conversion</p>
-                <h2 id="admin-pwa-conversion-title" className="mt-1 text-xl font-semibold rr-text-navy">PWA guide and sharing funnel</h2>
-                <p className="mt-1 text-sm rr-text-navy-muted">Aggregate first-party events only. No raw device or visitor records are shown.</p>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">
+                  Install conversion
+                </p>
+                <h2
+                  id="admin-pwa-conversion-title"
+                  className="mt-1 text-xl font-semibold rr-text-navy"
+                >
+                  PWA guide and sharing funnel
+                </h2>
+                <p className="mt-1 text-sm rr-text-navy-muted">
+                  Aggregate first-party events only. No raw device or visitor
+                  records are shown.
+                </p>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <ConversionMetricCard
@@ -467,21 +704,35 @@ export default function AdminDashboard() {
                 <ConversionMetricCard
                   testId="pwa-shares"
                   label="Successful shares"
-                  value={(pwaConversionStats?.allTime.share_completed ?? 0) + (pwaConversionStats?.allTime.share_copied ?? 0)}
+                  value={
+                    (pwaConversionStats?.allTime.share_completed ?? 0) +
+                    (pwaConversionStats?.allTime.share_copied ?? 0)
+                  }
                   detail={`${pwaConversionStats?.rates.shareConversion ?? 0}% of guide views`}
                   Icon={Share2}
                 />
               </div>
             </section>
 
-            <section data-testid="admin-caption-language-analytics" aria-labelledby="admin-caption-language-title">
+            <section
+              data-testid="admin-caption-language-analytics"
+              aria-labelledby="admin-caption-language-title"
+            >
               <div className="mb-3">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Walkthrough accessibility</p>
-                <h2 id="admin-caption-language-title" className="mt-1 text-xl font-semibold rr-text-navy">Caption language selections</h2>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">
+                  Walkthrough accessibility
+                </p>
+                <h2
+                  id="admin-caption-language-title"
+                  className="mt-1 text-xl font-semibold rr-text-navy"
+                >
+                  Caption language selections
+                </h2>
                 <p className="mt-1 text-sm rr-text-navy-muted">
-                  Explicit language choices only. No visitor identity, referrer, user agent, or free-text payload is collected.
+                  Explicit language choices only. No visitor identity, referrer,
+                  user agent, or free-text payload is collected.
                   {captionLanguageStats?.topAllTime.language
-                    ? ` Most selected: ${CAPTION_LANGUAGE_LABELS.find((item) => item.code === captionLanguageStats.topAllTime.language)?.label ?? captionLanguageStats.topAllTime.language}.`
+                    ? ` Most selected: ${CAPTION_LANGUAGE_LABELS.find(item => item.code === captionLanguageStats.topAllTime.language)?.label ?? captionLanguageStats.topAllTime.language}.`
                     : " No selections recorded yet."}
                 </p>
               </div>
@@ -499,100 +750,288 @@ export default function AdminDashboard() {
               </div>
             </section>
 
-            <section data-testid="admin-setup-funnel" aria-labelledby="admin-setup-funnel-title">
+            <section
+              data-testid="admin-setup-funnel"
+              aria-labelledby="admin-setup-funnel-title"
+            >
               <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Onboarding analytics</p>
-                  <h2 id="admin-setup-funnel-title" className="mt-1 text-xl font-semibold rr-text-navy">Setup checklist drop-off</h2>
-                  <p className="mt-1 text-sm rr-text-navy-muted">Aggregate account-level events only. Each account is counted once per funnel step.</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">
+                    Onboarding analytics
+                  </p>
+                  <h2
+                    id="admin-setup-funnel-title"
+                    className="mt-1 text-xl font-semibold rr-text-navy"
+                  >
+                    Setup checklist drop-off
+                  </h2>
+                  <p className="mt-1 text-sm rr-text-navy-muted">
+                    Aggregate account-level events only. Each account is counted
+                    once per funnel step.
+                  </p>
                 </div>
                 <button
                   type="button"
                   onClick={downloadOnboardingFunnelCsv}
-                  disabled={!onboardingFunnelRangeValid || !onboardingFunnelInput || onboardingFunnelExport.isFetching}
+                  disabled={
+                    !onboardingFunnelRangeValid ||
+                    !onboardingFunnelInput ||
+                    onboardingFunnelExport.isFetching
+                  }
                   className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold rr-bg-navy text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {onboardingFunnelExport.isFetching ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+                  {onboardingFunnelExport.isFetching ? (
+                    <Loader2 size={15} className="animate-spin" />
+                  ) : (
+                    <Download size={15} />
+                  )}
                   Export CSV
                 </button>
               </div>
               <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3">
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Onboarding funnel date range">
-                  {([
-                    ["7", "Last 7 Days"],
-                    ["30", "Last 30 Days"],
-                    ["90", "Last 90 Days"],
-                  ] as const).map(([period, label]) => (
-                    <button key={period} type="button" data-testid={`setup-funnel-preset-${period}`} onClick={() => { setOnboardingFunnelPeriod(period); setOnboardingFunnelStartDate(""); setOnboardingFunnelEndDate(""); }} className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === period ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
+                <div
+                  className="flex flex-wrap gap-2"
+                  role="group"
+                  aria-label="Onboarding funnel date range"
+                >
+                  {(
+                    [
+                      ["7", "Last 7 Days"],
+                      ["30", "Last 30 Days"],
+                      ["90", "Last 90 Days"],
+                    ] as const
+                  ).map(([period, label]) => (
+                    <button
+                      key={period}
+                      type="button"
+                      data-testid={`setup-funnel-preset-${period}`}
+                      onClick={() => {
+                        setOnboardingFunnelPeriod(period);
+                        setOnboardingFunnelStartDate("");
+                        setOnboardingFunnelEndDate("");
+                      }}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === period ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+                    >
                       {label}
                     </button>
                   ))}
-                  <button type="button" onClick={() => setOnboardingFunnelPeriod("custom")} className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === "custom" ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
+                  <button
+                    type="button"
+                    onClick={() => setOnboardingFunnelPeriod("custom")}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === "custom" ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+                  >
                     Custom range
                   </button>
                 </div>
                 {onboardingFunnelPeriod === "custom" && (
                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                    <label className="text-xs font-semibold text-slate-700">Start date<input type="date" value={onboardingFunnelStartDate} onChange={(event) => setOnboardingFunnelStartDate(event.target.value)} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm" /></label>
-                    <label className="text-xs font-semibold text-slate-700">End date<input type="date" value={onboardingFunnelEndDate} onChange={(event) => setOnboardingFunnelEndDate(event.target.value)} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm" /></label>
-                    {!onboardingFunnelRangeValid && <p className="sm:col-span-2 text-xs font-semibold text-rose-700">Choose both dates, with an end date on or after the start date.</p>}
+                    <label className="text-xs font-semibold text-slate-700">
+                      Start date
+                      <input
+                        type="date"
+                        value={onboardingFunnelStartDate}
+                        onChange={event =>
+                          setOnboardingFunnelStartDate(event.target.value)
+                        }
+                        className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
+                      />
+                    </label>
+                    <label className="text-xs font-semibold text-slate-700">
+                      End date
+                      <input
+                        type="date"
+                        value={onboardingFunnelEndDate}
+                        onChange={event =>
+                          setOnboardingFunnelEndDate(event.target.value)
+                        }
+                        className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
+                      />
+                    </label>
+                    {!onboardingFunnelRangeValid && (
+                      <p className="sm:col-span-2 text-xs font-semibold text-rose-700">
+                        Choose both dates, with an end date on or after the
+                        start date.
+                      </p>
+                    )}
                   </div>
                 )}
-                <p className="mt-2 text-xs text-slate-500">{onboardingChecklistFunnel ? `${onboardingChecklistFunnel.range.periodDays}-day reporting window · ${onboardingChecklistFunnel.range.isCustomRange ? "Custom range" : "Rolling period"}` : "Loading selected reporting window…"}</p>
+                <p className="mt-2 text-xs text-slate-500">
+                  {onboardingChecklistFunnel
+                    ? `${onboardingChecklistFunnel.range.periodDays}-day reporting window · ${onboardingChecklistFunnel.range.isCustomRange ? "Custom range" : "Rolling period"}`
+                    : "Loading selected reporting window…"}
+                </p>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {([
-                  ["email", "Connect email"],
-                  ["platform", "Add platform"],
-                  ["contacts", "Import contacts"],
-                  ["send", "First send"],
-                ] as const).map(([step, label]) => {
+                {(
+                  [
+                    ["email", "Connect email"],
+                    ["platform", "Add platform"],
+                    ["contacts", "Import contacts"],
+                    ["send", "First send"],
+                  ] as const
+                ).map(([step, label]) => {
                   const metric = onboardingChecklistFunnel?.steps[step];
-                  return <ConversionMetricCard key={step} testId={`setup-funnel-${step}`} label={`${label} drop-off`} value={metric?.dropOff ?? 0} detail={metric ? `${metric.shown} saw step · ${metric.actioned} continued · ${metric.continuationRate}% continued` : "Waiting for setup activity"} Icon={MousePointerClick} />;
+                  return (
+                    <ConversionMetricCard
+                      key={step}
+                      testId={`setup-funnel-${step}`}
+                      label={`${label} drop-off`}
+                      value={metric?.dropOff ?? 0}
+                      detail={
+                        metric
+                          ? `${metric.shown} saw step · ${metric.actioned} continued · ${metric.continuationRate}% continued`
+                          : "Waiting for setup activity"
+                      }
+                      Icon={MousePointerClick}
+                    />
+                  );
                 })}
               </div>
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <ConversionMetricCard testId="setup-funnel-views" label="Checklist views" value={onboardingChecklistFunnel?.allTime.checklist_viewed ?? 0} detail={`Unique viewers in the selected ${onboardingChecklistFunnel?.range.periodDays ?? 30}-day window`} Icon={Users} />
-                <ConversionMetricCard testId="setup-funnel-completed" label="Checklist completion" value={onboardingChecklistFunnel?.allTime.checklist_completed ?? 0} detail={`${onboardingChecklistFunnel?.rates.completion ?? 0}% of checklist viewers completed all setup steps`} Icon={CheckCircle2} />
+                <ConversionMetricCard
+                  testId="setup-funnel-views"
+                  label="Checklist views"
+                  value={
+                    onboardingChecklistFunnel?.allTime.checklist_viewed ?? 0
+                  }
+                  detail={`Unique viewers in the selected ${onboardingChecklistFunnel?.range.periodDays ?? 30}-day window`}
+                  Icon={Users}
+                />
+                <ConversionMetricCard
+                  testId="setup-funnel-completed"
+                  label="Checklist completion"
+                  value={
+                    onboardingChecklistFunnel?.allTime.checklist_completed ?? 0
+                  }
+                  detail={`${onboardingChecklistFunnel?.rates.completion ?? 0}% of checklist viewers completed all setup steps`}
+                  Icon={CheckCircle2}
+                />
               </div>
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3" data-testid="setup-funnel-comparison-chart">
+              <div
+                className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3"
+                data-testid="setup-funnel-comparison-chart"
+              >
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-navy-muted">Drop-off trend</p>
-                    <h3 className="mt-0.5 text-sm font-black rr-text-navy">Current period vs. previous period</h3>
+                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-navy-muted">
+                      Drop-off trend
+                    </p>
+                    <h3 className="mt-0.5 text-sm font-black rr-text-navy">
+                      Current period vs. previous period
+                    </h3>
                   </div>
-                  <p className="text-xs font-semibold rr-text-navy-muted">Percentage points of accounts that viewed a step but did not continue.</p>
+                  <p className="text-xs font-semibold rr-text-navy-muted">
+                    Percentage points of accounts that viewed a step but did not
+                    continue.
+                  </p>
                 </div>
-                <div className="mt-3 h-48" aria-label="Current and previous onboarding step drop-off rate comparison">
+                <div
+                  className="mt-3 h-48"
+                  aria-label="Current and previous onboarding step drop-off rate comparison"
+                >
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={onboardingFunnelComparisonData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#dbe3ef" vertical={false} />
-                      <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#53627a" }} axisLine={false} tickLine={false} />
-                      <YAxis domain={[0, 100]} tickFormatter={(value) => `${value}%`} tick={{ fontSize: 11, fill: "#53627a" }} axisLine={false} tickLine={false} />
-                      <Tooltip formatter={(value, name) => [`${Number(value).toFixed(1)}%`, name === "currentRate" ? "Current period" : "Previous period"]} contentStyle={{ borderRadius: 12, border: "1px solid #dbe3ef", boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)" }} />
-                      <Legend formatter={(value) => value === "currentRate" ? "Current period" : "Previous period"} wrapperStyle={{ fontSize: 12, fontWeight: 700 }} />
-                      <Bar dataKey="currentRate" fill="#d4a017" radius={[5, 5, 0, 0]} />
-                      <Bar dataKey="previousRate" fill="#94a3b8" radius={[5, 5, 0, 0]} />
+                    <BarChart
+                      data={onboardingFunnelComparisonData}
+                      margin={{ top: 4, right: 4, left: -16, bottom: 0 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#dbe3ef"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="label"
+                        tick={{ fontSize: 11, fill: "#53627a" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        domain={[0, 100]}
+                        tickFormatter={value => `${value}%`}
+                        tick={{ fontSize: 11, fill: "#53627a" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <Tooltip
+                        formatter={(value, name) => [
+                          `${Number(value).toFixed(1)}%`,
+                          name === "currentRate"
+                            ? "Current period"
+                            : "Previous period",
+                        ]}
+                        contentStyle={{
+                          borderRadius: 12,
+                          border: "1px solid #dbe3ef",
+                          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
+                        }}
+                      />
+                      <Legend
+                        formatter={value =>
+                          value === "currentRate"
+                            ? "Current period"
+                            : "Previous period"
+                        }
+                        wrapperStyle={{ fontSize: 12, fontWeight: 700 }}
+                      />
+                      <Bar
+                        dataKey="currentRate"
+                        fill="#d4a017"
+                        radius={[5, 5, 0, 0]}
+                      />
+                      <Bar
+                        dataKey="previousRate"
+                        fill="#94a3b8"
+                        radius={[5, 5, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
-              <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 p-3" data-testid="setup-funnel-ai-insight" aria-live="polite">
+              <div
+                className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 p-3"
+                data-testid="setup-funnel-ai-insight"
+                aria-live="polite"
+              >
                 <div className="flex items-start gap-3">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Sparkles size={17} /></span>
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+                    <Sparkles size={17} />
+                  </span>
                   <div className="min-w-0">
-                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-navy-muted">AI insight</p>
+                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-navy-muted">
+                      AI insight
+                    </p>
                     {onboardingFunnelInsightLoading ? (
-                      <div className="mt-1 flex items-center gap-2 text-sm font-semibold rr-text-navy-muted"><Loader2 size={14} className="animate-spin" /> Reviewing aggregate funnel data…</div>
+                      <div className="mt-1 flex items-center gap-2 text-sm font-semibold rr-text-navy-muted">
+                        <Loader2 size={14} className="animate-spin" /> Reviewing
+                        aggregate funnel data…
+                      </div>
                     ) : onboardingFunnelInsight ? (
                       <>
-                        <h3 className="mt-0.5 text-sm font-black rr-text-navy">Highest drop-off: {onboardingFunnelInsight.highestDropOff.label} ({onboardingFunnelInsight.highestDropOff.rate}%)</h3>
-                        <p className="mt-1 text-sm font-semibold rr-text-navy-muted">{onboardingFunnelInsight.observation}</p>
-                        <p className="mt-2 text-sm font-bold rr-text-navy"><span className="rr-text-gold">Potential improvement:</span> {onboardingFunnelInsight.recommendation}</p>
-                        <p className="mt-2 text-xs font-semibold rr-text-navy-muted">{onboardingFunnelInsight.source === "ai" ? "AI phrasing grounded in the aggregate metrics shown above." : "Aggregate-data fallback shown while AI phrasing is unavailable."}</p>
+                        <h3 className="mt-0.5 text-sm font-black rr-text-navy">
+                          Highest drop-off:{" "}
+                          {onboardingFunnelInsight.highestDropOff.label} (
+                          {onboardingFunnelInsight.highestDropOff.rate}%)
+                        </h3>
+                        <p className="mt-1 text-sm font-semibold rr-text-navy-muted">
+                          {onboardingFunnelInsight.observation}
+                        </p>
+                        <p className="mt-2 text-sm font-bold rr-text-navy">
+                          <span className="rr-text-gold">
+                            Potential improvement:
+                          </span>{" "}
+                          {onboardingFunnelInsight.recommendation}
+                        </p>
+                        <p className="mt-2 text-xs font-semibold rr-text-navy-muted">
+                          {onboardingFunnelInsight.source === "ai"
+                            ? "AI phrasing grounded in the aggregate metrics shown above."
+                            : "Aggregate-data fallback shown while AI phrasing is unavailable."}
+                        </p>
                       </>
                     ) : (
-                      <p className="mt-1 text-sm font-semibold rr-text-navy-muted">A data-grounded setup insight will appear when the selected funnel range is available.</p>
+                      <p className="mt-1 text-sm font-semibold rr-text-navy-muted">
+                        A data-grounded setup insight will appear when the
+                        selected funnel range is available.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -601,27 +1040,50 @@ export default function AdminDashboard() {
 
             <section aria-labelledby="operations-alerts-title">
               <div className="mb-3">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Alert thresholds</p>
-                <h2 id="operations-alerts-title" className="mt-1 text-xl font-semibold rr-text-navy">Performance guardrails</h2>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">
+                  Alert thresholds
+                </p>
+                <h2
+                  id="operations-alerts-title"
+                  className="mt-1 text-xl font-semibold rr-text-navy"
+                >
+                  Performance guardrails
+                </h2>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <AlertMetricCard
                   testId="smtp-alert-metric"
                   label="SMTP fleet health"
-                  value={operationsAlerts?.smtp.value == null ? "No data" : `${operationsAlerts.smtp.value.toFixed(1)}%`}
+                  value={
+                    operationsAlerts?.smtp.value == null
+                      ? "No data"
+                      : `${operationsAlerts.smtp.value.toFixed(1)}%`
+                  }
                   threshold={`Acceptable: ${operationsAlerts?.smtp.threshold ?? 95}% or higher`}
                   isAlert={operationsAlerts?.smtp.status === "alert"}
                   hasData={operationsAlerts?.smtp.hasData ?? false}
-                  detail={operationsAlerts?.smtp.checkedAt ? `Checked ${new Date(operationsAlerts.smtp.checkedAt).toLocaleString()}` : "Waiting for the first managed fleet check"}
+                  detail={
+                    operationsAlerts?.smtp.checkedAt
+                      ? `Checked ${new Date(operationsAlerts.smtp.checkedAt).toLocaleString()}`
+                      : "Waiting for the first managed fleet check"
+                  }
                 />
                 <AlertMetricCard
                   testId="reminder-alert-metric"
                   label="Reminder performance"
-                  value={operationsAlerts?.reminders.value == null ? "No data" : `${operationsAlerts.reminders.value.toFixed(1)}%`}
+                  value={
+                    operationsAlerts?.reminders.value == null
+                      ? "No data"
+                      : `${operationsAlerts.reminders.value.toFixed(1)}%`
+                  }
                   threshold={`Acceptable: ${operationsAlerts?.reminders.threshold ?? 20}% or higher`}
                   isAlert={operationsAlerts?.reminders.status === "alert"}
                   hasData={operationsAlerts?.reminders.hasData ?? false}
-                  detail={operationsAlerts ? `${operationsAlerts.reminders.sampleSize} attributed sends · alerting starts at ${operationsAlerts.reminders.minimumSample}` : "Loading attributed reminder outcomes"}
+                  detail={
+                    operationsAlerts
+                      ? `${operationsAlerts.reminders.sampleSize} attributed sends · alerting starts at ${operationsAlerts.reminders.minimumSample}`
+                      : "Loading attributed reminder outcomes"
+                  }
                 />
               </div>
             </section>
@@ -629,36 +1091,45 @@ export default function AdminDashboard() {
             {/* MRR highlight card */}
             {(() => {
               const MONTHLY_PRICE = 29;
-              const ANNUAL_MONTHLY_EQUIV = Math.round(290 / 12 * 100) / 100;
-              const mrr = (stats.tierCounts.pro * MONTHLY_PRICE) + (stats.tierCounts.annual * ANNUAL_MONTHLY_EQUIV);
+              const ANNUAL_MONTHLY_EQUIV = Math.round((290 / 12) * 100) / 100;
+              const mrr =
+                stats.tierCounts.pro * MONTHLY_PRICE +
+                stats.tierCounts.annual * ANNUAL_MONTHLY_EQUIV;
               const arr = mrr * 12;
               return (
                 <div
-                  className="rounded-2xl px-4 py-4 rr-bg-navy" style={{ border: "2px solid oklch(0.80 0.18 80)" }}
+                  className="rounded-2xl px-4 py-4 rr-bg-navy"
+                  style={{ border: "2px solid oklch(0.80 0.18 80)" }}
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <DollarSign size={16} className="rr-text-gold" />
-                    <span
-                      className="text-xs font-black uppercase tracking-widest rr-text-gold"
-                    >
+                    <span className="text-xs font-black uppercase tracking-widest rr-text-gold">
                       Revenue
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm font-bold mb-0.5 text-white/70">MRR</p>
-                      <p
-                        className="text-2xl font-black text-white"
-                      >
-                        ${mrr.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      <p className="text-sm font-bold mb-0.5 text-white/70">
+                        MRR
+                      </p>
+                      <p className="text-2xl font-black text-white">
+                        $
+                        {mrr.toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        })}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-bold mb-0.5 text-white/70">ARR</p>
-                      <p
-                        className="text-2xl font-black rr-text-gold"
-                      >
-                        ${arr.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      <p className="text-sm font-bold mb-0.5 text-white/70">
+                        ARR
+                      </p>
+                      <p className="text-2xl font-black rr-text-gold">
+                        $
+                        {arr.toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -684,14 +1155,21 @@ export default function AdminDashboard() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
-                  <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${failingSmtpUsers?.length ? "bg-red-700 text-white" : "bg-emerald-700 text-white"}`}>
+                  <div
+                    className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${failingSmtpUsers?.length ? "bg-red-700 text-white" : "bg-emerald-700 text-white"}`}
+                  >
                     <AlertTriangle size={22} />
                   </div>
                   <div className="min-w-0">
-                    <p className={`text-xs font-black uppercase tracking-[0.14em] ${failingSmtpUsers?.length ? "text-red-700" : "text-emerald-800"}`}>
+                    <p
+                      className={`text-xs font-black uppercase tracking-[0.14em] ${failingSmtpUsers?.length ? "text-red-700" : "text-emerald-800"}`}
+                    >
                       SMTP credential health
                     </p>
-                    <h2 id="failing-smtp-title" className="mt-0.5 text-xl font-black rr-text-navy">
+                    <h2
+                      id="failing-smtp-title"
+                      className="mt-0.5 text-xl font-black rr-text-navy"
+                    >
                       {failingSmtpLoading
                         ? "Checking failures…"
                         : failingSmtpUsers?.length
@@ -709,29 +1187,52 @@ export default function AdminDashboard() {
 
               {failingSmtpUsers && failingSmtpUsers.length > 0 && (
                 <div className="mt-4 space-y-2">
-                  {failingSmtpUsers.slice(0, 4).map((credential) => (
-                    <div key={credential.userId} className="rounded-xl bg-white/80 p-3">
+                  {failingSmtpUsers.slice(0, 4).map(credential => (
+                    <div
+                      key={credential.userId}
+                      className="rounded-xl bg-white/80 p-3"
+                    >
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-black rr-text-navy">{credential.userName || credential.userEmail || `User #${credential.userId}`}</p>
-                          <p className="truncate text-xs font-bold text-red-700">{credential.host}</p>
+                          <p className="truncate text-sm font-black rr-text-navy">
+                            {credential.userName ||
+                              credential.userEmail ||
+                              `User #${credential.userId}`}
+                          </p>
+                          <p className="truncate text-xs font-bold text-red-700">
+                            {credential.host}
+                          </p>
                         </div>
                         <div className="flex flex-col gap-2 sm:flex-row">
                           <button
                             type="button"
                             data-testid={`retest-failing-smtp-${credential.userId}`}
-                            disabled={retestSmtp.isPending && retestSmtp.variables?.userId === credential.userId}
-                            onClick={() => retestSmtp.mutate({ userId: credential.userId })}
+                            disabled={
+                              retestSmtp.isPending &&
+                              retestSmtp.variables?.userId === credential.userId
+                            }
+                            onClick={() =>
+                              retestSmtp.mutate({ userId: credential.userId })
+                            }
                             className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-emerald-700 px-3 text-xs font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60"
                           >
-                            {retestSmtp.isPending && retestSmtp.variables?.userId === credential.userId ? "Re-testing…" : "Re-test SMTP"}
+                            {retestSmtp.isPending &&
+                            retestSmtp.variables?.userId === credential.userId
+                              ? "Re-testing…"
+                              : "Re-test SMTP"}
                           </button>
                           <button
                             type="button"
                             data-testid={`manage-failing-smtp-${credential.userId}`}
                             onClick={() => {
-                              const accountQuery = credential.userEmail || credential.smtpUser || credential.userName || String(credential.userId);
-                              navigate(`/admin/users?smtpStatus=failing&search=${encodeURIComponent(accountQuery)}`);
+                              const accountQuery =
+                                credential.userEmail ||
+                                credential.smtpUser ||
+                                credential.userName ||
+                                String(credential.userId);
+                              navigate(
+                                `/admin/users?smtpStatus=failing&search=${encodeURIComponent(accountQuery)}`
+                              );
                             }}
                             className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-red-700 px-3 text-xs font-black text-white transition active:scale-[0.97]"
                           >
@@ -739,24 +1240,40 @@ export default function AdminDashboard() {
                           </button>
                         </div>
                       </div>
-                      <p className="mt-1 truncate text-xs font-semibold rr-text-navy-muted">{credential.userEmail || credential.smtpUser}</p>
-                      <p data-testid={`smtp-health-${credential.userId}`} className="mt-1 text-xs font-bold rr-text-navy-muted">
-                        Latest health: failed{credential.lastHealthCheck ? ` · ${new Date(credential.lastHealthCheck).toLocaleString()}` : " · not yet timestamped"}
+                      <p className="mt-1 truncate text-xs font-semibold rr-text-navy-muted">
+                        {credential.userEmail || credential.smtpUser}
                       </p>
-                      {credential.lastHealthError && <p className="mt-1 line-clamp-2 text-xs font-bold text-red-700">{credential.lastHealthError}</p>}
+                      <p
+                        data-testid={`smtp-health-${credential.userId}`}
+                        className="mt-1 text-xs font-bold rr-text-navy-muted"
+                      >
+                        Latest health: failed
+                        {credential.lastHealthCheck
+                          ? ` · ${new Date(credential.lastHealthCheck).toLocaleString()}`
+                          : " · not yet timestamped"}
+                      </p>
+                      {credential.lastHealthError && (
+                        <p className="mt-1 line-clamp-2 text-xs font-bold text-red-700">
+                          {credential.lastHealthError}
+                        </p>
+                      )}
                       {smtpRetestResults[credential.userId] && (
                         <p
                           data-testid={`smtp-retest-result-${credential.userId}`}
                           className={`mt-2 rounded-lg px-2 py-1.5 text-xs font-black ${smtpRetestResults[credential.userId].ok ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}
                         >
-                          {smtpRetestResults[credential.userId].ok ? "Re-test passed" : `Re-test failed: ${smtpRetestResults[credential.userId].error || "Connection rejected"}`}
+                          {smtpRetestResults[credential.userId].ok
+                            ? "Re-test passed"
+                            : `Re-test failed: ${smtpRetestResults[credential.userId].error || "Connection rejected"}`}
                           {` · ${new Date(smtpRetestResults[credential.userId].checkedAt).toLocaleString()}`}
                         </p>
                       )}
                     </div>
                   ))}
                   {failingSmtpUsers.length > 4 && (
-                    <p className="text-xs font-black text-red-700">+{failingSmtpUsers.length - 4} more failing connections</p>
+                    <p className="text-xs font-black text-red-700">
+                      +{failingSmtpUsers.length - 4} more failing connections
+                    </p>
                   )}
                 </div>
               )}
@@ -777,67 +1294,170 @@ export default function AdminDashboard() {
             >
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 items-start gap-3">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Activity size={21} /></span>
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+                    <Activity size={21} />
+                  </span>
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">System health</p>
-                    <h2 id="system-health-trend-title" className="mt-0.5 text-xl font-black rr-text-navy">24-hour health trend</h2>
-                    <p className="mt-1 text-sm font-semibold rr-text-navy-muted">Managed SMTP fleet checks and authentication diagnostics. Missing observations are not inferred.</p>
+                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">
+                      System health
+                    </p>
+                    <h2
+                      id="system-health-trend-title"
+                      className="mt-0.5 text-xl font-black rr-text-navy"
+                    >
+                      24-hour health trend
+                    </h2>
+                    <p className="mt-1 text-sm font-semibold rr-text-navy-muted">
+                      Managed SMTP fleet checks and authentication diagnostics.
+                      Missing observations are not inferred.
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-3 text-xs font-black rr-text-navy-muted sm:justify-end">
-                  <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-blue-700" />SMTP</span>
-                  <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-emerald-600" />Authentication</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="size-2.5 rounded-full bg-blue-700" />
+                    SMTP
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="size-2.5 rounded-full bg-emerald-600" />
+                    Authentication
+                  </span>
                 </div>
               </div>
               {systemHealthLoading ? (
-                <div className="flex h-64 items-center justify-center"><Loader2 size={24} className="animate-spin rr-text-navy" /></div>
+                <div className="flex h-64 items-center justify-center">
+                  <Loader2 size={24} className="animate-spin rr-text-navy" />
+                </div>
               ) : healthTrendData.length === 0 ? (
                 <div className="mt-4 flex min-h-52 items-center justify-center rounded-xl bg-slate-50 px-5 text-center">
                   <div>
-                    <p className="text-sm font-black rr-text-navy">Monitoring data unavailable</p>
-                    <p className="mt-1 text-sm font-semibold rr-text-navy-muted">No health status is being inferred from missing data. The chart will populate after managed checks run.</p>
+                    <p className="text-sm font-black rr-text-navy">
+                      Monitoring data unavailable
+                    </p>
+                    <p className="mt-1 text-sm font-semibold rr-text-navy-muted">
+                      No health status is being inferred from missing data. The
+                      chart will populate after managed checks run.
+                    </p>
                   </div>
                 </div>
               ) : (
-                <div className="mt-4 h-64 w-full" aria-label="SMTP and authentication success rates over the last 24 hours">
+                <div
+                  className="mt-4 h-64 w-full"
+                  aria-label="SMTP and authentication success rates over the last 24 hours"
+                >
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={healthTrendData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#dbe3ef" vertical={false} />
-                      <XAxis dataKey="time" tick={{ fontSize: 11, fill: "#53627a" }} minTickGap={28} axisLine={false} tickLine={false} />
-                      <YAxis domain={[0, 100]} ticks={[0, 50, 95, 100]} tickFormatter={(value) => `${value}%`} tick={{ fontSize: 11, fill: "#53627a" }} axisLine={false} tickLine={false} />
-                      <Tooltip formatter={(value, name) => [`${Number(value).toFixed(1)}%`, name === "smtp" ? "SMTP" : "Authentication"]} labelFormatter={(label) => `Observed at ${label}`} contentStyle={{ borderRadius: 12, border: "1px solid #dbe3ef", boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)" }} />
-                      <Line type="monotone" dataKey="smtp" stroke="#1d4ed8" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls />
-                      <Line type="monotone" dataKey="authentication" stroke="#059669" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls />
+                    <LineChart
+                      data={healthTrendData}
+                      margin={{ top: 8, right: 8, left: -18, bottom: 0 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#dbe3ef"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="time"
+                        tick={{ fontSize: 11, fill: "#53627a" }}
+                        minTickGap={28}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        domain={[0, 100]}
+                        ticks={[0, 50, 95, 100]}
+                        tickFormatter={value => `${value}%`}
+                        tick={{ fontSize: 11, fill: "#53627a" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <Tooltip
+                        formatter={(value, name) => [
+                          `${Number(value).toFixed(1)}%`,
+                          name === "smtp" ? "SMTP" : "Authentication",
+                        ]}
+                        labelFormatter={label => `Observed at ${label}`}
+                        contentStyle={{
+                          borderRadius: 12,
+                          border: "1px solid #dbe3ef",
+                          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="smtp"
+                        stroke="#1d4ed8"
+                        strokeWidth={3}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                        connectNulls
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="authentication"
+                        stroke="#059669"
+                        strokeWidth={3}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                        connectNulls
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
               )}
             </section>
 
-            <section data-testid="admin-support-reporting" aria-labelledby="admin-support-reporting-title">
+            <section
+              data-testid="admin-support-reporting"
+              aria-labelledby="admin-support-reporting-title"
+            >
               <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Support operations</p>
-                  <h2 id="admin-support-reporting-title" className="mt-1 text-xl font-semibold rr-text-navy">Response and resolution reporting</h2>
-                  <p className="mt-1 text-sm rr-text-navy-muted">First response begins at the first administrator update or private resolution note.</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">
+                    Support operations
+                  </p>
+                  <h2
+                    id="admin-support-reporting-title"
+                    className="mt-1 text-xl font-semibold rr-text-navy"
+                  >
+                    Response and resolution reporting
+                  </h2>
+                  <p className="mt-1 text-sm rr-text-navy-muted">
+                    First response begins at the first administrator update or
+                    private resolution note.
+                  </p>
                 </div>
                 <div className="flex flex-col gap-2 sm:items-end">
                   <label className="flex items-center gap-2 text-sm font-black rr-text-navy">
                     <span className="sr-only">Reporting period</span>
-                    <select value={supportReportingPeriod} onChange={(event) => { setSupportReportingPeriod(event.target.value as "7" | "30" | "90"); setSupportReportStartDate(""); setSupportReportEndDate(""); }} className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+                    <select
+                      value={supportReportingPeriod}
+                      onChange={event => {
+                        setSupportReportingPeriod(
+                          event.target.value as "7" | "30" | "90"
+                        );
+                        setSupportReportStartDate("");
+                        setSupportReportEndDate("");
+                      }}
+                      className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+                    >
                       <option value="7">Last 7 days</option>
                       <option value="30">Last 30 days</option>
                       <option value="90">Last 90 days</option>
                     </select>
                   </label>
-                  <div className="grid grid-cols-2 gap-2" aria-label="Custom SLA reporting date range">
+                  <div
+                    className="grid grid-cols-2 gap-2"
+                    aria-label="Custom SLA reporting date range"
+                  >
                     <label className="text-xs font-black rr-text-navy">
                       <span className="mb-1 block">From</span>
                       <input
                         type="date"
                         value={supportReportStartDate}
                         max={supportReportEndDate || undefined}
-                        onChange={(event) => setSupportReportStartDate(event.target.value)}
+                        onChange={event =>
+                          setSupportReportStartDate(event.target.value)
+                        }
                         className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
                       />
                     </label>
@@ -847,12 +1467,17 @@ export default function AdminDashboard() {
                         type="date"
                         value={supportReportEndDate}
                         min={supportReportStartDate || undefined}
-                        onChange={(event) => setSupportReportEndDate(event.target.value)}
+                        onChange={event =>
+                          setSupportReportEndDate(event.target.value)
+                        }
                         className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
                       />
                     </label>
                   </div>
-                  <p className="max-w-xs text-xs font-medium rr-text-navy-muted">Optional custom range: up to 366 days. Choosing a preset clears custom dates.</p>
+                  <p className="max-w-xs text-xs font-medium rr-text-navy-muted">
+                    Optional custom range: up to 366 days. Choosing a preset
+                    clears custom dates.
+                  </p>
                   <button
                     type="button"
                     data-testid="admin-support-sla-csv-export"
@@ -860,34 +1485,76 @@ export default function AdminDashboard() {
                     disabled={supportMetricsExport.isFetching}
                     className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl rr-bg-navy px-3 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
                   >
-                    {supportMetricsExport.isFetching ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
-                    {supportMetricsExport.isFetching ? "Preparing CSV…" : "Export SLA CSV"}
+                    {supportMetricsExport.isFetching ? (
+                      <Loader2 size={15} className="animate-spin" />
+                    ) : (
+                      <Download size={15} />
+                    )}
+                    {supportMetricsExport.isFetching
+                      ? "Preparing CSV…"
+                      : "Export SLA CSV"}
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 <SupportMetricCard
                   label="Average first response"
-                  value={supportMetricsLoading ? "Loading…" : formatSupportMetricDuration(supportMetrics?.avgFirstResponseMs)}
-                  detail={supportMetrics ? `${supportMetrics.firstResponseCount} ticket${supportMetrics.firstResponseCount === 1 ? "" : "s"} with a recorded first response` : "Waiting for support data"}
+                  value={
+                    supportMetricsLoading
+                      ? "Loading…"
+                      : formatSupportMetricDuration(
+                          supportMetrics?.avgFirstResponseMs
+                        )
+                  }
+                  detail={
+                    supportMetrics
+                      ? `${supportMetrics.firstResponseCount} ticket${supportMetrics.firstResponseCount === 1 ? "" : "s"} with a recorded first response`
+                      : "Waiting for support data"
+                  }
                   Icon={Clock3}
                 />
                 <SupportMetricCard
                   label="Average resolution"
-                  value={supportMetricsLoading ? "Loading…" : formatSupportMetricDuration(supportMetrics?.avgResolutionMs)}
-                  detail={supportMetrics ? `${supportMetrics.resolvedTickets} resolved ticket${supportMetrics.resolvedTickets === 1 ? "" : "s"}` : "Waiting for resolution data"}
+                  value={
+                    supportMetricsLoading
+                      ? "Loading…"
+                      : formatSupportMetricDuration(
+                          supportMetrics?.avgResolutionMs
+                        )
+                  }
+                  detail={
+                    supportMetrics
+                      ? `${supportMetrics.resolvedTickets} resolved ticket${supportMetrics.resolvedTickets === 1 ? "" : "s"}`
+                      : "Waiting for resolution data"
+                  }
                   Icon={CheckCircle2}
                 />
                 <SupportMetricCard
                   label="Tickets created"
-                  value={supportMetricsLoading ? "Loading…" : String(supportMetrics?.ticketsCreated ?? 0)}
-                  detail={supportMetrics ? `${supportMetrics.openTickets} currently open` : "Waiting for support data"}
+                  value={
+                    supportMetricsLoading
+                      ? "Loading…"
+                      : String(supportMetrics?.ticketsCreated ?? 0)
+                  }
+                  detail={
+                    supportMetrics
+                      ? `${supportMetrics.openTickets} currently open`
+                      : "Waiting for support data"
+                  }
                   Icon={Inbox}
                 />
                 <SupportMetricCard
                   label="SLA overdue"
-                  value={supportMetricsLoading ? "Loading…" : String(supportMetrics?.overdueTickets ?? 0)}
-                  detail={supportMetrics?.overdueTickets ? "Review the overdue-SLA queue" : "No unresolved overdue SLA targets"}
+                  value={
+                    supportMetricsLoading
+                      ? "Loading…"
+                      : String(supportMetrics?.overdueTickets ?? 0)
+                  }
+                  detail={
+                    supportMetrics?.overdueTickets
+                      ? "Review the overdue-SLA queue"
+                      : "No unresolved overdue SLA targets"
+                  }
                   Icon={AlertTriangle}
                   alert={Boolean(supportMetrics?.overdueTickets)}
                 />
@@ -917,12 +1584,22 @@ export default function AdminDashboard() {
                 value={`${stats.activeSmtp} / ${stats.totalSmtp}`}
               />
               <KpiCard
-                icon={<TrendingUp size={20} style={{ color: "oklch(0.55 0.18 150)" }} />}
+                icon={
+                  <TrendingUp
+                    size={20}
+                    style={{ color: "oklch(0.55 0.18 150)" }}
+                  />
+                }
                 label="Upsell Clicks (30d)"
                 value={upsellStats ? upsellStats.last30.toLocaleString() : "—"}
               />
               <KpiCard
-                icon={<CheckCircle2 size={20} style={{ color: "oklch(0.55 0.18 150)" }} />}
+                icon={
+                  <CheckCircle2
+                    size={20}
+                    style={{ color: "oklch(0.55 0.18 150)" }}
+                  />
+                }
                 label="Upsell Clicks (all)"
                 value={upsellStats ? upsellStats.total.toLocaleString() : "—"}
               />
@@ -930,11 +1607,10 @@ export default function AdminDashboard() {
 
             {/* Tier breakdown */}
             <div
-              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white"
+              style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
-              <h3
-                className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy"
-              >
+              <h3 className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy">
                 Tier Breakdown
               </h3>
               <div className="flex flex-col gap-2">
@@ -946,21 +1622,30 @@ export default function AdminDashboard() {
                   color="oklch(0.75 0.04 260)"
                 />
                 <TierRow
-                  icon={<Star size={14} style={{ color: "oklch(0.55 0.18 80)" }} />}
+                  icon={
+                    <Star size={14} style={{ color: "oklch(0.55 0.18 80)" }} />
+                  }
                   label="Pro Monthly"
                   count={stats.tierCounts.pro}
                   total={stats.totalUsers}
                   color="oklch(0.80 0.18 80)"
                 />
                 <TierRow
-                  icon={<Zap size={14} style={{ color: "oklch(0.55 0.18 80)" }} />}
+                  icon={
+                    <Zap size={14} style={{ color: "oklch(0.55 0.18 80)" }} />
+                  }
                   label="Pro Annual"
                   count={stats.tierCounts.annual}
                   total={stats.totalUsers}
                   color="oklch(0.70 0.18 80)"
                 />
                 <TierRow
-                  icon={<Infinity size={14} style={{ color: "oklch(0.55 0.22 150)" }} />}
+                  icon={
+                    <Infinity
+                      size={14}
+                      style={{ color: "oklch(0.55 0.22 150)" }}
+                    />
+                  }
                   label="Lifetime"
                   count={stats.tierCounts.lifetime}
                   total={stats.totalUsers}
@@ -977,7 +1662,9 @@ export default function AdminDashboard() {
                 <span className="font-black rr-text-navy">
                   {stats.totalUsers > 0
                     ? (
-                        ((stats.tierCounts.pro + stats.tierCounts.annual + stats.tierCounts.lifetime) /
+                        ((stats.tierCounts.pro +
+                          stats.tierCounts.annual +
+                          stats.tierCounts.lifetime) /
                           stats.totalUsers) *
                         100
                       ).toFixed(1)
@@ -989,19 +1676,21 @@ export default function AdminDashboard() {
 
             {/* Recent signups */}
             <div
-              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white"
+              style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
-              <h3
-                className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy"
-              >
+              <h3 className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy">
                 Recent Signups
               </h3>
               {stats.recentUsers.length === 0 ? (
                 <p className="text-sm text-gray-400">No users yet.</p>
               ) : (
                 <div className="flex flex-col gap-2">
-                  {[...stats.recentUsers].reverse().map((u) => (
-                    <div key={u.id} className="flex items-center justify-between">
+                  {[...stats.recentUsers].reverse().map(u => (
+                    <div
+                      key={u.id}
+                      className="flex items-center justify-between"
+                    >
                       <div>
                         <p className="text-sm font-bold rr-text-navy">
                           {u.name || "(no name)"}
@@ -1010,12 +1699,18 @@ export default function AdminDashboard() {
                           {u.email}
                         </p>
                       </div>
-                      <p className="text-sm font-bold" style={{ color: "oklch(0.35 0.04 260)" }}>
+                      <p
+                        className="text-sm font-bold"
+                        style={{ color: "oklch(0.35 0.04 260)" }}
+                      >
                         {u.createdAt
-                          ? new Date(u.createdAt).toLocaleDateString(undefined, {
-                              month: "short",
-                              day: "numeric",
-                            })
+                          ? new Date(u.createdAt).toLocaleDateString(
+                              undefined,
+                              {
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )
                           : "—"}
                       </p>
                     </div>
@@ -1026,11 +1721,10 @@ export default function AdminDashboard() {
 
             {/* User search */}
             <div
-              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white"
+              style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
-              <h3
-                className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy"
-              >
+              <h3 className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy">
                 User Search
               </h3>
               <div className="relative mb-3">
@@ -1043,7 +1737,11 @@ export default function AdminDashboard() {
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
                   placeholder="Search by name or email…"
-                  className="w-full rounded-xl pl-8 pr-8 py-2.5 text-sm outline-none rr-text-navy" style={{ background: "oklch(0.97 0.003 260)", border: "1px solid oklch(0.88 0.02 260)" }}
+                  className="w-full rounded-xl pl-8 pr-8 py-2.5 text-sm outline-none rr-text-navy"
+                  style={{
+                    background: "oklch(0.97 0.003 260)",
+                    border: "1px solid oklch(0.88 0.02 260)",
+                  }}
                 />
                 {searchInput && (
                   <button
@@ -1056,13 +1754,23 @@ export default function AdminDashboard() {
               </div>
               {isSearching && (
                 <div className="flex items-center gap-2 py-2">
-                  <Loader2 size={14} className="animate-spin rr-text-navy-muted" />
-                  <span className="text-sm font-bold rr-text-navy-mid">Searching…</span>
+                  <Loader2
+                    size={14}
+                    className="animate-spin rr-text-navy-muted"
+                  />
+                  <span className="text-sm font-bold rr-text-navy-mid">
+                    Searching…
+                  </span>
                 </div>
               )}
-              {!isSearching && searchResults && searchResults.length === 0 && debouncedSearch.length >= 2 && (
-                <p className="text-xs py-2 rr-text-navy-muted">No users found.</p>
-              )}
+              {!isSearching &&
+                searchResults &&
+                searchResults.length === 0 &&
+                debouncedSearch.length >= 2 && (
+                  <p className="text-xs py-2 rr-text-navy-muted">
+                    No users found.
+                  </p>
+                )}
               {!isSearching && searchResults && searchResults.length > 0 && (
                 <div className="flex flex-col gap-2">
                   {searchResults.map(u => (
@@ -1075,11 +1783,16 @@ export default function AdminDashboard() {
                         <p className="text-sm font-bold rr-text-navy">
                           {u.name || "(no name)"}
                         </p>
-                        <p className="text-sm font-bold rr-text-navy-mid">{u.email}</p>
+                        <p className="text-sm font-bold rr-text-navy-mid">
+                          {u.email}
+                        </p>
                         {u.churnReason && (
                           <span
                             className="inline-block text-xs font-bold rounded-full px-2 py-0.5 mt-0.5"
-                            style={{ background: "oklch(0.95 0.04 20)", color: "oklch(0.45 0.15 20)" }}
+                            style={{
+                              background: "oklch(0.95 0.04 20)",
+                              color: "oklch(0.45 0.15 20)",
+                            }}
                           >
                             Churned: {u.churnReason.replace(/_/g, " ")}
                           </span>
@@ -1095,19 +1808,31 @@ export default function AdminDashboard() {
                               type="button"
                               onClick={() => {
                                 setGrantPlan("monthly");
-                                setGrantTarget({ email: u.email!, name: u.name });
+                                setGrantTarget({
+                                  email: u.email!,
+                                  name: u.name,
+                                });
                               }}
                               className="rounded-lg bg-[oklch(0.80_0.18_80)] px-2.5 py-1.5 text-xs font-black text-[#061a3a] transition-transform active:scale-[0.97]"
                             >
-                              {t("adminSubscription.grant", { defaultValue: "Grant Subscription" })}
+                              {t("adminSubscription.grant", {
+                                defaultValue: "Grant Subscription",
+                              })}
                             </button>
                             {u.tier !== "free" && (
                               <button
                                 type="button"
-                                onClick={() => setRevokeTarget({ email: u.email!, name: u.name })}
+                                onClick={() =>
+                                  setRevokeTarget({
+                                    email: u.email!,
+                                    name: u.name,
+                                  })
+                                }
                                 className="rounded-lg border border-red-300/60 bg-red-50 px-2.5 py-1.5 text-xs font-black text-red-700 transition-transform active:scale-[0.97]"
                               >
-                                {t("adminSubscription.revoke", { defaultValue: "Revoke Access" })}
+                                {t("adminSubscription.revoke", {
+                                  defaultValue: "Revoke Access",
+                                })}
                               </button>
                             )}
                           </>
@@ -1118,7 +1843,9 @@ export default function AdminDashboard() {
                 </div>
               )}
               {debouncedSearch.length < 2 && (
-                <p className="text-xs rr-text-navy-faint">Type at least 2 characters to search.</p>
+                <p className="text-xs rr-text-navy-faint">
+                  Type at least 2 characters to search.
+                </p>
               )}
             </div>
 
@@ -1189,11 +1916,16 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      <Dialog open={grantTarget !== null} onOpenChange={(open) => !open && setGrantTarget(null)}>
+      <Dialog
+        open={grantTarget !== null}
+        onOpenChange={open => !open && setGrantTarget(null)}
+      >
         <DialogContent className="border-white/15 rr-bg-navy text-white sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-white">
-              {t("adminSubscription.grantTitle", { defaultValue: "Grant Subscription" })}
+              {t("adminSubscription.grantTitle", {
+                defaultValue: "Grant Subscription",
+              })}
             </DialogTitle>
             <DialogDescription className="text-white/70">
               {t("adminSubscription.grantDescription", {
@@ -1203,8 +1935,14 @@ export default function AdminDashboard() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-2" role="group" aria-label={t("adminSubscription.durationLabel", { defaultValue: "Subscription period" })}>
-            {(["monthly", "annual", "lifetime"] as const).map((plan) => (
+          <div
+            className="grid gap-2"
+            role="group"
+            aria-label={t("adminSubscription.durationLabel", {
+              defaultValue: "Subscription period",
+            })}
+          >
+            {(["monthly", "annual", "lifetime"] as const).map(plan => (
               <button
                 key={plan}
                 type="button"
@@ -1235,25 +1973,41 @@ export default function AdminDashboard() {
             <button
               type="button"
               disabled={!grantTarget || grantSubscription.isPending}
-              onClick={() => grantTarget && grantSubscription.mutate({ email: grantTarget.email, plan: grantPlan })}
+              onClick={() =>
+                grantTarget &&
+                grantSubscription.mutate({
+                  email: grantTarget.email,
+                  plan: grantPlan,
+                })
+              }
               className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black disabled:opacity-60 rr-bg-gold rr-text-navy"
             >
-              {grantSubscription.isPending && <Loader2 size={14} className="animate-spin" />}
-              {t("adminSubscription.confirmGrant", { defaultValue: "Grant Access" })}
+              {grantSubscription.isPending && (
+                <Loader2 size={14} className="animate-spin" />
+              )}
+              {t("adminSubscription.confirmGrant", {
+                defaultValue: "Grant Access",
+              })}
             </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={revokeTarget !== null} onOpenChange={(open) => !open && setRevokeTarget(null)}>
+      <AlertDialog
+        open={revokeTarget !== null}
+        onOpenChange={open => !open && setRevokeTarget(null)}
+      >
         <AlertDialogContent className="border-white/15 rr-bg-navy text-white">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-white">
-              {t("adminSubscription.revokeTitle", { defaultValue: "Revoke paid access?" })}
+              {t("adminSubscription.revokeTitle", {
+                defaultValue: "Revoke paid access?",
+              })}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-white/70">
               {t("adminSubscription.revokeDescription", {
-                defaultValue: "{{email}} will return to the Free tier immediately. This does not issue a refund or cancel billing in Stripe.",
+                defaultValue:
+                  "{{email}} will return to the Free tier immediately. This does not issue a refund or cancel billing in Stripe.",
                 email: revokeTarget?.email ?? "",
               })}
             </AlertDialogDescription>
@@ -1264,11 +2018,18 @@ export default function AdminDashboard() {
             </AlertDialogCancel>
             <AlertDialogAction
               disabled={!revokeTarget || revokeSubscription.isPending}
-              onClick={() => revokeTarget && revokeSubscription.mutate({ email: revokeTarget.email })}
+              onClick={() =>
+                revokeTarget &&
+                revokeSubscription.mutate({ email: revokeTarget.email })
+              }
               className="bg-red-600 font-black text-white hover:bg-red-700"
             >
-              {revokeSubscription.isPending && <Loader2 size={14} className="animate-spin" />}
-              {t("adminSubscription.confirmRevoke", { defaultValue: "Revoke Access" })}
+              {revokeSubscription.isPending && (
+                <Loader2 size={14} className="animate-spin" />
+              )}
+              {t("adminSubscription.confirmRevoke", {
+                defaultValue: "Revoke Access",
+              })}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1288,15 +2049,12 @@ function KpiCard({
 }) {
   return (
     <div
-      className="rounded-2xl px-4 py-4 flex flex-col gap-2 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+      className="rounded-2xl px-4 py-4 flex flex-col gap-2 bg-white"
+      style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
     >
       {icon}
-      <p className="text-2xl font-black rr-text-navy">
-        {value}
-      </p>
-      <p className="text-sm font-bold rr-text-navy-mid">
-        {label}
-      </p>
+      <p className="text-2xl font-black rr-text-navy">{value}</p>
+      <p className="text-sm font-bold rr-text-navy-mid">{label}</p>
     </div>
   );
 }
@@ -1326,13 +2084,19 @@ function SupportMetricCard({
   alert?: boolean;
 }) {
   return (
-    <div className={`rounded-2xl p-4 shadow-sm ${alert ? "bg-red-50" : "bg-white"}`}>
+    <div
+      className={`rounded-2xl p-4 shadow-sm ${alert ? "bg-red-50" : "bg-white"}`}
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.14em] rr-text-navy-muted">{label}</p>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] rr-text-navy-muted">
+            {label}
+          </p>
           <p className="mt-1 text-3xl font-black rr-text-navy">{value}</p>
         </div>
-        <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl text-white ${alert ? "bg-red-700" : "rr-bg-navy"}`}>
+        <span
+          className={`flex size-10 shrink-0 items-center justify-center rounded-xl text-white ${alert ? "bg-red-700" : "rr-bg-navy"}`}
+        >
           <Icon size={19} strokeWidth={2} aria-hidden="true" />
         </span>
       </div>
@@ -1358,8 +2122,12 @@ function ConversionMetricCard({
     <div data-testid={testId} className="rounded-2xl bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.14em] rr-text-navy-muted">{label}</p>
-          <p className="mt-1 text-3xl font-black rr-text-navy">{value.toLocaleString()}</p>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] rr-text-navy-muted">
+            {label}
+          </p>
+          <p className="mt-1 text-3xl font-black rr-text-navy">
+            {value.toLocaleString()}
+          </p>
         </div>
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
           <Icon size={19} strokeWidth={2} aria-hidden="true" />
@@ -1393,17 +2161,35 @@ function AlertMetricCard({
       ? "border-emerald-200 bg-emerald-50"
       : "border-slate-200 bg-white";
   return (
-    <div data-testid={testId} role={isAlert ? "alert" : undefined} className={`rounded-2xl border-2 p-4 shadow-sm ${tone}`}>
+    <div
+      data-testid={testId}
+      role={isAlert ? "alert" : undefined}
+      className={`rounded-2xl border-2 p-4 shadow-sm ${tone}`}
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className={`text-xs font-black uppercase tracking-[0.14em] ${isAlert ? "text-red-700" : "rr-text-navy-muted"}`}>{label}</p>
-          <p className={`mt-1 text-3xl font-black ${isAlert ? "text-red-700" : "rr-text-navy"}`}>{value}</p>
+          <p
+            className={`text-xs font-black uppercase tracking-[0.14em] ${isAlert ? "text-red-700" : "rr-text-navy-muted"}`}
+          >
+            {label}
+          </p>
+          <p
+            className={`mt-1 text-3xl font-black ${isAlert ? "text-red-700" : "rr-text-navy"}`}
+          >
+            {value}
+          </p>
         </div>
-        <span className={`rounded-full px-2.5 py-1 text-xs font-black ${isAlert ? "bg-red-700 text-white" : hasData ? "bg-emerald-700 text-white" : "bg-slate-200 text-slate-700"}`}>
+        <span
+          className={`rounded-full px-2.5 py-1 text-xs font-black ${isAlert ? "bg-red-700 text-white" : hasData ? "bg-emerald-700 text-white" : "bg-slate-200 text-slate-700"}`}
+        >
           {isAlert ? "Below threshold" : hasData ? "Healthy" : "No data"}
         </span>
       </div>
-      <p className={`mt-2 text-sm font-black ${isAlert ? "text-red-700" : "rr-text-navy"}`}>{threshold}</p>
+      <p
+        className={`mt-2 text-sm font-black ${isAlert ? "text-red-700" : "rr-text-navy"}`}
+      >
+        {threshold}
+      </p>
       <p className="mt-1 text-xs font-semibold rr-text-navy-muted">{detail}</p>
     </div>
   );
@@ -1428,14 +2214,18 @@ function TierRow({
       <div className="flex-shrink-0">{icon}</div>
       <div className="flex-1">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.04 260)" }}>
+          <span
+            className="text-xs font-bold"
+            style={{ color: "oklch(0.35 0.04 260)" }}
+          >
             {label}
           </span>
-          <span className="text-xs font-black rr-text-navy">
-            {count}
-          </span>
+          <span className="text-xs font-black rr-text-navy">{count}</span>
         </div>
-        <div className="h-1.5 rounded-full w-full" style={{ background: "oklch(0.92 0.01 260)" }}>
+        <div
+          className="h-1.5 rounded-full w-full"
+          style={{ background: "oklch(0.92 0.01 260)" }}
+        >
           <div
             className="h-1.5 rounded-full transition-all"
             style={{ width: `${pct}%`, background: color }}

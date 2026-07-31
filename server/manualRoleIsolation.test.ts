@@ -10,7 +10,15 @@ import type {
   ManualRole,
 } from "../client/src/content/manuals/types";
 
-const SUPPORTED_LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+const SUPPORTED_LOCALES = [
+  "en",
+  "es",
+  "fr",
+  "it",
+  "th",
+  "zh-CN",
+  "zh-TW",
+] as const;
 
 const MANUAL_UI_KEYS = [
   "nav.userManual",
@@ -36,7 +44,10 @@ const MANUAL_UI_KEYS = [
 ] as const;
 
 function readProjectFile(relativePath: string): string {
-  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+  return readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    "utf8"
+  );
 }
 
 function readJson<T>(relativePath: string): T {
@@ -51,14 +62,16 @@ function getByPath(value: unknown, dottedPath: string): unknown {
 }
 
 function readManual(role: ManualRole, locale: string): ManualDocument {
-  return readJson<ManualDocument>(`../client/src/content/manuals/${role}/${locale}.json`);
+  return readJson<ManualDocument>(
+    `../client/src/content/manuals/${role}/${locale}.json`
+  );
 }
 
 function topicIds(document: ManualDocument, access?: "all" | "paid" | "admin") {
   return document.sections.flatMap(section =>
     section.topics
       .filter(topic => !access || topic.access === access)
-      .map(topic => topic.id),
+      .map(topic => topic.id)
   );
 }
 
@@ -72,7 +85,9 @@ describe("role-aware Get Phame manuals", () => {
     expect(normalizeManualLocale("zh-Hans-CN")).toBe("zh-CN");
     expect(normalizeManualLocale("zh-Hant-TW")).toBe("zh-TW");
     expect(normalizeManualLocale("ja-JP")).toBe("ja");
-    expect(getManualDocument("ja-JP", "user").title).toBe(readManual("user", "en").title);
+    expect(getManualDocument("ja-JP", "user").title).toBe(
+      readManual("user", "en").title
+    );
   });
 
   it("gives users only user guidance and administrators one composed superset in all seven locales", () => {
@@ -82,29 +97,42 @@ describe("role-aware Get Phame manuals", () => {
       const userManual = getManualDocument(locale, "user");
       const adminManual = getManualDocument(locale, "admin");
 
-      expect(userManual.title, `${locale} user title`).toBe(authoredUserManual.title);
-      expect(userManual.sections, `${locale} user sections`).toEqual(authoredUserManual.sections);
+      expect(userManual.title, `${locale} user title`).toBe(
+        authoredUserManual.title
+      );
+      expect(userManual.sections, `${locale} user sections`).toEqual(
+        authoredUserManual.sections
+      );
       expect(
-        userManual.sections.some(section =>
-          section.access === "admin" || section.topics.some(topic => topic.access === "admin"),
+        userManual.sections.some(
+          section =>
+            section.access === "admin" ||
+            section.topics.some(topic => topic.access === "admin")
         ),
-        `${locale} user manual leaked administrator guidance`,
+        `${locale} user manual leaked administrator guidance`
       ).toBe(false);
 
-      expect(adminManual.title, `${locale} admin title`).toBe(authoredAdminSupplement.title);
+      expect(adminManual.title, `${locale} admin title`).toBe(
+        authoredAdminSupplement.title
+      );
       expect(adminManual.sections, `${locale} admin superset`).toEqual([
         ...authoredUserManual.sections,
         ...authoredAdminSupplement.sections,
       ]);
-      expect(adminManual.sections.slice(0, authoredUserManual.sections.length)).toEqual(
-        authoredUserManual.sections,
-      );
-      expect(authoredAdminSupplement.sections.length, `${locale} admin section count`).toBeGreaterThan(0);
       expect(
-        authoredAdminSupplement.sections.every(section =>
-          section.access === "admin" && section.topics.every(topic => topic.access === "admin"),
+        adminManual.sections.slice(0, authoredUserManual.sections.length)
+      ).toEqual(authoredUserManual.sections);
+      expect(
+        authoredAdminSupplement.sections.length,
+        `${locale} admin section count`
+      ).toBeGreaterThan(0);
+      expect(
+        authoredAdminSupplement.sections.every(
+          section =>
+            section.access === "admin" &&
+            section.topics.every(topic => topic.access === "admin")
         ),
-        `${locale} admin supplement contains guidance without an administrator-only label`,
+        `${locale} admin supplement contains guidance without an administrator-only label`
       ).toBe(true);
     }
   });
@@ -119,13 +147,17 @@ describe("role-aware Get Phame manuals", () => {
 
     for (const locale of SUPPORTED_LOCALES) {
       const manual = readManual("user", locale);
-      expect(topicIds(manual), `${locale} topic structure`).toEqual(englishAllIds);
-      expect(topicIds(manual, "paid"), `${locale} paid-topic labels`).toEqual(englishPaidIds);
+      expect(topicIds(manual), `${locale} topic structure`).toEqual(
+        englishAllIds
+      );
+      expect(topicIds(manual, "paid"), `${locale} paid-topic labels`).toEqual(
+        englishPaidIds
+      );
       expect(
-        manual.sections.flatMap(section => section.topics).every(topic =>
-          topic.access === "all" || topic.access === "paid",
-        ),
-        `${locale} user manual contains an invalid access state`,
+        manual.sections
+          .flatMap(section => section.topics)
+          .every(topic => topic.access === "all" || topic.access === "paid"),
+        `${locale} user manual contains an invalid access state`
       ).toBe(true);
     }
   });
@@ -138,7 +170,9 @@ describe("role-aware Get Phame manuals", () => {
     expect(app.match(/<Route path="\/manual"/g)).toHaveLength(1);
     expect(app).not.toContain("/user-manual");
     expect(app).not.toContain("/admin-manual");
-    expect(app.indexOf("if (!user) {")).toBeLessThan(app.indexOf('<Route path="/manual"'));
+    expect(app.indexOf("if (!user) {")).toBeLessThan(
+      app.indexOf('<Route path="/manual"')
+    );
 
     for (const navigation of [appLayout, bottomNav]) {
       expect(navigation).toMatch(/user\?\.role === ["']admin["']/);
@@ -148,27 +182,31 @@ describe("role-aware Get Phame manuals", () => {
     }
 
     expect(appLayout).toMatch(
-      /\{ path: "\/settings"[^\n]*\n\s*\{ path: "\/manual", label: manualLabel/,
+      /\{\s*path:\s*"\/settings"[\s\S]*?\}\s*,\s*\{\s*path:\s*"\/manual",\s*label:\s*manualLabel/
     );
     expect(appLayout).toMatch(
-      /data-testid="sidebar-account-details"[\s\S]*?navigate\("\/settings"\)[\s\S]*?<\/DropdownMenuItem>\s*<DropdownMenuItem\s*data-testid="sidebar-manual-link"/,
+      /data-testid="sidebar-account-details"[\s\S]*?navigate\("\/settings"\)[\s\S]*?<\/DropdownMenuItem>\s*<DropdownMenuItem\s*data-testid="sidebar-manual-link"/
     );
     expect(bottomNav).toMatch(
-      /data-testid=["']mobile-account-details["'][\s\S]*?navigate\(["']\/settings["']\)[\s\S]*?<\/DropdownMenuItem>\s*<DropdownMenuItem\s*data-testid=["']mobile-manual-link["']/,
+      /data-testid=["']mobile-account-details["'][\s\S]*?navigate\(["']\/settings["']\)[\s\S]*?<\/DropdownMenuItem>\s*<DropdownMenuItem\s*data-testid=["']mobile-manual-link["']/
     );
   });
 
   it("keeps the Manual interface searchable, deep-linkable, responsive, and keyboard accessible", () => {
     const page = readProjectFile("../client/src/pages/Manual.tsx");
 
-    expect(page).toContain('const role: ManualRole = user?.role === "admin" ? "admin" : "user"');
-    expect(page).toContain("getManualDocument(i18n.resolvedLanguage ?? i18n.language, role)");
+    expect(page).toContain(
+      'const role: ManualRole = user?.role === "admin" ? "admin" : "user"'
+    );
+    expect(page).toContain(
+      "getManualDocument(i18n.resolvedLanguage ?? i18n.language, role)"
+    );
     expect(page).toContain('type="search"');
     expect(page).toContain('aria-live="polite"');
-    expect(page).toContain('href={`#manual-section-${section.id}`}');
-    expect(page).toContain('href={`#manual-topic-${topic.id}`}');
-    expect(page).toContain('id={`manual-section-${section.id}`}');
-    expect(page).toContain('id={`manual-topic-${topic.id}`}');
+    expect(page).toContain("href={`#manual-section-${section.id}`}");
+    expect(page).toContain("href={`#manual-topic-${topic.id}`}");
+    expect(page).toContain("id={`manual-section-${section.id}`}");
+    expect(page).toContain("id={`manual-topic-${topic.id}`}");
     expect(page).toContain("manual.badges.paid");
     expect(page).toContain("manual.badges.admin");
     expect(page).toContain("manual.badges.all");
@@ -184,15 +222,15 @@ describe("role-aware Get Phame manuals", () => {
 
   it("ships complete Manual UI labels in catalogs and runtime fallbacks for all seven locales", () => {
     const fallbackResources = readJson<Record<string, unknown>>(
-      "../client/src/lib/i18nCompleteFallbackResources.json",
+      "../client/src/lib/i18nCompleteFallbackResources.json"
     );
     const englishCatalog = readJson<Record<string, unknown>>(
-      "../client/public/locales/en/translation.json",
+      "../client/public/locales/en/translation.json"
     );
 
     for (const locale of SUPPORTED_LOCALES) {
       const catalog = readJson<Record<string, unknown>>(
-        `../client/public/locales/${locale}/translation.json`,
+        `../client/public/locales/${locale}/translation.json`
       );
       const fallback = fallbackResources[locale];
 
@@ -201,18 +239,23 @@ describe("role-aware Get Phame manuals", () => {
         const fallbackValue = getByPath(fallback, key);
         expect(
           typeof catalogValue === "string" && catalogValue.trim().length > 0,
-          `${locale} catalog is missing ${key}`,
+          `${locale} catalog is missing ${key}`
         ).toBe(true);
-        expect(fallbackValue, `${locale} runtime fallback is missing ${key}`).toBe(catalogValue);
+        expect(
+          fallbackValue,
+          `${locale} runtime fallback is missing ${key}`
+        ).toBe(catalogValue);
       }
 
       if (locale !== "en") {
-        expect(getByPath(catalog, "nav.userManual"), `${locale} User Manual label`).not.toBe(
-          getByPath(englishCatalog, "nav.userManual"),
-        );
-        expect(getByPath(catalog, "nav.adminManual"), `${locale} Admin Manual label`).not.toBe(
-          getByPath(englishCatalog, "nav.adminManual"),
-        );
+        expect(
+          getByPath(catalog, "nav.userManual"),
+          `${locale} User Manual label`
+        ).not.toBe(getByPath(englishCatalog, "nav.userManual"));
+        expect(
+          getByPath(catalog, "nav.adminManual"),
+          `${locale} Admin Manual label`
+        ).not.toBe(getByPath(englishCatalog, "nav.adminManual"));
       }
     }
   });
@@ -221,7 +264,7 @@ describe("role-aware Get Phame manuals", () => {
     const i18n = readProjectFile("../client/src/lib/i18n.ts");
     const serviceWorker = readProjectFile("../client/public/sw.js");
 
-    expect(i18n).toContain('/locales/{{lng}}/{{ns}}.json?v=phame53');
+    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame53");
     expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v24'");
     for (const locale of SUPPORTED_LOCALES) {
       expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);

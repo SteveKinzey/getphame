@@ -11,13 +11,14 @@ function collectStringPaths(value: unknown, prefix = ""): string[] {
   if (!value || typeof value !== "object" || Array.isArray(value)) return [];
 
   return Object.entries(value).flatMap(([key, child]) =>
-    collectStringPaths(child, prefix ? `${prefix}.${key}` : key),
+    collectStringPaths(child, prefix ? `${prefix}.${key}` : key)
   );
 }
 
 function getByPath(value: unknown, path: string): unknown {
   return path.split(".").reduce<unknown>((current, key) => {
-    if (!current || typeof current !== "object" || Array.isArray(current)) return undefined;
+    if (!current || typeof current !== "object" || Array.isArray(current))
+      return undefined;
     return (current as Record<string, unknown>)[key];
   }, value);
 }
@@ -32,9 +33,13 @@ describe("premium conversion UI contracts", () => {
     expect(app).toContain('<Route path="/upgrade" component={UpgradePage} />');
     expect(modal).toContain('data-testid="premium-upgrade-modal"');
     expect(modal).toContain("max-h-[calc(100dvh-1.5rem)]");
-    expect(modal).toContain('aria-label={t("premiumConversion.modal.closeLabel"');
-    expect(modal).toContain('aria-label={t("premiumConversion.modal.benefitsLabel"');
-    expect(modal).toContain('navigate(`/pricing?feature=${featureKey}`)');
+    expect(modal).toContain(
+      'aria-label={t("premiumConversion.modal.closeLabel"'
+    );
+    expect(modal).toContain(
+      'aria-label={t("premiumConversion.modal.benefitsLabel"'
+    );
+    expect(modal).toContain("navigate(`/pricing?feature=${featureKey}`)");
     expect(modal).toContain("closeUpgradeModal();");
     expect(modal).toContain("motion-reduce:animate-none");
   });
@@ -43,16 +48,24 @@ describe("premium conversion UI contracts", () => {
     const controller = read("../client/src/lib/upgradeModal.ts");
     const sendRequest = read("../client/src/pages/SendRequest.tsx");
     const settings = read("../client/src/pages/Settings.tsx");
-    const koalendar = read("../client/src/components/KoalendarSettingsCard.tsx");
-    const adaptive = read("../client/src/components/AdaptiveSendLimitStatus.tsx");
+    const koalendar = read(
+      "../client/src/components/KoalendarSettingsCard.tsx"
+    );
+    const adaptive = read(
+      "../client/src/components/AdaptiveSendLimitStatus.tsx"
+    );
 
     for (const key of ["send_limit", "koalendar", "bulk_sender", "plans"]) {
       expect(controller).toContain(`"${key}"`);
     }
     expect(controller).toContain("export type PremiumFeatureKey");
     expect(controller).toContain("normalizePremiumFeatureKey");
-    expect(controller).toContain("updatePwaInstallSnapshot({ upgradeVisible: true })");
-    expect(sendRequest.match(/openUpgradeModal\("send_limit"\)/g)?.length).toBeGreaterThanOrEqual(3);
+    expect(controller).toContain(
+      "updatePwaInstallSnapshot({ upgradeVisible: true })"
+    );
+    expect(
+      sendRequest.match(/openUpgradeModal\("send_limit"\)/g)?.length
+    ).toBeGreaterThanOrEqual(3);
     expect(settings).toContain('openUpgradeModal("bulk_sender")');
     expect(koalendar).toContain('openUpgradeModal("koalendar")');
     expect(adaptive).toContain('openUpgradeModal("bulk_sender")');
@@ -67,9 +80,13 @@ describe("premium conversion UI contracts", () => {
     expect(source).toContain("premiumConversion.features.${featureKey}");
     expect(source).toContain('t("comparisonTable.freeRequestAllowance"');
     expect(source).toContain("10 first, then 5 / rolling 30 days");
-    expect(source).toContain('document.getElementById("upgrade-plan-grid-heading")');
+    expect(source).toContain(
+      'document.getElementById("upgrade-plan-grid-heading")'
+    );
     expect(source).toContain('data-testid="upgrade-plan-grid"');
-    expect(source).toContain("<FreeVsPremiumOverview featureKey={pricingFeature} />");
+    expect(source).toContain(
+      "<FreeVsPremiumOverview featureKey={pricingFeature} />"
+    );
   });
 
   it("uses a single semantic marker with Free-only route indicators and visible locked-action labels", () => {
@@ -78,8 +95,12 @@ describe("premium conversion UI contracts", () => {
     const mobileNav = read("../client/src/components/BottomNav.tsx");
     const sendRequest = read("../client/src/pages/SendRequest.tsx");
     const settings = read("../client/src/pages/Settings.tsx");
-    const koalendar = read("../client/src/components/KoalendarSettingsCard.tsx");
-    const adaptive = read("../client/src/components/AdaptiveSendLimitStatus.tsx");
+    const koalendar = read(
+      "../client/src/components/KoalendarSettingsCard.tsx"
+    );
+    const adaptive = read(
+      "../client/src/components/AdaptiveSendLimitStatus.tsx"
+    );
 
     expect(marker).toContain('variant?: "status" | "locked" | "compact"');
     expect(marker).toContain('data-premium-marker="compact"');
@@ -90,39 +111,79 @@ describe("premium conversion UI contracts", () => {
 
     expect(desktopNav).toContain('path: "/developer"');
     expect(desktopNav).toContain('path: "/settings"');
-    expect(desktopNav).toContain("const showPremiumMarker = isFreePlan && containsPremiumFeatures");
-    expect(desktopNav).toContain('<ProBadge variant="compact" size="sm"');
-    expect(mobileNav).toContain("const showPremiumMarker = isFreePlan && containsPremiumFeatures");
-    expect(mobileNav).toContain('<ProBadge variant="compact" size="sm"');
+    expect(desktopNav).toContain(
+      "const showPremiumMarker = isFreePlan && containsPremiumFeatures"
+    );
+    expect(desktopNav).toMatch(/<ProBadge\s+variant="compact"\s+size="sm"/);
+    expect(mobileNav).toContain(
+      "const showPremiumMarker = isFreePlan && containsPremiumFeatures"
+    );
+    expect(mobileNav).toMatch(/<ProBadge\s+variant="compact"\s+size="sm"/);
     expect(mobileNav).toContain("premiumConversion.marker.contains");
 
-    expect(sendRequest.match(/<ProBadge variant="locked" size="sm" \/>/g)).toHaveLength(3);
-    expect(settings.match(/<ProBadge variant="locked" size="sm" \/>/g)?.length).toBeGreaterThanOrEqual(2);
-    expect(koalendar.match(/<ProBadge variant="locked" size="sm" \/>/g)?.length).toBeGreaterThanOrEqual(2);
-    expect(adaptive).toContain('<ProBadge variant="locked" size="sm" />');
+    expect(
+      sendRequest.match(/<ProBadge\s+variant="locked"\s+size="sm"\s*\/>/g)
+    ).toHaveLength(3);
+    expect(
+      settings.match(/<ProBadge\s+variant="locked"\s+size="sm"\s*\/>/g)?.length
+    ).toBeGreaterThanOrEqual(2);
+    expect(
+      koalendar.match(/<ProBadge\s+variant="locked"\s+size="sm"\s*\/>/g)?.length
+    ).toBeGreaterThanOrEqual(2);
+    expect(adaptive).toMatch(/<ProBadge\s+variant="locked"\s+size="sm"\s*\/>/);
   });
 
   it("keeps premium dialog, marker, and comparison copy complete in catalogs and runtime fallbacks", () => {
-    const english = JSON.parse(read("../client/public/locales/en/translation.json")) as Record<string, unknown>;
-    const fallbackResources = JSON.parse(read("../client/src/lib/i18nCompleteFallbackResources.json")) as Record<string, unknown>;
-    const premiumPaths = collectStringPaths(english.premiumConversion, "premiumConversion");
-    const comparisonKeys = ["freeRequestAllowance", "bulkSender", "koalendarImports", "unlimited"] as const;
+    const english = JSON.parse(
+      read("../client/public/locales/en/translation.json")
+    ) as Record<string, unknown>;
+    const fallbackResources = JSON.parse(
+      read("../client/src/lib/i18nCompleteFallbackResources.json")
+    ) as Record<string, unknown>;
+    const premiumPaths = collectStringPaths(
+      english.premiumConversion,
+      "premiumConversion"
+    );
+    const comparisonKeys = [
+      "freeRequestAllowance",
+      "bulkSender",
+      "koalendarImports",
+      "unlimited",
+    ] as const;
 
     expect(premiumPaths.length).toBeGreaterThanOrEqual(25);
     for (const locale of locales) {
-      const bundle = JSON.parse(read(`../client/public/locales/${locale}/translation.json`)) as Record<string, unknown>;
+      const bundle = JSON.parse(
+        read(`../client/public/locales/${locale}/translation.json`)
+      ) as Record<string, unknown>;
       for (const path of premiumPaths) {
         const value = getByPath(bundle, path);
-        expect(value, `${locale} is missing ${path}`).toEqual(expect.any(String));
-        expect((value as string).trim(), `${locale} has an empty ${path}`).not.toBe("");
-        expect(getByPath(fallbackResources[locale], path), `${locale} fallback differs at ${path}`).toBe(value);
+        expect(value, `${locale} is missing ${path}`).toEqual(
+          expect.any(String)
+        );
+        expect(
+          (value as string).trim(),
+          `${locale} has an empty ${path}`
+        ).not.toBe("");
+        expect(
+          getByPath(fallbackResources[locale], path),
+          `${locale} fallback differs at ${path}`
+        ).toBe(value);
       }
       for (const key of comparisonKeys) {
         const path = `comparisonTable.${key}`;
         const value = getByPath(bundle, path);
-        expect(value, `${locale} is missing ${path}`).toEqual(expect.any(String));
-        expect((value as string).trim(), `${locale} has an empty ${path}`).not.toBe("");
-        expect(getByPath(fallbackResources[locale], path), `${locale} fallback differs at ${path}`).toBe(value);
+        expect(value, `${locale} is missing ${path}`).toEqual(
+          expect.any(String)
+        );
+        expect(
+          (value as string).trim(),
+          `${locale} has an empty ${path}`
+        ).not.toBe("");
+        expect(
+          getByPath(fallbackResources[locale], path),
+          `${locale} fallback differs at ${path}`
+        ).toBe(value);
       }
     }
   });

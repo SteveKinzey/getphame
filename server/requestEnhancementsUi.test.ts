@@ -10,7 +10,7 @@ describe("request enhancement UI contracts", () => {
 
     expect(source).toContain('t("mainForm.applyAiTone"');
     expect(source).toContain('t("mainForm.unlockAiTone"');
-    expect(source).toContain('aria-label={hasPaidAiAccess');
+    expect(source).toContain("aria-label={hasPaidAiAccess");
     expect(source).toContain("adjustTone.isPending");
     expect(source).toContain('aria-live="polite"');
     expect(source).toContain("openUpgradeModal");
@@ -43,16 +43,37 @@ describe("request enhancement UI contracts", () => {
   });
 
   it("keeps chart export reachable, data-aware, and format-specific", () => {
-    const source = read("../client/src/components/dashboard/ActivityTrendCard.tsx");
+    const source = read(
+      "../client/src/components/dashboard/ActivityTrendCard.tsx"
+    );
 
+    expect(source).toContain('setRangeMode("custom")');
+    expect(source).toContain("resolveActivityTrendCustomRange");
+    expect(source).toContain("MAX_ACTIVITY_TREND_CUSTOM_DAYS");
+    expect(source).toContain('rangeMode === "custom"');
+    expect(source).toContain("? appliedCustomRange");
+    expect(source).toContain("setAppliedCustomRange(customRange.query)");
+    expect(source).toContain(
+      "!customRange.query || !isCustomRangeDirty || trendFetching"
+    );
+    expect(source).toContain('type="date"');
+    expect(source).toContain("max={today}");
     expect(source).toContain('exportTrend("csv")');
     expect(source).toContain('exportTrend("png")');
     expect(source).toContain('t("activityTrend.exportCsvAria"');
     expect(source).toContain('t("activityTrend.exportPngAria"');
-    expect(source).toContain("disabled={!hasTrendData || trendLoading}");
+    expect(source).toContain(
+      "disabled={!hasTrendData || trendLoading || trendFetching}"
+    );
     expect(source).toContain('chart.toBase64Image("image/png", 1)');
+    expect(source).toContain(
+      "buildActivityTrendExportFilename(dailyTrend, format)"
+    );
     expect(source).toContain("serializeActivityTrendCsv");
     expect(source).toContain('t("activityTrend.csvDownloaded"');
     expect(source).toContain('t("activityTrend.pngDownloaded"');
+    expect(source).toContain('t("activityTrend.activeRange"');
+    expect(source).toContain('t("activityTrend.emptyRange"');
+    expect(source).toContain('role="alert"');
   });
 });

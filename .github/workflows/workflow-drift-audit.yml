@@ -17,8 +17,14 @@ jobs:
     name: Audit GitHub Actions configuration
     runs-on: ubuntu-latest
     timeout-minutes: 8
+    outputs:
+      started-at-ms: ${{ steps.started.outputs.started-at-ms }}
 
     steps:
+      - name: Record audit start time
+        id: started
+        run: echo "started-at-ms=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
+
       - name: Check out repository
         uses: actions/checkout@v7
 
@@ -54,3 +60,47 @@ jobs:
         uses: docker://rhysd/actionlint:1.7.12
         with:
           args: -color
+
+  publish-result:
+    name: Publish drift-audit outcome
+    needs: audit
+    if: ${{ always() && needs.audit.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out the trusted publisher
+        uses: actions/checkout@v7
+
+      - name: Build privacy-minimized audit event
+        env:
+          AUDIT_RESULT: ${{ needs.audit.result }}
+          STARTED_AT_MS: ${{ needs.audit.outputs.started-at-ms }}
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const now = Date.now();
+          const startedAt = Number.parseInt(process.env.STARTED_AT_MS || "", 10);
+          const success = process.env.AUDIT_RESULT === "success";
+          const event = {
+            kind: "drift_audit",
+            result: success ? "success" : "failure",
+            eventAt: now,
+            ...(Number.isFinite(startedAt) ? { durationMs: Math.max(0, now - startedAt) } : {}),
+            ...(!success ? {
+              failureCode: process.env.AUDIT_RESULT === "cancelled"
+                ? "workflow_cancelled"
+                : "workflow_failed",
+              failureSummary: "The workflow drift audit did not complete successfully. Review the linked GitHub Actions run.",
+            } : {}),
+          };
+          fs.writeFileSync("/tmp/automation-event.json", JSON.stringify(event));
+          NODE
+
+      - name: Publish signed audit event
+        env:
+          AUTOMATION_HEALTH_ENDPOINT: https://getphame.app/api/automation/events
+          AUTOMATION_HEALTH_AUDIENCE: https://getphame.app/api/automation/events
+        run: scripts/publish-oidc-automation-event.sh /tmp/automation-event.json

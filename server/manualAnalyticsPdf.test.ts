@@ -22,7 +22,15 @@ import {
 } from "./manualSearchAnalytics";
 import { checkManualSearchEventRateLimit } from "./rateLimiter";
 
-const SUPPORTED_LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+const SUPPORTED_LOCALES = [
+  "en",
+  "es",
+  "fr",
+  "it",
+  "th",
+  "zh-CN",
+  "zh-TW",
+] as const;
 const NEW_MANUAL_KEYS = [
   "manual.insights.eyebrow",
   "manual.insights.title",
@@ -68,7 +76,10 @@ const NEW_MANUAL_KEYS = [
 ] as const;
 
 function readProjectFile(relativePath: string) {
-  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+  return readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    "utf8"
+  );
 }
 
 function readJson<T>(relativePath: string): T {
@@ -83,7 +94,9 @@ function getByPath(value: unknown, dottedPath: string): unknown {
 }
 
 function placeholders(value: string) {
-  return [...value.matchAll(/{{\s*([^},\s]+)[^}]*}}/g)].map(match => match[1]).sort();
+  return [...value.matchAll(/{{\s*([^},\s]+)[^}]*}}/g)]
+    .map(match => match[1])
+    .sort();
 }
 
 const PDF_LABELS: ManualPdfLabels = {
@@ -94,7 +107,11 @@ const PDF_LABELS: ManualPdfLabels = {
   generated: "Generated",
   lastUpdated: "Manual last updated",
   version: "Manual version",
-  access: { all: "Free & paid", paid: "Paid subscription only", admin: "Administrator only" },
+  access: {
+    all: "Free & paid",
+    paid: "Paid subscription only",
+    admin: "Administrator only",
+  },
   steps: "Steps",
   notes: "Important notes",
   featurePath: "Feature path",
@@ -135,25 +152,48 @@ afterEach(() => {
 
 describe("Manual zero-result analytics", () => {
   it("normalizes bounded terms and rejects terms outside the privacy contract", () => {
-    expect(normalizeManualSearchQuery("  FULLWIDTH： ＡＢＣ   Setup  ")).toBe("fullwidth: abc setup");
-    expect(validateManualSearchQuery("  Missing   Topic ")).toBe("missing topic");
-    expect(() => validateManualSearchQuery("x")).toThrow(`${MANUAL_SEARCH_MIN_LENGTH}–${MANUAL_SEARCH_MAX_LENGTH}`);
-    expect(() => validateManualSearchQuery("x".repeat(101))).toThrow(`${MANUAL_SEARCH_MIN_LENGTH}–${MANUAL_SEARCH_MAX_LENGTH}`);
+    expect(normalizeManualSearchQuery("  FULLWIDTH： ＡＢＣ   Setup  ")).toBe(
+      "fullwidth: abc setup"
+    );
+    expect(validateManualSearchQuery("  Missing   Topic ")).toBe(
+      "missing topic"
+    );
+    expect(() => validateManualSearchQuery("x")).toThrow(
+      `${MANUAL_SEARCH_MIN_LENGTH}–${MANUAL_SEARCH_MAX_LENGTH}`
+    );
+    expect(() => validateManualSearchQuery("x".repeat(101))).toThrow(
+      `${MANUAL_SEARCH_MIN_LENGTH}–${MANUAL_SEARCH_MAX_LENGTH}`
+    );
     expect(validateManualSearchQuery("x".repeat(100))).toHaveLength(100);
   });
 
   it("uses a non-reversible fingerprint and a daily account/role/locale dedupe key", () => {
     const now = new Date("2026-07-25T10:00:00.000Z");
-    const base = { userId: 17, query: " Missing   Topic ", manualRole: "user" as const, locale: "en" as const, now };
+    const base = {
+      userId: 17,
+      query: " Missing   Topic ",
+      manualRole: "user" as const,
+      locale: "en" as const,
+      now,
+    };
     const key = getManualSearchDedupeKey(base);
 
     expect(getManualSearchFingerprint(base.query)).toMatch(/^[a-f0-9]{64}$/);
     expect(getManualSearchFingerprint(base.query)).not.toContain("missing");
-    expect(key).toBe(getManualSearchDedupeKey({ ...base, query: "missing topic" }));
+    expect(key).toBe(
+      getManualSearchDedupeKey({ ...base, query: "missing topic" })
+    );
     expect(key).not.toBe(getManualSearchDedupeKey({ ...base, userId: 18 }));
-    expect(key).not.toBe(getManualSearchDedupeKey({ ...base, manualRole: "admin" }));
+    expect(key).not.toBe(
+      getManualSearchDedupeKey({ ...base, manualRole: "admin" })
+    );
     expect(key).not.toBe(getManualSearchDedupeKey({ ...base, locale: "fr" }));
-    expect(key).not.toBe(getManualSearchDedupeKey({ ...base, now: new Date("2026-07-26T10:00:00.000Z") }));
+    expect(key).not.toBe(
+      getManualSearchDedupeKey({
+        ...base,
+        now: new Date("2026-07-26T10:00:00.000Z"),
+      })
+    );
   });
 
   it("stores only the bounded event contract, uses duplicate-safe insertion, and performs opportunistic retention cleanup", async () => {
@@ -192,16 +232,35 @@ describe("Manual zero-result analytics", () => {
     expect(inserted[0]).not.toHaveProperty("referrer");
     expect(inserted[0]).not.toHaveProperty("userAgent");
     expect(inserted[0]).not.toHaveProperty("customer");
-    expect(onDuplicateKeyUpdate).toHaveBeenCalledWith({ set: { dedupeKey: inserted[0].dedupeKey } });
+    expect(onDuplicateKeyUpdate).toHaveBeenCalledWith({
+      set: { dedupeKey: inserted[0].dedupeKey },
+    });
     expect(database.delete).toHaveBeenCalledOnce();
     expect(where).toHaveBeenCalledOnce();
   });
 
   it("returns aggregate-only administrator insight data with deterministic numeric and date normalization", async () => {
     const resultSets = [
-      [{ totalSearches: "7", uniqueTerms: "3", latestAt: new Date("2026-07-24T08:00:00.000Z") }],
-      [{ manualRole: "user", count: "5" }, { manualRole: "admin", count: "2" }],
-      [{ query: "custom domain", manualRole: "user", locale: "en", count: "4", lastSearchedAt: new Date("2026-07-24T08:00:00.000Z") }],
+      [
+        {
+          totalSearches: "7",
+          uniqueTerms: "3",
+          latestAt: new Date("2026-07-24T08:00:00.000Z"),
+        },
+      ],
+      [
+        { manualRole: "user", count: "5" },
+        { manualRole: "admin", count: "2" },
+      ],
+      [
+        {
+          query: "custom domain",
+          manualRole: "user",
+          locale: "en",
+          count: "4",
+          lastSearchedAt: new Date("2026-07-24T08:00:00.000Z"),
+        },
+      ],
     ];
     let selectIndex = 0;
     const makeBuilder = (rows: unknown[]) => {
@@ -211,10 +270,15 @@ describe("Manual zero-result analytics", () => {
       builder.groupBy = vi.fn(() => builder);
       builder.orderBy = vi.fn(() => builder);
       builder.limit = vi.fn(() => Promise.resolve(rows));
-      builder.then = (resolve: (value: unknown[]) => unknown, reject: (reason: unknown) => unknown) => Promise.resolve(rows).then(resolve, reject);
+      builder.then = (
+        resolve: (value: unknown[]) => unknown,
+        reject: (reason: unknown) => unknown
+      ) => Promise.resolve(rows).then(resolve, reject);
       return builder;
     };
-    const database = { select: vi.fn(() => makeBuilder(resultSets[selectIndex++] ?? [])) };
+    const database = {
+      select: vi.fn(() => makeBuilder(resultSets[selectIndex++] ?? [])),
+    };
 
     const result = await getManualSearchInsights({
       db: database as never,
@@ -231,13 +295,15 @@ describe("Manual zero-result analytics", () => {
       latestAt: "2026-07-24T08:00:00.000Z",
       roleCounts: { user: 5, admin: 2 },
     });
-    expect(result.items).toEqual([{
-      query: "custom domain",
-      manualRole: "user",
-      locale: "en",
-      count: 4,
-      lastSearchedAt: "2026-07-24T08:00:00.000Z",
-    }]);
+    expect(result.items).toEqual([
+      {
+        query: "custom domain",
+        manualRole: "user",
+        locale: "en",
+        count: 4,
+        lastSearchedAt: "2026-07-24T08:00:00.000Z",
+      },
+    ]);
     expect(result.items[0]).not.toHaveProperty("userId");
     expect(result.items[0]).not.toHaveProperty("queryFingerprint");
     expect(result.items[0]).not.toHaveProperty("dedupeKey");
@@ -252,7 +318,7 @@ describe("Manual zero-result analytics", () => {
       expect(() => checkManualSearchEventRateLimit(userId)).not.toThrow();
     }
     expect(() => checkManualSearchEventRateLimit(userId)).toThrowError(
-      expect.objectContaining({ code: "TOO_MANY_REQUESTS" }),
+      expect.objectContaining({ code: "TOO_MANY_REQUESTS" })
     );
 
     vi.advanceTimersByTime(60 * 60 * 1000 + 1);
@@ -264,7 +330,9 @@ describe("Manual zero-result analytics", () => {
     const page = readProjectFile("../client/src/pages/Manual.tsx");
     const schema = readProjectFile("../drizzle/schema.ts");
 
-    expect(routers).toContain("trackManualZeroResultSearch: protectedProcedure");
+    expect(routers).toContain(
+      "trackManualZeroResultSearch: protectedProcedure"
+    );
     expect(routers).toContain("resultCount: z.literal(0)");
     expect(routers).toContain("locale: z.enum(MANUAL_SEARCH_LOCALES)");
     expect(routers).toContain("manualRole: z.enum(MANUAL_SEARCH_ROLES)");
@@ -273,37 +341,59 @@ describe("Manual zero-result analytics", () => {
     expect(routers).toContain("manualSearchInsights: adminProcedure");
     expect(routers).toContain("max(50)");
 
-    expect(page).toContain("normalizedQuery.length < 2 || normalizedQuery.length > 100 || resultCount !== 0");
+    expect(page).toContain(
+      "normalizedQuery.length < 2 || normalizedQuery.length > 100 || resultCount !== 0"
+    );
     expect(page).toContain("trackedSearchesRef.current.has(trackingKey)");
     expect(page).toContain("window.setTimeout");
     expect(page).toContain("}, 800)");
     expect(page).toContain("resultCount: 0");
-    expect(page).toContain('role === "admin" ? <ManualSearchInsightsPanel /> : null');
+    expect(page).toContain(
+      'role === "admin" ? <ManualSearchInsightsPanel /> : null'
+    );
 
-    expect(schema).toContain('pgTable("manual_search_events"');
-    expect(schema).toContain('uniqueIndex("manual_search_events_dedupe_unique")');
-    expect(schema).toContain('index("manual_search_events_role_locale_created_idx")');
-    expect(schema).toContain('index("manual_search_events_query_created_idx")');
+    expect(schema).toMatch(/pgTable\(\s*"manual_search_events"/);
+    expect(schema).toMatch(
+      /uniqueIndex\(\s*"manual_search_events_dedupe_unique"\s*\)/
+    );
+    expect(schema).toMatch(
+      /index\(\s*"manual_search_events_role_locale_created_idx"\s*\)/
+    );
+    expect(schema).toMatch(
+      /index\(\s*"manual_search_events_query_created_idx"\s*\)/
+    );
   });
 });
 
 describe("role-safe Manual PDF export", () => {
   it("builds deterministic sanitized filenames for full and section exports", () => {
-    expect(buildManualPdfFilename({ role: "user", locale: "en-US" })).toBe("get-phame-user-manual-en-us.pdf");
-    expect(buildManualPdfFilename({ role: "admin", locale: "zh-CN", sectionId: "Security & Recovery" })).toBe(
-      "get-phame-admin-manual-zh-cn-security-recovery.pdf",
+    expect(buildManualPdfFilename({ role: "user", locale: "en-US" })).toBe(
+      "get-phame-user-manual-en-us.pdf"
     );
+    expect(
+      buildManualPdfFilename({
+        role: "admin",
+        locale: "zh-CN",
+        sectionId: "Security & Recovery",
+      })
+    ).toBe("get-phame-admin-manual-zh-cn-security-recovery.pdf");
   });
 
   it("selects only sections already present in the authorized role document", () => {
     const userManual = getManualDocument("en", "user");
     const adminManual = getManualDocument("en", "admin");
-    const administratorSection = adminManual.sections.find(section => section.access === "admin");
+    const administratorSection = adminManual.sections.find(
+      section => section.access === "admin"
+    );
     expect(administratorSection).toBeDefined();
 
     expect(getManualPdfSections(userManual)).toBe(userManual.sections);
-    expect(() => getManualPdfSections(userManual, administratorSection!.id)).toThrow("unavailable");
-    expect(getManualPdfSections(adminManual, administratorSection!.id)).toEqual([administratorSection]);
+    expect(() =>
+      getManualPdfSections(userManual, administratorSection!.id)
+    ).toThrow("unavailable");
+    expect(getManualPdfSections(adminManual, administratorSection!.id)).toEqual(
+      [administratorSection]
+    );
   });
 
   it("creates a real PDF blob for the authorized localized document", async () => {
@@ -314,7 +404,9 @@ describe("role-safe Manual PDF export", () => {
       generatedAt: new Date("2026-07-25T12:00:00.000Z"),
       labels: PDF_LABELS,
     });
-    const signature = new TextDecoder().decode(new Uint8Array(await blob.arrayBuffer()).slice(0, 5));
+    const signature = new TextDecoder().decode(
+      new Uint8Array(await blob.arrayBuffer()).slice(0, 5)
+    );
 
     expect(blob.type).toBe("application/pdf");
     expect(blob.size).toBeGreaterThan(1_000);
@@ -323,18 +415,36 @@ describe("role-safe Manual PDF export", () => {
 
   it("downloads with an explicit filename and revokes the temporary object URL", () => {
     const blob = new Blob(["pdf"], { type: "application/pdf" });
-    const anchor = { href: "", download: "", rel: "", click: vi.fn(), remove: vi.fn() };
+    const anchor = {
+      href: "",
+      download: "",
+      rel: "",
+      click: vi.fn(),
+      remove: vi.fn(),
+    };
     const appendChild = vi.fn();
     const createObjectURL = vi.fn(() => "blob:manual-pdf");
     const revokeObjectURL = vi.fn();
 
-    vi.stubGlobal("document", { createElement: vi.fn(() => anchor), body: { appendChild } });
+    vi.stubGlobal("document", {
+      createElement: vi.fn(() => anchor),
+      body: { appendChild },
+    });
     vi.stubGlobal("URL", { createObjectURL, revokeObjectURL });
-    vi.stubGlobal("window", { setTimeout: (callback: () => void) => { callback(); return 1; } });
+    vi.stubGlobal("window", {
+      setTimeout: (callback: () => void) => {
+        callback();
+        return 1;
+      },
+    });
 
     downloadManualPdfBlob(blob, "get-phame-user-manual-en.pdf");
 
-    expect(anchor).toMatchObject({ href: "blob:manual-pdf", download: "get-phame-user-manual-en.pdf", rel: "noopener" });
+    expect(anchor).toMatchObject({
+      href: "blob:manual-pdf",
+      download: "get-phame-user-manual-en.pdf",
+      rel: "noopener",
+    });
     expect(appendChild).toHaveBeenCalledWith(anchor);
     expect(anchor.click).toHaveBeenCalledOnce();
     expect(anchor.remove).toHaveBeenCalledOnce();
@@ -346,7 +456,9 @@ describe("role-safe Manual PDF export", () => {
     const exporter = readProjectFile("../client/src/lib/manualPdfExport.ts");
 
     expect(page).toContain("createManualPdfBlob(manual");
-    expect(page).toContain("buildManualPdfFilename({ role, locale: manualLocale");
+    expect(page).toContain(
+      "buildManualPdfFilename({ role, locale: manualLocale"
+    );
     expect(page).toContain('aria-describedby="manual-export-help"');
     expect(page).toContain("manual.export.fullButton");
     expect(page).toContain("manual.export.sectionButton");
@@ -361,31 +473,53 @@ describe("role-safe Manual PDF export", () => {
 
 describe("Manual analytics and PDF localization", () => {
   it("ships every new key with placeholder parity in all seven catalogs and runtime fallbacks", () => {
-    const fallbackResources = readJson<Record<string, unknown>>("../client/src/lib/i18nCompleteFallbackResources.json");
-    const english = readJson<Record<string, unknown>>("../client/public/locales/en/translation.json");
+    const fallbackResources = readJson<Record<string, unknown>>(
+      "../client/src/lib/i18nCompleteFallbackResources.json"
+    );
+    const english = readJson<Record<string, unknown>>(
+      "../client/public/locales/en/translation.json"
+    );
 
     for (const locale of SUPPORTED_LOCALES) {
-      const catalog = readJson<Record<string, unknown>>(`../client/public/locales/${locale}/translation.json`);
+      const catalog = readJson<Record<string, unknown>>(
+        `../client/public/locales/${locale}/translation.json`
+      );
       const fallback = fallbackResources[locale];
 
       for (const key of NEW_MANUAL_KEYS) {
         const value = getByPath(catalog, key);
         const fallbackValue = getByPath(fallback, key);
         const englishValue = getByPath(english, key);
-        expect(typeof value === "string" && value.trim().length > 0, `${locale} catalog missing ${key}`).toBe(true);
-        expect(fallbackValue, `${locale} fallback mismatch for ${key}`).toBe(value);
-        expect(placeholders(String(value)), `${locale} placeholders differ for ${key}`).toEqual(placeholders(String(englishValue)));
+        expect(
+          typeof value === "string" && value.trim().length > 0,
+          `${locale} catalog missing ${key}`
+        ).toBe(true);
+        expect(fallbackValue, `${locale} fallback mismatch for ${key}`).toBe(
+          value
+        );
+        expect(
+          placeholders(String(value)),
+          `${locale} placeholders differ for ${key}`
+        ).toEqual(placeholders(String(englishValue)));
       }
 
       if (locale !== "en") {
-        expect(getByPath(catalog, "manual.insights.title")).not.toBe(getByPath(english, "manual.insights.title"));
-        expect(getByPath(catalog, "manual.export.fullButton")).not.toBe(getByPath(english, "manual.export.fullButton"));
+        expect(getByPath(catalog, "manual.insights.title")).not.toBe(
+          getByPath(english, "manual.insights.title")
+        );
+        expect(getByPath(catalog, "manual.export.fullButton")).not.toBe(
+          getByPath(english, "manual.export.fullButton")
+        );
       }
     }
   });
 
   it("advances both locale and PWA caches for the analytics and PDF release", () => {
-    expect(readProjectFile("../client/src/lib/i18n.ts")).toContain('/locales/{{lng}}/{{ns}}.json?v=phame53');
-    expect(readProjectFile("../client/public/sw.js")).toContain("const CACHE_NAME = 'getphame-v24'");
+    expect(readProjectFile("../client/src/lib/i18n.ts")).toContain(
+      "/locales/{{lng}}/{{ns}}.json?v=phame53"
+    );
+    expect(readProjectFile("../client/public/sw.js")).toContain(
+      "const CACHE_NAME = 'getphame-v24'"
+    );
   });
 });

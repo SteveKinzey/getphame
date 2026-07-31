@@ -1,0 +1,57 @@
+name: Dependabot merge observability
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: dependabot-merge-observability-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  publish-merge:
+    name: Publish merged Actions update
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      startsWith(github.event.pull_request.head.ref, 'dependabot/github_actions/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check out the trusted publisher
+        uses: actions/checkout@v7
+      - name: Build privacy-minimized merge event
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+          PR_MERGED_AT: ${{ github.event.pull_request.merged_at }}
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const pullRequestNumber = Number.parseInt(process.env.PR_NUMBER || "", 10);
+          const pullRequestCreatedAt = Date.parse(process.env.PR_CREATED_AT || "");
+          const pullRequestMergedAt = Date.parse(process.env.PR_MERGED_AT || "");
+          if (!Number.isInteger(pullRequestNumber) || !Number.isFinite(pullRequestCreatedAt) || !Number.isFinite(pullRequestMergedAt)) {
+            throw new Error("Dependabot merge timestamps are unavailable.");
+          }
+          fs.writeFileSync("/tmp/automation-event.json", JSON.stringify({
+            kind: "dependabot_merge",
+            result: "success",
+            eventAt: Date.now(),
+            pullRequestNumber,
+            pullRequestCreatedAt,
+            pullRequestMergedAt,
+          }));
+          NODE
+      - name: Publish signed merge event
+        env:
+          AUTOMATION_HEALTH_ENDPOINT: https://getphame.app/api/automation/events
+          AUTOMATION_HEALTH_AUDIENCE: https://getphame.app/api/automation/events
+        run: scripts/publish-oidc-automation-event.sh /tmp/automation-event.json
