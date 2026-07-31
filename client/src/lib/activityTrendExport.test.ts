@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  ACTIVITY_TREND_EXPORT_SERIES,
   buildActivityTrendExportFilename,
   hasActivityTrendData,
   serializeActivityTrendCsv,
@@ -45,6 +46,30 @@ describe("activityTrendExport", () => {
     );
   });
 
+  it("serializes only administrator-selected series in canonical order", () => {
+    expect(serializeActivityTrendCsv(trend, ["clicks", "opens"])).toBe(
+      "Date,Opens,Clicks\n2026-07-01,1,0\n2026-07-03,2,1"
+    );
+    expect(serializeActivityTrendCsv(trend, ["sends"])).toBe(
+      "Date,Sent\n2026-07-01,2\n2026-07-03,4"
+    );
+  });
+
+  it("adds a deterministic series suffix only for subset exports", () => {
+    expect(
+      buildActivityTrendExportFilename(trend, "csv", ["clicks", "opens"])
+    ).toBe(
+      "get-phame-activity-trend-2026-07-01-to-2026-07-03-opens-clicks.csv"
+    );
+    expect(
+      buildActivityTrendExportFilename(
+        trend,
+        "png",
+        ACTIVITY_TREND_EXPORT_SERIES
+      )
+    ).toBe("get-phame-activity-trend-2026-07-01-to-2026-07-03.png");
+  });
+
   it("does not offer exports for empty or all-zero chart data", () => {
     expect(buildActivityTrendExportFilename([], "csv")).toBeNull();
     expect(hasActivityTrendData([])).toBe(false);
@@ -53,5 +78,14 @@ describe("activityTrendExport", () => {
         { date: "2026-07-01", sends: 0, opens: 0, clicks: 0 },
       ])
     ).toBe(false);
+  });
+
+  it("evaluates export availability against selected series only", () => {
+    const mixedTrend = [{ date: "2026-07-01", sends: 0, opens: 3, clicks: 0 }];
+
+    expect(hasActivityTrendData(mixedTrend, ["sends"])).toBe(false);
+    expect(hasActivityTrendData(mixedTrend, ["opens"])).toBe(true);
+    expect(hasActivityTrendData(mixedTrend, [])).toBe(false);
+    expect(buildActivityTrendExportFilename(mixedTrend, "csv", [])).toBeNull();
   });
 });

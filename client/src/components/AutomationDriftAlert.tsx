@@ -1,12 +1,19 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { AlertTriangle, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  BellRing,
+  CheckCircle2,
+  Clock3,
+  Loader2,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 
 export default function AutomationDriftAlert() {
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [, navigate] = useLocation();
   const utils = trpc.useUtils();
   const isAdmin = user?.role === "admin";
@@ -24,24 +31,40 @@ export default function AutomationDriftAlert() {
   if (!isAdmin || !alert.data?.active || !alert.data.event) return null;
 
   const event = alert.data.event;
+  const eventTime = new Intl.DateTimeFormat(i18n.language, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(event.eventAt));
+
   return (
     <section
       data-testid="automation-drift-alert"
+      data-state="critical"
       role="alert"
       aria-live="assertive"
-      className="border-b border-red-300 bg-red-50 px-4 py-3 text-red-950"
+      aria-atomic="true"
+      className="border-y-4 border-red-700 bg-[linear-gradient(100deg,#fff1f2_0%,#fffbeb_55%,#fff1f2_100%)] px-4 py-4 text-red-950 shadow-[inset_0_-1px_0_rgba(185,28,28,0.15)]"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
-          <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-red-700 text-white">
-            <AlertTriangle size={20} aria-hidden="true" />
+          <span className="relative mt-0.5 flex size-12 shrink-0 items-center justify-center rounded-full bg-red-800 text-white ring-4 ring-red-200">
+            <AlertTriangle size={24} aria-hidden="true" />
+            <span className="absolute -right-1 -top-1 size-3 rounded-full bg-amber-400 ring-2 ring-white motion-safe:animate-pulse" />
           </span>
           <div className="min-w-0">
-            <p className="font-black">
-              {t("automationHealth.alert.title", {
-                defaultValue: "Workflow drift detected",
-              })}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-900 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.12em] text-white">
+                <BellRing size={13} aria-hidden="true" />
+                {t("automationHealth.alert.badge", {
+                  defaultValue: "Action required",
+                })}
+              </span>
+              <p className="text-base font-black">
+                {t("automationHealth.alert.title", {
+                  defaultValue: "Workflow drift detected",
+                })}
+              </p>
+            </div>
             <p className="mt-0.5 text-sm font-semibold leading-5 text-red-900">
               {event.failureSummary ||
                 t("automationHealth.alert.body", {
@@ -49,6 +72,21 @@ export default function AutomationDriftAlert() {
                     "The latest workflow drift audit failed. Review the run before changing repository automation.",
                 })}
             </p>
+            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-bold text-red-950">
+              <span>
+                {t("automationHealth.alert.workflow", {
+                  workflow: event.workflow,
+                  defaultValue: "Workflow: {{workflow}}",
+                })}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock3 size={13} aria-hidden="true" />
+                {t("automationHealth.alert.observedAt", {
+                  time: eventTime,
+                  defaultValue: "Observed {{time}}",
+                })}
+              </span>
+            </div>
             <p className="mt-1 text-xs font-medium text-red-800">
               {t("automationHealth.alert.recovery", {
                 defaultValue:

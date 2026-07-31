@@ -1,7 +1,9 @@
 import { useMemo, useRef, useState } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import {
   CalendarRange,
   Download,
+  Filter,
   ImageDown,
   Loader2,
   TrendingUp,
@@ -22,9 +24,11 @@ import { Line } from "react-chartjs-2";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import {
+  ACTIVITY_TREND_EXPORT_SERIES,
   buildActivityTrendExportFilename,
   hasActivityTrendData,
   serializeActivityTrendCsv,
+  type ActivityTrendExportSeries,
 } from "@/lib/activityTrendExport";
 import {
   createDefaultActivityTrendRange,
@@ -68,6 +72,11 @@ export default function ActivityTrendCard({
   velocity,
 }: ActivityTrendCardProps) {
   const { t, i18n } = useTranslation("translation");
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const [selectedExportSeries, setSelectedExportSeries] = useState<
+    ActivityTrendExportSeries[]
+  >(() => [...ACTIVITY_TREND_EXPORT_SERIES]);
   const [initialCustomDates] = useState(() =>
     createDefaultActivityTrendRange()
   );
@@ -101,6 +110,10 @@ export default function ActivityTrendCard({
     isFetching: trendFetching,
   } = trpc.tracking.dailyTrend.useQuery(queryInput);
   const hasTrendData = hasActivityTrendData(dailyTrend);
+  const hasSelectedExportData = hasActivityTrendData(
+    dailyTrend,
+    selectedExportSeries
+  );
   const activeDays =
     rangeMode === "custom" ? (customRange.days ?? 30) : rangeMode;
   const isCustomRangeDirty =
@@ -110,6 +123,17 @@ export default function ActivityTrendCard({
     sent: t("activityTrend.sent", { defaultValue: "Sent" }),
     opens: t("activityTrend.opens", { defaultValue: "Opens" }),
     clicks: t("activityTrend.clicks", { defaultValue: "Clicks" }),
+  };
+  const exportSeriesLabels: Record<ActivityTrendExportSeries, string> = {
+    sends: t("activityTrend.exportTypeSent", {
+      defaultValue: "Sent requests",
+    }),
+    opens: t("activityTrend.exportTypeOpens", {
+      defaultValue: "Email opens",
+    }),
+    clicks: t("activityTrend.exportTypeClicks", {
+      defaultValue: "Review-link clicks",
+    }),
   };
   const dateFormatter = useMemo(
     () =>
@@ -164,23 +188,54 @@ export default function ActivityTrendCard({
     );
   };
 
+  const toggleExportSeries = (series: ActivityTrendExportSeries) => {
+    setSelectedExportSeries(current => {
+      if (current.includes(series)) {
+        if (current.length === 1) {
+          toast.error(
+            t("activityTrend.exportSelectAtLeastOne", {
+              defaultValue: "Keep at least one automation type selected.",
+            })
+          );
+          return current;
+        }
+        return current.filter(item => item !== series);
+      }
+
+      return ACTIVITY_TREND_EXPORT_SERIES.filter(
+        item => item === series || current.includes(item)
+      );
+    });
+  };
+
   const exportTrend = (format: "csv" | "png") => {
-    if (!dailyTrend || !hasTrendData) {
+    if (!dailyTrend || !hasSelectedExportData) {
       toast.error(
-        t("activityTrend.exportUnavailable", {
-          defaultValue: "No chart activity is available to export yet.",
+        t("activityTrend.exportSelectionEmpty", {
+          defaultValue:
+            "The selected automation types have no activity in this date range.",
         })
       );
       return;
     }
-    const filename = buildActivityTrendExportFilename(dailyTrend, format);
+    const filename = buildActivityTrendExportFilename(
+      dailyTrend,
+      format,
+      selectedExportSeries
+    );
     if (!filename) return;
 
     if (format === "csv") {
       downloadBlob(
-        new Blob(["\uFEFF", serializeActivityTrendCsv(dailyTrend)], {
-          type: "text/csv;charset=utf-8",
-        }),
+        new Blob(
+          [
+            "\uFEFF",
+            serializeActivityTrendCsv(dailyTrend, selectedExportSeries),
+          ],
+          {
+            type: "text/csv;charset=utf-8",
+          }
+        ),
         filename
       );
     } else {
@@ -193,7 +248,25 @@ export default function ActivityTrendCard({
         );
         return;
       }
-      downloadUrl(chart.toBase64Image("image/png", 1), filename);
+      const previousVisibility = chart.data.datasets.map((_, index) =>
+        chart.isDatasetVisible(index)
+      );
+
+      try {
+        ACTIVITY_TREND_EXPORT_SERIES.forEach((series, index) => {
+          chart.setDatasetVisibility(
+            index,
+            selectedExportSeries.includes(series)
+          );
+        });
+        chart.update("none");
+        downloadUrl(chart.toBase64Image("image/png", 1), filename);
+      } finally {
+        previousVisibility.forEach((visible, index) => {
+          chart.setDatasetVisibility(index, visible);
+        });
+        chart.update("none");
+      }
     }
 
     toast.success(
@@ -264,7 +337,7 @@ export default function ActivityTrendCard({
           <button
             type="button"
             onClick={() => exportTrend("csv")}
-            disabled={!hasTrendData || trendLoading || trendFetching}
+            disabled={!hasSelectedExportData || trendLoading || trendFetching}
             aria-label={t("activityTrend.exportCsvAria", {
               defaultValue: "Export filtered activity trend data as CSV",
             })}
@@ -283,7 +356,7 @@ export default function ActivityTrendCard({
           <button
             type="button"
             onClick={() => exportTrend("png")}
-            disabled={!hasTrendData || trendLoading || trendFetching}
+            disabled={!hasSelectedExportData || trendLoading || trendFetching}
             aria-label={t("activityTrend.exportPngAria", {
               defaultValue: "Export filtered activity trend chart as PNG",
             })}
@@ -354,6 +427,68 @@ export default function ActivityTrendCard({
             </p>
           )}
         </div>
+      ) : null}
+
+      {isAdmin ? (
+        <fieldset
+          className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3"
+          aria-describedby="activity-trend-export-filter-help activity-trend-export-filter-status"
+        >
+          <legend className="flex items-center gap-1.5 px-1 text-xs font-black rr-text-navy">
+            <Filter size={13} aria-hidden="true" />
+            {t("activityTrend.exportFilterLabel", {
+              defaultValue: "Export automation types",
+            })}
+          </legend>
+          <p
+            id="activity-trend-export-filter-help"
+            className="mt-1 text-xs rr-text-navy-muted"
+          >
+            {t("activityTrend.exportFilterHelp", {
+              defaultValue:
+                "Select which activity series to include. The dashboard chart stays unchanged.",
+            })}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {ACTIVITY_TREND_EXPORT_SERIES.map(series => {
+              const checked = selectedExportSeries.includes(series);
+              return (
+                <label
+                  key={series}
+                  className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-white px-3 text-xs font-bold rr-text-navy focus-within:ring-2 focus-within:ring-amber-500"
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleExportSeries(series)}
+                    className="h-4 w-4 accent-amber-500"
+                  />
+                  {exportSeriesLabels[series]}
+                </label>
+              );
+            })}
+          </div>
+          <div
+            id="activity-trend-export-filter-status"
+            className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold"
+            aria-live="polite"
+          >
+            <span className="rr-text-navy-muted">
+              {t("activityTrend.exportSelection", {
+                count: selectedExportSeries.length,
+                defaultValue: "{{count}} of 3 selected",
+              })}
+            </span>
+            {!trendLoading && !trendFetching && !hasSelectedExportData ? (
+              <span className="text-red-700">
+                {t("activityTrend.exportSelectionEmpty", {
+                  defaultValue:
+                    "The selected automation types have no activity in this date range.",
+                })}
+              </span>
+            ) : null}
+          </div>
+        </fieldset>
       ) : null}
 
       {trendLoading || trendFetching ? (

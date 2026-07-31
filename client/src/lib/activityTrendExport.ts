@@ -1,35 +1,87 @@
-export type ActivityTrendExportPoint = {
+export interface ActivityTrendExportPoint {
   date: string;
   sends: number;
   opens: number;
   clicks: number;
-};
+}
 
 export type ActivityTrendExportFormat = "csv" | "png";
+export const ACTIVITY_TREND_EXPORT_SERIES = [
+  "sends",
+  "opens",
+  "clicks",
+] as const;
+export type ActivityTrendExportSeries =
+  (typeof ACTIVITY_TREND_EXPORT_SERIES)[number];
 
-function sortByDate(points: ActivityTrendExportPoint[]): ActivityTrendExportPoint[] {
+const SERIES_HEADER: Record<ActivityTrendExportSeries, string> = {
+  sends: "Sent",
+  opens: "Opens",
+  clicks: "Clicks",
+};
+
+const SERIES_FILENAME: Record<ActivityTrendExportSeries, string> = {
+  sends: "sent",
+  opens: "opens",
+  clicks: "clicks",
+};
+
+function sortByDate(
+  points: ActivityTrendExportPoint[]
+): ActivityTrendExportPoint[] {
   return [...points].sort((left, right) => left.date.localeCompare(right.date));
 }
 
-export function hasActivityTrendData(points: ActivityTrendExportPoint[] | undefined): points is ActivityTrendExportPoint[] {
-  return Boolean(points?.some((point) => point.sends > 0 || point.opens > 0 || point.clicks > 0));
+function normalizeSeries(
+  selectedSeries: readonly ActivityTrendExportSeries[]
+): ActivityTrendExportSeries[] {
+  return ACTIVITY_TREND_EXPORT_SERIES.filter(series =>
+    selectedSeries.includes(series)
+  );
+}
+
+export function hasActivityTrendData(
+  points: ActivityTrendExportPoint[] | undefined,
+  selectedSeries: readonly ActivityTrendExportSeries[] = ACTIVITY_TREND_EXPORT_SERIES
+): points is ActivityTrendExportPoint[] {
+  const normalizedSeries = normalizeSeries(selectedSeries);
+  return Boolean(
+    normalizedSeries.length > 0 &&
+      points?.some(point => normalizedSeries.some(series => point[series] > 0))
+  );
 }
 
 export function buildActivityTrendExportFilename(
   points: ActivityTrendExportPoint[],
   format: ActivityTrendExportFormat,
+  selectedSeries: readonly ActivityTrendExportSeries[] = ACTIVITY_TREND_EXPORT_SERIES
 ): string | null {
-  if (points.length === 0) return null;
+  const normalizedSeries = normalizeSeries(selectedSeries);
+  if (points.length === 0 || normalizedSeries.length === 0) return null;
   const sorted = sortByDate(points);
   const start = sorted[0]?.date;
   const end = sorted.at(-1)?.date;
   if (!start || !end) return null;
-  return `get-phame-activity-trend-${start}-to-${end}.${format}`;
+
+  const seriesSuffix =
+    normalizedSeries.length === ACTIVITY_TREND_EXPORT_SERIES.length
+      ? ""
+      : `-${normalizedSeries.map(series => SERIES_FILENAME[series]).join("-")}`;
+
+  return `get-phame-activity-trend-${start}-to-${end}${seriesSuffix}.${format}`;
 }
 
-export function serializeActivityTrendCsv(points: ActivityTrendExportPoint[]): string {
-  const lines = sortByDate(points).map((point) =>
-    [point.date, point.sends, point.opens, point.clicks].join(","),
+export function serializeActivityTrendCsv(
+  points: ActivityTrendExportPoint[],
+  selectedSeries: readonly ActivityTrendExportSeries[] = ACTIVITY_TREND_EXPORT_SERIES
+): string {
+  const normalizedSeries = normalizeSeries(selectedSeries);
+  const header = [
+    "Date",
+    ...normalizedSeries.map(series => SERIES_HEADER[series]),
+  ].join(",");
+  const lines = sortByDate(points).map(point =>
+    [point.date, ...normalizedSeries.map(series => point[series])].join(",")
   );
-  return ["Date,Sent,Opens,Clicks", ...lines].join("\n");
+  return [header, ...lines].join("\n");
 }

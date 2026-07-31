@@ -60,16 +60,26 @@
     "alert": {
       "acknowledge": "确认",
       "acknowledged": "已确认",
+      "badge": "需要处理",
       "body": "最近的工作流漂移审计未通过。在更改仓库自动化之前请检查该运行记录。",
+      "observedAt": "检测时间：{{time}}",
       "recovery": "在收到已验证的成功审计之前，此警告将持续存在。",
       "title": "检测到工作流漂移",
-      "viewDetails": "查看详情"
+      "viewDetails": "查看详情",
+      "workflow": "工作流：{{workflow}}"
     },
     "charts": {
+      "dailyTotal": "当日总数",
       "driftDescription": "按日已验证的成功与失败",
+      "driftSummary": "{{audits}} 次审计 · {{failures}} 次失败 · 通过率 {{rate}}",
       "driftTitle": "漂移审计结果",
+      "interactionHint": "将指针悬停在数据点上，或聚焦图表并使用方向键，以查看每日数值。",
       "mergesDescription": "按日成功合并的依赖项更新",
-      "mergesTitle": "Dependabot 合并"
+      "mergeSummary": "{{count}} 次合并 · 平均合并时间 {{duration}}",
+      "mergesTitle": "Dependabot 合并",
+      "passRate": "通过率",
+      "rangeShare": "占所选区间的比例",
+      "tooltipDate": "{{date}}"
     },
     "filters": {
       "allEvents": "全部事件",
@@ -127,6 +137,16 @@
   "activityTrend": {
     "exportCsvAria": "将活动趋势数据导出为 CSV",
     "exportPngAria": "将活动趋势图导出为 PNG",
+    "exportFilterLabel": "要导出的自动化类型",
+    "exportFilterHelp": "选择要包含的活动系列。仪表板图表不会改变。",
+    "exportTypeSent": "已发送请求",
+    "exportTypeOpens": "邮件打开次数",
+    "exportTypeClicks": "评价链接点击次数",
+    "exportSelection_one": "已选择 3 项中的 {{count}} 项",
+    "exportSelection_other": "已选择 3 项中的 {{count}} 项",
+    "exportSelection": "已选择 3 项中的 {{count}} 项",
+    "exportSelectAtLeastOne": "请至少保留一种自动化类型。",
+    "exportSelectionEmpty": "所选自动化类型在此日期范围内没有活动。",
     "exportUnavailable": "目前没有可导出的图表活动数据。",
     "exported": "活动趋势已导出。",
     "csvDownloaded": "活动趋势 CSV 已下载。",
