@@ -216,6 +216,9 @@ describe("Automation Health administrator UI contracts", () => {
     );
     expect(presets).toContain("activityTrendExportPresets.delete.useMutation");
     expect(presets).toContain("activityTrendExportPresets.reorder.useMutation");
+    expect(presets).toContain("const EMPTY_PRESETS: Preset[] = []");
+    expect(presets).toContain("data = EMPTY_PRESETS");
+    expect(presets).not.toContain("data = []");
     expect(presets).toContain("draggable={!busy}");
     expect(presets).toContain('event.key === "Enter"');
     expect(presets).toContain('aria-live="polite"');

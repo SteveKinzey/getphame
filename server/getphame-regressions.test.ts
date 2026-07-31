@@ -370,8 +370,8 @@ describe("Get Phame regression contracts", () => {
     expect(languageOptions).not.toContain('flag: "🇬🇧"');
     expect(languageOptions).toContain('{ code: "it"');
     expect(flyout).toContain("LANGUAGE_OPTIONS.map");
-    expect(i18n).toContain(
-      'export { detectBrowserLang, SUPPORTED_LANGS, type SupportedLang } from "./languageDetection";'
+    expect(i18n).toMatch(
+      /export\s*\{\s*detectBrowserLang,\s*SUPPORTED_LANGS,\s*type SupportedLang,?\s*\}\s*from "\.\/languageDetection";/
     );
     expect(preservedItalian).toContain('"account"');
   });

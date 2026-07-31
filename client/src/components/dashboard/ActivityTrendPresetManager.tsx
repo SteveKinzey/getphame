@@ -33,6 +33,8 @@ type Preset = {
   includeClicks: boolean;
 };
 
+const EMPTY_PRESETS: Preset[] = [];
+
 function getSeries(preset: Preset): ActivityTrendExportSeries[] {
   return [
     preset.includeSends ? "sends" : null,
@@ -66,7 +68,7 @@ export function ActivityTrendPresetManager({
 }) {
   const { t } = useTranslation("translation");
   const utils = trpc.useUtils();
-  const { data = [], isLoading } =
+  const { data = EMPTY_PRESETS, isLoading } =
     trpc.activityTrendExportPresets.list.useQuery();
   const [presets, setPresets] = useState<Preset[]>([]);
   const [name, setName] = useState("");

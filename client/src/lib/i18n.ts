@@ -15,10 +15,14 @@ import {
 // thousands of localized literal leaves; parsing it at runtime keeps the
 // compiler from materializing that deep literal type graph on every full check.
 const generatedFallbackResources = JSON.parse(
-  generatedFallbackResourcesJson,
+  generatedFallbackResourcesJson
 ) as Record<string, ResourceRecord>;
 
-export { detectBrowserLang, SUPPORTED_LANGS, type SupportedLang } from "./languageDetection";
+export {
+  detectBrowserLang,
+  SUPPORTED_LANGS,
+  type SupportedLang,
+} from "./languageDetection";
 
 const STORAGE_KEY = "rr-lang";
 
@@ -106,12 +110,14 @@ export function setLanguage(lang: SupportedLang): void {
   }
   // Pre-load both i18n and the selected static-copy bundle, then switch. This
   // prevents a mixed-language frame during a user-initiated language change.
-  void Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)]).then(() => {
-    i18n.changeLanguage(lang);
-  }).catch(() => {
-    // Fallback: try switching anyway
-    i18n.changeLanguage(lang);
-  });
+  void Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)])
+    .then(() => {
+      i18n.changeLanguage(lang);
+    })
+    .catch(() => {
+      // Fallback: try switching anyway
+      i18n.changeLanguage(lang);
+    });
 }
 
 /**
@@ -147,7 +153,12 @@ const savedLang = getSavedLang();
 const browserLang = detectBrowserLang();
 const queryLang = getLangFromQuery();
 
-const initialLang = resolveInitialLanguage({ queryLang, userChosen, savedLang, browserLang });
+const initialLang = resolveInitialLanguage({
+  queryLang,
+  userChosen,
+  savedLang,
+  browserLang,
+});
 const shouldPersistDetectedLanguage = !queryLang && !(userChosen && savedLang);
 if (shouldPersistDetectedLanguage) saveLang(initialLang);
 
@@ -157,7 +168,9 @@ if (shouldPersistDetectedLanguage) saveLang(initialLang);
 // and never overwrite a maintained locale entry.
 function installGeneratedFallbacks(language: string): void {
   if (!SUPPORTED_LANGS.includes(language as SupportedLang)) return;
-  const generatedBundle = generatedFallbackResources[language as SupportedLang] as ResourceRecord;
+  const generatedBundle = generatedFallbackResources[
+    language as SupportedLang
+  ] as ResourceRecord;
   const directKeyBundle = directKeyFallbackResources[language] ?? {};
   const bundle = mergeLocaleFallback(generatedBundle, directKeyBundle);
   // Legacy components use a mixture of implicit, landing, and cancellation
@@ -165,7 +178,9 @@ function installGeneratedFallbacks(language: string): void {
   // every `t("key")` lookup stays localized even when an old catalog has a
   // scalar at a path now used as a nested object.
   for (const namespace of ["translation", "landing", "cancellation"]) {
-    const maintained = i18n.getResourceBundle(language, namespace) as ResourceRecord | undefined;
+    const maintained = i18n.getResourceBundle(language, namespace) as
+      | ResourceRecord
+      | undefined;
     const completedBundle = mergeLocaleFallback(bundle, maintained);
     i18n.addResourceBundle(language, namespace, completedBundle, true, true);
   }
@@ -175,7 +190,7 @@ function installGeneratedFallbacks(language: string): void {
 // namespace after the first synchronous fallback install. Re-merge the
 // generated safety net after each locale load so missing maintained keys never
 // regress to raw IDs such as `mainForm.pageTitle` in authenticated workflows.
-i18n.on("loaded", (loaded) => {
+i18n.on("loaded", loaded => {
   Object.keys(loaded).forEach(installGeneratedFallbacks);
 });
 

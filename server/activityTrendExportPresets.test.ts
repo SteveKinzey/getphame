@@ -112,7 +112,11 @@ describe("Activity Trend export preset persistence", () => {
     expect(source).toContain("sameName.id !== input.id");
     expect(source).toContain("db.transaction");
     expect(source).toContain("sortOrder: index");
-    expect(migration).toContain("CREATE TABLE `activity_trend_export_presets`");
+    expect(migration).toContain(
+      "CREATE TABLE IF NOT EXISTS `activity_trend_export_presets`"
+    );
+    expect(migration).toContain("WHEN ''days30'' THEN ''30''");
+    expect(migration).toContain("CHANGE COLUMN `include_sent` `include_sends`");
     expect(migration).toContain("activity_trend_presets_owner_name_unique");
     expect(migration).toContain("activity_trend_presets_owner_sort_idx");
     expect(migration).not.toContain("DROP TABLE");
