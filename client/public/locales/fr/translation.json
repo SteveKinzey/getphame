@@ -515,7 +515,11 @@
     "tonePreviewTitle": "Vérifiez l’e-mail ajusté par l’IA",
     "tonePreviewDescription": "Votre brouillon actuel ne changera pas avant que vous choisissiez Appliquer le ton ajusté.",
     "keepCurrentDraft": "Conserver le brouillon actuel",
-    "applyAdjustedTone": "Appliquer le ton ajusté"
+    "applyAdjustedTone": "Appliquer le ton ajusté",
+    "tonePreviewComparisonTitle": "Comparer les modifications",
+    "tonePreviewOriginalDraft": "Brouillon d’origine",
+    "tonePreviewAdjustedDraft": "Brouillon ajusté par l’IA",
+    "tonePreviewDiffLegend": "Le texte supprimé est mis en évidence en rouge. Le texte ajouté est mis en évidence en vert."
   },
   "page": {
     "title": "Paramètres",

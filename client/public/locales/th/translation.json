@@ -404,7 +404,11 @@
     "tonePreviewTitle": "ตรวจสอบอีเมลที่ AI ปรับแล้ว",
     "tonePreviewDescription": "ฉบับร่างปัจจุบันของคุณจะไม่เปลี่ยนจนกว่าคุณจะเลือกใช้โทนที่ปรับแล้ว",
     "keepCurrentDraft": "เก็บฉบับร่างปัจจุบัน",
-    "applyAdjustedTone": "ใช้โทนที่ปรับแล้ว"
+    "applyAdjustedTone": "ใช้โทนที่ปรับแล้ว",
+    "tonePreviewComparisonTitle": "เปรียบเทียบการเปลี่ยนแปลง",
+    "tonePreviewOriginalDraft": "ร่างต้นฉบับ",
+    "tonePreviewAdjustedDraft": "ร่างที่ AI ปรับแล้ว",
+    "tonePreviewDiffLegend": "ข้อความที่ลบจะแสดงเป็นสีแดง ข้อความที่เพิ่มจะแสดงเป็นสีเขียว"
   },
   "page": {
     "title": "การตั้งค่า",

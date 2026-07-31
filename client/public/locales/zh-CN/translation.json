@@ -413,7 +413,11 @@
     "tonePreviewTitle": "查看 AI 调整后的邮件",
     "tonePreviewDescription": "在您选择应用调整后的语气之前，当前草稿不会更改。",
     "keepCurrentDraft": "保留当前草稿",
-    "applyAdjustedTone": "应用调整后的语气"
+    "applyAdjustedTone": "应用调整后的语气",
+    "tonePreviewComparisonTitle": "比较更改",
+    "tonePreviewOriginalDraft": "原始草稿",
+    "tonePreviewAdjustedDraft": "AI 调整后的草稿",
+    "tonePreviewDiffLegend": "删除的文本以红色突出显示。新增的文本以绿色突出显示。"
   },
   "page": {
     "title": "设置",

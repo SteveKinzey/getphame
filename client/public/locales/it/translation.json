@@ -1700,7 +1700,11 @@
     "tonePreviewTitle": "Rivedi l’e-mail adattata dall’IA",
     "tonePreviewDescription": "La bozza attuale non cambierà finché non scegli Applica il tono modificato.",
     "keepCurrentDraft": "Mantieni la bozza attuale",
-    "applyAdjustedTone": "Applica il tono modificato"
+    "applyAdjustedTone": "Applica il tono modificato",
+    "tonePreviewComparisonTitle": "Confronta le modifiche",
+    "tonePreviewOriginalDraft": "Bozza originale",
+    "tonePreviewAdjustedDraft": "Bozza modificata dall’IA",
+    "tonePreviewDiffLegend": "Il testo rimosso è evidenziato in rosso. Il testo aggiunto è evidenziato in verde."
   },
   "page": {
     "title": "Impostazioni",

@@ -893,7 +893,11 @@
       "tonePreviewTitle": "Review the AI-adjusted email",
       "tonePreviewDescription": "Your current draft will not change until you choose Apply adjusted tone.",
       "keepCurrentDraft": "Keep current draft",
-      "applyAdjustedTone": "Apply adjusted tone"
+      "applyAdjustedTone": "Apply adjusted tone",
+      "tonePreviewComparisonTitle": "Compare the changes",
+      "tonePreviewOriginalDraft": "Original draft",
+      "tonePreviewAdjustedDraft": "AI-adjusted draft",
+      "tonePreviewDiffLegend": "Removed text is highlighted in red. Added text is highlighted in green."
     },
     "pwaInstallBanner": {
       "dismiss": "Dismiss install banner",
@@ -2390,7 +2394,11 @@
       "tonePreviewTitle": "Revisa el correo ajustado por IA",
       "tonePreviewDescription": "Tu borrador actual no cambiará hasta que elijas Aplicar tono ajustado.",
       "keepCurrentDraft": "Conservar el borrador actual",
-      "applyAdjustedTone": "Aplicar tono ajustado"
+      "applyAdjustedTone": "Aplicar tono ajustado",
+      "tonePreviewComparisonTitle": "Compara los cambios",
+      "tonePreviewOriginalDraft": "Borrador original",
+      "tonePreviewAdjustedDraft": "Borrador ajustado por IA",
+      "tonePreviewDiffLegend": "El texto eliminado se resalta en rojo. El texto añadido se resalta en verde."
     },
     "pwaInstallBanner": {
       "dismiss": "Descartar banner de instalación",
@@ -4073,7 +4081,11 @@
       "tonePreviewTitle": "Vérifiez l’e-mail ajusté par l’IA",
       "tonePreviewDescription": "Votre brouillon actuel ne changera pas avant que vous choisissiez Appliquer le ton ajusté.",
       "keepCurrentDraft": "Conserver le brouillon actuel",
-      "applyAdjustedTone": "Appliquer le ton ajusté"
+      "applyAdjustedTone": "Appliquer le ton ajusté",
+      "tonePreviewComparisonTitle": "Comparer les modifications",
+      "tonePreviewOriginalDraft": "Brouillon d’origine",
+      "tonePreviewAdjustedDraft": "Brouillon ajusté par l’IA",
+      "tonePreviewDiffLegend": "Le texte supprimé est mis en évidence en rouge. Le texte ajouté est mis en évidence en vert."
     },
     "pwaInstallBanner": {
       "dismiss": "Fermer la bannière d'installation",
@@ -5750,7 +5762,11 @@
       "tonePreviewTitle": "Rivedi l’e-mail adattata dall’IA",
       "tonePreviewDescription": "La bozza attuale non cambierà finché non scegli Applica il tono modificato.",
       "keepCurrentDraft": "Mantieni la bozza attuale",
-      "applyAdjustedTone": "Applica il tono modificato"
+      "applyAdjustedTone": "Applica il tono modificato",
+      "tonePreviewComparisonTitle": "Confronta le modifiche",
+      "tonePreviewOriginalDraft": "Bozza originale",
+      "tonePreviewAdjustedDraft": "Bozza modificata dall’IA",
+      "tonePreviewDiffLegend": "Il testo rimosso è evidenziato in rosso. Il testo aggiunto è evidenziato in verde."
     },
     "pwaInstallBanner": {
       "dismiss": "Chiudi banner di installazione",
@@ -7282,7 +7298,11 @@
       "tonePreviewTitle": "ตรวจสอบอีเมลที่ AI ปรับแล้ว",
       "tonePreviewDescription": "ฉบับร่างปัจจุบันของคุณจะไม่เปลี่ยนจนกว่าคุณจะเลือกใช้โทนที่ปรับแล้ว",
       "keepCurrentDraft": "เก็บฉบับร่างปัจจุบัน",
-      "applyAdjustedTone": "ใช้โทนที่ปรับแล้ว"
+      "applyAdjustedTone": "ใช้โทนที่ปรับแล้ว",
+      "tonePreviewComparisonTitle": "เปรียบเทียบการเปลี่ยนแปลง",
+      "tonePreviewOriginalDraft": "ร่างต้นฉบับ",
+      "tonePreviewAdjustedDraft": "ร่างที่ AI ปรับแล้ว",
+      "tonePreviewDiffLegend": "ข้อความที่ลบจะแสดงเป็นสีแดง ข้อความที่เพิ่มจะแสดงเป็นสีเขียว"
     },
     "pwaInstallBanner": {
       "dismiss": "ปิดแบนเนอร์ติดตั้ง",
@@ -8811,7 +8831,11 @@
       "tonePreviewTitle": "查看 AI 调整后的邮件",
       "tonePreviewDescription": "在您选择应用调整后的语气之前，当前草稿不会更改。",
       "keepCurrentDraft": "保留当前草稿",
-      "applyAdjustedTone": "应用调整后的语气"
+      "applyAdjustedTone": "应用调整后的语气",
+      "tonePreviewComparisonTitle": "比较更改",
+      "tonePreviewOriginalDraft": "原始草稿",
+      "tonePreviewAdjustedDraft": "AI 调整后的草稿",
+      "tonePreviewDiffLegend": "删除的文本以红色突出显示。新增的文本以绿色突出显示。"
     },
     "pwaInstallBanner": {
       "dismiss": "关闭安装横幅",
@@ -10333,7 +10357,11 @@
       "tonePreviewTitle": "查看 AI 調整後的電子郵件",
       "tonePreviewDescription": "在您選擇套用調整後的語氣之前，目前草稿不會變更。",
       "keepCurrentDraft": "保留目前草稿",
-      "applyAdjustedTone": "套用調整後的語氣"
+      "applyAdjustedTone": "套用調整後的語氣",
+      "tonePreviewComparisonTitle": "比較變更",
+      "tonePreviewOriginalDraft": "原始草稿",
+      "tonePreviewAdjustedDraft": "AI 調整後的草稿",
+      "tonePreviewDiffLegend": "刪除的文字會以紅色醒目顯示，新增的文字會以綠色醒目顯示。"
     },
     "pwaInstallBanner": {
       "dismiss": "關閉安裝橫幅",
