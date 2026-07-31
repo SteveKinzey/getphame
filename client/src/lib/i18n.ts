@@ -193,7 +193,7 @@ export const i18nReady = i18n
     defaultNS: "translation",
     fallbackNS: "landing",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame50",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame51",
     },
     interpolation: {
       escapeValue: false,

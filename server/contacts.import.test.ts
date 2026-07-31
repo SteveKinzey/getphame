@@ -45,6 +45,10 @@ describe("importContacts", () => {
             hasMoreRows: false,
           },
         ],
+        reportIssues: [
+          { reason: "duplicate_email", rowNumber: 2 },
+          { reason: "duplicate_email", rowNumber: 4 },
+        ],
       },
     });
     expect(db.values).toHaveBeenCalledWith([

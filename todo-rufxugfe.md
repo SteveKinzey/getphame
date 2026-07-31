@@ -17,4 +17,15 @@
 - [x] Perform and document evidence-based desktop and mobile visual QA of the new AI, CSV, and chart-export controls.
 - [x] Persist route-specific visual QA findings for the Send Request, Import Clients, and Dashboard routes after review.
 - [x] Add inspectable UI regression assertions for the AI tone-adjustment control, CSV diagnostics panel, and chart export buttons.
-- [ ] Save a validated release checkpoint, synchronize the validated tree to GitHub through a release branch and pull request, merge it to main, and verify the remote main tree.
+- [x] Save a validated release checkpoint, synchronize the validated tree to GitHub through a release branch and pull request, merge it to main, and verify the remote main tree.
+- [x] Package and validate a reusable Get Phame release-and-GitHub synchronization skill using the skill-creator workflow.
+- [x] Add an accessible AI tone-preview modal that requires explicit user approval before replacing the email draft.
+- [x] Add a privacy-safe failed-row CSV report download control to the import diagnostics summary.
+- [x] Add distinct localized toast confirmations for Activity Trend CSV and PNG export completion.
+- [x] Update all seven locale catalogs and UI regression coverage for the new controls.
+- [ ] Run focused tests, the full Vitest suite, TypeScript validation, a production build, responsive QA, checkpoint release, and GitHub synchronization.
+- [x] Update every failed-row summary initializer and empty return path to satisfy the new privacy-safe report contract.
+- [x] Update existing import-contract coverage for the failed-row report payload and re-run the affected suite.
+- [x] Add CSV and PNG export-completion translations to all locale catalogs and confirm their fallback resources load correctly.
+- [x] Synchronize every locale/cache regression assertion with the phame51 i18n cache-buster.
+- [x] Re-run the affected locale, settings, landing, manual, magic-link, developer-source, and localization-quality test suites.

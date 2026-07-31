@@ -14,6 +14,11 @@ describe("request enhancement UI contracts", () => {
     expect(source).toContain("adjustTone.isPending");
     expect(source).toContain('aria-live="polite"');
     expect(source).toContain("openUpgradeModal");
+    expect(source).toContain("tonePreviewDraft");
+    expect(source).toContain('data-testid="ai-tone-preview-dialog"');
+    expect(source).toContain("handleApplyTonePreview");
+    expect(source).toContain('data-testid="ai-tone-preview-apply"');
+    expect(source).toContain('t("mainForm.keepCurrentDraft"');
   });
 
   it("keeps CSV diagnostics privacy-safe and available at both preview and completion stages", () => {
@@ -25,6 +30,9 @@ describe("request enhancement UI contracts", () => {
     expect(source).toContain('t("csvDiagnostics.preImportTitle"');
     expect(source).toContain('t("csvDiagnostics.importResultTitle"');
     expect(source).toContain("Only row numbers are shown here");
+    expect(source).toContain("serializeContactImportErrorReport");
+    expect(source).toContain('data-testid="csv-error-report-download"');
+    expect(source).toContain('t("csvDiagnostics.downloadReport"');
   });
 
   it("keeps chart export reachable, data-aware, and format-specific", () => {
@@ -37,5 +45,7 @@ describe("request enhancement UI contracts", () => {
     expect(source).toContain("disabled={!hasTrendData || trendLoading}");
     expect(source).toContain('chart.toBase64Image("image/png", 1)');
     expect(source).toContain("serializeActivityTrendCsv");
+    expect(source).toContain('t("activityTrend.csvDownloaded"');
+    expect(source).toContain('t("activityTrend.pngDownloaded"');
   });
 });

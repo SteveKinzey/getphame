@@ -3,7 +3,9 @@
     "exportCsvAria": "将活动趋势数据导出为 CSV",
     "exportPngAria": "将活动趋势图导出为 PNG",
     "exportUnavailable": "目前没有可导出的图表活动数据。",
-    "exported": "活动趋势已导出。"
+    "exported": "活动趋势已导出。",
+    "csvDownloaded": "活动趋势 CSV 已下载。",
+    "pngDownloaded": "活动趋势 PNG 已下载。"
   },
   "csvDiagnostics": {
     "preImportTitle": "导入前请修正这些行",
@@ -16,7 +18,11 @@
     "rows": "CSV 行：{{rows}}",
     "moreRows": "以及更多",
     "privacyNote": "此处仅显示行号；客户详情仍保留在您的 CSV 文件中。",
-    "noValidRows": "目前没有可导入的有效联系人。请修正列出的行，然后重新上传文件。"
+    "noValidRows": "目前没有可导入的有效联系人。请修正列出的行，然后重新上传文件。",
+    "downloadReport": "下载失败行报告",
+    "reportRowNumber": "CSV 行",
+    "reportReason": "原因",
+    "reportUnavailableRow": "不可用"
   },
   "common": {
     "gotIt": "知道了",
@@ -403,7 +409,11 @@
     "unlockAiTone": "解锁 AI 语气调整",
     "aiToneUnavailable": "AI 无法调整此草稿。请重试或手动编辑。",
     "aiToneUpgrade": "AI 语气调整功能适用于 Get Phame Pro。",
-    "unlock": "解锁"
+    "unlock": "解锁",
+    "tonePreviewTitle": "查看 AI 调整后的邮件",
+    "tonePreviewDescription": "在您选择应用调整后的语气之前，当前草稿不会更改。",
+    "keepCurrentDraft": "保留当前草稿",
+    "applyAdjustedTone": "应用调整后的语气"
   },
   "page": {
     "title": "设置",
