@@ -54,6 +54,7 @@ import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
 import { registerTranscriptFontRoutes } from "../transcriptFontRoutes";
 import { registerStaticCopyRoutes } from "../staticCopyRoutes";
 import { registerAutomationHealthRoutes } from "../automationHealthRoutes";
+import { registerHumanVerificationRoute } from "../signupRisk";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -508,6 +509,7 @@ async function startServer() {
   // OAuth callback under /api/oauth/callback
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+  registerHumanVerificationRoute(app);
   registerGoogleAuthRoutes(app);
   registerEmailAuthRoutes(app);
   registerAppleAuthRoutes(app);

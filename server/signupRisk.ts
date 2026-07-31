@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import type { Express, Request, Response } from "express";
 import { desc, eq } from "drizzle-orm";
 import { getDb } from "./db";
 import { signupRiskEvents } from "./signupRiskSchema";
@@ -48,6 +49,19 @@ export async function verifyTurnstileHuman(token: unknown, remoteIp?: string) {
     const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body, signal: AbortSignal.timeout(5_000) });
     return response.ok && (await response.json() as { success?: boolean }).success === true;
   } catch { return false; }
+}
+
+/** Exchanges a successful browser challenge for a short-lived signed assertion. */
+export function registerHumanVerificationRoute(app: Express) {
+  app.post("/api/auth/human-verification", async (req: Request, res: Response) => {
+    const { token, email } = (req.body ?? {}) as { token?: unknown; email?: unknown };
+    if (email !== undefined && (typeof email !== "string" || email.trim().length < 3 || email.length > 320)) {
+      return res.status(400).json({ error: "A valid email address is required." });
+    }
+    const humanVerified = await verifyTurnstileHuman(token, typeof req.ip === "string" ? req.ip : undefined);
+    if (!humanVerified) return res.status(403).json({ error: "Human verification could not be completed. Please try again." });
+    return res.status(200).json({ proof: createSignedHumanProof(typeof email === "string" ? email : "provider-oauth") });
+  });
 }
 
 export async function recordSignupRiskEvent(input: { userId: number; subject: string; provider: SignupProvider; outcome: SignupRiskOutcome; reasonCode: string; humanVerified: boolean; now?: number }) {
