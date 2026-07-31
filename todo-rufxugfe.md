@@ -48,6 +48,7 @@
 - [x] Route first-account administrative welcome notices only through the managed platform no-reply sender, never a connected user mailbox.
 - [ ] Require signed, short-lived human verification only when a web magic-link, Google, or Apple flow would create a genuinely new account.
 - [x] Add and register the signed human-proof exchange endpoint with subject-bound integrity, expiry, tamper, and malformed-token coverage.
+- [x] Gate magic-link new-account issuance and creation on a subject-bound signed human proof while retaining returning-account access and safe verified outcome recording.
 - [ ] Preserve existing-account sign-in and provider-verified canonical identity linking while recording only privacy-safe signup-risk outcomes.
 - [ ] Add direct regression coverage for proof integrity, administrator-only risk review access, user-owned review outreach, and platform administrative email delivery.
 - [ ] Complete focused tests, full suite, type check, production build, desktop/mobile review, final checkpoint, production checks, and protected-main GitHub synchronization.

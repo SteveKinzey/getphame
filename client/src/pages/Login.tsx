@@ -21,6 +21,7 @@ import {
 } from "@/lib/authFeedback";
 import PasskeySignIn from "@/components/security/PasskeySignIn";
 import MagicLinkForm from "@/components/auth/MagicLinkForm";
+import HumanVerification from "@/components/auth/HumanVerification";
 import { AlertTriangle } from "lucide-react";
 import { isPasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
 
@@ -125,6 +126,7 @@ export default function Login() {
   const [googleStatus, setGoogleStatus] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [magicLinkRecovery, setMagicLinkRecovery] = useState<MagicLinkRecoveryKind>(null);
+  const [humanVerificationToken, setHumanVerificationToken] = useState<string | null>(null);
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
@@ -283,7 +285,12 @@ export default function Login() {
                 <span>{formError}</span>
               </div>
             )}
-            <MagicLinkForm idPrefix="login" autoFocus />
+            <HumanVerification onTokenChange={setHumanVerificationToken} />
+            <MagicLinkForm
+              idPrefix="login"
+              autoFocus
+              humanVerificationToken={humanVerificationToken}
+            />
             {shouldShowSocialSection && (
               <>
                 <OrDivider label={t("login.or", { defaultValue: "or" })} />
