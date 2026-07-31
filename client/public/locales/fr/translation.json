@@ -200,7 +200,7 @@
       "listLabel": "Préréglages d’export enregistrés",
       "rangeCustom": "Du {{start}} au {{end}}",
       "rangeDays": "{{count}} jours",
-      "seriesCount": "{{count}} types",
+      "seriesCount": "{{count}} catégories",
       "apply": "Appliquer",
       "applied": "Préréglage d’export appliqué.",
       "invalid": "Ce préréglage contient une période non valide.",
