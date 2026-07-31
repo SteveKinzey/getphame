@@ -3,7 +3,9 @@
     "exportCsvAria": "Exportar datos de actividad como CSV",
     "exportPngAria": "Exportar gráfico de actividad como PNG",
     "exportUnavailable": "Aún no hay actividad de gráfico disponible para exportar.",
-    "exported": "Tendencia de actividad exportada."
+    "exported": "Tendencia de actividad exportada.",
+    "csvDownloaded": "Se descargó el CSV de Tendencia de actividad.",
+    "pngDownloaded": "Se descargó el PNG de Tendencia de actividad."
   },
   "csvDiagnostics": {
     "preImportTitle": "Corrige estas filas antes de importar",
@@ -16,7 +18,11 @@
     "rows": "Filas del CSV: {{rows}}",
     "moreRows": "y más",
     "privacyNote": "Aquí solo se muestran números de fila; los datos de los clientes permanecen en tu archivo CSV.",
-    "noValidRows": "Aún no hay contactos válidos para importar. Corrige las filas indicadas y vuelve a cargar el archivo."
+    "noValidRows": "Aún no hay contactos válidos para importar. Corrige las filas indicadas y vuelve a cargar el archivo.",
+    "downloadReport": "Descargar informe de filas fallidas",
+    "reportRowNumber": "Fila del CSV",
+    "reportReason": "Motivo",
+    "reportUnavailableRow": "No disponible"
   },
   "seo": {
     "title": "Get Phame — Solicitudes de reseña personales por correo",
@@ -505,7 +511,11 @@
     "templateLabel": "Plantilla",
     "previewButton": "Vista previa",
     "saveContact": "Guardar contacto",
-    "noReviewPlatform": "Sin plataforma configurada"
+    "noReviewPlatform": "Sin plataforma configurada",
+    "tonePreviewTitle": "Revisa el correo ajustado por IA",
+    "tonePreviewDescription": "Tu borrador actual no cambiará hasta que elijas Aplicar tono ajustado.",
+    "keepCurrentDraft": "Conservar el borrador actual",
+    "applyAdjustedTone": "Aplicar tono ajustado"
   },
   "page": {
     "title": "Configuración",

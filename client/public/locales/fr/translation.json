@@ -3,7 +3,9 @@
     "exportCsvAria": "Exporter les données d’activité au format CSV",
     "exportPngAria": "Exporter le graphique d’activité au format PNG",
     "exportUnavailable": "Aucune activité de graphique n’est encore disponible à exporter.",
-    "exported": "Tendance d’activité exportée."
+    "exported": "Tendance d’activité exportée.",
+    "csvDownloaded": "Le CSV de tendance d’activité a été téléchargé.",
+    "pngDownloaded": "Le PNG de tendance d’activité a été téléchargé."
   },
   "csvDiagnostics": {
     "preImportTitle": "Corrigez ces lignes avant l’importation",
@@ -16,7 +18,11 @@
     "rows": "Lignes du CSV : {{rows}}",
     "moreRows": "et d’autres",
     "privacyNote": "Seuls les numéros de ligne sont affichés ici ; les informations des clients restent dans votre fichier CSV.",
-    "noValidRows": "Aucun contact valide n’est encore prêt à être importé. Corrigez les lignes indiquées, puis téléversez à nouveau le fichier."
+    "noValidRows": "Aucun contact valide n’est encore prêt à être importé. Corrigez les lignes indiquées, puis téléversez à nouveau le fichier.",
+    "downloadReport": "Télécharger le rapport des lignes en échec",
+    "reportRowNumber": "Ligne CSV",
+    "reportReason": "Motif",
+    "reportUnavailableRow": "Indisponible"
   },
   "seo": {
     "title": "Get Phame — Demandes d'avis personnelles par e-mail",
@@ -505,7 +511,11 @@
     "templateLabel": "Modèle",
     "previewButton": "Aperçu",
     "saveContact": "Enregistrer le contact",
-    "noReviewPlatform": "Aucune plateforme configurée"
+    "noReviewPlatform": "Aucune plateforme configurée",
+    "tonePreviewTitle": "Vérifiez l’e-mail ajusté par l’IA",
+    "tonePreviewDescription": "Votre brouillon actuel ne changera pas avant que vous choisissiez Appliquer le ton ajusté.",
+    "keepCurrentDraft": "Conserver le brouillon actuel",
+    "applyAdjustedTone": "Appliquer le ton ajusté"
   },
   "page": {
     "title": "Paramètres",

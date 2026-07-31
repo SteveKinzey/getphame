@@ -79,7 +79,11 @@ export default function ActivityTrendCard({ total, velocity }: ActivityTrendCard
       downloadUrl(chart.toBase64Image("image/png", 1), filename);
     }
 
-    toast.success(t("activityTrend.exported", { defaultValue: "Activity trend exported." }));
+    toast.success(
+      format === "csv"
+        ? t("activityTrend.csvDownloaded", { defaultValue: "Activity Trend CSV downloaded." })
+        : t("activityTrend.pngDownloaded", { defaultValue: "Activity Trend PNG downloaded." }),
+    );
   };
 
   return (

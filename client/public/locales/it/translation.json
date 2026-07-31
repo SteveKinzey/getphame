@@ -3,7 +3,9 @@
     "exportCsvAria": "Esporta i dati sull’attività come CSV",
     "exportPngAria": "Esporta il grafico dell’attività come PNG",
     "exportUnavailable": "Non ci sono ancora dati del grafico da esportare.",
-    "exported": "Andamento dell’attività esportato."
+    "exported": "Andamento dell’attività esportato.",
+    "csvDownloaded": "CSV dell’andamento attività scaricato.",
+    "pngDownloaded": "PNG dell’andamento attività scaricato."
   },
   "csvDiagnostics": {
     "preImportTitle": "Correggi queste righe prima dell’importazione",
@@ -16,7 +18,11 @@
     "rows": "Righe CSV: {{rows}}",
     "moreRows": "e altre",
     "privacyNote": "Qui vengono mostrati solo i numeri di riga; i dati dei clienti restano nel tuo file CSV.",
-    "noValidRows": "Non ci sono ancora contatti validi pronti per l’importazione. Correggi le righe indicate, poi carica di nuovo il file."
+    "noValidRows": "Non ci sono ancora contatti validi pronti per l’importazione. Correggi le righe indicate, poi carica di nuovo il file.",
+    "downloadReport": "Scarica il report delle righe non riuscite",
+    "reportRowNumber": "Riga CSV",
+    "reportReason": "Motivo",
+    "reportUnavailableRow": "Non disponibile"
   },
   "seo": {
     "title": "Get Phame — Richieste di recensione personali via email",
@@ -1690,7 +1696,11 @@
     "unlockAiTone": "Sblocca regolazione del tono con IA",
     "aiToneUnavailable": "L’IA non ha potuto regolare questa bozza. Riprova o modifica manualmente.",
     "aiToneUpgrade": "La regolazione del tono con IA è disponibile con Get Phame Pro.",
-    "unlock": "Sblocca"
+    "unlock": "Sblocca",
+    "tonePreviewTitle": "Rivedi l’e-mail adattata dall’IA",
+    "tonePreviewDescription": "La bozza attuale non cambierà finché non scegli Applica il tono modificato.",
+    "keepCurrentDraft": "Mantieni la bozza attuale",
+    "applyAdjustedTone": "Applica il tono modificato"
   },
   "page": {
     "title": "Impostazioni",

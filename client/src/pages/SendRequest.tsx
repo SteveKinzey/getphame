@@ -55,6 +55,8 @@ export default function SendRequestPage() {
   const [draftBody, setDraftBody] = useState("");
   const [selectedTone, setSelectedTone] = useState<"warmer" | "professional" | "concise">("warmer");
   const [loadedDraftSourceKey, setLoadedDraftSourceKey] = useState("");
+  const [tonePreviewDraft, setTonePreviewDraft] = useState<{ subject: string; body: string } | null>(null);
+  const [tonePreviewOpen, setTonePreviewOpen] = useState(false);
   const [finalPreviewOpen, setFinalPreviewOpen] = useState(false);
   const [complianceChecked, setComplianceChecked] = useState({
     realCustomers: false,
@@ -132,10 +134,8 @@ export default function SendRequestPage() {
 
   const adjustTone = trpc.email.adjustTone.useMutation({
     onSuccess: (draft) => {
-      setDraftSubject(draft.subject);
-      setDraftBody(draft.body);
-      setErrors((current) => ({ ...current, subject: undefined, body: undefined }));
-      toast.success(t("mainForm.toneApplied", { defaultValue: "Tone applied. Review the message before sending." }));
+      setTonePreviewDraft(draft);
+      setTonePreviewOpen(true);
     },
     onError: (err) => {
       if (err.data?.code === "FORBIDDEN") {
@@ -165,6 +165,21 @@ export default function SendRequestPage() {
       tone: selectedTone,
       businessName: profile.businessName,
     });
+  }
+
+  function handleApplyTonePreview() {
+    if (!tonePreviewDraft) return;
+    setDraftSubject(tonePreviewDraft.subject);
+    setDraftBody(tonePreviewDraft.body);
+    setErrors((current) => ({ ...current, subject: undefined, body: undefined }));
+    setTonePreviewOpen(false);
+    setTonePreviewDraft(null);
+    toast.success(t("mainForm.toneApplied", { defaultValue: "Tone applied. Review the message before sending." }));
+  }
+
+  function handleTonePreviewOpenChange(open: boolean) {
+    setTonePreviewOpen(open);
+    if (!open) setTonePreviewDraft(null);
   }
 
   // Resolve active template: explicit selection > default > null (uses server fallback)
@@ -1123,6 +1138,52 @@ export default function SendRequestPage() {
             {sending
               ? t("mainForm.sending")
               : t("mainForm.confirmAndSend", { defaultValue: "Confirm & send" })}
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+    <Dialog open={tonePreviewOpen} onOpenChange={handleTonePreviewOpenChange}>
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl" data-testid="ai-tone-preview-dialog">
+        <DialogHeader>
+          <DialogTitle className="rr-text-navy">
+            {t("mainForm.tonePreviewTitle", { defaultValue: "Review the AI-adjusted email" })}
+          </DialogTitle>
+          <DialogDescription>
+            {t("mainForm.tonePreviewDescription", { defaultValue: "Your current draft will not change until you choose Apply adjusted tone." })}
+          </DialogDescription>
+        </DialogHeader>
+
+        {tonePreviewDraft && (
+          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
+            <div className="mb-4">
+              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</p>
+              <p className="mt-1 text-sm font-bold rr-text-navy">{tonePreviewDraft.subject}</p>
+            </div>
+            <div>
+              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</p>
+              <div className="mt-1 whitespace-pre-wrap text-sm leading-relaxed rr-text-navy">{tonePreviewDraft.body}</div>
+            </div>
+          </div>
+        )}
+
+        <DialogFooter>
+          <button
+            type="button"
+            onClick={() => handleTonePreviewOpenChange(false)}
+            className="min-h-11 rounded-xl px-4 text-sm font-bold rr-text-navy-mid focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            style={{ background: "oklch(0.93 0.02 260)" }}
+          >
+            {t("mainForm.keepCurrentDraft", { defaultValue: "Keep current draft" })}
+          </button>
+          <button
+            type="button"
+            onClick={() => { buttonPressHaptic(); handleApplyTonePreview(); }}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            data-testid="ai-tone-preview-apply"
+          >
+            <Sparkles size={16} aria-hidden="true" />
+            {t("mainForm.applyAdjustedTone", { defaultValue: "Apply adjusted tone" })}
           </button>
         </DialogFooter>
       </DialogContent>

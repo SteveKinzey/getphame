@@ -10,7 +10,11 @@
     "rows": "CSV rows: {{rows}}",
     "moreRows": "and more",
     "privacyNote": "Only row numbers are shown here; client details stay in your CSV file.",
-    "noValidRows": "No valid contacts are ready to import yet. Correct the listed rows, then upload the file again."
+    "noValidRows": "No valid contacts are ready to import yet. Correct the listed rows, then upload the file again.",
+    "downloadReport": "Download failed-row report",
+    "reportRowNumber": "CSV row",
+    "reportReason": "Reason",
+    "reportUnavailableRow": "Unavailable"
   },
   "seo": {
     "title": "Get Phame — Personal review request emails",
@@ -335,7 +339,9 @@
     "exportCsvAria": "Export activity trend data as CSV",
     "exportPngAria": "Export activity trend chart as PNG",
     "exportUnavailable": "No chart activity is available to export yet.",
-    "exported": "Activity trend exported."
+    "exported": "Activity trend exported.",
+    "csvDownloaded": "Activity Trend CSV downloaded.",
+    "pngDownloaded": "Activity Trend PNG downloaded."
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
@@ -438,7 +444,11 @@
     "unlockAiTone": "Unlock AI tone adjustment",
     "aiToneWorking": "Adjusting",
     "adjust": "Adjust",
-    "unlock": "Unlock"
+    "unlock": "Unlock",
+    "tonePreviewTitle": "Review the AI-adjusted email",
+    "tonePreviewDescription": "Your current draft will not change until you choose Apply adjusted tone.",
+    "keepCurrentDraft": "Keep current draft",
+    "applyAdjustedTone": "Apply adjusted tone"
   },
   "page": {
     "title": "Settings",
