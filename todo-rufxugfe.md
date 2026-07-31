@@ -23,7 +23,7 @@
 - [x] Add a privacy-safe failed-row CSV report download control to the import diagnostics summary.
 - [x] Add distinct localized toast confirmations for Activity Trend CSV and PNG export completion.
 - [x] Update all seven locale catalogs and UI regression coverage for the new controls.
-- [ ] Run focused tests, the full Vitest suite, TypeScript validation, a production build, responsive QA, checkpoint release, and GitHub synchronization.
+- [x] Run focused tests, the full Vitest suite, TypeScript validation, a production build, responsive QA, checkpoint release, and GitHub synchronization.
 - [x] Update every failed-row summary initializer and empty return path to satisfy the new privacy-safe report contract.
 - [x] Update existing import-contract coverage for the failed-row report payload and re-run the affected suite.
 - [x] Add CSV and PNG export-completion translations to all locale catalogs and confirm their fallback resources load correctly.
