@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine, Sparkles } from "lucide-react";
+import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine, Sparkles, GitCompareArrows } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
 import {
@@ -23,6 +23,7 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 import { completeSuccessfulRequest } from "@/lib/onboardingFlow";
 import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
+import { getToneTextDiff, type ToneDiffSegment } from "@/lib/toneDraftDiff";
 import {
   buildSafePlatformLinks,
   containsDirectYelpLink,
@@ -35,6 +36,23 @@ import {
 
 const SUCCESS_IMG =
   "https://assets.getphame.app/rr-send-success.webp";
+
+function ToneDiffText({ segments, mode }: { segments: ToneDiffSegment[]; mode: "before" | "after" }) {
+  const changedKind = mode === "before" ? "removed" : "added";
+  const changedClass = mode === "before"
+    ? "rounded bg-rose-100 px-0.5 text-rose-950 decoration-rose-500/70 line-through"
+    : "rounded bg-emerald-100 px-0.5 text-emerald-950";
+
+  return (
+    <span className="whitespace-pre-wrap">
+      {segments.map((segment, index) => (
+        <span key={`${segment.kind}-${index}`} className={segment.kind === changedKind ? changedClass : undefined}>
+          {segment.text}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export default function SendRequestPage() {
   const { t } = useTranslation();
@@ -56,6 +74,7 @@ export default function SendRequestPage() {
   const [selectedTone, setSelectedTone] = useState<"warmer" | "professional" | "concise">("warmer");
   const [loadedDraftSourceKey, setLoadedDraftSourceKey] = useState("");
   const [tonePreviewDraft, setTonePreviewDraft] = useState<{ subject: string; body: string } | null>(null);
+  const [tonePreviewSourceDraft, setTonePreviewSourceDraft] = useState<{ subject: string; body: string } | null>(null);
   const [tonePreviewOpen, setTonePreviewOpen] = useState(false);
   const [finalPreviewOpen, setFinalPreviewOpen] = useState(false);
   const [complianceChecked, setComplianceChecked] = useState({
@@ -133,11 +152,13 @@ export default function SendRequestPage() {
   });
 
   const adjustTone = trpc.email.adjustTone.useMutation({
-    onSuccess: (draft) => {
+    onSuccess: (draft, sourceDraft) => {
+      setTonePreviewSourceDraft({ subject: sourceDraft.subject, body: sourceDraft.body });
       setTonePreviewDraft(draft);
       setTonePreviewOpen(true);
     },
     onError: (err) => {
+      setTonePreviewSourceDraft(null);
       if (err.data?.code === "FORBIDDEN") {
         openUpgradeModal("plans");
         return;
@@ -149,6 +170,13 @@ export default function SendRequestPage() {
   const emailConnected = smtpStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
   const hasPaidAiAccess = profile?.hasPaidAccess ?? false;
+  const tonePreviewComparison = useMemo(() => {
+    if (!tonePreviewSourceDraft || !tonePreviewDraft) return null;
+    return {
+      subject: getToneTextDiff(tonePreviewSourceDraft.subject, tonePreviewDraft.subject),
+      body: getToneTextDiff(tonePreviewSourceDraft.body, tonePreviewDraft.body),
+    };
+  }, [tonePreviewSourceDraft, tonePreviewDraft]);
 
   function handleToneAdjustment() {
     if (!profile?.businessName) {
@@ -179,7 +207,10 @@ export default function SendRequestPage() {
 
   function handleTonePreviewOpenChange(open: boolean) {
     setTonePreviewOpen(open);
-    if (!open) setTonePreviewDraft(null);
+    if (!open) {
+      setTonePreviewDraft(null);
+      setTonePreviewSourceDraft(null);
+    }
   }
 
   // Resolve active template: explicit selection > default > null (uses server fallback)
@@ -1144,7 +1175,7 @@ export default function SendRequestPage() {
     </Dialog>
 
     <Dialog open={tonePreviewOpen} onOpenChange={handleTonePreviewOpenChange}>
-      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl" data-testid="ai-tone-preview-dialog">
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-3xl lg:max-w-4xl" data-testid="ai-tone-preview-dialog">
         <DialogHeader>
           <DialogTitle className="rr-text-navy">
             {t("mainForm.tonePreviewTitle", { defaultValue: "Review the AI-adjusted email" })}
@@ -1154,17 +1185,61 @@ export default function SendRequestPage() {
           </DialogDescription>
         </DialogHeader>
 
-        {tonePreviewDraft && (
-          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
-            <div className="mb-4">
-              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</p>
-              <p className="mt-1 text-sm font-bold rr-text-navy">{tonePreviewDraft.subject}</p>
+        {tonePreviewSourceDraft && tonePreviewDraft && tonePreviewComparison && (
+          <section
+            className="overflow-hidden rounded-2xl bg-white"
+            style={{ border: "1px solid oklch(0.90 0.02 260)" }}
+            data-testid="ai-tone-preview-comparison"
+            aria-label={t("mainForm.tonePreviewComparisonTitle", { defaultValue: "Compare the changes" })}
+          >
+            <div className="flex flex-wrap items-center gap-2 border-b px-4 py-3" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
+              <GitCompareArrows size={17} className="rr-text-navy" aria-hidden="true" />
+              <p className="text-sm font-black rr-text-navy">
+                {t("mainForm.tonePreviewComparisonTitle", { defaultValue: "Compare the changes" })}
+              </p>
+              <p className="basis-full text-xs leading-relaxed rr-text-navy-mid sm:basis-auto sm:ml-auto">
+                {t("mainForm.tonePreviewDiffLegend", { defaultValue: "Removed text is highlighted in red. Added text is highlighted in green." })}
+              </p>
             </div>
-            <div>
-              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</p>
-              <div className="mt-1 whitespace-pre-wrap text-sm leading-relaxed rr-text-navy">{tonePreviewDraft.body}</div>
+
+            <div className="grid gap-px bg-[oklch(0.90_0.02_260)] md:grid-cols-2">
+              <section className="min-w-0 bg-white p-4" data-testid="ai-tone-preview-original" aria-label={t("mainForm.tonePreviewOriginalDraft", { defaultValue: "Original draft" })}>
+                <p className="mb-4 text-xs font-black uppercase tracking-wide rr-text-navy-mid">
+                  {t("mainForm.tonePreviewOriginalDraft", { defaultValue: "Original draft" })}
+                </p>
+                <div className="mb-4">
+                  <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</p>
+                  <p className="mt-1 break-words text-sm font-bold leading-relaxed rr-text-navy">
+                    <ToneDiffText segments={tonePreviewComparison.subject.before} mode="before" />
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</p>
+                  <div className="mt-1 break-words text-sm leading-relaxed rr-text-navy">
+                    <ToneDiffText segments={tonePreviewComparison.body.before} mode="before" />
+                  </div>
+                </div>
+              </section>
+
+              <section className="min-w-0 bg-white p-4" data-testid="ai-tone-preview-adjusted" aria-label={t("mainForm.tonePreviewAdjustedDraft", { defaultValue: "AI-adjusted draft" })}>
+                <p className="mb-4 text-xs font-black uppercase tracking-wide rr-text-navy-mid">
+                  {t("mainForm.tonePreviewAdjustedDraft", { defaultValue: "AI-adjusted draft" })}
+                </p>
+                <div className="mb-4">
+                  <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</p>
+                  <p className="mt-1 break-words text-sm font-bold leading-relaxed rr-text-navy">
+                    <ToneDiffText segments={tonePreviewComparison.subject.after} mode="after" />
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</p>
+                  <div className="mt-1 break-words text-sm leading-relaxed rr-text-navy">
+                    <ToneDiffText segments={tonePreviewComparison.body.after} mode="after" />
+                  </div>
+                </div>
+              </section>
             </div>
-          </div>
+          </section>
         )}
 
         <DialogFooter>

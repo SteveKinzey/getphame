@@ -448,7 +448,11 @@
     "tonePreviewTitle": "Review the AI-adjusted email",
     "tonePreviewDescription": "Your current draft will not change until you choose Apply adjusted tone.",
     "keepCurrentDraft": "Keep current draft",
-    "applyAdjustedTone": "Apply adjusted tone"
+    "applyAdjustedTone": "Apply adjusted tone",
+    "tonePreviewComparisonTitle": "Compare the changes",
+    "tonePreviewOriginalDraft": "Original draft",
+    "tonePreviewAdjustedDraft": "AI-adjusted draft",
+    "tonePreviewDiffLegend": "Removed text is highlighted in red. Added text is highlighted in green."
   },
   "page": {
     "title": "Settings",

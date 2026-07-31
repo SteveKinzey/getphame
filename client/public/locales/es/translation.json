@@ -515,7 +515,11 @@
     "tonePreviewTitle": "Revisa el correo ajustado por IA",
     "tonePreviewDescription": "Tu borrador actual no cambiará hasta que elijas Aplicar tono ajustado.",
     "keepCurrentDraft": "Conservar el borrador actual",
-    "applyAdjustedTone": "Aplicar tono ajustado"
+    "applyAdjustedTone": "Aplicar tono ajustado",
+    "tonePreviewComparisonTitle": "Compara los cambios",
+    "tonePreviewOriginalDraft": "Borrador original",
+    "tonePreviewAdjustedDraft": "Borrador ajustado por IA",
+    "tonePreviewDiffLegend": "El texto eliminado se resalta en rojo. El texto añadido se resalta en verde."
   },
   "page": {
     "title": "Configuración",
