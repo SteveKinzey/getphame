@@ -313,6 +313,7 @@ import {
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { automationHealthRouter } from "./routers/automationHealth";
+import { securityAuditsRouter } from "./routers/securityAudits";
 import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
 import { passkeysRouter } from "./routers/passkeys";
 import { recoveryDrillsRouter } from "./routers/recoveryDrills";
@@ -1004,6 +1005,7 @@ export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
   automationHealth: automationHealthRouter,
+  securityAudits: securityAuditsRouter,
   githubCleanupShowcase: githubCleanupShowcaseRouter,
   passkeys: passkeysRouter,
   recoveryDrills: recoveryDrillsRouter,

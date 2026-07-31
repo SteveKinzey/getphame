@@ -576,6 +576,17 @@ export default function AdminDashboard() {
                     Icon: Activity,
                   },
                   {
+                    path: "/admin/security-audits",
+                    label: t("securityAudits.dashboardCardTitle", {
+                      defaultValue: "Security audit history",
+                    }),
+                    detail: t("securityAudits.dashboardCardBody", {
+                      defaultValue:
+                        "Monthly dependency findings and validation outcomes from verified workflow runs",
+                    }),
+                    Icon: CheckCircle2,
+                  },
+                  {
                     path: "/admin/reminder-performance",
                     label: "Reminder operations",
                     detail: `${stats.pendingReminders} pending · ${stats.dueReminders} due`,

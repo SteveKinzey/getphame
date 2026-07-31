@@ -23,7 +23,20 @@
     "filterAll": "Tous les résultats",
     "filterFailure": "Échec",
     "filterSuccess": "Réussite",
-    "history": "Historique de l’automatisation",
+    "history": {
+      "completed": "Workflow terminé",
+      "details": "Détails",
+      "detected": "Détecté",
+      "empty": "Aucun événement vérifié ne correspond à ces filtres.",
+      "event": "Événement",
+      "eyebrow": "Piste d’audit",
+      "opensNewTab": "s’ouvre dans un nouvel onglet",
+      "pullRequest": "Pull request n°{{number}}",
+      "result": "Résultat",
+      "run": "Exécution",
+      "source": "Source : GitHub Actions OIDC · SteveKinzey/getphame",
+      "title": "Historique des événements vérifiés"
+    },
     "historyDescription": "Événements de workflow vérifiés pour la période sélectionnée.",
     "historyOutcome": "Résultat",
     "historyRun": "Exécution",
@@ -97,20 +110,6 @@
       "result": "Résultat",
       "title": "Filtrer l’historique opérationnel",
       "to": "À"
-    },
-    "history": {
-      "completed": "Workflow terminé",
-      "details": "Détails",
-      "detected": "Détecté",
-      "empty": "Aucun événement vérifié ne correspond à ces filtres.",
-      "event": "Événement",
-      "eyebrow": "Piste d’audit",
-      "opensNewTab": "s’ouvre dans un nouvel onglet",
-      "pullRequest": "Pull request n°{{number}}",
-      "result": "Résultat",
-      "run": "Exécution",
-      "source": "Source : GitHub Actions OIDC · SteveKinzey/getphame",
-      "title": "Historique des événements vérifiés"
     },
     "kind": {
       "dependabotMerge": "Fusion Dependabot",
@@ -3902,5 +3901,59 @@
         }
       }
     }
+  },
+  "securityAudits": {
+    "dashboardCardTitle": "Historique des audits de sécurité",
+    "dashboardCardBody": "Constats mensuels sur les dépendances et résultats de validation des exécutions vérifiées",
+    "accessDenied": "Accès refusé",
+    "adminOnly": "Un accès administrateur est requis.",
+    "backToAdmin": "Retour à l’administration",
+    "title": "Historique des audits de sécurité",
+    "description": "Synthèses mensuelles des audits de dépendances de production et complets provenant de GitHub Actions vérifié. Les journaux bruts et les détails des avis ne sont volontairement pas conservés ici.",
+    "refresh": "Actualiser",
+    "filterEyebrow": "Période du rapport",
+    "filterTitle": "Filtrer l’historique des audits",
+    "range": "Plage de dates",
+    "lastDays_one": "Dernier {{count}} jour",
+    "lastDays_other": "Derniers {{count}} jours",
+    "outcomeFilter": "Résultat",
+    "loading": "Chargement de l’historique des audits",
+    "loadErrorTitle": "L’historique des audits est temporairement indisponible",
+    "loadErrorDescription": "Actualisez la page ou réessayez bientôt.",
+    "latestEyebrow": "Dernier rapport vérifié",
+    "latestTitle": "État actuel de la sécurité des dépendances",
+    "emptyLatestTitle": "Aucun rapport d’audit vérifié pour le moment",
+    "emptyLatestDescription": "Le premier rapport programmé apparaîtra ici après la fin de son flux de travail.",
+    "auditedAt": "Audité {{date}}",
+    "productionHighCritical": "Production élevé / critique",
+    "devOnlyFindings": "Constats uniquement de développement",
+    "testsBuild": "Tests / compilation",
+    "packageUpdates": "Paquets mis à jour",
+    "openRun": "Ouvrir l’exécution vérifiée",
+    "historyEyebrow": "Enregistrements vérifiés",
+    "historyTitle": "Historique des audits",
+    "emptyHistory": "Aucun rapport d’audit vérifié ne correspond encore à ces filtres.",
+    "openRunAria": "Ouvrir l’exécution {{number}}",
+    "outcome": {
+      "all": "Tous les résultats",
+      "clean": "Sain",
+      "attention": "Attention requise",
+      "failed": "Rapport échoué"
+    },
+    "validation": {
+      "passed": "Réussi",
+      "failed": "Échoué",
+      "not_run": "Non exécuté"
+    },
+    "table": {
+      "audited": "Audité",
+      "outcome": "Résultat",
+      "production": "Production E / C",
+      "devOnly": "Dév. uniquement",
+      "validation": "Tests / compilation",
+      "updates": "Mises à jour",
+      "run": "Exécution"
+    },
+    "lastDays": "Derniers {{count}} jours"
   }
 }

@@ -99,6 +99,15 @@ export const automationEventResultEnum = pgEnum("automation_event_result", [
   "success",
   "failure",
 ]);
+export const securityAuditOutcomeEnum = pgEnum("security_audit_outcome", [
+  "clean",
+  "attention",
+  "failed",
+]);
+export const securityAuditValidationStatusEnum = pgEnum(
+  "security_audit_validation_status",
+  ["passed", "failed", "not_run"]
+);
 export const supportTopicEnum = pgEnum("support_topic", [
   "billing",
   "onboarding",
@@ -373,6 +382,72 @@ export const automationEvents = pgTable(
 
 export type AutomationEvent = typeof automationEvents.$inferSelect;
 export type InsertAutomationEvent = typeof automationEvents.$inferInsert;
+
+/**
+ * Privacy-minimized monthly dependency-audit reports received from the trusted
+ * Get Phame GitHub Actions workflow. Raw logs, package paths, advisory text,
+ * and credentials are deliberately excluded from this administrator-only record.
+ */
+export const securityAuditReports = pgTable(
+  "security_audit_reports",
+  {
+    id: serial("id").primaryKey(),
+    eventKey: varchar("event_key", { length: 191 }).notNull(),
+    oidcJtiHash: varchar("oidc_jti_hash", { length: 64 }).notNull(),
+    outcome: securityAuditOutcomeEnum("outcome").notNull(),
+    productionInfoCount: integer("production_info_count").notNull().default(0),
+    productionLowCount: integer("production_low_count").notNull().default(0),
+    productionModerateCount: integer("production_moderate_count")
+      .notNull()
+      .default(0),
+    productionHighCount: integer("production_high_count").notNull().default(0),
+    productionCriticalCount: integer("production_critical_count")
+      .notNull()
+      .default(0),
+    fullInfoCount: integer("full_info_count").notNull().default(0),
+    fullLowCount: integer("full_low_count").notNull().default(0),
+    fullModerateCount: integer("full_moderate_count").notNull().default(0),
+    fullHighCount: integer("full_high_count").notNull().default(0),
+    fullCriticalCount: integer("full_critical_count").notNull().default(0),
+    productionDependencyCount: integer("production_dependency_count")
+      .notNull()
+      .default(0),
+    fullDependencyCount: integer("full_dependency_count").notNull().default(0),
+    updatedPackageCount: integer("updated_package_count").notNull().default(0),
+    testStatus: securityAuditValidationStatusEnum("test_status").notNull(),
+    buildStatus: securityAuditValidationStatusEnum("build_status").notNull(),
+    failureCode: varchar("failure_code", { length: 64 }),
+    failureSummary: varchar("failure_summary", { length: 300 }),
+    repository: varchar("repository", { length: 255 }).notNull(),
+    repositoryId: varchar("repository_id", { length: 32 }).notNull(),
+    repositoryOwnerId: varchar("repository_owner_id", { length: 32 }).notNull(),
+    ref: varchar("ref", { length: 255 }).notNull(),
+    eventName: varchar("event_name", { length: 64 }).notNull(),
+    workflow: varchar("workflow", { length: 255 }).notNull(),
+    workflowRef: varchar("workflow_ref", { length: 512 }).notNull(),
+    workflowSha: varchar("workflow_sha", { length: 40 }).notNull(),
+    runId: varchar("run_id", { length: 32 }).notNull(),
+    runNumber: integer("run_number").notNull(),
+    runAttempt: integer("run_attempt").notNull(),
+    runUrl: varchar("run_url", { length: 512 }).notNull(),
+    eventAt: bigint("event_at", { mode: "number" }).notNull(),
+    durationMs: integer("duration_ms"),
+    receivedAt: bigint("received_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("security_audit_reports_event_key_unique").on(table.eventKey),
+    uniqueIndex("security_audit_reports_oidc_jti_unique").on(table.oidcJtiHash),
+    index("security_audit_reports_event_idx").on(table.eventAt),
+    index("security_audit_reports_outcome_event_idx").on(
+      table.outcome,
+      table.eventAt
+    ),
+  ]
+);
+
+export type SecurityAuditReport = typeof securityAuditReports.$inferSelect;
+export type InsertSecurityAuditReport =
+  typeof securityAuditReports.$inferInsert;
 
 /** Per-administrator dismissal of one active drift-failure event. */
 export const automationAlertAcknowledgements = pgTable(
