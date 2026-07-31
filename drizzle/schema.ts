@@ -99,6 +99,10 @@ export const automationEventResultEnum = pgEnum("automation_event_result", [
   "success",
   "failure",
 ]);
+export const activityTrendPresetRangeEnum = pgEnum(
+  "activity_trend_preset_range",
+  ["30", "60", "90", "custom"]
+);
 export const supportTopicEnum = pgEnum("support_topic", [
   "billing",
   "onboarding",
@@ -440,6 +444,50 @@ export type AuthHealthHistoryPreset =
   typeof authHealthHistoryPresets.$inferSelect;
 export type InsertAuthHealthHistoryPreset =
   typeof authHealthHistoryPresets.$inferInsert;
+
+/**
+ * Authenticated-user-owned Activity Trend export presets. Presets persist only
+ * bounded range configuration and canonical series flags; activity rows are
+ * never copied into a preset record.
+ */
+export const activityTrendExportPresets = pgTable(
+  "activity_trend_export_presets",
+  {
+    id: serial("id").primaryKey(),
+    ownerUserId: integer("owner_user_id").notNull(),
+    name: varchar("name", { length: 80 }).notNull(),
+    normalizedName: varchar("normalized_name", { length: 80 }).notNull(),
+    rangeKey: activityTrendPresetRangeEnum("range_key").notNull(),
+    customStartDate: varchar("custom_start_date", { length: 10 }),
+    customEndDate: varchar("custom_end_date", { length: 10 }),
+    includeSends: boolean("include_sends").notNull().default(true),
+    includeOpens: boolean("include_opens").notNull().default(true),
+    includeClicks: boolean("include_clicks").notNull().default(true),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  table => [
+    uniqueIndex("activity_trend_presets_owner_name_unique").on(
+      table.ownerUserId,
+      table.normalizedName
+    ),
+    index("activity_trend_presets_owner_updated_idx").on(
+      table.ownerUserId,
+      table.updatedAt
+    ),
+    index("activity_trend_presets_owner_sort_idx").on(
+      table.ownerUserId,
+      table.sortOrder,
+      table.id
+    ),
+  ]
+);
+
+export type ActivityTrendExportPreset =
+  typeof activityTrendExportPresets.$inferSelect;
+export type InsertActivityTrendExportPreset =
+  typeof activityTrendExportPresets.$inferInsert;
 
 /** Privacy-safe fleet SMTP health aggregates captured by the managed scheduler. */
 export const smtpHealthSnapshots = pgTable(

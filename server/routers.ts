@@ -312,6 +312,7 @@ import {
 } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
+import { activityTrendExportPresetsRouter } from "./routers/activityTrendExportPresets";
 import { automationHealthRouter } from "./routers/automationHealth";
 import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
 import { passkeysRouter } from "./routers/passkeys";
@@ -1002,6 +1003,7 @@ async function getSupportEscalationPolicySettings(
 
 export const appRouter = router({
   system: systemRouter,
+  activityTrendExportPresets: activityTrendExportPresetsRouter,
   authDiagnostics: authDiagnosticsRouter,
   automationHealth: automationHealthRouter,
   githubCleanupShowcase: githubCleanupShowcaseRouter,

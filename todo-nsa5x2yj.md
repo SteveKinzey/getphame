@@ -459,3 +459,17 @@
 - [x] Resolve pull request #65 localization review by formatting the drift timestamp with the active resolved locale fallback used elsewhere and add focused contract coverage; the replacement release gate passes.
 - [x] Resolve pull request #66 evidence review by distinguishing the 40-test implementation gate from the 20-test review-remediation subset; the corrected evidence passes formatting, whitespace, and credential checks.
 - [x] Resolve pull request #66 evidence review by recording the full managed evidence-only checkpoint and target tree while clarifying that the managed checkpoint is not a public GitHub commit; the corrected evidence passes formatting, whitespace, and credential checks.
+
+- [x] Reconfirm the restored canonical Get Phame tree and applicable style, export, production-monitoring, scheduling, localization, release, and skill-authoring contracts after the sandbox reset.
+- [x] Define authorization, ownership, bounded-query, audit, localization, accessibility, privacy, and regression contracts for saved Activity Trend export presets, tooltip-to-run drilldowns, and drift-alert acknowledgement history.
+- [x] Add durable owner-scoped Activity Trend export preset persistence for every authenticated user, including canonical non-empty series, 30/60/90/custom ranges, unique names, ordering, and schema-first migrations.
+- [x] Add localized, responsive, keyboard-accessible Activity Trend preset controls for save, apply, rename, duplicate, delete, pointer and keyboard reorder, confirmed persistence feedback, and undo.
+- [ ] Add administrator-only, bounded tooltip-to-run drilldowns that open real daily run details from both Automation Health charts without exposing secrets, credentials, or customer data.
+- [ ] Add durable administrator drift-alert acknowledgement history with event, actor, acknowledgement time, current alert context, bounded retrieval, explicit states, and administrator-only authorization.
+- [ ] Add complete seven-locale copy and locale-aware date/number formatting for presets, run drilldowns, and acknowledgement history, then bump the locale cache version.
+- [ ] Update the reusable `github-actions-quality-release` skill through `/skill-creator` with the proven preset, tooltip drilldown, acknowledgement audit, review-remediation, and exact-tree release workflow.
+- [ ] Add focused persistence, router, UI-contract, authorization, ownership, bounded-query, privacy, localization, accessibility, and migration regressions for all three features.
+- [ ] Run reviewed database migrations, focused regressions, strict TypeScript, the complete Vitest suite, production dependency audit, production builds, formatting, whitespace, and added-line credential checks.
+- [ ] Verify desktop and mobile layouts plus English, Spanish, and Simplified Chinese behavior, keyboard access, tooltip drilldowns, preset controls, acknowledgement history, browser console, and network requests.
+- [ ] Save and auto-publish validated milestone and final checkpoints, verify production readiness, synchronize the exact final tree through reviewed protected GitHub `main`, resolve valid feedback, and prove checkpoint-to-main parity.
+- [ ] Deliver the live feature summary, validation evidence, final checkpoint, protected-main proof, and updated reusable skill.

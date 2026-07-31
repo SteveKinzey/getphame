@@ -72,6 +72,35 @@ const requiredActivityTrendPaths = [
   "exportSelection",
   "exportSelectAtLeastOne",
   "exportSelectionEmpty",
+  "presets.title",
+  "presets.help",
+  "presets.undoOrder",
+  "presets.nameLabel",
+  "presets.namePlaceholder",
+  "presets.save",
+  "presets.loading",
+  "presets.empty",
+  "presets.listLabel",
+  "presets.rangeCustom",
+  "presets.rangeDays",
+  "presets.seriesCount",
+  "presets.apply",
+  "presets.applied",
+  "presets.invalid",
+  "presets.rename",
+  "presets.renamePrompt",
+  "presets.renamed",
+  "presets.duplicate",
+  "presets.duplicated",
+  "presets.moveUp",
+  "presets.moveDown",
+  "presets.delete",
+  "presets.deleteConfirm",
+  "presets.deleted",
+  "presets.updating",
+  "presets.error",
+  "presets.saved",
+  "presets.reordered",
 ] as const;
 
 function valueAtPath(input: unknown, path: string): unknown {
@@ -146,12 +175,15 @@ describe("Automation Health administrator UI contracts", () => {
     expect(admin).toContain('t("automationHealth.dashboardCardBody"');
   });
 
-  it("keeps Activity Trend export filtering administrator-only and restores the visible chart", () => {
+  it("keeps Activity Trend export filtering and saved presets available to authenticated dashboard users", () => {
     const card = readProjectFile(
       "../client/src/components/dashboard/ActivityTrendCard.tsx"
     );
+    const presets = readProjectFile(
+      "../client/src/components/dashboard/ActivityTrendPresetManager.tsx"
+    );
 
-    expect(card).toContain('const isAdmin = user?.role === "admin"');
+    expect(card).not.toContain('const isAdmin = user?.role === "admin"');
     expect(card).toContain("ACTIVITY_TREND_EXPORT_SERIES.map");
     expect(card).toContain(
       'aria-describedby="activity-trend-export-filter-help activity-trend-export-filter-status"'
@@ -169,6 +201,26 @@ describe("Automation Health administrator UI contracts", () => {
     expect(card).toContain("} finally {");
     expect(card).toContain('t("activityTrend.exportSelectAtLeastOne"');
     expect(card).toContain('t("activityTrend.exportSelectionEmpty"');
+    expect(card).toContain("<ActivityTrendPresetManager");
+    expect(card).toContain("current={currentPresetConfig}");
+    expect(card).toContain("onApply={applySavedPreset}");
+    expect(card).toContain('setRangeMode("custom")');
+    expect(card).toContain(
+      "setRangeMode(Number(preset.rangeKey) as 30 | 60 | 90)"
+    );
+    expect(card).toContain("setSelectedExportSeries(preset.series)");
+    expect(presets).toContain("activityTrendExportPresets.list.useQuery");
+    expect(presets).toContain("activityTrendExportPresets.save.useMutation");
+    expect(presets).toContain(
+      "activityTrendExportPresets.duplicate.useMutation"
+    );
+    expect(presets).toContain("activityTrendExportPresets.delete.useMutation");
+    expect(presets).toContain("activityTrendExportPresets.reorder.useMutation");
+    expect(presets).toContain("draggable={!busy}");
+    expect(presets).toContain('event.key === "Enter"');
+    expect(presets).toContain('aria-live="polite"');
+    expect(presets).toContain("window.confirm");
+    expect(presets).toContain("setUndoOrder(previousIds)");
   });
 });
 
