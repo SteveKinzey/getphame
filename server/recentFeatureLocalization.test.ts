@@ -17,6 +17,10 @@ const REQUIRED_KEYS = [
   "mainForm.tonePreviewDescription",
   "mainForm.keepCurrentDraft",
   "mainForm.applyAdjustedTone",
+  "mainForm.tonePreviewComparisonTitle",
+  "mainForm.tonePreviewOriginalDraft",
+  "mainForm.tonePreviewAdjustedDraft",
+  "mainForm.tonePreviewDiffLegend",
 ] as const;
 
 function getByPath(value: unknown, dottedPath: string): unknown {

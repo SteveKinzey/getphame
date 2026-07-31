@@ -19,6 +19,13 @@ describe("request enhancement UI contracts", () => {
     expect(source).toContain("handleApplyTonePreview");
     expect(source).toContain('data-testid="ai-tone-preview-apply"');
     expect(source).toContain('t("mainForm.keepCurrentDraft"');
+    expect(source).toContain("tonePreviewSourceDraft");
+    expect(source).toContain("getToneTextDiff");
+    expect(source).toContain('data-testid="ai-tone-preview-comparison"');
+    expect(source).toContain('data-testid="ai-tone-preview-original"');
+    expect(source).toContain('data-testid="ai-tone-preview-adjusted"');
+    expect(source).toContain('t("mainForm.tonePreviewOriginalDraft"');
+    expect(source).toContain('t("mainForm.tonePreviewAdjustedDraft"');
   });
 
   it("keeps CSV diagnostics privacy-safe and available at both preview and completion stages", () => {

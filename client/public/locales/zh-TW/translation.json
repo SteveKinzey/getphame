@@ -404,7 +404,11 @@
     "tonePreviewTitle": "查看 AI 調整後的電子郵件",
     "tonePreviewDescription": "在您選擇套用調整後的語氣之前，目前草稿不會變更。",
     "keepCurrentDraft": "保留目前草稿",
-    "applyAdjustedTone": "套用調整後的語氣"
+    "applyAdjustedTone": "套用調整後的語氣",
+    "tonePreviewComparisonTitle": "比較變更",
+    "tonePreviewOriginalDraft": "原始草稿",
+    "tonePreviewAdjustedDraft": "AI 調整後的草稿",
+    "tonePreviewDiffLegend": "刪除的文字會以紅色醒目顯示，新增的文字會以綠色醒目顯示。"
   },
   "page": {
     "title": "設定",
