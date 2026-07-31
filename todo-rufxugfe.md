@@ -42,5 +42,5 @@
 - [x] Add a localized Copy to Clipboard control for the revised AI draft with success and failure feedback.
 - [x] Extend the AI tone-adjustment contract with concise, safe rationales and render them with each suggested diff adjustment.
 - [x] Localize the new filter, clipboard, and rationale UI across every supported language and add focused regression coverage.
-- [ ] Run focused tests, full Vitest, TypeScript validation, production build, responsive QA, checkpoint release, and GitHub synchronization for the tone-diff enhancement.
+- [x] Run focused tests, full Vitest, TypeScript validation, production build, responsive QA, checkpoint release, and GitHub synchronization for the tone-diff enhancement.
 - [x] Complete TypeScript validation using a memory-aware release-check strategy after the bounded compiler process exhausted its heap.
