@@ -109,6 +109,16 @@ function buildDateKeys(fromMs: number, toMs: number): string[] {
 
 type AutomationEventRow = typeof automationEvents.$inferSelect;
 
+function matchesAutomationFilters(
+  event: AutomationEventRow,
+  filters: AutomationDashboardFilters
+): boolean {
+  return (
+    (!filters.kind || event.kind === filters.kind) &&
+    (!filters.result || event.result === filters.result)
+  );
+}
+
 export function summarizeAutomationEvents(input: {
   filters: AutomationDashboardFilters;
   history: AutomationEventRow[];
@@ -116,7 +126,10 @@ export function summarizeAutomationEvents(input: {
   latestDrift: AutomationEventRow | null;
 }) {
   const { filters, history, allRangeEvents, latestDrift } = input;
-  const dependabotMerges = allRangeEvents.filter(
+  const filteredRangeEvents = allRangeEvents.filter(event =>
+    matchesAutomationFilters(event, filters)
+  );
+  const dependabotMerges = filteredRangeEvents.filter(
     event => event.kind === "dependabot_merge" && event.result === "success"
   );
   const mergeDurations = dependabotMerges
@@ -151,7 +164,7 @@ export function summarizeAutomationEvents(input: {
           )
       : null;
 
-  const driftEvents = allRangeEvents.filter(
+  const driftEvents = filteredRangeEvents.filter(
     event => event.kind === "drift_audit"
   );
   const driftSuccesses = driftEvents.filter(
@@ -167,7 +180,7 @@ export function summarizeAutomationEvents(input: {
       { date, dependabotMerges: 0, driftSuccesses: 0, driftFailures: 0 },
     ])
   );
-  for (const event of allRangeEvents) {
+  for (const event of filteredRangeEvents) {
     const point = daily.get(utcDateKey(event.eventAt));
     if (!point) continue;
     if (event.kind === "dependabot_merge" && event.result === "success") {
@@ -214,12 +227,13 @@ export async function getAutomationDashboard(
   if (filters.kind) conditions.push(eq(automationEvents.kind, filters.kind));
   if (filters.result)
     conditions.push(eq(automationEvents.result, filters.result));
+  const rangeCondition = and(...conditions);
 
   const [events, latestDriftRows] = await Promise.all([
     db
       .select()
       .from(automationEvents)
-      .where(and(...conditions))
+      .where(rangeCondition)
       .orderBy(desc(automationEvents.eventAt), desc(automationEvents.id))
       .limit(filters.limit),
     db
@@ -233,12 +247,7 @@ export async function getAutomationDashboard(
   const allRangeEvents = await db
     .select()
     .from(automationEvents)
-    .where(
-      and(
-        gte(automationEvents.eventAt, filters.fromMs),
-        lte(automationEvents.eventAt, filters.toMs)
-      )
-    )
+    .where(rangeCondition)
     .orderBy(asc(automationEvents.eventAt), asc(automationEvents.id));
 
   return summarizeAutomationEvents({

@@ -6,19 +6,19 @@ Get Phame will receive privacy-minimized GitHub workflow outcomes through short-
 
 ## Trust Boundary
 
-GitHub Actions requests a short-lived token with the custom audience `getphame:automation-health`. The ingestion endpoint verifies the token signature from GitHub's discovery and JWKS endpoints and requires the documented issuer, audience, temporal claims, and unique `jti`.[1] The endpoint then applies exact allowlists for the immutable repository and owner IDs, repository name, protected branch ref, event name, and workflow path/ref. The workflow needs only `id-token: write` and `contents: read`; requesting an OIDC token does not itself grant repository write access.[1]
+GitHub Actions requests a short-lived token with the exact audience `https://getphame.app/api/automation/events`. The ingestion endpoint verifies the token signature from GitHub's discovery and JWKS endpoints and requires the documented issuer, audience, temporal claims, and unique `jti`.[1] The endpoint then applies exact allowlists for the immutable repository and owner IDs, repository name, protected branch ref, event name, and workflow path/ref. The workflow needs only `id-token: write` and `contents: read`; requesting an OIDC token does not itself grant repository write access.[1]
 
-| Control      | Contract                                                                                                                       |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Issuer       | Exact `https://token.actions.githubusercontent.com`                                                                            |
-| Audience     | Exact `getphame:automation-health`                                                                                             |
-| Repository   | Exact configured repository name plus immutable repository and owner IDs                                                       |
-| Workflow     | Only `.github/workflows/workflow-drift-audit.yml` and `.github/workflows/dependabot-actions-automerge.yml` on protected `main` |
-| Events       | Drift: `schedule` or `workflow_dispatch`; Dependabot merge: `pull_request_target` with a merged Dependabot pull request        |
-| Time         | Signature plus `exp`, `nbf`, and `iat`; reject tokens issued more than five minutes before receipt                             |
-| Replay       | Persist a SHA-256 fingerprint of `jti` behind a unique index; reject replays without storing the token                         |
-| Body binding | Require body run ID, attempt, workflow identity, repository identity, and ref to match signed claims                           |
-| Input        | Strict JSON schema, 16 KiB body limit, allowlisted status/failure codes, bounded strings, no raw logs                          |
+| Control      | Contract                                                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Issuer       | Exact `https://token.actions.githubusercontent.com`                                                                              |
+| Audience     | Exact `https://getphame.app/api/automation/events`                                                                               |
+| Repository   | Exact configured repository name plus immutable repository and owner IDs                                                         |
+| Workflow     | Only `.github/workflows/workflow-drift-audit.yml` and `.github/workflows/dependabot-merge-observability.yml` on protected `main` |
+| Events       | Drift: `schedule` or `workflow_dispatch`; Dependabot merge: `pull_request` on a closed, merged Dependabot pull request           |
+| Time         | Signature plus `exp`, `nbf`, and `iat`; reject tokens issued more than five minutes before receipt                               |
+| Replay       | Persist a SHA-256 fingerprint of `jti` behind a unique index; reject replays without storing the token                           |
+| Body binding | Require body run ID, attempt, workflow identity, repository identity, and ref to match signed claims                             |
+| Input        | Strict JSON schema, 16 KiB body limit, allowlisted status/failure codes, bounded strings, no raw logs                            |
 
 ## Durable Data
 
