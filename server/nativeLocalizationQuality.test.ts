@@ -245,7 +245,7 @@ describe("native-quality localization audit", () => {
   it("advances the HTTP and offline locale caches for the exhaustive audit", () => {
     const i18nSource = fs.readFileSync(path.join(projectRoot, "client/src/lib/i18n.ts"), "utf8");
     const serviceWorker = fs.readFileSync(path.join(projectRoot, "client/public/sw.js"), "utf8");
-    expect(i18nSource).toContain("{{ns}}.json?v=phame52");
+    expect(i18nSource).toContain("{{ns}}.json?v=phame53");
     expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v24'");
   });
 });

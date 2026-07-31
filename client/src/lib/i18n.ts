@@ -1,7 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import HttpBackend from "i18next-http-backend";
-import generatedFallbackResources from "./i18nCompleteFallbackResources.json";
+import generatedFallbackResourcesJson from "./i18nCompleteFallbackResources.json?raw";
 import directKeyFallbackResources from "./i18nDirectKeyFallbackResources";
 import { mergeLocaleFallback, type ResourceRecord } from "./i18nFallback";
 import {
@@ -10,6 +10,13 @@ import {
   SUPPORTED_LANGS,
   type SupportedLang,
 } from "./languageDetection";
+
+// Import the generated fallback bundle as a raw Vite asset. The JSON contains
+// thousands of localized literal leaves; parsing it at runtime keeps the
+// compiler from materializing that deep literal type graph on every full check.
+const generatedFallbackResources = JSON.parse(
+  generatedFallbackResourcesJson,
+) as Record<string, ResourceRecord>;
 
 export { detectBrowserLang, SUPPORTED_LANGS, type SupportedLang } from "./languageDetection";
 
@@ -193,7 +200,7 @@ export const i18nReady = i18n
     defaultNS: "translation",
     fallbackNS: "landing",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame52",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame53",
     },
     interpolation: {
       escapeValue: false,

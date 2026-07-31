@@ -417,7 +417,16 @@
     "tonePreviewComparisonTitle": "比较更改",
     "tonePreviewOriginalDraft": "原始草稿",
     "tonePreviewAdjustedDraft": "AI 调整后的草稿",
-    "tonePreviewDiffLegend": "删除的文本以红色突出显示。新增的文本以绿色突出显示。"
+    "tonePreviewDiffLegend": "删除的文本以红色突出显示。新增的文本以绿色突出显示。",
+    "tonePreviewChangedOnly": "仅显示已更改的行",
+    "tonePreviewShowFullDraft": "显示完整草稿",
+    "tonePreviewChangedOnlyDescription": "筛选两个草稿，仅显示含有高亮更改的完整行。",
+    "tonePreviewNoChangedLines": "此部分没有已更改的行。",
+    "tonePreviewCopyRevised": "复制修订后的草稿",
+    "tonePreviewCopySuccess": "修订后的草稿已复制到剪贴板。",
+    "tonePreviewCopyError": "无法复制修订后的草稿。请手动选择并复制。",
+    "tonePreviewRationaleTitle": "AI 建议这些调整的原因",
+    "tonePreviewRationaleDescription": "每个调整字段的简要说明。AI 会保留请求详情、占位符和链接。"
   },
   "page": {
     "title": "设置",

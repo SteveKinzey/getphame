@@ -1704,7 +1704,16 @@
     "tonePreviewComparisonTitle": "Confronta le modifiche",
     "tonePreviewOriginalDraft": "Bozza originale",
     "tonePreviewAdjustedDraft": "Bozza modificata dall’IA",
-    "tonePreviewDiffLegend": "Il testo rimosso è evidenziato in rosso. Il testo aggiunto è evidenziato in verde."
+    "tonePreviewDiffLegend": "Il testo rimosso è evidenziato in rosso. Il testo aggiunto è evidenziato in verde.",
+    "tonePreviewChangedOnly": "Solo righe modificate",
+    "tonePreviewShowFullDraft": "Mostra bozze complete",
+    "tonePreviewChangedOnlyDescription": "Filtra entrambe le bozze per mostrare solo le righe complete che contengono una modifica evidenziata.",
+    "tonePreviewNoChangedLines": "Nessuna riga modificata in questa sezione.",
+    "tonePreviewCopyRevised": "Copia bozza revisionata",
+    "tonePreviewCopySuccess": "La bozza revisionata è stata copiata negli appunti.",
+    "tonePreviewCopyError": "Impossibile copiare la bozza revisionata. Selezionala e copiala manualmente.",
+    "tonePreviewRationaleTitle": "Perché l’IA ha suggerito queste modifiche",
+    "tonePreviewRationaleDescription": "Una breve spiegazione per ogni campo modificato. L’IA mantiene dettagli della richiesta, segnaposto e link invariati."
   },
   "page": {
     "title": "Impostazioni",
