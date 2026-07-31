@@ -54,6 +54,7 @@ import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
 import { registerTranscriptFontRoutes } from "../transcriptFontRoutes";
 import { registerStaticCopyRoutes } from "../staticCopyRoutes";
 import { registerAutomationHealthRoutes } from "../automationHealthRoutes";
+import { registerSecurityAuditReportRoutes } from "../securityAuditReportRoutes";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -488,6 +489,7 @@ async function startServer() {
   // cookie can be validated by the canonical auth-google route.
   app.use(cookieParser());
   registerAutomationHealthRoutes(app);
+  registerSecurityAuditReportRoutes(app);
   app.use(express.json({ limit: "5mb" }));
   app.use(express.urlencoded({ limit: "5mb", extended: true }));
 

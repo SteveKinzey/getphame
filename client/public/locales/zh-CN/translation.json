@@ -23,7 +23,20 @@
     "filterAll": "所有结果",
     "filterFailure": "失败",
     "filterSuccess": "成功",
-    "history": "自动化历史记录",
+    "history": {
+      "completed": "工作流已完成",
+      "details": "详情",
+      "detected": "检测到",
+      "empty": "没有已验证事件符合这些筛选条件。",
+      "event": "事件",
+      "eyebrow": "审计轨迹",
+      "opensNewTab": "在新标签页中打开",
+      "pullRequest": "拉取请求 #{{number}}",
+      "result": "结果",
+      "run": "运行",
+      "source": "来源：GitHub Actions OIDC · SteveKinzey/getphame",
+      "title": "已验证事件历史"
+    },
     "historyDescription": "所选时间段内已验证的工作流事件。",
     "historyOutcome": "结果",
     "historyRun": "运行",
@@ -97,20 +110,6 @@
       "result": "结果",
       "title": "筛选运营历史",
       "to": "到"
-    },
-    "history": {
-      "completed": "工作流已完成",
-      "details": "详情",
-      "detected": "检测到",
-      "empty": "没有已验证事件符合这些筛选条件。",
-      "event": "事件",
-      "eyebrow": "审计轨迹",
-      "opensNewTab": "在新标签页中打开",
-      "pullRequest": "拉取请求 #{{number}}",
-      "result": "结果",
-      "run": "运行",
-      "source": "来源：GitHub Actions OIDC · SteveKinzey/getphame",
-      "title": "已验证事件历史"
     },
     "kind": {
       "dependabotMerge": "Dependabot 合并",
@@ -3390,5 +3389,59 @@
         }
       }
     }
+  },
+  "securityAudits": {
+    "dashboardCardTitle": "安全审计历史",
+    "dashboardCardBody": "已验证工作流运行的每月依赖项发现和验证结果",
+    "accessDenied": "拒绝访问",
+    "adminOnly": "需要管理员权限。",
+    "backToAdmin": "返回管理",
+    "title": "安全审计历史",
+    "description": "来自已验证 GitHub Actions 的每月生产和完整依赖项审计摘要。这里特意不保留原始日志和安全公告详情。",
+    "refresh": "刷新",
+    "filterEyebrow": "报告时间范围",
+    "filterTitle": "筛选审计历史",
+    "range": "日期范围",
+    "lastDays_one": "最近 {{count}} 天",
+    "lastDays_other": "最近 {{count}} 天",
+    "outcomeFilter": "结果",
+    "loading": "正在加载审计历史",
+    "loadErrorTitle": "审计历史暂时不可用",
+    "loadErrorDescription": "请刷新页面或稍后重试。",
+    "latestEyebrow": "最新已验证报告",
+    "latestTitle": "当前依赖项安全状况",
+    "emptyLatestTitle": "尚无已验证的审计报告",
+    "emptyLatestDescription": "首次计划报告将在工作流完成后显示在这里。",
+    "auditedAt": "审计于 {{date}}",
+    "productionHighCritical": "生产环境 高 / 严重",
+    "devOnlyFindings": "仅开发环境发现",
+    "testsBuild": "测试 / 构建",
+    "packageUpdates": "已更新的软件包",
+    "openRun": "打开已验证的工作流运行",
+    "historyEyebrow": "已验证记录",
+    "historyTitle": "审计历史",
+    "emptyHistory": "尚无与这些筛选条件匹配的已验证审计报告。",
+    "openRunAria": "打开工作流运行 {{number}}",
+    "outcome": {
+      "all": "所有结果",
+      "clean": "正常",
+      "attention": "需要关注",
+      "failed": "报告失败"
+    },
+    "validation": {
+      "passed": "通过",
+      "failed": "失败",
+      "not_run": "未运行"
+    },
+    "table": {
+      "audited": "审计时间",
+      "outcome": "结果",
+      "production": "生产 高 / 严重",
+      "devOnly": "仅开发",
+      "validation": "测试 / 构建",
+      "updates": "更新",
+      "run": "运行"
+    },
+    "lastDays": "最近 {{count}} 天"
   }
 }
