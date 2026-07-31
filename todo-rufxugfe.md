@@ -44,3 +44,9 @@
 - [x] Localize the new filter, clipboard, and rationale UI across every supported language and add focused regression coverage.
 - [x] Run focused tests, full Vitest, TypeScript validation, production build, responsive QA, checkpoint release, and GitHub synchronization for the tone-diff enhancement.
 - [x] Complete TypeScript validation using a memory-aware release-check strategy after the bounded compiler process exhausted its heap.
+- [x] Preserve the pre-existing richer signup-risk database table and checkpoint a privacy-bounded administrator review API without duplicate migration DDL.
+- [x] Route first-account administrative welcome notices only through the managed platform no-reply sender, never a connected user mailbox.
+- [ ] Require signed, short-lived human verification only when a web magic-link, Google, or Apple flow would create a genuinely new account.
+- [ ] Preserve existing-account sign-in and provider-verified canonical identity linking while recording only privacy-safe signup-risk outcomes.
+- [ ] Add direct regression coverage for proof integrity, administrator-only risk review access, user-owned review outreach, and platform administrative email delivery.
+- [ ] Complete focused tests, full suite, type check, production build, desktop/mobile review, final checkpoint, production checks, and protected-main GitHub synchronization.
