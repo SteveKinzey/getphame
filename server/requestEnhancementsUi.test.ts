@@ -63,12 +63,11 @@ describe("request enhancement UI contracts", () => {
     expect(source).toContain('t("activityTrend.exportCsvAria"');
     expect(source).toContain('t("activityTrend.exportPngAria"');
     expect(source).toContain(
-      "disabled={!hasTrendData || trendLoading || trendFetching}"
+      "disabled={!hasSelectedExportData || trendLoading || trendFetching}"
     );
     expect(source).toContain('chart.toBase64Image("image/png", 1)');
-    expect(source).toContain(
-      "buildActivityTrendExportFilename(dailyTrend, format)"
-    );
+    expect(source).toContain("buildActivityTrendExportFilename(");
+    expect(source).toContain("selectedExportSeries");
     expect(source).toContain("serializeActivityTrendCsv");
     expect(source).toContain('t("activityTrend.csvDownloaded"');
     expect(source).toContain('t("activityTrend.pngDownloaded"');

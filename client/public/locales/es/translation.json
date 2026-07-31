@@ -60,16 +60,26 @@
     "alert": {
       "acknowledge": "Reconocer",
       "acknowledged": "Reconocido",
+      "badge": "Acción requerida",
       "body": "La última auditoría de deriva del flujo de trabajo falló. Revise la ejecución antes de modificar la automatización del repositorio.",
+      "observedAt": "Detectado {{time}}",
       "recovery": "Esta advertencia permanecerá hasta que se reciba una auditoría verificada exitosa.",
       "title": "Deriva del flujo de trabajo detectada",
-      "viewDetails": "Ver detalles"
+      "viewDetails": "Ver detalles",
+      "workflow": "Flujo de trabajo: {{workflow}}"
     },
     "charts": {
+      "dailyTotal": "Total diario",
       "driftDescription": "Éxitos y fallos verificados diarios",
+      "driftSummary": "{{audits}} auditorías · {{failures}} fallidas · {{rate}} de éxito",
       "driftTitle": "Resultados de auditorías de deriva",
+      "interactionHint": "Pase el cursor sobre un punto, o enfoque el gráfico y use las flechas, para consultar los valores diarios.",
       "mergesDescription": "Actualizaciones de dependencias fusionadas con éxito por día",
-      "mergesTitle": "Fusiones de Dependabot"
+      "mergeSummary": "{{count}} fusiones · {{duration}} de tiempo medio de fusión",
+      "mergesTitle": "Fusiones de Dependabot",
+      "passRate": "Tasa de éxito",
+      "rangeShare": "Proporción del intervalo seleccionado",
+      "tooltipDate": "{{date}}"
     },
     "filters": {
       "allEvents": "Todos los eventos",
@@ -127,6 +137,16 @@
   "activityTrend": {
     "exportCsvAria": "Exportar datos de actividad como CSV",
     "exportPngAria": "Exportar gráfico de actividad como PNG",
+    "exportFilterLabel": "Tipos de automatización para exportar",
+    "exportFilterHelp": "Seleccione qué series de actividad desea incluir. El gráfico del panel no cambia.",
+    "exportTypeSent": "Solicitudes enviadas",
+    "exportTypeOpens": "Aperturas de correo",
+    "exportTypeClicks": "Clics en enlaces de reseña",
+    "exportSelection_one": "{{count}} de 3 seleccionado",
+    "exportSelection_other": "{{count}} de 3 seleccionados",
+    "exportSelection": "{{count}} de 3 seleccionados",
+    "exportSelectAtLeastOne": "Mantenga seleccionado al menos un tipo de automatización.",
+    "exportSelectionEmpty": "Los tipos de automatización seleccionados no tienen actividad en este intervalo de fechas.",
     "exportUnavailable": "Aún no hay actividad de gráfico disponible para exportar.",
     "exported": "Tendencia de actividad exportada.",
     "csvDownloaded": "Se descargó el CSV de Tendencia de actividad.",

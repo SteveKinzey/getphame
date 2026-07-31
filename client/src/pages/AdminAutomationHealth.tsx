@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
+import type { TFunction } from "i18next";
 import {
   Activity,
   AlertTriangle,
@@ -8,12 +9,13 @@ import {
   Clock3,
   GitMerge,
   Loader2,
+  MousePointer2,
   RefreshCw,
   ShieldAlert,
   ShieldCheck,
   Star,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
@@ -24,6 +26,7 @@ import {
   LineChart,
   ResponsiveContainer,
   Tooltip,
+  type TooltipContentProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -493,11 +496,27 @@ export default function AdminAutomationHealth() {
                 description={t("automationHealth.charts.driftDescription", {
                   defaultValue: "Daily verified successes and failures",
                 })}
+                interactionHint={t("automationHealth.charts.interactionHint", {
+                  defaultValue:
+                    "Hover over a point, or focus the chart and use the arrow keys, to inspect daily values.",
+                })}
+                summary={t("automationHealth.charts.driftSummary", {
+                  audits: number.format(dashboard.data.drift.auditCount),
+                  failures: number.format(dashboard.data.drift.failureCount),
+                  rate:
+                    successRate == null
+                      ? t("automationHealth.notAvailable", {
+                          defaultValue: "N/A",
+                        })
+                      : percent.format(successRate),
+                  defaultValue: `${number.format(dashboard.data.drift.auditCount)} audits · ${number.format(dashboard.data.drift.failureCount)} failed · ${successRate == null ? "N/A" : percent.format(successRate)} pass rate`,
+                })}
               >
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={chartData}
                     margin={{ top: 8, right: 8, left: -18, bottom: 0 }}
+                    accessibilityLayer
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#d7dde6" />
                     <XAxis
@@ -506,7 +525,18 @@ export default function AdminAutomationHealth() {
                       tick={{ fontSize: 11 }}
                     />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
+                    <Tooltip
+                      isAnimationActive="auto"
+                      cursor={{ fill: "#f1f5f9" }}
+                      content={props => (
+                        <DriftChartTooltip
+                          {...props}
+                          t={t}
+                          numberFormatter={number}
+                          percentFormatter={percent}
+                        />
+                      )}
+                    />
                     <Legend />
                     <Bar
                       dataKey="driftSuccesses"
@@ -537,11 +567,24 @@ export default function AdminAutomationHealth() {
                 description={t("automationHealth.charts.mergesDescription", {
                   defaultValue: "Successfully merged dependency updates by day",
                 })}
+                interactionHint={t("automationHealth.charts.interactionHint", {
+                  defaultValue:
+                    "Hover over a point, or focus the chart and use the arrow keys, to inspect daily values.",
+                })}
+                summary={t("automationHealth.charts.mergeSummary", {
+                  count: number.format(dashboard.data.dependabot.mergedCount),
+                  duration: formatDuration(
+                    dashboard.data.dependabot.averageMergeDurationMs,
+                    t("automationHealth.notAvailable", { defaultValue: "N/A" })
+                  ),
+                  defaultValue: `${number.format(dashboard.data.dependabot.mergedCount)} merges · ${formatDuration(dashboard.data.dependabot.averageMergeDurationMs, "N/A")} average merge time`,
+                })}
               >
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={chartData}
                     margin={{ top: 8, right: 8, left: -18, bottom: 0 }}
+                    accessibilityLayer
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#d7dde6" />
                     <XAxis
@@ -550,7 +593,19 @@ export default function AdminAutomationHealth() {
                       tick={{ fontSize: 11 }}
                     />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
-                    <Tooltip />
+                    <Tooltip
+                      isAnimationActive="auto"
+                      cursor={{ stroke: "#64748b", strokeDasharray: "4 4" }}
+                      content={props => (
+                        <MergeChartTooltip
+                          {...props}
+                          t={t}
+                          numberFormatter={number}
+                          percentFormatter={percent}
+                          rangeTotal={dashboard.data.dependabot.mergedCount}
+                        />
+                      )}
+                    />
                     <Line
                       type="monotone"
                       dataKey="dependabotMerges"
@@ -724,6 +779,163 @@ export default function AdminAutomationHealth() {
   );
 }
 
+type NumberTooltipProps = TooltipContentProps & {
+  t: TFunction;
+  numberFormatter: Intl.NumberFormat;
+  percentFormatter: Intl.NumberFormat;
+};
+
+function DriftChartTooltip({
+  active,
+  label,
+  payload,
+  t,
+  numberFormatter,
+  percentFormatter,
+}: NumberTooltipProps) {
+  if (!active || !payload?.length) return null;
+  const successes = Number(
+    payload.find(entry => entry.dataKey === "driftSuccesses")?.value ?? 0
+  );
+  const failures = Number(
+    payload.find(entry => entry.dataKey === "driftFailures")?.value ?? 0
+  );
+  const total = successes + failures;
+
+  return (
+    <div
+      data-testid="automation-drift-chart-tooltip"
+      role="status"
+      aria-live="polite"
+      className="min-w-52 rounded-xl border border-slate-200 bg-white p-3 text-sm shadow-xl"
+    >
+      <p className="font-black rr-text-navy">
+        {t("automationHealth.charts.tooltipDate", {
+          date: String(label ?? ""),
+          defaultValue: "{{date}}",
+        })}
+      </p>
+      <dl className="mt-2 space-y-1.5">
+        <TooltipRow
+          label={t("automationHealth.result.success", {
+            defaultValue: "Successful",
+          })}
+          value={numberFormatter.format(successes)}
+          tone="success"
+        />
+        <TooltipRow
+          label={t("automationHealth.result.failure", {
+            defaultValue: "Failed",
+          })}
+          value={numberFormatter.format(failures)}
+          tone="failure"
+        />
+        <TooltipRow
+          label={t("automationHealth.charts.dailyTotal", {
+            defaultValue: "Daily total",
+          })}
+          value={numberFormatter.format(total)}
+          bordered
+        />
+        <TooltipRow
+          label={t("automationHealth.charts.passRate", {
+            defaultValue: "Pass rate",
+          })}
+          value={
+            total > 0
+              ? percentFormatter.format(successes / total)
+              : t("automationHealth.notAvailable", { defaultValue: "N/A" })
+          }
+        />
+      </dl>
+    </div>
+  );
+}
+
+function MergeChartTooltip({
+  active,
+  label,
+  payload,
+  t,
+  numberFormatter,
+  percentFormatter,
+  rangeTotal,
+}: NumberTooltipProps & { rangeTotal: number }) {
+  if (!active || !payload?.length) return null;
+  const merges = Number(payload[0]?.value ?? 0);
+
+  return (
+    <div
+      data-testid="automation-merge-chart-tooltip"
+      role="status"
+      aria-live="polite"
+      className="min-w-52 rounded-xl border border-slate-200 bg-white p-3 text-sm shadow-xl"
+    >
+      <p className="font-black rr-text-navy">
+        {t("automationHealth.charts.tooltipDate", {
+          date: String(label ?? ""),
+          defaultValue: "{{date}}",
+        })}
+      </p>
+      <dl className="mt-2 space-y-1.5">
+        <TooltipRow
+          label={t("automationHealth.metrics.merges", {
+            defaultValue: "Dependabot merges",
+          })}
+          value={numberFormatter.format(merges)}
+          tone="merge"
+        />
+        <TooltipRow
+          label={t("automationHealth.charts.rangeShare", {
+            defaultValue: "Share of selected range",
+          })}
+          value={
+            rangeTotal > 0
+              ? percentFormatter.format(merges / rangeTotal)
+              : t("automationHealth.notAvailable", { defaultValue: "N/A" })
+          }
+          bordered
+        />
+      </dl>
+    </div>
+  );
+}
+
+function TooltipRow({
+  label,
+  value,
+  tone,
+  bordered = false,
+}: {
+  label: string;
+  value: string;
+  tone?: "success" | "failure" | "merge";
+  bordered?: boolean;
+}) {
+  const toneClasses = {
+    success: "bg-emerald-700",
+    failure: "bg-red-700",
+    merge: "bg-amber-700",
+  };
+
+  return (
+    <div
+      className={`flex items-center justify-between gap-5 ${bordered ? "border-t border-slate-200 pt-1.5" : ""}`}
+    >
+      <dt className="inline-flex items-center gap-2 font-bold rr-text-navy-muted">
+        {tone && (
+          <span
+            className={`size-2 rounded-full ${toneClasses[tone]}`}
+            aria-hidden="true"
+          />
+        )}
+        {label}
+      </dt>
+      <dd className="font-black rr-text-navy">{value}</dd>
+    </div>
+  );
+}
+
 function MetricCard({
   icon,
   label,
@@ -766,25 +978,46 @@ function MetricCard({
 function ChartPanel({
   title,
   description,
+  interactionHint,
+  summary,
   children,
 }: {
   title: string;
   description: string;
+  interactionHint: string;
+  summary: string;
   children: React.ReactNode;
 }) {
+  const titleId = useId();
+  const descriptionId = useId();
+
   return (
-    <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
-      <h2 className="text-xl font-semibold rr-text-navy">{title}</h2>
-      <p className="mt-1 text-sm font-medium rr-text-navy-muted">
+    <section
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
+      className="rounded-2xl bg-white p-4 shadow-sm sm:p-5"
+    >
+      <h2 id={titleId} className="text-xl font-semibold rr-text-navy">
+        {title}
+      </h2>
+      <p
+        id={descriptionId}
+        className="mt-1 text-sm font-medium rr-text-navy-muted"
+      >
         {description}
       </p>
-      <div
-        className="mt-4 h-[300px] w-full"
-        role="img"
-        aria-label={`${title}. ${description}`}
-      >
-        {children}
-      </div>
+      <div className="mt-4 h-[300px] w-full">{children}</div>
+      <p className="mt-3 flex items-start gap-2 text-xs font-semibold rr-text-navy-muted">
+        <MousePointer2
+          size={14}
+          className="mt-0.5 shrink-0"
+          aria-hidden="true"
+        />
+        {interactionHint}
+      </p>
+      <p className="mt-2 border-t border-slate-200 pt-2 text-sm font-bold rr-text-navy">
+        {summary}
+      </p>
     </section>
   );
 }

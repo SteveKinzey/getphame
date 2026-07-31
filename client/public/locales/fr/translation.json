@@ -60,16 +60,26 @@
     "alert": {
       "acknowledge": "Reconnaître",
       "acknowledged": "Reconnu",
+      "badge": "Action requise",
       "body": "Le dernier audit de dérive du workflow a échoué. Examinez l’exécution avant de modifier l’automatisation du dépôt.",
+      "observedAt": "Détecté le {{time}}",
       "recovery": "Cet avertissement reste actif jusqu’à réception d’un audit vérifié réussi.",
       "title": "Dérive de workflow détectée",
-      "viewDetails": "Voir les détails"
+      "viewDetails": "Voir les détails",
+      "workflow": "Workflow : {{workflow}}"
     },
     "charts": {
+      "dailyTotal": "Total quotidien",
       "driftDescription": "Succès et échecs vérifiés par jour",
+      "driftSummary": "{{audits}} audits · {{failures}} en échec · {{rate}} de réussite",
       "driftTitle": "Résultats des audits de dérive",
+      "interactionHint": "Survolez un point, ou placez le focus sur le graphique et utilisez les flèches, pour consulter les valeurs quotidiennes.",
       "mergesDescription": "Mises à jour de dépendances fusionnées avec succès par jour",
-      "mergesTitle": "Fusions Dependabot"
+      "mergeSummary": "{{count}} fusions · durée moyenne de fusion : {{duration}}",
+      "mergesTitle": "Fusions Dependabot",
+      "passRate": "Taux de réussite",
+      "rangeShare": "Part de la période sélectionnée",
+      "tooltipDate": "{{date}}"
     },
     "filters": {
       "allEvents": "Tous les événements",
@@ -127,6 +137,16 @@
   "activityTrend": {
     "exportCsvAria": "Exporter les données d’activité au format CSV",
     "exportPngAria": "Exporter le graphique d’activité au format PNG",
+    "exportFilterLabel": "Types d’automatisation à exporter",
+    "exportFilterHelp": "Sélectionnez les séries d’activité à inclure. Le graphique du tableau de bord reste inchangé.",
+    "exportTypeSent": "Demandes envoyées",
+    "exportTypeOpens": "Ouvertures d’e-mails",
+    "exportTypeClicks": "Clics sur les liens d’avis",
+    "exportSelection_one": "{{count}} sur 3 sélectionné",
+    "exportSelection_other": "{{count}} sur 3 sélectionnés",
+    "exportSelection": "{{count}} sur 3 sélectionnés",
+    "exportSelectAtLeastOne": "Conservez au moins un type d’automatisation sélectionné.",
+    "exportSelectionEmpty": "Les types d’automatisation sélectionnés n’ont aucune activité sur cette période.",
     "exportUnavailable": "Aucune activité de graphique n’est encore disponible à exporter.",
     "exported": "Tendance d’activité exportée.",
     "csvDownloaded": "Le CSV de tendance d’activité a été téléchargé.",
