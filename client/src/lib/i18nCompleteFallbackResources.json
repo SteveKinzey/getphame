@@ -889,7 +889,11 @@
       "firstPlatform": "First platform",
       "link": "Link: {{url}}",
       "subject": "Subject:",
-      "body": "Body:"
+      "body": "Body:",
+      "tonePreviewTitle": "Review the AI-adjusted email",
+      "tonePreviewDescription": "Your current draft will not change until you choose Apply adjusted tone.",
+      "keepCurrentDraft": "Keep current draft",
+      "applyAdjustedTone": "Apply adjusted tone"
     },
     "pwaInstallBanner": {
       "dismiss": "Dismiss install banner",
@@ -1455,6 +1459,16 @@
           }
         }
       }
+    },
+    "csvDiagnostics": {
+      "downloadReport": "Download failed-row report",
+      "reportRowNumber": "CSV row",
+      "reportReason": "Reason",
+      "reportUnavailableRow": "Unavailable"
+    },
+    "activityTrend": {
+      "csvDownloaded": "Activity Trend CSV downloaded.",
+      "pngDownloaded": "Activity Trend PNG downloaded."
     }
   },
   "es": {
@@ -2372,7 +2386,11 @@
       "firstPlatform": "Primera plataforma",
       "link": "Enlace: {{url}}",
       "subject": "Asunto:",
-      "body": "Cuerpo:"
+      "body": "Cuerpo:",
+      "tonePreviewTitle": "Revisa el correo ajustado por IA",
+      "tonePreviewDescription": "Tu borrador actual no cambiará hasta que elijas Aplicar tono ajustado.",
+      "keepCurrentDraft": "Conservar el borrador actual",
+      "applyAdjustedTone": "Aplicar tono ajustado"
     },
     "pwaInstallBanner": {
       "dismiss": "Descartar banner de instalación",
@@ -3118,6 +3136,16 @@
           }
         }
       }
+    },
+    "csvDiagnostics": {
+      "downloadReport": "Descargar informe de filas fallidas",
+      "reportRowNumber": "Fila del CSV",
+      "reportReason": "Motivo",
+      "reportUnavailableRow": "No disponible"
+    },
+    "activityTrend": {
+      "csvDownloaded": "Se descargó el CSV de Tendencia de actividad.",
+      "pngDownloaded": "Se descargó el PNG de Tendencia de actividad."
     }
   },
   "fr": {
@@ -4041,7 +4069,11 @@
       "firstPlatform": "Première plateforme",
       "link": "Lien : {{url}}",
       "subject": "Objet :",
-      "body": "Corps :"
+      "body": "Corps :",
+      "tonePreviewTitle": "Vérifiez l’e-mail ajusté par l’IA",
+      "tonePreviewDescription": "Votre brouillon actuel ne changera pas avant que vous choisissiez Appliquer le ton ajusté.",
+      "keepCurrentDraft": "Conserver le brouillon actuel",
+      "applyAdjustedTone": "Appliquer le ton ajusté"
     },
     "pwaInstallBanner": {
       "dismiss": "Fermer la bannière d'installation",
@@ -4802,6 +4834,16 @@
           }
         }
       }
+    },
+    "csvDiagnostics": {
+      "downloadReport": "Télécharger le rapport des lignes en échec",
+      "reportRowNumber": "Ligne CSV",
+      "reportReason": "Motif",
+      "reportUnavailableRow": "Indisponible"
+    },
+    "activityTrend": {
+      "csvDownloaded": "Le CSV de tendance d’activité a été téléchargé.",
+      "pngDownloaded": "Le PNG de tendance d’activité a été téléchargé."
     }
   },
   "it": {
@@ -5704,7 +5746,11 @@
       "firstPlatform": "Prima piattaforma",
       "link": "Link: {{url}}",
       "subject": "Oggetto:",
-      "body": "Corpo:"
+      "body": "Corpo:",
+      "tonePreviewTitle": "Rivedi l’e-mail adattata dall’IA",
+      "tonePreviewDescription": "La bozza attuale non cambierà finché non scegli Applica il tono modificato.",
+      "keepCurrentDraft": "Mantieni la bozza attuale",
+      "applyAdjustedTone": "Applica il tono modificato"
     },
     "pwaInstallBanner": {
       "dismiss": "Chiudi banner di installazione",
@@ -6329,6 +6375,16 @@
           }
         }
       }
+    },
+    "csvDiagnostics": {
+      "downloadReport": "Scarica il report delle righe non riuscite",
+      "reportRowNumber": "Riga CSV",
+      "reportReason": "Motivo",
+      "reportUnavailableRow": "Non disponibile"
+    },
+    "activityTrend": {
+      "csvDownloaded": "CSV dell’andamento attività scaricato.",
+      "pngDownloaded": "PNG dell’andamento attività scaricato."
     }
   },
   "th": {
@@ -7222,7 +7278,11 @@
       "firstPlatform": "แพลตฟอร์มแรก",
       "link": "ลิงก์: {{url}}",
       "subject": "หัวข้อ:",
-      "body": "เนื้อหา:"
+      "body": "เนื้อหา:",
+      "tonePreviewTitle": "ตรวจสอบอีเมลที่ AI ปรับแล้ว",
+      "tonePreviewDescription": "ฉบับร่างปัจจุบันของคุณจะไม่เปลี่ยนจนกว่าคุณจะเลือกใช้โทนที่ปรับแล้ว",
+      "keepCurrentDraft": "เก็บฉบับร่างปัจจุบัน",
+      "applyAdjustedTone": "ใช้โทนที่ปรับแล้ว"
     },
     "pwaInstallBanner": {
       "dismiss": "ปิดแบนเนอร์ติดตั้ง",
@@ -7846,6 +7906,16 @@
           }
         }
       }
+    },
+    "csvDiagnostics": {
+      "downloadReport": "ดาวน์โหลดรายงานแถวที่ล้มเหลว",
+      "reportRowNumber": "แถว CSV",
+      "reportReason": "สาเหตุ",
+      "reportUnavailableRow": "ไม่พร้อมใช้งาน"
+    },
+    "activityTrend": {
+      "csvDownloaded": "ดาวน์โหลด CSV แนวโน้มกิจกรรมแล้ว",
+      "pngDownloaded": "ดาวน์โหลด PNG แนวโน้มกิจกรรมแล้ว"
     }
   },
   "zh-CN": {
@@ -8737,7 +8807,11 @@
       "firstPlatform": "首选平台",
       "link": "链接：{{url}}",
       "subject": "主题：",
-      "body": "正文："
+      "body": "正文：",
+      "tonePreviewTitle": "查看 AI 调整后的邮件",
+      "tonePreviewDescription": "在您选择应用调整后的语气之前，当前草稿不会更改。",
+      "keepCurrentDraft": "保留当前草稿",
+      "applyAdjustedTone": "应用调整后的语气"
     },
     "pwaInstallBanner": {
       "dismiss": "关闭安装横幅",
@@ -9353,6 +9427,16 @@
           }
         }
       }
+    },
+    "csvDiagnostics": {
+      "downloadReport": "下载失败行报告",
+      "reportRowNumber": "CSV 行",
+      "reportReason": "原因",
+      "reportUnavailableRow": "不可用"
+    },
+    "activityTrend": {
+      "csvDownloaded": "活动趋势 CSV 已下载。",
+      "pngDownloaded": "活动趋势 PNG 已下载。"
     }
   },
   "zh-TW": {
@@ -10245,7 +10329,11 @@
       "firstPlatform": "第一個平台",
       "link": "連結：{{url}}",
       "subject": "主旨：",
-      "body": "內容："
+      "body": "內容：",
+      "tonePreviewTitle": "查看 AI 調整後的電子郵件",
+      "tonePreviewDescription": "在您選擇套用調整後的語氣之前，目前草稿不會變更。",
+      "keepCurrentDraft": "保留目前草稿",
+      "applyAdjustedTone": "套用調整後的語氣"
     },
     "pwaInstallBanner": {
       "dismiss": "關閉安裝橫幅",
@@ -10875,6 +10963,16 @@
           }
         }
       }
+    },
+    "csvDiagnostics": {
+      "downloadReport": "下載失敗列報告",
+      "reportRowNumber": "CSV 列",
+      "reportReason": "原因",
+      "reportUnavailableRow": "無法使用"
+    },
+    "activityTrend": {
+      "csvDownloaded": "活動趨勢 CSV 已下載。",
+      "pngDownloaded": "活動趨勢 PNG 已下載。"
     }
   }
 }

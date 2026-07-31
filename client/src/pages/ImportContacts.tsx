@@ -27,6 +27,10 @@ import {
   type ContactImportErrorSummary,
   type ContactImportIssue,
 } from "@shared/contactImportDiagnostics";
+import {
+  buildContactImportErrorReportFilename,
+  serializeContactImportErrorReport,
+} from "@/lib/contactImportErrorReport";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type RawRow = Record<string, string>;
@@ -53,6 +57,10 @@ type CsvDiagnosticsLabels = {
   rows: (rows: string) => string;
   moreRows: string;
   privacyNote: string;
+  downloadReport: string;
+  reportRowNumber: string;
+  reportReason: string;
+  reportUnavailableRow: string;
 };
 
 function CsvErrorSummary({
@@ -72,6 +80,25 @@ function CsvErrorSummary({
     missing_email: labels.missingEmail,
     invalid_email: labels.invalidEmail,
     duplicate_email: labels.duplicateEmail,
+  };
+
+  const downloadFailedRowsReport = () => {
+    const csv = serializeContactImportErrorReport(summary.reportIssues, {
+      rowNumber: labels.reportRowNumber,
+      reason: labels.reportReason,
+      unavailableRow: labels.reportUnavailableRow,
+      reasonLabels: {
+        missing_email: labels.missingEmail,
+        invalid_email: labels.invalidEmail,
+        duplicate_email: labels.duplicateEmail,
+      },
+    });
+    const url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = buildContactImportErrorReportFilename();
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -103,6 +130,15 @@ function CsvErrorSummary({
           </li>
         ))}
       </ul>
+      <button
+        type="button"
+        onClick={downloadFailedRowsReport}
+        className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-xs font-black rr-bg-navy rr-text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+        data-testid="csv-error-report-download"
+      >
+        <Download size={14} aria-hidden="true" />
+        {labels.downloadReport}
+      </button>
       <p className="mt-3 text-[11px] font-semibold rr-text-navy-muted">{labels.privacyNote}</p>
     </section>
   );
@@ -200,7 +236,7 @@ export default function ImportContactsPage() {
   const [mapping, setMapping] = useState<Record<string, ColumnKey>>({});
   const [mappedRows, setMappedRows] = useState<MappedRow[]>([]);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
-  const [preImportSummary, setPreImportSummary] = useState<ContactImportErrorSummary>({ totalRejected: 0, reasons: [] });
+  const [preImportSummary, setPreImportSummary] = useState<ContactImportErrorSummary>({ totalRejected: 0, reasons: [], reportIssues: [] });
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [contactPickerOpen, setContactPickerOpen] = useState(false);
@@ -214,6 +250,10 @@ export default function ImportContactsPage() {
     rows: (rows) => t("csvDiagnostics.rows", { rows, defaultValue: "CSV rows: {{rows}}" }),
     moreRows: t("csvDiagnostics.moreRows", { defaultValue: "and more" }),
     privacyNote: t("csvDiagnostics.privacyNote", { defaultValue: "Only row numbers are shown here; client details stay in your CSV file." }),
+    downloadReport: t("csvDiagnostics.downloadReport", { defaultValue: "Download failed-row report" }),
+    reportRowNumber: t("csvDiagnostics.reportRowNumber", { defaultValue: "CSV row" }),
+    reportReason: t("csvDiagnostics.reportReason", { defaultValue: "Reason" }),
+    reportUnavailableRow: t("csvDiagnostics.reportUnavailableRow", { defaultValue: "Unavailable" }),
   };
 
   const importMutation = trpc.contacts.importCSV.useMutation({
@@ -246,7 +286,7 @@ export default function ImportContactsPage() {
       setHeaders(h);
       setRawRows(r);
       setMapping(autoDetect(h));
-      setPreImportSummary({ totalRejected: 0, reasons: [] });
+      setPreImportSummary({ totalRejected: 0, reasons: [], reportIssues: [] });
       setImportResult(null);
       setStep(1);
     };
@@ -267,7 +307,7 @@ export default function ImportContactsPage() {
     const phoneCol = Object.entries(mapping).find(([, v]) => v === "phone")?.[0];
     const notesCol = Object.entries(mapping).find(([, v]) => v === "notes")?.[0];
 
-    if (!emailCol) return { rows: [], errorSummary: { totalRejected: 0, reasons: [] } };
+    if (!emailCol) return { rows: [], errorSummary: { totalRejected: 0, reasons: [], reportIssues: [] } };
 
     const issues: ContactImportIssue[] = [];
     const rows = rawRows
@@ -642,7 +682,7 @@ export default function ImportContactsPage() {
                   setHeaders([]);
                   setRawRows([]);
                   setMappedRows([]);
-                  setPreImportSummary({ totalRejected: 0, reasons: [] });
+                  setPreImportSummary({ totalRejected: 0, reasons: [], reportIssues: [] });
                   setImportResult(null);
                 }}
                 className="w-full py-3 rounded-2xl text-sm font-black"
@@ -663,7 +703,7 @@ export default function ImportContactsPage() {
       onImport={(contacts) => {
         // Map native contacts directly into the importCSV mutation format
         const rows = contacts.map((c) => ({ name: c.name, email: c.email }));
-        setPreImportSummary({ totalRejected: 0, reasons: [] });
+        setPreImportSummary({ totalRejected: 0, reasons: [], reportIssues: [] });
         importMutation.mutate({ rows });
         setContactPickerOpen(false);
       }}

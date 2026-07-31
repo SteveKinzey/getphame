@@ -20,6 +20,8 @@ export type ContactImportErrorSummary = {
     rowNumbers: number[];
     hasMoreRows: boolean;
   }>;
+  /** Full privacy-safe issue list for a local failed-row CSV report. */
+  reportIssues: ContactImportIssue[];
 };
 
 export const MAX_IMPORT_ERROR_ROW_NUMBERS = 10;
@@ -61,6 +63,10 @@ export function summarizeContactImportIssues(
         rowNumbers: uniqueRows.slice(0, MAX_IMPORT_ERROR_ROW_NUMBERS),
         hasMoreRows: uniqueRows.length > MAX_IMPORT_ERROR_ROW_NUMBERS,
       }];
+    }),
+    reportIssues: [...issues].sort((left, right) => {
+      const rowDifference = (left.rowNumber ?? 0) - (right.rowNumber ?? 0);
+      return rowDifference === 0 ? left.reason.localeCompare(right.reason) : rowDifference;
     }),
   };
 }
