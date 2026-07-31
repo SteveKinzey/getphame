@@ -45,6 +45,67 @@ describe("GitHub Actions automation", () => {
     expect(workflow).toContain("autoMergeAllowed");
     expect(workflow).not.toContain(".allow_auto_merge");
     expect(workflow).toContain("docker://rhysd/actionlint:1.7.12");
+    expect(workflow).toContain("publish-result:");
+    expect(workflow).toContain("needs: audit");
+    expect(workflow).toContain("always() && needs.audit.result != 'skipped'");
+    expect(workflow).toContain("id-token: write");
+    expect(workflow).toContain('kind: "drift_audit"');
+    expect(workflow).toContain("failureCode:");
+    expect(workflow).toContain("failureSummary:");
+    expect(workflow).toContain("https://getphame.app/api/automation/events");
+    expect(workflow).toContain(
+      "scripts/publish-oidc-automation-event.sh /tmp/automation-event.json"
+    );
+    expect(workflow).not.toMatch(
+      /secrets\.[A-Z0-9_]*(GITHUB|TOKEN|AUTOMATION)/
+    );
+  });
+
+  it("publishes only merged Dependabot GitHub Actions outcomes through OIDC", () => {
+    const workflow = readProjectFile(
+      "../.github/workflows/dependabot-merge-observability.yml"
+    );
+    expect(workflow).toContain("pull_request:");
+    expect(workflow).not.toContain("pull_request_target:");
+    expect(workflow).toContain("contents: read");
+    expect(workflow).toContain("id-token: write");
+    expect(workflow).toContain("github.event.pull_request.merged == true");
+    expect(workflow).toContain(
+      "github.event.pull_request.user.login == 'dependabot[bot]'"
+    );
+    expect(workflow).toContain(
+      "github.event.pull_request.head.repo.full_name == github.repository"
+    );
+    expect(workflow).toContain(
+      "github.event.pull_request.base.ref == github.event.repository.default_branch"
+    );
+    expect(workflow).toContain(
+      "startsWith(github.event.pull_request.head.ref, 'dependabot/github_actions/')"
+    );
+    expect(workflow).toContain('kind: "dependabot_merge"');
+    expect(workflow).toContain("https://getphame.app/api/automation/events");
+    expect(workflow).not.toMatch(
+      /secrets\.[A-Z0-9_]*(GITHUB|TOKEN|AUTOMATION)/
+    );
+  });
+
+  it("requests and delivers a short-lived OIDC token without argument exposure", () => {
+    const publisher = readProjectFile(
+      "../scripts/publish-oidc-automation-event.sh"
+    );
+    expect(publisher).toContain("ACTIONS_ID_TOKEN_REQUEST_URL");
+    expect(publisher).toContain("ACTIONS_ID_TOKEN_REQUEST_TOKEN");
+    expect(publisher).toContain("audience=${encoded_audience}");
+    expect(publisher).toContain('process.stdin.setEncoding("utf8")');
+    expect(publisher).toContain("--max-time 15");
+    expect(publisher).toContain("--max-time 20");
+    expect(publisher).toContain("--retry 3");
+    expect(publisher).toContain('--data-binary "@${body_file}"');
+    expect(publisher).toContain(
+      '--header "Authorization: Bearer ${oidc_token}"'
+    );
+    expect(publisher).toContain("body_bytes > 16384");
+    expect(publisher).not.toContain("process.argv[2]");
   });
   it("routes CI configuration ownership without requiring owner approval", () => {
     const codeowners = readProjectFile("../.github/CODEOWNERS");

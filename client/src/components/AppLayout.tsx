@@ -3,7 +3,22 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut, UserRound, Code2, BookOpen } from "lucide-react";
+import {
+  Home,
+  Send,
+  BarChart2,
+  Settings,
+  Moon,
+  Sun,
+  Zap,
+  Crown,
+  ShieldCheck,
+  Users,
+  LogOut,
+  UserRound,
+  Code2,
+  BookOpen,
+} from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -13,7 +28,12 @@ import { ReactNode } from "react";
 import LandingBrandLink from "@/components/LandingBrandLink";
 import NetworkStatusBadge from "@/components/NetworkStatusBadge";
 import ProBadge from "@/components/ProBadge";
-import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import AutomationDriftAlert from "@/components/AutomationDriftAlert";
+import {
+  canManageSubscription,
+  getEffectivePlan,
+  PLAN_LABELS,
+} from "@shared/plans";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,24 +53,72 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { t } = useTranslation();
   const { buttonPressHaptic } = useHaptics();
   const { user, logout, loading: authLoading } = useAuth();
-  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: !!user });
-  const { data: accountProfile } = trpc.accountProfile.get.useQuery(undefined, { enabled: !!user });
-  const { data: subscription } = trpc.stripe.subscriptionStatus.useQuery(undefined, {
-    enabled: !!user && profile?.tier !== "free" && profile?.tier !== "lifetime",
+  const { data: profile } = trpc.profile.get.useQuery(undefined, {
+    enabled: !!user,
   });
+  const { data: accountProfile } = trpc.accountProfile.get.useQuery(undefined, {
+    enabled: !!user,
+  });
+  const { data: subscription } = trpc.stripe.subscriptionStatus.useQuery(
+    undefined,
+    {
+      enabled:
+        !!user && profile?.tier !== "free" && profile?.tier !== "lifetime",
+    }
+  );
   const isDark = theme === "dark";
-  const manualLabel = user?.role === "admin"
-    ? t("nav.adminManual", { defaultValue: "Admin Manual" })
-    : t("nav.userManual", { defaultValue: "User Manual" });
+  const manualLabel =
+    user?.role === "admin"
+      ? t("nav.adminManual", { defaultValue: "Admin Manual" })
+      : t("nav.userManual", { defaultValue: "User Manual" });
 
   const NAV_ITEMS = [
-    { path: "/", label: t("nav.home"), Icon: Home, containsPremiumFeatures: false },
-    { path: "/send", label: t("nav.send"), Icon: Send, containsPremiumFeatures: false },
-    { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2, containsPremiumFeatures: false },
-    { path: "/developer", label: t("nav.developer", { defaultValue: "Developer" }), Icon: Code2, containsPremiumFeatures: true },
-    { path: "/settings", label: t("nav.settings"), Icon: Settings, containsPremiumFeatures: true },
-    { path: "/manual", label: manualLabel, Icon: BookOpen, containsPremiumFeatures: false },
-    ...(user?.role === "admin" ? [{ path: "/admin", label: t("nav.admin", { defaultValue: "Administration" }), Icon: Users, containsPremiumFeatures: false }] : []),
+    {
+      path: "/",
+      label: t("nav.home"),
+      Icon: Home,
+      containsPremiumFeatures: false,
+    },
+    {
+      path: "/send",
+      label: t("nav.send"),
+      Icon: Send,
+      containsPremiumFeatures: false,
+    },
+    {
+      path: "/dashboard",
+      label: t("nav.dashboard"),
+      Icon: BarChart2,
+      containsPremiumFeatures: false,
+    },
+    {
+      path: "/developer",
+      label: t("nav.developer", { defaultValue: "Developer" }),
+      Icon: Code2,
+      containsPremiumFeatures: true,
+    },
+    {
+      path: "/settings",
+      label: t("nav.settings"),
+      Icon: Settings,
+      containsPremiumFeatures: true,
+    },
+    {
+      path: "/manual",
+      label: manualLabel,
+      Icon: BookOpen,
+      containsPremiumFeatures: false,
+    },
+    ...(user?.role === "admin"
+      ? [
+          {
+            path: "/admin",
+            label: t("nav.admin", { defaultValue: "Administration" }),
+            Icon: Users,
+            containsPremiumFeatures: false,
+          },
+        ]
+      : []),
   ];
 
   const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
@@ -59,7 +127,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const isLife = effectivePlan === "life";
   const manageSubscription = canManageSubscription(effectivePlan);
   const renewalDate = subscription?.currentPeriodEnd
-    ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(subscription.currentPeriodEnd))
+    ? new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }).format(new Date(subscription.currentPeriodEnd))
     : null;
 
   return (
@@ -92,7 +164,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <nav className="flex-1 py-3 flex flex-col gap-1 px-2">
           {/* Gold Send Request CTA — desktop only (hidden on icon-only tablet) */}
           <button
-            onClick={() => { buttonPressHaptic(); navigate("/send"); }}
+            onClick={() => {
+              buttonPressHaptic();
+              navigate("/send");
+            }}
             className="mb-2 flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2.5 rounded-xl w-full transition-all duration-200"
             style={{
               background: "oklch(0.75 0.18 80)",
@@ -132,7 +207,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 aria-label={accessibleLabel}
                 className="flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl transition-all duration-200 group w-full text-left"
                 style={{
-                  background: isActive ? "oklch(0.80 0.18 80 / 0.12)" : "transparent",
+                  background: isActive
+                    ? "oklch(0.80 0.18 80 / 0.12)"
+                    : "transparent",
                   border: isActive
                     ? "1px solid oklch(0.80 0.18 80 / 0.25)"
                     : "1px solid transparent",
@@ -151,13 +228,19 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     }}
                   />
                   {showPremiumMarker && (
-                    <ProBadge variant="compact" size="sm" className="absolute -right-2.5 -top-2.5" />
+                    <ProBadge
+                      variant="compact"
+                      size="sm"
+                      className="absolute -right-2.5 -top-2.5"
+                    />
                   )}
                 </span>
                 <span
                   className="app-sidebar-label text-sm font-semibold hidden transition-colors duration-200"
                   style={{
-                    color: isActive ? "oklch(0.80 0.18 80)" : "oklch(0.65 0.04 260)",
+                    color: isActive
+                      ? "oklch(0.80 0.18 80)"
+                      : "oklch(0.65 0.04 260)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -179,16 +262,27 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <button
               type="button"
               data-testid="admin-sidebar-badge"
-              onClick={() => { buttonPressHaptic(); navigate("/admin"); }}
+              onClick={() => {
+                buttonPressHaptic();
+                navigate("/admin");
+              }}
               className="flex w-full items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl transition active:scale-[0.97]"
-              title={t("account.administratorAccount", { defaultValue: "Administrator account" })}
-              aria-label={t("nav.admin", { defaultValue: "Open administration hub" })}
+              title={t("account.administratorAccount", {
+                defaultValue: "Administrator account",
+              })}
+              aria-label={t("nav.admin", {
+                defaultValue: "Open administration hub",
+              })}
               style={{
                 background: "oklch(0.30 0.08 260)",
                 border: "1px solid oklch(0.80 0.18 80 / 0.42)",
               }}
             >
-              <ShieldCheck size={14} className="flex-shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} />
+              <ShieldCheck
+                size={14}
+                className="flex-shrink-0"
+                style={{ color: "oklch(0.80 0.18 80)" }}
+              />
               <span className="app-sidebar-label text-xs font-black hidden text-white">
                 {t("account.administrator", { defaultValue: "Administrator" })}
               </span>
@@ -204,14 +298,27 @@ export default function AppLayout({ children }: AppLayoutProps) {
               border: "1px solid oklch(0.80 0.18 80 / 0.22)",
             }}
           >
-            <Crown size={14} className="flex-shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} />
-            <span className="app-sidebar-label text-xs font-bold hidden" style={{ color: "oklch(0.80 0.18 80)" }}>
+            <Crown
+              size={14}
+              className="flex-shrink-0"
+              style={{ color: "oklch(0.80 0.18 80)" }}
+            />
+            <span
+              className="app-sidebar-label text-xs font-bold hidden"
+              style={{ color: "oklch(0.80 0.18 80)" }}
+            >
               {t("account.status", { defaultValue: "Status" })}: {planLabel}
               {renewalDate && !isLife && (
                 <span className="block mt-0.5 text-[10px] font-semibold text-white/70">
                   {subscription?.cancelAtPeriodEnd
-                    ? t("account.accessUntil", { defaultValue: "Access until {{date}}", date: renewalDate })
-                    : t("account.renewsOn", { defaultValue: "Renews {{date}}", date: renewalDate })}
+                    ? t("account.accessUntil", {
+                        defaultValue: "Access until {{date}}",
+                        date: renewalDate,
+                      })
+                    : t("account.renewsOn", {
+                        defaultValue: "Renews {{date}}",
+                        date: renewalDate,
+                      })}
                 </span>
               )}
             </span>
@@ -220,7 +327,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
           {!isLife && (
             <button
               onClick={() => navigate("/upgrade")}
-              title={manageSubscription ? t("account.managePlan", { defaultValue: "Manage plan" }) : t("account.upgrade", { defaultValue: "Upgrade" })}
+              title={
+                manageSubscription
+                  ? t("account.managePlan", { defaultValue: "Manage plan" })
+                  : t("account.upgrade", { defaultValue: "Upgrade" })
+              }
               className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl transition-all duration-200 hover:opacity-80 w-full"
               style={{
                 background: "oklch(0.80 0.18 80 / 0.08)",
@@ -236,7 +347,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 className="app-sidebar-label text-xs font-bold hidden"
                 style={{ color: "oklch(0.80 0.18 80)" }}
               >
-                {manageSubscription ? t("account.managePlan", { defaultValue: "Manage plan" }) : t("account.upgrade", { defaultValue: "Upgrade" })}
+                {manageSubscription
+                  ? t("account.managePlan", { defaultValue: "Manage plan" })
+                  : t("account.upgrade", { defaultValue: "Upgrade" })}
               </span>
             </button>
           )}
@@ -278,16 +391,26 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 <button
                   type="button"
                   data-testid="sidebar-account-menu-trigger"
-                  aria-label={t("profileMenu.open", { defaultValue: "Open account menu" })}
+                  aria-label={t("profileMenu.open", {
+                    defaultValue: "Open account menu",
+                  })}
                   className="flex w-full items-center justify-center lg:justify-start gap-2.5 px-2 lg:px-3 py-2 rounded-xl text-left transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
                   style={{ background: "oklch(0.18 0.06 260)" }}
                 >
-                  <div className="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full" style={{ background: "oklch(0.80 0.18 80)" }}>
+                  <div
+                    className="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full"
+                    style={{ background: "oklch(0.80 0.18 80)" }}
+                  >
                     <img
-                      src={accountProfile?.avatarUrl || "https://assets.getphame.app/getphame-logo.svg"}
-                      alt={accountProfile?.avatarUrl
-                        ? `${user.name || "Get Phame user"} profile photo`
-                        : "Get Phame account profile"}
+                      src={
+                        accountProfile?.avatarUrl ||
+                        "https://assets.getphame.app/getphame-logo.svg"
+                      }
+                      alt={
+                        accountProfile?.avatarUrl
+                          ? `${user.name || "Get Phame user"} profile photo`
+                          : "Get Phame account profile"
+                      }
                       className="h-full w-full object-cover"
                     />
                   </div>
@@ -295,7 +418,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     <p className="text-xs font-semibold text-white truncate">
                       {user.name || "User"}
                     </p>
-                    <p className="text-xs truncate" style={{ color: "oklch(0.55 0.04 260)" }}>
+                    <p
+                      className="text-xs truncate"
+                      style={{ color: "oklch(0.55 0.04 260)" }}
+                    >
                       {user.email}
                     </p>
                   </div>
@@ -309,10 +435,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
               >
                 <DropdownMenuLabel className="px-3 py-2 font-normal">
                   <span className="block text-[11px] font-semibold uppercase tracking-wide text-white/50">
-                    {t("profileMenu.signedInAs", { defaultValue: "Signed in as" })}
+                    {t("profileMenu.signedInAs", {
+                      defaultValue: "Signed in as",
+                    })}
                   </span>
-                  <span className="mt-1 block truncate text-sm font-bold text-white">{user.name || "User"}</span>
-                  <span className="block truncate text-xs text-white/60">{user.email}</span>
+                  <span className="mt-1 block truncate text-sm font-bold text-white">
+                    {user.name || "User"}
+                  </span>
+                  <span className="block truncate text-xs text-white/60">
+                    {user.email}
+                  </span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-white/15" />
                 <DropdownMenuItem
@@ -335,7 +467,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
                 >
                   <UserRound size={18} className="rr-text-gold" />
-                  {t("profileMenu.accountDetails", { defaultValue: "Account details" })}
+                  {t("profileMenu.accountDetails", {
+                    defaultValue: "Account details",
+                  })}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   data-testid="sidebar-manual-link"
@@ -350,21 +484,31 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   data-testid="sidebar-theme-toggle"
-                  onSelect={(event) => {
+                  onSelect={event => {
                     event.preventDefault();
                     buttonPressHaptic();
                     toggleTheme?.();
                   }}
                   className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
                 >
-                  {isDark ? <Sun size={18} className="rr-text-gold" /> : <Moon size={18} className="rr-text-gold" />}
+                  {isDark ? (
+                    <Sun size={18} className="rr-text-gold" />
+                  ) : (
+                    <Moon size={18} className="rr-text-gold" />
+                  )}
                   <span className="flex-1">
                     {isDark
-                      ? t("profileMenu.lightMode", { defaultValue: "Light mode" })
-                      : t("profileMenu.darkMode", { defaultValue: "Dark mode" })}
+                      ? t("profileMenu.lightMode", {
+                          defaultValue: "Light mode",
+                        })
+                      : t("profileMenu.darkMode", {
+                          defaultValue: "Dark mode",
+                        })}
                   </span>
                   <span className="text-[10px] font-bold uppercase tracking-wide text-white/45">
-                    {isDark ? t("common.on", { defaultValue: "On" }) : t("common.off", { defaultValue: "Off" })}
+                    {isDark
+                      ? t("common.on", { defaultValue: "On" })
+                      : t("common.off", { defaultValue: "Off" })}
                   </span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-white/15" />
@@ -388,6 +532,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
       {/* ── Main content — offset on md/lg, full-width on mobile ─────── */}
       <div className="app-main flex-1 min-h-screen">
+        <AutomationDriftAlert />
         {children}
       </div>
     </>

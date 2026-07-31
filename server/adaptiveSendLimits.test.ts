@@ -22,7 +22,7 @@ const DAY_MS = 86_400_000;
 const NOW = Date.UTC(2026, 6, 22, 12, 0, 0);
 
 function channel(
-  overrides: Partial<AdaptiveSendChannelDescriptor> = {},
+  overrides: Partial<AdaptiveSendChannelDescriptor> = {}
 ): AdaptiveSendChannelDescriptor {
   return {
     key: "personal:1:gmail",
@@ -35,7 +35,9 @@ function channel(
   };
 }
 
-function status(overrides: Partial<AdaptiveSendStatus> = {}): AdaptiveSendStatus {
+function status(
+  overrides: Partial<AdaptiveSendStatus> = {}
+): AdaptiveSendStatus {
   return {
     configured: true,
     providerId: "gmail",
@@ -87,19 +89,25 @@ describe("adaptive send policy", () => {
       dailyLimit: 25,
     });
 
-    expect(buildAdaptiveSendPolicy(channel({ connectedAt: NOW - 4 * DAY_MS }), NOW)).toMatchObject({
+    expect(
+      buildAdaptiveSendPolicy(channel({ connectedAt: NOW - 4 * DAY_MS }), NOW)
+    ).toMatchObject({
       rampStage: "warming",
       hourlyLimit: 10,
       dailyLimit: 50,
     });
 
-    expect(buildAdaptiveSendPolicy(channel({ connectedAt: NOW - 10 * DAY_MS }), NOW)).toMatchObject({
+    expect(
+      buildAdaptiveSendPolicy(channel({ connectedAt: NOW - 10 * DAY_MS }), NOW)
+    ).toMatchObject({
       rampStage: "building",
       hourlyLimit: 15,
       dailyLimit: 75,
     });
 
-    expect(buildAdaptiveSendPolicy(channel({ connectedAt: NOW - 30 * DAY_MS }), NOW)).toMatchObject({
+    expect(
+      buildAdaptiveSendPolicy(channel({ connectedAt: NOW - 30 * DAY_MS }), NOW)
+    ).toMatchObject({
       rampStage: "established",
       hourlyLimit: 20,
       dailyLimit: 100,
@@ -123,7 +131,9 @@ describe("adaptive send policy", () => {
       hardDailyCeiling: 2_000,
     });
 
-    expect(buildAdaptiveSendPolicy({ ...bulk, connectedAt: NOW - 30 * DAY_MS }, NOW)).toMatchObject({
+    expect(
+      buildAdaptiveSendPolicy({ ...bulk, connectedAt: NOW - 30 * DAY_MS }, NOW)
+    ).toMatchObject({
       rampStage: "established",
       hourlyLimit: 250,
       dailyLimit: 1_500,
@@ -133,47 +143,79 @@ describe("adaptive send policy", () => {
   });
 
   it("uses conservative custom-SMTP defaults for unknown providers", () => {
-    expect(buildAdaptiveSendPolicy(channel({
-      providerId: "unknown_relay",
-      connectedAt: NOW - 30 * DAY_MS,
-    }), NOW)).toMatchObject({
+    expect(
+      buildAdaptiveSendPolicy(
+        channel({
+          providerId: "unknown_relay",
+          connectedAt: NOW - 30 * DAY_MS,
+        }),
+        NOW
+      )
+    ).toMatchObject({
       hourlyLimit: 15,
       dailyLimit: 75,
     });
   });
 
   it("escalates warnings at the configured thresholds and blocks at exhaustion", () => {
-    expect(getAdaptiveSendWarningLevel(ADAPTIVE_SEND_WARNING_THRESHOLD - 0.01, 1)).toBe("normal");
-    expect(getAdaptiveSendWarningLevel(ADAPTIVE_SEND_WARNING_THRESHOLD, 1)).toBe("approaching");
-    expect(getAdaptiveSendWarningLevel(ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD, 1)).toBe("high");
+    expect(
+      getAdaptiveSendWarningLevel(ADAPTIVE_SEND_WARNING_THRESHOLD - 0.01, 1)
+    ).toBe("normal");
+    expect(
+      getAdaptiveSendWarningLevel(ADAPTIVE_SEND_WARNING_THRESHOLD, 1)
+    ).toBe("approaching");
+    expect(
+      getAdaptiveSendWarningLevel(ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD, 1)
+    ).toBe("high");
     expect(getAdaptiveSendWarningLevel(1, 1)).toBe("blocked");
     expect(getAdaptiveSendWarningLevel(0.2, 0)).toBe("blocked");
   });
 
   it("suggests paid Bulk Sender paths without allowing an upgrade to bypass safety", () => {
     expect(getAdaptiveSendRecommendedAction(channel())).toBe("upgrade_plan");
-    expect(getAdaptiveSendRecommendedAction(channel({ tier: "pro" }))).toBe("connect_bulk_sender");
-    expect(getAdaptiveSendRecommendedAction(channel({ type: "bulk", tier: "pro" }))).toBeNull();
+    expect(getAdaptiveSendRecommendedAction(channel({ tier: "pro" }))).toBe(
+      "connect_bulk_sender"
+    );
+    expect(
+      getAdaptiveSendRecommendedAction(channel({ type: "bulk", tier: "pro" }))
+    ).toBeNull();
   });
 });
 
 describe("outbound provider classification", () => {
   it("distinguishes personal Gmail from Google Workspace and classifies common relays", () => {
-    expect(classifyPersonalSmtpProvider("smtp.gmail.com", "owner@gmail.com")).toEqual({ id: "gmail", label: "Gmail" });
-    expect(classifyPersonalSmtpProvider("smtp.gmail.com", "owner@business.example")).toEqual({ id: "google_workspace", label: "Google Workspace" });
-    expect(classifyPersonalSmtpProvider("smtp.office365.com", "owner@business.example").id).toBe("microsoft");
-    expect(classifyPersonalSmtpProvider("smtp.unknown.example", "owner@business.example").id).toBe("custom_smtp");
+    expect(
+      classifyPersonalSmtpProvider("smtp.gmail.com", "owner@gmail.com")
+    ).toEqual({ id: "gmail", label: "Gmail" });
+    expect(
+      classifyPersonalSmtpProvider("smtp.gmail.com", "owner@business.example")
+    ).toEqual({ id: "google_workspace", label: "Google Workspace" });
+    expect(
+      classifyPersonalSmtpProvider(
+        "smtp.office365.com",
+        "owner@business.example"
+      ).id
+    ).toBe("microsoft");
+    expect(
+      classifyPersonalSmtpProvider(
+        "smtp.unknown.example",
+        "owner@business.example"
+      ).id
+    ).toBe("custom_smtp");
   });
 });
 
 describe("adaptive limit errors", () => {
   it("returns retry metadata for the exhausted hourly window", () => {
-    const error = new AdaptiveSendLimitError(status({
-      hourlyRemaining: 0,
-      remaining: 0,
-      warningLevel: "blocked",
-      hourlyResetAt: NOW + 90_000,
-    }), NOW);
+    const error = new AdaptiveSendLimitError(
+      status({
+        hourlyRemaining: 0,
+        remaining: 0,
+        warningLevel: "blocked",
+        hourlyResetAt: NOW + 90_000,
+      }),
+      NOW
+    );
 
     expect(error.code).toBe("ADAPTIVE_SEND_LIMIT_REACHED");
     expect(error.retryAfterSeconds).toBe(90);
@@ -181,27 +223,31 @@ describe("adaptive limit errors", () => {
   });
 
   it("uses the daily reset when hourly capacity remains", () => {
-    const error = new AdaptiveSendLimitError(status({
-      dailyRemaining: 0,
-      hourlyRemaining: 5,
-      remaining: 0,
-      warningLevel: "blocked",
-      dailyResetAt: NOW + 7_200_000,
-    }), NOW);
+    const error = new AdaptiveSendLimitError(
+      status({
+        dailyRemaining: 0,
+        hourlyRemaining: 5,
+        remaining: 0,
+        warningLevel: "blocked",
+        dailyResetAt: NOW + 7_200_000,
+      }),
+      NOW
+    );
 
     expect(error.retryAfterSeconds).toBe(7_200);
   });
 });
 
 describe("adaptive sending production contracts", () => {
-  const read = (relativePath: string) => readFileSync(join(PROJECT_ROOT, relativePath), "utf8");
+  const read = (relativePath: string) =>
+    readFileSync(join(PROJECT_ROOT, relativePath), "utf8");
 
   it("persists atomic provider and account windows with the required uniqueness invariant", () => {
     const schema = read("drizzle/schema.ts");
     const migration = read("drizzle/0024_harsh_kabuki.sql");
     const service = read("server/adaptiveSendLimits.ts");
 
-    expect(schema).toContain('pgTable("outbound_send_limit_windows"');
+    expect(schema).toMatch(/pgTable\(\s*"outbound_send_limit_windows"/);
     expect(migration).toContain("outbound_send_limit_scope_window_unique");
     expect(migration).toContain("outbound_send_limit_user_expiry_idx");
     expect(service).toContain("db.transaction");
@@ -231,27 +277,43 @@ describe("adaptive sending production contracts", () => {
     const woo = read("client/src/pages/WooCustomers.tsx");
 
     expect(component).toContain("Changing providers cannot bypass protection.");
-    expect(component).toContain('onClick={() => openUpgradeModal("bulk_sender")}');
+    expect(component).toContain(
+      'onClick={() => openUpgradeModal("bulk_sender")}'
+    );
     expect(component).toContain('<ProBadge variant="locked" size="sm" />');
     expect(component).toContain('href="/settings#bulk-sender"');
     expect(component).not.toContain('href="/upgrade"');
-    expect(settings).toContain("<AdaptiveSendLimitStatus status={adaptiveSendStatus}");
+    expect(settings).toContain(
+      "<AdaptiveSendLimitStatus status={adaptiveSendStatus}"
+    );
     expect(contacts).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");
     expect(woo).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");
   });
 
   it("keeps every adaptive sending string complete in all seven maintained locales", () => {
     const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"];
-    const english = JSON.parse(read("client/public/locales/en/translation.json")) as Record<string, unknown>;
-    const paths = collectStringPaths(english.adaptiveSending, "adaptiveSending");
+    const english = JSON.parse(
+      read("client/public/locales/en/translation.json")
+    ) as Record<string, unknown>;
+    const paths = collectStringPaths(
+      english.adaptiveSending,
+      "adaptiveSending"
+    );
 
     expect(paths.length).toBeGreaterThanOrEqual(20);
     for (const locale of locales) {
-      const bundle = JSON.parse(read(`client/public/locales/${locale}/translation.json`)) as Record<string, unknown>;
+      const bundle = JSON.parse(
+        read(`client/public/locales/${locale}/translation.json`)
+      ) as Record<string, unknown>;
       for (const path of paths) {
         const value = getByPath(bundle, path);
-        expect(value, `${locale} is missing ${path}`).toEqual(expect.any(String));
-        expect((value as string).trim(), `${locale} has an empty ${path}`).not.toBe("");
+        expect(value, `${locale} is missing ${path}`).toEqual(
+          expect.any(String)
+        );
+        expect(
+          (value as string).trim(),
+          `${locale} has an empty ${path}`
+        ).not.toBe("");
       }
     }
   });
