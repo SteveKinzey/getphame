@@ -4064,12 +4064,160 @@
     "lastDays": "Derniers {{count}} jours"
   },
   "securityAuditReleaseVerification": {
-    "dashboardCardTitle": "Vérification de la mise en production de l’audit de sécurité", "dashboardCardBody": "Consultez les preuves de la mise en production protégée et l’étape de confirmation du premier audit planifié", "accessDenied": "Accès refusé", "adminOnly": "Administrateurs uniquement", "loading": "Chargement de la vérification de mise en production", "errorTitle": "La vérification de mise en production est indisponible", "errorBody": "Les preuves de mise en production réservées aux administrateurs n’ont pas pu être chargées.", "backToAdmin": "Retour à l’administration",
-    "title": "Vérification de la mise en production de l’audit de sécurité", "description": "Un registre de preuves protégé pour la mise en production de l’Historique des audits de sécurité, ses contrôles d’autorisation, son schéma de production et la première confirmation de rapport planifié.", "releaseStatusLabel": "État de la mise en production", "statusEyebrow": "État de la mise en production", "statusVerified": "Vérifiée", "statusBody": "La mise en production revue, les routes protégées, la préparation du schéma et les contrôles de l’interface autorisée sont terminés.",
-    "evidenceEyebrow": "Preuves de mise en production vérifiées", "evidenceTitle": "Les contrôles de production sont en place", "evidenceDescription": "Cette vue contient un registre opérationnel concis. Elle exclut volontairement les journaux bruts des dépendances, les détails d’avis, les données client et les identifiants.", "evidenceListLabel": "Contrôles de mise en production vérifiés",
-    "evidence": { "github-release": { "title": "Traçabilité de la version revue", "detail": "La version revue de l’Historique des audits de sécurité est fusionnée dans main protégé." }, "ingestion-auth": { "title": "Autorisation d’ingestion", "detail": "Toute ingestion non authentifiée est refusée avant qu’un rapport d’audit puisse être enregistré." }, "admin-reporting-auth": { "title": "Autorisation des rapports administrateur", "detail": "La charge utile des rapports est servie uniquement via une procédure autorisée pour les administrateurs." }, "schema-readiness": { "title": "Préparation du schéma d’historique", "detail": "La table additive de rapports d’audit et les index de reporting sont disponibles en production." }, "admin-ui": { "title": "Interface administrateur", "detail": "L’Historique des audits de sécurité se charge pour un administrateur autorisé sans conserver les journaux bruts de dépendances ni les détails d’avis." } },
-    "scopeEyebrow": "Mise en production vérifiée", "scopeTitle": "Historique des audits de sécurité", "scopeBody": "Ingestion d’audit protégée, reporting administrateur et persistance d’audit assainie.", "repository": "Dépôt", "protectedBranch": "Branche protégée", "verifiedAt": "Vérifiée", "nextEyebrow": "Prochaine confirmation opérationnelle", "nextTitle": "Confirmez le premier audit planifié", "reportRecorded": "Un rapport d’audit vérifié est désormais disponible. Consultez-le dans l’Historique des audits de sécurité et conservez toute preuve d’exécution en échec avant de réessayer.", "reportPending": "La mise en production est prête. La première preuve opérationnelle arrivera lorsque le prochain workflow d’audit des dépendances planifié enregistrera son résumé assaini.", "recordedBadge": "Rapport enregistré", "pendingBadge": "En attente de l’audit planifié",
-    "steps": { "1": "Laissez le workflow planifié d’audit des dépendances se terminer à sa cadence normale. Ne déclenchez pas d’exécution dupliquée uniquement pour remplir la page.", "2": "Confirmez qu’un résumé authentifié et assaini est accepté via la route d’ingestion des audits.", "3": "Ouvrez l’Historique des audits de sécurité comme administrateur et vérifiez qu’une nouvelle carte de rapport affiche un résultat, les statuts de validation, un horodatage, le nombre de mises à jour de paquets et une référence de workflow.", "4": "Si aucun rapport n’apparaît, conservez la preuve de l’exécution en échec et examinez le workflow ou le résultat de l’ingestion assainie avant de réessayer." },
-    "nextNote": "Ne créez pas de workflow dupliqué uniquement pour remplir ce tableau de bord. Une exécution planifiée normale confirme l’ensemble de la boucle de reporting de production.", "openHistory": "Ouvrir l’Historique des audits de sécurité", "privacyEyebrow": "Traitement des données", "privacyTitle": "Reporting respectueux de la confidentialité", "privacyBody": "Le registre de mise en production exclut les identifiants, les données client, les journaux bruts et les détails d’avis individuels.", "reportChecking": "Les éléments de preuve de la version sont chargés. Vérification de l’enregistrement du premier rapport d’audit planifié.", "reportUnavailable": "La version est vérifiée, mais l’état du dernier rapport d’audit n’a pas pu être chargé. Ouvrez l’Historique des audits de sécurité pour réessayer en toute sécurité.", "checkingBadge": "Vérification de l’historique des audits", "unavailableBadge": "État de l’audit indisponible"
+    "dashboardCardTitle": "Dossier interne d'audit de sécurité",
+    "dashboardCardBody": "Preuves de publication réservées aux administrateurs, contrôles de production et statut d'audit planifié",
+    "accessDenied": "Accès refusé",
+    "adminOnly": "Administrateurs uniquement",
+    "loading": "Chargement de la vérification de mise en production",
+    "errorTitle": "La vérification de mise en production est indisponible",
+    "errorBody": "Les preuves de mise en production réservées aux administrateurs n’ont pas pu être chargées.",
+    "backToAdmin": "Retour à l’administration",
+    "title": "Dossier interne d'audit de sécurité",
+    "description": "Dossier administrateur protégé côté serveur pour la publication Security Audit History : étapes de validation exactes, contrôles de production et confirmation prévue selon la cadence normale.",
+    "releaseStatusLabel": "Statut de la publication",
+    "statusEyebrow": "Conclusion",
+    "statusVerified": "Version vérifiée",
+    "statusBody": "Source revue, étapes de validation exactes, limites de production, disponibilité du schéma et héritage protégé main validés.",
+    "evidenceEyebrow": "Preuves de mise en production vérifiées",
+    "evidenceTitle": "Les contrôles de production sont en place",
+    "evidenceDescription": "Cette vue contient un registre opérationnel concis. Elle exclut volontairement les journaux bruts des dépendances, les détails d’avis, les données client et les identifiants.",
+    "evidenceListLabel": "Contrôles de mise en production vérifiés",
+    "evidence": {
+      "github-release": {
+        "title": "Traçabilité de la version revue",
+        "detail": "La version revue de l’Historique des audits de sécurité est fusionnée dans main protégé."
+      },
+      "ingestion-auth": {
+        "title": "Autorisation d’ingestion",
+        "detail": "Toute ingestion non authentifiée est refusée avant qu’un rapport d’audit puisse être enregistré."
+      },
+      "admin-reporting-auth": {
+        "title": "Autorisation des rapports administrateur",
+        "detail": "La charge utile des rapports est servie uniquement via une procédure autorisée pour les administrateurs."
+      },
+      "schema-readiness": {
+        "title": "Préparation du schéma d’historique",
+        "detail": "La table additive de rapports d’audit et les index de reporting sont disponibles en production."
+      },
+      "admin-ui": {
+        "title": "Interface administrateur",
+        "detail": "L’Historique des audits de sécurité se charge pour un administrateur autorisé sans conserver les journaux bruts de dépendances ni les détails d’avis."
+      }
+    },
+    "scopeEyebrow": "Mise en production vérifiée",
+    "scopeTitle": "Historique des audits de sécurité",
+    "scopeBody": "Ingestion d’audit protégée, reporting administrateur et persistance d’audit assainie.",
+    "repository": "Dépôt",
+    "protectedBranch": "Branche protégée",
+    "verifiedAt": "Vérifiée",
+    "nextEyebrow": "Prochaine confirmation opérationnelle",
+    "nextTitle": "Confirmez le premier audit planifié",
+    "reportRecorded": "Un rapport d’audit vérifié est désormais disponible. Consultez-le dans l’Historique des audits de sécurité et conservez toute preuve d’exécution en échec avant de réessayer.",
+    "reportPending": "La publication est vérifiée. Le premier rapport programmé selon la cadence normale reste en attente par conception.",
+    "recordedBadge": "Rapport enregistré",
+    "pendingBadge": "En attente de l’audit planifié",
+    "steps": {
+      "1": "Laissez le workflow planifié d’audit des dépendances se terminer à sa cadence normale. Ne déclenchez pas d’exécution dupliquée uniquement pour remplir la page.",
+      "2": "Confirmez qu’un résumé authentifié et assaini est accepté via la route d’ingestion des audits.",
+      "3": "Ouvrez l’Historique des audits de sécurité comme administrateur et vérifiez qu’une nouvelle carte de rapport affiche un résultat, les statuts de validation, un horodatage, le nombre de mises à jour de paquets et une référence de workflow.",
+      "4": "Si aucun rapport n’apparaît, conservez la preuve de l’exécution en échec et examinez le workflow ou le résultat de l’ingestion assainie avant de réessayer."
+    },
+    "nextNote": "Ne créez pas de workflow dupliqué uniquement pour remplir ce tableau de bord. Une exécution planifiée normale confirme l’ensemble de la boucle de reporting de production.",
+    "openHistory": "Ouvrir l’Historique des audits de sécurité",
+    "privacyEyebrow": "Traitement des données",
+    "privacyTitle": "Reporting respectueux de la confidentialité",
+    "privacyBody": "L'enregistrement de la publication exclut les identifiants, les données clients, les lignes de production, les logs bruts, les détails des avis individuels et les liens vers les rapports publics.",
+    "reportChecking": "Les éléments de preuve de la version sont chargés. Vérification de l’enregistrement du premier rapport d’audit planifié.",
+    "reportUnavailable": "La version est vérifiée, mais l’état du dernier rapport d’audit n’a pas pu être chargé. Ouvrez l’Historique des audits de sécurité pour réessayer en toute sécurité.",
+    "checkingBadge": "Vérification de l’historique des audits",
+    "unavailableBadge": "État de l’audit indisponible",
+    "internalRecord": "Enregistrement interne de preuves",
+    "pendingExpected": "Premier rapport programmé : en attente — prévu",
+    "accessEyebrow": "Limite d'autorisation",
+    "accessTitle": "Seuls les administrateurs reçoivent le contenu du dossier",
+    "accessDescription": "La protection côté navigateur améliore la navigation ; le middleware serveur centralisé reste le point d'application.",
+    "allowed": "Autorisé",
+    "blocked": "Bloqué",
+    "pageOutcome": "Interface",
+    "serverOutcome": "Charge utile serveur",
+    "access": {
+      "unauthenticated": {
+        "context": "Visiteur non authentifié",
+        "page": "Page publique uniquement",
+        "server": "FORBIDDEN · aucune charge utile"
+      },
+      "non-admin": {
+        "context": "Utilisateur authentifié non administrateur",
+        "page": "Redirigé",
+        "server": "FORBIDDEN · aucune charge utile"
+      },
+      "administrator": {
+        "context": "Administrateur",
+        "page": "Dossier affiché",
+        "server": "Autorisé · charge utile assainie"
+      }
+    },
+    "validationEyebrow": "Validation du candidat exact",
+    "validationTitle": "Toutes les étapes de publication validées",
+    "validationDescription": "La fusion de restauration revue a été testée indépendamment des modifications ultérieures du dépôt.",
+    "passed": "Validé",
+    "validation": {
+      "focused-tests": {
+        "label": "Tests d'autorisation ciblés",
+        "result": "23 / 23"
+      },
+      "full-suite": {
+        "label": "Suite complète de régression",
+        "result": "948 réussis · 17 ignorés"
+      },
+      "typescript": {
+        "label": "Contrôle TypeScript",
+        "result": "0 erreurs"
+      },
+      "dependency-audit": {
+        "label": "Audit des dépendances de production",
+        "result": "0 avis en production"
+      },
+      "production-build": {
+        "label": "Build de production",
+        "result": "Réussi"
+      },
+      "responsive": {
+        "label": "Cas responsive et navigation au clavier",
+        "result": "4 cas d'affichage"
+      }
+    },
+    "productionEyebrow": "Preuve de production sans mutation",
+    "productionTitle": "Production fermée en cas d'échec et confidentialité préservée",
+    "production": {
+      "ingestion": {
+        "title": "Ingestion non authentifiée",
+        "result": "401 · no-store · rejeté",
+        "detail": "Un JSON valide sans autorisation a été rejeté sans exposer le contenu du rapport."
+      },
+      "admin-reporting": {
+        "title": "Reporting administrateur",
+        "result": "403 · aucune charge utile",
+        "detail": "Un appelant sans autorisation administrateur n'a reçu aucune donnée du dossier."
+      },
+      "schema": {
+        "title": "Schéma de production",
+        "result": "Table et 2 index",
+        "detail": "La table de reporting additive d'audit de sécurité et les deux index de reporting sont présents."
+      },
+      "interfaces": {
+        "title": "Interfaces protégées",
+        "result": "2 routes protégées",
+        "detail": "Security Audit History et ce dossier de publication restent dans l'espace administrateur."
+      }
+    },
+    "lineageEyebrow": "Lignée protégée",
+    "lineageTitle": "Publication revue préservée dans main",
+    "pullRequest": "Demande de fusion",
+    "mergeCommit": "Commit de fusion",
+    "qualityGateRun": "Exécution du contrôle qualité",
+    "schemaEyebrow": "Disponibilité du schéma",
+    "schemaTitle": "Stockage de reporting additif présent",
+    "noRowsOpened": "Aucune valeur de ligne de production n'a été ouverte ou copiée."
   }
 }

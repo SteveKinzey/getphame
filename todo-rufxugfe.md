@@ -102,3 +102,4 @@
 - [x] Add editable, previewable SMTP-onboarding guidance for Gmail, Google Workspace, Microsoft 365, Outlook.com, Live, Hotmail, Yahoo!, Zoho, iCloud, AOL, Proton Mail, Fastmail, and custom SMTP without requesting existing passwords.
 - [x] Add a retention-bounded administrator sent-mail outbox and assess Google Workspace inbound integration separately; do not read private administrator mailboxes or expose user SMTP credentials.
 - [x] Add focused tests, reconcile the existing matching preserved-schema migration, run full validation and responsive review, then checkpoint, verify production, and synchronize the exact tree through protected GitHub main.
+- [x] Reconcile the concurrently merged protected-main Security Audit release dossier with the validated Admin Users lifecycle release, re-run exact-tree validation, and create a replacement checkpoint before GitHub synchronization.

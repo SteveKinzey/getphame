@@ -591,14 +591,14 @@ export default function AdminDashboard() {
                     label: t(
                       "securityAuditReleaseVerification.dashboardCardTitle",
                       {
-                        defaultValue: "Security Audit release verification",
+                        defaultValue: "Security Audit internal dossier",
                       }
                     ),
                     detail: t(
                       "securityAuditReleaseVerification.dashboardCardBody",
                       {
                         defaultValue:
-                          "Review the protected release evidence and the first scheduled-audit confirmation step",
+                          "Administrator-only release evidence, production controls, and scheduled-audit status",
                       }
                     ),
                     Icon: CheckCircle2,

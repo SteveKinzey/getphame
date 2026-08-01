@@ -76,7 +76,7 @@ const trpcClient = trpc.createClient({
 });
 
 // ── Service worker ────────────────────────────────────────────────────────────
-const SERVICE_WORKER_URL = "/sw-v26.js";
+const SERVICE_WORKER_URL = "/sw-v27.js";
 
 function syncLanguageToServiceWorker(registration: ServiceWorkerRegistration, language: string) {
   const worker = registration.active ?? registration.waiting ?? registration.installing;

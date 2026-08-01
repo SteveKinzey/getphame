@@ -3574,11 +3574,160 @@
     "lastDays": "最近 {{count}} 天"
   },
   "securityAuditReleaseVerification": {
-    "dashboardCardTitle": "安全稽核發布驗證", "dashboardCardBody": "檢視受保護發布的證據以及首次排程稽核的確認步驟", "accessDenied": "拒絕存取", "adminOnly": "僅限管理員", "loading": "正在載入發布驗證", "errorTitle": "發布驗證無法使用", "errorBody": "無法載入僅限管理員查看的發布證據。", "backToAdmin": "返回管理後台",
-    "title": "安全稽核發布驗證", "description": "這是安全稽核歷程發布的受保護證據記錄，涵蓋其授權控制、生產架構和首次排程報告確認。", "releaseStatusLabel": "發布狀態", "statusEyebrow": "發布狀態", "statusVerified": "已驗證", "statusBody": "已完成已審查發布、受保護路由、架構就緒狀態和授權介面檢查。", "evidenceEyebrow": "已驗證的發布證據", "evidenceTitle": "生產控制措施已就位", "evidenceDescription": "此檢視保留簡潔的營運記錄，並且刻意排除原始相依性日誌、公告詳情、客戶資料和憑證。", "evidenceListLabel": "已驗證的發布控制措施",
-    "evidence": { "github-release": { "title": "已審查的發布沿革", "detail": "已審查的安全稽核歷程發布已合併至受保護的 main 分支。" }, "ingestion-auth": { "title": "擷取授權", "detail": "未經驗證的擷取會在儲存稽核報告之前被拒絕。" }, "admin-reporting-auth": { "title": "管理員報告授權", "detail": "報告承載內容僅透過管理員授權的程序提供。" }, "schema-readiness": { "title": "稽核歷程架構就緒", "detail": "生產環境中已提供增量稽核報告資料表和報告索引。" }, "admin-ui": { "title": "管理員介面", "detail": "授權管理員可以載入安全稽核歷程，且不會保留原始相依性日誌或公告詳情。" } },
-    "scopeEyebrow": "已驗證的發布", "scopeTitle": "安全稽核歷程", "scopeBody": "受保護的稽核擷取、管理員報告和經過淨化的稽核持久化。", "repository": "程式碼庫", "protectedBranch": "受保護分支", "verifiedAt": "已驗證", "nextEyebrow": "下一步營運確認", "nextTitle": "確認首次排程稽核", "reportRecorded": "現在已有已驗證的稽核報告。請在安全稽核歷程中檢視，並在重試前保留任何失敗執行的證據。", "reportPending": "發布已就緒。首次營運證明將在下一個排程相依性稽核工作流程記錄其淨化摘要後到達。", "recordedBadge": "報告已記錄", "pendingBadge": "等待排程稽核",
-    "steps": { "1": "讓排程相依性稽核工作流程按正常節奏完成。不要只為填入此頁面而觸發重複執行。", "2": "確認透過稽核擷取路徑接受了一份經過驗證且經過淨化的摘要。", "3": "以管理員身分開啟安全稽核歷程，並確認新的最新報告卡顯示結果、驗證狀態、時間戳記、套件更新數和工作流程參考。", "4": "如果沒有出現報告，請保留失敗執行的證據，並在重試前調查工作流程或淨化擷取結果。" },
-    "nextNote": "不要只為填入此儀表板而建立重複工作流程。一次正常的排程執行即可確認完整的生產報告循環。", "openHistory": "開啟安全稽核歷程", "privacyEyebrow": "資料處理", "privacyTitle": "保護隱私的報告", "privacyBody": "發布記錄不包含憑證、客戶資料、原始日誌和個別公告詳情。", "reportChecking": "版本驗證證據已載入。正在確認是否已記錄第一份排定的安全稽核報告。", "reportUnavailable": "版本已驗證，但無法載入最新安全稽核報告的狀態。請開啟「安全稽核歷程」以安全地重試。", "checkingBadge": "正在檢查稽核歷程", "unavailableBadge": "無法取得稽核狀態"
+    "dashboardCardTitle": "安全稽核內部檔案",
+    "dashboardCardBody": "僅限管理員的發布證據、生產控管與預定稽核狀態",
+    "accessDenied": "拒絕存取",
+    "adminOnly": "僅限管理員",
+    "loading": "正在載入發布驗證",
+    "errorTitle": "發布驗證無法使用",
+    "errorBody": "無法載入僅限管理員查看的發布證據。",
+    "backToAdmin": "返回管理後台",
+    "title": "安全稽核內部檔案",
+    "description": "受伺服器保護的管理員案卷，用於 Security Audit History 發行，包含其精確驗證門檻、產線控管與預定常規確認。",
+    "releaseStatusLabel": "發布狀態",
+    "statusEyebrow": "結論",
+    "statusVerified": "發布已驗證",
+    "statusBody": "已通過審核來源、精準候選門控、部署邊界、Schema 準備度，以及受保護的 main 系譜。",
+    "evidenceEyebrow": "已驗證的發布證據",
+    "evidenceTitle": "生產控制措施已就位",
+    "evidenceDescription": "此檢視保留簡潔的營運記錄，並且刻意排除原始相依性日誌、公告詳情、客戶資料和憑證。",
+    "evidenceListLabel": "已驗證的發布控制措施",
+    "evidence": {
+      "github-release": {
+        "title": "已審查的發布沿革",
+        "detail": "已審查的安全稽核歷程發布已合併至受保護的 main 分支。"
+      },
+      "ingestion-auth": {
+        "title": "擷取授權",
+        "detail": "未經驗證的擷取會在儲存稽核報告之前被拒絕。"
+      },
+      "admin-reporting-auth": {
+        "title": "管理員報告授權",
+        "detail": "報告承載內容僅透過管理員授權的程序提供。"
+      },
+      "schema-readiness": {
+        "title": "稽核歷程架構就緒",
+        "detail": "生產環境中已提供增量稽核報告資料表和報告索引。"
+      },
+      "admin-ui": {
+        "title": "管理員介面",
+        "detail": "授權管理員可以載入安全稽核歷程，且不會保留原始相依性日誌或公告詳情。"
+      }
+    },
+    "scopeEyebrow": "已驗證的發布",
+    "scopeTitle": "安全稽核歷程",
+    "scopeBody": "受保護的稽核擷取、管理員報告和經過淨化的稽核持久化。",
+    "repository": "程式碼庫",
+    "protectedBranch": "受保護分支",
+    "verifiedAt": "已驗證",
+    "nextEyebrow": "下一步營運確認",
+    "nextTitle": "確認首次排程稽核",
+    "reportRecorded": "現在已有已驗證的稽核報告。請在安全稽核歷程中檢視，並在重試前保留任何失敗執行的證據。",
+    "reportPending": "發布已驗證。首份依常規節奏安排的排程報告依設計仍為待處理。",
+    "recordedBadge": "報告已記錄",
+    "pendingBadge": "等待排程稽核",
+    "steps": {
+      "1": "讓排程相依性稽核工作流程按正常節奏完成。不要只為填入此頁面而觸發重複執行。",
+      "2": "確認透過稽核擷取路徑接受了一份經過驗證且經過淨化的摘要。",
+      "3": "以管理員身分開啟安全稽核歷程，並確認新的最新報告卡顯示結果、驗證狀態、時間戳記、套件更新數和工作流程參考。",
+      "4": "如果沒有出現報告，請保留失敗執行的證據，並在重試前調查工作流程或淨化擷取結果。"
+    },
+    "nextNote": "不要只為填入此儀表板而建立重複工作流程。一次正常的排程執行即可確認完整的生產報告循環。",
+    "openHistory": "開啟安全稽核歷程",
+    "privacyEyebrow": "資料處理",
+    "privacyTitle": "保護隱私的報告",
+    "privacyBody": "發布紀錄不含憑證、客戶資料、生產資料列、原始日誌、單一建議細節或公開報告連結。",
+    "reportChecking": "版本驗證證據已載入。正在確認是否已記錄第一份排定的安全稽核報告。",
+    "reportUnavailable": "版本已驗證，但無法載入最新安全稽核報告的狀態。請開啟「安全稽核歷程」以安全地重試。",
+    "checkingBadge": "正在檢查稽核歷程",
+    "unavailableBadge": "無法取得稽核狀態",
+    "internalRecord": "內部證據記錄",
+    "pendingExpected": "首份排程報告：待定 — 預期",
+    "accessEyebrow": "授權邊界",
+    "accessTitle": "僅管理員可接收案卷有效負載",
+    "accessDescription": "瀏覽器端保護改善導航；集中式伺服器中介軟體仍為執法點。",
+    "allowed": "允許",
+    "blocked": "封鎖",
+    "pageOutcome": "頁面",
+    "serverOutcome": "伺服器有效負載",
+    "access": {
+      "unauthenticated": {
+        "context": "未驗證訪客",
+        "page": "僅顯示公開頁面",
+        "server": "FORBIDDEN · 無有效負載"
+      },
+      "non-admin": {
+        "context": "已驗證，非管理員",
+        "page": "已轉導",
+        "server": "FORBIDDEN · 無有效負載"
+      },
+      "administrator": {
+        "context": "管理員",
+        "page": "案卷已呈現",
+        "server": "已授權 · 已清理有效負載"
+      }
+    },
+    "validationEyebrow": "精確候選驗證",
+    "validationTitle": "所有發布門檻已通過",
+    "validationDescription": "已檢閱的恢復合併在不受後續倉庫變更影響下獨立測試。",
+    "passed": "已通過",
+    "validation": {
+      "focused-tests": {
+        "label": "重點授權測試",
+        "result": "23 / 23"
+      },
+      "full-suite": {
+        "label": "完整回歸測試套件",
+        "result": "948 已通過 · 17 已略過"
+      },
+      "typescript": {
+        "label": "TypeScript 檢查",
+        "result": "0 錯誤"
+      },
+      "dependency-audit": {
+        "label": "生產相依性稽核",
+        "result": "0 生產警示"
+      },
+      "production-build": {
+        "label": "生產環境建置",
+        "result": "已通過"
+      },
+      "responsive": {
+        "label": "響應式與鍵盤操作情境",
+        "result": "4 個視窗情境"
+      }
+    },
+    "productionEyebrow": "非變更性生產驗證",
+    "productionTitle": "生產環境採封閉式失敗並保留隱私",
+    "production": {
+      "ingestion": {
+        "title": "未驗證資料接收",
+        "result": "401 · no-store · 已拒絕",
+        "detail": "未附授權的有效 JSON 被拒絕，未洩露報告有效負載。"
+      },
+      "admin-reporting": {
+        "title": "管理員報告",
+        "result": "403 · 無有效負載",
+        "detail": "未具管理員授權的呼叫者未收到案卷資料。"
+      },
+      "schema": {
+        "title": "生產架構",
+        "result": "資料表 + 2 個索引",
+        "detail": "新增的安全稽核報告資料表及兩個報告索引皆存在。"
+      },
+      "interfaces": {
+        "title": "受保護介面",
+        "result": "2 個受保護路由",
+        "detail": "Security Audit History 與本次發布的案卷仍保留於管理員區域內。"
+      }
+    },
+    "lineageEyebrow": "受保護系譜",
+    "lineageTitle": "已審查發布保留於 main",
+    "pullRequest": "拉取請求",
+    "mergeCommit": "合併提交",
+    "qualityGateRun": "品質門檻執行",
+    "schemaEyebrow": "Schema 準備度",
+    "schemaTitle": "新增報告儲存已存在",
+    "noRowsOpened": "未開啟或複製任何生產資料列值。"
   }
 }
