@@ -31,6 +31,10 @@ export const requestStatusEnum = pgEnum("request_status", [
   "pending",
   "followed_up",
 ]);
+export const quietHoursQueuedSendStatusEnum = pgEnum(
+  "quiet_hours_queued_send_status",
+  ["pending", "sending", "sent", "cancelled", "failed"]
+);
 export const contactSourceEnum = pgEnum("contact_source", [
   "manual",
   "woocommerce",
@@ -116,6 +120,7 @@ export const supportTopicEnum = pgEnum("support_topic", [
   "billing",
   "onboarding",
   "technical",
+  "quiet_hours_exception",
 ]);
 export const supportSubmissionStatusEnum = pgEnum("support_submission_status", [
   "open",
@@ -648,6 +653,27 @@ export const businessProfiles = pgTable("business_profiles", {
   referralCode: varchar("referralCode", { length: 32 }),
   // Inactive user re-engagement email — Unix ms when sent (null = not yet sent)
   inactiveEmailSentAt: bigint("inactiveEmailSentAt", { mode: "number" }),
+  // Physical location and derived IANA timezone are used for safe local-time delivery.
+  physicalAddress: varchar("physicalAddress", { length: 500 }),
+  normalizedPhysicalAddress: varchar("normalizedPhysicalAddress", { length: 500 }),
+  businessTimeZone: varchar("businessTimeZone", { length: 100 }),
+  // Business-local quiet period; default is 8:00 PM through 8:00 AM.
+  quietHoursStartMinutes: integer("quietHoursStartMinutes")
+    .default(20 * 60)
+    .notNull(),
+  quietHoursEndMinutes: integer("quietHoursEndMinutes")
+    .default(8 * 60)
+    .notNull(),
+  // A shorter-than-default quiet period requires a documented support approval.
+  quietHoursShorteningApproved: integer("quietHoursShorteningApproved")
+    .default(0)
+    .notNull(),
+  quietHoursShorteningApprovedAt: bigint("quietHoursShorteningApprovedAt", {
+    mode: "number",
+  }),
+  quietHoursShorteningApprovedByUserId: integer(
+    "quietHoursShorteningApprovedByUserId"
+  ),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -665,7 +691,8 @@ export const customerRequests = pgTable("customer_requests", {
   method: methodEnum("method").notNull(),
   status: requestStatusEnum("status").default("sent").notNull(),
   respondedAt: bigint("respondedAt", { mode: "number" }), // Unix ms when customer left a review (null = not yet)
-  sentAt: timestamp("sentAt").defaultNow().notNull(),
+  // Null while delivery is held in the quiet-hours queue; populated only after SMTP accepts it.
+  sentAt: timestamp("sentAt"),
   followUpAt: timestamp("followUpAt"),
   platformId: integer("platformId"), // FK to review_platforms.id — which platform was linked in this request
   emailSubject: varchar("emailSubject", { length: 500 }), // Subject line of the sent email
@@ -674,6 +701,43 @@ export const customerRequests = pgTable("customer_requests", {
 });
 export type CustomerRequest = typeof customerRequests.$inferSelect;
 export type InsertCustomerRequest = typeof customerRequests.$inferInsert;
+
+/**
+ * Durable delivery queue for review requests held until the business's local
+ * quiet period ends. It stores only the pre-rendered outbound message needed
+ * for later delivery, plus operational status—not customer response content.
+ */
+export const quietHoursQueuedSends = pgTable(
+  "quiet_hours_queued_sends",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull(),
+    customerRequestId: integer("customerRequestId").notNull(),
+    recipientEmail: varchar("recipientEmail", { length: 320 }).notNull(),
+    subject: varchar("subject", { length: 500 }).notNull(),
+    html: text("html").notNull(),
+    source: varchar("source", { length: 32 }).notNull(),
+    sourceRecordId: integer("sourceRecordId"),
+    templateId: integer("templateId"),
+    scheduleFollowUps: integer("scheduleFollowUps").default(0).notNull(),
+    scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(),
+    status: quietHoursQueuedSendStatusEnum("status").default("pending").notNull(),
+    attemptCount: integer("attemptCount").default(0).notNull(),
+    lastError: varchar("lastError", { length: 1000 }),
+    claimedAt: bigint("claimedAt", { mode: "number" }),
+    sentAt: bigint("sentAt", { mode: "number" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  table => [
+    index("quiet_hours_queue_due_idx").on(table.status, table.scheduledAt),
+    index("quiet_hours_queue_request_idx").on(table.customerRequestId),
+    index("quiet_hours_queue_user_status_idx").on(table.userId, table.status),
+  ]
+);
+export type QuietHoursQueuedSend = typeof quietHoursQueuedSends.$inferSelect;
+export type InsertQuietHoursQueuedSend =
+  typeof quietHoursQueuedSends.$inferInsert;
 
 /**
  * Tracks active Stripe subscriptions.

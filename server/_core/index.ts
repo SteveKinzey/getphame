@@ -24,6 +24,7 @@ import {
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { reminderHeartbeatHandler } from "../scheduledReminders";
+import { quietHoursHeartbeatHandler } from "../quietHoursHeartbeat";
 import { koalendarHeartbeatHandler } from "../koalendarHeartbeat";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
@@ -531,6 +532,7 @@ async function startServer() {
   app.post(SOURCE_HEALTH_CALLBACK_PATH, sourceHealthHandler);
   app.post(DISPOSABLE_DOMAIN_CALLBACK_PATH, disposableDomainHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
+  app.post("/api/scheduled/process-quiet-hours", quietHoursHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP

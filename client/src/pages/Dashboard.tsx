@@ -160,6 +160,7 @@ export default function DashboardPage() {
       const day = startOfDay(subDays(new Date(), i));
       const nextDay = startOfDay(subDays(new Date(), i - 1));
       const count = allRequests.filter((r) => {
+        if (!r.sentAt) return false;
         const sent = new Date(r.sentAt).getTime();
         return sent >= day.getTime() && sent < nextDay.getTime();
       }).length;
@@ -174,8 +175,9 @@ export default function DashboardPage() {
   const velocity = useMemo(() => {
     if (!allRequests) return null;
     const now = Date.now();
-    const last7 = allRequests.filter((r) => new Date(r.sentAt).getTime() > now - 7 * 86400000).length;
+    const last7 = allRequests.filter((r) => r.sentAt && new Date(r.sentAt).getTime() > now - 7 * 86400000).length;
     const prior7 = allRequests.filter((r) => {
+      if (!r.sentAt) return false;
       const t = new Date(r.sentAt).getTime();
       return t > now - 14 * 86400000 && t <= now - 7 * 86400000;
     }).length;
@@ -458,7 +460,9 @@ export default function DashboardPage() {
                       }
                     </button>
                     <p className="text-xs rr-text-navy-faint">
-                      {formatDate(new Date(req.sentAt))}
+                      {req.sentAt
+                        ? formatDate(new Date(req.sentAt))
+                        : t("quietHours.queuedForDelivery", "Queued for delivery")}
                     </p>
                     {/* Open / click badges */}
                     {trackingMap.has(req.id) && (
