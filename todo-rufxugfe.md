@@ -86,3 +86,7 @@
 - [x] Run the complete Vitest regression suite after the protected-pull-request coverage remediation: 174 files passed, 1 skipped; 980 tests passed, 7 skipped.
 - [x] Run the production build after the scheduler coverage remediation: the 703-package OSV audit passed, the full Vitest gate passed, and Vite plus the server bundle completed successfully.
 - [x] Run the defined one-shot TypeScript check after the scheduler coverage remediation; `tsc --noEmit` completed with no errors.
+- [x] Recheck the latest protected source, live Content Security Policy, and supported-browser login state before reapplying any Turnstile remediation; the latest source and live CSP still omit the official Turnstile origin, and the supported browser still reports the account-security check unavailable.
+- [x] Add the official `https://challenges.cloudflare.com` origin only to the production CSP directives required by Turnstile script and challenge-frame initialization.
+- [x] Add focused regression coverage for the narrow Turnstile CSP contract and run the complete project validation gates: 2 focused suites / 2 tests passed; full suite 175 files passed and 1 skipped, 981 tests passed and 7 skipped; one-shot TypeScript check passed; production build completed; `/login` remained readable at 1280×900 and 390×844.
+- [ ] Save and publish the validated checkpoint, confirm live Turnstile initialization, synchronize the exact tree through protected GitHub `main`, and verify parity.

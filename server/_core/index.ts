@@ -448,8 +448,12 @@ async function startServer() {
                   "https://img.youtube.com",
                   "https://i.ytimg.com",
                 ],
-                // Allow YouTube iframes for the landing page video embed
-                frameSrc: ["https://www.youtube.com", "https://youtube.com"],
+                // Allow YouTube embeds and the official Turnstile challenge frame.
+                frameSrc: [
+                  "https://www.youtube.com",
+                  "https://youtube.com",
+                  "https://challenges.cloudflare.com",
+                ],
                 // Keep video delivery restricted to the app and the durable public media CDN.
                 mediaSrc: ["'self'", "https://files.manuscdn.com"],
                 // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
@@ -472,6 +476,8 @@ async function startServer() {
                   "'self'",
                   "'unsafe-inline'",
                   "https://manus-analytics.com",
+                  // Invisible Turnstile protects genuinely new account creation.
+                  "https://challenges.cloudflare.com",
                 ],
                 scriptSrcAttr: ["'none'"],
                 // 'unsafe-inline' is required for:
