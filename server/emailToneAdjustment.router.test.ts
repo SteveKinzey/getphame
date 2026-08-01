@@ -52,17 +52,23 @@ const entitledUser = {
   lastSignedIn: new Date(),
 };
 
+function databaseWithActiveAccount(profileLookup = vi.fn()) {
+  const activeAccountQuery = {
+    from: vi.fn().mockReturnThis(),
+    where: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockResolvedValue([{ suspendedUntil: null }]),
+  };
+  return {
+    select: vi.fn(() => activeAccountQuery),
+    query: { businessProfiles: { findFirst: profileLookup } },
+  };
+}
+
 describe("email.adjustTone", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.findActiveComplimentaryAccess.mockResolvedValue(null);
-    mocks.getDb.mockResolvedValue({
-      query: {
-        businessProfiles: {
-          findFirst: vi.fn(),
-        },
-      },
-    });
+    mocks.getDb.mockResolvedValue(databaseWithActiveAccount());
   });
 
   it("rejects unauthenticated callers before invoking the assistant", async () => {
@@ -77,9 +83,7 @@ describe("email.adjustTone", () => {
 
   it("rejects free-tier callers before invoking the assistant", async () => {
     const profileLookup = vi.fn().mockResolvedValue({ tier: "free", planExpiresAt: null });
-    mocks.getDb.mockResolvedValue({
-      query: { businessProfiles: { findFirst: profileLookup } },
-    });
+    mocks.getDb.mockResolvedValue(databaseWithActiveAccount(profileLookup));
     const caller = appRouter.createCaller(context(entitledUser));
 
     await expect(caller.email.adjustTone(input)).rejects.toMatchObject({
@@ -91,9 +95,7 @@ describe("email.adjustTone", () => {
 
   it("runs for an entitled tenant and scopes the rewrite to the authenticated user", async () => {
     const profileLookup = vi.fn().mockResolvedValue({ tier: "pro", planExpiresAt: null });
-    mocks.getDb.mockResolvedValue({
-      query: { businessProfiles: { findFirst: profileLookup } },
-    });
+    mocks.getDb.mockResolvedValue(databaseWithActiveAccount(profileLookup));
     mocks.adjustEmailTone.mockResolvedValue({
       subject: "A warm request from {{businessName}}",
       body: "Hi {{customerName}}, please share feedback at {{platformLinks}}. Reply unsubscribe to opt out.",

@@ -188,6 +188,8 @@ import {
   supportSavedQueueViews,
   supportSubmissions,
   supportTicketAlerts,
+  adminPlatformEmailMessages,
+  adminUserLifecycleAuditLogs,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -281,6 +283,21 @@ import {
   grantSubscriptionByEmail,
   revokeSubscriptionByEmail,
 } from "./subscriptionGrants";
+import {
+  MAX_ADMIN_GRANT_MONTHS,
+  MAX_ADMIN_GRANT_YEARS,
+  MAX_ADMIN_SUSPENSION_DAYS,
+  resolveFlexibleAccessExpiry,
+  resolveSuspensionUntil,
+} from "./adminUserLifecycle";
+import { revokeSecuritySessionsForUser } from "./security/passkeySessions";
+import {
+  ADMIN_MESSAGE_RETENTION_MS,
+  buildSmtpOnboardingTemplate,
+  sanitizeAdminMessage,
+  sendAdminPlatformEmail,
+  type AdminPlatformEmailTemplate,
+} from "./adminPlatformEmail";
 import {
   listReviewPlatforms,
   addReviewPlatform,
@@ -4372,6 +4389,7 @@ export const appRouter = router({
             role: users.role,
             createdAt: users.createdAt,
             lastSignedIn: users.lastSignedIn,
+            suspendedUntil: users.suspendedUntil,
             tier: businessProfiles.tier,
             smtpCredentialId: smtpCredentials.id,
             smtpVerified: smtpCredentials.verified,
@@ -4392,6 +4410,7 @@ export const appRouter = router({
             lifeAccess: row.role === "admin" || row.tier === "lifetime",
             smtpConnected: row.smtpCredentialId !== null,
             smtpVerified: row.smtpVerified === 1,
+            isSuspended: typeof row.suspendedUntil === "number" && row.suspendedUntil > Date.now(),
           })),
           page: input.page,
           pageSize: input.pageSize,
@@ -4653,6 +4672,112 @@ export const appRouter = router({
           `[Admin] User ${input.userId} Life access ${input.enabled ? "enabled" : "disabled"} by admin ${ctx.user.id}`
         );
         return { ok: true };
+      }),
+
+    /** Create a passwordless account; the user later signs in through the normal magic-link flow. */
+    createUser: adminProcedure
+      .input(z.object({ name: z.string().trim().min(1).max(255).optional(), email: z.string().trim().email().max(320) }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const email = input.email.toLowerCase();
+        const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
+        if (existing) throw new TRPCError({ code: "CONFLICT", message: "An account with that email already exists." });
+        const [created] = await db.insert(users).values({
+          openId: `email_${email}`,
+          name: input.name?.trim() || null,
+          email,
+          loginMethod: "email",
+          role: "user",
+          lastSignedIn: new Date(),
+        }).$returningId();
+        await db.insert(adminUserLifecycleAuditLogs).values({ actorUserId: ctx.user.id, targetUserId: created.id, action: "account_created", occurredAt: Date.now() });
+        return { ok: true, userId: created.id, email };
+      }),
+
+    /** Grant a bounded calendar duration or lifetime access, preserving unused paid time. */
+    grantFlexibleAccess: adminProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        kind: z.enum(["months", "years", "lifetime"]),
+        quantity: z.number().int().positive().optional(),
+      }).superRefine((value, context) => {
+        if (value.kind !== "lifetime" && !value.quantity) context.addIssue({ code: z.ZodIssueCode.custom, message: "A duration is required.", path: ["quantity"] });
+        if (value.kind === "months" && (value.quantity ?? 0) > MAX_ADMIN_GRANT_MONTHS) context.addIssue({ code: z.ZodIssueCode.custom, message: `Months may not exceed ${MAX_ADMIN_GRANT_MONTHS}.`, path: ["quantity"] });
+        if (value.kind === "years" && (value.quantity ?? 0) > MAX_ADMIN_GRANT_YEARS) context.addIssue({ code: z.ZodIssueCode.custom, message: `Years may not exceed ${MAX_ADMIN_GRANT_YEARS}.`, path: ["quantity"] });
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db.select({ id: users.id, name: users.name, email: users.email, role: users.role, planExpiresAt: businessProfiles.planExpiresAt }).from(users).leftJoin(businessProfiles, eq(users.id, businessProfiles.userId)).where(eq(users.id, input.userId)).limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+        if (target.role === "admin" && input.kind !== "lifetime") throw new TRPCError({ code: "BAD_REQUEST", message: "Administrators already have Life access." });
+        const yearMonth = new Date().toISOString().slice(0, 7);
+        const planExpiresAt = input.kind === "lifetime" ? null : resolveFlexibleAccessExpiry(target.planExpiresAt, { kind: input.kind, quantity: input.quantity! });
+        const tier = input.kind === "lifetime" ? "lifetime" : input.kind === "years" ? "annual" : "pro";
+        await db.insert(businessProfiles).values({ userId: target.id, businessName: target.name?.trim() || target.email || "Get Phame User", reviewLink: "", tier, monthlyCount: 0, monthlyResetDate: yearMonth, planExpiresAt }).onDuplicateKeyUpdate({ set: { tier, planExpiresAt, updatedAt: new Date() } });
+        await db.insert(adminUserLifecycleAuditLogs).values({ actorUserId: ctx.user.id, targetUserId: target.id, action: input.kind === "lifetime" ? "access_granted_lifetime" : `access_granted_${input.kind}`, occurredAt: Date.now() });
+        return { ok: true, tier, planExpiresAt };
+      }),
+
+    /** Temporarily block account access and revoke all revocable sessions. */
+    suspendUser: adminProcedure
+      .input(z.object({ userId: z.number().int().positive(), days: z.number().int().min(1).max(MAX_ADMIN_SUSPENSION_DAYS), confirmation: z.literal("SUSPEND") }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.id === input.userId) throw new TRPCError({ code: "BAD_REQUEST", message: "You cannot suspend your own account." });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db.select({ id: users.id, role: users.role }).from(users).where(eq(users.id, input.userId)).limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+        if (target.role === "admin") throw new TRPCError({ code: "BAD_REQUEST", message: "Administrator accounts cannot be suspended from this screen." });
+        const suspendedUntil = resolveSuspensionUntil(input.days);
+        await db.update(users).set({ suspendedUntil, updatedAt: new Date() }).where(eq(users.id, target.id));
+        await revokeSecuritySessionsForUser(target.id);
+        await db.insert(adminUserLifecycleAuditLogs).values({ actorUserId: ctx.user.id, targetUserId: target.id, action: "account_suspended", occurredAt: Date.now() });
+        return { ok: true, suspendedUntil };
+      }),
+
+    restoreUser: adminProcedure
+      .input(z.object({ userId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db.select({ id: users.id }).from(users).where(eq(users.id, input.userId)).limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+        await db.update(users).set({ suspendedUntil: null, updatedAt: new Date() }).where(eq(users.id, target.id));
+        await db.insert(adminUserLifecycleAuditLogs).values({ actorUserId: ctx.user.id, targetUserId: target.id, action: "account_restored", occurredAt: Date.now() });
+        return { ok: true };
+      }),
+
+    /** Deliver an explicit general message only to an existing Get Phame user and retain a bounded outbox record. */
+    sendUserEmail: adminProcedure
+      .input(z.object({ userId: z.number().int().positive(), template: z.enum(["smtp_onboarding", "custom"]), subject: z.string().max(180).optional(), bodyText: z.string().max(12_000).optional() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db.select({ id: users.id, name: users.name, email: users.email }).from(users).where(eq(users.id, input.userId)).limit(1);
+        if (!target?.email) throw new TRPCError({ code: "NOT_FOUND", message: "The selected user has no deliverable email address." });
+        const preset = input.template === "smtp_onboarding" ? buildSmtpOnboardingTemplate(target.name) : null;
+        const message = sanitizeAdminMessage({ subject: input.subject ?? preset?.subject ?? "", bodyText: input.bodyText ?? preset?.bodyText ?? "" });
+        const delivered = await sendAdminPlatformEmail({ to: target.email, subject: message.subject, bodyText: message.bodyText });
+        const now = Date.now();
+        await db.insert(adminPlatformEmailMessages).values({ actorUserId: ctx.user.id, recipientUserId: target.id, recipientEmail: target.email, fromEmail: "hello@getphame.app", template: input.template as AdminPlatformEmailTemplate, subject: message.subject, bodyText: message.bodyText, status: delivered.sent ? "sent" : "failed", providerMessageId: delivered.providerMessageId, failureCode: delivered.failureCode, createdAt: now, sentAt: delivered.sent ? now : null, expiresAt: now + ADMIN_MESSAGE_RETENTION_MS });
+        return { ok: delivered.sent, failureCode: delivered.failureCode };
+      }),
+
+    listUserEmailOutbox: adminProcedure
+      .input(z.object({ userId: z.number().int().positive(), page: z.number().int().min(1).default(1), pageSize: z.number().int().min(1).max(50).default(10) }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const now = Date.now();
+        const outboxVisibilityPredicate = and(
+          eq(adminPlatformEmailMessages.recipientUserId, input.userId),
+          gte(adminPlatformEmailMessages.expiresAt, now),
+        );
+        const [totalRow] = await db.select({ value: count() }).from(adminPlatformEmailMessages).where(outboxVisibilityPredicate);
+        const entries = await db.select().from(adminPlatformEmailMessages).where(outboxVisibilityPredicate).orderBy(desc(adminPlatformEmailMessages.createdAt)).limit(input.pageSize).offset((input.page - 1) * input.pageSize);
+        return { entries, total: Number(totalRow?.value ?? 0) };
       }),
 
     removeUserSmtp: adminProcedure
