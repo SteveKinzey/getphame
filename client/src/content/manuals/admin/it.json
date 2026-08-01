@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "title": "Manuale per amministratori",
   "eyebrow": "Operazioni Get Phame",
   "introduction": "Questo Manuale per amministratori contiene le istruzioni complete per l’uso seguite dalle procedure operative riservate agli amministratori. Viene mostrato solo agli amministratori autenticati. Usare le sezioni operative per gestire account, diagnostica, supporto, entrate, recupero e lo stato aggregato del prodotto senza esporre credenziali o dati cliente non necessari.",
@@ -444,6 +444,79 @@
             "Confermare un risultato sano durevole prima di chiudere l’incidente."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-and-data-protection",
+      "title": "Operazioni di sicurezza e protezione dei dati",
+      "summary": "Usa affermazioni accurate, accesso con privilegi minimi, risposta verificata agli incidenti e flussi protetti per le richieste sulla privacy.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-claims",
+          "title": "Usa un linguaggio accurato su sicurezza e privacy",
+          "access": "admin",
+          "body": "Descrivi solo controlli implementati e verificati. Le affermazioni approvate includono la mancata vendita dei dati di account o contatti cliente, la raccolta minima legata al servizio, HTTPS/TLS in transito, la cifratura a riposo delle credenziali email collegate, sessioni server revocabili, cookie protetti, controlli di accesso, limiti di frequenza, prevenzione degli abusi e controlli sulle dipendenze di produzione. Non definire Get Phame cifrato end-to-end e non garantire rischio zero.",
+          "steps": [
+            "Controlla l’Informativa sulla privacy, Utilizzo dei dati, la pagina Sicurezza e le prove di implementazione correnti prima di rispondere a un questionario o pubblicare un’affermazione.",
+            "Distingui la cifratura in transito e delle credenziali archiviate dalla cifratura end-to-end.",
+            "Qualifica le affermazioni sulla raccolta indicando i dati operativi, antifrode e di coinvolgimento dichiarati.",
+            "Aggiorna i contenuti per i clienti e i manuali quando cambia un controllo o un’informativa."
+          ],
+          "route": "/security"
+        },
+        {
+          "id": "least-privilege-data-handling",
+          "title": "Gestisci i dati con privilegi minimi",
+          "access": "admin",
+          "body": "L’accesso amministrativo è consentito solo per attività approvate di assistenza, sicurezza, fatturazione, conformità o operative. Restringi le ricerche, consulta il minimo di dati necessario, preferisci anteprime sanificate e report aggregati e non richiedere o esporre mai segreti archiviati.",
+          "steps": [
+            "Verifica lo scopo operativo e l’account interessato prima di aprire i record dettagliati.",
+            "Usa filtri limitati, anteprime sanificate e colonne di esportazione consentite quando disponibili.",
+            "Non copiare credenziali SMTP, chiavi API, link magici, token di sessione grezzi, dati di pagamento o record cliente non necessari in ticket, log, schermate o report.",
+            "Proteggi i file esportati, registra il motivo dell’accesso ed elimina le copie locali al termine dello scopo approvato."
+          ]
+        },
+        {
+          "id": "security-incident-response",
+          "title": "Rispondi a sospetti incidenti e compromissioni di account",
+          "access": "admin",
+          "body": "Considera non verificati i comportamenti insoliti di autenticazione, consegna, accesso o dati finché non vengono esaminate prove persistenti. Contieni prima, conserva il minimo di prove necessario, usa diagnostica e cronologia di audit e annuncia il ripristino solo dopo la registrazione di un risultato sano.",
+          "steps": [
+            "Conferma account, intervallo temporale, dipendenza e impatto osservato senza ampliare inutilmente l’accesso.",
+            "Revoca sessioni, credenziali, connessioni o codici interessati quando la compromissione è credibile; evita eliminazioni distruttive finché servono prove.",
+            "Esamina lo stato dell’autenticazione, la Cronologia audit di sicurezza, lo stato dei provider, le versioni recenti e gli eventi operativi o di assistenza pertinenti.",
+            "Esegui una verifica non distruttiva dopo la correzione e chiudi l’incidente solo dopo una prova sana persistente e l’eventuale notifica di ripristino."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "privacy-request-operations",
+          "title": "Gestisci richieste di privacy ed eliminazione",
+          "access": "admin",
+          "body": "Le richieste sulla privacy richiedono verifica dell’identità, ambito definito, divulgazione minima e risultato registrato. L’eliminazione dell’account può influire su contatti, richieste, promemoria, integrazioni, esportazioni e abbonamenti; usa il flusso protetto anziché modifiche ad hoc al database.",
+          "steps": [
+            "Verifica la proprietà dell’account con prove approvate e registra categoria e ambito della richiesta.",
+            "Usa i controlli supportati di esportazione, correzione o eliminazione; non inviare mai i dati di un utente a un altro indirizzo senza verifica.",
+            "Controlla promemoria attivi, integrazioni, fatturazione, conservazione obbligatoria ed esportazioni legittimamente richieste prima di un’azione distruttiva.",
+            "Conferma il completamento, documenta eccezioni o categorie conservate ed elimina le copie di lavoro alla chiusura."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "security-release-verification",
+          "title": "Mantieni verificabili i controlli di sicurezza nelle versioni",
+          "access": "admin",
+          "body": "Le affermazioni di sicurezza restano affidabili solo se i controlli di produzione e le prove di rilascio sono aggiornati. Richiedi regressioni mirate, suite completa, controlli TypeScript, audit delle dipendenze di produzione, build di produzione, verifica responsive, revisione del main protetto e parità esatta dell’albero rilasciato.",
+          "steps": [
+            "Blocca il rilascio se resta una vulnerabilità nota di produzione, un contratto di sicurezza fallito o un problema di autorizzazione irrisolto.",
+            "Esamina i risultati automatici e risolvi quelli validi invece di aggirare la protezione del branch.",
+            "Esegui il merge tramite pull request che conserva la cronologia e conferma che il main protetto corrisponda all’albero validato.",
+            "Verifica la pagina pubblica Sicurezza e la diagnostica pertinente dopo la propagazione e registra le prove senza esporre segreti o dati cliente."
+          ],
+          "route": "/security"
         }
       ]
     },

@@ -14,7 +14,7 @@ This inventory is derived from the current application routes, navigation, prici
 
 1. Getting started: magic-link sign-in, onboarding checklist, business profile, language, install/share guidance, and first request.
 2. Home and navigation: Home, Send Request, Dashboard, Developer Integrations, Settings, Manual, account menu, theme, and offline/network status.
-3. Account profile and security: display name, avatar, sign-in email, passkeys, recovery methods, logout, and account deletion.
+3. Account profile, privacy, and security: display name, avatar, sign-in email, passkeys, recovery methods, verified Get Phame safeguards, data-minimization responsibilities, privacy choices and requests, safe vulnerability reporting, logout, and account deletion.
 4. Business and review setup: business identity, review destination/platform links, default platform, and Yelp compliance behavior.
 5. Email connection: supported SMTP providers, app-password guidance, sender identity, connection testing, and troubleshooting.
 6. Sending review requests: individual outreach, consent, compliant copy, customer details, preview, send status, and free-quota messaging.
@@ -61,6 +61,7 @@ The Admin Manual adds these sections after the complete shared user guidance:
 12. Koalendar recovery: failed import inspection and retry.
 13. PWA install/share conversion, caption-language selections, onboarding funnel analytics, comparison periods, AI insights, and aggregate CSV exports.
 14. Operations alerts and system-health trends.
+15. Security and data-protection operations: accurate customer-facing claims, least-privilege data handling, incident containment and recovery, privacy and deletion requests, and release-verification controls.
 
 ## Source files used as authority
 

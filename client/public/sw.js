@@ -1,12 +1,12 @@
 // Versioned path prevents edge caches from pinning an older service worker.
 // v28 intentionally does not skip waiting during install: page reloads remain
 // user-controlled and a waiting worker must never take over active peer tabs.
-// Release manifest: locale dictionaries phame59; service worker getphame-v29.
+// Release manifest: locale dictionaries phame61; service worker getphame-v29.
 const CACHE_NAME = 'getphame-v29';
 const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
 const VERSION_ENDPOINT = '/__manus__/version.json';
 const VERSION_CHECK_INTERVAL_MS = 60_000;
-const LOCALE_CACHE_VERSION = 'phame59';
+const LOCALE_CACHE_VERSION = 'phame61';
 const OFFLINE_PAGES = {
   en: '/offline.en.html',
   es: '/offline.es.html',

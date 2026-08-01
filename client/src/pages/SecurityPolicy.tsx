@@ -1,4 +1,5 @@
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Shield, AlertTriangle, Clock, CheckCircle, RefreshCw, Lock } from "lucide-react";
 
 const SECTION_HEADING = "text-base font-bold mt-6 mb-2";
@@ -8,11 +9,16 @@ const LINK_STYLE = { color: "oklch(0.80 0.18 80)" };
 const GOLD = "oklch(0.80 0.18 80)";
 const ACCENT_BORDER = { borderColor: GOLD };
 
-const LAST_UPDATED = "July 2026";
+const LAST_UPDATED_AT = new Date("2026-08-01T00:00:00Z");
 const SECURITY_EMAIL = "security@getphame.app";
 
 export default function SecurityPolicy() {
   const [, navigate] = useLocation();
+  const { i18n } = useTranslation();
+  const lastUpdated = new Intl.DateTimeFormat(
+    i18n.resolvedLanguage ?? i18n.language ?? "en",
+    { month: "long", year: "numeric", timeZone: "UTC" }
+  ).format(LAST_UPDATED_AT);
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -33,7 +39,7 @@ export default function SecurityPolicy() {
           </h1>
         </div>
         <p className="text-sm" style={{ color: "oklch(0.55 0.04 260)" }}>
-          Last updated: {LAST_UPDATED}
+          Last updated: {lastUpdated}
         </p>
       </div>
 
@@ -43,7 +49,7 @@ export default function SecurityPolicy() {
         {/* Intro */}
         <section>
           <p className="mb-3">
-            GetPhame (operated by SK America LLC) takes the security of its platform and customer data seriously. This document describes our vulnerability management process, our automated security controls, and how to responsibly disclose a security issue.
+            Get Phame (operated by SK America LLC) takes the security of its platform and customer data seriously. This document describes our vulnerability management process, our automated security controls, and how to responsibly disclose a security issue.
           </p>
           <p>
             We follow a layered defence approach: automated dependency auditing on every build, monthly automated patch reviews, and a defined CVE response SLA for production issues.
@@ -63,14 +69,14 @@ export default function SecurityPolicy() {
               <strong style={{ color: "oklch(0.90 0.02 260)" }}>Production dependency audit</strong> — <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.18 0.04 260)", color: GOLD }}>pnpm audit --prod</code> scans every package shipped to end users. If any known vulnerability is found, the build exits with a non-zero code and deployment is blocked.
             </li>
             <li>
-              <strong style={{ color: "oklch(0.90 0.02 260)" }}>Full test suite</strong> — <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.18 0.04 260)", color: GOLD }}>pnpm test</code> runs all 54 unit tests covering authentication, email delivery, Stripe checkout, and API contracts. A single failing test blocks deployment.
+              <strong style={{ color: "oklch(0.90 0.02 260)" }}>Full test suite</strong> — <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.18 0.04 260)", color: GOLD }}>pnpm test</code> runs the full automated test suite covering authentication, email delivery, Stripe checkout, and API contracts. A single failing test blocks deployment.
             </li>
             <li>
               <strong style={{ color: "oklch(0.90 0.02 260)" }}>Compiled build verification</strong> — TypeScript is compiled to production bundles; any type error or import failure also blocks deployment.
             </li>
           </ol>
           <p className="mt-3">
-            This means it is <em>structurally impossible</em> to deploy a build that contains a known production CVE or a broken test.
+            This means a release is <em>blocked</em> when a production dependency audit, automated test, or compiled build check fails.
           </p>
         </section>
 
@@ -87,10 +93,10 @@ export default function SecurityPolicy() {
             <li>Runs <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.18 0.04 260)", color: GOLD }}>pnpm audit --prod</code> and <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.18 0.04 260)", color: GOLD }}>pnpm audit</code> (full, including dev tools)</li>
             <li>Attempts to fix any production CVEs via <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.18 0.04 260)", color: GOLD }}>pnpm update</code> or dependency overrides</li>
             <li>Runs the full test suite and build to confirm no regressions</li>
-            <li>Commits and pushes any fixes to the main branch with a <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.18 0.04 260)", color: GOLD }}>chore: monthly dependency security update</code> commit</li>
+            <li>Opens a pull request with validated dependency fixes for review before merge</li>
           </ul>
           <p className="mt-3">
-            In addition, <strong style={{ color: "oklch(0.90 0.02 260)" }}>GitHub Dependabot</strong> monitors all production and development dependencies continuously and opens pull requests for patch and minor upgrades within 24–48 hours of a new CVE advisory being published.
+            In addition, <strong style={{ color: "oklch(0.90 0.02 260)" }}>GitHub Dependabot</strong> monitors production and development dependencies and opens pull requests when eligible security or version updates are available.
           </p>
         </section>
 
@@ -145,7 +151,7 @@ export default function SecurityPolicy() {
               <span className="font-semibold text-xs" style={{ color: "#22c55e" }}>PRODUCTION DEPENDENCIES — CLEAN</span>
             </div>
             <p className="text-xs" style={{ color: "oklch(0.65 0.02 260)" }}>
-              <code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>pnpm audit --prod</code> reports zero known vulnerabilities. Last verified: {LAST_UPDATED}.
+              <code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>pnpm audit --prod</code> reports zero known vulnerabilities. Last verified: {lastUpdated}.
             </p>
             <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 260)" }}>
               1 moderate finding exists in a dev-only migration tool (<code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>drizzle-kit → @esbuild-kit/core-utils → esbuild ≤0.24.2</code>) that is never compiled into the production bundle and poses no runtime risk.
@@ -160,10 +166,10 @@ export default function SecurityPolicy() {
           </h2>
           <ul className="list-disc pl-5 space-y-1.5">
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>SMTP credentials</strong> are encrypted at rest using AES-256-GCM before storage. The encryption key is never stored alongside the ciphertext.</li>
-            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Session tokens</strong> are signed JWTs with short expiry, stored in HttpOnly cookies to prevent XSS access.</li>
+            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Session tokens</strong> are opaque, revocable identifiers stored in HttpOnly, SameSite cookies. Raw session tokens are not stored in the database.</li>
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Customer data</strong> (email addresses you upload) is stored in a TiDB-compatible MySQL database with TLS-enforced connections.</li>
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>File storage</strong> uses S3-compatible object storage with non-enumerable, randomised key paths.</li>
-            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Payment processing</strong> is handled entirely by Stripe. GetPhame never stores raw card numbers or CVVs.</li>
+            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Payment processing</strong> is handled entirely by Stripe. Get Phame never stores raw card numbers or CVVs.</li>
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>OAuth</strong> (Google, Apple) credentials are never stored; only a platform-issued session token is persisted.</li>
           </ul>
         </section>
@@ -174,7 +180,7 @@ export default function SecurityPolicy() {
             <span className="inline-flex items-center gap-2"><AlertTriangle size={16} style={{ color: GOLD }} /> Responsible Disclosure</span>
           </h2>
           <p className="mb-3">
-            If you discover a security vulnerability in GetPhame, please report it privately before public disclosure. We commit to:
+            If you discover a security vulnerability in Get Phame, please report it privately before public disclosure. We commit to:
           </p>
           <ul className="list-disc pl-5 space-y-1.5 mb-3">
             <li>Acknowledge your report within <strong style={{ color: "oklch(0.90 0.02 260)" }}>24 hours</strong></li>
@@ -214,7 +220,7 @@ export default function SecurityPolicy() {
           <p className="mb-2">In scope for responsible disclosure:</p>
           <ul className="list-disc pl-5 space-y-1 mb-3">
             <li>getphame.app and all subdomains</li>
-            <li>The GetPhame web application and its API</li>
+            <li>The Get Phame web application and its API</li>
             <li>Authentication flows (Google OAuth, Apple Sign In, magic links)</li>
             <li>Data handling and storage</li>
           </ul>
@@ -230,7 +236,7 @@ export default function SecurityPolicy() {
         {/* Footer note */}
         <section>
           <p className="text-xs" style={{ color: "oklch(0.45 0.04 260)" }}>
-            This security policy applies to the GetPhame platform operated by SK America LLC. It is reviewed and updated at least quarterly. Questions about this policy may be directed to{" "}
+            This security policy applies to the Get Phame platform operated by SK America LLC. It is reviewed and updated at least quarterly. Questions about this policy may be directed to{" "}
             <a href={`mailto:${SECURITY_EMAIL}`} style={LINK_STYLE}>{SECURITY_EMAIL}</a>.
           </p>
         </section>

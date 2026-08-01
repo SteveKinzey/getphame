@@ -25,6 +25,20 @@ const ADMIN_SKILL_TOPIC_IDS = [
   "security-audit-skill-capabilities",
   "security-audit-skill-instructions",
 ] as const;
+const USER_SECURITY_SECTION_ID = "security-privacy-and-compliance";
+const USER_SECURITY_TOPIC_IDS = [
+  "how-get-phame-protects-data",
+  "privacy-choices-and-requests",
+  "report-security-concern",
+] as const;
+const ADMIN_SECURITY_SECTION_ID = "admin-security-and-data-protection";
+const ADMIN_SECURITY_TOPIC_IDS = [
+  "security-claims",
+  "least-privilege-data-handling",
+  "security-incident-response",
+  "privacy-request-operations",
+  "security-release-verification",
+] as const;
 
 const MANUAL_UI_KEYS = [
   "nav.userManual",
@@ -150,7 +164,8 @@ describe("role-aware Get Phame manuals", () => {
     );
 
     expect(englishSection).toBeDefined();
-    if (!englishSection) throw new Error("English administrator skill section is missing");
+    if (!englishSection)
+      throw new Error("English administrator skill section is missing");
 
     for (const locale of SUPPORTED_LOCALES) {
       const authoredUserManual = readManual("user", locale);
@@ -161,12 +176,17 @@ describe("role-aware Get Phame manuals", () => {
         candidate => candidate.id === ADMIN_SKILL_SECTION_ID
       );
 
-      expect(authoredAdminSupplement.version, `${locale} admin manual version`).toBe(2);
-      expect(authoredAdminSupplement.lastUpdated, `${locale} admin manual update date`).toBe(
-        "2026-08-01"
-      );
+      expect(
+        authoredAdminSupplement.version,
+        `${locale} admin manual version`
+      ).toBe(3);
+      expect(
+        authoredAdminSupplement.lastUpdated,
+        `${locale} admin manual update date`
+      ).toBe("2026-08-01");
       expect(section, `${locale} administrator skill section`).toBeDefined();
-      if (!section) throw new Error(`${locale} administrator skill section is missing`);
+      if (!section)
+        throw new Error(`${locale} administrator skill section is missing`);
 
       expect(section.access, `${locale} section access`).toBe("admin");
       expect(
@@ -177,20 +197,35 @@ describe("role-aware Get Phame manuals", () => {
         section.topics.every(topic => topic.access === "admin"),
         `${locale} administrator skill topic access`
       ).toBe(true);
-      expect(section.topics[0]?.steps, `${locale} capability steps`).toHaveLength(4);
-      expect(section.topics[1]?.steps, `${locale} instruction steps`).toHaveLength(10);
-      expect(section.topics[1]?.notes, `${locale} instruction safeguards`).toHaveLength(2);
+      expect(
+        section.topics[0]?.steps,
+        `${locale} capability steps`
+      ).toHaveLength(4);
+      expect(
+        section.topics[1]?.steps,
+        `${locale} instruction steps`
+      ).toHaveLength(10);
+      expect(
+        section.topics[1]?.notes,
+        `${locale} instruction safeguards`
+      ).toHaveLength(2);
 
       expect(
-        authoredUserManual.sections.some(candidate => candidate.id === ADMIN_SKILL_SECTION_ID),
+        authoredUserManual.sections.some(
+          candidate => candidate.id === ADMIN_SKILL_SECTION_ID
+        ),
         `${locale} authored user manual leaked the administrator skill section`
       ).toBe(false);
       expect(
-        userManual.sections.some(candidate => candidate.id === ADMIN_SKILL_SECTION_ID),
+        userManual.sections.some(
+          candidate => candidate.id === ADMIN_SKILL_SECTION_ID
+        ),
         `${locale} composed user manual leaked the administrator skill section`
       ).toBe(false);
       expect(
-        adminManual.sections.some(candidate => candidate.id === ADMIN_SKILL_SECTION_ID),
+        adminManual.sections.some(
+          candidate => candidate.id === ADMIN_SKILL_SECTION_ID
+        ),
         `${locale} composed Admin Manual omitted the administrator skill section`
       ).toBe(true);
 
@@ -198,12 +233,132 @@ describe("role-aware Get Phame manuals", () => {
         expect(section.title, `${locale} localized section title`).not.toBe(
           englishSection.title
         );
-        expect(section.topics[0]?.body, `${locale} localized capability body`).not.toBe(
-          englishSection.topics[0]?.body
+        expect(
+          section.topics[0]?.body,
+          `${locale} localized capability body`
+        ).not.toBe(englishSection.topics[0]?.body);
+        expect(
+          section.topics[1]?.body,
+          `${locale} localized instructions body`
+        ).not.toBe(englishSection.topics[1]?.body);
+      }
+    }
+  });
+
+  it("adds verified, localized safeguards and privacy guidance to every User Manual", () => {
+    const englishManual = readManual("user", "en");
+    const englishSection = englishManual.sections.find(
+      section => section.id === USER_SECURITY_SECTION_ID
+    );
+
+    expect(englishSection).toBeDefined();
+    if (!englishSection)
+      throw new Error("English user security section is missing");
+
+    const englishProtection = englishSection.topics.find(
+      topic => topic.id === "how-get-phame-protects-data"
+    );
+    expect(englishProtection?.body).toContain("does not sell, rent, or trade");
+    expect(englishProtection?.body).toContain("does not read Gmail messages");
+    expect(englishProtection?.notes?.join(" ")).toContain(
+      "not the same as end-to-end encryption"
+    );
+
+    for (const locale of SUPPORTED_LOCALES) {
+      const manual = readManual("user", locale);
+      const section = manual.sections.find(
+        candidate => candidate.id === USER_SECURITY_SECTION_ID
+      );
+
+      expect(manual.version, `${locale} user manual version`).toBe(2);
+      expect(manual.lastUpdated, `${locale} user manual update date`).toBe(
+        "2026-08-01"
+      );
+      expect(section, `${locale} user security section`).toBeDefined();
+      if (!section)
+        throw new Error(`${locale} user security section is missing`);
+
+      const sectionTopicIds = section.topics.map(topic => topic.id);
+      for (const topicId of USER_SECURITY_TOPIC_IDS) {
+        expect(sectionTopicIds, `${locale} user security topics`).toContain(
+          topicId
         );
-        expect(section.topics[1]?.body, `${locale} localized instructions body`).not.toBe(
-          englishSection.topics[1]?.body
+        const topic = section.topics.find(
+          candidate => candidate.id === topicId
         );
+        expect(topic?.access, `${locale} ${topicId} access`).toBe("all");
+        expect(topic?.steps, `${locale} ${topicId} steps`).toHaveLength(4);
+
+        if (locale !== "en") {
+          const englishTopic = englishSection.topics.find(
+            candidate => candidate.id === topicId
+          );
+          expect(topic?.title, `${locale} ${topicId} title`).not.toBe(
+            englishTopic?.title
+          );
+          expect(topic?.body, `${locale} ${topicId} body`).not.toBe(
+            englishTopic?.body
+          );
+        }
+      }
+    }
+  });
+
+  it("keeps detailed security operations localized and administrator-only", () => {
+    const englishAdmin = readManual("admin", "en");
+    const englishSection = englishAdmin.sections.find(
+      section => section.id === ADMIN_SECURITY_SECTION_ID
+    );
+
+    expect(englishSection).toBeDefined();
+    if (!englishSection)
+      throw new Error("English admin security section is missing");
+
+    const englishClaims = englishSection.topics.find(
+      topic => topic.id === "security-claims"
+    );
+    expect(englishClaims?.body).toContain(
+      "Do not call Get Phame end-to-end encrypted"
+    );
+    expect(englishClaims?.body).toContain("production dependency checks");
+
+    for (const locale of SUPPORTED_LOCALES) {
+      const userManual = readManual("user", locale);
+      const adminSupplement = readManual("admin", locale);
+      const section = adminSupplement.sections.find(
+        candidate => candidate.id === ADMIN_SECURITY_SECTION_ID
+      );
+
+      expect(section, `${locale} admin security section`).toBeDefined();
+      if (!section)
+        throw new Error(`${locale} admin security section is missing`);
+
+      expect(section.access, `${locale} admin security access`).toBe("admin");
+      expect(
+        section.topics.map(topic => topic.id),
+        `${locale} admin security topic structure`
+      ).toEqual(ADMIN_SECURITY_TOPIC_IDS);
+      expect(
+        section.topics.every(
+          topic => topic.access === "admin" && topic.steps.length === 4
+        ),
+        `${locale} admin security topic controls`
+      ).toBe(true);
+      expect(
+        userManual.sections.some(
+          candidate => candidate.id === ADMIN_SECURITY_SECTION_ID
+        ),
+        `${locale} User Manual leaked administrator security operations`
+      ).toBe(false);
+
+      if (locale !== "en") {
+        expect(section.title, `${locale} admin security title`).not.toBe(
+          englishSection.title
+        );
+        expect(
+          section.topics[0]?.body,
+          `${locale} admin security body`
+        ).not.toBe(englishSection.topics[0]?.body);
       }
     }
   });
@@ -335,7 +490,7 @@ describe("role-aware Get Phame manuals", () => {
     const i18n = readProjectFile("../client/src/lib/i18n.ts");
     const serviceWorker = readProjectFile("../client/public/sw.js");
 
-    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame59");
+    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame61");
     expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
     for (const locale of SUPPORTED_LOCALES) {
       expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);

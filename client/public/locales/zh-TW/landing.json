@@ -398,6 +398,28 @@
         "messageMax": "訊息請維持在 4,000 個字元以內。",
         "nameMax": "姓名請維持在 80 個字元以內。"
       }
+    },
+    "securitySummary": {
+      "eyebrow": "隱私與安全",
+      "title": "您的客戶資料始終歸您所有",
+      "description": "Get Phame 僅使用傳送評論邀請所需的資訊，絕不出售您的資料，並以現代安全措施保護敏感資訊。",
+      "noSelling": {
+        "title": "我們絕不出售您的資料",
+        "description": "您的帳戶與客戶資訊只用於運作 Get Phame，不會用於廣告或轉售。"
+      },
+      "minimalData": {
+        "title": "我們只收集必要資訊",
+        "description": "使用 Google 登入只會分享您的姓名與電子郵件地址。我們不會讀取您的收件匣、聯絡人、Drive 檔案或 Calendar。"
+      },
+      "protected": {
+        "title": "敏感資訊受到保護",
+        "description": "已連結信箱的密碼會在儲存前加密，您與 Get Phame 之間的連線則受 HTTPS 保護。"
+      },
+      "account": {
+        "title": "您的帳戶受到保護",
+        "description": "安全登入工作階段、存取控制、請求頻率限制、濫用偵測與持續弱點監控，共同協助保護服務。"
+      },
+      "cta": "瞭解 Get Phame 如何保護您的資料"
     }
   },
   "support": {

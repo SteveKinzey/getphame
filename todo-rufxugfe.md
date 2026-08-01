@@ -133,3 +133,5 @@
 - [x] Build a branded, dependency-free offline fallback page and safely serve it for failed uncached navigation requests from both maintained service-worker entrypoints.
 - [x] Correct the GitHub API-health monitor to test the canonical production domain, preserving its existing privacy-minimized incident contract and adding regression coverage.
 - [ ] Add focused contracts, run full validation and responsive PWA QA, checkpoint the release, repair the deployment path, and synchronize the exact validated tree through protected GitHub main.
+- [x] Reconcile the material managed-checkpoint and protected-main history divergence before any protected-main release, preserving both histories and resolving only verified compatibility conflicts.
+- [x] Rebuild the PWA resilience delta on the current protected-main tree, preserve GitHub-only security and release work, then revalidate and synchronize the reconciled candidate by normal pull request.

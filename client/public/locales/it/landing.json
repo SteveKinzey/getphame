@@ -287,6 +287,28 @@
       "tabTrackingTitle": "Controlla l'attività delle richieste",
       "tabTrackingDescription": "Consulta invii, aperture e clic nella dashboard di Get Phame.",
       "tabTrackingAlt": "Dashboard attività di Get Phame con monitoraggio di invii, aperture e clic"
+    },
+    "securitySummary": {
+      "eyebrow": "Privacy e sicurezza",
+      "title": "I dati dei tuoi clienti restano tuoi",
+      "description": "Get Phame utilizza solo le informazioni necessarie per inviare richieste di recensione, non vende mai i tuoi dati e protegge le informazioni sensibili con misure di sicurezza moderne.",
+      "noSelling": {
+        "title": "Non vendiamo i tuoi dati",
+        "description": "Le informazioni del tuo account e dei tuoi clienti vengono utilizzate per far funzionare Get Phame, non per pubblicità o rivendita."
+      },
+      "minimalData": {
+        "title": "Raccogliamo solo ciò che serve",
+        "description": "L’accesso con Google condivide solo il tuo nome e indirizzo email. Non leggiamo la tua posta in arrivo, i contatti, i file di Drive o Calendar."
+      },
+      "protected": {
+        "title": "Le informazioni sensibili sono protette",
+        "description": "La password dell’email collegata viene crittografata prima di essere archiviata e la connessione a Get Phame è protetta tramite HTTPS."
+      },
+      "account": {
+        "title": "Il tuo account è protetto",
+        "description": "Sessioni di accesso sicure, controlli degli accessi, limiti alle richieste, verifiche antiabuso e monitoraggio continuo delle vulnerabilità contribuiscono a proteggere il servizio."
+      },
+      "cta": "Scopri come Get Phame protegge i tuoi dati"
     }
   }
 }

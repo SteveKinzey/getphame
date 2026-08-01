@@ -4065,7 +4065,7 @@
   },
   {
     "key": "k_355d331b13ae55",
-    "source": "is handled entirely by Stripe. GetPhame never stores raw card numbers or CVVs.",
+    "source": "is handled entirely by Stripe. Get Phame never stores raw card numbers or CVVs.",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -5835,7 +5835,7 @@
   },
   {
     "key": "k_4e39f38a4aae25",
-    "source": "If you discover a security vulnerability in GetPhame, please report it privately before public disclosure. We commit to:",
+    "source": "If you discover a security vulnerability in Get Phame, please report it privately before public disclosure. We commit to:",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -6312,7 +6312,7 @@
   },
   {
     "key": "k_53ae9c4e03c0c1",
-    "source": "runs all 54 unit tests covering authentication, email delivery, Stripe checkout, and API contracts. A single failing test blocks deployment.",
+    "source": "runs the full automated test suite covering authentication, email delivery, Stripe checkout, and API contracts. A single failing test blocks deployment.",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -7006,7 +7006,7 @@
   },
   {
     "key": "k_5e2808e8191196",
-    "source": "GetPhame (operated by SK America LLC) takes the security of its platform and customer data seriously. This document describes our vulnerability management process, our automated security controls, and how to responsibly disclose a security issue.",
+    "source": "Get Phame (operated by SK America LLC) takes the security of its platform and customer data seriously. This document describes our vulnerability management process, our automated security controls, and how to responsibly disclose a security issue.",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -9025,7 +9025,7 @@
   },
   {
     "key": "k_79904b41b8d1e1",
-    "source": "monitors all production and development dependencies continuously and opens pull requests for patch and minor upgrades within 24–48 hours of a new CVE advisory being published.",
+    "source": "monitors production and development dependencies and opens pull requests when eligible security or version updates are available.",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -10845,7 +10845,7 @@
   },
   {
     "key": "k_970594bfcc95ed",
-    "source": "to deploy a build that contains a known production CVE or a broken test.",
+    "source": "when a production dependency audit, automated test, or compiled build check fails.",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -11511,7 +11511,7 @@
   },
   {
     "key": "k_9f8be392fdd62f",
-    "source": "Commits and pushes any fixes to the main branch with a",
+    "source": "Opens a pull request with validated dependency fixes for review before merge",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -12109,7 +12109,7 @@
   },
   {
     "key": "k_a9f385611961ed",
-    "source": "structurally impossible",
+    "source": "blocked",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -12399,7 +12399,7 @@
   },
   {
     "key": "k_aee81bf17b95ce",
-    "source": "This means it is",
+    "source": "This means a release is",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -12563,7 +12563,7 @@
   },
   {
     "key": "k_b06bae2552c5fb",
-    "source": "This security policy applies to the GetPhame platform operated by SK America LLC. It is reviewed and updated at least quarterly. Questions about this policy may be directed to",
+    "source": "This security policy applies to the Get Phame platform operated by SK America LLC. It is reviewed and updated at least quarterly. Questions about this policy may be directed to",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -13324,7 +13324,7 @@
   },
   {
     "key": "k_b9c542bcc8905b",
-    "source": "The GetPhame web application and its API",
+    "source": "The Get Phame web application and its API",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",
@@ -17332,7 +17332,7 @@
   },
   {
     "key": "k_f0ad66876e35f4",
-    "source": "are signed JWTs with short expiry, stored in HttpOnly cookies to prevent XSS access.",
+    "source": "are opaque, revocable identifiers stored in HttpOnly, SameSite cookies. Raw session tokens are not stored in the database.",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",

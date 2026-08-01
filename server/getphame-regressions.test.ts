@@ -220,7 +220,7 @@ describe("Get Phame regression contracts", () => {
     expect(offlinePage).toContain("You’re offline");
     expect(offlinePage).toContain("GET PHAME");
     expect(offlinePage).toContain('id="retry"');
-    expect(offlinePage).toContain("window.setTimeout(() => window.location.reload(), 80)");
+    expect(offlinePage).toContain("window.location.reload()");
     expect(installPrompt).toContain(
       'window.addEventListener("beforeinstallprompt"'
     );
@@ -315,7 +315,7 @@ describe("Get Phame regression contracts", () => {
       );
       expect(localizedOffline).toContain("GET PHAME");
       expect(localizedOffline).toContain('id="retry"');
-      expect(localizedOffline).toContain("window.setTimeout(() => window.location.reload(), 80)");
+      expect(localizedOffline).toContain("window.location.reload()");
     }
   });
 
@@ -836,7 +836,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame59");
+    expect(i18n).toContain("v=phame61");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

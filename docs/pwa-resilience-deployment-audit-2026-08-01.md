@@ -1,6 +1,6 @@
 # PWA Resilience Deployment and Repository Audit
 
-**Observed:** 2026-08-01 UTC  
+**Observed:** 2026-08-01 UTC
 **Scope:** Canonical production availability, managed runtime signals, protected-main health, and branch-cleanup safety.
 
 ## Production availability
@@ -33,6 +33,8 @@ The repository’s scheduled API-health workflow currently probes the legacy Man
 On 2026-08-01, the refreshed English offline fallback was visually verified at a 375 × 812 mobile viewport. The approved gold P-star asset, text-rendered `GET PHAME` lockup, connection guidance, visible focus-capable retry action, status copy, and readable contrast all rendered within the viewport without horizontal overflow.
 
 The same recovery experience was also verified at a 1280 × 720 desktop viewport. Its card remained centered and legible, with intentional whitespace, proportionate hierarchy, and no clipped or overflowing elements.
+
+After reconciling the release onto current protected-main work, the transferred managed tree was rechecked at 390 × 844 and 1280 × 720. The branded recovery card remained readable, centered, and fully visible at both breakpoints; the gold retry control and live-status copy remained easy to identify without overflow.
 
 ## Branch-cleanup safety
 
