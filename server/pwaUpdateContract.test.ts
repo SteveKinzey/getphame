@@ -80,9 +80,9 @@ describe("PWA safe update release contract", () => {
     const worker = readProjectFile("../client/public/sw-v28.js");
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
 
-    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame58'");
+    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame59'");
     expect(worker).toContain("...TRANSLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`)");
-    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame58');
+    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame59');
     for (const locale of localePaths) {
       expect(worker).toContain(`/locales/${locale}/translation.json`);
       expect(worker).toContain(`/locales/${locale}/landing.json`);

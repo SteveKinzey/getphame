@@ -398,6 +398,28 @@
         "messageMax": "Le message doit contenir 4 000 caractères ou moins.",
         "nameMax": "Le nom doit contenir 80 caractères ou moins."
       }
+    },
+    "securitySummary": {
+      "eyebrow": "Confidentialité et sécurité",
+      "title": "Les données de vos clients restent les vôtres",
+      "description": "Get Phame utilise uniquement les informations nécessaires pour envoyer des demandes d’avis, ne vend jamais vos données et protège les informations sensibles avec des mesures de sécurité modernes.",
+      "noSelling": {
+        "title": "Nous ne vendons pas vos données",
+        "description": "Les informations de votre compte et de vos clients servent à faire fonctionner Get Phame, et non à des fins publicitaires ou de revente."
+      },
+      "minimalData": {
+        "title": "Nous recueillons uniquement le nécessaire",
+        "description": "Lors de la connexion, Google ne partage que votre nom et votre adresse e-mail. Nous ne lisons pas votre boîte de réception, vos contacts, vos fichiers Drive ni votre Calendar."
+      },
+      "protected": {
+        "title": "Vos informations sensibles sont protégées",
+        "description": "Le mot de passe de votre messagerie connectée est chiffré avant d’être stocké, et votre connexion à Get Phame est protégée par HTTPS."
+      },
+      "account": {
+        "title": "Votre compte est protégé",
+        "description": "Des sessions de connexion sécurisées, des contrôles d’accès, des limites de requêtes, des contrôles anti-abus et une surveillance continue des vulnérabilités contribuent à protéger le service."
+      },
+      "cta": "Découvrez comment Get Phame protège vos données"
     }
   },
   "support": {
