@@ -1,7 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { TrpcContext } from "./_core/context";
+
+const mocks = vi.hoisted(() => ({
+  getDb: vi.fn(),
+}));
+
+vi.mock("./db", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./db")>()),
+  getDb: mocks.getDb,
+}));
+
 import { appRouter } from "./routers";
 import { buildSecurityAuditReleaseVerificationPayload } from "./routers/securityAuditReleaseVerification";
 
@@ -27,6 +37,18 @@ function context(role: "admin" | "user" | null): TrpcContext {
 }
 
 describe("administrator security-audit release verification", () => {
+  beforeEach(() => {
+    mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => [{ suspendedUntil: null }],
+          }),
+        }),
+      })),
+    });
+  });
+
   it("redirects resolved unauthenticated visitors to the public landing page", () => {
     const pageSource = readFileSync(
       resolve(
