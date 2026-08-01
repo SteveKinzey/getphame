@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "title": "User Manual",
   "eyebrow": "Get Phame guidance",
   "introduction": "Use this manual to set up Get Phame, send compliant review requests, manage contacts and reminders, connect integrations, and understand what is included with Free and paid subscriptions. Paid capabilities remain visible so you can evaluate them, and every subscription-only item is clearly labeled.",
-  "lastUpdated": "2026-07-25",
+  "lastUpdated": "2026-08-01",
   "sections": [
     {
       "id": "getting-started",
@@ -22,7 +22,9 @@
             "If the link has expired or was already used, return to sign-in and request a new one.",
             "Never forward a magic-link email or share its URL."
           ],
-          "notes": ["If delivery is delayed, check spam or junk folders and confirm the email address was entered correctly."]
+          "notes": [
+            "If delivery is delayed, check spam or junk folders and confirm the email address was entered correctly."
+          ]
         },
         {
           "id": "setup-checklist",
@@ -171,7 +173,9 @@
             "Open the inline provider guide and create the required app or SMTP password.",
             "Enter the connection details, save, and run the connection test."
           ],
-          "notes": ["Google Workspace administrators may need to allow app passwords. Proton Mail requires credentials supplied by Proton Bridge."],
+          "notes": [
+            "Google Workspace administrators may need to allow app passwords. Proton Mail requires credentials supplied by Proton Bridge."
+          ],
           "route": "/settings"
         },
         {
@@ -615,6 +619,51 @@
             "Remove passkeys or sessions for devices you no longer control."
           ],
           "route": "/settings"
+        },
+        {
+          "id": "how-get-phame-protects-data",
+          "title": "How Get Phame protects your information",
+          "access": "all",
+          "body": "Get Phame does not sell, rent, or trade account information or customer contact data. It collects the information needed to provide review-request workflows, prevent abuse, and deliver disclosed activity reporting. Google sign-in supplies basic identity details only; Get Phame does not read Gmail messages, Google Contacts, Drive files, or Calendar events. Connected-email credentials are encrypted before storage, browser traffic is protected with HTTPS/TLS, and revocable sessions, protected cookies, access controls, rate limits, and vulnerability checks help protect the service.",
+          "steps": [
+            "Read the Privacy Policy to understand collection, use, retention, sharing, and your choices.",
+            "Read the Security page for the current safeguards and vulnerability-reporting process.",
+            "Open Data Usage to confirm which Google information is and is not accessed.",
+            "Use the contact address in the applicable policy when a privacy or security concern requires review."
+          ],
+          "notes": [
+            "Encryption in transit and encryption of sensitive stored credentials are not the same as end-to-end encryption. Get Phame must process the data needed to perform the workflows you request."
+          ],
+          "route": "/security"
+        },
+        {
+          "id": "privacy-choices-and-requests",
+          "title": "Your privacy choices and data requests",
+          "access": "all",
+          "body": "Import only customer information you are authorized to use, retain it only for a defined business purpose, and keep exported copies protected. Depending on your location, the Privacy Policy explains how to request access, correction, export, deletion, objection, or withdrawal of consent for applicable account data.",
+          "steps": [
+            "Keep contact records limited to the name, email, consent, source, and workflow information needed for legitimate outreach.",
+            "Correct inaccurate records and stop outreach when a customer opts out or the requested action is complete.",
+            "Restrict access to exports and delete local copies when the approved purpose ends.",
+            "Use the protected account-deletion flow or the Privacy Policy contact method for a data-rights request."
+          ],
+          "notes": [
+            "Get Phame may need to verify identity before processing a privacy request."
+          ],
+          "route": "/privacy"
+        },
+        {
+          "id": "report-security-concern",
+          "title": "Report a security concern safely",
+          "access": "all",
+          "body": "Report suspected vulnerabilities privately through the contact method on the Security page. Do not test against another user, disrupt the service, or include credentials or customer data in a report.",
+          "steps": [
+            "Record a concise description, the affected page or feature, safe reproduction steps, and the observed impact.",
+            "Remove customer records, credentials, session links, and unrelated personal information from screenshots or attachments.",
+            "Submit the report privately to the security contact shown on the Security page.",
+            "Do not publish details until Get Phame has acknowledged the report and coordinated responsible disclosure."
+          ],
+          "route": "/security"
         },
         {
           "id": "data-responsibility",

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "title": "Admin Manual",
   "eyebrow": "Get Phame operations",
   "introduction": "This Admin Manual contains the complete user guidance followed by administrator-only operating procedures. It is shown only to authenticated administrators. Use the operational sections to manage accounts, diagnostics, support, revenue, recovery, and aggregate product health without exposing credentials or unnecessary customer data.",
@@ -444,6 +444,79 @@
             "Confirm a durable healthy result before closing the incident."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-and-data-protection",
+      "title": "Security and data protection operations",
+      "summary": "Use accurate claims, least-privilege handling, verified incident response, and protected privacy-request workflows.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-claims",
+          "title": "Use accurate security and privacy language",
+          "access": "admin",
+          "body": "Describe only controls that are implemented and verified. Approved claims include no sale of account or customer-contact data, minimal service-related collection, HTTPS/TLS in transit, encryption of connected-email credentials at rest, revocable server-side sessions, protected cookies, access controls, rate limits, abuse prevention, and production dependency checks. Do not call Get Phame end-to-end encrypted or guarantee that risk is zero.",
+          "steps": [
+            "Check the current Privacy Policy, Data Usage page, Security page, and implementation evidence before answering a questionnaire or publishing a claim.",
+            "Distinguish encryption in transit and encrypted stored credentials from end-to-end encryption.",
+            "Qualify collection claims by acknowledging operational, fraud-prevention, and disclosed engagement data.",
+            "Update customer-facing copy and manuals when an implemented control or disclosure changes."
+          ],
+          "route": "/security"
+        },
+        {
+          "id": "least-privilege-data-handling",
+          "title": "Handle data with least privilege",
+          "access": "admin",
+          "body": "Administrator access is for approved support, security, billing, compliance, or operational work only. Search narrowly, inspect the minimum data needed, prefer sanitized previews and aggregate reporting, and never request or expose stored secrets.",
+          "steps": [
+            "Verify the operational purpose and affected account before opening detail records.",
+            "Use bounded filters, sanitized previews, and allowlisted export columns whenever available.",
+            "Do not copy SMTP credentials, API keys, magic links, raw session tokens, payment details, or unnecessary customer records into tickets, logs, screenshots, or reports.",
+            "Restrict exported files, record the reason for access, and delete local copies when the approved purpose ends."
+          ]
+        },
+        {
+          "id": "security-incident-response",
+          "title": "Respond to suspected incidents and account compromise",
+          "access": "admin",
+          "body": "Treat unusual authentication, delivery, access, or data behavior as unverified until persisted evidence is reviewed. Contain first, preserve the minimum necessary evidence, use built-in diagnostics and audit history, and announce recovery only after a healthy result is recorded.",
+          "steps": [
+            "Confirm the affected account, time window, dependency, and observed impact without broadening access unnecessarily.",
+            "Revoke affected sessions, credentials, connections, or codes when compromise is credible; avoid destructive deletion while evidence is still needed.",
+            "Review authentication health, Security Audit History, provider status, recent releases, and relevant support or operational events.",
+            "Run a non-destructive verification after remediation and close the incident only after persisted healthy evidence and any required recovery notification."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "privacy-request-operations",
+          "title": "Process privacy and deletion requests",
+          "access": "admin",
+          "body": "Privacy requests require identity verification, a defined scope, minimal disclosure, and a recorded outcome. Account deletion can affect contacts, requests, reminders, integrations, exports, and subscriptions, so use the protected workflow rather than ad hoc database changes.",
+          "steps": [
+            "Verify account ownership through approved evidence and record the request category and scope.",
+            "Use supported export, correction, or deletion controls; never send one user’s data to another address without verification.",
+            "Review active reminders, integrations, billing state, required retention, and legitimately requested exports before destructive action.",
+            "Confirm completion, document exceptions or retained categories, and remove working copies after the request is closed."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "security-release-verification",
+          "title": "Keep security controls verifiable through releases",
+          "access": "admin",
+          "body": "Security claims remain reliable only when production checks and release evidence stay current. Require focused regressions, the full suite, TypeScript checks, production dependency auditing, a production build, responsive verification, protected-main review, and exact release-tree parity.",
+          "steps": [
+            "Block release when a known production dependency vulnerability, failing security contract, or unresolved authorization issue remains.",
+            "Review automated findings and resolve valid conversations rather than bypassing branch protection.",
+            "Merge through a history-preserving pull request and confirm protected main matches the validated release tree.",
+            "Verify the public Security page and relevant diagnostics after propagation, then record evidence without exposing secrets or customer data."
+          ],
+          "route": "/security"
         }
       ]
     },

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "title": "Manual de administrador",
   "eyebrow": "Operaciones de Get Phame",
   "introduction": "Este Manual de administrador contiene la guía completa de usuario seguida de procedimientos operativos solo para administradores. Se muestra únicamente a administradores autenticados. Utilice las secciones operativas para gestionar cuentas, diagnósticos, soporte, ingresos, recuperación y la salud agregada del producto sin exponer credenciales ni datos de clientes innecesarios.",
@@ -444,6 +444,79 @@
             "Confirme un resultado durable y saludable antes de cerrar el incidente."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-and-data-protection",
+      "title": "Operaciones de seguridad y protección de datos",
+      "summary": "Usa afirmaciones precisas, acceso de mínimo privilegio, respuesta verificada a incidentes y flujos protegidos para solicitudes de privacidad.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-claims",
+          "title": "Usa un lenguaje preciso sobre seguridad y privacidad",
+          "access": "admin",
+          "body": "Describe únicamente controles implementados y verificados. Las afirmaciones aprobadas incluyen que no se venden datos de cuentas ni contactos de clientes, recopilación mínima relacionada con el servicio, HTTPS/TLS en tránsito, cifrado en reposo de las credenciales del correo conectado, sesiones revocables del servidor, cookies protegidas, controles de acceso, límites de frecuencia, prevención de abusos y comprobaciones de dependencias de producción. No describas Get Phame como cifrado de extremo a extremo ni garantices riesgo cero.",
+          "steps": [
+            "Comprueba la Política de privacidad, Uso de datos, Seguridad y las pruebas de implementación actuales antes de responder un cuestionario o publicar una afirmación.",
+            "Diferencia el cifrado en tránsito y de credenciales almacenadas del cifrado de extremo a extremo.",
+            "Matiza las afirmaciones de recopilación indicando los datos operativos, de prevención del fraude y de interacción descritos.",
+            "Actualiza el contenido para clientes y los manuales cuando cambie un control o una divulgación."
+          ],
+          "route": "/security"
+        },
+        {
+          "id": "least-privilege-data-handling",
+          "title": "Gestiona los datos con mínimo privilegio",
+          "access": "admin",
+          "body": "El acceso administrativo se limita a tareas autorizadas de soporte, seguridad, facturación, cumplimiento u operaciones. Busca de forma específica, consulta los datos mínimos, prefiere vistas depuradas e informes agregados y nunca solicites ni expongas secretos almacenados.",
+          "steps": [
+            "Verifica la finalidad operativa y la cuenta afectada antes de abrir registros detallados.",
+            "Usa filtros acotados, vistas previas depuradas y columnas de exportación permitidas siempre que estén disponibles.",
+            "No copies credenciales SMTP, claves de API, enlaces mágicos, tokens de sesión sin procesar, datos de pago ni registros de clientes innecesarios en tickets, registros, capturas o informes.",
+            "Restringe los archivos exportados, registra el motivo del acceso y elimina las copias locales al terminar la finalidad autorizada."
+          ]
+        },
+        {
+          "id": "security-incident-response",
+          "title": "Responde a incidentes sospechosos y cuentas comprometidas",
+          "access": "admin",
+          "body": "Trata los comportamientos inusuales de autenticación, entrega, acceso o datos como no verificados hasta revisar pruebas persistentes. Contén primero, conserva solo las pruebas necesarias, usa los diagnósticos y el historial de auditoría y anuncia la recuperación únicamente tras registrar un resultado saludable.",
+          "steps": [
+            "Confirma la cuenta, el intervalo de tiempo, la dependencia y el impacto observado sin ampliar el acceso innecesariamente.",
+            "Revoca sesiones, credenciales, conexiones o códigos afectados cuando el compromiso sea creíble; evita la eliminación destructiva mientras se necesiten pruebas.",
+            "Revisa la salud de autenticación, el Historial de auditoría de seguridad, el estado del proveedor, las versiones recientes y los eventos de soporte u operaciones pertinentes.",
+            "Ejecuta una verificación no destructiva tras la corrección y cierra el incidente solo con pruebas saludables persistentes y la notificación de recuperación requerida."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "privacy-request-operations",
+          "title": "Tramita solicitudes de privacidad y eliminación",
+          "access": "admin",
+          "body": "Las solicitudes de privacidad requieren verificación de identidad, un alcance definido, divulgación mínima y un resultado registrado. La eliminación de una cuenta puede afectar contactos, solicitudes, recordatorios, integraciones, exportaciones y suscripciones; usa el flujo protegido y no cambios manuales en la base de datos.",
+          "steps": [
+            "Verifica la titularidad con pruebas aprobadas y registra la categoría y el alcance de la solicitud.",
+            "Usa los controles compatibles de exportación, corrección o eliminación; nunca envíes datos de un usuario a otra dirección sin verificarla.",
+            "Revisa recordatorios activos, integraciones, facturación, conservación obligatoria y exportaciones solicitadas legítimamente antes de una acción destructiva.",
+            "Confirma la finalización, documenta excepciones o categorías conservadas y elimina copias de trabajo al cerrar la solicitud."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "security-release-verification",
+          "title": "Mantén verificables los controles de seguridad en cada versión",
+          "access": "admin",
+          "body": "Las afirmaciones de seguridad siguen siendo fiables solo si las comprobaciones de producción y las pruebas de publicación están actualizadas. Exige regresiones específicas, la suite completa, TypeScript, auditoría de dependencias de producción, compilación de producción, verificación adaptable, revisión de main protegido y paridad exacta del árbol publicado.",
+          "steps": [
+            "Bloquea la publicación si queda una vulnerabilidad conocida de producción, un contrato de seguridad fallido o un problema de autorización sin resolver.",
+            "Revisa los hallazgos automáticos y resuelve los válidos en lugar de eludir la protección de rama.",
+            "Fusiona mediante una solicitud de cambios que conserve el historial y confirma que main protegido coincide con el árbol validado.",
+            "Verifica la página pública de Seguridad y los diagnósticos pertinentes tras la propagación y registra pruebas sin exponer secretos ni datos de clientes."
+          ],
+          "route": "/security"
         }
       ]
     },

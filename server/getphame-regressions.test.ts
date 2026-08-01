@@ -834,7 +834,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame59");
+    expect(i18n).toContain("v=phame60");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");
