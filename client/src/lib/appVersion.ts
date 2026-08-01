@@ -1,6 +1,7 @@
 export const DEPLOYMENT_VERSION_URL = "/__manus__/version.json";
 export const APP_WORKER_CACHE_NAME = "getphame-v28";
 export const VERSION_POLL_INTERVAL_MS = 60_000;
+export const DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS = 10_000;
 export const UPDATE_DEFER_DURATION_MS = 15 * 60_000;
 export const UPDATE_RELOAD_GUARD_PREFIX = "getphame:update-reload:";
 export const UPDATE_RELOAD_TARGET_STORAGE_KEY = "getphame:update-reload-target";
@@ -42,11 +43,21 @@ export async function fetchDeploymentVersion(
 ): Promise<string | null> {
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
   const now = options.now ?? Date.now;
+  const timeoutController =
+    options.signal || typeof AbortController === "undefined"
+      ? null
+      : new AbortController();
+  const timeoutId = timeoutController
+    ? globalThis.setTimeout(
+        () => timeoutController.abort(),
+        DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS
+      )
+    : null;
 
   try {
     const response = await fetchImpl(buildDeploymentVersionUrl(now()), {
       cache: "no-store",
-      signal: options.signal,
+      signal: options.signal ?? timeoutController?.signal,
     });
     if (!response.ok) return null;
 
@@ -55,6 +66,10 @@ export async function fetchDeploymentVersion(
     return payload.version.trim();
   } catch {
     return null;
+  } finally {
+    if (timeoutId !== null) {
+      globalThis.clearTimeout(timeoutId);
+    }
   }
 }
 

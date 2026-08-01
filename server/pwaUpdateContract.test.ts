@@ -121,6 +121,22 @@ describe("PWA safe update release contract", () => {
     expect(upgrade).toContain('"paypal-checkout"');
   });
 
+  it("bounds version checks, pauses background polling, and records worker-activation timeouts", () => {
+    const versionUtility = readProjectFile("../client/src/lib/appVersion.ts");
+    const versionCheck = readProjectFile("../client/src/hooks/useAppVersionCheck.ts");
+
+    expect(versionUtility).toContain(
+      "DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS = 10_000"
+    );
+    expect(versionUtility).toContain("timeoutController.abort()");
+    expect(versionCheck).toContain("const startPolling = () =>");
+    expect(versionCheck).toContain("const stopPolling = () =>");
+    expect(versionCheck).toContain('document.visibilityState !== "visible"');
+    expect(versionCheck).toContain(
+      'recordState("failed", { failure: "worker-timeout" })'
+    );
+  });
+
   it("keeps complete localized update UI copy and accessible live status for every supported language", () => {
     const updateController = readProjectFile("../client/src/components/AppVersionUpdateController.tsx");
 
