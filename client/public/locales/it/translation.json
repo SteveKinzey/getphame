@@ -718,7 +718,8 @@
       "viewAll": "Vedi tutto →",
       "markAllReviewed": "Segna tutto come esaminato",
       "markingAll": "Contrassegnando…",
-      "markAllShort": "Segna tutto"
+      "markAllShort": "Segna tutto",
+      "markAllSuccess": "{{count}} elementi contrassegnati come esaminati"
     }
   },
   "settings": {

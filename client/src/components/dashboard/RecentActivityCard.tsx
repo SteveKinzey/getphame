@@ -60,6 +60,8 @@ export default function RecentActivityCard({
 }: RecentActivityCardProps) {
   const { t } = useTranslation();
   const [markingAll, setMarkingAll] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [markedCount, setMarkedCount] = useState(0);
 
   const utils = trpc.useUtils();
   const bulkMark = trpc.requests.bulkMarkResponded.useMutation({
@@ -67,6 +69,9 @@ export default function RecentActivityCard({
       utils.requests.invalidate();
       onRefresh?.();
       setMarkingAll(false);
+      setMarkedCount(recent.filter((r) => !r.respondedAt).length);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
     },
     onError: () => setMarkingAll(false),
   });
@@ -156,6 +161,23 @@ export default function RecentActivityCard({
           </a>
         </div>
       </div>
+
+      {/* Success toast */}
+      {showSuccess && (
+        <div
+          className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-fade-up"
+          style={{
+            background: "oklch(0.92 0.10 145)",
+            color: "oklch(0.30 0.12 145)",
+          }}
+        >
+          <CheckCheck size={13} />
+          {t("dashboard.recentActivity.markAllSuccess", {
+            defaultValue: "{{count}} items marked as reviewed",
+            count: markedCount,
+          })}
+        </div>
+      )}
 
       {/* Loading skeletons */}
       {isLoading && (

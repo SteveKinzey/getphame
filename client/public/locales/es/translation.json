@@ -2182,7 +2182,8 @@
       "viewAll": "Ver todo →",
       "markAllReviewed": "Marcar todo como revisado",
       "markingAll": "Marcando…",
-      "markAllShort": "Marcar todo"
+      "markAllShort": "Marcar todo",
+      "markAllSuccess": "{{count}} elementos marcados como revisados"
     },
     "viewAll": "Ver todo"
   },

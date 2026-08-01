@@ -1106,7 +1106,8 @@
         "viewAll": "View all →",
         "markAllReviewed": "Mark all as reviewed",
         "markingAll": "Marking…",
-        "markAllShort": "Mark all"
+        "markAllShort": "Mark all",
+        "markAllSuccess": "{{count}} items marked as reviewed"
       }
     },
     "reminderRow": {
@@ -2636,7 +2637,8 @@
         "viewAll": "Ver todo →",
         "markAllReviewed": "Marcar todo como revisado",
         "markingAll": "Marcando…",
-        "markAllShort": "Marcar todo"
+        "markAllShort": "Marcar todo",
+        "markAllSuccess": "{{count}} elementos marcados como revisados"
       }
     },
     "reminderRow": {
@@ -4344,7 +4346,8 @@
         "viewAll": "Voir tout →",
         "markAllReviewed": "Tout marquer comme examiné",
         "markingAll": "Marquage…",
-        "markAllShort": "Tout marquer"
+        "markAllShort": "Tout marquer",
+        "markAllSuccess": "{{count}} éléments marqués comme examinés"
       }
     },
     "reminderRow": {
@@ -6029,7 +6032,8 @@
         "viewAll": "Vedi tutto →",
         "markAllReviewed": "Segna tutto come esaminato",
         "markingAll": "Contrassegnando…",
-        "markAllShort": "Segna tutto"
+        "markAllShort": "Segna tutto",
+        "markAllSuccess": "{{count}} elementi contrassegnati come esaminati"
       }
     },
     "reminderRow": {
@@ -7583,7 +7587,8 @@
         "viewAll": "ดูทั้งหมด →",
         "markAllReviewed": "ทำเครื่องหมายทั้งหมดว่าตรวจสอบแล้ว",
         "markingAll": "กำลังทำเครื่องหมาย…",
-        "markAllShort": "ทำเครื่องหมายทั้งหมด"
+        "markAllShort": "ทำเครื่องหมายทั้งหมด",
+        "markAllSuccess": "{{count}} รายการถูกทำเครื่องหมายว่าตรวจสอบแล้ว"
       }
     },
     "reminderRow": {
@@ -9134,7 +9139,8 @@
         "viewAll": "查看全部 →",
         "markAllReviewed": "全部标记为已审阅",
         "markingAll": "标记中…",
-        "markAllShort": "全部标记"
+        "markAllShort": "全部标记",
+        "markAllSuccess": "{{count}} 条已标记为审阅"
       }
     },
     "reminderRow": {
@@ -10678,7 +10684,8 @@
         "viewAll": "查看全部 →",
         "markAllReviewed": "全部標記為已審閱",
         "markingAll": "標記中…",
-        "markAllShort": "全部標記"
+        "markAllShort": "全部標記",
+        "markAllSuccess": "{{count}} 條已標記為審閱"
       }
     },
     "reminderRow": {

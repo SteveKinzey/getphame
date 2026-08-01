@@ -2023,7 +2023,8 @@
       "viewAll": "View all →",
       "markAllReviewed": "Mark all as reviewed",
       "markingAll": "Marking…",
-      "markAllShort": "Mark all"
+      "markAllShort": "Mark all",
+      "markAllSuccess": "{{count}} items marked as reviewed"
     }
   },
   "pricing": {

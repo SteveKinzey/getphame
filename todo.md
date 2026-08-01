@@ -1648,3 +1648,11 @@
 - [x] Add Mark All as Reviewed bulk action to RecentActivityCard (uses trpc.requests.bulkMarkResponded)
 - [x] Add markAllReviewed, markingAll, markAllShort i18n keys to all 7 locale files and fallback bundle
 - [x] Create getphame-github-pr-release skill
+
+## Session — Success Toast, Skills, CI Gate (Aug 1 2026)
+- [x] Add success toast to RecentActivityCard after Mark All as Reviewed completes
+- [x] Add dashboard.recentActivity.markAllSuccess to all 7 locale files with native translations
+- [x] Update offline fallback bundle with markAllSuccess key (properly nested under locale keys)
+- [x] Create getphame-native-localization-quality skill
+- [x] Update getphame-i18n-key-coverage skill with nativeLocalizationQuality pattern and loose-key warning
+- [x] Verify GitHub Actions CI is green on main (Quality Gate, Validate GitHub Actions, API Recovery Browser Check, API Health Monitor — all passing)
