@@ -54,4 +54,8 @@
 - [x] Add direct regression coverage for proof integrity, administrator-only risk review access, user-owned review outreach, and platform administrative email delivery.
 - [x] Add behavior-level regression coverage showing Google and magic-link existing accounts bypass proof while new accounts fail closed without a valid proof.
 - [x] Add focused privacy-persistence coverage showing signup-risk records retain only bounded safe fields and exclude raw network, device, and account identifiers.
+- [x] Visual QA: `/admin/signup-risk` renders readable privacy-safe status cards, a bounded outcome filter, and a no-evidence empty state at 1280×900 and 390×844 without raw identifiers.
+- [x] Production verification note: local production build passed; the published login URL returned the app shell before the browser session reset, while managed runtime logs were unavailable because no Cloud Run service was found.
+- [x] Production browser recheck: `https://getphame.app/login` rendered the live sign-in route; the sandbox browser reported its invisible account-security control unavailable with no client-console errors, which may reflect third-party challenge availability in that browser rather than a runtime crash.
+- [ ] Verify that the user-supplied Turnstile keys are embedded in the refreshed production login experience and that the invisible challenge initializes.
 - [ ] Complete focused tests, full suite, type check, production build, desktop/mobile review, final checkpoint, production checks, and protected-main GitHub synchronization.
