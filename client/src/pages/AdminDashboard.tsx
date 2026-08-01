@@ -160,6 +160,12 @@ export default function AdminDashboard() {
     }
   );
 
+  const { data: pwaUpdateTelemetry } =
+    trpc.admin.pwaUpdateTelemetryStats.useQuery(undefined, {
+      enabled: user?.role === "admin",
+      refetchInterval: 60_000,
+    });
+
   const { data: captionLanguageStats } =
     trpc.admin.captionLanguageStats.useQuery(undefined, {
       enabled: user?.role === "admin",
@@ -738,6 +744,57 @@ export default function AdminDashboard() {
                   }
                   detail={`${pwaConversionStats?.rates.shareConversion ?? 0}% of guide views`}
                   Icon={Share2}
+                />
+              </div>
+            </section>
+
+            <section
+              data-testid="admin-pwa-update-telemetry"
+              aria-labelledby="admin-pwa-update-telemetry-title"
+            >
+              <div className="mb-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">
+                  Update resilience
+                </p>
+                <h2
+                  id="admin-pwa-update-telemetry-title"
+                  className="mt-1 text-xl font-semibold rr-text-navy"
+                >
+                  PWA update notice interactions
+                </h2>
+                <p className="mt-1 text-sm rr-text-navy-muted">
+                  Daily aggregate counters only. No account, visitor, device,
+                  network, route, version, or raw event record is collected.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <ConversionMetricCard
+                  testId="pwa-update-notices"
+                  label="Notices shown"
+                  value={pwaUpdateTelemetry?.allTime.notice_shown ?? 0}
+                  detail={`${pwaUpdateTelemetry?.last30Days.notice_shown ?? 0} in the last 30 days`}
+                  Icon={MousePointerClick}
+                />
+                <ConversionMetricCard
+                  testId="pwa-update-requests"
+                  label="Update requests"
+                  value={pwaUpdateTelemetry?.allTime.update_requested ?? 0}
+                  detail={`${pwaUpdateTelemetry?.rates.requestRate ?? 0}% of notices`}
+                  Icon={Activity}
+                />
+                <ConversionMetricCard
+                  testId="pwa-update-applying"
+                  label="Safe updates applying"
+                  value={pwaUpdateTelemetry?.allTime.update_applying ?? 0}
+                  detail={`${pwaUpdateTelemetry?.rates.applyingRate ?? 0}% of requests`}
+                  Icon={RotateCcw}
+                />
+                <ConversionMetricCard
+                  testId="pwa-update-deferrals"
+                  label="Later selected"
+                  value={pwaUpdateTelemetry?.allTime.update_deferred ?? 0}
+                  detail={`${pwaUpdateTelemetry?.rates.deferralRate ?? 0}% of notices`}
+                  Icon={Clock3}
                 />
               </div>
             </section>

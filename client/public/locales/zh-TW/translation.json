@@ -3784,6 +3784,8 @@
     "no": "否",
     "lastChecked": "上次成功檢查",
     "check": "檢查更新",
-    "reloadTab": "重新載入此分頁"
+    "reloadTab": "重新載入此分頁",
+    "applyingTitle": "正在套用更新",
+    "applyingDescription": "GET PHAME 正在準備最新版本。此分頁即將重新整理。"
   }
 }

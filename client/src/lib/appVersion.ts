@@ -1,5 +1,5 @@
 export const DEPLOYMENT_VERSION_URL = "/__manus__/version.json";
-export const APP_WORKER_CACHE_NAME = "getphame-v28";
+export const APP_WORKER_CACHE_NAME = "getphame-v29";
 export const VERSION_POLL_INTERVAL_MS = 60_000;
 export const DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS = 10_000;
 export const UPDATE_DEFER_DURATION_MS = 15 * 60_000;
