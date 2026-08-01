@@ -8,7 +8,7 @@ import { trpc } from "@/lib/trpc";
 type SupportStatus = "open" | "in_progress" | "resolved";
 type SupportPriority = "low" | "normal" | "high" | "urgent";
 type StatusFilter = SupportStatus | "all";
-type TopicFilter = "billing" | "onboarding" | "technical" | "all";
+type TopicFilter = "billing" | "onboarding" | "technical" | "quiet_hours_exception" | "all";
 type PriorityFilter = SupportPriority | "all";
 type AssigneeFilter = "all" | "unassigned" | `${number}`;
 type SlaDeadlineFilter = "all" | "overdue" | "next_4_hours" | "next_24_hours";
@@ -48,6 +48,7 @@ const topicLabel: Record<Exclude<TopicFilter, "all">, string> = {
   billing: "Billing",
   onboarding: "Onboarding",
   technical: "Technical issue",
+  quiet_hours_exception: "Quiet-hours exception",
 };
 
 const priorityLabel: Record<SupportPriority, string> = {
@@ -75,7 +76,8 @@ function normalizeStatus(status: string): SupportStatus {
 }
 
 function normalizeTopic(topic: string): Exclude<TopicFilter, "all"> {
-  return topic === "billing" || topic === "onboarding" ? topic : "technical";
+  if (topic === "billing" || topic === "onboarding" || topic === "quiet_hours_exception") return topic;
+  return "technical";
 }
 
 function normalizePriority(priority: string): SupportPriority {
@@ -431,6 +433,13 @@ export default function AdminSupportInboxPage() {
       invalidateInbox();
     },
     onError: (error) => toast.error(error.message || "Unable to update ticket assignee."),
+  });
+  const approveQuietHoursShortening = trpc.support.approveQuietHoursShortening.useMutation({
+    onSuccess: () => {
+      toast.success("Quiet-hours shortening permission approved.");
+      invalidateInbox();
+    },
+    onError: (error) => toast.error(error.message || "Unable to approve the quiet-hours exception."),
   });
   const saveView = trpc.support.saveView.useMutation({
     onSuccess: (result) => {
@@ -790,6 +799,7 @@ export default function AdminSupportInboxPage() {
               const isStatusUpdating = updateStatus.isPending && updateStatus.variables?.id === submission.id;
               const isPriorityUpdating = updatePriority.isPending && updatePriority.variables?.id === submission.id;
               const isAssigneeUpdating = updateAssignee.isPending && updateAssignee.variables?.id === submission.id;
+              const isQuietHoursApprovalUpdating = approveQuietHoursShortening.isPending && approveQuietHoursShortening.variables?.submissionId === submission.id;
               const assigneeValue = submission.assigneeUserId ? String(submission.assigneeUserId) : "unassigned";
               const showLegacyAssignee = Boolean(submission.assigneeUserId && assignees.data && !assignees.data.some((candidate) => candidate.id === submission.assigneeUserId));
               const assigneeDisplay = submission.assigneeUserId ? formatAssignee(submission.assigneeName, submission.assigneeEmail) : "Unassigned";
@@ -827,6 +837,21 @@ export default function AdminSupportInboxPage() {
                         <span className="truncate">Owner: {assigneeDisplay}</span>
                       </div>
                       <p className="mt-3 whitespace-pre-wrap text-sm leading-6 rr-text-navy">{submission.message}</p>
+                      {currentTopic === "quiet_hours_exception" && (
+                        <section className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-3" aria-label="Quiet-hours exception decision">
+                          <p className="text-xs font-black rr-text-navy">Controlled permission</p>
+                          <p className="mt-1 text-xs rr-text-navy-muted">Approval lets this business save a quiet period shorter than 12 hours. The requested local window and business address are preserved in this ticket.</p>
+                          <button
+                            type="button"
+                            onClick={() => approveQuietHoursShortening.mutate({ submissionId: submission.id, approved: true })}
+                            disabled={isQuietHoursApprovalUpdating}
+                            className="mt-3 inline-flex min-h-10 items-center justify-center gap-2 rounded-lg rr-bg-navy px-3 text-xs font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
+                          >
+                            {isQuietHoursApprovalUpdating ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <CheckCircle2 size={14} aria-hidden="true" />}
+                            Approve shortening
+                          </button>
+                        </section>
+                      )}
                       {submission.attachmentUrl && (
                         <a href={submission.attachmentUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm font-black rr-text-navy transition hover:border-amber-400 hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2">
                           <Paperclip size={15} /> Open screenshot <ExternalLink size={14} aria-hidden="true" />

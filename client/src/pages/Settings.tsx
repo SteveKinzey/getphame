@@ -8,6 +8,7 @@ import { trpc } from "@/lib/trpc";
 import {
   Settings,
   Building2,
+  MapPin,
   Link2,
   Crown,
   Save,
@@ -92,6 +93,25 @@ import {
 } from "@/lib/reminderSettings";
 import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
+
+const QUIET_HOURS_MINUTES = 12 * 60;
+
+function timeToMinutes(value: string) {
+  const [hours, minutes] = value.split(":").map(Number);
+  return Number.isInteger(hours) && Number.isInteger(minutes)
+    ? hours * 60 + minutes
+    : 0;
+}
+
+function minutesToTime(value: number | null | undefined, fallback: string) {
+  if (!Number.isInteger(value) || value! < 0 || value! >= 24 * 60) return fallback;
+  return `${String(Math.floor(value! / 60)).padStart(2, "0")}:${String(value! % 60).padStart(2, "0")}`;
+}
+
+function quietDurationMinutes(startMinutes: number, endMinutes: number) {
+  const duration = (endMinutes - startMinutes + 24 * 60) % (24 * 60);
+  return duration === 0 ? 24 * 60 : duration;
+}
 
 // ── Share & Earn Card ────────────────────────────────────────────────────────
 function ShareAndEarnCard({ profile }: { profile: ProfileData | null | undefined }) {
@@ -1206,7 +1226,7 @@ function SettingsSkeleton({ title }: { title: string }) {
 }
 
 export default function SettingsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { hapticEnabled, setHapticEnabled } = useHaptics();
@@ -1216,11 +1236,16 @@ export default function SettingsPage() {
 
   // ── Profile form state ─────────────────────────────────────────────────────
   const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
+  const { data: quietHoursStatus } = trpc.profile.getQuietHoursStatus.useQuery();
   const { data: adaptiveSendStatus } = trpc.contacts.getDailyStatus.useQuery();
   const [businessName, setBusinessName] = useState("");
   const [reviewLink, setPhame] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
+  const [physicalAddress, setPhysicalAddress] = useState("");
+  const [quietStart, setQuietStart] = useState("20:00");
+  const [quietEnd, setQuietEnd] = useState("08:00");
+  const [quietHoursReason, setQuietHoursReason] = useState("");
 
   // Reminder settings state
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
@@ -1304,6 +1329,9 @@ export default function SettingsPage() {
       setPhame(profile.reviewLink);
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
+      setPhysicalAddress(profile.physicalAddress ?? "");
+      setQuietStart(minutesToTime(profile.quietHoursStartMinutes, "20:00"));
+      setQuietEnd(minutesToTime(profile.quietHoursEndMinutes, "08:00"));
     }
   }, [profile?.id]);
 
@@ -1311,6 +1339,27 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.profile.get.invalidate();
       toast.success("Business profile saved!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const updateQuietHours = trpc.profile.updateQuietHours.useMutation({
+    onSuccess: async () => {
+      await Promise.all([
+        utils.profile.get.invalidate(),
+        utils.profile.getQuietHoursStatus.invalidate(),
+      ]);
+      toast.success(t("quietHours.toastSaved", { defaultValue: "Business-local quiet hours saved." }));
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const requestQuietHoursShortening = trpc.profile.requestQuietHoursShortening.useMutation({
+    onSuccess: (result) => {
+      if (result.alreadyApproved) {
+        toast.success(t("quietHours.toastPermissionActive", { defaultValue: "Your quiet-hours shortening permission is already active." }));
+        return;
+      }
+      setQuietHoursReason("");
+      toast.success(t("quietHours.toastRequested", { defaultValue: "Your exception request has been sent to support@getphame.app." }));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1618,6 +1667,36 @@ export default function SettingsPage() {
     });
   }
 
+  const quietStartMinutes = timeToMinutes(quietStart);
+  const quietEndMinutes = timeToMinutes(quietEnd);
+  const quietDuration = quietDurationMinutes(quietStartMinutes, quietEndMinutes);
+  const quietHoursShorteningApproved = quietHoursStatus?.profile?.quietHoursShorteningApproved === 1;
+  const requiresQuietHoursException = !quietHoursShorteningApproved && quietDuration < QUIET_HOURS_MINUTES;
+
+  function handleSaveQuietHours() {
+    if (!physicalAddress.trim()) {
+      toast.error(t("quietHours.toastAddressRequired", { defaultValue: "Enter your physical business address so we can determine local time." }));
+      return;
+    }
+    if (requiresQuietHoursException) {
+      if (quietHoursReason.trim().length < 10) {
+        toast.error(t("quietHours.toastReasonRequired", { defaultValue: "Please explain why a shorter quiet period is needed." }));
+        return;
+      }
+      requestQuietHoursShortening.mutate({
+        requestedStartMinutes: quietStartMinutes,
+        requestedEndMinutes: quietEndMinutes,
+        reason: quietHoursReason.trim(),
+      });
+      return;
+    }
+    updateQuietHours.mutate({
+      physicalAddress: physicalAddress.trim(),
+      quietHoursStartMinutes: quietStartMinutes,
+      quietHoursEndMinutes: quietEndMinutes,
+    });
+  }
+
   if (profileLoading) {
     return <SettingsSkeleton title={t('tabs.account', { defaultValue: 'Account & Profile' })} />;
   }
@@ -1782,6 +1861,137 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
+
+              <section
+                className="rounded-xl p-4 flex flex-col gap-3"
+                aria-labelledby="quiet-hours-heading"
+                style={{ border: "1px solid oklch(0.80 0.18 80 / 0.45)", background: "oklch(0.985 0.012 85)" }}
+              >
+                <div className="flex items-start gap-2">
+                  <div className="shrink-0 rounded-lg p-2" style={{ background: "oklch(0.80 0.18 80 / 0.22)", color: "oklch(0.22 0.09 260)" }}>
+                    <Moon size={17} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 id="quiet-hours-heading" className="text-sm font-black rr-text-navy">{t("quietHours.title", { defaultValue: "Customer quiet hours" })}</h3>
+                    <p className="text-xs mt-0.5 rr-text-navy-muted">
+                      {t("quietHours.subtitle", { defaultValue: "Review-request emails wait during your business’s local quiet period and resume after it ends." })}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="quiet-hours-address" className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                    <MapPin size={12} className="inline mr-1" aria-hidden="true" />
+                    {t("quietHours.addressLabel", { defaultValue: "Physical business address" })}
+                  </label>
+                  <input
+                    id="quiet-hours-address"
+                    type="text"
+                    autoComplete="street-address"
+                    value={physicalAddress}
+                    onChange={(event) => setPhysicalAddress(event.target.value)}
+                    placeholder={t("quietHours.addressPlaceholder", { defaultValue: "Street address, city, region, postal code, country" })}
+                    className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none"
+                    style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                  />
+                  <p className="text-xs mt-1 rr-text-navy-muted">
+                    {quietHoursStatus?.profile?.businessTimeZone
+                      ? t("quietHours.addressTimezoneVerified", { defaultValue: "Verified local timezone: {{timezone}}.", timezone: quietHoursStatus.profile.businessTimeZone })
+                      : t("quietHours.addressTimezonePending", { defaultValue: "We verify this address and derive its IANA timezone before saving." })}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="quiet-hours-start" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("quietHours.startLabel", { defaultValue: "Quiet period starts" })}</label>
+                    <input
+                      id="quiet-hours-start"
+                      type="time"
+                      value={quietStart}
+                      onChange={(event) => setQuietStart(event.target.value)}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none"
+                      style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="quiet-hours-end" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("quietHours.endLabel", { defaultValue: "Quiet period ends" })}</label>
+                    <input
+                      id="quiet-hours-end"
+                      type="time"
+                      value={quietEnd}
+                      onChange={(event) => setQuietEnd(event.target.value)}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none"
+                      style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "white", border: "1px solid oklch(0.90 0.02 260)" }} aria-live="polite">
+                  <p className="font-bold rr-text-navy">
+                    {quietHoursShorteningApproved
+                      ? t("quietHours.durationApproved", { defaultValue: "{{minutes}}-minute quiet period (support permission active)", minutes: quietDuration })
+                      : t("quietHours.durationStandard", { defaultValue: "{{minutes}}-minute quiet period", minutes: quietDuration })}
+                  </p>
+                  <p className="mt-1 rr-text-navy-muted">
+                    {t("quietHours.legalNote", { defaultValue: "The default 8:00 PM–8:00 AM local window is a customer-respect standard. CAN-SPAM does not set a time-of-day sending rule; it still requires compliant identification and opt-out handling." })}
+                  </p>
+                </div>
+
+                {requiresQuietHoursException && (
+                  <div className="rounded-lg p-3" style={{ background: "oklch(0.96 0.04 80)", border: "1px solid oklch(0.80 0.18 80 / 0.55)" }}>
+                    <p className="text-xs font-black rr-text-navy">{t("quietHours.exceptionTitle", { defaultValue: "A shorter quiet period needs support permission" })}</p>
+                    <p className="text-xs mt-1 rr-text-navy-muted">
+                      {t("quietHours.exceptionDescription", { defaultValue: "Tell support why your business needs this exception. Your current protection remains active until it is approved." })}
+                    </p>
+                    <label htmlFor="quiet-hours-reason" className="sr-only">Reason for quiet-hours exception</label>
+                    <textarea
+                      id="quiet-hours-reason"
+                      value={quietHoursReason}
+                      onChange={(event) => setQuietHoursReason(event.target.value)}
+                      placeholder={t("quietHours.exceptionPlaceholder", { defaultValue: "Explain the operational need for a shorter local quiet period." })}
+                      rows={3}
+                      className="rr-form-field w-full mt-2 px-3 py-2 rounded-xl text-sm outline-none resize-y"
+                      style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    />
+                  </div>
+                )}
+
+                {quietHoursStatus?.queuedCount ? (
+                  <div className="flex items-start gap-2 rounded-lg px-3 py-2 text-xs" style={{ background: "oklch(0.22 0.09 260)", color: "var(--text-on-dark-secondary)" }} aria-live="polite">
+                    <Clock size={15} className="mt-0.5 shrink-0" aria-hidden="true" />
+                    <p>
+                      {quietHoursStatus.nextQueuedAt
+                        ? t("quietHours.queuedWithDate", {
+                          defaultValue: "{{count}} review request is queued for delivery after quiet hours, beginning {{date}}.",
+                          count: quietHoursStatus.queuedCount,
+                          date: new Date(quietHoursStatus.nextQueuedAt).toLocaleString(i18n.language),
+                        })
+                        : t("quietHours.queued", {
+                          defaultValue: "{{count}} review request is queued for delivery after quiet hours.",
+                          count: quietHoursStatus.queuedCount,
+                        })}
+                    </p>
+                  </div>
+                ) : null}
+
+                <button
+                  type="button"
+                  onClick={handleSaveQuietHours}
+                  disabled={updateQuietHours.isPending || requestQuietHoursShortening.isPending}
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
+                  style={{
+                    background: requiresQuietHoursException ? "oklch(0.22 0.09 260)" : "oklch(0.80 0.18 80)",
+                    color: requiresQuietHoursException ? "white" : "oklch(0.22 0.09 260)",
+                    fontFamily: "'Poppins', sans-serif",
+                    opacity: updateQuietHours.isPending || requestQuietHoursShortening.isPending ? 0.7 : 1,
+                  }}
+                >
+                  {updateQuietHours.isPending || requestQuietHoursShortening.isPending ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
+                  {requiresQuietHoursException
+                    ? t("quietHours.requestPermission", { defaultValue: "Request support permission" })
+                    : t("quietHours.save", { defaultValue: "Save quiet hours" })}
+                </button>
+              </section>
 
               <button
                 onClick={handleSaveProfile}

@@ -6,7 +6,7 @@ export const SUPPORT_TO_EMAIL = "support@getphame.app";
 export interface SupportMessageInput {
   name?: string;
   email: string;
-  topic: "billing" | "onboarding" | "technical";
+  topic: "billing" | "onboarding" | "technical" | "quiet_hours_exception";
   subject: string;
   message: string;
   submissionId?: number;
@@ -55,6 +55,7 @@ function compact(value: string): string {
 function topicLabel(topic: SupportMessageInput["topic"]): string {
   if (topic === "billing") return "Billing";
   if (topic === "onboarding") return "Onboarding";
+  if (topic === "quiet_hours_exception") return "Quiet-hours exception";
   return "Technical issue";
 }
 

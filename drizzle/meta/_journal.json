@@ -295,6 +295,34 @@
       "when": 1785570226154,
       "tag": "0041_cute_colossus",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "5",
+      "when": 1785577499647,
+      "tag": "0042_peaceful_shockwave",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "5",
+      "when": 1785577884172,
+      "tag": "0043_spooky_bloodaxe",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "5",
+      "when": 1785578042770,
+      "tag": "0044_dashing_purple_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "5",
+      "when": 1785578736677,
+      "tag": "0045_tough_unus",
+      "breakpoints": true
     }
   ]
 }
