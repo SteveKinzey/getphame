@@ -19,7 +19,7 @@ import { FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
 import { upsertApiContact } from "./contacts";
 import { fireWebhooks } from "./webhookHelpers";
-import { sendMailViaSmtp } from "./smtp";
+import { deliverReviewEmailOrQueue } from "./quietHours";
 import { buildReviewRequestEmail } from "./emailTemplates";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { emailTemplates as emailTemplatesTable } from "../drizzle/schema";
@@ -570,7 +570,7 @@ export function registerPublicApiRoutes(app: Router) {
         htmlBody = buildReviewRequestEmail({ customerName: name, businessName: profile.businessName, reviewUrl, showPoweredBy: profile.tier === "free" });
       }
       // Create request row
-      const newRequestId = await createCustomerRequest({ userId, customerName: name, customerEmail: email, method: "email", status: "sent", platformId: null });
+      const newRequestId = await createCustomerRequest({ userId, customerName: name, customerEmail: email, method: "email", status: "pending", platformId: null });
       // Inject tracking
       const baseUrl = `${req.protocol}://${req.get("host")}`;
       const trackingToken = encodeTrackingToken(newRequestId, userId, resolvedTemplate?.id ?? null);
@@ -579,13 +579,20 @@ export function registerPublicApiRoutes(app: Router) {
       const trackedHtmlBody = htmlBody
         .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedReviewUrl)
         .replace(/<\/div>\s*$/, `${openPixel}</div>`);
-      const sendLimitStatus = await sendMailViaSmtp({ userId, to: email, subject, html: trackedHtmlBody });
+      const delivery = await deliverReviewEmailOrQueue({
+        userId,
+        customerRequestId: newRequestId,
+        customerName: name,
+        recipientEmail: email,
+        subject,
+        html: trackedHtmlBody,
+        source: "api",
+        templateId: resolvedTemplate?.id ?? null,
+      });
       // Increment template usage
       if (resolvedTemplate) {
         await db.update(emailTemplatesTable).set({ usageCount: sqlOp`${emailTemplatesTable.usageCount} + 1` }).where(eq(emailTemplatesTable.id, resolvedTemplate.id));
       }
-      // Increment monthly count
-      await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + 1 });
       await logDeveloperApiImport({
         principal: auth.principal,
         eventType: "review_request_send",
@@ -600,11 +607,13 @@ export function registerPublicApiRoutes(app: Router) {
       return res.json({
         success: true,
         requestId: newRequestId,
-        sendLimit: sendLimitStatus ? {
-          warningLevel: sendLimitStatus.warningLevel,
-          remaining: sendLimitStatus.remaining,
-          hourlyRemaining: sendLimitStatus.hourlyRemaining,
-          dailyRemaining: sendLimitStatus.dailyRemaining,
+        delivery: delivery.delivery,
+        scheduledAt: delivery.scheduledAt,
+        sendLimit: delivery.sendLimitStatus ? {
+          warningLevel: delivery.sendLimitStatus.warningLevel,
+          remaining: delivery.sendLimitStatus.remaining,
+          hourlyRemaining: delivery.sendLimitStatus.hourlyRemaining,
+          dailyRemaining: delivery.sendLimitStatus.dailyRemaining,
         } : null,
       });
     } catch (err: any) {

@@ -58,6 +58,12 @@ import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
 import {
+  deliverReviewEmailOrQueue,
+  quietWindowDurationMinutes,
+  QUIET_HOURS_MINIMUM_DURATION_MINUTES,
+  resolveBusinessAddressTimeZone,
+} from "./quietHours";
+import {
   buildReviewRequestEmail,
   buildReviewRequestText,
 } from "./emailTemplates";
@@ -190,6 +196,7 @@ import {
   supportTicketAlerts,
   adminPlatformEmailMessages,
   adminUserLifecycleAuditLogs,
+  quietHoursQueuedSends,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -1424,6 +1431,155 @@ export const appRouter = router({
         return getBusinessProfile(ctx.user.id);
       }),
 
+    updateQuietHours: protectedProcedure
+      .input(
+        z.object({
+          physicalAddress: z.string().trim().min(8).max(500),
+          quietHoursStartMinutes: z.number().int().min(0).max(1439),
+          quietHoursEndMinutes: z.number().int().min(0).max(1439),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const existing = await getBusinessProfile(ctx.user.id);
+        if (!existing) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Complete your business profile before configuring quiet hours.",
+          });
+        }
+
+        const requestedDuration = quietWindowDurationMinutes(
+          input.quietHoursStartMinutes,
+          input.quietHoursEndMinutes
+        );
+        if (
+          existing.quietHoursShorteningApproved !== 1 &&
+          requestedDuration < QUIET_HOURS_MINIMUM_DURATION_MINUTES
+        ) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message:
+              "The default 8:00 PM–8:00 AM local quiet period is the shortest available without approved support permission. You may extend it now or request an exception.",
+          });
+        }
+
+        const resolved = await resolveBusinessAddressTimeZone(input.physicalAddress);
+        await upsertBusinessProfile({
+          ...existing,
+          physicalAddress: input.physicalAddress,
+          normalizedPhysicalAddress: resolved.normalizedPhysicalAddress,
+          businessTimeZone: resolved.businessTimeZone,
+          quietHoursStartMinutes: input.quietHoursStartMinutes,
+          quietHoursEndMinutes: input.quietHoursEndMinutes,
+        });
+        return getBusinessProfile(ctx.user.id);
+      }),
+
+    getQuietHoursStatus: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const profile = await getBusinessProfile(ctx.user.id);
+      const [queued] = await db
+        .select({ count: count() })
+        .from(quietHoursQueuedSends)
+        .where(
+          and(
+            eq(quietHoursQueuedSends.userId, ctx.user.id),
+            eq(quietHoursQueuedSends.status, "pending")
+          )
+        );
+      const [nextQueued] = await db
+        .select({ scheduledAt: quietHoursQueuedSends.scheduledAt })
+        .from(quietHoursQueuedSends)
+        .where(
+          and(
+            eq(quietHoursQueuedSends.userId, ctx.user.id),
+            eq(quietHoursQueuedSends.status, "pending")
+          )
+        )
+        .orderBy(asc(quietHoursQueuedSends.scheduledAt))
+        .limit(1);
+      return {
+        profile,
+        queuedCount: Number(queued?.count ?? 0),
+        nextQueuedAt: nextQueued?.scheduledAt ?? null,
+      };
+    }),
+
+    requestQuietHoursShortening: protectedProcedure
+      .input(
+        z.object({
+          requestedStartMinutes: z.number().int().min(0).max(1439),
+          requestedEndMinutes: z.number().int().min(0).max(1439),
+          reason: z.string().trim().min(10).max(1000),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile?.physicalAddress || !profile.businessTimeZone) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Save and verify your physical business address before requesting a quiet-hours exception.",
+          });
+        }
+        const duration = quietWindowDurationMinutes(
+          input.requestedStartMinutes,
+          input.requestedEndMinutes
+        );
+        if (duration >= QUIET_HOURS_MINIMUM_DURATION_MINUTES) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "This requested window already meets the 12-hour minimum and does not need an exception.",
+          });
+        }
+        if (profile.quietHoursShorteningApproved === 1) {
+          return { submitted: false, alreadyApproved: true };
+        }
+
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        if (!ctx.user.email) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Add an email address to your account before requesting a quiet-hours exception." });
+        }
+        const requesterName = ctx.user.name ?? profile.businessName;
+        const start = String(Math.floor(input.requestedStartMinutes / 60)).padStart(2, "0") + ":" + String(input.requestedStartMinutes % 60).padStart(2, "0");
+        const end = String(Math.floor(input.requestedEndMinutes / 60)).padStart(2, "0") + ":" + String(input.requestedEndMinutes % 60).padStart(2, "0");
+        const subject = "Quiet-hours shortening permission request";
+        const message = [
+          `Account user ID: ${ctx.user.id}`,
+          `Business: ${profile.businessName}`,
+          `Business address: ${profile.normalizedPhysicalAddress ?? profile.physicalAddress}`,
+          `Business timezone: ${profile.businessTimeZone}`,
+          `Requested local quiet period: ${start}–${end} (${duration} minutes)`,
+          "Reason:",
+          input.reason,
+        ].join("\n");
+        const [insertResult] = await db.insert(supportSubmissions).values({
+          name: requesterName,
+          email: ctx.user.email,
+          topic: "quiet_hours_exception",
+          subject,
+          message,
+          priority: "normal",
+          slaTargetAt: getSupportSlaTargetAt("normal"),
+        });
+        const submissionId = Number((insertResult as { insertId?: number }).insertId ?? 0);
+        if (!submissionId) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Could not record your request." });
+
+        const notification = await sendSupportMessage({
+          name: requesterName,
+          email: ctx.user.email,
+          topic: "quiet_hours_exception",
+          subject,
+          message,
+          submissionId,
+        });
+        if (notification.sent) {
+          await db.update(supportSubmissions).set({ notificationSentAt: new Date() }).where(eq(supportSubmissions.id, submissionId));
+        }
+        return { submitted: true, alreadyApproved: false, submissionId, notified: notification.sent };
+      }),
+
     setGoal: protectedProcedure
       .input(z.object({ goal: z.number().int().min(0).max(10000) }))
       .mutation(async ({ ctx, input }) => {
@@ -1920,6 +2076,7 @@ export const appRouter = router({
         z.object({
           customerIds: z.array(z.number().int()).min(1),
           platformId: z.number().int().optional(),
+          scheduleFollowUps: z.boolean().default(false),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1985,7 +2142,8 @@ export const appRouter = router({
         }
 
         const subject = `${profile.businessName} would love your feedback!`;
-        const sentIds: number[] = [];
+        let delivered = 0;
+        let queued = 0;
         const errors: string[] = [];
         const sentRequests: {
           customerRequestId: number;
@@ -2004,23 +2162,29 @@ export const appRouter = router({
             showPoweredBy: profile.tier === "free",
           });
           try {
-            await sendMailViaSmtp({
-              userId: ctx.user.id,
-              to: customer.customerEmail,
-              subject,
-              html: htmlBody,
-            });
-            sentIds.push(customer.id);
             const wooReqId = await createCustomerRequest({
               userId: ctx.user.id,
               customerName: customer.customerName,
               customerEmail: customer.customerEmail,
               method: "email",
-              status: "sent",
+              status: "pending",
               platformId: input.platformId ?? null,
               emailSubject: subject,
               emailBody: htmlBody,
             });
+            const delivery = await deliverReviewEmailOrQueue({
+              userId: ctx.user.id,
+              customerRequestId: wooReqId,
+              customerName: customer.customerName,
+              recipientEmail: customer.customerEmail,
+              subject,
+              html: htmlBody,
+              source: "woocommerce",
+              sourceRecordId: customer.id,
+              scheduleFollowUps: input.scheduleFollowUps,
+            });
+            if (delivery.delivery === "sent") delivered += 1;
+            else queued += 1;
             sentRequests.push({
               customerRequestId: wooReqId,
               customerName: customer.customerName,
@@ -2031,16 +2195,9 @@ export const appRouter = router({
           }
         }
 
-        if (sentIds.length > 0) {
-          await markWooCustomersSent(ctx.user.id, sentIds);
-          await upsertBusinessProfile({
-            ...profile,
-            monthlyCount: profile.monthlyCount + sentIds.length,
-          });
-        }
-
         return {
-          sent: sentIds.length,
+          sent: delivered,
+          queued,
           errors,
           sentRequests,
           skippedDueToLimit,
@@ -2241,6 +2398,7 @@ export const appRouter = router({
           contactIds: z.array(z.number().int()).min(1).max(200),
           templateId: z.number().int().optional(),
           platformId: z.number().int().optional(), // optional: specific review platform to link to
+          scheduleFollowUps: z.boolean().default(false),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -2331,6 +2489,7 @@ export const appRouter = router({
             .replace(/\{\{platformLinks\}\}/g, platformLinksList);
 
         let sent = 0;
+        let queued = 0;
         let failed = 0;
         const errors: string[] = [];
         const sentRequests: {
@@ -2370,7 +2529,7 @@ export const appRouter = router({
               customerName: contact.name,
               customerEmail: contact.email,
               method: "email",
-              status: "sent",
+              status: "pending",
               platformId: input.platformId ?? null,
               emailSubject: subject,
               emailBody: htmlBody,
@@ -2404,47 +2563,25 @@ export const appRouter = router({
                     .replace(/<\/div>\s*$/, `${bulkPixel}</div>`);
                 })();
 
-            await sendMailViaSmtp({
+            const delivery = await deliverReviewEmailOrQueue({
               userId: ctx.user.id,
-              to: contact.email,
+              customerRequestId: bulkRequestId,
+              customerName: contact.name,
+              recipientEmail: contact.email,
               subject,
               html: trackedBulkHtml,
+              source: "contacts",
+              sourceRecordId: contact.id,
+              templateId: resolvedTemplate?.id ?? null,
+              scheduleFollowUps: input.scheduleFollowUps,
             });
-            // Mark contact as sent
-            const db = await import("./db").then(m => m.getDb());
-            if (db) {
-              const { savedContacts } = await import("../drizzle/schema");
-              const { and, eq } = await import("drizzle-orm");
-              const [existing] = await db
-                .select({ totalSent: savedContacts.totalSent })
-                .from(savedContacts)
-                .where(
-                  and(
-                    eq(savedContacts.userId, ctx.user.id),
-                    eq(savedContacts.id, contact.id)
-                  )
-                );
-              if (existing) {
-                await db
-                  .update(savedContacts)
-                  .set({
-                    lastSentAt: Date.now(),
-                    totalSent: (existing.totalSent ?? 0) + 1,
-                  })
-                  .where(
-                    and(
-                      eq(savedContacts.userId, ctx.user.id),
-                      eq(savedContacts.id, contact.id)
-                    )
-                  );
-              }
-            }
             sentRequests.push({
               customerRequestId: bulkRequestId,
               customerName: contact.name,
               customerEmail: contact.email,
             });
-            sent++;
+            if (delivery.delivery === "sent") sent++;
+            else queued++;
           } catch (err) {
             failed++;
             errors.push(
@@ -2454,7 +2591,7 @@ export const appRouter = router({
         }
 
         // Increment template usage counter once for the whole bulk send
-        if (resolvedTemplate && sent > 0) {
+        if (resolvedTemplate && sent + queued > 0) {
           const dbT = await import("./db").then(m => m.getDb());
           if (dbT) {
             const { emailTemplates: etTable } = await import(
@@ -2463,19 +2600,14 @@ export const appRouter = router({
             const { eq: eqT, sql: sqlT } = await import("drizzle-orm");
             await dbT
               .update(etTable)
-              .set({ usageCount: sqlT`${etTable.usageCount} + ${sent}` })
+              .set({ usageCount: sqlT`${etTable.usageCount} + ${sent + queued}` })
               .where(eqT(etTable.id, resolvedTemplate.id));
           }
         }
 
-        // Update monthly count
-        await upsertBusinessProfile({
-          ...profile,
-          monthlyCount: profile.monthlyCount + sent,
-        });
-
         return {
           sent,
+          queued,
           failed,
           skippedDueToLimit,
           errors,
@@ -3015,7 +3147,7 @@ export const appRouter = router({
           customerName: input.customerName,
           customerEmail: input.customerEmail,
           method: input.method,
-          status: "sent",
+          status: "pending",
           platformId: input.platformId ?? null,
           emailSubject: subject,
           emailBody: htmlBody, // store pre-tracking HTML so it's editable
@@ -3051,11 +3183,15 @@ export const appRouter = router({
                 .replace(/<\/div>\s*$/, `${openPixel}</div>`);
             })();
 
-        const sendLimitStatus = await sendMailViaSmtp({
+        const delivery = await deliverReviewEmailOrQueue({
           userId: ctx.user.id,
-          to: input.customerEmail,
+          customerRequestId: newRequestId,
+          customerName: input.customerName,
+          recipientEmail: input.customerEmail,
           subject,
           html: trackedHtmlBody,
+          source: "single",
+          templateId: resolvedTemplate?.id ?? null,
         });
 
         // Increment template usage counter
@@ -3071,12 +3207,13 @@ export const appRouter = router({
           }
         }
 
-        await upsertBusinessProfile({
-          ...profile,
-          monthlyCount: profile.monthlyCount + 1,
-        });
-
-        return { success: true, requestId: newRequestId, sendLimitStatus };
+        return {
+          success: true,
+          requestId: newRequestId,
+          delivery: delivery.delivery,
+          scheduledAt: delivery.scheduledAt,
+          sendLimitStatus: delivery.sendLimitStatus,
+        };
       }),
 
     getById: protectedProcedure
@@ -3175,20 +3312,13 @@ export const appRouter = router({
           `${openPixel}</div>`
         );
 
-        await sendMailViaSmtp({
-          userId: ctx.user.id,
-          to: original.customerEmail,
-          subject: input.emailSubject,
-          html: trackedHtml,
-        });
-
         if (input.restart) {
           // Cancel existing reminders for the original request
           await cancelRemindersByRequestId(ctx.user.id, input.id);
-          // Reset respondedAt and sentAt on original row
+          // Reset response state while delivery remains pending or queued.
           await db
             .update(customerRequests)
-            .set({ respondedAt: null, sentAt: new Date(), status: "sent" })
+            .set({ respondedAt: null, sentAt: null, status: "pending" })
             .where(
               and(
                 eqOp(customerRequests.userId, ctx.user.id),
@@ -3197,11 +3327,16 @@ export const appRouter = router({
             );
         }
 
-        await upsertBusinessProfile({
-          ...profile,
-          monthlyCount: profile.monthlyCount + 1,
+        const delivery = await deliverReviewEmailOrQueue({
+          userId: ctx.user.id,
+          customerRequestId: input.id,
+          customerName: original.customerName,
+          recipientEmail: original.customerEmail,
+          subject: input.emailSubject,
+          html: trackedHtml,
+          source: "resend",
         });
-        return { ok: true };
+        return { ok: true, delivery: delivery.delivery, scheduledAt: delivery.scheduledAt };
       }),
 
     markResponded: protectedProcedure
@@ -3264,6 +3399,7 @@ export const appRouter = router({
         if (!profile) throw new Error("Business profile not found");
 
         let sent = 0;
+        let queued = 0;
         const errors: string[] = [];
 
         for (const id of input.ids) {
@@ -3294,7 +3430,7 @@ export const appRouter = router({
             await cancelRemindersByRequestId(ctx.user.id, id);
             await db
               .update(customerRequests)
-              .set({ respondedAt: null, sentAt: new Date(), status: "sent" })
+              .set({ respondedAt: null, sentAt: null, status: "pending" })
               .where(
                 and(
                   eqOp(customerRequests.userId, ctx.user.id),
@@ -3311,24 +3447,24 @@ export const appRouter = router({
               `${openPixel}</div>`
             );
 
-            await sendMailViaSmtp({
+            const delivery = await deliverReviewEmailOrQueue({
               userId: ctx.user.id,
-              to: original.customerEmail,
+              customerRequestId: id,
+              customerName: original.customerName,
+              recipientEmail: original.customerEmail,
               subject: original.emailSubject,
               html: trackedHtml,
+              source: "resend",
             });
-            await upsertBusinessProfile({
-              ...profile,
-              monthlyCount: profile.monthlyCount + 1,
-            });
-            sent++;
+            if (delivery.delivery === "sent") sent++;
+            else queued++;
           } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : String(err);
             errors.push(`Request ${id}: ${msg}`);
           }
         }
 
-        return { sent, errors };
+        return { sent, queued, errors };
       }),
 
     stats: protectedProcedure.query(async ({ ctx }) => {
@@ -6243,6 +6379,43 @@ export const appRouter = router({
 
   /** Anonymous landing-footer support form with a deliberately inert honeypot. */
   support: router({
+    approveQuietHoursShortening: adminProcedure
+      .input(z.object({ submissionId: z.number().int().positive(), approved: z.boolean() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const [submission] = await db
+          .select()
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.submissionId))
+          .limit(1);
+        if (!submission || submission.topic !== "quiet_hours_exception") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Quiet-hours exception request not found." });
+        }
+        const [requester] = await db
+          .select({ id: users.id })
+          .from(users)
+          .where(eq(users.email, submission.email))
+          .limit(1);
+        if (!requester) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "The requesting user account no longer exists." });
+        }
+        await db
+          .update(businessProfiles)
+          .set({
+            quietHoursShorteningApproved: input.approved ? 1 : 0,
+            quietHoursShorteningApprovedAt: input.approved ? Date.now() : null,
+            quietHoursShorteningApprovedByUserId: input.approved ? ctx.user.id : null,
+            updatedAt: new Date(),
+          })
+          .where(eq(businessProfiles.userId, requester.id));
+        await db
+          .update(supportSubmissions)
+          .set({ status: "resolved", resolvedAt: new Date(), updatedAt: new Date() })
+          .where(eq(supportSubmissions.id, input.submissionId));
+        return { ok: true, userId: requester.id, approved: input.approved };
+      }),
+
     uploadScreenshot: publicProcedure
       .input(
         z.object({

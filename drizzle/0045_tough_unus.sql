@@ -1,0 +1,2 @@
+ALTER TABLE `support_saved_queue_views` MODIFY COLUMN `topic` enum('billing','onboarding','technical','quiet_hours_exception');--> statement-breakpoint
+ALTER TABLE `support_submissions` MODIFY COLUMN `topic` enum('billing','onboarding','technical','quiet_hours_exception') NOT NULL;

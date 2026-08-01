@@ -97,12 +97,6 @@ export default function WooCustomers() {
     { enabled: historyOpen && !!historyCustomer }
   );
 
-  // Reminder scheduling mutation
-  const scheduleRemindersMutation = trpc.contacts.scheduleReminders.useMutation({
-    onSuccess: (r) => toast.success(`${r.scheduled} follow-up reminder${r.scheduled !== 1 ? "s" : ""} scheduled for 3 days from now.`),
-    onError: (e) => toast.error(`Reminder scheduling failed: ${e.message}`),
-  });
-
   const utils = trpc.useUtils();
   const { data: emailPreview, isLoading: previewLoading } = trpc.smtp.previewEmail.useQuery();
 
@@ -182,18 +176,16 @@ export default function WooCustomers() {
 
   const bulkSend = trpc.woo.bulkSend.useMutation({
     onSuccess: (result) => {
+      const queued = result.queued ?? 0;
       if (result.errors.length > 0) {
         toast.warning(
-          `Sent ${result.sent} — ${result.errors.length} failed. Check your email connection.`
+          `Sent ${result.sent}, queued ${queued} — ${result.errors.length} failed. Check your email connection.`
         );
       } else {
         toast.success(
-          `Sent ${result.sent} review request${result.sent !== 1 ? "s" : ""} successfully.`
+          `${result.sent} review request${result.sent !== 1 ? "s" : ""} sent` +
+          (queued > 0 ? `; ${queued} queued until local quiet hours end.` : " successfully.")
         );
-      }
-      // Schedule follow-up reminders if checkbox was checked
-      if (scheduleReminders && result.sentRequests && result.sentRequests.length > 0) {
-        scheduleRemindersMutation.mutate({ reminders: result.sentRequests });
       }
       utils.woo.listPending.invalidate();
       utils.woo.listAll.invalidate();
@@ -401,7 +393,11 @@ export default function WooCustomers() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => bulkSend.mutate({ customerIds: Array.from(selectedIds), platformId: wooPlatformId ?? undefined })}
+              onClick={() => bulkSend.mutate({
+                customerIds: Array.from(selectedIds),
+                platformId: wooPlatformId ?? undefined,
+                scheduleFollowUps: scheduleReminders,
+              })}
               disabled={bulkSend.isPending || !allWooComplianceChecked}
             >
               {bulkSend.isPending ? "Sending…" : "Send"}

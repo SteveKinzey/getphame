@@ -55,7 +55,7 @@ describe("developer API abuse safeguards", () => {
     const importAbuseIndex = source.indexOf('action: "contact_import"');
     const contactWriteIndex = source.indexOf("upsertApiContact", importAbuseIndex);
     const sendAbuseIndex = source.indexOf('action: "review_request_send"');
-    const emailSendIndex = source.indexOf("sendMail", sendAbuseIndex);
+    const emailSendIndex = source.indexOf("deliverReviewEmailOrQueue", sendAbuseIndex);
     const successUseIndex = source.lastIndexOf("recordDeveloperApiKeySuccessfulUse");
 
     expect(importAbuseIndex).toBeGreaterThan(0);

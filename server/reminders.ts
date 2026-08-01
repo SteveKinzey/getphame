@@ -9,6 +9,11 @@ import { getDb } from "./db";
 import { followUpReminders, businessProfiles } from "../drizzle/schema";
 import { eq, and, lte } from "drizzle-orm";
 import { sendMailViaSmtp } from "./smtp";
+import {
+  isWithinQuietHours,
+  nextAllowedDeliveryAt,
+  resolveQuietHoursWindow,
+} from "./quietHours";
 import { getDefaultReviewPlatform } from "./reviewPlatforms";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { buildReviewRequestEmail } from "./emailTemplates";
@@ -218,7 +223,7 @@ function getReminderBody(
  * Process all due pending reminders — called by the background scheduler.
  */
 export async function processDueReminders() {
-  const summary = { checked: 0, sent: 0, cancelled: 0, failed: 0, locked: 0 };
+  const summary = { checked: 0, sent: 0, deferred: 0, cancelled: 0, failed: 0, locked: 0 };
   try {
     const db = await getDb();
     if (!db) return summary;
@@ -266,6 +271,16 @@ export async function processDueReminders() {
         if (!isStageEnabled(profile, step)) {
           await db.update(followUpReminders).set({ status: "cancelled" }).where(eq(followUpReminders.id, reminder.id));
           summary.cancelled += 1;
+          continue;
+        }
+
+        const quietWindow = resolveQuietHoursWindow(profile);
+        if (isWithinQuietHours(now, quietWindow)) {
+          await db
+            .update(followUpReminders)
+            .set({ scheduledAt: nextAllowedDeliveryAt(now, quietWindow) })
+            .where(eq(followUpReminders.id, reminder.id));
+          summary.deferred += 1;
           continue;
         }
 
@@ -326,6 +341,16 @@ export async function sendReminderNow(userId: number, reminderId: number) {
     throw new Error("This reminder stage is disabled in Settings.");
   }
 
+  const quietWindow = resolveQuietHoursWindow(profile);
+  if (isWithinQuietHours(Date.now(), quietWindow)) {
+    const scheduledAt = nextAllowedDeliveryAt(Date.now(), quietWindow);
+    await db
+      .update(followUpReminders)
+      .set({ scheduledAt })
+      .where(eq(followUpReminders.id, reminderId));
+    return { delivery: "queued" as const, scheduledAt };
+  }
+
   const defaultPlatform = await getDefaultReviewPlatform(userId);
   const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
   const trackingToken = encodeTrackingToken(reminder.customerRequestId, userId, null);
@@ -342,6 +367,7 @@ export async function sendReminderNow(userId: number, reminderId: number) {
     .update(followUpReminders)
     .set({ status: "sent", sentAt: Date.now() })
     .where(eq(followUpReminders.id, reminderId));
+  return { delivery: "sent" as const, scheduledAt: null };
 }
 
 /** Build a preview of a follow-up reminder email for the given user and sequence step */

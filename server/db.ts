@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, gte, isNull, lt, lte, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gt, gte, isNotNull, isNull, lt, lte, or, sql, type SQL } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { createHash, randomBytes } from "crypto";
@@ -606,6 +606,7 @@ export async function getMonthlyRequestCount(userId: number, yearMonth: string) 
     .where(
       and(
         eq(customerRequests.userId, userId),
+        isNotNull(customerRequests.sentAt),
         sql`YEAR(sentAt) = ${year} AND MONTH(sentAt) = ${month}`
       )
     );
@@ -622,6 +623,7 @@ export async function getTodaySentCount(userId: number): Promise<number> {
     .where(
       and(
         eq(customerRequests.userId, userId),
+        isNotNull(customerRequests.sentAt),
         sql`DATE(sentAt) = CURDATE()`
       )
     );
@@ -635,7 +637,12 @@ export async function getTotalRequestCount(userId: number): Promise<number> {
   const rows = await db
     .select({ count: sql<number>`count(*)` })
     .from(customerRequests)
-    .where(eq(customerRequests.userId, userId));
+    .where(
+      and(
+        eq(customerRequests.userId, userId),
+        isNotNull(customerRequests.sentAt)
+      )
+    );
   return Number(rows[0]?.count ?? 0);
 }
 
@@ -664,7 +671,12 @@ export async function getFreeQuotaSummaryFromDb(
   const countRows = await db
     .select({ count: sql<number>`count(*)` })
     .from(customerRequests)
-    .where(eq(customerRequests.userId, userId));
+    .where(
+      and(
+        eq(customerRequests.userId, userId),
+        isNotNull(customerRequests.sentAt)
+      )
+    );
   const totalSent = Number(countRows[0]?.count ?? 0);
 
   if (totalSent < FREE_INITIAL_REQUESTS) {
@@ -674,24 +686,36 @@ export async function getFreeQuotaSummaryFromDb(
   const [tenthRequest] = await db
     .select({ id: customerRequests.id, sentAt: customerRequests.sentAt })
     .from(customerRequests)
-    .where(eq(customerRequests.userId, userId))
+    .where(
+      and(
+        eq(customerRequests.userId, userId),
+        isNotNull(customerRequests.sentAt)
+      )
+    )
     .orderBy(asc(customerRequests.sentAt), asc(customerRequests.id))
     .limit(1)
     .offset(FREE_INITIAL_REQUESTS - 1);
 
-  if (!tenthRequest) {
+  if (!tenthRequest?.sentAt) {
     return buildFreeQuotaSummary({ totalSent, rollingUsed: 0 });
   }
 
+  const tenthSentAt = tenthRequest.sentAt;
   const cutoff = new Date(nowMs - FREE_ROLLING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
   const postInitial = or(
-    gt(customerRequests.sentAt, tenthRequest.sentAt),
-    and(eq(customerRequests.sentAt, tenthRequest.sentAt), gt(customerRequests.id, tenthRequest.id)),
+    gt(customerRequests.sentAt, tenthSentAt),
+    and(eq(customerRequests.sentAt, tenthSentAt), gt(customerRequests.id, tenthRequest.id)),
   );
   const rollingRows = await db
     .select({ sentAt: customerRequests.sentAt })
     .from(customerRequests)
-    .where(and(eq(customerRequests.userId, userId), gte(customerRequests.sentAt, cutoff), postInitial))
+    .where(
+      and(
+        eq(customerRequests.userId, userId),
+        gte(customerRequests.sentAt, cutoff), postInitial,
+        isNotNull(customerRequests.sentAt)
+      )
+    )
     .orderBy(asc(customerRequests.sentAt), asc(customerRequests.id));
 
   return buildFreeQuotaSummary({
