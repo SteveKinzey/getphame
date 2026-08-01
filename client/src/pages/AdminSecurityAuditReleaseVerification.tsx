@@ -51,7 +51,7 @@ const productionIcons = {
 
 export default function AdminSecurityAuditReleaseVerification() {
   const { t, i18n } = useTranslation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const isAdmin = user?.role === "admin";
   const release = trpc.securityAuditReleaseVerification.dashboard.useQuery(
@@ -64,10 +64,11 @@ export default function AdminSecurityAuditReleaseVerification() {
   );
 
   useEffect(() => {
-    if (user && !isAdmin) navigate("/");
-  }, [isAdmin, navigate, user]);
+    if (authLoading) return;
+    if (!isAuthenticated || !user || !isAdmin) navigate("/");
+  }, [authLoading, isAdmin, isAuthenticated, navigate, user]);
 
-  if (!isAuthenticated || !user) return null;
+  if (authLoading || !isAuthenticated || !user) return null;
 
   if (!isAdmin) {
     return (

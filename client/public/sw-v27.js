@@ -194,14 +194,9 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Handle follow-up reminder scheduling via background sync
+// Persist only the non-sensitive language preference needed by offline fallbacks.
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SET_LANGUAGE') {
     event.waitUntil(rememberOfflineLanguage(event.data.language));
-    return;
-  }
-  if (event.data && event.data.type === 'SCHEDULE_REMINDER') {
-    const { customerId, businessName, reviewLink, sendAt } = event.data;
-    console.log('[SW] Reminder scheduled for:', customerId, 'at', sendAt);
   }
 });

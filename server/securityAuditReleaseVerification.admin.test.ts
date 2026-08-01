@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import type { TrpcContext } from "./_core/context";
 import { appRouter } from "./routers";
 import { buildSecurityAuditReleaseVerificationPayload } from "./routers/securityAuditReleaseVerification";
@@ -25,6 +27,26 @@ function context(role: "admin" | "user" | null): TrpcContext {
 }
 
 describe("administrator security-audit release verification", () => {
+  it("redirects resolved unauthenticated visitors to the public landing page", () => {
+    const pageSource = readFileSync(
+      resolve(
+        process.cwd(),
+        "client/src/pages/AdminSecurityAuditReleaseVerification.tsx"
+      ),
+      "utf8"
+    );
+
+    expect(pageSource).toContain(
+      'if (!isAuthenticated || !user || !isAdmin) navigate("/")'
+    );
+    expect(pageSource).toContain(
+      "if (authLoading || !isAuthenticated || !user) return null"
+    );
+    expect(pageSource).not.toContain(
+      "if (!isAuthenticated || !user) return null"
+    );
+  });
+
   it.each([
     ["unauthenticated", null],
     ["non-administrator", "user" as const],
