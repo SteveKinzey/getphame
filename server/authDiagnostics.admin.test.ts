@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { TrpcContext } from "./_core/context";
 
 const mocks = vi.hoisted(() => ({
+  getDb: vi.fn(),
   listAuthDiagnosticEvents: vi.fn(),
   getAuthDiagnosticSummary: vi.fn(),
   listAuthHealthChecks: vi.fn(),
@@ -18,6 +19,7 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("./db", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./db")>()),
+  getDb: mocks.getDb,
   listAuthDiagnosticEvents: mocks.listAuthDiagnosticEvents,
   getAuthDiagnosticSummary: mocks.getAuthDiagnosticSummary,
   listAuthHealthChecks: mocks.listAuthHealthChecks,
@@ -64,6 +66,15 @@ describe("admin authentication diagnostics", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("JWT_SECRET", "admin-diagnostics-test-secret-long-enough");
+    mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => [{ suspendedUntil: null }],
+          }),
+        }),
+      })),
+    });
     mocks.listAuthDiagnosticEvents.mockResolvedValue([]);
     mocks.getAuthDiagnosticSummary.mockResolvedValue({ total: 0, ok: 0, fail: 0 });
     mocks.listAuthHealthChecks.mockResolvedValue([]);

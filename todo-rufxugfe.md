@@ -106,3 +106,4 @@
 - [x] Repair the CI-discovered signup-risk administrator test mock for centralized active-account enforcement, re-run the complete release gates, and replace the superseded checkpoint/PR tree without weakening production authorization.
 - [x] Repair the remaining CI-discovered Security Audit administrator test mocks for centralized active-account enforcement, re-run complete validation, and update the replacement release tree without weakening production authorization.
 - [x] Repair the CI-discovered Automation Health and GitHub Cleanup administrator test mocks for centralized active-account enforcement, then re-run complete validation before another replacement release.
+- [x] Repair the CI-discovered Auth Diagnostics administrator test mock for centralized active-account enforcement, then audit remaining protected-procedure fixtures before the next replacement release.

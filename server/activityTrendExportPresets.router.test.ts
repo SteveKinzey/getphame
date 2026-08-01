@@ -2,11 +2,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { TrpcContext } from "./_core/context";
 
 const mocks = vi.hoisted(() => ({
+  getDb: vi.fn(),
   list: vi.fn(),
   save: vi.fn(),
   delete: vi.fn(),
   duplicate: vi.fn(),
   reorder: vi.fn(),
+}));
+
+vi.mock("./db", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./db")>()),
+  getDb: mocks.getDb,
 }));
 
 vi.mock("./activityTrendExportPresets", async importOriginal => ({
@@ -42,6 +48,15 @@ describe("Activity Trend export preset router", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("JWT_SECRET", "activity-trend-preset-test-secret-long-enough");
+    mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => [{ suspendedUntil: null }],
+          }),
+        }),
+      })),
+    });
     mocks.list.mockResolvedValue([]);
     mocks.save.mockResolvedValue({ outcome: "saved", id: 7, created: true });
     mocks.delete.mockResolvedValue({ outcome: "deleted" });
