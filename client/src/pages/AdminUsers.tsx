@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useSearch } from "wouter";
 import { useDebounce } from "use-debounce";
-import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, ClipboardList, Crown, Download, Filter, Loader2, MailCheck, MailWarning, Merge, RefreshCw, Search, ShieldCheck, Trash2, Unplug, Users } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, ClipboardList, Clock3, Crown, Download, Filter, Loader2, MailCheck, MailWarning, MailPlus, Merge, Plus, RefreshCw, Search, Send, ShieldCheck, ShieldOff, Trash2, Unplug, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -15,9 +15,45 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function matchesTypedEmail(confirmation: string, email: string | null | undefined) {
   return Boolean(email) && confirmation.trim().toLowerCase() === email!.trim().toLowerCase();
+}
+
+export function buildSmtpOnboardingDraft(recipientName?: string | null) {
+  const greeting = recipientName?.trim() ? `Hi ${recipientName.trim()},` : "Hi,";
+  return {
+    subject: "Welcome to Get Phame — connect your sending email",
+    bodyText: `${greeting}
+
+Welcome to Get Phame. Connecting your own sending email lets review requests come from an address your customers recognize.
+
+In Get Phame, open Settings → Email sending and enter the email address plus the app password or SMTP password from your provider. Never send your password to us by email.
+
+Common provider setup paths:
+• Gmail or Google Workspace: enable 2-Step Verification, then create a Google App Password for Mail.
+• Microsoft 365 / Outlook: use SMTP AUTH if your tenant allows it, or an app password where your Microsoft account supports one.
+• Outlook.com, Live, or Hotmail: use an app password if two-step verification is enabled.
+• Yahoo!: create an App Password in Account Security.
+• Zoho Mail: create an app-specific password and use the SMTP details shown in Zoho Mail settings.
+• iCloud Mail: create an app-specific password at appleid.apple.com.
+• AOL: create an app password in Account Security.
+• Proton Mail: use Proton Mail Bridge; direct SMTP is not available without it.
+• Fastmail: create an app password in Settings → Password & Security.
+• Another provider or custom domain: use the SMTP host, port, encryption setting, username, and app password supplied by your provider.
+
+If you need help, reply to hello@getphame.app with your provider name. Do not include a password, app password, or verification code.
+
+— Get Phame`,
+  };
 }
 
 export type SmtpStatusFilter = "all" | "verified" | "unverified" | "failing" | "unconnected";
@@ -109,10 +145,28 @@ export default function AdminUsersPage() {
   const [combineConfirmation, setCombineConfirmation] = useState("");
   const [smtpAccount, setSmtpAccount] = useState<DirectoryAccount | null>(null);
   const [smtpConfirmation, setSmtpConfirmation] = useState("");
+  const [newUserOpen, setNewUserOpen] = useState(false);
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [accessAccount, setAccessAccount] = useState<DirectoryAccount | null>(null);
+  const [accessKind, setAccessKind] = useState<"months" | "years" | "lifetime">("months");
+  const [accessQuantity, setAccessQuantity] = useState("1");
+  const [suspendAccount, setSuspendAccount] = useState<DirectoryAccount | null>(null);
+  const [suspendDays, setSuspendDays] = useState("7");
+  const [suspendConfirmation, setSuspendConfirmation] = useState("");
+  const [emailAccount, setEmailAccount] = useState<DirectoryAccount | null>(null);
+  const [emailTemplate, setEmailTemplate] = useState<"smtp_onboarding" | "custom">("smtp_onboarding");
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBodyText, setEmailBodyText] = useState("");
+  const [outboxAccount, setOutboxAccount] = useState<DirectoryAccount | null>(null);
 
   const mergeCandidates = trpc.admin.listUsers.useQuery(
     { query: "", smtpStatus: "all", page: 1, pageSize: 100 },
     { enabled: user?.role === "admin" && Boolean(combineSource) }
+  );
+  const outbox = trpc.admin.listUserEmailOutbox.useQuery(
+    { userId: outboxAccount?.id ?? -1, page: 1, pageSize: 20 },
+    { enabled: user?.role === "admin" && Boolean(outboxAccount) }
   );
 
   const refresh = () => utils.admin.listUsers.invalidate();
@@ -126,6 +180,49 @@ export default function AdminUsersPage() {
         ? t("adminUsers.lifeGranted", { defaultValue: "Life access granted." })
         : t("adminUsers.lifeRemoved", { defaultValue: "Life access removed." }));
       void refresh();
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const createUser = trpc.admin.createUser.useMutation({
+    onSuccess: (data) => {
+      toast.success(t("adminUsers.userCreated", { defaultValue: "Passwordless account created for {{email}}.", email: data.email }));
+      setNewUserOpen(false);
+      setNewUserName("");
+      setNewUserEmail("");
+      void refresh();
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const grantFlexibleAccess = trpc.admin.grantFlexibleAccess.useMutation({
+    onSuccess: () => {
+      toast.success(t("adminUsers.accessUpdated", { defaultValue: "Paid access updated." }));
+      setAccessAccount(null);
+      void refresh();
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const suspendUser = trpc.admin.suspendUser.useMutation({
+    onSuccess: () => {
+      toast.success(t("adminUsers.userSuspended", { defaultValue: "Account suspended and active sessions revoked." }));
+      setSuspendAccount(null);
+      setSuspendConfirmation("");
+      void refresh();
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const restoreUser = trpc.admin.restoreUser.useMutation({
+    onSuccess: () => {
+      toast.success(t("adminUsers.userRestored", { defaultValue: "Account access restored." }));
+      void refresh();
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const sendUserEmail = trpc.admin.sendUserEmail.useMutation({
+    onSuccess: (data) => {
+      if (data.ok) toast.success(t("adminUsers.emailSent", { defaultValue: "Email sent from hello@getphame.app." }));
+      else toast.error(t("adminUsers.emailNotConfirmed", { defaultValue: "Delivery was not confirmed. The outbox contains the recorded attempt." }));
+      setEmailAccount(null);
+      void utils.admin.listUserEmailOutbox.invalidate();
     },
     onError: (error) => toast.error(error.message),
   });
@@ -208,10 +305,22 @@ export default function AdminUsersPage() {
     }));
   };
 
+  const openSmtpOnboardingComposer = (account: DirectoryAccount) => {
+    const draft = buildSmtpOnboardingDraft(account.name);
+    setEmailAccount(account);
+    setEmailTemplate("smtp_onboarding");
+    setEmailSubject(draft.subject);
+    setEmailBodyText(draft.bodyText);
+  };
+
   if (!user || user.role !== "admin") return null;
 
   const busyUserId = setRole.variables?.userId
     ?? setLifeAccess.variables?.userId
+    ?? grantFlexibleAccess.variables?.userId
+    ?? suspendUser.variables?.userId
+    ?? restoreUser.variables?.userId
+    ?? sendUserEmail.variables?.userId
     ?? retestUserSmtp.variables?.userId
     ?? removeUserSmtp.variables?.userId
     ?? deleteUser.variables?.userId
@@ -229,7 +338,16 @@ export default function AdminUsersPage() {
           <Users size={17} />
           <span className="text-xs font-black uppercase tracking-[0.18em]">{t("adminUsers.eyebrow", { defaultValue: "User Management" })}</span>
         </div>
-        <h1 className="text-3xl font-black text-white">{t("adminUsers.title", { defaultValue: "Manage users" })}</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-3xl font-black text-white">{t("adminUsers.title", { defaultValue: "Manage users" })}</h1>
+          <button
+            type="button"
+            onClick={() => setNewUserOpen(true)}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-black rr-text-navy transition active:scale-[0.97]"
+          >
+            <Plus size={17} /> {t("adminUsers.addUser", { defaultValue: "Add user" })}
+          </button>
+        </div>
         <p className="mt-1 text-sm font-semibold text-white/75">{t("adminUsers.subtitle", { defaultValue: "Search every account, combine duplicates, or control administrator and Life access." })}</p>
       </header>
 
@@ -280,7 +398,7 @@ export default function AdminUsersPage() {
           <div className="flex flex-col gap-3">
             {directory.data?.users.map((account) => {
               const isSelf = account.id === user.id;
-              const isBusy = busyUserId === account.id && (setRole.isPending || setLifeAccess.isPending || retestUserSmtp.isPending || removeUserSmtp.isPending || deleteUser.isPending || combineAccounts.isPending);
+              const isBusy = busyUserId === account.id && (setRole.isPending || setLifeAccess.isPending || grantFlexibleAccess.isPending || suspendUser.isPending || restoreUser.isPending || sendUserEmail.isPending || retestUserSmtp.isPending || removeUserSmtp.isPending || deleteUser.isPending || combineAccounts.isPending);
               return (
                 <article key={account.id} className="rounded-2xl bg-white p-4 shadow-sm" data-testid={`admin-user-${account.id}`}>
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -292,6 +410,11 @@ export default function AdminUsersPage() {
                         )}
                         {account.lifeAccess && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-1 text-xs font-black text-amber-900"><Crown size={12} /> {t("adminUsers.life", { defaultValue: "Life" })}</span>
+                        )}
+                        {account.isSuspended && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-black text-red-800">
+                            <ShieldOff size={12} /> {t("adminUsers.suspended", { defaultValue: "Suspended" })}
+                          </span>
                         )}
                       </div>
                       <p className="truncate text-sm font-semibold rr-text-navy-mid">{account.email || t("adminUsers.noEmail", { defaultValue: "No email" })}</p>
@@ -329,9 +452,70 @@ export default function AdminUsersPage() {
                           tier: account.tier,
                         })}
                       </p>
+                      {account.isSuspended && account.suspendedUntil && (
+                        <p className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-red-700">
+                          <Clock3 size={13} />
+                          {t("adminUsers.suspendedUntil", {
+                            defaultValue: "Access resumes {{date}} ({{days}} day(s) remaining).",
+                            date: new Date(account.suspendedUntil).toLocaleString(),
+                            days: Math.max(1, Math.ceil((account.suspendedUntil - Date.now()) / 86_400_000)),
+                          })}
+                        </p>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end">
+                      <button
+                        type="button"
+                        disabled={isBusy || account.role === "admin"}
+                        onClick={() => {
+                          setAccessAccount(account);
+                          setAccessKind("months");
+                          setAccessQuantity("1");
+                        }}
+                        className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 text-sm font-black text-amber-900 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        <Crown size={15} /> {t("adminUsers.manageAccess", { defaultValue: "Manage access" })}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isBusy || !account.email}
+                        onClick={() => openSmtpOnboardingComposer(account)}
+                        className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 text-sm font-black text-blue-800 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        <MailPlus size={15} /> {t("adminUsers.sendEmail", { defaultValue: "Send email" })}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isBusy || !account.email}
+                        onClick={() => setOutboxAccount(account)}
+                        className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-black rr-text-navy transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        <ClipboardList size={15} /> {t("adminUsers.outbox", { defaultValue: "Outbox" })}
+                      </button>
+                      {account.isSuspended ? (
+                        <button
+                          type="button"
+                          disabled={isBusy || account.role === "admin"}
+                          onClick={() => restoreUser.mutate({ userId: account.id })}
+                          className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-sm font-black text-emerald-800 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                          <ShieldCheck size={15} /> {t("adminUsers.restore", { defaultValue: "Restore" })}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={isBusy || isSelf || account.role === "admin"}
+                          onClick={() => {
+                            setSuspendAccount(account);
+                            setSuspendDays("7");
+                            setSuspendConfirmation("");
+                          }}
+                          className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 text-sm font-black text-red-700 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                          <ShieldOff size={15} /> {t("adminUsers.suspend", { defaultValue: "Suspend" })}
+                        </button>
+                      )}
                       <button
                         type="button"
                         disabled={isBusy || (isSelf && account.role === "admin")}
@@ -544,6 +728,199 @@ export default function AdminUsersPage() {
           )}
         </section>
       </main>
+
+      <Dialog open={newUserOpen} onOpenChange={(open) => {
+        if (!open && !createUser.isPending) {
+          setNewUserOpen(false);
+          setNewUserName("");
+          setNewUserEmail("");
+        }
+      }}>
+        <DialogContent className="max-w-lg border-0 bg-white text-slate-950">
+          <DialogHeader>
+            <div className="mb-1 flex size-11 items-center justify-center rounded-full bg-amber-100 text-amber-900"><Plus size={22} /></div>
+            <DialogTitle className="text-xl font-black text-slate-950">{t("adminUsers.addUserTitle", { defaultValue: "Create a passwordless user" })}</DialogTitle>
+            <DialogDescription className="text-sm font-medium text-slate-600">{t("adminUsers.addUserDescription", { defaultValue: "The user will sign in with a magic link. Administrators never create or manage a user password." })}</DialogDescription>
+          </DialogHeader>
+          <form
+            className="space-y-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              createUser.mutate({ name: newUserName.trim() || undefined, email: newUserEmail.trim() });
+            }}
+          >
+            <label className="block text-sm font-black text-slate-900" htmlFor="new-user-name">
+              {t("adminUsers.nameOptional", { defaultValue: "Name (optional)" })}
+              <input id="new-user-name" value={newUserName} onChange={(event) => setNewUserName(event.target.value)} autoComplete="name" className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 px-3 text-base font-semibold text-slate-950 outline-none focus:ring-2 focus:ring-amber-400" />
+            </label>
+            <label className="block text-sm font-black text-slate-900" htmlFor="new-user-email">
+              {t("adminUsers.emailRequired", { defaultValue: "Email address" })}
+              <input id="new-user-email" type="email" required value={newUserEmail} onChange={(event) => setNewUserEmail(event.target.value)} autoComplete="email" className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 px-3 text-base font-semibold text-slate-950 outline-none focus:ring-2 focus:ring-amber-400" />
+            </label>
+            <DialogFooter>
+              <button type="button" disabled={createUser.isPending} onClick={() => setNewUserOpen(false)} className="min-h-10 rounded-md px-4 text-sm font-black text-slate-700 disabled:opacity-45">{t("common.cancel", { defaultValue: "Cancel" })}</button>
+              <button type="submit" disabled={!newUserEmail.trim() || createUser.isPending} className="inline-flex min-h-10 items-center justify-center rounded-md px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:cursor-not-allowed disabled:opacity-45">
+                {createUser.isPending && <Loader2 className="mr-2 animate-spin" size={16} />}{t("adminUsers.createPasswordless", { defaultValue: "Create account" })}
+              </button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(accessAccount)} onOpenChange={(open) => {
+        if (!open && !grantFlexibleAccess.isPending) setAccessAccount(null);
+      }}>
+        <DialogContent className="max-w-lg border-0 bg-white text-slate-950">
+          <DialogHeader>
+            <div className="mb-1 flex size-11 items-center justify-center rounded-full bg-amber-100 text-amber-900"><Crown size={22} /></div>
+            <DialogTitle className="text-xl font-black text-slate-950">{t("adminUsers.manageAccessTitle", { defaultValue: "Manage paid access" })}</DialogTitle>
+            <DialogDescription className="text-sm font-medium text-slate-600">{t("adminUsers.manageAccessDescription", { defaultValue: "New time is added after any unused paid time. Calendar months and years preserve the matching calendar date where possible." })}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="rounded-xl bg-slate-50 p-3 text-sm font-bold rr-text-navy">{accessAccount?.name || accessAccount?.email || t("adminUsers.user", { defaultValue: "User" })}</p>
+            <label className="block text-sm font-black text-slate-900" htmlFor="access-kind">
+              {t("adminUsers.accessType", { defaultValue: "Access type" })}
+              <select id="access-kind" value={accessKind} onChange={(event) => setAccessKind(event.target.value as "months" | "years" | "lifetime")} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base font-bold text-slate-950 outline-none focus:ring-2 focus:ring-amber-400">
+                <option value="months">{t("adminUsers.accessMonths", { defaultValue: "Grant months" })}</option>
+                <option value="years">{t("adminUsers.accessYears", { defaultValue: "Grant years" })}</option>
+                <option value="lifetime">{t("adminUsers.accessLifetime", { defaultValue: "Grant Life access" })}</option>
+              </select>
+            </label>
+            {accessKind !== "lifetime" && (
+              <label className="block text-sm font-black text-slate-900" htmlFor="access-quantity">
+                {accessKind === "months" ? t("adminUsers.months", { defaultValue: "Months (1–120)" }) : t("adminUsers.years", { defaultValue: "Years (1–10)" })}
+                <input id="access-quantity" type="number" min="1" max={accessKind === "months" ? 120 : 10} value={accessQuantity} onChange={(event) => setAccessQuantity(event.target.value)} inputMode="numeric" className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 px-3 text-base font-semibold text-slate-950 outline-none focus:ring-2 focus:ring-amber-400" />
+              </label>
+            )}
+            {accessKind === "lifetime" && <p className="rounded-xl bg-amber-50 p-3 text-sm font-bold text-amber-950">{t("adminUsers.lifeAccessNote", { defaultValue: "Life access does not expire and replaces any existing paid expiry." })}</p>}
+            <DialogFooter>
+              <button type="button" disabled={grantFlexibleAccess.isPending} onClick={() => setAccessAccount(null)} className="min-h-10 rounded-md px-4 text-sm font-black text-slate-700 disabled:opacity-45">{t("common.cancel", { defaultValue: "Cancel" })}</button>
+              <button
+                type="button"
+                disabled={!accessAccount || grantFlexibleAccess.isPending || (accessKind !== "lifetime" && (!Number.isInteger(Number(accessQuantity)) || Number(accessQuantity) < 1 || Number(accessQuantity) > (accessKind === "months" ? 120 : 10)))}
+                onClick={() => accessAccount && grantFlexibleAccess.mutate({ userId: accessAccount.id, kind: accessKind, quantity: accessKind === "lifetime" ? undefined : Number(accessQuantity) })}
+                className="inline-flex min-h-10 items-center justify-center rounded-md px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                {grantFlexibleAccess.isPending && <Loader2 className="mr-2 animate-spin" size={16} />}{t("adminUsers.applyAccess", { defaultValue: "Apply access" })}
+              </button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={Boolean(suspendAccount)} onOpenChange={(open) => {
+        if (!open && !suspendUser.isPending) {
+          setSuspendAccount(null);
+          setSuspendConfirmation("");
+        }
+      }}>
+        <AlertDialogContent className="border-0 bg-white text-slate-950">
+          <AlertDialogHeader>
+            <div className="mb-1 flex size-11 items-center justify-center rounded-full bg-red-100 text-red-700"><ShieldOff size={22} /></div>
+            <AlertDialogTitle className="text-xl font-black text-slate-950">{t("adminUsers.suspendTitle", { defaultValue: "Suspend this account?" })}</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3 text-sm font-medium text-slate-600">
+              <span className="block">{t("adminUsers.suspendDescription", { defaultValue: "Suspension blocks protected activity immediately and revokes every active session for this user." })}</span>
+              <span className="block font-black text-red-700">{t("adminUsers.suspendRecovery", { defaultValue: "You can restore the account later from this directory." })}</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <label className="block text-sm font-black text-slate-900" htmlFor="suspend-days">
+            {t("adminUsers.suspendDays", { defaultValue: "Suspend for days (1–3650)" })}
+            <input id="suspend-days" type="number" min="1" max="3650" inputMode="numeric" value={suspendDays} onChange={(event) => setSuspendDays(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 px-3 text-base font-semibold text-slate-950 outline-none focus:ring-2 focus:ring-red-400" />
+          </label>
+          <label className="block text-sm font-black text-slate-900" htmlFor="suspend-confirmation">
+            {t("adminUsers.typeSuspend", { defaultValue: "Type SUSPEND to confirm" })}
+            <input id="suspend-confirmation" value={suspendConfirmation} onChange={(event) => setSuspendConfirmation(event.target.value)} autoComplete="off" className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 px-3 text-base font-black text-slate-950 outline-none focus:ring-2 focus:ring-red-400" />
+          </label>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={suspendUser.isPending}>{t("common.cancel", { defaultValue: "Cancel" })}</AlertDialogCancel>
+            <button type="button" disabled={!suspendAccount || suspendConfirmation !== "SUSPEND" || !Number.isInteger(Number(suspendDays)) || Number(suspendDays) < 1 || Number(suspendDays) > 3650 || suspendUser.isPending} onClick={() => suspendAccount && suspendUser.mutate({ userId: suspendAccount.id, days: Number(suspendDays), confirmation: "SUSPEND" })} className="inline-flex min-h-10 items-center justify-center rounded-md bg-red-700 px-4 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-45">
+              {suspendUser.isPending && <Loader2 className="mr-2 animate-spin" size={16} />}{t("adminUsers.suspendNow", { defaultValue: "Suspend account" })}
+            </button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={Boolean(emailAccount)} onOpenChange={(open) => {
+        if (!open && !sendUserEmail.isPending) setEmailAccount(null);
+      }}>
+        <DialogContent className="max-h-[92vh] max-w-2xl overflow-y-auto border-0 bg-white text-slate-950">
+          <DialogHeader>
+            <div className="mb-1 flex size-11 items-center justify-center rounded-full bg-blue-100 text-blue-800"><Send size={22} /></div>
+            <DialogTitle className="text-xl font-black text-slate-950">{t("adminUsers.emailTitle", { defaultValue: "Email user" })}</DialogTitle>
+            <DialogDescription className="text-sm font-medium text-slate-600">{t("adminUsers.emailDescription", { defaultValue: "This general communication is sent from hello@getphame.app. Magic links are always sent from no-reply@getphame.app." })}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="rounded-xl bg-slate-50 p-3 text-sm font-bold rr-text-navy">{emailAccount?.name || emailAccount?.email} · {emailAccount?.email}</p>
+            <label className="block text-sm font-black text-slate-900" htmlFor="admin-email-template">
+              {t("adminUsers.emailTemplate", { defaultValue: "Message starting point" })}
+              <select id="admin-email-template" value={emailTemplate} onChange={(event) => {
+                const next = event.target.value as "smtp_onboarding" | "custom";
+                setEmailTemplate(next);
+                if (next === "smtp_onboarding") {
+                  const draft = buildSmtpOnboardingDraft(emailAccount?.name);
+                  setEmailSubject(draft.subject);
+                  setEmailBodyText(draft.bodyText);
+                } else {
+                  setEmailSubject("");
+                  setEmailBodyText("");
+                }
+              }} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base font-bold text-slate-950 outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="smtp_onboarding">{t("adminUsers.smtpTemplate", { defaultValue: "SMTP setup guide" })}</option>
+                <option value="custom">{t("adminUsers.customTemplate", { defaultValue: "Custom message" })}</option>
+              </select>
+            </label>
+            <label className="block text-sm font-black text-slate-900" htmlFor="admin-email-subject">
+              {t("adminUsers.emailSubject", { defaultValue: "Subject" })}
+              <input id="admin-email-subject" value={emailSubject} maxLength={180} onChange={(event) => setEmailSubject(event.target.value)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 px-3 text-base font-semibold text-slate-950 outline-none focus:ring-2 focus:ring-blue-400" />
+            </label>
+            <label className="block text-sm font-black text-slate-900" htmlFor="admin-email-body">
+              {t("adminUsers.emailBody", { defaultValue: "Message" })}
+              <textarea id="admin-email-body" value={emailBodyText} maxLength={12000} onChange={(event) => setEmailBodyText(event.target.value)} rows={14} className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-950 outline-none focus:ring-2 focus:ring-blue-400" />
+            </label>
+            <p className="text-xs font-semibold rr-text-navy-muted">{t("adminUsers.emailSecurityHint", { defaultValue: "Never ask a user to send passwords, app passwords, or verification codes by email. Sent mail is retained for 180 days in the user outbox." })}</p>
+            <DialogFooter>
+              <button type="button" disabled={sendUserEmail.isPending} onClick={() => setEmailAccount(null)} className="min-h-10 rounded-md px-4 text-sm font-black text-slate-700 disabled:opacity-45">{t("common.cancel", { defaultValue: "Cancel" })}</button>
+              <button type="button" disabled={!emailAccount || !emailSubject.trim() || !emailBodyText.trim() || sendUserEmail.isPending} onClick={() => emailAccount && sendUserEmail.mutate({ userId: emailAccount.id, template: emailTemplate, subject: emailSubject, bodyText: emailBodyText })} className="inline-flex min-h-10 items-center justify-center rounded-md bg-blue-800 px-4 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-45">
+                {sendUserEmail.isPending && <Loader2 className="mr-2 animate-spin" size={16} />}{t("adminUsers.sendFromHello", { defaultValue: "Send from hello@getphame.app" })}
+              </button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(outboxAccount)} onOpenChange={(open) => { if (!open) setOutboxAccount(null); }}>
+        <DialogContent className="max-h-[92vh] max-w-2xl overflow-y-auto border-0 bg-white text-slate-950">
+          <DialogHeader>
+            <div className="mb-1 flex size-11 items-center justify-center rounded-full bg-slate-100 rr-text-navy"><ClipboardList size={22} /></div>
+            <DialogTitle className="text-xl font-black text-slate-950">{t("adminUsers.outboxTitle", { defaultValue: "Sent-mail outbox" })}</DialogTitle>
+            <DialogDescription className="text-sm font-medium text-slate-600">{t("adminUsers.outboxDescription", { defaultValue: "Administrator emails sent to this user from hello@getphame.app. Records automatically expire after 180 days." })}</DialogDescription>
+          </DialogHeader>
+          {outbox.isLoading ? (
+            <div className="flex justify-center py-10"><Loader2 className="animate-spin rr-text-navy" size={26} /></div>
+          ) : outbox.error ? (
+            <p className="rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700">{outbox.error.message}</p>
+          ) : outbox.data?.entries.length ? (
+            <div className="space-y-3">
+              {outbox.data.entries.map((entry) => (
+                <article key={entry.id} className="rounded-xl border border-slate-200 p-3">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-black rr-text-navy">{entry.subject}</p>
+                      <p className="mt-1 text-xs font-semibold rr-text-navy-muted">{entry.fromEmail} → {entry.recipientEmail} · {new Date(entry.createdAt).toLocaleString()}</p>
+                    </div>
+                    <span className={`rounded-full px-2 py-1 text-xs font-black ${entry.status === "sent" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>{entry.status === "sent" ? t("adminUsers.sent", { defaultValue: "Sent" }) : t("adminUsers.failed", { defaultValue: "Not confirmed" })}</span>
+                  </div>
+                  {entry.status !== "sent" && entry.failureCode && <p className="mt-2 text-xs font-bold text-red-700">{t("adminUsers.deliveryFailure", { defaultValue: "Delivery status: {{code}}", code: entry.failureCode })}</p>}
+                  <pre className="mt-3 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-xs font-medium leading-5 rr-text-navy">{entry.bodyText}</pre>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="py-8 text-center text-sm font-semibold rr-text-navy-muted">{t("adminUsers.outboxEmpty", { defaultValue: "No administrator email has been recorded for this user." })}</p>
+          )}
+          <DialogFooter><button type="button" onClick={() => setOutboxAccount(null)} className="min-h-10 rounded-md px-4 text-sm font-black rr-text-navy">{t("common.cancel", { defaultValue: "Cancel" })}</button></DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={Boolean(deleteAccount)} onOpenChange={(open) => {
         if (!open && !deleteUser.isPending) {

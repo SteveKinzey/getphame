@@ -46,7 +46,13 @@ function context(role: "admin" | "user"): TrpcContext {
 describe("private connector download", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    const activeAccountQuery = {
+      from: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockResolvedValue([{ suspendedUntil: null }]),
+    };
     mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => activeAccountQuery),
       query: { businessProfiles: { findFirst: mocks.findProfile } },
     });
     mocks.findActiveComplimentaryAccess.mockResolvedValue(null);

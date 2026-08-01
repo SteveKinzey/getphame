@@ -71,6 +71,9 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
         };
         return { from: () => auditChain };
       }
+      if ("suspendedUntil" in selection && Object.keys(selection).length === 1) {
+        return { from: () => ({ where: () => ({ limit: async () => [{ suspendedUntil: null }] }) }) };
+      }
       if ("count" in selection || "value" in selection) {
         const countChain = {
           leftJoin: () => countChain,
@@ -278,6 +281,12 @@ describe("administrator user-management runtime", () => {
     await expect(caller.admin.listUsers({ query: "", smtpStatus: "all", page: 1, pageSize: 25 })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.setUserRole({ userId: 2, role: "admin" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.setLifeAccess({ userId: 2, enabled: true })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.createUser({ email: "new@example.test" })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.grantFlexibleAccess({ userId: 2, kind: "months", quantity: 3 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.suspendUser({ userId: 2, days: 7, confirmation: "SUSPEND" })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.restoreUser({ userId: 2 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.sendUserEmail({ userId: 2, template: "custom", subject: "Hello", bodyText: "Welcome" })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.listUserEmailOutbox({ userId: 2 })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.deleteUser({ userId: 2, confirmation: "DELETE" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.combineAccounts({ sourceUserId: 2, targetUserId: 1, confirmation: "COMBINE" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: "target@example.test" })).rejects.toMatchObject({ code: "FORBIDDEN" });
@@ -344,7 +353,7 @@ describe("administrator user-management runtime", () => {
       code: "BAD_REQUEST",
       message: "You cannot remove your own administrator access.",
     });
-    expect(mocks.getDb).not.toHaveBeenCalled();
+    expect(mocks.getDb).toHaveBeenCalledTimes(1);
   });
 
   it("persists role changes for another account", async () => {
@@ -354,11 +363,13 @@ describe("administrator user-management runtime", () => {
   });
 
   it("grants Life access to a user and refuses to remove mandatory administrator Life access", async () => {
-    mocks.getDb.mockResolvedValueOnce(createDb({ targetRole: "user", targetTier: "free" }));
+    const grantDb = createDb({ targetRole: "user", targetTier: "free" });
+    mocks.getDb.mockResolvedValueOnce(grantDb).mockResolvedValueOnce(grantDb);
     await expect(appRouter.createCaller(context("admin")).admin.setLifeAccess({ userId: 2, enabled: true })).resolves.toEqual({ ok: true });
     expect(mocks.upsertProfile).toHaveBeenCalledTimes(1);
 
-    mocks.getDb.mockResolvedValueOnce(createDb({ targetRole: "admin", targetTier: "free" }));
+    const adminDb = createDb({ targetRole: "admin", targetTier: "free" });
+    mocks.getDb.mockResolvedValueOnce(adminDb).mockResolvedValueOnce(adminDb);
     await expect(appRouter.createCaller(context("admin")).admin.setLifeAccess({ userId: 2, enabled: false })).rejects.toMatchObject({
       code: "BAD_REQUEST",
       message: "Administrators always have Life access. Change the role first.",
@@ -392,11 +403,13 @@ describe("administrator user-management runtime", () => {
 describe("administrator user-management rendered workflow", () => {
   let matchesTypedEmail: (confirmation: string, email: string | null | undefined) => boolean;
   let parseAdminUserDirectoryParams: (searchString: string) => { search: string; smtpStatus: string };
+  let buildSmtpOnboardingDraft: (recipientName?: string | null) => { subject: string; bodyText: string };
 
   beforeAll(async () => {
     const module = await import("../client/src/pages/AdminUsers");
     matchesTypedEmail = module.matchesTypedEmail;
     parseAdminUserDirectoryParams = module.parseAdminUserDirectoryParams;
+    buildSmtpOnboardingDraft = module.buildSmtpOnboardingDraft;
   });
 
   it("hydrates the user directory from a failing-SMTP remediation deep link", () => {
@@ -445,6 +458,24 @@ describe("administrator user-management rendered workflow", () => {
     expect(html).toContain('data-testid={`smtp-status-${account.id}`}');
     expect(html).toContain("Delete");
     expect(html).toContain("disabled");
+    expect(html).toContain("createUser.useMutation");
+    expect(html).toContain("grantFlexibleAccess.useMutation");
+    expect(html).toContain("suspendUser.useMutation");
+    expect(html).toContain("restoreUser.useMutation");
+    expect(html).toContain("sendUserEmail.useMutation");
+    expect(html).toContain("listUserEmailOutbox.useQuery");
+    expect(html).toContain("hello@getphame.app");
+    expect(html).toContain('defaultValue: "Type SUSPEND to confirm"');
+  });
+
+  it("prefills an editable SMTP onboarding draft for every supported provider without requesting credentials", () => {
+    const draft = buildSmtpOnboardingDraft("Jordan");
+    expect(draft.subject).toContain("Get Phame");
+    expect(draft.bodyText).toContain("Hi Jordan,");
+    for (const provider of ["Gmail", "Google Workspace", "Microsoft 365", "Outlook.com", "Yahoo!", "Zoho Mail", "iCloud Mail", "AOL", "Proton Mail", "Fastmail", "custom domain"]) {
+      expect(draft.bodyText).toContain(provider);
+    }
+    expect(draft.bodyText).toContain("Never send your password");
   });
 
   it("shows the selected duplicate flowing explicitly into the surviving account before confirmation", () => {
