@@ -77,3 +77,7 @@
 - [ ] Add focused tests, full regression coverage, migration verification, scheduled-run validation, production checks, and protected-main release synchronization for any approved implementation.
 - [x] Reconcile the phame56 localized-catalog cache contract across all relevant regression tests and both service-worker release manifests.
 - [x] Validate the disposable-domain release locally: 171 Vitest files passed (one suite skipped), 967 tests passed (seven skipped), TypeScript completed without errors, production build completed, and `/admin/signup-risk` was reviewed at 1280×900 and 375×812.
+- [x] Reconcile the concurrent protected-main security-audit release correction with the disposable-domain checkpoint without discarding either body of work; added the protected administrator route, privacy-bounded evidence contract, regression coverage, dashboard entry, and seven localized catalogs.
+- [x] Re-run affected security-audit and disposable-domain validation against the reconciled source tree: 9 focused suites / 56 tests and the full 173-file suite / 977 tests passed; TypeScript and production client/server builds passed; `/admin/security-audit-release` was reviewed at 1280×900 and 390×844.
+- [ ] Save a replacement managed checkpoint and synchronize its exact tree through a protected GitHub release pull request.
+- [ ] Verify the merged protected `main` tree matches the replacement checkpoint and record the completed release outcome.
