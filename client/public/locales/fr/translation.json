@@ -4274,8 +4274,6 @@
     "no": "Non",
     "lastChecked": "Dernière vérification réussie",
     "check": "Rechercher une mise à jour",
-    "reloadTab": "Recharger cet onglet",
-    "applyingTitle": "Application de votre mise à jour",
-    "applyingDescription": "GET PHAME prépare la dernière version. Cet onglet s’actualisera dans un instant."
+    "reloadTab": "Recharger cet onglet"
   }
 }

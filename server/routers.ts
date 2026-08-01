@@ -197,7 +197,6 @@ import {
   adminPlatformEmailMessages,
   adminUserLifecycleAuditLogs,
   quietHoursQueuedSends,
-  pwaUpdateEventTotals,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -210,11 +209,6 @@ import {
   summarizePwaEvents,
   toPwaEventPage,
 } from "./pwaAnalytics";
-import {
-  getPwaUpdateTelemetryDay,
-  summarizePwaUpdateTelemetry,
-} from "./pwaUpdateTelemetry";
-import { PWA_UPDATE_TELEMETRY_EVENT_NAMES } from "@shared/pwaUpdateTelemetry";
 import {
   CAPTION_LANGUAGE_ANALYTICS_LANGUAGES,
   CAPTION_LANGUAGE_ANALYTICS_SOURCE,
@@ -5169,24 +5163,6 @@ export const appRouter = router({
       return summarizePwaEvents(rows);
     }),
 
-    /** Daily PWA update-notice totals only; no user, visitor, or device rows leave the server. */
-    pwaUpdateTelemetryStats: adminProcedure.query(async () => {
-      const db = await getDb();
-      if (!db)
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "DB unavailable",
-        });
-      const rows = await db
-        .select({
-          event: pwaUpdateEventTotals.event,
-          eventDay: pwaUpdateEventTotals.eventDay,
-          total: pwaUpdateEventTotals.total,
-        })
-        .from(pwaUpdateEventTotals);
-      return summarizePwaUpdateTelemetry(rows);
-    }),
-
     /** Aggregate explicit caption-language choices; no identity, referrer, user-agent, or free text is returned. */
     captionLanguageStats: adminProcedure.query(async () => {
       const db = await getDb();
@@ -6315,28 +6291,6 @@ export const appRouter = router({
           userAgent: null,
         });
         return { ok: true };
-      }),
-    /**
-     * Public, strict-allowlist update interactions. The only persistence is an
-     * atomic daily counter; no account, browser, location, version, route, or
-     * raw event record is accepted or stored.
-     */
-    trackPwaUpdateEvent: publicProcedure
-      .input(z.object({ event: z.enum(PWA_UPDATE_TELEMETRY_EVENT_NAMES) }))
-      .mutation(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return { ok: true as const };
-        await db
-          .insert(pwaUpdateEventTotals)
-          .values({
-            eventDay: getPwaUpdateTelemetryDay(),
-            event: input.event,
-            total: 1,
-          })
-          .onDuplicateKeyUpdate({
-            set: { total: sql`${pwaUpdateEventTotals.total} + 1` },
-          });
-        return { ok: true as const };
       }),
     /** Explicit caption-language selections only; bounded language code and no visitor identity or raw context. */
     trackCaptionLanguage: publicProcedure

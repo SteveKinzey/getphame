@@ -4487,8 +4487,6 @@
     "no": "No",
     "lastChecked": "Ultimo controllo riuscito",
     "check": "Cerca aggiornamenti",
-    "reloadTab": "Ricarica questa scheda",
-    "applyingTitle": "Applicazione dell’aggiornamento",
-    "applyingDescription": "GET PHAME sta preparando l’ultima versione. Questa scheda si aggiornerà a breve."
+    "reloadTab": "Ricarica questa scheda"
   }
 }

@@ -4193,9 +4193,7 @@
     "lastChecked": "Last successful check",
     "notChecked": "Not checked yet",
     "check": "Check for update",
-    "reloadTab": "Reload this tab",
-    "applyingTitle": "Applying your update",
-    "applyingDescription": "GET PHAME is preparing the latest version. This tab will refresh shortly."
+    "reloadTab": "Reload this tab"
   },
   "quietHours": {
     "title": "Customer quiet hours",

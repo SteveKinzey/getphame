@@ -1388,32 +1388,6 @@ export type PageEvent = typeof pageEvents.$inferSelect;
 export type InsertPageEvent = typeof pageEvents.$inferInsert;
 
 /**
- * Daily, aggregate-only PWA update-notice interactions. This table deliberately
- * has no user, visitor, device, route, referrer, user-agent, or event-time
- * columns: one row represents the total for one allowlisted interaction/day.
- */
-export const pwaUpdateEventTotals = pgTable(
-  "pwa_update_event_totals",
-  {
-    id: serial("id").primaryKey(),
-    eventDay: varchar("event_day", { length: 10 }).notNull(),
-    event: varchar("event", { length: 48 }).notNull(),
-    total: integer("total").notNull().default(0),
-    updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
-  },
-  table => [
-    uniqueIndex("pwa_update_event_totals_day_event_unique").on(
-      table.eventDay,
-      table.event
-    ),
-    index("pwa_update_event_totals_day_idx").on(table.eventDay),
-  ]
-);
-export type PwaUpdateEventTotal = typeof pwaUpdateEventTotals.$inferSelect;
-export type InsertPwaUpdateEventTotal =
-  typeof pwaUpdateEventTotals.$inferInsert;
-
-/**
  * Privacy-bounded zero-result Manual searches.
  * Raw rows are never exposed to administrators; reporting returns aggregates only.
  */

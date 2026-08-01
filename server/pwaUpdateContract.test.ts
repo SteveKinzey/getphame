@@ -14,8 +14,6 @@ const versionUpdateKeys = [
   "later",
   "blockedMutation",
   "blockedSensitiveFlow",
-  "applyingTitle",
-  "applyingDescription",
   "reloading",
   "failed",
   "discardTitle",
@@ -48,7 +46,7 @@ describe("PWA safe update release contract", () => {
     expect(main).toContain('const SERVICE_WORKER_URL = "/sw-v28.js"');
     expect(appContext).not.toContain("navigator.serviceWorker.register");
     expect(workerMirror).toBe(v28Worker);
-    expect(v28Worker).toContain("const CACHE_NAME = 'getphame-v29'");
+    expect(v28Worker).toContain("const CACHE_NAME = 'getphame-v28'");
   });
 
   it("excludes deployment metadata from every cache path and preserves existing PWA exclusions", () => {
@@ -82,9 +80,9 @@ describe("PWA safe update release contract", () => {
     const worker = readProjectFile("../client/public/sw-v28.js");
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
 
-    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame61'");
+    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame60'");
     expect(worker).toContain("...TRANSLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`)");
-    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame61');
+    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame60');
     for (const locale of localePaths) {
       expect(worker).toContain(`/locales/${locale}/translation.json`);
       expect(worker).toContain(`/locales/${locale}/landing.json`);
