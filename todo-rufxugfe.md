@@ -126,3 +126,10 @@
 - [x] Run focused tests, full suite, TypeScript validation, production build, responsive PWA QA, checkpoint release, and protected-main synchronization for the PWA update flow.
 - [x] Preserve the compatible protected-main security-audit manual localization and regression updates in the managed tree, then revalidate and create an exact-parity replacement release.
 - [x] Clarify the final PWA validation record’s intentionally varied mobile viewport evidence, revalidate the exact release tree, and resolve the protected-main review thread.
+- [x] Audit the reported broken production deployment, protected-main release state, and repository health without overwriting concurrent work.
+- [x] Create and validate a reusable PWA resilience and protected-release skill using the required skill-creator workflow.
+- [x] Add anonymous, aggregate-only update-notice telemetry for notice shown, accepted, dismissed, and safety-blocked interactions without user, device, or network identifiers.
+- [x] Provide immediate, accessible, localized visual feedback while an accepted PWA update is applying and before the controlled reload occurs.
+- [x] Build a branded, dependency-free offline fallback page and safely serve it for failed uncached navigation requests from both maintained service-worker entrypoints.
+- [x] Correct the GitHub API-health monitor to test the canonical production domain, preserving its existing privacy-minimized incident contract and adding regression coverage.
+- [ ] Add focused contracts, run full validation and responsive PWA QA, checkpoint the release, repair the deployment path, and synchronize the exact validated tree through protected GitHub main.

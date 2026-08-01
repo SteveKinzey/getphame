@@ -3762,6 +3762,8 @@
     "no": "否",
     "lastChecked": "上次成功检查",
     "check": "检查更新",
-    "reloadTab": "重新加载此标签页"
+    "reloadTab": "重新加载此标签页",
+    "applyingTitle": "正在应用更新",
+    "applyingDescription": "GET PHAME 正在准备最新版本。此标签页将很快刷新。"
   }
 }

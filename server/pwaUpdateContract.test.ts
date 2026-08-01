@@ -32,6 +32,8 @@ const versionUpdateKeys = [
   "lastChecked",
   "check",
   "reloadTab",
+  "applyingTitle",
+  "applyingDescription",
 ].sort();
 
 describe("PWA safe update release contract", () => {
@@ -46,7 +48,7 @@ describe("PWA safe update release contract", () => {
     expect(main).toContain('const SERVICE_WORKER_URL = "/sw-v28.js"');
     expect(appContext).not.toContain("navigator.serviceWorker.register");
     expect(workerMirror).toBe(v28Worker);
-    expect(v28Worker).toContain("const CACHE_NAME = 'getphame-v28'");
+    expect(v28Worker).toContain("const CACHE_NAME = 'getphame-v29'");
   });
 
   it("excludes deployment metadata from every cache path and preserves existing PWA exclusions", () => {
@@ -59,7 +61,7 @@ describe("PWA safe update release contract", () => {
     expect(worker).toContain("cache: 'no-store'");
     expect(worker).toContain("url.pathname.startsWith('/manus-storage/')");
     expect(worker).toContain("if (url.origin !== self.location.origin) return;");
-    expect(worker).toContain("event.request.destination === 'document'");
+    expect(worker).toContain("event.request.mode === 'navigate'");
     expect(worker).toContain("return getOfflinePage();");
   });
 
@@ -80,9 +82,9 @@ describe("PWA safe update release contract", () => {
     const worker = readProjectFile("../client/public/sw-v28.js");
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
 
-    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame58'");
+    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame59'");
     expect(worker).toContain("...TRANSLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`)");
-    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame58');
+    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame59');
     for (const locale of localePaths) {
       expect(worker).toContain(`/locales/${locale}/translation.json`);
       expect(worker).toContain(`/locales/${locale}/landing.json`);
@@ -139,8 +141,16 @@ describe("PWA safe update release contract", () => {
 
   it("keeps complete localized update UI copy and accessible live status for every supported language", () => {
     const updateController = readProjectFile("../client/src/components/AppVersionUpdateController.tsx");
+    const updateCoordinator = readProjectFile("../client/src/hooks/useAppVersionCheck.ts");
 
     expect(updateController).toContain('aria-live="polite"');
+    expect(updateController).toContain('data-testid="pwa-update-applying"');
+    expect(updateController).toContain('versionUpdate.applyingTitle');
+    expect(updateController).toContain('versionUpdate.applyingDescription');
+    expect(updateCoordinator).toContain('recordUpdateEvent("notice_shown", version)');
+    expect(updateCoordinator).toContain('recordUpdateEvent("update_applying", version)');
+    expect(updateCoordinator).toContain('recordUpdateEvent("update_deferred", version)');
+    expect(updateCoordinator).toContain('recordUpdateEvent("update_blocked")');
     for (const locale of localePaths) {
       const catalog = JSON.parse(
         readProjectFile(`../client/public/locales/${locale}/translation.json`)

@@ -22,7 +22,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      HEALTH_URL: https://revrocket-j5ynazte.manus.space/api/health
+      HEALTH_URL: https://getphame.app/api/health
       STATE_LABEL: monitor:api-health-state
       INCIDENT_LABEL: monitor:api-health-incident
       FAILURE_THRESHOLD: "2"
