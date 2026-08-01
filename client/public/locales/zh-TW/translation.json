@@ -3465,5 +3465,70 @@
       "run": "執行"
     },
     "lastDays": "最近 {{count}} 天"
+  },
+  "securityAuditReleaseVerification": {
+    "dashboardCardTitle": "安全稽核發布驗證",
+    "dashboardCardBody": "檢視受保護發布的證據以及首次排程稽核的確認步驟",
+    "accessDenied": "拒絕存取",
+    "adminOnly": "僅限管理員",
+    "loading": "正在載入發布驗證",
+    "errorTitle": "發布驗證無法使用",
+    "errorBody": "無法載入僅限管理員查看的發布證據。",
+    "backToAdmin": "返回管理後台",
+    "title": "安全稽核發布驗證",
+    "description": "這是安全稽核歷程發布的受保護證據記錄，涵蓋其授權控制、生產架構和首次排程報告確認。",
+    "releaseStatusLabel": "發布狀態",
+    "statusEyebrow": "發布狀態",
+    "statusVerified": "已驗證",
+    "statusBody": "已完成已審查發布、受保護路由、架構就緒狀態和授權介面檢查。",
+    "evidenceEyebrow": "已驗證的發布證據",
+    "evidenceTitle": "生產控制措施已就位",
+    "evidenceDescription": "此檢視保留簡潔的營運記錄，並且刻意排除原始相依性日誌、公告詳情、客戶資料和憑證。",
+    "evidenceListLabel": "已驗證的發布控制措施",
+    "evidence": {
+      "github-release": {
+        "title": "已審查的發布沿革",
+        "detail": "已審查的安全稽核歷程發布已合併至受保護的 main 分支。"
+      },
+      "ingestion-auth": {
+        "title": "擷取授權",
+        "detail": "未經驗證的擷取會在儲存稽核報告之前被拒絕。"
+      },
+      "admin-reporting-auth": {
+        "title": "管理員報告授權",
+        "detail": "報告承載內容僅透過管理員授權的程序提供。"
+      },
+      "schema-readiness": {
+        "title": "稽核歷程架構就緒",
+        "detail": "生產環境中已提供增量稽核報告資料表和報告索引。"
+      },
+      "admin-ui": {
+        "title": "管理員介面",
+        "detail": "授權管理員可以載入安全稽核歷程，且不會保留原始相依性日誌或公告詳情。"
+      }
+    },
+    "scopeEyebrow": "已驗證的發布",
+    "scopeTitle": "安全稽核歷程",
+    "scopeBody": "受保護的稽核擷取、管理員報告和經過淨化的稽核持久化。",
+    "repository": "程式碼庫",
+    "protectedBranch": "受保護分支",
+    "verifiedAt": "已驗證",
+    "nextEyebrow": "下一步營運確認",
+    "nextTitle": "確認首次排程稽核",
+    "reportRecorded": "現在已有已驗證的稽核報告。請在安全稽核歷程中檢視，並在重試前保留任何失敗執行的證據。",
+    "reportPending": "發布已就緒。首次營運證明將在下一個排程相依性稽核工作流程記錄其淨化摘要後到達。",
+    "recordedBadge": "報告已記錄",
+    "pendingBadge": "等待排程稽核",
+    "steps": {
+      "1": "讓排程相依性稽核工作流程按正常節奏完成。不要只為填入此頁面而觸發重複執行。",
+      "2": "確認透過稽核擷取路徑接受了一份經過驗證且經過淨化的摘要。",
+      "3": "以管理員身分開啟安全稽核歷程，並確認新的最新報告卡顯示結果、驗證狀態、時間戳記、套件更新數和工作流程參考。",
+      "4": "如果沒有出現報告，請保留失敗執行的證據，並在重試前調查工作流程或淨化擷取結果。"
+    },
+    "nextNote": "不要只為填入此儀表板而建立重複工作流程。一次正常的排程執行即可確認完整的生產報告循環。",
+    "openHistory": "開啟安全稽核歷程",
+    "privacyEyebrow": "資料處理",
+    "privacyTitle": "保護隱私的報告",
+    "privacyBody": "發布記錄不包含憑證、客戶資料、原始日誌和個別公告詳情。"
   }
 }
