@@ -314,6 +314,7 @@ import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { automationHealthRouter } from "./routers/automationHealth";
 import { securityAuditsRouter } from "./routers/securityAudits";
+import { securityAuditReleaseVerificationRouter } from "./routers/securityAuditReleaseVerification";
 import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
 import { passkeysRouter } from "./routers/passkeys";
 import { recoveryDrillsRouter } from "./routers/recoveryDrills";
@@ -1006,6 +1007,7 @@ export const appRouter = router({
   authDiagnostics: authDiagnosticsRouter,
   automationHealth: automationHealthRouter,
   securityAudits: securityAuditsRouter,
+  securityAuditReleaseVerification: securityAuditReleaseVerificationRouter,
   githubCleanupShowcase: githubCleanupShowcaseRouter,
   passkeys: passkeysRouter,
   recoveryDrills: recoveryDrillsRouter,
