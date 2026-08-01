@@ -3962,25 +3962,46 @@
     "lastDays": "Last {{count}} days"
   },
   "securityAuditReleaseVerification": {
-    "dashboardCardTitle": "Security Audit release verification",
-    "dashboardCardBody": "Review the protected release evidence and the first scheduled-audit confirmation step",
+    "dashboardCardTitle": "Security Audit internal dossier",
+    "dashboardCardBody": "Administrator-only release evidence, production controls, and scheduled-audit status",
     "accessDenied": "Access denied",
     "adminOnly": "Administrator only",
     "loading": "Loading release verification",
     "errorTitle": "Release verification is unavailable",
     "errorBody": "The administrator-only release evidence could not be loaded.",
     "backToAdmin": "Back to administration",
-    "title": "Security Audit release verification",
-    "description": "A protected evidence record for the Security Audit History release, its authorization controls, production schema, and the first scheduled-report confirmation.",
+    "title": "Security Audit internal dossier",
+    "description": "A server-protected administrator dossier for the Security Audit History release, its exact validation gates, production controls, and pending normal-cadence confirmation.",
     "releaseStatusLabel": "Release status",
-    "statusEyebrow": "Release status",
-    "statusVerified": "Verified",
-    "statusBody": "Reviewed release, protected routes, schema readiness, and authorized interface checks are complete.",
+    "statusEyebrow": "Determination",
+    "statusVerified": "Release verified",
+    "statusBody": "Reviewed source, exact-candidate gates, production boundaries, schema readiness, and protected-main lineage passed.",
     "evidenceEyebrow": "Verified release evidence",
     "evidenceTitle": "Production controls are in place",
     "evidenceDescription": "This view holds a concise operational record. It deliberately excludes raw dependency logs, advisory details, customer data, and credentials.",
     "evidenceListLabel": "Verified release controls",
-    "evidence": { "github-release": { "title": "Reviewed release lineage", "detail": "The reviewed Security Audit History release is merged to protected main." }, "ingestion-auth": { "title": "Ingestion authorization", "detail": "Unauthenticated ingestion is rejected before an audit report can be stored." }, "admin-reporting-auth": { "title": "Administrator reporting authorization", "detail": "The reporting payload is served only through an administrator-authorized procedure." }, "schema-readiness": { "title": "Audit-history schema readiness", "detail": "The additive audit-report table and reporting indexes are available in production." }, "admin-ui": { "title": "Administrator interface", "detail": "Security Audit History loads for an authorized administrator and retains no raw dependency logs or advisory details." } },
+    "evidence": {
+      "github-release": {
+        "title": "Reviewed release lineage",
+        "detail": "The reviewed Security Audit History release is merged to protected main."
+      },
+      "ingestion-auth": {
+        "title": "Ingestion authorization",
+        "detail": "Unauthenticated ingestion is rejected before an audit report can be stored."
+      },
+      "admin-reporting-auth": {
+        "title": "Administrator reporting authorization",
+        "detail": "The reporting payload is served only through an administrator-authorized procedure."
+      },
+      "schema-readiness": {
+        "title": "Audit-history schema readiness",
+        "detail": "The additive audit-report table and reporting indexes are available in production."
+      },
+      "admin-ui": {
+        "title": "Administrator interface",
+        "detail": "Security Audit History loads for an authorized administrator and retains no raw dependency logs or advisory details."
+      }
+    },
     "scopeEyebrow": "Verified release",
     "scopeTitle": "Security Audit History",
     "scopeBody": "Protected audit ingestion, administrator reporting, and sanitized audit persistence.",
@@ -3990,18 +4011,111 @@
     "nextEyebrow": "Next operational confirmation",
     "nextTitle": "Confirm the first scheduled audit",
     "reportRecorded": "A verified audit report is now available. Review it in Security Audit History and preserve any failed-run evidence before retrying.",
-    "reportPending": "The release is ready. The first operational proof arrives when the next scheduled dependency-audit workflow records its sanitized summary.",
+    "reportPending": "The release is verified. The first normal-cadence scheduled report remains pending by design.",
     "recordedBadge": "Report recorded",
     "pendingBadge": "Awaiting scheduled audit",
-    "steps": { "1": "Allow the scheduled dependency-audit workflow to finish at its normal cadence. Do not trigger a duplicate run only to populate the page.", "2": "Confirm that one authenticated, sanitized summary is accepted through the audit-ingestion path.", "3": "Open Security Audit History as an administrator and confirm that a new latest-report card shows an outcome, validation statuses, a timestamp, package-update count, and a workflow reference.", "4": "If no report appears, preserve the failed-run evidence and investigate the workflow or sanitized ingestion result before retrying." },
+    "steps": {
+      "1": "Allow the scheduled dependency-audit workflow to finish at its normal cadence. Do not trigger a duplicate run only to populate the page.",
+      "2": "Confirm that one authenticated, sanitized summary is accepted through the audit-ingestion path.",
+      "3": "Open Security Audit History as an administrator and confirm that a new latest-report card shows an outcome, validation statuses, a timestamp, package-update count, and a workflow reference.",
+      "4": "If no report appears, preserve the failed-run evidence and investigate the workflow or sanitized ingestion result before retrying."
+    },
     "nextNote": "Do not create a duplicate workflow merely to populate this dashboard. A normal scheduled run confirms the whole production reporting loop.",
     "openHistory": "Open Security Audit History",
     "privacyEyebrow": "Data handling",
     "privacyTitle": "Privacy-preserving reporting",
-    "privacyBody": "The release record excludes credentials, customer data, raw logs, and individual advisory details.",
+    "privacyBody": "The release record excludes credentials, customer data, production rows, raw logs, individual advisory details, and public report links.",
     "reportChecking": "The release evidence is loaded. Checking whether the first scheduled audit report has been recorded.",
     "reportUnavailable": "The release is verified, but the latest audit-report status could not be loaded. Open Security Audit History to retry safely.",
     "checkingBadge": "Checking audit history",
-    "unavailableBadge": "Audit status unavailable"
+    "unavailableBadge": "Audit status unavailable",
+    "internalRecord": "Internal evidence record",
+    "pendingExpected": "First scheduled report: pending — expected",
+    "accessEyebrow": "Authorization boundary",
+    "accessTitle": "Only administrators receive the dossier payload",
+    "accessDescription": "The browser guard improves navigation; centralized server middleware remains the enforcement point.",
+    "allowed": "Allowed",
+    "blocked": "Blocked",
+    "pageOutcome": "Page",
+    "serverOutcome": "Server payload",
+    "access": {
+      "unauthenticated": {
+        "context": "Unauthenticated visitor",
+        "page": "Public landing only",
+        "server": "FORBIDDEN · no payload"
+      },
+      "non-admin": {
+        "context": "Authenticated non-admin",
+        "page": "Redirected away",
+        "server": "FORBIDDEN · no payload"
+      },
+      "administrator": {
+        "context": "Administrator",
+        "page": "Dossier rendered",
+        "server": "Authorized · sanitized payload"
+      }
+    },
+    "validationEyebrow": "Exact-candidate validation",
+    "validationTitle": "Every release gate passed",
+    "validationDescription": "The reviewed restoration merge was tested independently of later repository changes.",
+    "passed": "Passed",
+    "validation": {
+      "focused-tests": {
+        "label": "Focused authorization tests",
+        "result": "23 / 23"
+      },
+      "full-suite": {
+        "label": "Full regression suite",
+        "result": "948 passed · 17 skipped"
+      },
+      "typescript": {
+        "label": "TypeScript",
+        "result": "0 errors"
+      },
+      "dependency-audit": {
+        "label": "Production dependency audit",
+        "result": "0 production advisories"
+      },
+      "production-build": {
+        "label": "Production build",
+        "result": "Passed"
+      },
+      "responsive": {
+        "label": "Responsive and keyboard cases",
+        "result": "4 viewport cases"
+      }
+    },
+    "productionEyebrow": "Non-mutating production proof",
+    "productionTitle": "Production failed closed and retained privacy",
+    "production": {
+      "ingestion": {
+        "title": "Unauthenticated ingestion",
+        "result": "401 · no-store",
+        "detail": "Valid JSON without authorization was rejected without exposing a report payload."
+      },
+      "admin-reporting": {
+        "title": "Administrator reporting",
+        "result": "403 · no payload",
+        "detail": "A caller without administrator authorization received no dossier data."
+      },
+      "schema": {
+        "title": "Production schema",
+        "result": "Table + 2 indexes",
+        "detail": "The additive Security Audit reporting table and both reporting indexes are present."
+      },
+      "interfaces": {
+        "title": "Protected interfaces",
+        "result": "2 protected routes",
+        "detail": "Security Audit History and this release dossier remain inside the administrator area."
+      }
+    },
+    "lineageEyebrow": "Protected lineage",
+    "lineageTitle": "Reviewed release preserved in main",
+    "pullRequest": "Pull request",
+    "mergeCommit": "Merge commit",
+    "qualityGateRun": "Quality-gate run",
+    "schemaEyebrow": "Schema readiness",
+    "schemaTitle": "Additive reporting storage present",
+    "noRowsOpened": "No production row values were opened or copied."
   }
 }

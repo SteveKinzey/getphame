@@ -516,10 +516,10 @@ describe("Manual analytics and PDF localization", () => {
 
   it("advances both locale and PWA caches for the analytics and PDF release", () => {
     expect(readProjectFile("../client/src/lib/i18n.ts")).toContain(
-      "/locales/{{lng}}/{{ns}}.json?v=phame56"
+      "/locales/{{lng}}/{{ns}}.json?v=phame57"
     );
     expect(readProjectFile("../client/public/sw.js")).toContain(
-      "const CACHE_NAME = 'getphame-v26'"
+      "const CACHE_NAME = 'getphame-v27'"
     );
   });
 });
