@@ -1694,7 +1694,8 @@
       "markAllReviewed": "全部标记为已审阅",
       "markingAll": "标记中…",
       "markAllShort": "全部标记",
-      "markAllSuccess": "{{count}} 条已标记为审阅"
+      "markAllSuccess": "{{count}} 条已标记为审阅",
+      "markReviewed": "标记为已审阅"
     }
   },
   "pricing": {

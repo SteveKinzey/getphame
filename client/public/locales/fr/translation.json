@@ -2183,7 +2183,8 @@
       "markAllReviewed": "Tout marquer comme examiné",
       "markingAll": "Marquage…",
       "markAllShort": "Tout marquer",
-      "markAllSuccess": "{{count}} éléments marqués comme examinés"
+      "markAllSuccess": "{{count}} éléments marqués comme examinés",
+      "markReviewed": "Marquer comme examiné"
     },
     "viewAll": "Voir tout"
   },

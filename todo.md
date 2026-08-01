@@ -1656,3 +1656,10 @@
 - [x] Create getphame-native-localization-quality skill
 - [x] Update getphame-i18n-key-coverage skill with nativeLocalizationQuality pattern and loose-key warning
 - [x] Verify GitHub Actions CI is green on main (Quality Gate, Validate GitHub Actions, API Recovery Browser Check, API Health Monitor — all passing)
+
+## Session — Single-item Mark, Skill, PR (Aug 1 2026)
+- [x] Create getphame-success-toast-i18n reusable skill
+- [x] Sync checkpoint cb49ccd0 to SteveKinzey/getphame via PR
+- [x] Add single-item mark-as-reviewed action (checkmark icon on hover) to each RecentActivityCard row
+- [x] Add dashboard.recentActivity.markReviewed i18n key to all 7 locales and fallback bundle
+- [x] Update nativeLocalizationQuality manifests: document markAllSuccess in audit trail (keys have native translations, not English-identical, so no manifest change needed — totalCandidates=586 preserved)

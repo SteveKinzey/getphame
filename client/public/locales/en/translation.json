@@ -2024,7 +2024,8 @@
       "markAllReviewed": "Mark all as reviewed",
       "markingAll": "Marking…",
       "markAllShort": "Mark all",
-      "markAllSuccess": "{{count}} items marked as reviewed"
+      "markAllSuccess": "{{count}} items marked as reviewed",
+      "markReviewed": "Mark as reviewed"
     }
   },
   "pricing": {

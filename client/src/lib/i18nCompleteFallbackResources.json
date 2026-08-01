@@ -1107,7 +1107,8 @@
         "markAllReviewed": "Mark all as reviewed",
         "markingAll": "Marking…",
         "markAllShort": "Mark all",
-        "markAllSuccess": "{{count}} items marked as reviewed"
+        "markAllSuccess": "{{count}} items marked as reviewed",
+        "markReviewed": "Mark as reviewed"
       }
     },
     "reminderRow": {
@@ -2638,7 +2639,8 @@
         "markAllReviewed": "Marcar todo como revisado",
         "markingAll": "Marcando…",
         "markAllShort": "Marcar todo",
-        "markAllSuccess": "{{count}} elementos marcados como revisados"
+        "markAllSuccess": "{{count}} elementos marcados como revisados",
+        "markReviewed": "Marcar como revisado"
       }
     },
     "reminderRow": {
@@ -4347,7 +4349,8 @@
         "markAllReviewed": "Tout marquer comme examiné",
         "markingAll": "Marquage…",
         "markAllShort": "Tout marquer",
-        "markAllSuccess": "{{count}} éléments marqués comme examinés"
+        "markAllSuccess": "{{count}} éléments marqués comme examinés",
+        "markReviewed": "Marquer comme examiné"
       }
     },
     "reminderRow": {
@@ -6033,7 +6036,8 @@
         "markAllReviewed": "Segna tutto come esaminato",
         "markingAll": "Contrassegnando…",
         "markAllShort": "Segna tutto",
-        "markAllSuccess": "{{count}} elementi contrassegnati come esaminati"
+        "markAllSuccess": "{{count}} elementi contrassegnati come esaminati",
+        "markReviewed": "Segna come esaminato"
       }
     },
     "reminderRow": {
@@ -7588,7 +7592,8 @@
         "markAllReviewed": "ทำเครื่องหมายทั้งหมดว่าตรวจสอบแล้ว",
         "markingAll": "กำลังทำเครื่องหมาย…",
         "markAllShort": "ทำเครื่องหมายทั้งหมด",
-        "markAllSuccess": "{{count}} รายการถูกทำเครื่องหมายว่าตรวจสอบแล้ว"
+        "markAllSuccess": "{{count}} รายการถูกทำเครื่องหมายว่าตรวจสอบแล้ว",
+        "markReviewed": "ทำเครื่องหมายว่าตรวจสอบแล้ว"
       }
     },
     "reminderRow": {
@@ -9140,7 +9145,8 @@
         "markAllReviewed": "全部标记为已审阅",
         "markingAll": "标记中…",
         "markAllShort": "全部标记",
-        "markAllSuccess": "{{count}} 条已标记为审阅"
+        "markAllSuccess": "{{count}} 条已标记为审阅",
+        "markReviewed": "标记为已审阅"
       }
     },
     "reminderRow": {
@@ -10685,7 +10691,8 @@
         "markAllReviewed": "全部標記為已審閱",
         "markingAll": "標記中…",
         "markAllShort": "全部標記",
-        "markAllSuccess": "{{count}} 條已標記為審閱"
+        "markAllSuccess": "{{count}} 條已標記為審閱",
+        "markReviewed": "標記為已審閱"
       }
     },
     "reminderRow": {

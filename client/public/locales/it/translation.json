@@ -719,7 +719,8 @@
       "markAllReviewed": "Segna tutto come esaminato",
       "markingAll": "Contrassegnando…",
       "markAllShort": "Segna tutto",
-      "markAllSuccess": "{{count}} elementi contrassegnati come esaminati"
+      "markAllSuccess": "{{count}} elementi contrassegnati come esaminati",
+      "markReviewed": "Segna come esaminato"
     }
   },
   "settings": {

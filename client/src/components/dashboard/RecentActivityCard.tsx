@@ -2,7 +2,7 @@
 // Sits above the full activity feed on the dashboard for quick at-a-glance status.
 
 import { useMemo, useState } from "react";
-import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap, CheckCheck } from "lucide-react";
+import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap, CheckCheck, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, isToday, isYesterday } from "date-fns";
 import { trpc } from "@/lib/trpc";
@@ -60,10 +60,12 @@ export default function RecentActivityCard({
 }: RecentActivityCardProps) {
   const { t } = useTranslation();
   const [markingAll, setMarkingAll] = useState(false);
+  const [markingId, setMarkingId] = useState<number | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [markedCount, setMarkedCount] = useState(0);
 
   const utils = trpc.useUtils();
+
   const bulkMark = trpc.requests.bulkMarkResponded.useMutation({
     onSuccess: () => {
       utils.requests.invalidate();
@@ -76,6 +78,16 @@ export default function RecentActivityCard({
     onError: () => setMarkingAll(false),
   });
 
+  // Separate mutation instance for single-item marking so it doesn't interfere with bulk state
+  const singleMark = trpc.requests.bulkMarkResponded.useMutation({
+    onSuccess: () => {
+      utils.requests.invalidate();
+      onRefresh?.();
+      setMarkingId(null);
+    },
+    onError: () => setMarkingId(null),
+  });
+
   const handleMarkAllReviewed = () => {
     const unreviewedIds = recent
       .filter((r) => !r.respondedAt)
@@ -83,6 +95,12 @@ export default function RecentActivityCard({
     if (unreviewedIds.length === 0) return;
     setMarkingAll(true);
     bulkMark.mutate({ ids: unreviewedIds, responded: true });
+  };
+
+  const handleMarkSingle = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation(); // prevent row click from opening the detail panel
+    setMarkingId(id);
+    singleMark.mutate({ ids: [id], responded: true });
   };
 
   // Last 5 requests sorted by sentAt descending
@@ -208,6 +226,7 @@ export default function RecentActivityCard({
             const hasOpens = (tracking?.opens ?? 0) > 0;
             const hasClicks = (tracking?.clicks ?? 0) > 0;
             const isReviewed = !!req.respondedAt;
+            const isMarkingThis = markingId === req.id;
 
             return (
               <button
@@ -253,10 +272,39 @@ export default function RecentActivityCard({
                   </p>
                 </div>
 
-                {/* Badges + time */}
+                {/* Badges + time + single-item mark button */}
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   <div className="flex items-center gap-1">
-                    {/* Reviewed / sent status */}
+                    {/* Single-item mark-as-reviewed — visible on row hover when not yet reviewed */}
+                    {!isReviewed && (
+                      <button
+                        onClick={(e) => handleMarkSingle(e, req.id)}
+                        disabled={isMarkingThis}
+                        className="opacity-0 group-hover:opacity-100 flex items-center justify-center w-6 h-6 rounded-full transition-all duration-150 disabled:opacity-40"
+                        style={{
+                          background: "oklch(0.92 0.10 145)",
+                          color: "oklch(0.35 0.14 145)",
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.82 0.16 145)";
+                          (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.92 0.10 145)";
+                          (e.currentTarget as HTMLButtonElement).style.transform = "";
+                        }}
+                        title={t("dashboard.recentActivity.markReviewed", { defaultValue: "Mark as reviewed" })}
+                        aria-label={t("dashboard.recentActivity.markReviewed", { defaultValue: "Mark as reviewed" })}
+                      >
+                        {isMarkingThis ? (
+                          <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Check size={12} strokeWidth={3} />
+                        )}
+                      </button>
+                    )}
+
+                    {/* Reviewed / sent status badge */}
                     <span
                       className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
                       style={
