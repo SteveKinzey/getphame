@@ -2,10 +2,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { TrpcContext } from "./_core/context";
 
 const mocks = vi.hoisted(() => ({
+  getDb: vi.fn(),
   getSignupRiskReview: vi.fn(),
   getDisposableDomainReviewQueue: vi.fn(),
   resolveDisposableDomainReview: vi.fn(),
   runDisposableDomainManualSync: vi.fn(),
+}));
+
+vi.mock("./db", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./db")>()),
+  getDb: mocks.getDb,
 }));
 
 vi.mock("./signupRisk", async (importOriginal) => ({
@@ -41,6 +47,15 @@ function context(role: "admin" | "user"): TrpcContext {
 describe("administrator signup-risk review", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => [{ suspendedUntil: null }],
+          }),
+        }),
+      })),
+    });
     mocks.getSignupRiskReview.mockResolvedValue({
       summary: { total: 1, allowed: 0, verified: 1, restricted: 0, blocked: 0 },
       events: [{ id: 9, provider: "google", outcome: "verified", occurredAt: Date.UTC(2026, 6, 31, 12, 0, 0) }],
