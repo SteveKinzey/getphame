@@ -964,10 +964,27 @@
   animation: homeInstallBannerEnter 300ms cubic-bezier(0.23, 1, 0.32, 1) both;
   will-change: transform, opacity;
 }
+@keyframes pwaUpdateApplyingEnter {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes pwaUpdateApplyingSpin {
+  to { transform: rotate(360deg); }
+}
+.pwa-update-applying-toast {
+  animation: pwaUpdateApplyingEnter 220ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  will-change: transform, opacity;
+}
+.pwa-update-applying-icon {
+  animation: pwaUpdateApplyingSpin 800ms linear infinite;
+  will-change: transform;
+}
 @media (prefers-reduced-motion: reduce) {
   .pwa-install-sheet,
   .pwa-install-attention,
-  .home-install-banner-enter {
+  .home-install-banner-enter,
+  .pwa-update-applying-toast,
+  .pwa-update-applying-icon {
     animation: none !important;
   }
 }

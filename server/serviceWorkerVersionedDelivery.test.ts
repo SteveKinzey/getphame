@@ -25,11 +25,11 @@ describe("versioned service-worker delivery", () => {
     const versionedWorker = readProjectFile("client/public/sw-v28.js");
     const legacyWorker = readProjectFile("client/public/sw.js");
 
-    expect(versionedWorker).toContain("const CACHE_NAME = 'getphame-v28'");
+    expect(versionedWorker).toContain("const CACHE_NAME = 'getphame-v29'");
     expect(versionedWorker).toContain(
-      "Release manifest: locale dictionaries phame60; service worker getphame-v28."
+      "Release manifest: locale dictionaries phame61; service worker getphame-v29."
     );
-    expect(legacyWorker).toContain("const CACHE_NAME = 'getphame-v28'");
+    expect(legacyWorker).toContain("const CACHE_NAME = 'getphame-v29'");
 
     for (const locale of ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
       const cancellationNamespace = `/locales/${locale}/cancellation.json`;
