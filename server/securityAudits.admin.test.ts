@@ -2,7 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { TrpcContext } from "./_core/context";
 
 const mocks = vi.hoisted(() => ({
+  getDb: vi.fn(),
   getSecurityAuditDashboard: vi.fn(),
+}));
+
+vi.mock("./db", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./db")>()),
+  getDb: mocks.getDb,
 }));
 
 vi.mock("./securityAuditReports", async importOriginal => ({
@@ -34,6 +40,15 @@ describe("Security audit administrator API", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("JWT_SECRET", "security-audit-admin-test-secret-long-enough");
+    mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => [{ suspendedUntil: null }],
+          }),
+        }),
+      })),
+    });
     mocks.getSecurityAuditDashboard.mockResolvedValue({
       history: [],
       latest: null,

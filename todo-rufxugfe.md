@@ -104,3 +104,4 @@
 - [x] Add focused tests, reconcile the existing matching preserved-schema migration, run full validation and responsive review, then checkpoint, verify production, and synchronize the exact tree through protected GitHub main.
 - [x] Reconcile the concurrently merged protected-main Security Audit release dossier with the validated Admin Users lifecycle release, re-run exact-tree validation, and create a replacement checkpoint before GitHub synchronization.
 - [x] Repair the CI-discovered signup-risk administrator test mock for centralized active-account enforcement, re-run the complete release gates, and replace the superseded checkpoint/PR tree without weakening production authorization.
+- [x] Repair the remaining CI-discovered Security Audit administrator test mocks for centralized active-account enforcement, re-run complete validation, and update the replacement release tree without weakening production authorization.
