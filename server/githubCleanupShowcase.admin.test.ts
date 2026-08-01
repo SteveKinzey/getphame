@@ -1,5 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { TrpcContext } from "./_core/context";
+
+const mocks = vi.hoisted(() => ({
+  getDb: vi.fn(),
+}));
+
+vi.mock("./db", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./db")>()),
+  getDb: mocks.getDb,
+}));
+
 import { appRouter } from "./routers";
 
 function context(role: "admin" | "user"): TrpcContext {
@@ -22,6 +32,18 @@ function context(role: "admin" | "user"): TrpcContext {
 }
 
 describe("admin GitHub cleanup showcase", () => {
+  beforeEach(() => {
+    mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => [{ suspendedUntil: null }],
+          }),
+        }),
+      })),
+    });
+  });
+
   it("rejects non-admin accounts", async () => {
     const caller = appRouter.createCaller(context("user"));
     await expect(caller.githubCleanupShowcase.dashboard()).rejects.toMatchObject({ code: "FORBIDDEN" });
