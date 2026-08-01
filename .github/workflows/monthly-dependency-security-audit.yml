@@ -1,0 +1,82 @@
+name: Monthly Dependency Security Audit
+
+on:
+  schedule:
+    - cron: "30 17 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monthly-dependency-security-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Audit locked dependency graph
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install pinned pnpm
+        run: npm install --global pnpm@10.18.1
+
+      - name: Run production and full audits
+        id: audit
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          set -euo pipefail
+          node scripts/run-dependency-security-audit.mjs /tmp/dependency-security-audit.json
+          outcome="$(node -p "JSON.parse(require('node:fs').readFileSync('/tmp/dependency-security-audit.json', 'utf8')).outcome")"
+          echo "outcome=${outcome}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload sanitized audit result
+        if: ${{ always() && steps.audit.outputs.outcome != '' }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: dependency-security-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/dependency-security-audit.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Mark unresolved audit findings for attention
+        if: ${{ steps.audit.outputs.outcome != 'clean' }}
+        run: |
+          echo "Dependency audit result: ${{ steps.audit.outputs.outcome }}"
+          exit 1
+
+  publish-result:
+    name: Publish dependency-audit outcome
+    needs: audit
+    if: ${{ always() && needs.audit.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Check out trusted publisher
+        uses: actions/checkout@v7
+
+      - name: Download sanitized audit result
+        uses: actions/download-artifact@v6
+        with:
+          name: dependency-security-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp
+
+      - name: Publish signed audit result
+        env:
+          AUTOMATION_HEALTH_ENDPOINT: https://getphame.app/api/security-audits
+          AUTOMATION_HEALTH_AUDIENCE: https://getphame.app/api/security-audits
+        run: scripts/publish-oidc-automation-event.sh /tmp/dependency-security-audit.json

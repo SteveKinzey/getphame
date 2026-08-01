@@ -23,7 +23,20 @@
     "filterAll": "所有結果",
     "filterFailure": "失敗",
     "filterSuccess": "成功",
-    "history": "自動化歷史記錄",
+    "history": {
+      "completed": "工作流程已完成",
+      "details": "詳細資料",
+      "detected": "偵測時間",
+      "empty": "沒有已驗證的事件符合這些篩選條件。",
+      "event": "事件",
+      "eyebrow": "稽核記錄",
+      "opensNewTab": "在新分頁開啟",
+      "pullRequest": "拉取請求 #{{number}}",
+      "result": "結果",
+      "run": "執行",
+      "source": "來源：GitHub Actions OIDC · SteveKinzey/getphame",
+      "title": "已驗證事件歷史"
+    },
     "historyDescription": "所選期間內已驗證的工作流程事件。",
     "historyOutcome": "結果",
     "historyRun": "執行",
@@ -97,20 +110,6 @@
       "result": "結果",
       "title": "篩選操作歷史",
       "to": "至"
-    },
-    "history": {
-      "completed": "工作流程已完成",
-      "details": "詳細資料",
-      "detected": "偵測時間",
-      "empty": "沒有已驗證的事件符合這些篩選條件。",
-      "event": "事件",
-      "eyebrow": "稽核記錄",
-      "opensNewTab": "在新分頁開啟",
-      "pullRequest": "拉取請求 #{{number}}",
-      "result": "結果",
-      "run": "執行",
-      "source": "來源：GitHub Actions OIDC · SteveKinzey/getphame",
-      "title": "已驗證事件歷史"
     },
     "kind": {
       "dependabotMerge": "Dependabot 合併",
@@ -3467,5 +3466,59 @@
         }
       }
     }
+  },
+  "securityAudits": {
+    "dashboardCardTitle": "安全稽核歷程",
+    "dashboardCardBody": "來自已驗證工作流程執行的每月相依性發現和驗證結果",
+    "accessDenied": "拒絕存取",
+    "adminOnly": "需要管理員權限。",
+    "backToAdmin": "返回管理",
+    "title": "安全稽核歷程",
+    "description": "來自已驗證 GitHub Actions 的每月生產與完整相依性稽核摘要。此處刻意不保留原始日誌和安全公告詳細資訊。",
+    "refresh": "重新整理",
+    "filterEyebrow": "報告時間範圍",
+    "filterTitle": "篩選稽核歷程",
+    "range": "日期範圍",
+    "lastDays_one": "最近 {{count}} 天",
+    "lastDays_other": "最近 {{count}} 天",
+    "outcomeFilter": "結果",
+    "loading": "正在載入稽核歷程",
+    "loadErrorTitle": "稽核歷程暫時無法使用",
+    "loadErrorDescription": "請重新整理頁面或稍後再試。",
+    "latestEyebrow": "最新已驗證報告",
+    "latestTitle": "目前相依性安全狀態",
+    "emptyLatestTitle": "尚無已驗證的稽核報告",
+    "emptyLatestDescription": "第一份排定的報告會在工作流程完成後顯示於此。",
+    "auditedAt": "稽核於 {{date}}",
+    "productionHighCritical": "生產環境 高 / 嚴重",
+    "devOnlyFindings": "僅開發環境發現",
+    "testsBuild": "測試 / 建置",
+    "packageUpdates": "已更新套件",
+    "openRun": "開啟已驗證的工作流程執行",
+    "historyEyebrow": "已驗證記錄",
+    "historyTitle": "稽核歷程",
+    "emptyHistory": "尚無符合這些篩選條件的已驗證稽核報告。",
+    "openRunAria": "開啟工作流程執行 {{number}}",
+    "outcome": {
+      "all": "所有結果",
+      "clean": "正常",
+      "attention": "需要注意",
+      "failed": "報告失敗"
+    },
+    "validation": {
+      "passed": "通過",
+      "failed": "失敗",
+      "not_run": "未執行"
+    },
+    "table": {
+      "audited": "稽核時間",
+      "outcome": "結果",
+      "production": "生產 高 / 嚴重",
+      "devOnly": "僅開發",
+      "validation": "測試 / 建置",
+      "updates": "更新",
+      "run": "執行"
+    },
+    "lastDays": "最近 {{count}} 天"
   }
 }

@@ -23,7 +23,20 @@
     "filterAll": "Tutti i risultati",
     "filterFailure": "Errore",
     "filterSuccess": "Riuscito",
-    "history": "Cronologia dell’automazione",
+    "history": {
+      "completed": "Workflow completato",
+      "details": "Dettagli",
+      "detected": "Rilevato",
+      "empty": "Nessun evento verificato corrisponde a questi filtri.",
+      "event": "Evento",
+      "eyebrow": "Registro audit",
+      "opensNewTab": "si apre in una nuova scheda",
+      "pullRequest": "Richiesta pull n. {{number}}",
+      "result": "Risultato",
+      "run": "Esecuzione",
+      "source": "Fonte: GitHub Actions OIDC · SteveKinzey/getphame",
+      "title": "Cronologia eventi verificati"
+    },
     "historyDescription": "Eventi di workflow verificati per il periodo selezionato.",
     "historyOutcome": "Risultato",
     "historyRun": "Esecuzione",
@@ -97,20 +110,6 @@
       "result": "Risultato",
       "title": "Filtra la cronologia operativa",
       "to": "A"
-    },
-    "history": {
-      "completed": "Workflow completato",
-      "details": "Dettagli",
-      "detected": "Rilevato",
-      "empty": "Nessun evento verificato corrisponde a questi filtri.",
-      "event": "Evento",
-      "eyebrow": "Registro audit",
-      "opensNewTab": "si apre in una nuova scheda",
-      "pullRequest": "Richiesta pull n. {{number}}",
-      "result": "Risultato",
-      "run": "Esecuzione",
-      "source": "Fonte: GitHub Actions OIDC · SteveKinzey/getphame",
-      "title": "Cronologia eventi verificati"
     },
     "kind": {
       "dependabotMerge": "Merge di Dependabot",
@@ -4170,5 +4169,59 @@
         }
       }
     }
+  },
+  "securityAudits": {
+    "dashboardCardTitle": "Cronologia degli audit di sicurezza",
+    "dashboardCardBody": "Risultati mensili delle dipendenze e della convalida da esecuzioni verificate",
+    "accessDenied": "Accesso negato",
+    "adminOnly": "È richiesto l’accesso amministratore.",
+    "backToAdmin": "Torna all’amministrazione",
+    "title": "Cronologia degli audit di sicurezza",
+    "description": "Riepiloghi mensili degli audit delle dipendenze di produzione e completi da GitHub Actions verificato. I log grezzi e i dettagli degli avvisi non vengono conservati qui intenzionalmente.",
+    "refresh": "Aggiorna",
+    "filterEyebrow": "Finestra di reporting",
+    "filterTitle": "Filtra la cronologia degli audit",
+    "range": "Intervallo di date",
+    "lastDays_one": "Ultimo {{count}} giorno",
+    "lastDays_other": "Ultimi {{count}} giorni",
+    "outcomeFilter": "Esito",
+    "loading": "Caricamento cronologia degli audit",
+    "loadErrorTitle": "La cronologia degli audit non è temporaneamente disponibile",
+    "loadErrorDescription": "Aggiorna la pagina o riprova tra poco.",
+    "latestEyebrow": "Ultimo report verificato",
+    "latestTitle": "Stato attuale della sicurezza delle dipendenze",
+    "emptyLatestTitle": "Nessun report di audit verificato ancora",
+    "emptyLatestDescription": "Il primo report pianificato apparirà qui al termine del workflow.",
+    "auditedAt": "Audit eseguito {{date}}",
+    "productionHighCritical": "Produzione alto / critico",
+    "devOnlyFindings": "Risultati solo di sviluppo",
+    "testsBuild": "Test / build",
+    "packageUpdates": "Pacchetti aggiornati",
+    "openRun": "Apri esecuzione del workflow verificata",
+    "historyEyebrow": "Record verificati",
+    "historyTitle": "Cronologia degli audit",
+    "emptyHistory": "Nessun report di audit verificato corrisponde ancora a questi filtri.",
+    "openRunAria": "Apri esecuzione del workflow {{number}}",
+    "outcome": {
+      "all": "Tutti gli esiti",
+      "clean": "Pulito",
+      "attention": "Richiede attenzione",
+      "failed": "Report non riuscito"
+    },
+    "validation": {
+      "passed": "Superato",
+      "failed": "Non riuscito",
+      "not_run": "Non eseguito"
+    },
+    "table": {
+      "audited": "Audit",
+      "outcome": "Esito",
+      "production": "Produzione A / C",
+      "devOnly": "Solo sviluppo",
+      "validation": "Test / build",
+      "updates": "Aggiornamenti",
+      "run": "Esecuzione"
+    },
+    "lastDays": "Ultimi {{count}} giorni"
   }
 }

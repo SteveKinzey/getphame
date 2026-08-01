@@ -474,3 +474,5 @@
 - [ ] Save and auto-publish validated milestone and final checkpoints, verify production readiness, synchronize the exact final tree through reviewed protected GitHub `main`, resolve valid feedback, and prove checkpoint-to-main parity.
 - [ ] Deliver the live feature summary, validation evidence, final checkpoint, protected-main proof, and updated reusable skill.
 - [x] Fix the Activity Trend preset manager maximum-update-depth loop found during responsive runtime verification so the saved preset list settles and browser logs remain clean; stable empty-query fallback is regression-covered and verified in the live preview.
+- [x] Preserve the concurrently checkpointed signup-abuse and platform welcome-mail work while integrating protected GitHub security-audit history with a distinct reviewed additive 0037 migration; focused security, observability, proof, and mail regressions pass.
+- [ ] Advance the HTTP locale and PWA cache versions, add complete seven-locale Security Audit History regression coverage, and verify the integrated page is fully localized on desktop and mobile.

@@ -23,7 +23,20 @@
     "filterAll": "Todos los resultados",
     "filterFailure": "Error",
     "filterSuccess": "Éxito",
-    "history": "Historial de automatización",
+    "history": {
+      "completed": "Flujo de trabajo completado",
+      "details": "Detalles",
+      "detected": "Detectado",
+      "empty": "Ningún evento verificado coincide con estos filtros.",
+      "event": "Evento",
+      "eyebrow": "Registro de auditoría",
+      "opensNewTab": "se abre en una nueva pestaña",
+      "pullRequest": "Solicitud de incorporación #{{number}}",
+      "result": "Resultado",
+      "run": "Ejecución",
+      "source": "Origen: GitHub Actions OIDC · SteveKinzey/getphame",
+      "title": "Historial de eventos verificados"
+    },
     "historyDescription": "Eventos de flujo de trabajo verificados para el período seleccionado.",
     "historyOutcome": "Resultado",
     "historyRun": "Ejecución",
@@ -97,20 +110,6 @@
       "result": "Resultado",
       "title": "Filtrar historial operativo",
       "to": "Hasta"
-    },
-    "history": {
-      "completed": "Flujo de trabajo completado",
-      "details": "Detalles",
-      "detected": "Detectado",
-      "empty": "Ningún evento verificado coincide con estos filtros.",
-      "event": "Evento",
-      "eyebrow": "Registro de auditoría",
-      "opensNewTab": "se abre en una nueva pestaña",
-      "pullRequest": "Solicitud de incorporación #{{number}}",
-      "result": "Resultado",
-      "run": "Ejecución",
-      "source": "Origen: GitHub Actions OIDC · SteveKinzey/getphame",
-      "title": "Historial de eventos verificados"
     },
     "kind": {
       "dependabotMerge": "Fusión de Dependabot",
@@ -3957,5 +3956,59 @@
         }
       }
     }
+  },
+  "securityAudits": {
+    "dashboardCardTitle": "Historial de auditorías de seguridad",
+    "dashboardCardBody": "Hallazgos mensuales de dependencias y resultados de validación de ejecuciones verificadas",
+    "accessDenied": "Acceso denegado",
+    "adminOnly": "Se requiere acceso de administrador.",
+    "backToAdmin": "Volver a administración",
+    "title": "Historial de auditorías de seguridad",
+    "description": "Resúmenes mensuales de auditorías de dependencias de producción y completas de GitHub Actions verificadas. Los registros sin procesar y los detalles de avisos no se conservan aquí deliberadamente.",
+    "refresh": "Actualizar",
+    "filterEyebrow": "Periodo del informe",
+    "filterTitle": "Filtrar historial de auditorías",
+    "range": "Rango de fechas",
+    "lastDays_one": "Último {{count}} día",
+    "lastDays_other": "Últimos {{count}} días",
+    "outcomeFilter": "Resultado",
+    "loading": "Cargando historial de auditorías",
+    "loadErrorTitle": "El historial de auditorías no está disponible temporalmente",
+    "loadErrorDescription": "Actualiza la página o inténtalo de nuevo en breve.",
+    "latestEyebrow": "Último informe verificado",
+    "latestTitle": "Estado actual de seguridad de dependencias",
+    "emptyLatestTitle": "Aún no hay informes de auditoría verificados",
+    "emptyLatestDescription": "El primer informe programado aparecerá aquí después de que finalice su flujo de trabajo.",
+    "auditedAt": "Auditado {{date}}",
+    "productionHighCritical": "Producción alto / crítico",
+    "devOnlyFindings": "Hallazgos solo de desarrollo",
+    "testsBuild": "Pruebas / compilación",
+    "packageUpdates": "Paquetes actualizados",
+    "openRun": "Abrir ejecución de flujo verificada",
+    "historyEyebrow": "Registros verificados",
+    "historyTitle": "Historial de auditorías",
+    "emptyHistory": "Aún no hay informes de auditoría verificados que coincidan con estos filtros.",
+    "openRunAria": "Abrir ejecución de flujo {{number}}",
+    "outcome": {
+      "all": "Todos los resultados",
+      "clean": "Limpio",
+      "attention": "Requiere atención",
+      "failed": "Informe fallido"
+    },
+    "validation": {
+      "passed": "Correcto",
+      "failed": "Fallido",
+      "not_run": "No ejecutado"
+    },
+    "table": {
+      "audited": "Auditado",
+      "outcome": "Resultado",
+      "production": "Producción A / C",
+      "devOnly": "Solo desarrollo",
+      "validation": "Pruebas / compilación",
+      "updates": "Actualizaciones",
+      "run": "Ejecución"
+    },
+    "lastDays": "Últimos {{count}} días"
   }
 }

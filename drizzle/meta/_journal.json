@@ -260,6 +260,13 @@
       "when": 1785534878276,
       "tag": "0036_productive_spot",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "5",
+      "when": 1785542937943,
+      "tag": "0037_first_mimic",
+      "breakpoints": true
     }
   ]
 }

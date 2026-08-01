@@ -23,7 +23,20 @@
     "filterAll": "All outcomes",
     "filterFailure": "Failure",
     "filterSuccess": "Success",
-    "history": "Automation history",
+    "history": {
+      "completed": "Workflow completed",
+      "details": "Details",
+      "detected": "Detected",
+      "empty": "No verified events match these filters.",
+      "event": "Event",
+      "eyebrow": "Audit trail",
+      "opensNewTab": "opens in a new tab",
+      "pullRequest": "Pull request #{{number}}",
+      "result": "Result",
+      "run": "Run",
+      "source": "Source: GitHub Actions OIDC · SteveKinzey/getphame",
+      "title": "Verified event history"
+    },
     "historyDescription": "Verified workflow events for the selected period.",
     "historyOutcome": "Outcome",
     "historyRun": "Run",
@@ -97,20 +110,6 @@
       "result": "Result",
       "title": "Filter operational history",
       "to": "To"
-    },
-    "history": {
-      "completed": "Workflow completed",
-      "details": "Details",
-      "detected": "Detected",
-      "empty": "No verified events match these filters.",
-      "event": "Event",
-      "eyebrow": "Audit trail",
-      "opensNewTab": "opens in a new tab",
-      "pullRequest": "Pull request #{{number}}",
-      "result": "Result",
-      "run": "Run",
-      "source": "Source: GitHub Actions OIDC · SteveKinzey/getphame",
-      "title": "Verified event history"
     },
     "kind": {
       "dependabotMerge": "Dependabot merge",
@@ -3906,5 +3905,59 @@
         }
       }
     }
+  },
+  "securityAudits": {
+    "dashboardCardTitle": "Security audit history",
+    "dashboardCardBody": "Monthly dependency findings and validation outcomes from verified workflow runs",
+    "accessDenied": "Access denied",
+    "adminOnly": "Administrator access is required.",
+    "backToAdmin": "Back to administration",
+    "title": "Security audit history",
+    "description": "Monthly production and full dependency audit summaries from verified GitHub Actions. Raw logs and advisory details are intentionally not retained here.",
+    "refresh": "Refresh",
+    "filterEyebrow": "Reporting window",
+    "filterTitle": "Filter audit history",
+    "range": "Date range",
+    "lastDays_one": "Last {{count}} day",
+    "lastDays_other": "Last {{count}} days",
+    "outcomeFilter": "Outcome",
+    "loading": "Loading audit history",
+    "loadErrorTitle": "Audit history is temporarily unavailable",
+    "loadErrorDescription": "Refresh the page or try again shortly.",
+    "latestEyebrow": "Latest verified report",
+    "latestTitle": "Current dependency security posture",
+    "emptyLatestTitle": "No verified audit reports yet",
+    "emptyLatestDescription": "The first scheduled report will appear here after its workflow completes.",
+    "auditedAt": "Audited {{date}}",
+    "productionHighCritical": "Production high / critical",
+    "devOnlyFindings": "Development-only findings",
+    "testsBuild": "Tests / build",
+    "packageUpdates": "Packages updated",
+    "openRun": "Open verified workflow run",
+    "historyEyebrow": "Verified records",
+    "historyTitle": "Audit history",
+    "emptyHistory": "No verified audit reports match these filters yet.",
+    "openRunAria": "Open workflow run {{number}}",
+    "outcome": {
+      "all": "All outcomes",
+      "clean": "Clean",
+      "attention": "Attention needed",
+      "failed": "Report failed"
+    },
+    "validation": {
+      "passed": "Passed",
+      "failed": "Failed",
+      "not_run": "Not run"
+    },
+    "table": {
+      "audited": "Audited",
+      "outcome": "Outcome",
+      "production": "Production H / C",
+      "devOnly": "Dev-only",
+      "validation": "Tests / build",
+      "updates": "Updates",
+      "run": "Run"
+    },
+    "lastDays": "Last {{count}} days"
   }
 }

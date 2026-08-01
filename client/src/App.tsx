@@ -136,6 +136,9 @@ const AdminGithubCleanupShowcasePage = lazy(
 const AdminAutomationHealthPage = lazy(
   () => import("./pages/AdminAutomationHealth")
 );
+const AdminSecurityAuditsPage = lazy(
+  () => import("./pages/AdminSecurityAudits")
+);
 
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 
@@ -494,6 +497,10 @@ function AppShell() {
                   <Route
                     path="/admin/automation-health"
                     component={AdminAutomationHealthPage}
+                  />
+                  <Route
+                    path="/admin/security-audits"
+                    component={AdminSecurityAuditsPage}
                   />
                   <Route path="/compliance" component={CompliancePage} />
                   <Route path="/reviews" component={ClientReviewsPage} />
