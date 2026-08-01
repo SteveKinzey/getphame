@@ -1768,7 +1768,8 @@
       "googleFailed": "La connexion Google a échoué. Veuillez réessayer.",
       "googleMissingCode": "Google n’a pas fourni les informations nécessaires à la connexion. Veuillez réessayer.",
       "googleStateMismatch": "La vérification de sécurité de la connexion Google a échoué. Veuillez réessayer.",
-      "googleNoId": "La connexion Google n’a pas pu vérifier votre compte. Veuillez réessayer."
+      "googleNoId": "La connexion Google n’a pas pu vérifier votre compte. Veuillez réessayer.",
+      "disposableEmail": "Veuillez utiliser une adresse e-mail non temporaire."
     },
     "preparingGoogle": "Préparation de la connexion Google…",
     "redirectingGoogle": "Redirection sécurisée vers Google…"

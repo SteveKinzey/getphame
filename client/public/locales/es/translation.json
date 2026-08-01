@@ -1768,7 +1768,8 @@
       "googleFailed": "El inicio de sesión con Google falló. Inténtalo de nuevo.",
       "googleMissingCode": "Google no devolvió la información necesaria para iniciar sesión. Inténtalo de nuevo.",
       "googleStateMismatch": "Falló la comprobación de seguridad del inicio de sesión con Google. Inténtalo de nuevo.",
-      "googleNoId": "No se pudo verificar tu cuenta con Google. Inténtalo de nuevo."
+      "googleNoId": "No se pudo verificar tu cuenta con Google. Inténtalo de nuevo.",
+      "disposableEmail": "Usa una dirección de correo electrónico que no sea temporal."
     },
     "preparingGoogle": "Preparando el inicio de sesión con Google…",
     "redirectingGoogle": "Redirigiendo de forma segura a Google…"

@@ -1503,7 +1503,8 @@
       "googleFailed": "Google sign-in failed. Please try again.",
       "googleMissingCode": "Google did not return the information needed to sign you in. Please try again.",
       "googleStateMismatch": "Google sign-in security check failed. Please try again.",
-      "googleNoId": "Google sign-in could not verify your account. Please try again."
+      "googleNoId": "Google sign-in could not verify your account. Please try again.",
+      "disposableEmail": "Please use a non-disposable email address."
     },
     "preparingGoogle": "Preparing Google sign-in…",
     "redirectingGoogle": "Redirecting securely to Google…"

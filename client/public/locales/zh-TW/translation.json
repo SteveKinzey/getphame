@@ -1403,7 +1403,8 @@
       "googleFailed": "Google 登入失敗。請再試一次。",
       "googleMissingCode": "Google 未傳回登入所需的資訊。請再試一次。",
       "googleStateMismatch": "Google 登入安全檢查失敗。請再試一次。",
-      "googleNoId": "Google 登入無法驗證您的帳戶。請再試一次。"
+      "googleNoId": "Google 登入無法驗證您的帳戶。請再試一次。",
+      "disposableEmail": "請使用非一次性電子郵件地址。"
     },
     "preparingGoogle": "正在準備 Google 登入…",
     "redirectingGoogle": "正在安全地重新導向至 Google…"

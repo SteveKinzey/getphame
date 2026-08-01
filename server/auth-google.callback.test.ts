@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => ({
   createProviderHumanVerificationAttempt: vi.fn(),
   consumeProviderHumanVerificationAttempt: vi.fn(),
   verifyProviderStartHumanToken: vi.fn(),
+  isHighConfidenceDisposableEmail: vi.fn(),
 }));
 
 vi.mock("googleapis", () => ({
@@ -51,6 +52,9 @@ vi.mock("./signupRisk", async importOriginal => {
 });
 vi.mock("./security/humanVerification", () => ({
   verifyProviderStartHumanToken: mocks.verifyProviderStartHumanToken,
+}));
+vi.mock("./disposableDomains", () => ({
+  isHighConfidenceDisposableEmail: mocks.isHighConfidenceDisposableEmail,
 }));
 
 import { registerGoogleAuthRoutes } from "./auth-google";
@@ -117,6 +121,7 @@ describe("Google callback human-proof enforcement", () => {
       "11111111-1111-4111-8111-111111111111"
     );
     mocks.consumeProviderHumanVerificationAttempt.mockResolvedValue(false);
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(false);
     mocks.generateAuthUrl.mockImplementation(
       ({ state }: { state: string }) =>
         `https://accounts.google.test/authorize?state=${encodeURIComponent(state)}`
@@ -225,5 +230,21 @@ describe("Google callback human-proof enforcement", () => {
       mocks.consumeProviderHumanVerificationAttempt
     ).toHaveBeenNthCalledWith(2, attemptId, "google");
     expect(mocks.upsertUser).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects a high-confidence disposable Google identity before persistence", async () => {
+    const state = createProviderOAuthState({
+      humanVerificationAttemptId: "11111111-1111-4111-8111-111111111111",
+    });
+    mocks.consumeProviderHumanVerificationAttempt.mockResolvedValue(true);
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(true);
+
+    const response = await callbackRequest(createApp(), state);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe(
+      "/login?auth_error=disposable_email"
+    );
+    expect(mocks.upsertUser).not.toHaveBeenCalled();
   });
 });

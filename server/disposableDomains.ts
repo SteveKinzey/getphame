@@ -1,6 +1,6 @@
 import { resolveMx } from "node:dns/promises";
 import { domainToASCII } from "node:url";
-import { and, count, desc, eq, gte, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
 import {
   disposableDomainAccountReviews,
   disposableDomainSchedulers,
@@ -16,6 +16,7 @@ export const DISPOSABLE_DOMAIN_DNS_BATCH_SIZE = 60;
 export const DISPOSABLE_DOMAIN_CRON = "0 0 9,10 * * *";
 export const DISPOSABLE_DOMAIN_SCHEDULE_KEY = "global";
 export const DISPOSABLE_DOMAIN_TIME_ZONE = "America/Los_Angeles";
+export const DISPOSABLE_DOMAIN_MANUAL_COOLDOWN_MS = 5 * 60 * 1000;
 
 export const DISPOSABLE_DOMAIN_SOURCES = [
   {
@@ -244,6 +245,8 @@ export async function syncDisposableEmailDomains(options?: {
 export async function reconcileDisposableDomainAccountReviews(now = nowMs()) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
+  const scheduler = await getDisposableDomainScheduler();
+  const reviewCursorUserId = scheduler?.reviewCursorUserId ?? 0;
   const candidates = await db.select({
     userId: users.id,
     domain: disposableEmailDomains.domain,
@@ -256,9 +259,10 @@ export async function reconcileDisposableDomainAccountReviews(now = nowMs()) {
     ),
   ).where(and(
     isNotNull(users.email),
+    gte(users.id, reviewCursorUserId + 1),
     eq(disposableEmailDomains.active, true),
     gte(disposableEmailDomains.confidenceScore, DISPOSABLE_DOMAIN_BLOCK_THRESHOLD),
-  )).limit(1_000);
+  )).orderBy(asc(users.id)).limit(1_000);
 
   for (const candidate of candidates) {
     await db.insert(disposableDomainAccountReviews).values({
@@ -278,6 +282,13 @@ export async function reconcileDisposableDomainAccountReviews(now = nowMs()) {
         updatedAt: now,
       },
     });
+  }
+  if (scheduler?.scheduleCronTaskUid) {
+    const nextCursor = candidates.at(-1)?.userId ?? 0;
+    await db.update(disposableDomainSchedulers).set({
+      reviewCursorUserId: nextCursor,
+      updatedAt: now,
+    }).where(eq(disposableDomainSchedulers.scheduleCronTaskUid, scheduler.scheduleCronTaskUid));
   }
   return candidates.length;
 }
@@ -455,4 +466,54 @@ export async function recordDisposableDomainSchedulerRun(params: {
     lastRunSummaryJson: params.summary ? JSON.stringify(params.summary) : null,
     updatedAt: now,
   }).where(eq(disposableDomainSchedulers.scheduleCronTaskUid, params.taskUid));
+}
+
+/**
+ * Allows a trusted administrator to establish the catalog before the first
+ * scheduled run. The same durable scheduler state provides a small cooldown
+ * so repeated UI clicks cannot create parallel public-feed imports.
+ */
+export async function runDisposableDomainManualSync(now = nowMs()) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const scheduler = await getDisposableDomainScheduler();
+  if (!scheduler?.scheduleCronTaskUid) {
+    return { status: "unavailable" as const };
+  }
+
+  const claim = await db.update(disposableDomainSchedulers).set({
+    lastRunAt: now,
+    lastRunStatus: "running",
+    lastRunErrorCode: null,
+    updatedAt: now,
+  }).where(and(
+    eq(disposableDomainSchedulers.scheduleKey, DISPOSABLE_DOMAIN_SCHEDULE_KEY),
+    eq(disposableDomainSchedulers.scheduleCronTaskUid, scheduler.scheduleCronTaskUid),
+    or(
+      isNull(disposableDomainSchedulers.lastRunAt),
+      lte(disposableDomainSchedulers.lastRunAt, now - DISPOSABLE_DOMAIN_MANUAL_COOLDOWN_MS),
+    ),
+  ));
+  const claimed = Number((claim as unknown as [{ affectedRows?: number }])[0]?.affectedRows ?? 0) === 1;
+  if (!claimed) return { status: "cooldown" as const, retryAfterMs: DISPOSABLE_DOMAIN_MANUAL_COOLDOWN_MS };
+
+  try {
+    const summary = await syncDisposableEmailDomains({ now });
+    await recordDisposableDomainSchedulerRun({
+      taskUid: scheduler.scheduleCronTaskUid,
+      status: "ok",
+      dateKey: getPacificScheduleDecision(now).dateKey,
+      summary,
+      now,
+    });
+    return { status: "ok" as const, summary };
+  } catch (error) {
+    await recordDisposableDomainSchedulerRun({
+      taskUid: scheduler.scheduleCronTaskUid,
+      status: "failed",
+      errorCode: "DISPOSABLE_DOMAIN_MANUAL_SYNC_FAILED",
+      now,
+    }).catch(() => undefined);
+    throw error;
+  }
 }

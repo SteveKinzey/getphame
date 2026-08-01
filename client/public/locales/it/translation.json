@@ -2431,7 +2431,8 @@
       "googleFailed": "Accesso con Google non riuscito. Riprova.",
       "googleMissingCode": "Google non ha restituito le informazioni necessarie per accedere. Riprova.",
       "googleStateMismatch": "Il controllo di sicurezza dell’accesso con Google non è riuscito. Riprova.",
-      "googleNoId": "Non è stato possibile verificare il tuo account Google. Riprova."
+      "googleNoId": "Non è stato possibile verificare il tuo account Google. Riprova.",
+      "disposableEmail": "Usa un indirizzo email non temporaneo."
     },
     "preparingGoogle": "Preparazione dell’accesso con Google…",
     "redirectingGoogle": "Reindirizzamento sicuro a Google…"

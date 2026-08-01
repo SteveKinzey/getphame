@@ -1880,7 +1880,8 @@
       "googleFailed": "Google 登录失败。请重试。",
       "googleMissingCode": "Google 未返回登录所需的信息。请重试。",
       "googleStateMismatch": "Google 登录安全检查失败。请重试。",
-      "googleNoId": "Google 登录无法验证您的账户。请重试。"
+      "googleNoId": "Google 登录无法验证您的账户。请重试。",
+      "disposableEmail": "请使用非一次性电子邮件地址。"
     },
     "preparingGoogle": "正在准备 Google 登录…",
     "redirectingGoogle": "正在安全跳转至 Google…"

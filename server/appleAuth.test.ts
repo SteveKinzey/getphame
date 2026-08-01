@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => ({
   createProviderHumanVerificationAttempt: vi.fn(),
   consumeProviderHumanVerificationAttempt: vi.fn(),
   verifyProviderStartHumanToken: vi.fn(),
+  isHighConfidenceDisposableEmail: vi.fn(),
 }));
 
 vi.mock("apple-signin-auth", () => ({
@@ -70,6 +71,9 @@ vi.mock("./signupRisk", async importOriginal => {
 });
 vi.mock("./security/humanVerification", () => ({
   verifyProviderStartHumanToken: mocks.verifyProviderStartHumanToken,
+}));
+vi.mock("./disposableDomains", () => ({
+  isHighConfidenceDisposableEmail: mocks.isHighConfidenceDisposableEmail,
 }));
 
 import { registerAppleAuthRoutes } from "./appleAuth";
@@ -136,6 +140,7 @@ describe("Apple Sign In callback", () => {
       "33333333-3333-4333-8333-333333333333"
     );
     mocks.consumeProviderHumanVerificationAttempt.mockResolvedValue(false);
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(false);
   });
 
   it("requests and verifies Apple's signed identity token directly from the form-post callback", async () => {
@@ -295,6 +300,23 @@ describe("Apple Sign In callback", () => {
       "/login?auth_error=human_verification_required"
     );
     expect(mocks.upsertUser).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects a high-confidence disposable Apple identity before persistence", async () => {
+    const { app, state } = await createAppleRequestState(createApp(), true);
+    mocks.consumeProviderHumanVerificationAttempt.mockResolvedValue(true);
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(true);
+
+    const response = await request(app)
+      .post("/api/auth/apple/callback")
+      .type("form")
+      .send({ code: "provider-code", state });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe(
+      "/login?auth_error=disposable_email"
+    );
+    expect(mocks.upsertUser).not.toHaveBeenCalled();
   });
 
   it("returns a safe callback error when Apple does not provide an authorization code", async () => {

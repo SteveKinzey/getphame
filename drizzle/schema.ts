@@ -1535,6 +1535,7 @@ export const disposableDomainSchedulers = pgTable(
     lastRunStatus: varchar("lastRunStatus", { length: 20 }),
     lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
     lastRunSummaryJson: text("lastRunSummaryJson"),
+    reviewCursorUserId: integer("reviewCursorUserId").notNull().default(0),
     createdAt: bigint("createdAt", { mode: "number" })
       .notNull()
       .$defaultFn(() => Date.now()),

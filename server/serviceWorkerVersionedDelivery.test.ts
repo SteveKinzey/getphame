@@ -27,7 +27,7 @@ describe("versioned service-worker delivery", () => {
 
     expect(versionedWorker).toContain("const CACHE_NAME = 'getphame-v26'");
     expect(versionedWorker).toContain(
-      "Release manifest: locale dictionaries phame55; service worker getphame-v26."
+      "Release manifest: locale dictionaries phame56; service worker getphame-v26."
     );
     expect(legacyWorker).toContain("const CACHE_NAME = 'getphame-v26'");
   });

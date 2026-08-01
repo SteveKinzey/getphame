@@ -274,6 +274,20 @@
       "when": 1785546822939,
       "tag": "0038_dizzy_union_jack",
       "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "5",
+      "when": 1785547599298,
+      "tag": "0039_worthless_stephen_strange",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "5",
+      "when": 1785548502832,
+      "tag": "0040_bizarre_zemo",
+      "breakpoints": true
     }
   ]
 }

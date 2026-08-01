@@ -3,6 +3,7 @@ import { adminProcedure, router } from "../_core/trpc";
 import {
   getDisposableDomainReviewQueue,
   resolveDisposableDomainReview,
+  runDisposableDomainManualSync,
 } from "../disposableDomains";
 import { getSignupRiskReview } from "../signupRisk";
 
@@ -41,4 +42,6 @@ export const signupRiskReviewRouter = router({
       });
       return { ok: true };
     }),
+  syncDisposableDomainCatalog: adminProcedure
+    .mutation(() => runDisposableDomainManualSync()),
 });
