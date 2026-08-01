@@ -2175,7 +2175,17 @@
     "clickRate": "Taux de clic",
     "thisMonth": "Ce mois-ci",
     "allTime": "Depuis toujours",
-    "recentActivity": "Activité récente",
+    "recentActivity": {
+      "title": "Activité récente",
+      "engagedBadge": "{{count}} ont interagi",
+      "noActivity": "Aucune activité récente",
+      "viewAll": "Voir tout →",
+      "markAllReviewed": "Tout marquer comme examiné",
+      "markingAll": "Marquage…",
+      "markAllShort": "Tout marquer",
+      "markAllSuccess": "{{count}} éléments marqués comme examinés",
+      "markReviewed": "Marquer comme examiné"
+    },
     "viewAll": "Voir tout"
   },
   "pricing": {

@@ -14,7 +14,12 @@ import {
   ChevronLeft,
   MessageSquare,
   TrendingUp,
+  Share2,
+  Check,
+  Copy,
 } from 'lucide-react';
+import { useState as useShareState } from 'react';
+import { shareGetPhame, type GetPhameShareOutcome } from '@/lib/pwaShare';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -223,6 +228,20 @@ function AddReviewSheet({ onAdded }: { onAdded: () => void }) {
 export default function ClientReviewsPage() {
   const [, navigate] = useLocation();
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [sharing, setSharing] = useShareState(false);
+  const [shareStatus, setShareStatus] = useShareState<GetPhameShareOutcome | 'idle'>('idle');
+
+  const handleShare = async () => {
+    if (sharing) return;
+    setSharing(true);
+    const outcome = await shareGetPhame();
+    setShareStatus(outcome);
+    setSharing(false);
+    if (outcome === 'copied') toast.success('Link copied to clipboard');
+    if (outcome === 'failed') toast.error('Could not share');
+    // Reset icon after 2.5s
+    setTimeout(() => setShareStatus('idle'), 2500);
+  };
   const utils = trpc.useUtils();
 
   const { data: reviews = [], isLoading } = trpc.reviews.list.useQuery({ limit: 100 });
@@ -260,7 +279,32 @@ export default function ClientReviewsPage() {
             <ChevronLeft size={18} />
             Home
           </button>
-          <AddReviewSheet onAdded={handleAdded} />
+          <div className="flex items-center gap-2">
+            {/* Share button */}
+            <button
+              onClick={handleShare}
+              disabled={sharing}
+              aria-label="Share Get Phame"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-150 active:scale-[0.97] disabled:opacity-60"
+              style={{
+                background: shareStatus === 'shared' || shareStatus === 'copied'
+                  ? 'oklch(0.80 0.18 80 / 0.2)'
+                  : 'oklch(1 0 0 / 0.1)',
+                color: shareStatus === 'shared' || shareStatus === 'copied'
+                  ? 'oklch(0.80 0.18 80)'
+                  : 'rgba(255,255,255,0.85)',
+              }}
+            >
+              {shareStatus === 'shared' ? <Check size={14} /> :
+               shareStatus === 'copied' ? <Copy size={14} /> :
+               <Share2 size={14} />}
+              {sharing ? 'Sharing…' :
+               shareStatus === 'shared' ? 'Shared' :
+               shareStatus === 'copied' ? 'Copied' :
+               'Share'}
+            </button>
+            <AddReviewSheet onAdded={handleAdded} />
+          </div>
         </div>
 
         <h1
