@@ -3,6 +3,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
+import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine, Sparkles, GitCompareArrows, Copy, ListFilter, Lightbulb } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
@@ -301,6 +302,18 @@ export default function SendRequestPage() {
   const allComplianceChecked = complianceChecked.realCustomers
     && complianceChecked.noIncentives
     && complianceChecked.allCustomers;
+  const hasUnsavedSendDraft = !sent && (
+    customerName.trim().length > 0
+    || customerEmail.trim().length > 0
+    || selectedTemplateId !== null
+    || selectedPlatformId !== null
+    || (loadedDraftSourceKey === draftSourceKey
+      && (draftSubject !== sourceDraft.subject || draftBody !== sourceDraft.body))
+    || tonePreviewOpen
+    || finalPreviewOpen
+    || allComplianceChecked
+  );
+  useUpdateDirtySource("send-request-draft", hasUnsavedSendDraft);
 
   function validate() {
     const errs: Record<string, string> = {};

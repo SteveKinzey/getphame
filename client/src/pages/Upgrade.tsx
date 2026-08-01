@@ -23,6 +23,7 @@ import {
   USD_PRICES,
 } from "@shared/pricing";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
+import { useUpdateCriticalActivity } from "@/contexts/UpdateSafetyContext";
 import {
   Drawer,
   DrawerClose,
@@ -158,6 +159,11 @@ export default function UpgradePage() {
   // PayPal — check if configured on server
   const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
   const [paypalLoading, setPaypalLoading] = useState(false);
+  const [paypalCheckoutActive, setPaypalCheckoutActive] = useState(false);
+  useUpdateCriticalActivity(
+    "paypal-checkout",
+    paypalLoading || paypalCheckoutActive,
+  );
   useEffect(() => {
     fetch("/api/paypal/status")
       .then((r) => r.json() as Promise<{ enabled: boolean; clientId: string | null }>)
@@ -176,11 +182,14 @@ export default function UpgradePage() {
       });
       const data = await res.json() as { orderId?: string; approvalUrl?: string; error?: string };
       if (!res.ok || !data.orderId) {
+        setPaypalCheckoutActive(false);
         toast.error(data.error ?? "Failed to start PayPal checkout.");
         return "";
       }
+      setPaypalCheckoutActive(true);
       return data.orderId;
     } catch {
+      setPaypalCheckoutActive(false);
       toast.error("PayPal checkout failed. Please try again.");
       return "";
     } finally {
@@ -189,6 +198,7 @@ export default function UpgradePage() {
   }, [selectedPlan]);
 
   const handlePayPalApprove = useCallback(async (data: { orderID: string }) => {
+    setPaypalLoading(true);
     try {
       const res = await fetch("/api/paypal/capture-order", {
         method: "POST",
@@ -205,8 +215,22 @@ export default function UpgradePage() {
       navigate("/payment-success");
     } catch {
       toast.error("Payment capture failed. Please contact support.");
+    } finally {
+      setPaypalLoading(false);
+      setPaypalCheckoutActive(false);
     }
   }, [utils, navigate]);
+
+  const handlePayPalError = useCallback((error: unknown) => {
+    setPaypalCheckoutActive(false);
+    console.error("[PayPal]", error);
+    toast.error("PayPal encountered an error. Please try again.");
+  }, []);
+
+  const handlePayPalCancel = useCallback(() => {
+    setPaypalCheckoutActive(false);
+    toast("PayPal payment cancelled.");
+  }, []);
 
   const createCheckout = trpc.stripe.createCheckout.useMutation({
     onSuccess: (data) => {
@@ -597,11 +621,8 @@ export default function UpgradePage() {
                     style={{ layout: "horizontal", color: "gold", shape: "rect", label: "pay", height: 44 }}
                     createOrder={handlePayPalCreateOrder}
                     onApprove={handlePayPalApprove}
-                    onError={(err) => {
-                      console.error("[PayPal]", err);
-                      toast.error("PayPal encountered an error. Please try again.");
-                    }}
-                    onCancel={() => toast("PayPal payment cancelled.")}
+                    onError={handlePayPalError}
+                    onCancel={handlePayPalCancel}
                   />
                 </PayPalScriptProvider>
               )}
@@ -681,6 +702,8 @@ export default function UpgradePage() {
           paypalLoading={paypalLoading}
           onPayPalCreateOrder={handlePayPalCreateOrder}
           onPayPalApprove={handlePayPalApprove}
+          onPayPalError={handlePayPalError}
+          onPayPalCancel={handlePayPalCancel}
           showPromptPay={showPromptPay}
           isThai={isThai}
           isPromptPayPending={createThbCheckout.isPending}
@@ -1306,6 +1329,8 @@ type AlternativePaymentOptionsProps = {
   paypalLoading: boolean;
   onPayPalCreateOrder: () => Promise<string>;
   onPayPalApprove: (data: { orderID: string }) => Promise<void>;
+  onPayPalError: (error: unknown) => void;
+  onPayPalCancel: () => void;
   showPromptPay: boolean;
   isThai: boolean;
   isPromptPayPending: boolean;
@@ -1321,6 +1346,8 @@ function AlternativePaymentOptions({
   paypalLoading,
   onPayPalCreateOrder,
   onPayPalApprove,
+  onPayPalError,
+  onPayPalCancel,
   showPromptPay,
   isThai,
   isPromptPayPending,
@@ -1368,11 +1395,8 @@ function AlternativePaymentOptions({
                   style={{ layout: "horizontal", color: "gold", shape: "rect", label: "pay", height: 44 }}
                   createOrder={onPayPalCreateOrder}
                   onApprove={onPayPalApprove}
-                  onError={(err) => {
-                    console.error("[PayPal]", err);
-                    toast.error("PayPal encountered an error. Please try again.");
-                  }}
-                  onCancel={() => toast("PayPal payment cancelled.")}
+                  onError={onPayPalError}
+                  onCancel={onPayPalCancel}
                 />
               </PayPalScriptProvider>
             )}

@@ -114,3 +114,13 @@
 - [x] Preserve quota, analytics, customer-request, and follow-up semantics for pending versus actually delivered review requests.
 - [x] Add a controlled support exception topic, administrator approval path, and accessible localized settings controls for address, timezone, quiet hours, and queued delivery status.
 - [x] Add focused quiet-hours regression coverage and complete full validation, responsive verification, checkpoint release, and protected-main synchronization.
+- [x] Revalidate and delete only the patch-equivalent `release/premium-conversion-60b90d9f` remote branch while preserving its history through the retained commit graph.
+- [x] Analyze `consolidation/push-safe` at feature and file level to identify selectively portable, current-compatible work without importing stale migrations, fabricated social proof, or unresolved WIP.
+- [x] Analyze `release/reconcile-main-with-20437f53-20260726` at contract and file level to identify selective reimplementation candidates that remain relevant to current protected main.
+- [x] Deliver a prioritized evidence-backed recommendation that separates safe future work from superseded or unsafe branch material.
+- [x] Produce an architecture-aligned implementation plan and effort estimate for a version-aware PWA update notice, user-controlled safe reload, and administrator recovery control without changing production code.
+- [x] Analyze the attached PWA update plan for lifecycle, cache, reload-loop, active-work, privacy, accessibility, and deployment risks; document the approved mitigations before implementation.
+- [x] Create and validate a reusable PWA update-notice and safe-reload skill using the required skill-creator workflow.
+- [x] Implement the version-aware detection, safe reload coordination, service-worker migration, and legacy-registration retirement using the approved mitigations.
+- [x] Add localized update UI, administrator diagnostics, active-work safeguards, regression coverage, and release documentation for the PWA update flow.
+- [ ] Run focused tests, full suite, TypeScript validation, production build, responsive PWA QA, checkpoint release, and protected-main synchronization for the PWA update flow.

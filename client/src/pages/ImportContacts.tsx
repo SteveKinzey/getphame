@@ -31,6 +31,7 @@ import {
   buildContactImportErrorReportFilename,
   serializeContactImportErrorReport,
 } from "@/lib/contactImportErrorReport";
+import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type RawRow = Record<string, string>;
@@ -267,6 +268,14 @@ export default function ImportContactsPage() {
       toast.error(err.message);
     },
   });
+
+  const hasUnsavedImportWork = step > 0 && step < 3 && (
+    fileName.length > 0
+    || rawRows.length > 0
+    || Object.keys(mapping).length > 0
+    || mappedRows.length > 0
+  );
+  useUpdateDirtySource("contact-import-wizard", hasUnsavedImportWork);
 
   // ── File handling ────────────────────────────────────────────────────────────
   const handleFile = useCallback((file: File) => {

@@ -5,6 +5,7 @@ import MagicLinkForm from "@/components/auth/MagicLinkForm";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { hashPasskeyEnrollmentEmail, PASSKEY_ENROLLMENT_INTENT, rememberPasskeyEnrollmentEmail, type PasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
 import { isGoogleSignInHost, isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
+import { useUpdateCriticalActivity } from "@/contexts/UpdateSafetyContext";
 
 interface Props {
   open: boolean;
@@ -16,6 +17,10 @@ interface Props {
 export default function AddPasskeyModal({ open, email, onOpenChange, verificationError = null }: Props) {
   const { t } = useTranslation();
   const [openingProvider, setOpeningProvider] = useState<"google" | "apple" | null>(null);
+  useUpdateCriticalActivity(
+    "passkey-provider-verification",
+    Boolean(openingProvider),
+  );
   const googleAvailable = isGoogleSignInHost(window.location.hostname);
   const appleAvailable = isStagingSocialLoginHost(window.location.hostname);
 

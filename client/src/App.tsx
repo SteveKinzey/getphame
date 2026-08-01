@@ -38,6 +38,8 @@ import { useHapticEvents } from "./hooks/useHapticEvents";
 import { useTranslation } from "react-i18next";
 import AutoTextLocalizer from "./components/AutoTextLocalizer";
 import HelpAssistant from "./components/HelpAssistant";
+import { UpdateSafetyProvider } from "./contexts/UpdateSafetyContext";
+import { AppVersionProvider } from "./components/AppVersionUpdateController";
 import {
   GOOGLE_SIGN_IN_TOAST_ID,
   clearGoogleSignInPending,
@@ -554,13 +556,17 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
-          <AutoTextLocalizer />
-          <Toaster position="top-center" richColors />
-          <AppShell />
-          <HelpAssistant />
-          <PremiumUpgradeModal />
-          <FirstVisitWelcome />
-          <PWAInstallPrompt />
+          <UpdateSafetyProvider>
+            <AppVersionProvider>
+              <AutoTextLocalizer />
+              <Toaster position="top-center" richColors />
+              <AppShell />
+              <HelpAssistant />
+              <PremiumUpgradeModal />
+              <FirstVisitWelcome />
+              <PWAInstallPrompt />
+            </AppVersionProvider>
+          </UpdateSafetyProvider>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

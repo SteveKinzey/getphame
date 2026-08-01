@@ -3759,5 +3759,31 @@
     "toastRequested": "您的例外申請已傳送至 support@getphame.app。",
     "toastAddressRequired": "請輸入企業實際地址，以便確定當地時間。",
     "toastReasonRequired": "請說明為何需要較短的靜默時段。"
+  },
+  "versionUpdate": {
+    "title": "更新已就緒",
+    "notice": "GET PHAME 新版本已就緒。請在方便時更新。",
+    "updateNow": "立即更新",
+    "later": "稍後",
+    "blockedMutation": "請先完成目前操作，再進行更新。",
+    "blockedSensitiveFlow": "請先完成此登入或付款步驟，再進行更新。",
+    "reloading": "正在更新此分頁。",
+    "failed": "無法自動完成更新。準備好後，您可以重新整理此分頁。",
+    "discardTitle": "更新並捨棄未儲存的變更？",
+    "discardDescription": "此分頁包含未儲存的工作。請先儲存，或確認要重新載入並捨棄這些變更。",
+    "keepEditing": "繼續編輯",
+    "discardAndUpdate": "捨棄並更新",
+    "notChecked": "尚未檢查",
+    "adminTitle": "應用程式版本",
+    "adminDescription": "僅檢查目前分頁。不會顯示帳戶或客戶資料。",
+    "deployedVersion": "已部署版本",
+    "workerScript": "Worker 指令碼",
+    "workerCache": "Worker 快取",
+    "waitingWorker": "等待中的 Worker",
+    "yes": "是",
+    "no": "否",
+    "lastChecked": "上次成功檢查",
+    "check": "檢查更新",
+    "reloadTab": "重新載入此分頁"
   }
 }

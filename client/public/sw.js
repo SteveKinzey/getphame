@@ -1,8 +1,12 @@
-// Get Phame Service Worker v5 — Fixed cross-origin fetch handling
-// Cache version bump forces old caches to be cleared on update
+// Versioned path prevents edge caches from pinning an older service worker.
+// v28 intentionally does not skip waiting during install: page reloads remain
+// user-controlled and a waiting worker must never take over active peer tabs.
 // Release manifest: locale dictionaries phame58; service worker getphame-v28.
 const CACHE_NAME = 'getphame-v28';
 const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
+const VERSION_ENDPOINT = '/__manus__/version.json';
+const VERSION_CHECK_INTERVAL_MS = 60_000;
+const LOCALE_CACHE_VERSION = 'phame58';
 const OFFLINE_PAGES = {
   en: '/offline.en.html',
   es: '/offline.es.html',
@@ -13,8 +17,49 @@ const OFFLINE_PAGES = {
   'zh-TW': '/offline.zh-TW.html',
 };
 
-// Pre-cache all locale files at install so language switching is instant
-// and works completely offline after the app is installed on the device.
+const TRANSLATION_ASSETS = [
+  '/locales/en/translation.json',
+  '/locales/es/translation.json',
+  '/locales/fr/translation.json',
+  '/locales/it/translation.json',
+  '/locales/th/translation.json',
+  '/locales/zh-CN/translation.json',
+  '/locales/zh-TW/translation.json',
+];
+
+const LANDING_ASSETS = [
+  '/locales/en/landing.json',
+  '/locales/es/landing.json',
+  '/locales/fr/landing.json',
+  '/locales/it/landing.json',
+  '/locales/th/landing.json',
+  '/locales/zh-CN/landing.json',
+  '/locales/zh-TW/landing.json',
+];
+
+// Authenticated cancellation controls must be usable on the first offline
+// launch rather than degrading to the locale fallback JSON response.
+const CANCELLATION_ASSETS = [
+  '/locales/en/cancellation.json',
+  '/locales/es/cancellation.json',
+  '/locales/fr/cancellation.json',
+  '/locales/it/cancellation.json',
+  '/locales/th/cancellation.json',
+  '/locales/zh-CN/cancellation.json',
+  '/locales/zh-TW/cancellation.json',
+];
+
+// Pre-cache both historical unversioned locale URLs and the exact query-versioned
+// URLs issued by i18next so installation keeps language switching available offline.
+const LOCALIZED_ASSETS = [
+  ...TRANSLATION_ASSETS,
+  ...LANDING_ASSETS,
+  ...CANCELLATION_ASSETS,
+  ...TRANSLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`),
+  ...LANDING_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`),
+  ...CANCELLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`),
+];
+
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -25,31 +70,7 @@ const STATIC_ASSETS = [
   '/apple-touch-icon.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  // All 7 supported language locale files — cached at install time
-  '/locales/en/translation.json',
-  '/locales/es/translation.json',
-  '/locales/fr/translation.json',
-  '/locales/it/translation.json',
-  '/locales/th/translation.json',
-  '/locales/zh-CN/translation.json',
-  '/locales/zh-TW/translation.json',
-  // Landing-page namespaces contain the localized custom video controls.
-  '/locales/en/landing.json',
-  '/locales/es/landing.json',
-  '/locales/fr/landing.json',
-  '/locales/it/landing.json',
-  '/locales/th/landing.json',
-  '/locales/zh-CN/landing.json',
-  '/locales/zh-TW/landing.json',
-  // Cancellation namespace is loaded by authenticated workflows and must be
-  // available on first offline launch rather than falling back to empty JSON.
-  '/locales/en/cancellation.json',
-  '/locales/es/cancellation.json',
-  '/locales/fr/cancellation.json',
-  '/locales/it/cancellation.json',
-  '/locales/th/cancellation.json',
-  '/locales/zh-CN/cancellation.json',
-  '/locales/zh-TW/cancellation.json',
+  ...LOCALIZED_ASSETS,
   // Caption tracks remain same-origin and are available after PWA installation.
   '/getphame-walkthrough.en.vtt',
   '/getphame-walkthrough.es.vtt',
@@ -58,6 +79,9 @@ const STATIC_ASSETS = [
   '/getphame-walkthrough.de.vtt',
   '/getphame-walkthrough.pt.vtt',
 ];
+
+let lastKnownVersion = null;
+let versionCheckInterval = null;
 
 function normalizeOfflineLanguage(language) {
   const normalized = String(language || '').toLowerCase();
@@ -68,6 +92,10 @@ function normalizeOfflineLanguage(language) {
   if (normalized.startsWith('it')) return 'it';
   if (normalized.startsWith('th')) return 'th';
   return 'en';
+}
+
+function isValidVersion(version) {
+  return typeof version === 'string' && version.trim().length > 0 && version.trim().length <= 160;
 }
 
 async function rememberOfflineLanguage(language) {
@@ -82,40 +110,79 @@ async function getOfflinePage() {
   return cache.match(OFFLINE_PAGES[language]) || cache.match('/offline.html');
 }
 
-self.addEventListener('install', (event) => {
+async function broadcastVersionAvailable(version) {
+  const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  clients.forEach(client => {
+    client.postMessage({ type: 'VERSION_AVAILABLE', version });
+  });
+}
+
+async function checkDeploymentVersion() {
+  try {
+    const response = await fetch(`${VERSION_ENDPOINT}?_t=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) return null;
+
+    const payload = await response.json();
+    const version = payload && payload.version;
+    if (!isValidVersion(version)) return null;
+
+    const normalizedVersion = version.trim();
+    if (lastKnownVersion === null) {
+      lastKnownVersion = normalizedVersion;
+      return normalizedVersion;
+    }
+
+    if (normalizedVersion !== lastKnownVersion) {
+      lastKnownVersion = normalizedVersion;
+      await broadcastVersionAvailable(normalizedVersion);
+    }
+
+    return normalizedVersion;
+  } catch {
+    // Network and platform-version failures are intentionally silent. The page
+    // coordinator will retry only while a visible customer tab is active.
+    return null;
+  }
+}
+
+function startVersionPolling() {
+  if (versionCheckInterval !== null) return;
+  versionCheckInterval = setInterval(() => {
+    void checkDeploymentVersion();
+  }, VERSION_CHECK_INTERVAL_MS);
+}
+
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
   );
-  // Immediately activate new SW without waiting for old one to finish
-  self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => {
-            console.log('[SW] Deleting old cache:', name);
+          .filter(name => name.startsWith('getphame-') && name !== CACHE_NAME)
+          .map(name => {
+            console.log('[SW] Deleting obsolete Get Phame cache:', name);
             return caches.delete(name);
           })
       );
-    }).then(() => {
-      // Take control of all open clients immediately
-      return self.clients.claim();
+    }).then(async () => {
+      await self.clients.claim();
+      await checkDeploymentVersion();
+      startVersionPolling();
     })
   );
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // Skip Vite dev server assets — let browser handle them normally
+  // Skip Vite dev server assets — let browser handle them normally.
   if (
     url.pathname.startsWith('/src/') ||
     url.pathname.startsWith('/@') ||
@@ -124,41 +191,34 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Skip API calls — never intercept backend requests
-  if (url.pathname.startsWith('/api/')) {
-    return;
-  }
+  // Deployment metadata must always reach the network. Caching this endpoint
+  // would make update detection compare stale deployment versions.
+  if (url.pathname.startsWith('/__manus__/')) return;
 
-  // Managed storage endpoints issue signed cross-origin redirects. Let the browser
-  // own these requests so media byte ranges and redirects are handled natively;
-  // routing them through respondWith() can turn a valid MP4 into an opaque response.
-  if (url.pathname.startsWith('/manus-storage/')) {
-    return;
-  }
+  // Skip API calls — never intercept backend requests.
+  if (url.pathname.startsWith('/api/')) return;
 
-  // Cross-origin requests (CDN images, YouTube thumbnails, external fonts, etc.)
-  // MUST be passed through directly — do NOT try to cache opaque responses
-  // as they can cause null response errors and inflate cache storage.
-  if (url.origin !== self.location.origin) {
-    // Just pass through to network — no caching, no interference
-    return;
-  }
+  // Managed storage endpoints issue signed cross-origin redirects. Let the
+  // browser own these requests so media byte ranges and redirects are handled natively.
+  if (url.pathname.startsWith('/manus-storage/')) return;
 
-  // Locale files: cache-first strategy for instant language switching
+  // Cross-origin requests (CDN images, YouTube thumbnails, external fonts,
+  // etc.) MUST pass through directly; opaque responses are not cached.
+  if (url.origin !== self.location.origin) return;
+
+  // Locale files are cache-first for instant language switching, including
+  // i18next's versioned query URLs pre-cached during installation.
   if (url.pathname.startsWith('/locales/')) {
     event.respondWith(
-      caches.match(event.request).then((cached) => {
+      caches.match(event.request).then(cached => {
         if (cached) return cached;
-        return fetch(event.request).then((response) => {
+        return fetch(event.request).then(response => {
           if (response && response.status === 200) {
             const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone);
-            });
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
           }
           return response;
         }).catch(() => {
-          // Locale fetch failed offline — return empty JSON to prevent crash
           return new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } });
         });
       })
@@ -166,28 +226,22 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Same-origin assets: network-first, fall back to cache
+  // Same-origin assets: network-first, then cache, preserving the branded
+  // offline document fallback used by installed and ordinary browser clients.
   event.respondWith(
     fetch(event.request)
-      .then((response) => {
-        // Only cache valid same-origin responses
+      .then(response => {
         if (response && response.status === 200 && response.type === 'basic') {
           const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
         }
         return response;
       })
       .catch(async () => {
-        // Document navigations use the branded offline page instead of a broken app shell.
-        if (event.request.destination === 'document') {
-          return getOfflinePage();
-        }
-        // Other same-origin requests fall back to their cached response.
-        return caches.match(event.request).then((cached) => {
+        if (event.request.destination === 'document') return getOfflinePage();
+
+        return caches.match(event.request).then(cached => {
           if (cached) return cached;
-          // For favicon/icon requests that fail, return a 204 no-content
           if (
             url.pathname.includes('favicon') ||
             url.pathname.includes('.ico') ||
@@ -195,17 +249,27 @@ self.addEventListener('fetch', (event) => {
           ) {
             return new Response(null, { status: 204 });
           }
-          // For all other same-origin assets that fail offline,
-          // return a proper 503 response instead of null
           return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
         });
       })
   );
 });
 
-// Persist only the non-sensitive language preference needed by offline fallbacks.
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SET_LANGUAGE') {
+self.addEventListener('message', event => {
+  if (!event.data) return;
+
+  if (event.data.type === 'SET_LANGUAGE') {
     event.waitUntil(rememberOfflineLanguage(event.data.language));
+    return;
+  }
+
+  // The page must address registration.waiting explicitly after a customer
+  // action. Refuse activation when another in-scope window could be working.
+  if (event.data.type === 'SKIP_WAITING') {
+    event.waitUntil(
+      self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async clients => {
+        if (clients.length <= 1) await self.skipWaiting();
+      })
+    );
   }
 });
