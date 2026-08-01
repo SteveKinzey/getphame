@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "title": "Manuel d'administration",
   "eyebrow": "Opérations Get Phame",
   "introduction": "Ce manuel d'administration contient les directives utilisateur complètes suivies des procédures d'exploitation réservées aux administrateurs. Il n'est affiché qu'aux administrateurs authentifiés. Utilisez les sections opérationnelles pour gérer les comptes, les diagnostics, le support, les revenus, la récupération et la santé agrégée du produit sans exposer les identifiants ou des données clients inutiles.",
-  "lastUpdated": "2026-07-25",
+  "lastUpdated": "2026-08-01",
   "sections": [
     {
       "id": "admin-hub",
@@ -444,6 +444,49 @@
             "Confirmez un résultat sain durable avant de clôturer l'incident."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-audit-release-verification",
+      "title": "Vérification de la publication de l'historique d'audit de sécurité",
+      "summary": "Utilisez la compétence installée pour récupérer, valider et publier l'historique d'audit de sécurité (Security Audit History) sans dupliquer les sites gérés, affaiblir les limites des administrateurs, exposer des preuves sensibles ou perdre la parité avec la branche principale protégée.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-audit-skill-capabilities",
+          "title": "Ce que la compétence installée peut faire",
+          "access": "admin",
+          "body": "La compétence de vérification de la publication de l'audit de sécurité de Get Phame coordonne le flux de travail complet de publication et de preuves pour l'historique d'audit de sécurité (Security Audit History). Elle identifie la version exacte révisée, récupère le site web géré correct sans duplication, vérifie la préparation du schéma additif, contrôle les interfaces protégées sans créer de rapports, confirme l'expérience administrateur assainie, valide le comportement réactif et au clavier, suit la première confirmation d'audit planifiée et prouve que la version gérée et la branche principale (main) GitHub protégée partagent la même arborescence validée.",
+          "steps": [
+            "Utilisez la compétence pour une publication bloquée ou incertaine de l'historique d'audit de sécurité, une migration de l'historique d'audit, une route de signalement protégée, une vérification de parité avec la branche principale protégée ou la première confirmation d'audit planifiée.",
+            "Exigez une autorisation d'administrateur appliquée par le serveur ; traitez les vérifications de rôle du navigateur uniquement comme une garantie de navigation supplémentaire.",
+            "Gardez les données des clients, les identifiants, les sessions, les journaux de flux de travail bruts, les détails des avis de dépendance et tout autre matériel sensible hors du dossier et du registre de preuves.",
+            "Utilisez le modèle de vérification de publication inclus et l'assistant de parité d'arborescence pour produire des preuves reproductibles et non sensibles."
+          ]
+        },
+        {
+          "id": "security-audit-skill-instructions",
+          "title": "Comment utiliser la compétence dans Manus",
+          "access": "admin",
+          "body": "Démarrez la compétence à partir d'une tâche Get Phame autorisée par un administrateur. Fournissez à Manus le dépôt, le nom d'hôte de production, la demande de tirage (pull request) ou le commit révisé, la migration attendue, la route d'ingestion protégée, la route de signalement de l'administrateur et le résultat de publication dont vous avez besoin. La compétence doit s'arrêter plutôt que de deviner lorsque le site web géré, l'arborescence révisée, la migration ou le contrat d'autorisation ne peuvent pas être prouvés.",
+          "steps": [
+            "Demandez à Manus d'utiliser la compétence de vérification de la publication de l'audit de sécurité de Get Phame et indiquez si vous récupérez, publiez, vérifiez ou documentez l'historique d'audit de sécurité.",
+            "Établissez la version exacte révisée, les interfaces protégées, la table de base de données attendue, le propriétaire du site web géré, le nom d'hôte de production et l'état actuel de l'éditeur.",
+            "Si la publication est active ou incertaine, inspectez d'abord le site web pris en charge et les contrôles d'historique des versions ; ne publiez pas à nouveau, ne devinez pas un ID de projet et ne créez pas de site de remplacement.",
+            "Comparez le candidat géré avec le commit et l'arborescence Git révisés. Arrêtez-vous et réconciliez toute discordance ou modification plus récente non liée avant la publication.",
+            "Passez en revue la migration et appliquez uniquement une modification de schéma additive et révisée via le flux de travail de la base de données de production gérée. Ne créez pas de données de test client ou d'audit.",
+            "Vérifiez le site public, la route d'ingestion protégée, le point de terminaison de signalement de l'administrateur, la page de l'administrateur connecté, l'état vide, la mise en page réactive et l'accès au clavier sans modifier les rapports ni exposer les résultats bruts.",
+            "Laissez le prochain audit de dépendance planifié s'exécuter à son rythme normal, puis confirmez qu'un résumé assaini et authentifié apparaît dans l'historique d'audit de sécurité. Ne lancez pas une exécution en double simplement pour remplir la page.",
+            "Exécutez des tests ciblés, la suite complète, TypeScript strict, l'audit des dépendances, la compilation de production et la vérification réactive sur le candidat exact.",
+            "Enregistrez le point de contrôle validé, publiez via une demande de tirage (pull request) préservant l'historique, attendez les vérifications requises et la résolution de la révision, fusionnez normalement et prouvez que l'arborescence de la branche principale protégée correspond à l'arborescence publiée.",
+            "Remplissez le registre de vérification de publication inclus avec des preuves non sensibles et documentez tout suivi limité dans le temps qui reste à faire."
+          ],
+          "notes": [
+            "Arrêtez-vous et signalez le problème si la migration est destructive ou ambiguë, si le site géré ne peut pas être récupéré via les contrôles pris en charge, si l'arborescence candidate diffère de la version révisée, si une requête non autorisée révèle ou persiste des données, si une vérification requise échoue ou si le rapport planifié n'apparaît pas.",
+            "Ne forcez jamais la poussée (force-push), ne contournez pas la protection de branche, ne divulguez pas d'identifiants, ne copiez pas de journaux de flux de travail bruts dans les preuves et ne présentez pas une confirmation planifiée en attente comme terminée."
+          ]
         }
       ]
     }

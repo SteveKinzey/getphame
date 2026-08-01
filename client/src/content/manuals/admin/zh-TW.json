@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "title": "管理員手冊",
   "eyebrow": "Get Phame 營運",
   "introduction": "本管理員手冊包含完整的使用說明，並附帶僅限管理員的操作程序。僅向已驗證的管理員顯示。請使用操作章節來管理帳戶、診斷、支援、營收、復原與彙整的產品健康，並避免洩露憑證或不必要的客戶資料。",
-  "lastUpdated": "2026-07-25",
+  "lastUpdated": "2026-08-01",
   "sections": [
     {
       "id": "admin-hub",
@@ -444,6 +444,49 @@
             "在關閉事件前，確認持久穩定的健康結果。"
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-audit-release-verification",
+      "title": "Security Audit 發布驗證",
+      "summary": "使用已安裝的技能來復原、驗證並發布 Security Audit History，且不得重複建立受管理網站、削弱管理員邊界、暴露敏感證據或失去與受保護主分支的一致性。",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-audit-skill-capabilities",
+          "title": "已安裝技能可執行的工作",
+          "access": "admin",
+          "body": "Get Phame Security Audit Release Verification 技能可協調 Security Audit History 的完整發布與證據流程。它會識別精確的已審核版本、在不重複建立的情況下復原正確的受管理網站、驗證可新增的 schema 就緒狀態、檢查受保護介面而不產生報表、確認已清理的管理員體驗、驗證回應式與鍵盤操作行為、追蹤首次排程的稽核確認，並證明受管理發布與受保護的 GitHub main 使用相同且已驗證的樹狀內容。",
+          "steps": [
+            "在 Security Audit History 發布停滯或不確定、稽核歷史移轉、受保護的報表路由、protected-main 一致性檢查，或首次排程的稽核確認時使用此技能。",
+            "要求伺服器強制執行的管理員授權；將瀏覽器角色檢查僅視為額外的導覽保護措施。",
+            "將客戶資料、憑證、工作階段、原始工作流程日誌、相依性建議細節以及其他敏感內容排除在檔案與證據紀錄之外。",
+            "使用隨附的發布驗證範本與樹狀一致性輔助工具，產生可重現且不含敏感資訊的證據。"
+          ]
+        },
+        {
+          "id": "security-audit-skill-instructions",
+          "title": "如何在 Manus 中使用此技能",
+          "access": "admin",
+          "body": "從具有管理員授權的 Get Phame 任務啟動此技能。向 Manus 提供儲存庫、正式主機名稱、已審核的 pull request 或 commit、預期的 migration、受保護的 ingestion route、管理員報表路由，以及你需要的發布結果。當無法證明受管理網站、已審核樹、migration 或授權契約時，此技能必須停止而不是猜測。",
+          "steps": [
+            "請 Manus 使用 Get Phame Security Audit Release Verification 技能，並說明你是在復原、發布、驗證或記錄 Security Audit History。",
+            "建立精確的已審核版本、受保護介面、預期資料庫表、受管理網站擁有者、正式主機名稱與目前的發布狀態。",
+            "如果發布正在進行或狀態不確定，請先檢查受支援的網站與版本歷史控制；不要再次發布、猜測 project ID，或建立替代網站。",
+            "將受管理候選版本與已審核的 Git commit 及 tree 進行比對。若有任何不一致或無關的新變更，請停止並先完成修正後再發布。",
+            "檢視 migration，並且只透過受管理的正式資料庫工作流程套用經審核且具新增性的 schema 變更。不要建立測試客戶資料或稽核資料。",
+            "驗證公開網站、受保護的 ingestion route、管理員報表端點、已登入的管理員頁面、空狀態、回應式版面配置與鍵盤可用性，且不得變動報表或揭露原始發現內容。",
+            "讓下一次排定的相依性稽核依正常週期執行，然後確認 Security Audit History 中出現一筆已驗證且已清理的摘要。不要僅為了填滿頁面而啟動重複執行。",
+            "對精確的候選版本執行聚焦測試、完整測試套件、嚴格 TypeScript、相依性稽核、正式建置與回應式驗證。",
+            "儲存已驗證的檢查點，透過保留歷史的 pull request 發布，等待必要檢查與審查問題解決，正常合併，並證明 protected-main 樹與已發布樹一致。",
+            "完成隨附的發布驗證紀錄，僅填寫非敏感證據，並記錄任何仍待完成的時效性後續事項。"
+          ],
+          "notes": [
+            "如果 migration 具有破壞性或含糊不清、無法透過受支援控制復原受管理網站、候選樹與已審核版本不一致、未經授權的請求揭露或保留資料、必要檢查失敗，或排定的報告未出現，請停止並升級處理。",
+            "絕不可強制推送、繞過分支保護、揭露憑證、將原始工作流程日誌複製到證據中，或把尚未完成的排程確認表示為已完成。"
+          ]
         }
       ]
     }

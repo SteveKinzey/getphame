@@ -1,6 +1,6 @@
 # Get Phame PWA Update Notice: Risk Register and Approved Mitigations
 
-**Status:** Approved implementation constraints  
+**Status:** Approved implementation constraints
 **Scope:** Version-aware PWA update notice, user-controlled reload, service-worker migration, and administrator diagnostics.
 
 ## Executive Decision

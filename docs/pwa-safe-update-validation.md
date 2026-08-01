@@ -23,3 +23,9 @@ Responsive review completed at `1280×720` and `375×812`. The root shell and it
 After protected-main review, the managed release was revalidated with the three review remediations: a bounded internal timeout for deployment-version requests, visible-tab-only polling, and an explicit `worker-timeout` diagnostic before a customer-requested reload proceeds. The reconciled worker also preserves the concurrent cancellation-localization offline cache for every supported language in both v28 delivery paths.
 
 The managed workspace passed the focused PWA suite (`15` tests), TypeScript check, complete one-worker regression suite, production build, and production dependency audit with no known high-severity vulnerabilities. Final responsive captures at `1280×720` and `375×812` remained readable and functional with the existing onboarding overlay; no update-coordinator visual regression was observed.
+
+## Final managed-tree parity verification
+
+The managed release tree was reconciled with the compatible protected-main administrator-manual update without overwriting either release. All seven localized Admin Manual supplements now include the administrator-only Security Audit release-verification guidance, while the matching user manuals remain free of that content. The manual-role regression locks the section identifier, localized structure, administrator-only access boundary, version/date metadata, and translation separation.
+
+The exact reconciled tree passed the focused `manualRoleIsolation` suite, strict TypeScript checking, a production build, and the complete one-worker Vitest suite (`180` files passed, `1` suite skipped, `1,010` tests passed, `7` tests skipped). Final Manual route captures at `1280×720` and `375×812` remained readable and usable. A filtered source-tree comparison confirmed parity with the verified protected-main release, excluding only managed platform metadata and this session’s ledger.

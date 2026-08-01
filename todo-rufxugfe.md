@@ -124,3 +124,4 @@
 - [x] Implement the version-aware detection, safe reload coordination, service-worker migration, and legacy-registration retirement using the approved mitigations.
 - [x] Add localized update UI, administrator diagnostics, active-work safeguards, regression coverage, and release documentation for the PWA update flow.
 - [x] Run focused tests, full suite, TypeScript validation, production build, responsive PWA QA, checkpoint release, and protected-main synchronization for the PWA update flow.
+- [x] Preserve the compatible protected-main security-audit manual localization and regression updates in the managed tree, then revalidate and create an exact-parity replacement release.
