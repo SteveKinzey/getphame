@@ -29,18 +29,21 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain('role="status" aria-live="polite"');
     expect(login).toContain('t("authFeedback.connectingGoogle"');
     expect(login).toContain('t("login.continueWithGoogle"');
-    expect(login).toContain('window.location.assign("/api/auth/google")');
+    expect(login).toContain("const humanProof = await createProviderHumanProof()");
+    expect(login).toContain("/api/auth/google?human_proof=${encodeURIComponent(humanProof)}");
+    expect(login).toContain('window.location.assign(destination)');
   });
 
   it("keeps account-establishing methods before passkey authentication in JSX source order and preserves the autofocus contract", () => {
     const login = read("client/src/pages/Login.tsx");
     const magicLinkForm = read("client/src/components/auth/MagicLinkForm.tsx");
     const passkeySignIn = read("client/src/components/security/PasskeySignIn.tsx");
-    const magicLinkPosition = login.indexOf('<MagicLinkForm idPrefix="login" autoFocus />');
+    const magicLinkPosition = login.indexOf('<MagicLinkForm');
     const socialPosition = login.indexOf('data-testid="social-login"');
     const passkeyPosition = login.indexOf("<PasskeySignIn />");
 
     expect(magicLinkPosition).toBeGreaterThan(-1);
+    expect(login.slice(magicLinkPosition, socialPosition)).toContain('humanVerificationToken={humanVerificationToken}');
     expect(socialPosition).toBeGreaterThan(magicLinkPosition);
     expect(passkeyPosition).toBeGreaterThan(socialPosition);
     expect(login.slice(magicLinkPosition, socialPosition)).toContain('t("login.or"');
