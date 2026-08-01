@@ -56,7 +56,7 @@ export async function sendAdminPlatformEmail(input: { to: string; subject: strin
   const user = process.env.SYSTEM_SMTP_USER;
   const pass = process.env.SYSTEM_SMTP_PASS;
   const configuredFrom = process.env.HELLO_FROM_EMAIL?.trim() || ADMIN_GENERAL_FROM_EMAIL;
-  if (!host || !user || !pass) return { sent: false, providerMessageId: null, failureCode: "not_configured" };
+  if (!host || !user || !pass || !Number.isFinite(port)) return { sent: false, providerMessageId: null, failureCode: "not_configured" };
   if (configuredFrom.toLowerCase() !== ADMIN_GENERAL_FROM_EMAIL) return { sent: false, providerMessageId: null, failureCode: "invalid_from_address" };
   try {
     const transporter = createTransporter({ host, port, secure: port === 465, user, pass });

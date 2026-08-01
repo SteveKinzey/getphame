@@ -347,6 +347,14 @@ describe("administrator user-management runtime", () => {
     expect(result.csv).not.toContain("credentialId");
   });
 
+  it("limits both administrator outbox queries to messages still within the retention window", () => {
+    const routerSource = fs.readFileSync(path.join(process.cwd(), "server/routers.ts"), "utf8");
+    const outboxSource = routerSource.slice(routerSource.indexOf("listUserEmailOutbox"), routerSource.indexOf("removeUserSmtp"));
+
+    expect(outboxSource).toContain("gte(adminPlatformEmailMessages.expiresAt, now)");
+    expect(outboxSource.match(/\.where\(outboxVisibilityPredicate\)/g)).toHaveLength(2);
+  });
+
   it("prevents an administrator from removing their own administrator access", async () => {
     const caller = appRouter.createCaller(context("admin", 1));
     await expect(caller.admin.setUserRole({ userId: 1, role: "user" })).rejects.toMatchObject({
