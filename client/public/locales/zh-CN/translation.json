@@ -1880,7 +1880,8 @@
       "googleFailed": "Google 登录失败。请重试。",
       "googleMissingCode": "Google 未返回登录所需的信息。请重试。",
       "googleStateMismatch": "Google 登录安全检查失败。请重试。",
-      "googleNoId": "Google 登录无法验证您的账户。请重试。"
+      "googleNoId": "Google 登录无法验证您的账户。请重试。",
+      "disposableEmail": "请使用非一次性电子邮件地址。"
     },
     "preparingGoogle": "正在准备 Google 登录…",
     "redirectingGoogle": "正在安全跳转至 Google…"
@@ -3500,72 +3501,11 @@
     "lastDays": "最近 {{count}} 天"
   },
   "securityAuditReleaseVerification": {
-    "dashboardCardTitle": "安全审计发布验证",
-    "dashboardCardBody": "查看受保护发布的证据以及首次计划审计的确认步骤",
-    "accessDenied": "拒绝访问",
-    "adminOnly": "仅限管理员",
-    "loading": "正在加载发布验证",
-    "errorTitle": "发布验证不可用",
-    "errorBody": "无法加载仅限管理员查看的发布证据。",
-    "backToAdmin": "返回管理后台",
-    "title": "安全审计发布验证",
-    "description": "这是安全审计历史发布的受保护证据记录，涵盖其授权控制、生产架构和首次计划报告确认。",
-    "releaseStatusLabel": "发布状态",
-    "statusEyebrow": "发布状态",
-    "statusVerified": "已验证",
-    "statusBody": "已完成已审查发布、受保护路由、架构就绪状态和授权界面检查。",
-    "evidenceEyebrow": "已验证的发布证据",
-    "evidenceTitle": "生产控制措施已就位",
-    "evidenceDescription": "此视图保留简洁的运营记录，并且有意排除原始依赖日志、公告详情、客户数据和凭据。",
-    "evidenceListLabel": "已验证的发布控制措施",
-    "evidence": {
-      "github-release": {
-        "title": "已审查的发布沿革",
-        "detail": "已审查的安全审计历史发布已合并至受保护的 main 分支。"
-      },
-      "ingestion-auth": {
-        "title": "摄取授权",
-        "detail": "未通过身份验证的摄取会在存储审计报告之前被拒绝。"
-      },
-      "admin-reporting-auth": {
-        "title": "管理员报告授权",
-        "detail": "报告负载仅通过管理员授权的过程提供。"
-      },
-      "schema-readiness": {
-        "title": "审计历史架构就绪",
-        "detail": "生产环境中已提供增量审计报告表和报告索引。"
-      },
-      "admin-ui": {
-        "title": "管理员界面",
-        "detail": "授权管理员可以加载安全审计历史，且不会保留原始依赖日志或公告详情。"
-      }
-    },
-    "scopeEyebrow": "已验证的发布",
-    "scopeTitle": "安全审计历史",
-    "scopeBody": "受保护的审计摄取、管理员报告和经过净化的审计持久化。",
-    "repository": "代码库",
-    "protectedBranch": "受保护分支",
-    "verifiedAt": "已验证",
-    "nextEyebrow": "下一步运营确认",
-    "nextTitle": "确认首次计划审计",
-    "reportRecorded": "现在已有已验证的审计报告。请在安全审计历史中查看，并在重试前保留任何失败运行的证据。",
-    "reportPending": "发布已就绪。首次运营证明将在下一个计划依赖审计工作流记录其净化摘要后到达。",
-    "recordedBadge": "报告已记录",
-    "pendingBadge": "等待计划审计",
-    "steps": {
-      "1": "让计划依赖审计工作流按正常节奏完成。不要仅为了填充此页面而触发重复运行。",
-      "2": "确认通过审计摄取路径接受了一份经过身份验证且经过净化的摘要。",
-      "3": "以管理员身份打开安全审计历史，并确认新的最新报告卡显示结果、验证状态、时间戳、软件包更新数和工作流引用。",
-      "4": "如果没有出现报告，请保留失败运行的证据，并在重试前调查工作流或净化摄取结果。"
-    },
-    "nextNote": "不要仅为了填充此仪表板而创建重复工作流。一次正常的计划运行即可确认完整的生产报告循环。",
-    "openHistory": "打开安全审计历史",
-    "privacyEyebrow": "数据处理",
-    "privacyTitle": "保护隐私的报告",
-    "privacyBody": "发布记录不包含凭据、客户数据、原始日志和单个公告详情。",
-    "reportChecking": "发布验证证据已加载。正在检查是否已记录首份计划安全审计报告。",
-    "reportUnavailable": "发布已验证，但无法加载最新安全审计报告的状态。请打开“安全审计历史记录”以安全重试。",
-    "checkingBadge": "正在检查审计历史",
-    "unavailableBadge": "审计状态不可用"
+    "dashboardCardTitle": "安全审计发布验证", "dashboardCardBody": "查看受保护发布的证据以及首次计划审计的确认步骤", "accessDenied": "拒绝访问", "adminOnly": "仅限管理员", "loading": "正在加载发布验证", "errorTitle": "发布验证不可用", "errorBody": "无法加载仅限管理员查看的发布证据。", "backToAdmin": "返回管理后台",
+    "title": "安全审计发布验证", "description": "这是安全审计历史发布的受保护证据记录，涵盖其授权控制、生产架构和首次计划报告确认。", "releaseStatusLabel": "发布状态", "statusEyebrow": "发布状态", "statusVerified": "已验证", "statusBody": "已完成已审查发布、受保护路由、架构就绪状态和授权界面检查。", "evidenceEyebrow": "已验证的发布证据", "evidenceTitle": "生产控制措施已就位", "evidenceDescription": "此视图保留简洁的运营记录，并且有意排除原始依赖日志、公告详情、客户数据和凭据。", "evidenceListLabel": "已验证的发布控制措施",
+    "evidence": { "github-release": { "title": "已审查的发布沿革", "detail": "已审查的安全审计历史发布已合并至受保护的 main 分支。" }, "ingestion-auth": { "title": "摄取授权", "detail": "未通过身份验证的摄取会在存储审计报告之前被拒绝。" }, "admin-reporting-auth": { "title": "管理员报告授权", "detail": "报告负载仅通过管理员授权的过程提供。" }, "schema-readiness": { "title": "审计历史架构就绪", "detail": "生产环境中已提供增量审计报告表和报告索引。" }, "admin-ui": { "title": "管理员界面", "detail": "授权管理员可以加载安全审计历史，且不会保留原始依赖日志或公告详情。" } },
+    "scopeEyebrow": "已验证的发布", "scopeTitle": "安全审计历史", "scopeBody": "受保护的审计摄取、管理员报告和经过净化的审计持久化。", "repository": "代码库", "protectedBranch": "受保护分支", "verifiedAt": "已验证", "nextEyebrow": "下一步运营确认", "nextTitle": "确认首次计划审计", "reportRecorded": "现在已有已验证的审计报告。请在安全审计历史中查看，并在重试前保留任何失败运行的证据。", "reportPending": "发布已就绪。首次运营证明将在下一个计划依赖审计工作流记录其净化摘要后到达。", "recordedBadge": "报告已记录", "pendingBadge": "等待计划审计",
+    "steps": { "1": "让计划依赖审计工作流按正常节奏完成。不要仅为了填充此页面而触发重复运行。", "2": "确认通过审计摄取路径接受了一份经过身份验证且经过净化的摘要。", "3": "以管理员身份打开安全审计历史，并确认新的最新报告卡显示结果、验证状态、时间戳、软件包更新数和工作流引用。", "4": "如果没有出现报告，请保留失败运行的证据，并在重试前调查工作流或净化摄取结果。" },
+    "nextNote": "不要仅为了填充此仪表板而创建重复工作流。一次正常的计划运行即可确认完整的生产报告循环。", "openHistory": "打开安全审计历史", "privacyEyebrow": "数据处理", "privacyTitle": "保护隐私的报告", "privacyBody": "发布记录不包含凭据、客户数据、原始日志和单个公告详情。", "reportChecking": "发布验证证据已加载。正在检查是否已记录首份计划安全审计报告。", "reportUnavailable": "发布已验证，但无法加载最新安全审计报告的状态。请打开“安全审计历史记录”以安全重试。", "checkingBadge": "正在检查审计历史", "unavailableBadge": "审计状态不可用"
   }
 }

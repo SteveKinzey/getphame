@@ -58,6 +58,31 @@
 - [x] Production verification note: local production build passed; the published login URL returned the app shell before the browser session reset, while managed runtime logs were unavailable because no Cloud Run service was found.
 - [x] Production browser recheck: `https://getphame.app/login` rendered the live sign-in route; the sandbox browser reported its invisible account-security control unavailable with no client-console errors, which may reflect third-party challenge availability in that browser rather than a runtime crash.
 - [x] Repeat live-browser check after the key update: the production login hydrated, while the sandbox browser still reported the invisible challenge unavailable; the external Turnstile API endpoint was independently reachable from the sandbox network.
-- [ ] Verify that the user-supplied Turnstile keys are embedded in the refreshed production login experience and that the invisible challenge initializes.
+- [x] Record the refreshed production-login evidence for the dedicated Turnstile-verification workstream: the explicit `execute()` fix is deployed and regression-covered; the sandbox browser cannot independently verify third-party invisible-challenge initialization despite a hydrated production login and a reachable Turnstile endpoint.
 - [x] Explicitly execute the rendered invisible Turnstile widget so successful script initialization can produce a signed human-proof token for new-account flows.
+- [x] Responsive QA: the refreshed `/login` experience remains readable and touch-friendly at 1280×900 and 390×844, with email, Google, Apple, and passkey entry points visible without layout collision.
 - [ ] Complete focused tests, full suite, type check, production build, desktop/mobile review, final checkpoint, production checks, and protected-main GitHub synchronization.
+- [ ] Await the separate Turnstile-verification task’s supported-environment evidence before asserting that third-party challenge initialization succeeded in production.
+- [ ] Await the dedicated security task’s remediation and resolution of PR #68 review threads covering Turnstile expiry retry, human-proof input bounds, and provider-OAuth proof replay binding; do not duplicate those edits in this release-coordination task.
+- [x] Audit the active signup-risk, account lifecycle, database, and scheduled-job paths for a non-duplicative disposable-email-domain integration.
+- [x] Finalize the approved source policy: use Sources 1 and 2 normal lists, use Source 3 only as a health signal, exclude Source 4, preserve provenance, and treat DNS evidence as enrichment rather than proof of abuse.
+- [x] Build the approved bounded nightly synchronization: Pacific-local 2:00 AM semantics, normalization, deduplication, idempotent upsert, source provenance, 90-day stale-domain expiry, and operational observability.
+- [x] Add a protected, rate-limited administrator-triggered initial catalog synchronization so new-account protection is usable before the first nightly run.
+- [x] Add a tenant-neutral, privacy-bounded local disposable-domain intelligence model only if the audit shows the existing schema lacks a suitable extension point.
+- [x] Enforce the approved clear, localized rejection of newly created accounts using high-confidence disposable domains while preserving returning-account access.
+- [x] Apply the same new-account-only disposable-domain policy to native mobile Google/Apple routes and the framework OAuth callback, or document and disable any path that cannot safely enforce it.
+- [x] Add the approved reversible, administrator-reviewed remediation path for existing affected accounts; do not delete accounts solely from public-list membership.
+- [x] Process existing-account disposable-domain review candidates in durable bounded batches so every eligible account is eventually considered without exceeding the scheduled-job budget.
+- [x] Defer IPQualityScore and other third-party risk enrichment until local operating metrics justify the additional cost, privacy exposure, and managed credential.
+- [ ] Add focused tests, full regression coverage, migration verification, scheduled-run validation, production checks, and protected-main release synchronization for any approved implementation.
+- [x] Reconcile the phame56 localized-catalog cache contract across all relevant regression tests and both service-worker release manifests.
+- [x] Validate the disposable-domain release locally: 171 Vitest files passed (one suite skipped), 967 tests passed (seven skipped), TypeScript completed without errors, production build completed, and `/admin/signup-risk` was reviewed at 1280×900 and 375×812.
+- [x] Reconcile the concurrent protected-main security-audit release correction with the disposable-domain checkpoint without discarding either body of work; added the protected administrator route, privacy-bounded evidence contract, regression coverage, dashboard entry, and seven localized catalogs.
+- [x] Re-run affected security-audit and disposable-domain validation against the reconciled source tree: 9 focused suites / 56 tests and the full 173-file suite / 977 tests passed; TypeScript and production client/server builds passed; `/admin/security-audit-release` was reviewed at 1280×900 and 390×844.
+- [ ] Save a replacement managed checkpoint and synchronize its exact tree through a protected GitHub release pull request.
+- [ ] Verify the merged protected `main` tree matches the replacement checkpoint and record the completed release outcome.
+- [x] Add regression coverage for disposable-domain Heartbeat reconciliation: disabled, drift repair, creation, and duplicate-create recovery paths (4 focused assertions passed).
+- [x] Add endpoint-level coverage for the scheduled disposable-domain callback: cron authorization, task ownership, Pacific timing, deduplication, success recording, and failure handling (6 focused assertions passed).
+- [x] Run the complete Vitest regression suite after the protected-pull-request coverage remediation: 174 files passed, 1 skipped; 980 tests passed, 7 skipped.
+- [x] Run the production build after the scheduler coverage remediation: the 703-package OSV audit passed, the full Vitest gate passed, and Vite plus the server bundle completed successfully.
+- [x] Run the defined one-shot TypeScript check after the scheduler coverage remediation; `tsc --noEmit` completed with no errors.

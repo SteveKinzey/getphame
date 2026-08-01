@@ -1503,7 +1503,8 @@
       "googleFailed": "Google sign-in failed. Please try again.",
       "googleMissingCode": "Google did not return the information needed to sign you in. Please try again.",
       "googleStateMismatch": "Google sign-in security check failed. Please try again.",
-      "googleNoId": "Google sign-in could not verify your account. Please try again."
+      "googleNoId": "Google sign-in could not verify your account. Please try again.",
+      "disposableEmail": "Please use a non-disposable email address."
     },
     "preparingGoogle": "Preparing Google sign-in…",
     "redirectingGoogle": "Redirecting securely to Google…"
@@ -3979,28 +3980,7 @@
     "evidenceTitle": "Production controls are in place",
     "evidenceDescription": "This view holds a concise operational record. It deliberately excludes raw dependency logs, advisory details, customer data, and credentials.",
     "evidenceListLabel": "Verified release controls",
-    "evidence": {
-      "github-release": {
-        "title": "Reviewed release lineage",
-        "detail": "The reviewed Security Audit History release is merged to protected main."
-      },
-      "ingestion-auth": {
-        "title": "Ingestion authorization",
-        "detail": "Unauthenticated ingestion is rejected before an audit report can be stored."
-      },
-      "admin-reporting-auth": {
-        "title": "Administrator reporting authorization",
-        "detail": "The reporting payload is served only through an administrator-authorized procedure."
-      },
-      "schema-readiness": {
-        "title": "Audit-history schema readiness",
-        "detail": "The additive audit-report table and reporting indexes are available in production."
-      },
-      "admin-ui": {
-        "title": "Administrator interface",
-        "detail": "Security Audit History loads for an authorized administrator and retains no raw dependency logs or advisory details."
-      }
-    },
+    "evidence": { "github-release": { "title": "Reviewed release lineage", "detail": "The reviewed Security Audit History release is merged to protected main." }, "ingestion-auth": { "title": "Ingestion authorization", "detail": "Unauthenticated ingestion is rejected before an audit report can be stored." }, "admin-reporting-auth": { "title": "Administrator reporting authorization", "detail": "The reporting payload is served only through an administrator-authorized procedure." }, "schema-readiness": { "title": "Audit-history schema readiness", "detail": "The additive audit-report table and reporting indexes are available in production." }, "admin-ui": { "title": "Administrator interface", "detail": "Security Audit History loads for an authorized administrator and retains no raw dependency logs or advisory details." } },
     "scopeEyebrow": "Verified release",
     "scopeTitle": "Security Audit History",
     "scopeBody": "Protected audit ingestion, administrator reporting, and sanitized audit persistence.",
@@ -4013,12 +3993,7 @@
     "reportPending": "The release is ready. The first operational proof arrives when the next scheduled dependency-audit workflow records its sanitized summary.",
     "recordedBadge": "Report recorded",
     "pendingBadge": "Awaiting scheduled audit",
-    "steps": {
-      "1": "Allow the scheduled dependency-audit workflow to finish at its normal cadence. Do not trigger a duplicate run only to populate the page.",
-      "2": "Confirm that one authenticated, sanitized summary is accepted through the audit-ingestion path.",
-      "3": "Open Security Audit History as an administrator and confirm that a new latest-report card shows an outcome, validation statuses, a timestamp, package-update count, and a workflow reference.",
-      "4": "If no report appears, preserve the failed-run evidence and investigate the workflow or sanitized ingestion result before retrying."
-    },
+    "steps": { "1": "Allow the scheduled dependency-audit workflow to finish at its normal cadence. Do not trigger a duplicate run only to populate the page.", "2": "Confirm that one authenticated, sanitized summary is accepted through the audit-ingestion path.", "3": "Open Security Audit History as an administrator and confirm that a new latest-report card shows an outcome, validation statuses, a timestamp, package-update count, and a workflow reference.", "4": "If no report appears, preserve the failed-run evidence and investigate the workflow or sanitized ingestion result before retrying." },
     "nextNote": "Do not create a duplicate workflow merely to populate this dashboard. A normal scheduled run confirms the whole production reporting loop.",
     "openHistory": "Open Security Audit History",
     "privacyEyebrow": "Data handling",

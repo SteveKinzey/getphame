@@ -47,7 +47,7 @@ describe("administrator security-audit release verification", () => {
     expect(first.privacy).not.toBe(second.privacy);
   });
 
-  it("returns the verified, sanitized release evidence only to administrators", async () => {
+  it("returns verified, sanitized release evidence only to administrators", async () => {
     const caller = appRouter.createCaller(context("admin"));
     const result = await caller.securityAuditReleaseVerification.dashboard();
 
