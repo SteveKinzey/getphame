@@ -16,7 +16,9 @@ describe("versioned service-worker delivery", () => {
     expect(mainSource).toContain(
       "navigator.serviceWorker.register(SERVICE_WORKER_URL)"
     );
-    expect(mainSource).not.toContain("navigator.serviceWorker.register('/sw.js')");
+    expect(mainSource).not.toContain(
+      "navigator.serviceWorker.register('/sw.js')"
+    );
   });
 
   it("keeps the versioned file and runtime cache generation aligned", () => {
