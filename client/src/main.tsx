@@ -76,6 +76,8 @@ const trpcClient = trpc.createClient({
 });
 
 // ── Service worker ────────────────────────────────────────────────────────────
+const SERVICE_WORKER_URL = "/sw-v26.js";
+
 function syncLanguageToServiceWorker(registration: ServiceWorkerRegistration, language: string) {
   const worker = registration.active ?? registration.waiting ?? registration.installing;
   worker?.postMessage({ type: "SET_LANGUAGE", language });
@@ -89,7 +91,7 @@ i18n.on("languageChanged", syncDocumentLanguage);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then((registration) => {
+    navigator.serviceWorker.register(SERVICE_WORKER_URL).then((registration) => {
       const syncCurrentLanguage = (language = i18n.resolvedLanguage ?? i18n.language ?? "en") => {
         syncLanguageToServiceWorker(registration, language);
       };
