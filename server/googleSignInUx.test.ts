@@ -8,7 +8,8 @@ import {
 } from "../client/src/lib/authFeedback";
 
 const root = process.cwd();
-const read = (relativePath: string) => fs.readFileSync(path.join(root, relativePath), "utf8");
+const read = (relativePath: string) =>
+  fs.readFileSync(path.join(root, relativePath), "utf8");
 
 describe("Google sign-in interaction feedback", () => {
   it("disables the Google control, exposes busy state, and replaces its icon with a spinner", () => {
@@ -23,31 +24,45 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain("GOOGLE_REDIRECT_FEEDBACK_MS = 420");
     expect(login).toContain("GOOGLE_REDIRECT_STATUS_MS = 140");
     expect(login).toContain("window.setTimeout(() => {");
-    expect(login).toContain("isGoogleSubmitting ? <Spinner /> : <GoogleIcon />");
+    expect(login).toContain(
+      "isGoogleSubmitting ? <Spinner /> : <GoogleIcon />"
+    );
     expect(login).toContain('t("authFeedback.preparingGoogle"');
     expect(login).toContain('t("authFeedback.redirectingGoogle"');
-    expect(login).toContain('role="status" aria-live="polite"');
+    expect(login).toContain('role="status"');
+    expect(login).toContain('aria-live="polite"');
     expect(login).toContain('t("authFeedback.connectingGoogle"');
     expect(login).toContain('t("login.continueWithGoogle"');
-    expect(login).toContain("const humanProof = await createProviderHumanProof()");
-    expect(login).toContain("/api/auth/google?human_proof=${encodeURIComponent(humanProof)}");
-    expect(login).toContain('window.location.assign(destination)');
+    expect(login).toContain(
+      'const destination = await createVerifiedProviderUrl("google")'
+    );
+    expect(login).toContain("fetch(`/api/auth/${provider}/start`");
+    expect(login).not.toContain("human_proof");
+    expect(login).toContain("window.location.assign(destination)");
   });
 
   it("keeps account-establishing methods before passkey authentication in JSX source order and preserves the autofocus contract", () => {
     const login = read("client/src/pages/Login.tsx");
     const magicLinkForm = read("client/src/components/auth/MagicLinkForm.tsx");
-    const passkeySignIn = read("client/src/components/security/PasskeySignIn.tsx");
-    const magicLinkPosition = login.indexOf('<MagicLinkForm');
+    const passkeySignIn = read(
+      "client/src/components/security/PasskeySignIn.tsx"
+    );
+    const magicLinkPosition = login.indexOf("<MagicLinkForm");
     const socialPosition = login.indexOf('data-testid="social-login"');
     const passkeyPosition = login.indexOf("<PasskeySignIn />");
 
     expect(magicLinkPosition).toBeGreaterThan(-1);
-    expect(login.slice(magicLinkPosition, socialPosition)).toContain('humanVerificationToken={humanVerificationToken}');
+    expect(login.slice(magicLinkPosition, socialPosition)).toContain(
+      "humanVerificationToken={humanVerificationToken}"
+    );
     expect(socialPosition).toBeGreaterThan(magicLinkPosition);
     expect(passkeyPosition).toBeGreaterThan(socialPosition);
-    expect(login.slice(magicLinkPosition, socialPosition)).toContain('t("login.or"');
-    expect(login.slice(socialPosition, passkeyPosition)).toContain('t("passkeys.signIn.orAlternative"');
+    expect(login.slice(magicLinkPosition, socialPosition)).toContain(
+      't("login.or"'
+    );
+    expect(login.slice(socialPosition, passkeyPosition)).toContain(
+      't("passkeys.signIn.orAlternative"'
+    );
     expect(magicLinkForm).toContain("autoFocus={autoFocus}");
     expect(passkeySignIn).not.toContain("autoFocus");
     expect(passkeySignIn).toContain('ceremony.state === "enrollment_required"');
@@ -61,38 +76,54 @@ describe("Google sign-in interaction feedback", () => {
     const googleAuth = read("server/googleAuth.ts");
 
     expect(login).toContain("rememberGoogleSignInPending()");
-    expect(login).toContain('toast.loading(t("authFeedback.openingGoogle"');
+    expect(login).toContain("toast.loading(");
+    expect(login).toContain('t("authFeedback.openingGoogle"');
     expect(app).toContain("hasGoogleSignInPending()");
     expect(app).toContain('t("authFeedback.googleSuccess"');
-    expect(app).toContain("toast.error(getLocalizedAuthErrorMessage(authError, t)");
+    expect(app).toContain(
+      "toast.error(getLocalizedAuthErrorMessage(authError, t)"
+    );
     expect(feedback).toContain("google_missing_code");
     expect(feedback).toContain("google_state_mismatch");
     expect(feedback).toContain("google_no_id");
     expect(googleAuth).toContain('app.get("/api/auth/google/status"');
-    expect(googleAuth).toContain('res.json({ enabled: Boolean(ENV.googleClientId && ENV.googleClientSecret) })');
+    expect(googleAuth).toContain(
+      "res.json({ enabled: Boolean(ENV.googleClientId && ENV.googleClientSecret) })"
+    );
     expect(googleAuth).toContain('"/?auth_error=google_missing_code"');
     expect(googleAuth).toContain('"/?auth_error=google_no_id"');
     expect(googleAuth).toContain('"/?auth_error=google_failed"');
   });
 
   it("maps known callback failures to actionable user-facing messages", () => {
-    expect(getAuthErrorMessage("google_denied")).toBe("Google sign-in was cancelled.");
-    expect(getAuthErrorMessage("google_failed")).toBe("Google sign-in failed. Please try again.");
-    expect(getAuthErrorMessage("google_state_mismatch")).toContain("security check failed");
+    expect(getAuthErrorMessage("google_denied")).toBe(
+      "Google sign-in was cancelled."
+    );
+    expect(getAuthErrorMessage("google_failed")).toBe(
+      "Google sign-in failed. Please try again."
+    );
+    expect(getAuthErrorMessage("google_state_mismatch")).toContain(
+      "security check failed"
+    );
     expect(getAuthErrorMessage("unknown_code")).toContain("contact support");
   });
 
   it("maps known Google callback failures through stable localization keys while retaining safe fallbacks", () => {
-    const translate = vi.fn((key: string, options: { defaultValue: string }) => `${key}|${options.defaultValue}`);
+    const translate = vi.fn(
+      (key: string, options: { defaultValue: string }) =>
+        `${key}|${options.defaultValue}`
+    );
 
     expect(getLocalizedAuthErrorMessage("google_denied", translate)).toContain(
-      "authFeedback.errors.googleDenied|Google sign-in was cancelled.",
+      "authFeedback.errors.googleDenied|Google sign-in was cancelled."
     );
-    expect(getLocalizedAuthErrorMessage("google_state_mismatch", translate)).toContain(
-      "authFeedback.errors.googleStateMismatch|Google sign-in security check failed.",
+    expect(
+      getLocalizedAuthErrorMessage("google_state_mismatch", translate)
+    ).toContain(
+      "authFeedback.errors.googleStateMismatch|Google sign-in security check failed."
     );
     expect(getLocalizedAuthErrorMessage("unknown_code", translate)).toBe(
-      "Sign-in failed. Please try again or contact support.",
+      "Sign-in failed. Please try again or contact support."
     );
     expect(translate).toHaveBeenCalledTimes(2);
   });
@@ -122,7 +153,9 @@ describe("Google sign-in interaction feedback", () => {
     ];
 
     for (const locale of locales) {
-      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+      const catalog = JSON.parse(
+        read(`client/public/locales/${locale}/translation.json`)
+      );
 
       for (const keyPath of requiredPaths) {
         const value = keyPath.split(".").reduce<unknown>((current, key) => {
@@ -172,7 +205,9 @@ describe("Google sign-in interaction feedback", () => {
     ];
 
     for (const locale of locales) {
-      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+      const catalog = JSON.parse(
+        read(`client/public/locales/${locale}/translation.json`)
+      );
 
       for (const keyPath of requiredPaths) {
         const value = keyPath.split(".").reduce<unknown>((current, key) => {
@@ -199,7 +234,7 @@ describe("authenticated account menus", () => {
     expect(layout).toContain('data-testid="sidebar-account-details"');
     expect(layout).toContain('navigate("/settings")');
     expect(layout).toContain('data-testid="sidebar-logout"');
-    expect(layout).toContain("void logout().then(() => navigate(\"/\"))");
+    expect(layout).toContain('void logout().then(() => navigate("/"))');
     expect(layout).toContain("focus-visible:ring-2");
   });
 

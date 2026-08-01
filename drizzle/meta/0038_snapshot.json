@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "049c65f7-7b96-4eef-8719-2354ca2d7d97",
+  "id": "5aa6f332-52f2-4e1e-870d-fc6157aad684",
   "prevId": "720f3063-b1ac-4d3a-b9cd-b96c7ce5abfb",
   "tables": {
     "access_code_redemptions": {
@@ -2658,381 +2658,6 @@
       },
       "checkConstraint": {}
     },
-    "disposable_domain_account_reviews": {
-      "name": "disposable_domain_account_reviews",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "userId": {
-          "name": "userId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "domain": {
-          "name": "domain",
-          "type": "varchar(253)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "confidenceScore": {
-          "name": "confidenceScore",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "enum('pending','dismissed','resolved')",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'pending'"
-        },
-        "detectedAt": {
-          "name": "detectedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "lastDetectedAt": {
-          "name": "lastDetectedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "resolvedAt": {
-          "name": "resolvedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "resolvedByUserId": {
-          "name": "resolvedByUserId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "adminNote": {
-          "name": "adminNote",
-          "type": "varchar(500)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "disposable_domain_review_status_detected_idx": {
-          "name": "disposable_domain_review_status_detected_idx",
-          "columns": [
-            "status",
-            "lastDetectedAt"
-          ],
-          "isUnique": false
-        },
-        "disposable_domain_review_domain_idx": {
-          "name": "disposable_domain_review_domain_idx",
-          "columns": [
-            "domain"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "disposable_domain_account_reviews_id": {
-          "name": "disposable_domain_account_reviews_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "disposable_domain_account_reviews_userId_unique": {
-          "name": "disposable_domain_account_reviews_userId_unique",
-          "columns": [
-            "userId"
-          ]
-        }
-      },
-      "checkConstraint": {}
-    },
-    "disposable_domain_schedulers": {
-      "name": "disposable_domain_schedulers",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "scheduleKey": {
-          "name": "scheduleKey",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'global'"
-        },
-        "scheduleCronTaskUid": {
-          "name": "scheduleCronTaskUid",
-          "type": "varchar(65)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "cronExpression": {
-          "name": "cronExpression",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'0 0 9,10 * * *'"
-        },
-        "lastRunDateKey": {
-          "name": "lastRunDateKey",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "lastRunAt": {
-          "name": "lastRunAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "lastRunStatus": {
-          "name": "lastRunStatus",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "lastRunErrorCode": {
-          "name": "lastRunErrorCode",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "lastRunSummaryJson": {
-          "name": "lastRunSummaryJson",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "disposable_domain_scheduler_task_idx": {
-          "name": "disposable_domain_scheduler_task_idx",
-          "columns": [
-            "scheduleCronTaskUid"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "disposable_domain_schedulers_id": {
-          "name": "disposable_domain_schedulers_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "disposable_domain_schedulers_scheduleKey_unique": {
-          "name": "disposable_domain_schedulers_scheduleKey_unique",
-          "columns": [
-            "scheduleKey"
-          ]
-        },
-        "disposable_domain_schedulers_scheduleCronTaskUid_unique": {
-          "name": "disposable_domain_schedulers_scheduleCronTaskUid_unique",
-          "columns": [
-            "scheduleCronTaskUid"
-          ]
-        }
-      },
-      "checkConstraint": {}
-    },
-    "disposable_email_domains": {
-      "name": "disposable_email_domains",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "domain": {
-          "name": "domain",
-          "type": "varchar(253)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "sourceEvidenceJson": {
-          "name": "sourceEvidenceJson",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "confidenceScore": {
-          "name": "confidenceScore",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "active": {
-          "name": "active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": true
-        },
-        "firstSeenAt": {
-          "name": "firstSeenAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "lastSeenAt": {
-          "name": "lastSeenAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "lastDnsCheckedAt": {
-          "name": "lastDnsCheckedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "mxExists": {
-          "name": "mxExists",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "dnsErrorCode": {
-          "name": "dnsErrorCode",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "disposable_domain_active_confidence_idx": {
-          "name": "disposable_domain_active_confidence_idx",
-          "columns": [
-            "active",
-            "confidenceScore"
-          ],
-          "isUnique": false
-        },
-        "disposable_domain_last_seen_idx": {
-          "name": "disposable_domain_last_seen_idx",
-          "columns": [
-            "lastSeenAt"
-          ],
-          "isUnique": false
-        },
-        "disposable_domain_dns_checked_idx": {
-          "name": "disposable_domain_dns_checked_idx",
-          "columns": [
-            "lastDnsCheckedAt"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "disposable_email_domains_id": {
-          "name": "disposable_email_domains_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "disposable_email_domains_domain_unique": {
-          "name": "disposable_email_domains_domain_unique",
-          "columns": [
-            "domain"
-          ]
-        }
-      },
-      "checkConstraint": {}
-    },
     "email_events": {
       "name": "email_events",
       "columns": {
@@ -4187,6 +3812,73 @@
       "compositePrimaryKeys": {
         "page_events_id": {
           "name": "page_events_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "provider_human_verification_attempts": {
+      "name": "provider_human_verification_attempts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provider": {
+          "name": "provider",
+          "type": "enum('google','apple')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "consumed_at": {
+          "name": "consumed_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "provider_human_verification_expiry_idx": {
+          "name": "provider_human_verification_expiry_idx",
+          "columns": [
+            "expires_at"
+          ],
+          "isUnique": false
+        },
+        "provider_human_verification_consumed_idx": {
+          "name": "provider_human_verification_consumed_idx",
+          "columns": [
+            "consumed_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "provider_human_verification_attempts_id": {
+          "name": "provider_human_verification_attempts_id",
           "columns": [
             "id"
           ]

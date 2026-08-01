@@ -2064,6 +2064,29 @@ export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
 export type InsertMagicLinkToken = typeof magicLinkTokens.$inferInsert;
 
 /**
+ * One-time Turnstile verification attempts bound into signed provider OAuth state.
+ * No raw Turnstile token, browser fingerprint, IP address, or provider credential is stored.
+ */
+export const providerHumanVerificationAttempts = pgTable(
+  "provider_human_verification_attempts",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
+    provider: mysqlEnum("provider", ["google", "apple"]).notNull(),
+    expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+    consumedAt: bigint("consumed_at", { mode: "number" }),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("provider_human_verification_expiry_idx").on(table.expiresAt),
+    index("provider_human_verification_consumed_idx").on(table.consumedAt),
+  ]
+);
+export type ProviderHumanVerificationAttempt =
+  typeof providerHumanVerificationAttempts.$inferSelect;
+export type InsertProviderHumanVerificationAttempt =
+  typeof providerHumanVerificationAttempts.$inferInsert;
+
+/**
  * Landing page lead captures — stores emails from the free guide form.
  * guideSentAt is null until the system email with the PDF link is successfully sent.
  */
