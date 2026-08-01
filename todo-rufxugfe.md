@@ -113,4 +113,4 @@
 - [x] Route every initial review-request send path through durable deferred delivery and dispatch queued requests only after quiet hours end.
 - [x] Preserve quota, analytics, customer-request, and follow-up semantics for pending versus actually delivered review requests.
 - [x] Add a controlled support exception topic, administrator approval path, and accessible localized settings controls for address, timezone, quiet hours, and queued delivery status.
-- [ ] Add focused quiet-hours regression coverage and complete full validation, responsive verification, checkpoint release, and protected-main synchronization.
+- [x] Add focused quiet-hours regression coverage and complete full validation, responsive verification, checkpoint release, and protected-main synchronization.
