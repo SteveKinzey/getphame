@@ -484,7 +484,7 @@
             "Completa il registro di verifica del rilascio incluso con prove non sensibili e documenta qualsiasi follow-up limitato nel tempo che rimane."
           ],
           "notes": [
-            "Fermati ed esala se la migrazione è distruttiva o ambigua, il sito gestito non può essere recuperato tramite i controlli supportati, l'albero candidato differisce dal rilascio revisionato, una richiesta non autorizzata rivela o persiste dati, un controllo richiesto fallisce o il report programmato non appare.",
+            "Fermati ed esegui l'escalation se la migrazione è distruttiva o ambigua, il sito gestito non può essere recuperato tramite i controlli supportati, l'albero candidato differisce dal rilascio revisionato, una richiesta non autorizzata rivela o persiste dati, un controllo richiesto fallisce o il report programmato non appare.",
             "Non forzare mai il push, non bypassare la protezione del ramo, non divulgare credenziali, non copiare i log grezzi del flusso di lavoro nelle prove o rappresentare una conferma programmata in sospeso come completata."
           ]
         }

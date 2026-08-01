@@ -41,6 +41,15 @@ const STATIC_ASSETS = [
   '/locales/th/landing.json',
   '/locales/zh-CN/landing.json',
   '/locales/zh-TW/landing.json',
+  // Cancellation namespace is loaded by authenticated workflows and must be
+  // available on first offline launch rather than falling back to empty JSON.
+  '/locales/en/cancellation.json',
+  '/locales/es/cancellation.json',
+  '/locales/fr/cancellation.json',
+  '/locales/it/cancellation.json',
+  '/locales/th/cancellation.json',
+  '/locales/zh-CN/cancellation.json',
+  '/locales/zh-TW/cancellation.json',
   // Caption tracks remain same-origin and are available after PWA installation.
   '/getphame-walkthrough.en.vtt',
   '/getphame-walkthrough.es.vtt',
