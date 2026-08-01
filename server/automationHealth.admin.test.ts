@@ -2,11 +2,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { TrpcContext } from "./_core/context";
 
 const mocks = vi.hoisted(() => ({
+  getDb: vi.fn(),
   getAutomationDashboard: vi.fn(),
   getAutomationAlert: vi.fn(),
   acknowledgeAutomationAlert: vi.fn(),
   getAutomationRunsForDay: vi.fn(),
   getAutomationAlertAcknowledgementHistory: vi.fn(),
+}));
+
+vi.mock("./db", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./db")>()),
+  getDb: mocks.getDb,
 }));
 
 vi.mock("./automationHealthDb", async importOriginal => ({
@@ -43,6 +49,15 @@ describe("Automation Health administrator API", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("JWT_SECRET", "automation-health-admin-test-secret-long-enough");
+    mocks.getDb.mockResolvedValue({
+      select: vi.fn(() => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => [{ suspendedUntil: null }],
+          }),
+        }),
+      })),
+    });
     mocks.getAutomationDashboard.mockResolvedValue({ history: [], daily: [] });
     mocks.getAutomationAlert.mockResolvedValue({ active: false });
     mocks.acknowledgeAutomationAlert.mockResolvedValue({ acknowledged: true });
