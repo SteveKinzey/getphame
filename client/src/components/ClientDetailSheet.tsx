@@ -16,6 +16,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { X, Mail, Pencil, RefreshCw, Send, Loader2, RotateCcw, ChevronDown, ChevronUp, Bell, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { format } from "date-fns";
+import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
 interface ClientDetailSheetProps {
   requestId: number | null;
@@ -75,6 +76,10 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
 
   const hasEmail = !!(request?.emailSubject || request?.emailBody);
   const isDirty = editSubject !== (request?.emailSubject ?? "") || editBody !== (request?.emailBody ?? "");
+  useUpdateDirtySource(
+    "client-campaign-email-editor",
+    isOpen && isEditing && isDirty,
+  );
 
   if (!isOpen) return null;
 

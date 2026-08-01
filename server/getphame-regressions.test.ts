@@ -189,7 +189,7 @@ describe("Get Phame regression contracts", () => {
     ).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v27'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v28'");
     expect(serviceWorker).toContain("'/locales/en/landing.json'");
     expect(serviceWorker).toContain("'/locales/zh-TW/landing.json'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
@@ -216,7 +216,7 @@ describe("Get Phame regression contracts", () => {
     expect(serviceWorker).toContain("return getOfflinePage()");
     expect(serviceWorker).toContain("'/offline.html'");
     expect(serviceWorker).toContain("cache.match('/offline.html')");
-    expect(serviceWorker).toContain("return self.clients.claim()");
+    expect(serviceWorker).toContain("await self.clients.claim()");
     expect(offlinePage).toContain("You’re offline");
     expect(offlinePage).toContain("GET PHAME");
     expect(offlinePage).toContain('onclick="window.location.reload()"');
@@ -834,7 +834,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame57");
+    expect(i18n).toContain("v=phame58");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

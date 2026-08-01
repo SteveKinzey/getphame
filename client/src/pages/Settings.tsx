@@ -93,6 +93,8 @@ import {
 } from "@/lib/reminderSettings";
 import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
+import ApplicationVersionDiagnosticsCard from "@/components/ApplicationVersionDiagnosticsCard";
+import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -1672,6 +1674,26 @@ export default function SettingsPage() {
   const quietDuration = quietDurationMinutes(quietStartMinutes, quietEndMinutes);
   const quietHoursShorteningApproved = quietHoursStatus?.profile?.quietHoursShorteningApproved === 1;
   const requiresQuietHoursException = !quietHoursShorteningApproved && quietDuration < QUIET_HOURS_MINUTES;
+  const profileHasUnsavedChanges = profile
+    ? (
+      businessName !== profile.businessName ||
+      reviewLink !== profile.reviewLink ||
+      fromName !== (profile.fromName ?? "") ||
+      replyTo !== (profile.replyTo ?? "")
+    )
+    : false;
+  const quietHoursHasUnsavedChanges = profile
+    ? (
+      physicalAddress !== (profile.physicalAddress ?? "") ||
+      quietStart !== minutesToTime(profile.quietHoursStartMinutes, "20:00") ||
+      quietEnd !== minutesToTime(profile.quietHoursEndMinutes, "08:00") ||
+      quietHoursReason.trim().length > 0
+    )
+    : false;
+  useUpdateDirtySource(
+    "settings-core-forms",
+    profileHasUnsavedChanges || quietHoursHasUnsavedChanges || followUpTimingHasChanges
+  );
 
   function handleSaveQuietHours() {
     if (!physicalAddress.trim()) {
@@ -3533,6 +3555,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <SendFeedbackSection />
+        {user?.role === "admin" && <ApplicationVersionDiagnosticsCard />}
         {/* ── Admin: OAuth & Auth Integrations ────────────────────────────── */}
         {user?.role === "admin" && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">

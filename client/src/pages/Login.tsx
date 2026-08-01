@@ -27,6 +27,7 @@ import MagicLinkForm from "@/components/auth/MagicLinkForm";
 import HumanVerification from "@/components/auth/HumanVerification";
 import { AlertTriangle } from "lucide-react";
 import { isPasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
+import { useUpdateCriticalActivity } from "@/contexts/UpdateSafetyContext";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -164,6 +165,10 @@ export default function Login() {
   const [humanVerificationToken, setHumanVerificationToken] = useState<
     string | null
   >(null);
+  useUpdateCriticalActivity(
+    "login-provider-redirect",
+    isGoogleSubmitting || isAppleSubmitting,
+  );
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {

@@ -264,8 +264,8 @@ describe("role-aware Get Phame manuals", () => {
     const i18n = readProjectFile("../client/src/lib/i18n.ts");
     const serviceWorker = readProjectFile("../client/public/sw.js");
 
-    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame57");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v27'");
+    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame58");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v28'");
     for (const locale of SUPPORTED_LOCALES) {
       expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);
     }
