@@ -1763,8 +1763,8 @@
     },
     "recentActivity": {
       "title": "最近活動",
-      "engagedBadge": "{{count}} 位已互動",
-      "noActivity": "目前尚無最近活動",
+      "engagedBadge": "{{count}} 人互動",
+      "noActivity": "尚無最近活動",
       "viewAll": "查看全部 →",
       "markAllReviewed": "全部標記為已審閱",
       "markingAll": "標記中…",

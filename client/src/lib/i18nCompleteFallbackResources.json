@@ -2631,8 +2631,8 @@
       },
       "recentActivity": {
         "title": "Actividad reciente",
-        "engagedBadge": "{{count}} activos",
-        "noActivity": "Aún no hay actividad reciente",
+        "engagedBadge": "{{count}} interactuaron",
+        "noActivity": "Sin actividad reciente",
         "viewAll": "Ver todo →",
         "markAllReviewed": "Marcar todo como revisado",
         "markingAll": "Marcando…",
@@ -4339,8 +4339,8 @@
       },
       "recentActivity": {
         "title": "Activité récente",
-        "engagedBadge": "{{count}} engagés",
-        "noActivity": "Aucune activité récente pour l'instant",
+        "engagedBadge": "{{count}} ont interagi",
+        "noActivity": "Aucune activité récente",
         "viewAll": "Voir tout →",
         "markAllReviewed": "Tout marquer comme examiné",
         "markingAll": "Marquage…",
@@ -6024,11 +6024,11 @@
       },
       "recentActivity": {
         "title": "Attività recente",
-        "engagedBadge": "{{count}} coinvolti",
+        "engagedBadge": "{{count}} hanno interagito",
         "noActivity": "Nessuna attività recente",
         "viewAll": "Vedi tutto →",
         "markAllReviewed": "Segna tutto come esaminato",
-        "markingAll": "Marcatura…",
+        "markingAll": "Contrassegnando…",
         "markAllShort": "Segna tutto"
       }
     },
@@ -9129,7 +9129,7 @@
       },
       "recentActivity": {
         "title": "最近活动",
-        "engagedBadge": "{{count}} 位已互动",
+        "engagedBadge": "{{count}} 人互动",
         "noActivity": "暂无最近活动",
         "viewAll": "查看全部 →",
         "markAllReviewed": "全部标记为已审阅",
@@ -10673,8 +10673,8 @@
       },
       "recentActivity": {
         "title": "最近活動",
-        "engagedBadge": "{{count}} 位已互動",
-        "noActivity": "目前尚無最近活動",
+        "engagedBadge": "{{count}} 人互動",
+        "noActivity": "尚無最近活動",
         "viewAll": "查看全部 →",
         "markAllReviewed": "全部標記為已審閱",
         "markingAll": "標記中…",

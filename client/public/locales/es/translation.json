@@ -2177,8 +2177,8 @@
     "allTime": "Todo el tiempo",
     "recentActivity": {
       "title": "Actividad reciente",
-      "engagedBadge": "{{count}} activos",
-      "noActivity": "Aún no hay actividad reciente",
+      "engagedBadge": "{{count}} interactuaron",
+      "noActivity": "Sin actividad reciente",
       "viewAll": "Ver todo →",
       "markAllReviewed": "Marcar todo como revisado",
       "markingAll": "Marcando…",
