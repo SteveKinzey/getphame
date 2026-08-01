@@ -4019,6 +4019,10 @@
     "openHistory": "Ouvrir l’Historique des audits de sécurité",
     "privacyEyebrow": "Traitement des données",
     "privacyTitle": "Reporting respectueux de la confidentialité",
-    "privacyBody": "Le registre de mise en production exclut les identifiants, les données client, les journaux bruts et les détails d’avis individuels."
+    "privacyBody": "Le registre de mise en production exclut les identifiants, les données client, les journaux bruts et les détails d’avis individuels.",
+    "reportChecking": "Les éléments de preuve de la version sont chargés. Vérification de l’enregistrement du premier rapport d’audit planifié.",
+    "reportUnavailable": "La version est vérifiée, mais l’état du dernier rapport d’audit n’a pas pu être chargé. Ouvrez l’Historique des audits de sécurité pour réessayer en toute sécurité.",
+    "checkingBadge": "Vérification de l’historique des audits",
+    "unavailableBadge": "État de l’audit indisponible"
   }
 }

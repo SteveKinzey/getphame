@@ -3968,6 +3968,10 @@
     "openHistory": "Open Security Audit History",
     "privacyEyebrow": "Data handling",
     "privacyTitle": "Privacy-preserving reporting",
-    "privacyBody": "The release record excludes credentials, customer data, raw logs, and individual advisory details."
+    "privacyBody": "The release record excludes credentials, customer data, raw logs, and individual advisory details.",
+    "reportChecking": "The release evidence is loaded. Checking whether the first scheduled audit report has been recorded.",
+    "reportUnavailable": "The release is verified, but the latest audit-report status could not be loaded. Open Security Audit History to retry safely.",
+    "checkingBadge": "Checking audit history",
+    "unavailableBadge": "Audit status unavailable"
   }
 }

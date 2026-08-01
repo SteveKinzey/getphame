@@ -3529,6 +3529,10 @@
     "openHistory": "開啟安全稽核歷程",
     "privacyEyebrow": "資料處理",
     "privacyTitle": "保護隱私的報告",
-    "privacyBody": "發布記錄不包含憑證、客戶資料、原始日誌和個別公告詳情。"
+    "privacyBody": "發布記錄不包含憑證、客戶資料、原始日誌和個別公告詳情。",
+    "reportChecking": "版本驗證證據已載入。正在確認是否已記錄第一份排定的安全稽核報告。",
+    "reportUnavailable": "版本已驗證，但無法載入最新安全稽核報告的狀態。請開啟「安全稽核歷程」以安全地重試。",
+    "checkingBadge": "正在檢查稽核歷程",
+    "unavailableBadge": "無法取得稽核狀態"
   }
 }

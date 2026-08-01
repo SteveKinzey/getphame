@@ -4019,6 +4019,10 @@
     "openHistory": "Abrir Historial de auditorías de seguridad",
     "privacyEyebrow": "Tratamiento de datos",
     "privacyTitle": "Informes que preservan la privacidad",
-    "privacyBody": "El registro de publicación excluye credenciales, datos de clientes, registros sin procesar y detalles individuales de avisos."
+    "privacyBody": "El registro de publicación excluye credenciales, datos de clientes, registros sin procesar y detalles individuales de avisos.",
+    "reportChecking": "La evidencia de la versión está cargada. Se está comprobando si se ha registrado el primer informe de auditoría programada.",
+    "reportUnavailable": "La versión está verificada, pero no se pudo cargar el estado del último informe de auditoría. Abra Historial de auditorías de seguridad para volver a intentarlo de forma segura.",
+    "checkingBadge": "Comprobando historial de auditorías",
+    "unavailableBadge": "Estado de auditoría no disponible"
   }
 }

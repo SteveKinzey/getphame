@@ -135,6 +135,8 @@ export default function AdminSecurityAuditReleaseVerification() {
   }
 
   const data = release.data;
+  const auditHistoryLoading = auditHistory.isLoading;
+  const auditHistoryUnavailable = auditHistory.isError || !auditHistory.data;
   const firstReportRecorded = Boolean(auditHistory.data?.latest);
 
   return (
@@ -377,34 +379,80 @@ export default function AdminSecurityAuditReleaseVerification() {
                       defaultValue: data.nextOperationalConfirmation.title,
                     })}
                   </h2>
-                  <p className="mt-2 max-w-3xl rr-b2 rr-text-navy-muted">
-                    {firstReportRecorded
-                      ? t("securityAuditReleaseVerification.reportRecorded", {
+                  <p
+                    className="mt-2 max-w-3xl rr-b2 rr-text-navy-muted"
+                    aria-live="polite"
+                  >
+                    {auditHistoryLoading
+                      ? t("securityAuditReleaseVerification.reportChecking", {
                           defaultValue:
-                            "A verified audit report is now available. Review it in Security Audit History and preserve any failed-run evidence before retrying.",
+                            "The release evidence is loaded. Checking whether the first scheduled audit report has been recorded.",
                         })
-                      : t("securityAuditReleaseVerification.reportPending", {
-                          defaultValue:
-                            "The release is ready. The first operational proof arrives when the next scheduled dependency-audit workflow records its sanitized summary.",
-                        })}
+                      : auditHistoryUnavailable
+                        ? t(
+                            "securityAuditReleaseVerification.reportUnavailable",
+                            {
+                              defaultValue:
+                                "The release is verified, but the latest audit-report status could not be loaded. Open Security Audit History to retry safely.",
+                            }
+                          )
+                        : firstReportRecorded
+                          ? t(
+                              "securityAuditReleaseVerification.reportRecorded",
+                              {
+                                defaultValue:
+                                  "A verified audit report is now available. Review it in Security Audit History and preserve any failed-run evidence before retrying.",
+                              }
+                            )
+                          : t(
+                              "securityAuditReleaseVerification.reportPending",
+                              {
+                                defaultValue:
+                                  "The release is ready. The first operational proof arrives when the next scheduled dependency-audit workflow records its sanitized summary.",
+                              }
+                            )}
                   </p>
                 </div>
               </div>
               <span
-                className={`inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-black ${firstReportRecorded ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-900"}`}
+                className={`inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-black ${
+                  auditHistoryLoading
+                    ? "bg-sky-100 text-sky-900"
+                    : auditHistoryUnavailable
+                      ? "bg-rose-100 text-rose-800"
+                      : firstReportRecorded
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-amber-100 text-amber-900"
+                }`}
               >
-                {firstReportRecorded ? (
+                {auditHistoryLoading ? (
+                  <Loader2
+                    className="animate-spin"
+                    size={14}
+                    aria-hidden="true"
+                  />
+                ) : auditHistoryUnavailable ? (
+                  <AlertTriangle size={14} aria-hidden="true" />
+                ) : firstReportRecorded ? (
                   <CheckCircle2 size={14} aria-hidden="true" />
                 ) : (
                   <AlertTriangle size={14} aria-hidden="true" />
                 )}
-                {firstReportRecorded
-                  ? t("securityAuditReleaseVerification.recordedBadge", {
-                      defaultValue: "Report recorded",
+                {auditHistoryLoading
+                  ? t("securityAuditReleaseVerification.checkingBadge", {
+                      defaultValue: "Checking audit history",
                     })
-                  : t("securityAuditReleaseVerification.pendingBadge", {
-                      defaultValue: "Awaiting scheduled audit",
-                    })}
+                  : auditHistoryUnavailable
+                    ? t("securityAuditReleaseVerification.unavailableBadge", {
+                        defaultValue: "Audit status unavailable",
+                      })
+                    : firstReportRecorded
+                      ? t("securityAuditReleaseVerification.recordedBadge", {
+                          defaultValue: "Report recorded",
+                        })
+                      : t("securityAuditReleaseVerification.pendingBadge", {
+                          defaultValue: "Awaiting scheduled audit",
+                        })}
               </span>
             </div>
           </div>

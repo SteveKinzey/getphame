@@ -3507,6 +3507,10 @@
     "openHistory": "打开安全审计历史",
     "privacyEyebrow": "数据处理",
     "privacyTitle": "保护隐私的报告",
-    "privacyBody": "发布记录不包含凭据、客户数据、原始日志和单个公告详情。"
+    "privacyBody": "发布记录不包含凭据、客户数据、原始日志和单个公告详情。",
+    "reportChecking": "发布验证证据已加载。正在检查是否已记录首份计划安全审计报告。",
+    "reportUnavailable": "发布已验证，但无法加载最新安全审计报告的状态。请打开“安全审计历史记录”以安全重试。",
+    "checkingBadge": "正在检查审计历史",
+    "unavailableBadge": "审计状态不可用"
   }
 }

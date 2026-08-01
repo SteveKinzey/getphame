@@ -4232,6 +4232,10 @@
     "openHistory": "Apri Cronologia degli audit di sicurezza",
     "privacyEyebrow": "Gestione dei dati",
     "privacyTitle": "Report rispettosi della privacy",
-    "privacyBody": "Il registro del rilascio esclude credenziali, dati dei clienti, log non elaborati e dettagli individuali degli avvisi."
+    "privacyBody": "Il registro del rilascio esclude credenziali, dati dei clienti, log non elaborati e dettagli individuali degli avvisi.",
+    "reportChecking": "Le evidenze della versione sono state caricate. Verifica in corso della registrazione del primo report di audit pianificato.",
+    "reportUnavailable": "La versione è verificata, ma non è stato possibile caricare lo stato dell’ultimo report di audit. Apri Cronologia degli audit di sicurezza per riprovare in modo sicuro.",
+    "checkingBadge": "Verifica della cronologia degli audit",
+    "unavailableBadge": "Stato dell’audit non disponibile"
   }
 }
