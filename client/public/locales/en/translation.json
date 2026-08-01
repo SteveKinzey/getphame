@@ -2015,6 +2015,16 @@
       "updateFailed": "Failed to update requests.",
       "updatedSuccess": "{{count}} request updated.",
       "updatedSuccessPlural": "{{count}} requests updated."
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "engagedBadge": "{{count}} engaged",
+      "noActivity": "No recent activity yet",
+      "viewAll": "View all →",
+      "markAllReviewed": "Mark all as reviewed",
+      "markingAll": "Marking…",
+      "markAllShort": "Mark all",
+      "markAllSuccess": "{{count}} items marked as reviewed"
     }
   },
   "pricing": {

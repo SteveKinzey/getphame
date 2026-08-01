@@ -1098,6 +1098,16 @@
         "selectedCount": "{{count}} selected",
         "markReviewed": "Mark Reviewed",
         "markSent": "Mark Sent"
+      },
+      "recentActivity": {
+        "title": "Recent Activity",
+        "engagedBadge": "{{count}} engaged",
+        "noActivity": "No recent activity yet",
+        "viewAll": "View all →",
+        "markAllReviewed": "Mark all as reviewed",
+        "markingAll": "Marking…",
+        "markAllShort": "Mark all",
+        "markAllSuccess": "{{count}} items marked as reviewed"
       }
     },
     "reminderRow": {
@@ -2619,6 +2629,16 @@
         "selectedCount": "{{count}} seleccionados",
         "markReviewed": "Marcar como revisado",
         "markSent": "Marcar como enviado"
+      },
+      "recentActivity": {
+        "title": "Actividad reciente",
+        "engagedBadge": "{{count}} interactuaron",
+        "noActivity": "Sin actividad reciente",
+        "viewAll": "Ver todo →",
+        "markAllReviewed": "Marcar todo como revisado",
+        "markingAll": "Marcando…",
+        "markAllShort": "Marcar todo",
+        "markAllSuccess": "{{count}} elementos marcados como revisados"
       }
     },
     "reminderRow": {
@@ -4318,6 +4338,16 @@
       "toasts": {
         "updatedSuccess": "{{count}} demande mise à jour.",
         "updatedSuccessPlural": "{{count}} demandes mises à jour."
+      },
+      "recentActivity": {
+        "title": "Activité récente",
+        "engagedBadge": "{{count}} ont interagi",
+        "noActivity": "Aucune activité récente",
+        "viewAll": "Voir tout →",
+        "markAllReviewed": "Tout marquer comme examiné",
+        "markingAll": "Marquage…",
+        "markAllShort": "Tout marquer",
+        "markAllSuccess": "{{count}} éléments marqués comme examinés"
       }
     },
     "reminderRow": {
@@ -5994,6 +6024,16 @@
         "selectedCount": "{{count}} selezionato",
         "markReviewed": "Segna come recensito",
         "markSent": "Segna come inviato"
+      },
+      "recentActivity": {
+        "title": "Attività recente",
+        "engagedBadge": "{{count}} hanno interagito",
+        "noActivity": "Nessuna attività recente",
+        "viewAll": "Vedi tutto →",
+        "markAllReviewed": "Segna tutto come esaminato",
+        "markingAll": "Contrassegnando…",
+        "markAllShort": "Segna tutto",
+        "markAllSuccess": "{{count}} elementi contrassegnati come esaminati"
       }
     },
     "reminderRow": {
@@ -7539,6 +7579,16 @@
         "selectedCount": "{{count}} ถูกเลือก",
         "markReviewed": "ทำเครื่องหมายว่ารีวิวแล้ว",
         "markSent": "ทำเครื่องหมายว่า ส่งแล้ว"
+      },
+      "recentActivity": {
+        "title": "กิจกรรมล่าสุด",
+        "engagedBadge": "{{count}} มีส่วนร่วม",
+        "noActivity": "ยังไม่มีกิจกรรมล่าสุด",
+        "viewAll": "ดูทั้งหมด →",
+        "markAllReviewed": "ทำเครื่องหมายทั้งหมดว่าตรวจสอบแล้ว",
+        "markingAll": "กำลังทำเครื่องหมาย…",
+        "markAllShort": "ทำเครื่องหมายทั้งหมด",
+        "markAllSuccess": "{{count}} รายการถูกทำเครื่องหมายว่าตรวจสอบแล้ว"
       }
     },
     "reminderRow": {
@@ -9081,6 +9131,16 @@
         "selectedCount": "已选择 {{count}} 项",
         "markReviewed": "标记为已评价",
         "markSent": "标记为已发送"
+      },
+      "recentActivity": {
+        "title": "最近活动",
+        "engagedBadge": "{{count}} 人互动",
+        "noActivity": "暂无最近活动",
+        "viewAll": "查看全部 →",
+        "markAllReviewed": "全部标记为已审阅",
+        "markingAll": "标记中…",
+        "markAllShort": "全部标记",
+        "markAllSuccess": "{{count}} 条已标记为审阅"
       }
     },
     "reminderRow": {
@@ -10616,6 +10676,16 @@
         "selectedCount": "已選擇 {{count}} 項",
         "markReviewed": "標記為已審查",
         "markSent": "標記為已發送"
+      },
+      "recentActivity": {
+        "title": "最近活動",
+        "engagedBadge": "{{count}} 人互動",
+        "noActivity": "尚無最近活動",
+        "viewAll": "查看全部 →",
+        "markAllReviewed": "全部標記為已審閱",
+        "markingAll": "標記中…",
+        "markAllShort": "全部標記",
+        "markAllSuccess": "{{count}} 條已標記為審閱"
       }
     },
     "reminderRow": {

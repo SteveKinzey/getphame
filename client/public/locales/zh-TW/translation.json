@@ -1760,6 +1760,16 @@
       "updateFailed": "更新請求失敗。",
       "updatedSuccess": "已更新{{count}}個請求。",
       "updatedSuccessPlural": "已更新{{count}}個請求。"
+    },
+    "recentActivity": {
+      "title": "最近活動",
+      "engagedBadge": "{{count}} 人互動",
+      "noActivity": "尚無最近活動",
+      "viewAll": "查看全部 →",
+      "markAllReviewed": "全部標記為已審閱",
+      "markingAll": "標記中…",
+      "markAllShort": "全部標記",
+      "markAllSuccess": "{{count}} 條已標記為審閱"
     }
   },
   "pricing": {
