@@ -227,6 +227,10 @@ export const recoveryApprovalDecisionEnum = pgEnum(
   "recovery_approval_decision",
   ["approved", "rejected"]
 );
+export const disposableDomainReviewStatusEnum = pgEnum(
+  "disposable_domain_review_status",
+  ["pending", "dismissed", "resolved"]
+);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -1479,6 +1483,105 @@ export const sourceHealthSchedulers = pgTable("source_health_schedulers", {
 export type SourceHealthScheduler = typeof sourceHealthSchedulers.$inferSelect;
 export type InsertSourceHealthScheduler =
   typeof sourceHealthSchedulers.$inferInsert;
+
+/**
+ * Global disposable-email domain intelligence sourced from approved public feeds.
+ * The catalog stores only domain-level evidence; no email-address content belongs here.
+ */
+export const disposableEmailDomains = pgTable(
+  "disposable_email_domains",
+  {
+    id: serial("id").primaryKey(),
+    domain: varchar("domain", { length: 253 }).notNull().unique(),
+    sourceEvidenceJson: text("sourceEvidenceJson").notNull(),
+    confidenceScore: integer("confidenceScore").notNull().default(0),
+    active: boolean("active").notNull().default(true),
+    firstSeenAt: bigint("firstSeenAt", { mode: "number" }).notNull(),
+    lastSeenAt: bigint("lastSeenAt", { mode: "number" }).notNull(),
+    lastDnsCheckedAt: bigint("lastDnsCheckedAt", { mode: "number" }),
+    mxExists: boolean("mxExists"),
+    dnsErrorCode: varchar("dnsErrorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("disposable_domain_active_confidence_idx").on(
+      table.active,
+      table.confidenceScore
+    ),
+    index("disposable_domain_last_seen_idx").on(table.lastSeenAt),
+    index("disposable_domain_dns_checked_idx").on(table.lastDnsCheckedAt),
+  ]
+);
+export type DisposableEmailDomain = typeof disposableEmailDomains.$inferSelect;
+export type InsertDisposableEmailDomain =
+  typeof disposableEmailDomains.$inferInsert;
+
+/** Durable singleton state for the project-owned disposable-domain Heartbeat. */
+export const disposableDomainSchedulers = pgTable(
+  "disposable_domain_schedulers",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("scheduleKey", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).unique(),
+    cronExpression: varchar("cronExpression", { length: 64 })
+      .notNull()
+      .default("0 0 9,10 * * *"),
+    lastRunDateKey: varchar("lastRunDateKey", { length: 16 }),
+    lastRunAt: bigint("lastRunAt", { mode: "number" }),
+    lastRunStatus: varchar("lastRunStatus", { length: 20 }),
+    lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+    lastRunSummaryJson: text("lastRunSummaryJson"),
+    reviewCursorUserId: integer("reviewCursorUserId").notNull().default(0),
+    createdAt: bigint("createdAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+    updatedAt: bigint("updatedAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+  },
+  table => [index("disposable_domain_scheduler_task_idx").on(table.scheduleCronTaskUid)]
+);
+export type DisposableDomainScheduler = typeof disposableDomainSchedulers.$inferSelect;
+export type InsertDisposableDomainScheduler =
+  typeof disposableDomainSchedulers.$inferInsert;
+
+/**
+ * Administrator-only review queue for existing accounts whose current domain
+ * later appears in the high-confidence catalog. No automated restriction or
+ * deletion is attached to this record.
+ */
+export const disposableDomainAccountReviews = pgTable(
+  "disposable_domain_account_reviews",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull().unique(),
+    domain: varchar("domain", { length: 253 }).notNull(),
+    confidenceScore: integer("confidenceScore").notNull(),
+    status: disposableDomainReviewStatusEnum("status").notNull().default("pending"),
+    detectedAt: bigint("detectedAt", { mode: "number" }).notNull(),
+    lastDetectedAt: bigint("lastDetectedAt", { mode: "number" }).notNull(),
+    resolvedAt: bigint("resolvedAt", { mode: "number" }),
+    resolvedByUserId: integer("resolvedByUserId"),
+    adminNote: varchar("adminNote", { length: 500 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("disposable_domain_review_status_detected_idx").on(
+      table.status,
+      table.lastDetectedAt
+    ),
+    index("disposable_domain_review_domain_idx").on(table.domain),
+  ]
+);
+export type DisposableDomainAccountReview =
+  typeof disposableDomainAccountReviews.$inferSelect;
+export type InsertDisposableDomainAccountReview =
+  typeof disposableDomainAccountReviews.$inferInsert;
 
 /**
  * Developer API enrollment — one privacy-minimized record per authenticated account.

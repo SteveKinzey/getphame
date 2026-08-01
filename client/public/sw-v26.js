@@ -1,6 +1,6 @@
 // Versioned path prevents edge caches from pinning an older service worker.
 // Cache version bump forces old caches to be cleared on update.
-// Release manifest: locale dictionaries phame55; service worker getphame-v26.
+// Release manifest: locale dictionaries phame56; service worker getphame-v26.
 const CACHE_NAME = 'getphame-v26';
 const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
 const OFFLINE_PAGES = {

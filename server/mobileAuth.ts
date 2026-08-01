@@ -18,6 +18,7 @@ import { google } from "googleapis";
 import appleSignin from "apple-signin-auth";
 import { ENV } from "./_core/env";
 import * as db from "./db";
+import { isHighConfidenceDisposableEmail } from "./disposableDomains";
 import { sendUserWelcomeEmail } from "./smtp";
 import { issueSecuritySession } from "./security/passkeySessions";
 
@@ -53,6 +54,9 @@ async function handleMobileGoogleAuth(req: Request, res: Response) {
 
     const existingUser = await db.getUserByOpenId(openId);
     const isNewUser = !existingUser;
+    if (isNewUser && await isHighConfidenceDisposableEmail(email)) {
+      return res.status(409).json({ error: "disposable_email" });
+    }
 
     await db.upsertUser({
       openId,
@@ -139,6 +143,9 @@ async function handleMobileAppleAuth(req: Request, res: Response) {
     }
 
     const email = (isNewUser ? appleEmail : existingUser?.email) ?? null;
+    if (isNewUser && await isHighConfidenceDisposableEmail(email)) {
+      return res.status(409).json({ error: "disposable_email" });
+    }
 
     await db.upsertUser({
       openId,

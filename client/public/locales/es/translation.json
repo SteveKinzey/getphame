@@ -1768,7 +1768,8 @@
       "googleFailed": "El inicio de sesión con Google falló. Inténtalo de nuevo.",
       "googleMissingCode": "Google no devolvió la información necesaria para iniciar sesión. Inténtalo de nuevo.",
       "googleStateMismatch": "Falló la comprobación de seguridad del inicio de sesión con Google. Inténtalo de nuevo.",
-      "googleNoId": "No se pudo verificar tu cuenta con Google. Inténtalo de nuevo."
+      "googleNoId": "No se pudo verificar tu cuenta con Google. Inténtalo de nuevo.",
+      "disposableEmail": "Usa una dirección de correo electrónico que no sea temporal."
     },
     "preparingGoogle": "Preparando el inicio de sesión con Google…",
     "redirectingGoogle": "Redirigiendo de forma segura a Google…"
@@ -4014,70 +4015,13 @@
   "securityAuditReleaseVerification": {
     "dashboardCardTitle": "Verificación de la publicación de auditoría de seguridad",
     "dashboardCardBody": "Revise la evidencia de la publicación protegida y el primer paso de confirmación de la auditoría programada",
-    "accessDenied": "Acceso denegado",
-    "adminOnly": "Solo para administradores",
-    "loading": "Cargando la verificación de la publicación",
-    "errorTitle": "La verificación de la publicación no está disponible",
-    "errorBody": "No se pudo cargar la evidencia de publicación disponible solo para administradores.",
-    "backToAdmin": "Volver a administración",
-    "title": "Verificación de la publicación de auditoría de seguridad",
-    "description": "Un registro de evidencia protegido para la publicación del Historial de auditorías de seguridad, sus controles de autorización, el esquema de producción y la primera confirmación de informe programado.",
-    "releaseStatusLabel": "Estado de la publicación",
-    "statusEyebrow": "Estado de la publicación",
-    "statusVerified": "Verificada",
-    "statusBody": "La publicación revisada, las rutas protegidas, la preparación del esquema y las comprobaciones de la interfaz autorizada están completas.",
-    "evidenceEyebrow": "Evidencia de publicación verificada",
-    "evidenceTitle": "Los controles de producción están activos",
-    "evidenceDescription": "Esta vista contiene un registro operativo conciso. Excluye deliberadamente registros sin procesar de dependencias, detalles de avisos, datos de clientes y credenciales.",
-    "evidenceListLabel": "Controles de publicación verificados",
-    "evidence": {
-      "github-release": {
-        "title": "Linaje de publicación revisado",
-        "detail": "La publicación revisada del Historial de auditorías de seguridad se fusionó en main protegido."
-      },
-      "ingestion-auth": {
-        "title": "Autorización de ingesta",
-        "detail": "La ingesta sin autenticar se rechaza antes de que se pueda almacenar un informe de auditoría."
-      },
-      "admin-reporting-auth": {
-        "title": "Autorización de informes de administrador",
-        "detail": "La carga de informes se sirve solo mediante un procedimiento autorizado para administradores."
-      },
-      "schema-readiness": {
-        "title": "Preparación del esquema de historial",
-        "detail": "La tabla aditiva de informes de auditoría y los índices de informes están disponibles en producción."
-      },
-      "admin-ui": {
-        "title": "Interfaz de administrador",
-        "detail": "El Historial de auditorías de seguridad se carga para un administrador autorizado y no conserva registros sin procesar de dependencias ni detalles de avisos."
-      }
-    },
-    "scopeEyebrow": "Publicación verificada",
-    "scopeTitle": "Historial de auditorías de seguridad",
-    "scopeBody": "Ingesta de auditorías protegida, informes de administrador y persistencia de auditorías depurada.",
-    "repository": "Repositorio",
-    "protectedBranch": "Rama protegida",
-    "verifiedAt": "Verificada",
-    "nextEyebrow": "Próxima confirmación operativa",
-    "nextTitle": "Confirme la primera auditoría programada",
-    "reportRecorded": "Ya hay un informe de auditoría verificado disponible. Revíselo en el Historial de auditorías de seguridad y conserve la evidencia de cualquier ejecución fallida antes de reintentar.",
-    "reportPending": "La publicación está lista. La primera prueba operativa llegará cuando el siguiente flujo programado de auditoría de dependencias registre su resumen depurado.",
-    "recordedBadge": "Informe registrado",
-    "pendingBadge": "Esperando auditoría programada",
-    "steps": {
-      "1": "Permita que el flujo de auditoría programada de dependencias termine con su cadencia normal. No active una ejecución duplicada solo para completar la página.",
-      "2": "Confirme que se acepta un resumen autenticado y depurado mediante la ruta de ingesta de auditorías.",
-      "3": "Abra el Historial de auditorías de seguridad como administrador y confirme que una nueva tarjeta de informe muestra un resultado, estados de validación, una marca de tiempo, el recuento de paquetes actualizados y una referencia al flujo de trabajo.",
-      "4": "Si no aparece ningún informe, conserve la evidencia de la ejecución fallida e investigue el flujo de trabajo o el resultado de la ingesta depurada antes de reintentar."
-    },
-    "nextNote": "No cree un flujo de trabajo duplicado solo para completar este panel. Una ejecución programada normal confirma todo el ciclo de informes de producción.",
-    "openHistory": "Abrir Historial de auditorías de seguridad",
-    "privacyEyebrow": "Tratamiento de datos",
-    "privacyTitle": "Informes que preservan la privacidad",
-    "privacyBody": "El registro de publicación excluye credenciales, datos de clientes, registros sin procesar y detalles individuales de avisos.",
-    "reportChecking": "La evidencia de la versión está cargada. Se está comprobando si se ha registrado el primer informe de auditoría programada.",
-    "reportUnavailable": "La versión está verificada, pero no se pudo cargar el estado del último informe de auditoría. Abra Historial de auditorías de seguridad para volver a intentarlo de forma segura.",
-    "checkingBadge": "Comprobando historial de auditorías",
-    "unavailableBadge": "Estado de auditoría no disponible"
+    "accessDenied": "Acceso denegado", "adminOnly": "Solo para administradores", "loading": "Cargando la verificación de la publicación", "errorTitle": "La verificación de la publicación no está disponible", "errorBody": "No se pudo cargar la evidencia de publicación disponible solo para administradores.", "backToAdmin": "Volver a administración",
+    "title": "Verificación de la publicación de auditoría de seguridad", "description": "Un registro de evidencia protegido para la publicación del Historial de auditorías de seguridad, sus controles de autorización, el esquema de producción y la primera confirmación de informe programado.", "releaseStatusLabel": "Estado de la publicación", "statusEyebrow": "Estado de la publicación", "statusVerified": "Verificada", "statusBody": "La publicación revisada, las rutas protegidas, la preparación del esquema y las comprobaciones de la interfaz autorizada están completas.",
+    "evidenceEyebrow": "Evidencia de publicación verificada", "evidenceTitle": "Los controles de producción están activos", "evidenceDescription": "Esta vista contiene un registro operativo conciso. Excluye deliberadamente registros sin procesar de dependencias, detalles de avisos, datos de clientes y credenciales.", "evidenceListLabel": "Controles de publicación verificados",
+    "evidence": { "github-release": { "title": "Linaje de publicación revisado", "detail": "La publicación revisada del Historial de auditorías de seguridad se fusionó en main protegido." }, "ingestion-auth": { "title": "Autorización de ingesta", "detail": "La ingesta sin autenticar se rechaza antes de que se pueda almacenar un informe de auditoría." }, "admin-reporting-auth": { "title": "Autorización de informes de administrador", "detail": "La carga de informes se sirve solo mediante un procedimiento autorizado para administradores." }, "schema-readiness": { "title": "Preparación del esquema de historial", "detail": "La tabla aditiva de informes de auditoría y los índices de informes están disponibles en producción." }, "admin-ui": { "title": "Interfaz de administrador", "detail": "El Historial de auditorías de seguridad se carga para un administrador autorizado y no conserva registros sin procesar de dependencias ni detalles de avisos." } },
+    "scopeEyebrow": "Publicación verificada", "scopeTitle": "Historial de auditorías de seguridad", "scopeBody": "Ingesta de auditorías protegida, informes de administrador y persistencia de auditorías depurada.", "repository": "Repositorio", "protectedBranch": "Rama protegida", "verifiedAt": "Verificada", "nextEyebrow": "Próxima confirmación operativa", "nextTitle": "Confirme la primera auditoría programada",
+    "reportRecorded": "Ya hay un informe de auditoría verificado disponible. Revíselo en el Historial de auditorías de seguridad y conserve la evidencia de cualquier ejecución fallida antes de reintentar.", "reportPending": "La publicación está lista. La primera prueba operativa llegará cuando el siguiente flujo programado de auditoría de dependencias registre su resumen depurado.", "recordedBadge": "Informe registrado", "pendingBadge": "Esperando auditoría programada",
+    "steps": { "1": "Permita que el flujo de auditoría programada de dependencias termine con su cadencia normal. No active una ejecución duplicada solo para completar la página.", "2": "Confirme que se acepta un resumen autenticado y depurado mediante la ruta de ingesta de auditorías.", "3": "Abra el Historial de auditorías de seguridad como administrador y confirme que una nueva tarjeta de informe muestra un resultado, estados de validación, una marca de tiempo, el recuento de paquetes actualizados y una referencia al flujo de trabajo.", "4": "Si no aparece ningún informe, conserve la evidencia de la ejecución fallida e investigue el flujo de trabajo o el resultado de la ingesta depurada antes de reintentar." },
+    "nextNote": "No cree un flujo de trabajo duplicado solo para completar este panel. Una ejecución programada normal confirma todo el ciclo de informes de producción.", "openHistory": "Abrir Historial de auditorías de seguridad", "privacyEyebrow": "Tratamiento de datos", "privacyTitle": "Informes que preservan la privacidad", "privacyBody": "El registro de publicación excluye credenciales, datos de clientes, registros sin procesar y detalles individuales de avisos.", "reportChecking": "La evidencia de la versión está cargada. Se está comprobando si se ha registrado el primer informe de auditoría programada.", "reportUnavailable": "La versión está verificada, pero no se pudo cargar el estado del último informe de auditoría. Abra Historial de auditorías de seguridad para volver a intentarlo de forma segura.", "checkingBadge": "Comprobando historial de auditorías", "unavailableBadge": "Estado de auditoría no disponible"
   }
 }

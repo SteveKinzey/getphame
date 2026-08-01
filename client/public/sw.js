@@ -1,6 +1,6 @@
 // Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-// Release manifest: locale dictionaries phame55; service worker getphame-v26.
+// Release manifest: locale dictionaries phame56; service worker getphame-v26.
 const CACHE_NAME = 'getphame-v26';
 const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
 const OFFLINE_PAGES = {

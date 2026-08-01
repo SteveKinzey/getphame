@@ -1,0 +1,1 @@
+ALTER TABLE `disposable_domain_schedulers` ADD `reviewCursorUserId` int DEFAULT 0 NOT NULL;

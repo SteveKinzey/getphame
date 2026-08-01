@@ -29,6 +29,7 @@ const AUTH_ERROR_TRANSLATION_KEYS: Record<string, string> = {
   invalid_magic_link: "login.invalidMagicLink",
   service_unavailable: "login.serviceUnavailable",
   verification_failed: "login.verificationFailed",
+  disposable_email: "authFeedback.errors.disposableEmail",
 };
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
@@ -50,6 +51,7 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
   invalid_magic_link: "Invalid or already-used sign-in link. Please request a new one.",
   service_unavailable: "Service temporarily unavailable. Please try again.",
   verification_failed: "Verification failed. Please request a new link.",
+  disposable_email: "Please use a non-disposable email address to create your account.",
 };
 
 export function getAuthErrorMessage(code: string): string {

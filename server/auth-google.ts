@@ -18,6 +18,7 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
+import { isHighConfidenceDisposableEmail } from "./disposableDomains";
 import {
   consumeProviderHumanVerificationAttempt,
   createProviderHumanVerificationAttempt,
@@ -269,6 +270,9 @@ export function registerGoogleAuthRoutes(app: Express) {
               "/login?auth_error=human_verification_required"
             );
           }
+          if (await isHighConfidenceDisposableEmail(email)) {
+            return res.redirect(302, "/login?auth_error=disposable_email");
+          }
           await db.upsertUser({
             openId,
             name,
@@ -334,6 +338,9 @@ export function registerGoogleAuthRoutes(app: Express) {
             302,
             "/login?auth_error=human_verification_required"
           );
+        }
+        if (await isHighConfidenceDisposableEmail(email)) {
+          return res.redirect(302, "/login?auth_error=disposable_email");
         }
         await db.upsertUser({
           openId,
