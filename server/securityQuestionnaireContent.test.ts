@@ -47,6 +47,12 @@ describe("public security questionnaire content", () => {
     );
     expect(securitySummary).toContain('id="privacy-and-security"');
     expect(securitySummary).toContain('href="/security"');
+    expect(securitySummary).toContain('id: "no-selling"');
+    expect(securitySummary).toContain('id: "minimal-data"');
+    expect(securitySummary).toContain('id: "sensitive-details"');
+    expect(securitySummary).toContain('id: "account-protection"');
+    expect(securitySummary).toContain("key={id}");
+    expect(securitySummary).not.toContain("key={title}");
     expect(securitySummary).toContain("We do not sell your data");
     expect(securitySummary).toContain("We collect only what we need");
     expect(securitySummary).toContain(
@@ -73,7 +79,12 @@ describe("public security questionnaire content", () => {
   it("keeps the linked security policy aligned with the active session and release controls", () => {
     const policy = read("client/src/pages/SecurityPolicy.tsx");
 
-    expect(policy).toContain('const LAST_UPDATED = "August 2026"');
+    expect(policy).toContain(
+      'const LAST_UPDATED_AT = new Date("2026-08-01T00:00:00Z")'
+    );
+    expect(policy).toContain("new Intl.DateTimeFormat(");
+    expect(policy).toContain('timeZone: "UTC"');
+    expect(policy).not.toContain("const LAST_UPDATED =");
     expect(policy).toMatch(
       /opaque, revocable identifiers stored in HttpOnly, SameSite\s+cookies/
     );
@@ -124,7 +135,13 @@ describe("public security questionnaire content", () => {
     const catalogs = JSON.parse(
       read("client/src/lib/autoTextTranslations.json")
     ) as Record<string, Record<string, string>>;
+    const findingPrefix = manifest.find(
+      entry => entry.key === "k_fd705e4988fabe"
+    );
 
+    expect(findingPrefix?.source).toBe(
+      "1 moderate finding exists in a dev-only migration tool ("
+    );
     expect(securitySource).not.toContain("GetPhame");
     expect(securitySource).not.toContain("signed JWTs");
     expect(securitySource).not.toContain("all 54 unit tests");
@@ -137,6 +154,7 @@ describe("public security questionnaire content", () => {
         ).toBeGreaterThan(0);
         expect(catalogs[locale][key]).not.toContain("GetPhame");
       }
+      expect(catalogs[locale]["k_fd705e4988fabe"]).not.toMatch(/2026/);
     }
   });
 });

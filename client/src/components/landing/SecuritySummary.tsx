@@ -13,6 +13,7 @@ export default function SecuritySummary() {
 
   const securityItems = [
     {
+      id: "no-selling",
       icon: EyeOff,
       title: t("landing.securitySummary.noSelling.title", {
         defaultValue: "We do not sell your data",
@@ -23,6 +24,7 @@ export default function SecuritySummary() {
       }),
     },
     {
+      id: "minimal-data",
       icon: Database,
       title: t("landing.securitySummary.minimalData.title", {
         defaultValue: "We collect only what we need",
@@ -33,6 +35,7 @@ export default function SecuritySummary() {
       }),
     },
     {
+      id: "sensitive-details",
       icon: LockKeyhole,
       title: t("landing.securitySummary.protected.title", {
         defaultValue: "Sensitive details are protected",
@@ -43,6 +46,7 @@ export default function SecuritySummary() {
       }),
     },
     {
+      id: "account-protection",
       icon: ShieldCheck,
       title: t("landing.securitySummary.account.title", {
         defaultValue: "Your account is protected",
@@ -86,8 +90,8 @@ export default function SecuritySummary() {
         </FadeUp>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {securityItems.map(({ icon: Icon, title, description }, index) => (
-            <FadeUp key={title} delay={index * 0.08}>
+          {securityItems.map(({ id, icon: Icon, title, description }, index) => (
+            <FadeUp key={id} delay={index * 0.08}>
               <article className="h-full rounded-2xl border border-[#1e3050] bg-[#0f1d32] p-6 transition-all duration-300 hover:border-primary/25 hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.06)]">
                 <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Icon size={22} aria-hidden="true" />

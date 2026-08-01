@@ -18397,7 +18397,7 @@
   },
   {
     "key": "k_fd705e4988fabe",
-    "source": "August 2026",
+    "source": "1 moderate finding exists in a dev-only migration tool (",
     "usages": [
       {
         "file": "client/src/pages/SecurityPolicy.tsx",

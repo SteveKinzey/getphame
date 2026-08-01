@@ -1,4 +1,5 @@
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Shield, AlertTriangle, Clock, CheckCircle, RefreshCw, Lock } from "lucide-react";
 
 const SECTION_HEADING = "text-base font-bold mt-6 mb-2";
@@ -8,11 +9,16 @@ const LINK_STYLE = { color: "oklch(0.80 0.18 80)" };
 const GOLD = "oklch(0.80 0.18 80)";
 const ACCENT_BORDER = { borderColor: GOLD };
 
-const LAST_UPDATED = "August 2026";
+const LAST_UPDATED_AT = new Date("2026-08-01T00:00:00Z");
 const SECURITY_EMAIL = "security@getphame.app";
 
 export default function SecurityPolicy() {
   const [, navigate] = useLocation();
+  const { i18n } = useTranslation();
+  const lastUpdated = new Intl.DateTimeFormat(
+    i18n.resolvedLanguage ?? i18n.language ?? "en",
+    { month: "long", year: "numeric", timeZone: "UTC" }
+  ).format(LAST_UPDATED_AT);
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -33,7 +39,7 @@ export default function SecurityPolicy() {
           </h1>
         </div>
         <p className="text-sm" style={{ color: "oklch(0.55 0.04 260)" }}>
-          Last updated: {LAST_UPDATED}
+          Last updated: {lastUpdated}
         </p>
       </div>
 
@@ -145,7 +151,7 @@ export default function SecurityPolicy() {
               <span className="font-semibold text-xs" style={{ color: "#22c55e" }}>PRODUCTION DEPENDENCIES — CLEAN</span>
             </div>
             <p className="text-xs" style={{ color: "oklch(0.65 0.02 260)" }}>
-              <code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>pnpm audit --prod</code> reports zero known vulnerabilities. Last verified: {LAST_UPDATED}.
+              <code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>pnpm audit --prod</code> reports zero known vulnerabilities. Last verified: {lastUpdated}.
             </p>
             <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 260)" }}>
               1 moderate finding exists in a dev-only migration tool (<code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>drizzle-kit → @esbuild-kit/core-utils → esbuild ≤0.24.2</code>) that is never compiled into the production bundle and poses no runtime risk.
