@@ -1624,3 +1624,11 @@
 - [x] Add 30/60/90 day range toggle to Dashboard trend chart
 - [x] Apply two-column layout to WooCustomers bulk send page (list left, email preview right)
 - [x] Add gold "Send Request" CTA button to desktop sidebar in AppLayout
+
+## Session — Skill, Features, and UX Enhancements (Aug 2026)
+
+- [x] Create github-managed-checkpoint-sync skill (reusable workflow for GitHub protected-main → managed checkpoint sync and publication)
+- [x] Landing page audit against GetPhame style guide — FAQ, ProductShowcase animations, and layout all confirmed compliant, no changes needed
+- [x] Share button on ClientReviews page — uses existing pwaShare helper, shows Share/Copied/Shared state with 2.5s reset, gold accent on success
+- [x] Dashboard stats skeleton loading animation — animated pulse bars replace "—" placeholder during API load
+- [x] RecentActivityCard component — compact last-5 interactions summary above full activity feed, with skeleton loading, engagement badge, and open/click tracking badges

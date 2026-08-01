@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import LanguageFlyout from "@/components/LanguageFlyout";
 import ClientDetailSheet from "@/components/ClientDetailSheet";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
+import RecentActivityCard from "@/components/dashboard/RecentActivityCard";
 
 const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"));
 
@@ -222,10 +223,10 @@ export default function DashboardPage() {
               >
                 {s.icon}
               </div>
-              <div
-                className="text-2xl font-black text-white"
-              >
-                {isLoading ? "—" : s.value}
+              <div className="text-2xl font-black text-white">
+                {isLoading ? (
+                  <div className="h-7 w-10 mx-auto rounded-md animate-pulse" style={{ background: "oklch(1 0 0 / 0.15)" }} />
+                ) : s.value}
               </div>
               <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
                 {s.label}
@@ -286,6 +287,16 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Recent Activity Summary Card */}
+        {(allRequests?.length ?? 0) > 0 && (
+          <RecentActivityCard
+            requests={allRequests ?? []}
+            trackingMap={trackingMap}
+            isLoading={listLoading}
+            onSelectRequest={setSelectedRequestId}
+          />
         )}
 
         {/* Activity Feed */}

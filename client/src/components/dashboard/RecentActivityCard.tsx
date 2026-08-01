@@ -1,0 +1,241 @@
+// RecentActivityCard — lightweight "last 5 interactions" summary card
+// Sits above the full activity feed on the dashboard for quick at-a-glance status.
+
+import { useMemo } from "react";
+import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { format, isToday, isYesterday } from "date-fns";
+
+interface Request {
+  id: number;
+  customerName: string;
+  customerEmail?: string | null;
+  sentAt?: string | Date | null;
+  respondedAt?: number | string | null;
+}
+
+interface TrackingEntry {
+  opens: number;
+  clicks: number;
+}
+
+interface RecentActivityCardProps {
+  requests: Request[];
+  trackingMap: Map<number, TrackingEntry>;
+  isLoading: boolean;
+  onSelectRequest: (id: number) => void;
+}
+
+function formatRelative(value: string | Date | number | null | undefined): string {
+  if (!value) return "";
+  const d = new Date(value as string | number | Date);
+  if (isNaN(d.getTime())) return "";
+  if (isToday(d)) return format(d, "h:mm a");
+  if (isYesterday(d)) return "Yesterday";
+  return format(d, "MMM d");
+}
+
+// Skeleton row for loading state
+function SkeletonRow() {
+  return (
+    <div className="flex items-center gap-3 py-2.5 animate-pulse">
+      <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0" />
+      <div className="flex-1 space-y-1.5">
+        <div className="h-3 bg-gray-200 rounded w-28" />
+        <div className="h-2.5 bg-gray-100 rounded w-20" />
+      </div>
+      <div className="h-5 bg-gray-100 rounded-full w-14" />
+    </div>
+  );
+}
+
+export default function RecentActivityCard({
+  requests,
+  trackingMap,
+  isLoading,
+  onSelectRequest,
+}: RecentActivityCardProps) {
+  const { t } = useTranslation();
+
+  // Last 5 requests sorted by sentAt descending
+  const recent = useMemo(() => {
+    return [...requests]
+      .sort((a, b) => {
+        const ta = a.sentAt ? new Date(a.sentAt as string | Date).getTime() : 0;
+        const tb = b.sentAt ? new Date(b.sentAt as string | Date).getTime() : 0;
+        return tb - ta;
+      })
+      .slice(0, 5);
+  }, [requests]);
+
+  // Count how many have opens or clicks in last 5
+  const engagedCount = useMemo(
+    () => recent.filter((r) => {
+      const t = trackingMap.get(r.id);
+      return t && (t.opens > 0 || t.clicks > 0);
+    }).length,
+    [recent, trackingMap]
+  );
+
+  return (
+    <div className="bg-white rounded-2xl p-4 shadow-sm">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Zap size={14} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <h3 className="text-sm font-black rr-text-navy">
+            {t("dashboard.recentActivity.title", { defaultValue: "Recent Activity" })}
+          </h3>
+        </div>
+        {!isLoading && engagedCount > 0 && (
+          <span
+            className="text-xs font-bold px-2 py-0.5 rounded-full"
+            style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
+          >
+            {t("dashboard.recentActivity.engagedBadge", {
+              defaultValue: "{{count}} engaged",
+              count: engagedCount,
+            })}
+          </span>
+        )}
+      </div>
+
+      {/* Loading skeletons */}
+      {isLoading && (
+        <div className="flex flex-col divide-y divide-gray-50">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!isLoading && recent.length === 0 && (
+        <div className="flex flex-col items-center py-6 gap-2 text-center">
+          <Clock size={28} style={{ color: "oklch(0.80 0.03 260)" }} />
+          <p className="text-sm rr-text-navy-muted">
+            {t("dashboard.recentActivity.noActivity", {
+              defaultValue: "No recent activity yet",
+            })}
+          </p>
+        </div>
+      )}
+
+      {/* Activity rows */}
+      {!isLoading && recent.length > 0 && (
+        <div className="flex flex-col">
+          {recent.map((req, idx) => {
+            const tracking = trackingMap.get(req.id);
+            const hasOpens = (tracking?.opens ?? 0) > 0;
+            const hasClicks = (tracking?.clicks ?? 0) > 0;
+            const isReviewed = !!req.respondedAt;
+
+            return (
+              <button
+                key={req.id}
+                onClick={() => onSelectRequest(req.id)}
+                className="flex items-center gap-3 py-2.5 text-left hover:bg-gray-50 rounded-lg px-1 -mx-1 transition-colors"
+                style={{
+                  borderBottom:
+                    idx < recent.length - 1
+                      ? "1px solid oklch(0.96 0.005 260)"
+                      : "none",
+                }}
+              >
+                {/* Avatar */}
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 rr-bg-navy rr-text-gold"
+                >
+                  {req.customerName[0].toUpperCase()}
+                </div>
+
+                {/* Name + email */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold rr-text-navy truncate">
+                    {req.customerName}
+                  </p>
+                  <p className="text-xs rr-text-navy-muted truncate">
+                    {req.customerEmail}
+                  </p>
+                </div>
+
+                {/* Badges + time */}
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  <div className="flex items-center gap-1">
+                    {/* Reviewed / sent status */}
+                    <span
+                      className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                      style={
+                        isReviewed
+                          ? {
+                              background: "oklch(0.88 0.10 80)",
+                              color: "oklch(0.35 0.12 80)",
+                            }
+                          : {
+                              background: "oklch(0.96 0.04 145)",
+                              color: "oklch(0.45 0.12 145)",
+                            }
+                      }
+                    >
+                      {isReviewed ? (
+                        <CheckCircle2 size={10} />
+                      ) : (
+                        <Circle size={10} />
+                      )}
+                      {isReviewed
+                        ? t("dashboard.activityFeed.statusReviewed", {
+                            defaultValue: "Reviewed",
+                          })
+                        : t("dashboard.activityFeed.statusSent", {
+                            defaultValue: "Sent",
+                          })}
+                    </span>
+
+                    {/* Open badge */}
+                    {hasOpens && (
+                      <span
+                        className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                        style={{
+                          background: "oklch(0.93 0.04 260)",
+                          color: "oklch(0.40 0.08 260)",
+                        }}
+                        title={t("dashboard.activityFeed.emailOpenedTooltip", {
+                          defaultValue: "Email opened",
+                        })}
+                      >
+                        <Eye size={9} />
+                        {tracking!.opens}
+                      </span>
+                    )}
+
+                    {/* Click badge */}
+                    {hasClicks && (
+                      <span
+                        className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                        style={{
+                          background: "oklch(0.92 0.08 80)",
+                          color: "oklch(0.40 0.12 80)",
+                        }}
+                        title={t("dashboard.activityFeed.reviewLinkClickedTooltip", {
+                          defaultValue: "Review link clicked",
+                        })}
+                      >
+                        <MousePointerClick size={9} />
+                        {tracking!.clicks}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Time */}
+                  <p className="text-xs rr-text-navy-faint">
+                    {formatRelative(req.sentAt)}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
