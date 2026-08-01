@@ -84,3 +84,5 @@
 - [x] Add regression coverage for disposable-domain Heartbeat reconciliation: disabled, drift repair, creation, and duplicate-create recovery paths (4 focused assertions passed).
 - [x] Add endpoint-level coverage for the scheduled disposable-domain callback: cron authorization, task ownership, Pacific timing, deduplication, success recording, and failure handling (6 focused assertions passed).
 - [x] Run the complete Vitest regression suite after the protected-pull-request coverage remediation: 174 files passed, 1 skipped; 980 tests passed, 7 skipped.
+- [x] Run the production build after the scheduler coverage remediation: the 703-package OSV audit passed, the full Vitest gate passed, and Vite plus the server bundle completed successfully.
+- [x] Run the defined one-shot TypeScript check after the scheduler coverage remediation; `tsc --noEmit` completed with no errors.
