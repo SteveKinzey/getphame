@@ -459,7 +459,10 @@ export default function AdminSecurityAuditReleaseVerification() {
 
           <ol className="grid gap-px bg-[#0b2a52]/10 md:grid-cols-2">
             {data.nextOperationalConfirmation.steps.map((step, index) => (
-              <li key={step} className="flex gap-3 bg-white p-5 sm:p-6">
+              <li
+                key={`step-${index}`}
+                className="flex gap-3 bg-white p-5 sm:p-6"
+              >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full rr-bg-navy text-sm font-black text-white">
                   {index + 1}
                 </span>

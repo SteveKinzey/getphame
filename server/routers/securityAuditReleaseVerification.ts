@@ -64,7 +64,21 @@ export const SECURITY_AUDIT_RELEASE_VERIFICATION = {
 } as const;
 
 export function buildSecurityAuditReleaseVerificationPayload() {
-  return SECURITY_AUDIT_RELEASE_VERIFICATION;
+  return {
+    ...SECURITY_AUDIT_RELEASE_VERIFICATION,
+    release: { ...SECURITY_AUDIT_RELEASE_VERIFICATION.release },
+    evidence: SECURITY_AUDIT_RELEASE_VERIFICATION.evidence.map(item => ({
+      ...item,
+    })),
+    nextOperationalConfirmation: {
+      ...SECURITY_AUDIT_RELEASE_VERIFICATION.nextOperationalConfirmation,
+      steps: [
+        ...SECURITY_AUDIT_RELEASE_VERIFICATION.nextOperationalConfirmation
+          .steps,
+      ],
+    },
+    privacy: { ...SECURITY_AUDIT_RELEASE_VERIFICATION.privacy },
+  };
 }
 
 export const securityAuditReleaseVerificationRouter = router({

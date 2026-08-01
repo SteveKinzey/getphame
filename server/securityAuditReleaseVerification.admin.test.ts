@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { TrpcContext } from "./_core/context";
 import { appRouter } from "./routers";
+import { buildSecurityAuditReleaseVerificationPayload } from "./routers/securityAuditReleaseVerification";
 
 function context(role: "admin" | "user"): TrpcContext {
   return {
@@ -27,6 +28,23 @@ describe("administrator security-audit release verification", () => {
     await expect(
       caller.securityAuditReleaseVerification.dashboard()
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("returns a fresh payload for each request", () => {
+    const first = buildSecurityAuditReleaseVerificationPayload();
+    const second = buildSecurityAuditReleaseVerificationPayload();
+
+    expect(first).not.toBe(second);
+    expect(first.release).not.toBe(second.release);
+    expect(first.evidence).not.toBe(second.evidence);
+    expect(first.evidence[0]).not.toBe(second.evidence[0]);
+    expect(first.nextOperationalConfirmation).not.toBe(
+      second.nextOperationalConfirmation
+    );
+    expect(first.nextOperationalConfirmation.steps).not.toBe(
+      second.nextOperationalConfirmation.steps
+    );
+    expect(first.privacy).not.toBe(second.privacy);
   });
 
   it("returns the verified, sanitized release evidence only to administrators", async () => {
