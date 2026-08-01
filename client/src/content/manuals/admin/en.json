@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "title": "Admin Manual",
   "eyebrow": "Get Phame operations",
   "introduction": "This Admin Manual contains the complete user guidance followed by administrator-only operating procedures. It is shown only to authenticated administrators. Use the operational sections to manage accounts, diagnostics, support, revenue, recovery, and aggregate product health without exposing credentials or unnecessary customer data.",
-  "lastUpdated": "2026-07-25",
+  "lastUpdated": "2026-08-01",
   "sections": [
     {
       "id": "admin-hub",
@@ -444,6 +444,49 @@
             "Confirm a durable healthy result before closing the incident."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-audit-release-verification",
+      "title": "Security Audit release verification",
+      "summary": "Use the installed skill to recover, validate, and release Security Audit History without duplicating managed sites, weakening administrator boundaries, exposing sensitive evidence, or losing protected-main parity.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-audit-skill-capabilities",
+          "title": "What the installed skill can do",
+          "access": "admin",
+          "body": "The Get Phame Security Audit Release Verification skill coordinates the complete release and evidence workflow for Security Audit History. It identifies the exact reviewed release, recovers the correct managed website without duplication, verifies additive schema readiness, checks protected interfaces without creating reports, confirms the sanitized administrator experience, validates responsive and keyboard behavior, tracks the first scheduled audit confirmation, and proves that the managed release and protected GitHub main share the same validated tree.",
+          "steps": [
+            "Use the skill for a stalled or uncertain Security Audit History publication, an audit-history migration, a protected reporting route, a protected-main parity check, or the first scheduled audit confirmation.",
+            "Require server-enforced administrator authorization; treat browser role checks only as an additional navigation safeguard.",
+            "Keep customer data, credentials, sessions, raw workflow logs, dependency-advisory details, and other sensitive material out of the dossier and evidence record.",
+            "Use the included release-verification template and tree-parity helper to produce repeatable, non-sensitive evidence."
+          ]
+        },
+        {
+          "id": "security-audit-skill-instructions",
+          "title": "How to use the skill in Manus",
+          "access": "admin",
+          "body": "Start the skill from an administrator-authorized Get Phame task. Give Manus the repository, production hostname, reviewed pull request or commit, expected migration, protected ingestion route, administrator reporting route, and the release outcome you need. The skill must stop rather than guess when the managed website, reviewed tree, migration, or authorization contract cannot be proven.",
+          "steps": [
+            "Ask Manus to use the Get Phame Security Audit Release Verification skill and state whether you are recovering, releasing, verifying, or documenting Security Audit History.",
+            "Establish the exact reviewed release, protected interfaces, expected database table, managed website owner, production hostname, and current publisher state.",
+            "If publication is active or uncertain, inspect supported website and version history controls first; do not publish again, guess a project ID, or create a replacement site.",
+            "Compare the managed candidate with the reviewed Git commit and tree. Stop and reconcile any mismatch or unrelated newer change before publication.",
+            "Review the migration and apply only an additive, reviewed schema change through the managed production database workflow. Do not create test customer or audit data.",
+            "Verify the public site, protected ingestion route, administrator reporting endpoint, signed-in administrator page, empty state, responsive layout, and keyboard access without mutating reports or exposing raw findings.",
+            "Allow the next scheduled dependency audit to run at its normal cadence, then confirm one authenticated sanitized summary appears in Security Audit History. Do not launch a duplicate run merely to populate the page.",
+            "Run focused tests, the full suite, strict TypeScript, dependency audit, production build, and responsive verification on the exact candidate.",
+            "Save the validated checkpoint, release through a history-preserving pull request, wait for required checks and review resolution, merge normally, and prove the protected-main tree matches the released tree.",
+            "Complete the included release-verification record with non-sensitive evidence and document any time-bound follow-up that remains."
+          ],
+          "notes": [
+            "Stop and escalate if the migration is destructive or ambiguous, the managed site cannot be recovered through supported controls, the candidate tree differs from the reviewed release, an unauthorized request reveals or persists data, a required check fails, or the scheduled report does not appear.",
+            "Never force-push, bypass branch protection, disclose credentials, copy raw workflow logs into evidence, or represent a pending scheduled confirmation as completed."
+          ]
         }
       ]
     }

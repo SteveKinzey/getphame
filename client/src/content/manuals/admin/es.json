@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "title": "Manual de administrador",
   "eyebrow": "Operaciones de Get Phame",
   "introduction": "Este Manual de administrador contiene la guía completa de usuario seguida de procedimientos operativos solo para administradores. Se muestra únicamente a administradores autenticados. Utilice las secciones operativas para gestionar cuentas, diagnósticos, soporte, ingresos, recuperación y la salud agregada del producto sin exponer credenciales ni datos de clientes innecesarios.",
-  "lastUpdated": "2026-07-25",
+  "lastUpdated": "2026-08-01",
   "sections": [
     {
       "id": "admin-hub",
@@ -444,6 +444,49 @@
             "Confirme un resultado durable y saludable antes de cerrar el incidente."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-audit-release-verification",
+      "title": "Verificación de lanzamiento de Security Audit",
+      "summary": "Utilice la skill instalada para recuperar, validar y lanzar Security Audit History sin duplicar sitios administrados, debilitar los límites de administrador, exponer evidencia confidencial o perder la paridad de protected-main.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-audit-skill-capabilities",
+          "title": "Qué puede hacer la skill instalada",
+          "access": "admin",
+          "body": "La skill Get Phame Security Audit Release Verification coordina el flujo de trabajo completo de lanzamiento y evidencia para Security Audit History. Identifica el lanzamiento exacto revisado, recupera el sitio web administrado correcto sin duplicación, verifica la preparación del esquema aditivo, comprueba las interfaces protegidas sin crear informes, confirma la experiencia de administrador saneada, valida el comportamiento responsivo y del teclado, rastrea la primera confirmación de auditoría programada y demuestra que el lanzamiento administrado y el main de GitHub protegido comparten el mismo árbol validado.",
+          "steps": [
+            "Utilice la skill para una publicación de Security Audit History estancada o incierta, una migración de historial de auditoría, una ruta de informes protegida, una comprobación de paridad de protected-main o la primera confirmación de auditoría programada.",
+            "Exija autorización de administrador aplicada por el servidor; trate las comprobaciones de roles del navegador solo como una medida de seguridad de navegación adicional.",
+            "Mantenga los datos de los clientes, las credenciales, las sesiones, los registros de flujo de trabajo sin procesar, los detalles de asesoramiento de dependencias y otro material confidencial fuera del dossier y del registro de evidencia.",
+            "Utilice la plantilla de verificación de lanzamiento incluida y el ayudante de paridad de árbol para producir evidencia repetible y no confidencial."
+          ]
+        },
+        {
+          "id": "security-audit-skill-instructions",
+          "title": "Cómo usar la skill en Manus",
+          "access": "admin",
+          "body": "Inicie la skill desde una tarea de Get Phame autorizada por el administrador. Proporcione a Manus el repositorio, el nombre de host de producción, el pull request o commit revisado, la migración esperada, la ruta de ingestión protegida, la ruta de informes del administrador y el resultado de lanzamiento que necesita. La skill debe detenerse en lugar de adivinar cuando no se pueda probar el sitio web administrado, el árbol revisado, la migración o el contrato de autorización.",
+          "steps": [
+            "Pida a Manus que utilice la skill Get Phame Security Audit Release Verification e indique si está recuperando, lanzando, verificando o documentando Security Audit History.",
+            "Establezca el lanzamiento exacto revisado, las interfaces protegidas, la tabla de base de datos esperada, el propietario del sitio web administrado, el nombre de host de producción y el estado actual del editor.",
+            "Si la publicación está activa o es incierta, inspeccione primero los controles de historial de versiones y sitios web compatibles; no vuelva a publicar, no adivine un ID de proyecto ni cree un sitio de reemplazo.",
+            "Compare el candidato administrado con el commit y el árbol de Git revisados. Deténgase y concilie cualquier discrepancia o cambio más reciente no relacionado antes de la publicación.",
+            "Revise la migración y aplique solo un cambio de esquema aditivo y revisado a través del flujo de trabajo de la base de datos de producción administrada. No cree datos de clientes o de auditoría de prueba.",
+            "Verifique el sitio público, la ruta de ingestión protegida, el endpoint de informes del administrador, la página de administrador con sesión iniciada, el estado vacío, el diseño responsivo y el acceso por teclado sin mutar informes ni exponer hallazgos sin procesar.",
+            "Permita que la próxima auditoría de dependencias programada se ejecute a su ritmo normal, luego confirme que aparece un resumen saneado autenticado en Security Audit History. No inicie una ejecución duplicada simplemente para completar la página.",
+            "Ejecute pruebas enfocadas, la suite completa, TypeScript estricto, auditoría de dependencias, compilación de producción y verificación responsiva en el candidato exacto.",
+            "Guarde el punto de control validado, lance a través de un pull request que preserve el historial, espere las comprobaciones requeridas y la resolución de la revisión, fusione normalmente y demuestre que el árbol de protected-main coincide con el árbol lanzado.",
+            "Complete el registro de verificación de lanzamiento incluido con evidencia no confidencial y documente cualquier seguimiento con límite de tiempo que quede."
+          ],
+          "notes": [
+            "Deténgase y escale si la migración es destructiva o ambigua, el sitio administrado no se puede recuperar a través de controles compatibles, el árbol candidato difiere del lanzamiento revisado, una solicitud no autorizada revela o persiste datos, una comprobación requerida falla o el informe programado no aparece.",
+            "Nunca fuerce el push, eluda la protección de la rama, divulgue credenciales, copie registros de flujo de trabajo sin procesar en la evidencia ni represente una confirmación programada pendiente como completada."
+          ]
         }
       ]
     }

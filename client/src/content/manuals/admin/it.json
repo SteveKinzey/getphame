@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "title": "Manuale per amministratori",
   "eyebrow": "Operazioni Get Phame",
   "introduction": "Questo Manuale per amministratori contiene le istruzioni complete per l’uso seguite dalle procedure operative riservate agli amministratori. Viene mostrato solo agli amministratori autenticati. Usare le sezioni operative per gestire account, diagnostica, supporto, entrate, recupero e lo stato aggregato del prodotto senza esporre credenziali o dati cliente non necessari.",
-  "lastUpdated": "2026-07-25",
+  "lastUpdated": "2026-08-01",
   "sections": [
     {
       "id": "admin-hub",
@@ -444,6 +444,49 @@
             "Confermare un risultato sano durevole prima di chiudere l’incidente."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-audit-release-verification",
+      "title": "Verifica del rilascio di Security Audit",
+      "summary": "Usa la skill installata per recuperare, convalidare e rilasciare Security Audit History senza duplicare i siti gestiti, indebolire i confini dell'amministratore, esporre prove sensibili o perdere la parità del main protetto.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-audit-skill-capabilities",
+          "title": "Cosa può fare la skill installata",
+          "access": "admin",
+          "body": "La skill Get Phame Security Audit Release Verification coordina il rilascio completo e il flusso di lavoro delle prove per Security Audit History. Identifica l'esatto rilascio revisionato, recupera il sito web gestito corretto senza duplicazioni, verifica la prontezza dello schema additivo, controlla le interfacce protette senza creare report, conferma l'esperienza amministratore sanificata, convalida il comportamento responsivo e da tastiera, traccia la prima conferma dell'audit programmato e dimostra che il rilascio gestito e il main GitHub protetto condividono lo stesso albero convalidato.",
+          "steps": [
+            "Usa la skill per una pubblicazione di Security Audit History bloccata o incerta, una migrazione della cronologia degli audit, una rotta di segnalazione protetta, un controllo di parità del main protetto o la prima conferma dell'audit programmato.",
+            "Richiedi l'autorizzazione dell'amministratore applicata dal server; tratta i controlli del ruolo del browser solo come un'ulteriore salvaguardia di navigazione.",
+            "Mantieni i dati dei clienti, le credenziali, le sessioni, i log grezzi del flusso di lavoro, i dettagli degli avvisi sulle dipendenze e altro materiale sensibile fuori dal dossier e dal registro delle prove.",
+            "Usa il modello di verifica del rilascio incluso e l'helper di parità dell'albero per produrre prove ripetibili e non sensibili."
+          ]
+        },
+        {
+          "id": "security-audit-skill-instructions",
+          "title": "Come usare la skill in Manus",
+          "access": "admin",
+          "body": "Avvia la skill da un'attività Get Phame autorizzata dall'amministratore. Fornisci a Manus il repository, l'hostname di produzione, la pull request o il commit revisionato, la migrazione prevista, la rotta di acquisizione protetta, la rotta di segnalazione dell'amministratore e il risultato del rilascio di cui hai bisogno. La skill deve fermarsi piuttosto che indovinare quando il sito web gestito, l'albero revisionato, la migrazione o il contratto di autorizzazione non possono essere dimostrati.",
+          "steps": [
+            "Chiedi a Manus di usare la skill Get Phame Security Audit Release Verification e dichiara se stai recuperando, rilasciando, verificando o documentando Security Audit History.",
+            "Stabilisci l'esatto rilascio revisionato, le interfacce protette, la tabella del database prevista, il proprietario del sito web gestito, l'hostname di produzione e lo stato attuale dell'editore.",
+            "Se la pubblicazione è attiva o incerta, ispeziona prima il sito web supportato e i controlli della cronologia delle versioni; non pubblicare di nuovo, non indovinare un ID progetto o creare un sito sostitutivo.",
+            "Confronta il candidato gestito con il commit e l'albero Git revisionati. Fermati e riconcilia qualsiasi discrepanza o modifica più recente non correlata prima della pubblicazione.",
+            "Rivedi la migrazione e applica solo una modifica dello schema additiva e revisionata attraverso il flusso di lavoro del database di produzione gestito. Non creare dati di test dei clienti o degli audit.",
+            "Verifica il sito pubblico, la rotta di acquisizione protetta, l'endpoint di segnalazione dell'amministratore, la pagina dell'amministratore connesso, lo stato vuoto, il layout responsivo e l'accesso da tastiera senza mutare i report o esporre i risultati grezzi.",
+            "Consenti al successivo audit delle dipendenze programmato di essere eseguito alla sua normale cadenza, quindi conferma che un riepilogo sanificato autenticato appaia in Security Audit History. Non avviare un'esecuzione duplicata solo per popolare la pagina.",
+            "Esegui test mirati, la suite completa, TypeScript rigoroso, audit delle dipendenze, build di produzione e verifica responsiva sull'esatto candidato.",
+            "Salva il checkpoint convalidato, rilascia attraverso una pull request che preserva la cronologia, attendi i controlli richiesti e la risoluzione della revisione, unisci normalmente e dimostra che l'albero del main protetto corrisponde all'albero rilasciato.",
+            "Completa il registro di verifica del rilascio incluso con prove non sensibili e documenta qualsiasi follow-up limitato nel tempo che rimane."
+          ],
+          "notes": [
+            "Fermati ed esegui l'escalation se la migrazione è distruttiva o ambigua, il sito gestito non può essere recuperato tramite i controlli supportati, l'albero candidato differisce dal rilascio revisionato, una richiesta non autorizzata rivela o persiste dati, un controllo richiesto fallisce o il report programmato non appare.",
+            "Non forzare mai il push, non bypassare la protezione del ramo, non divulgare credenziali, non copiare i log grezzi del flusso di lavoro nelle prove o rappresentare una conferma programmata in sospeso come completata."
+          ]
         }
       ]
     }
