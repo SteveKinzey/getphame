@@ -50,10 +50,7 @@ describe("appVersion", () => {
 
     expect(fetchImpl).toHaveBeenCalledWith(
       buildDeploymentVersionUrl(1_725_000_000_000),
-      expect.objectContaining({
-        cache: "no-store",
-        signal: expect.any(AbortSignal),
-      })
+      expect.objectContaining({ cache: "no-store" })
     );
   });
 
@@ -61,17 +58,15 @@ describe("appVersion", () => {
     vi.useFakeTimers();
     try {
       const fetchImpl = vi.fn(
-        (_url: string, init?: RequestInit) =>
-          new Promise<never>((_resolve, reject) => {
-            init?.signal?.addEventListener(
-              "abort",
-              () => reject(new Error("request aborted")),
-              { once: true }
-            );
+        (_input: RequestInfo | URL, init?: RequestInit) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener("abort", () => {
+              reject(new DOMException("Aborted", "AbortError"));
+            });
           })
       ) as unknown as typeof fetch;
 
-      const request = fetchDeploymentVersion({ fetchImpl });
+      const request = fetchDeploymentVersion({ fetchImpl, now: () => 1_785_588_893_259 });
       await vi.advanceTimersByTimeAsync(DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS);
 
       await expect(request).resolves.toBeNull();
