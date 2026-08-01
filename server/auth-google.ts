@@ -18,7 +18,12 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
-import { recordSignupRiskEvent, verifySignedHumanProof } from "./signupRisk";
+import {
+  consumeProviderHumanVerificationAttempt,
+  createProviderHumanVerificationAttempt,
+  recordSignupRiskEvent,
+} from "./signupRisk";
+import { verifyProviderStartHumanToken } from "./security/humanVerification";
 import {
   createProviderOAuthState,
   isValidExpectedEmailHash,
@@ -26,8 +31,8 @@ import {
   PASSKEY_ENROLLMENT_INTENT,
   PASSKEY_ENROLLMENT_MISMATCH_PATH,
   PASSKEY_ENROLLMENT_SUCCESS_PATH,
-    providerEmailMatches,
-    verifyProviderOAuthCallbackState,
+  providerEmailMatches,
+  verifyProviderOAuthCallbackState,
 } from "./security/passkeyEnrollmentIntent";
 
 // ---------------------------------------------------------------------------
@@ -46,8 +51,12 @@ function buildRedirectUri(req: Request): string {
     return `${process.env.APP_BASE_URL.replace(/\/$/, "")}/api/auth/google/callback`;
   }
   // Fallback for local dev only
-  const proto = (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
-  const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "localhost:3000";
+  const proto =
+    (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
+  const host =
+    (req.headers["x-forwarded-host"] as string) ??
+    req.headers.host ??
+    "localhost:3000";
   return `${proto}://${host}/api/auth/google/callback`;
 }
 
@@ -57,6 +66,51 @@ function createOAuthClient(redirectUri: string) {
     process.env.GOOGLE_CLIENT_SECRET,
     redirectUri
   );
+}
+
+function createGoogleAuthorization(
+  req: Request,
+  res: Response,
+  humanVerificationAttemptId?: string
+) {
+  const redirectUri = buildRedirectUri(req);
+  const oAuth2Client = createOAuthClient(redirectUri);
+  const intent =
+    typeof req.query.intent === "string" ? req.query.intent : undefined;
+  const expectedEmailHash =
+    typeof req.query.expected_email_hash === "string"
+      ? req.query.expected_email_hash
+      : undefined;
+  if (
+    intent !== undefined &&
+    (intent !== PASSKEY_ENROLLMENT_INTENT ||
+      !isValidExpectedEmailHash(expectedEmailHash))
+  )
+    return null;
+
+  const state = createProviderOAuthState({
+    ...(intent === PASSKEY_ENROLLMENT_INTENT
+      ? { intent, expectedEmailHash }
+      : {}),
+    ...(humanVerificationAttemptId ? { humanVerificationAttemptId } : {}),
+  });
+  res.cookie("google_oauth_state", state, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 10 * 60 * 1000,
+  });
+
+  return oAuth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "openid",
+    ],
+    state,
+    prompt: "select_account",
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -80,50 +134,40 @@ export function registerGoogleAuthRoutes(app: Express) {
    */
   app.get("/api/auth/google", (req: Request, res: Response) => {
     if (!isGoogleConfigured()) {
+      return res.status(503).json({
+        error:
+          "Google Sign-In is not configured. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.",
+      });
+    }
+
+    const authUrl = createGoogleAuthorization(req, res);
+    if (!authUrl)
+      return res.status(400).json({ error: "Invalid verification request." });
+    res.redirect(302, authUrl);
+  });
+
+  app.post("/api/auth/google/start", async (req: Request, res: Response) => {
+    if (!isGoogleConfigured())
       return res
         .status(503)
-        .json({ error: "Google Sign-In is not configured. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET." });
+        .json({ error: "Google Sign-In is not configured." });
+    if (!(await verifyProviderStartHumanToken(req, req.body?.token))) {
+      return res.status(403).json({
+        error: "Human verification could not be completed. Please try again.",
+      });
     }
-
-    const redirectUri = buildRedirectUri(req);
-    const oAuth2Client = createOAuthClient(redirectUri);
-
-    const intent = typeof req.query.intent === "string" ? req.query.intent : undefined;
-    const expectedEmailHash = typeof req.query.expected_email_hash === "string" ? req.query.expected_email_hash : undefined;
-    const humanProof = typeof req.query.human_proof === "string" ? req.query.human_proof : undefined;
-    if (intent !== undefined && (intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(expectedEmailHash))) {
-      return res.status(400).json({ error: "Invalid verification request." });
+    try {
+      const attemptId = await createProviderHumanVerificationAttempt("google");
+      const authUrl = createGoogleAuthorization(req, res, attemptId);
+      if (!authUrl)
+        return res.status(400).json({ error: "Invalid verification request." });
+      return res.status(200).json({ url: authUrl });
+    } catch (error) {
+      console.error("[GoogleAuth] Unable to start verified OAuth flow", error);
+      return res.status(503).json({
+        error: "Secure sign-in could not be started. Please try again.",
+      });
     }
-    if (humanProof !== undefined && (humanProof.length < 20 || humanProof.length > 4096)) {
-      return res.status(400).json({ error: "Invalid verification request." });
-    }
-    const state = createProviderOAuthState({
-      ...(intent === PASSKEY_ENROLLMENT_INTENT ? { intent, expectedEmailHash } : {}),
-      ...(humanProof ? { humanProof } : {}),
-    });
-
-    // Store state in a short-lived httpOnly cookie (10 minutes).
-    // Must use sameSite: "none" + secure so the cookie survives the
-    // cross-site redirect from accounts.google.com back to our callback.
-    res.cookie("google_oauth_state", state, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 10 * 60 * 1000, // 10 minutes
-    });
-
-    const authUrl = oAuth2Client.generateAuthUrl({
-      access_type: "offline",
-      scope: [
-        "https://www.googleapis.com/auth/userinfo.email",
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "openid",
-      ],
-      state,
-      prompt: "select_account", // Always show account picker for better UX
-    });
-
-    res.redirect(302, authUrl);
   });
 
   /**
@@ -141,7 +185,10 @@ export function registerGoogleAuthRoutes(app: Express) {
 
     // CSRF state validation
     const storedState = req.cookies?.google_oauth_state;
-    const stateVerification = verifyProviderOAuthCallbackState(storedState, state);
+    const stateVerification = verifyProviderOAuthCallbackState(
+      storedState,
+      state
+    );
     if (!stateVerification) {
       console.warn("[GoogleAuth] State mismatch — possible CSRF attack");
       return res.redirect(302, "/?auth_error=google_state_mismatch");
@@ -149,13 +196,22 @@ export function registerGoogleAuthRoutes(app: Express) {
 
     // Clear the state cookie immediately
     res.clearCookie("google_oauth_state");
-    const statePayload = stateVerification.kind === "signed" ? stateVerification.payload : null;
-    const isPasskeyEnrollment = statePayload?.intent === PASSKEY_ENROLLMENT_INTENT;
+    const statePayload =
+      stateVerification.kind === "signed" ? stateVerification.payload : null;
+    const isPasskeyEnrollment =
+      statePayload?.intent === PASSKEY_ENROLLMENT_INTENT;
 
     if (error || !code) {
       if (error) console.warn("[GoogleAuth] User denied access:", error);
       else console.warn("[GoogleAuth] Missing authorization code");
-      return res.redirect(302, isPasskeyEnrollment ? PASSKEY_ENROLLMENT_CANCEL_PATH : error ? "/?auth_error=google_denied" : "/?auth_error=google_missing_code");
+      return res.redirect(
+        302,
+        isPasskeyEnrollment
+          ? PASSKEY_ENROLLMENT_CANCEL_PATH
+          : error
+            ? "/?auth_error=google_denied"
+            : "/?auth_error=google_missing_code"
+      );
     }
 
     try {
@@ -180,63 +236,149 @@ export function registerGoogleAuthRoutes(app: Express) {
       const name = googleUser.name ?? null;
 
       if (isPasskeyEnrollment) {
-        if (!email || googleUser.verified_email !== true || !statePayload?.expectedEmailHash || !providerEmailMatches(email, statePayload.expectedEmailHash)) {
+        if (
+          !email ||
+          googleUser.verified_email !== true ||
+          !statePayload?.expectedEmailHash ||
+          !providerEmailMatches(email, statePayload.expectedEmailHash)
+        ) {
           return res.redirect(302, PASSKEY_ENROLLMENT_MISMATCH_PATH);
         }
 
         const providerUser = await db.getUserByOpenId(openId);
         const canonicalUser = await db.getUserByEmail(email);
-        if (providerUser && canonicalUser && providerUser.id !== canonicalUser.id) {
+        if (
+          providerUser &&
+          canonicalUser &&
+          providerUser.id !== canonicalUser.id
+        ) {
           return res.redirect(302, PASSKEY_ENROLLMENT_MISMATCH_PATH);
         }
 
         let sessionUser = canonicalUser ?? providerUser;
         let isNewEnrollmentUser = false;
         if (!sessionUser) {
-          if (!verifySignedHumanProof(statePayload?.humanProof, "provider-oauth")) {
-            return res.redirect(302, "/login?auth_error=human_verification_required");
+          if (
+            !(await consumeProviderHumanVerificationAttempt(
+              statePayload?.humanVerificationAttemptId,
+              "google"
+            ))
+          ) {
+            return res.redirect(
+              302,
+              "/login?auth_error=human_verification_required"
+            );
           }
-          await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
+          await db.upsertUser({
+            openId,
+            name,
+            email,
+            loginMethod: "google",
+            lastSignedIn: new Date(),
+          });
           sessionUser = await db.getUserByOpenId(openId);
           isNewEnrollmentUser = true;
         } else if (!providerUser) {
-          await db.linkUserIdentity({ userId: sessionUser.id, openId, loginMethod: "google", lastSignedIn: new Date() });
+          await db.linkUserIdentity({
+            userId: sessionUser.id,
+            openId,
+            loginMethod: "google",
+            lastSignedIn: new Date(),
+          });
         }
-        if (!sessionUser) throw new Error("Session user unavailable after Google verification");
+        if (!sessionUser)
+          throw new Error("Session user unavailable after Google verification");
 
         if (isNewEnrollmentUser) {
-          sendUserWelcomeEmail({ toEmail: email, toName: name }).catch((err: unknown) => console.warn("[GoogleAuth] Welcome email failed:", err));
-          void recordSignupRiskEvent({ userId: sessionUser.id, subject: email, provider: "google", outcome: "verified", reasonCode: "human_proof_verified", humanVerified: true });
+          sendUserWelcomeEmail({ toEmail: email, toName: name }).catch(
+            (err: unknown) =>
+              console.warn("[GoogleAuth] Welcome email failed:", err)
+          );
+          void recordSignupRiskEvent({
+            userId: sessionUser.id,
+            subject: email,
+            provider: "google",
+            outcome: "verified",
+            reasonCode: "provider_attempt_verified",
+            humanVerified: true,
+          });
         }
-        await issueSecuritySession({ userId: sessionUser.id, authMethod: "oauth", assurance: "a1", req, res });
+        await issueSecuritySession({
+          userId: sessionUser.id,
+          authMethod: "oauth",
+          assurance: "a1",
+          req,
+          res,
+        });
         return res.redirect(302, PASSKEY_ENROLLMENT_SUCCESS_PATH);
       }
 
       const providerUser = await db.getUserByOpenId(openId);
-      const canonicalUser = email && googleUser.verified_email === true
-        ? await db.getUserByEmail(email)
-        : null;
+      const canonicalUser =
+        email && googleUser.verified_email === true
+          ? await db.getUserByEmail(email)
+          : null;
       let sessionUser = canonicalUser ?? providerUser;
       const isNewUser = !sessionUser;
 
       if (isNewUser) {
-        if (!email || googleUser.verified_email !== true || !verifySignedHumanProof(statePayload?.humanProof, "provider-oauth")) {
-          return res.redirect(302, "/login?auth_error=human_verification_required");
+        if (
+          !email ||
+          googleUser.verified_email !== true ||
+          !(await consumeProviderHumanVerificationAttempt(
+            statePayload?.humanVerificationAttemptId,
+            "google"
+          ))
+        ) {
+          return res.redirect(
+            302,
+            "/login?auth_error=human_verification_required"
+          );
         }
-        await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
+        await db.upsertUser({
+          openId,
+          name,
+          email,
+          loginMethod: "google",
+          lastSignedIn: new Date(),
+        });
         sessionUser = await db.getUserByOpenId(openId);
       } else if (!providerUser) {
-        if (!sessionUser) throw new Error("Canonical Google account unavailable for identity linking");
-        await db.linkUserIdentity({ userId: sessionUser.id, openId, loginMethod: "google", lastSignedIn: new Date() });
+        if (!sessionUser)
+          throw new Error(
+            "Canonical Google account unavailable for identity linking"
+          );
+        await db.linkUserIdentity({
+          userId: sessionUser.id,
+          openId,
+          loginMethod: "google",
+          lastSignedIn: new Date(),
+        });
       } else {
-        await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
+        await db.upsertUser({
+          openId,
+          name,
+          email,
+          loginMethod: "google",
+          lastSignedIn: new Date(),
+        });
       }
 
-      if (!sessionUser) throw new Error("Session user unavailable after Google account update");
+      if (!sessionUser)
+        throw new Error("Session user unavailable after Google account update");
       if (isNewUser && email) {
-        sendUserWelcomeEmail({ toEmail: email, toName: name })
-          .catch((err: unknown) => console.warn("[GoogleAuth] Welcome email failed:", err));
-        void recordSignupRiskEvent({ userId: sessionUser.id, subject: email, provider: "google", outcome: "verified", reasonCode: "human_proof_verified", humanVerified: true });
+        sendUserWelcomeEmail({ toEmail: email, toName: name }).catch(
+          (err: unknown) =>
+            console.warn("[GoogleAuth] Welcome email failed:", err)
+        );
+        void recordSignupRiskEvent({
+          userId: sessionUser.id,
+          subject: email,
+          provider: "google",
+          outcome: "verified",
+          reasonCode: "provider_attempt_verified",
+          humanVerified: true,
+        });
       }
       await issueSecuritySession({
         userId: sessionUser.id,
