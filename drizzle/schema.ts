@@ -248,6 +248,8 @@ export const users = pgTable("users", {
   avatarKey: text("avatar_key"),
   avatarMimeType: varchar("avatar_mime_type", { length: 64 }),
   avatarUpdatedAt: timestamp("avatar_updated_at"),
+  /** Unix milliseconds; active only while in the future. */
+  suspendedUntil: bigint("suspended_until", { mode: "number" }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -951,6 +953,60 @@ export const smtpAdminAuditLogs = pgTable(
 
 export type SmtpAdminAuditLog = typeof smtpAdminAuditLogs.$inferSelect;
 export type InsertSmtpAdminAuditLog = typeof smtpAdminAuditLogs.$inferInsert;
+
+/**
+ * Minimal, durable evidence for administrator-initiated account lifecycle
+ * actions. It never stores credentials, message bodies, or customer data.
+ */
+export const adminUserLifecycleAuditLogs = pgTable(
+  "admin_user_lifecycle_audit_logs",
+  {
+    id: serial("id").primaryKey(),
+    actorUserId: integer("actor_user_id").notNull(),
+    targetUserId: integer("target_user_id").notNull(),
+    action: varchar("action", { length: 64 }).notNull(),
+    occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("admin_user_lifecycle_target_time_idx").on(table.targetUserId, table.occurredAt),
+    index("admin_user_lifecycle_actor_time_idx").on(table.actorUserId, table.occurredAt),
+  ]
+);
+
+export type AdminUserLifecycleAuditLog = typeof adminUserLifecycleAuditLogs.$inferSelect;
+export type InsertAdminUserLifecycleAuditLog = typeof adminUserLifecycleAuditLogs.$inferInsert;
+
+/**
+ * Retention-bounded records for messages sent through the administrator-only
+ * Get Phame general-communication workflow. This is an outbox, not a mirror of
+ * private Google Workspace inboxes or user-owned SMTP mailboxes.
+ */
+export const adminPlatformEmailMessages = pgTable(
+  "admin_platform_email_messages",
+  {
+    id: serial("id").primaryKey(),
+    actorUserId: integer("actor_user_id").notNull(),
+    recipientUserId: integer("recipient_user_id").notNull(),
+    recipientEmail: varchar("recipient_email", { length: 320 }).notNull(),
+    fromEmail: varchar("from_email", { length: 320 }).notNull(),
+    template: varchar("template", { length: 64 }).notNull(),
+    subject: varchar("subject", { length: 255 }).notNull(),
+    bodyText: text("body_text").notNull(),
+    status: varchar("status", { length: 32 }).notNull(),
+    providerMessageId: varchar("provider_message_id", { length: 255 }),
+    failureCode: varchar("failure_code", { length: 64 }),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    sentAt: bigint("sent_at", { mode: "number" }),
+    expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("admin_platform_email_recipient_time_idx").on(table.recipientUserId, table.createdAt),
+    index("admin_platform_email_expiry_idx").on(table.expiresAt),
+  ]
+);
+
+export type AdminPlatformEmailMessage = typeof adminPlatformEmailMessages.$inferSelect;
+export type InsertAdminPlatformEmailMessage = typeof adminPlatformEmailMessages.$inferInsert;
 
 /**
  * Tracks email open and click events for review request emails.

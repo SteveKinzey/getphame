@@ -3,7 +3,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { TrpcContext } from "./context";
 import { getDb } from "../db";
-import { businessProfiles } from "../../drizzle/schema";
+import { businessProfiles, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hasPaidOrAdminAccess } from "../entitlements";
 import { findActiveComplimentaryAccess } from "../complimentaryAccess";
@@ -17,12 +17,30 @@ const t = initTRPC.context<TrpcContext>().create({
 export const router = t.router;
 export const publicProcedure = t.procedure;
 
+async function ensureAccountIsActive(userId: number) {
+  const db = await getDb();
+  if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
+  const [account] = await db
+    .select({ suspendedUntil: users.suspendedUntil })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  if (account?.suspendedUntil && account.suspendedUntil > Date.now()) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This account is temporarily suspended. Contact Get Phame support if you need assistance.",
+    });
+  }
+}
+
 const requireUser = t.middleware(async opts => {
   const { ctx, next } = opts;
 
   if (!ctx.user) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
   }
+
+  await ensureAccountIsActive(ctx.user.id);
 
   return next({
     ctx: {
@@ -64,6 +82,8 @@ export const paidProcedure = t.procedure.use(
       throw new TRPCError({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
     }
 
+    await ensureAccountIsActive(ctx.user.id);
+
     const db = await getDb();
     if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
     const profile = await db.query.businessProfiles.findFirst({
@@ -93,6 +113,8 @@ export const adminProcedure = t.procedure.use(
     if (!ctx.user || ctx.user.role !== 'admin') {
       throw new TRPCError({ code: "FORBIDDEN", message: NOT_ADMIN_ERR_MSG });
     }
+
+    await ensureAccountIsActive(ctx.user.id);
 
     return next({
       ctx: {

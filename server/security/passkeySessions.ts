@@ -192,4 +192,15 @@ export async function revokeSecuritySessionFromRequest(req: Request, reason = "u
   return true;
 }
 
+export async function revokeSecuritySessionsForUser(userId: number, reason = "admin_suspension") {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const now = Date.now();
+  await db
+    .update(authSessions)
+    .set({ revokedAt: now, revocationReason: reason })
+    .where(and(eq(authSessions.userId, userId), isNull(authSessions.revokedAt)));
+  return now;
+}
+
 export const revokePasskeySessionFromRequest = revokeSecuritySessionFromRequest;
