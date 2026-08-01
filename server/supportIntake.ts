@@ -1,4 +1,9 @@
-export const SUPPORT_TOPICS = ["billing", "onboarding", "technical"] as const;
+export const SUPPORT_TOPICS = [
+  "billing",
+  "onboarding",
+  "technical",
+  "quiet_hours_exception",
+] as const;
 export type SupportTopic = (typeof SUPPORT_TOPICS)[number];
 
 export const SUPPORT_SUBMISSION_STATUSES = ["open", "in_progress", "resolved"] as const;

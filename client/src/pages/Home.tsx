@@ -689,10 +689,14 @@ export default function HomePage() {
                     <div
                       className="text-xs px-2 py-0.5 rounded-full font-bold rr-bg-green-pale" style={{ color: "oklch(0.45 0.12 145)" }}
                     >
-                      {t("homePage.sent")}
+                      {req.sentAt
+                        ? t("homePage.sent")
+                        : t("quietHours.queuedForDelivery", "Queued for delivery")}
                     </div>
                     <p className="text-xs mt-0.5 rr-text-navy-faint">
-                      {formatRelativeTime(new Date(req.sentAt), t)}
+                      {req.sentAt
+                        ? formatRelativeTime(new Date(req.sentAt), t)
+                        : t("quietHours.queuedForDelivery", "Queued for delivery")}
                     </p>
                   </div>
                 </div>

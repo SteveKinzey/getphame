@@ -187,12 +187,6 @@ export default function SavedContacts() {
     { enabled: historyDrawerOpen && !!historyContact }
   );
 
-  // Reminder scheduling mutation
-  const scheduleRemindersMutation = trpc.contacts.scheduleReminders.useMutation({
-    onSuccess: (r) => toast.success(`${r.scheduled} follow-up reminder${r.scheduled !== 1 ? "s" : ""} scheduled for 3 days from now.`),
-    onError: (e) => toast.error(`Reminder scheduling failed: ${e.message}`),
-  });
-
   // Daily send status
   const { data: dailyStatus } = trpc.contacts.getDailyStatus.useQuery(undefined, { enabled: isAuthenticated });
 
@@ -332,18 +326,15 @@ export default function SavedContacts() {
       setBulkConfirmOpen(false);
       if (result.sent > 0) track("bulk_send", { count: result.sent });
 
-      // Schedule follow-up reminders if checkbox was checked
-      if (scheduleReminders && result.sentRequests && result.sentRequests.length > 0) {
-        scheduleRemindersMutation.mutate({ reminders: result.sentRequests });
-      }
-
-      if (result.sent > 0 && result.failed === 0) {
+      const queued = result.queued ?? 0;
+      if (result.sent + queued > 0 && result.failed === 0) {
         toast.success(
-          `${result.sent} review request${result.sent !== 1 ? "s" : ""} sent!` +
+          `${result.sent} review request${result.sent !== 1 ? "s" : ""} sent` +
+          (queued > 0 ? `; ${queued} queued until local quiet hours end` : "!") +
           (result.skippedDueToLimit > 0 ? ` (${result.skippedDueToLimit} skipped — free limit reached)` : "")
         );
-      } else if (result.sent > 0 && result.failed > 0) {
-        toast.warning(`${result.sent} sent, ${result.failed} failed. Check your email connection in Settings.`);
+      } else if (result.sent + queued > 0 && result.failed > 0) {
+        toast.warning(`${result.sent} sent, ${queued} queued, ${result.failed} failed. Check your email connection in Settings.`);
       } else {
         toast.error(`All ${result.failed} sends failed. Check your email connection in Settings.`);
       }
@@ -1420,7 +1411,11 @@ export default function SavedContacts() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               disabled={bulkSendMutation.isPending || !allComplianceChecked}
-              onClick={() => bulkSendMutation.mutate({ contactIds: selectedIds, platformId: bulkPlatformId ?? undefined })}
+              onClick={() => bulkSendMutation.mutate({
+                contactIds: selectedIds,
+                platformId: bulkPlatformId ?? undefined,
+                scheduleFollowUps: scheduleReminders,
+              })}
               className="rr-bg-navy rr-text-gold"
             >
               {bulkSendMutation.isPending ? (

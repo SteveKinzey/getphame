@@ -1,0 +1,1 @@
+ALTER TABLE `quiet_hours_queued_sends` ADD `scheduleFollowUps` int DEFAULT 0 NOT NULL;

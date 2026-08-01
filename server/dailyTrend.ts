@@ -12,7 +12,7 @@ export type DailyTrendPoint = {
 };
 
 type SendRow = {
-  sentAt: Date;
+  sentAt: Date | null;
 };
 
 type EventRow = {
@@ -236,6 +236,7 @@ export function buildDailyTrend(input: {
   const clicksByDay = new Map<string, Set<number>>();
 
   for (const row of input.sendRows) {
+    if (!row.sentAt) continue;
     const day = toCalendarDay(row.sentAt, input.timeZone);
     sendsByDay.set(day, (sendsByDay.get(day) ?? 0) + 1);
   }
