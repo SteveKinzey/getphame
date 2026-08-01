@@ -1632,3 +1632,12 @@
 - [x] Share button on ClientReviews page — uses existing pwaShare helper, shows Share/Copied/Shared state with 2.5s reset, gold accent on success
 - [x] Dashboard stats skeleton loading animation — animated pulse bars replace "—" placeholder during API load
 - [x] RecentActivityCard component — compact last-5 interactions summary above full activity feed, with skeleton loading, engagement badge, and open/click tracking badges
+
+## Session — i18n Skill, View All, Fallback Bundle, Hover States (Aug 2026)
+
+- [x] Create getphame-i18n-key-coverage skill (reusable workflow for fixing directI18nKeyCoverage build failures)
+- [x] Add dashboard.recentActivity.viewAll key to all 7 locale files (en/es/fr/it/th/zh-CN/zh-TW)
+- [x] Update i18nCompleteFallbackResources.json with all 4 dashboard.recentActivity keys for offline PWA
+- [x] Add View All anchor link to RecentActivityCard header — smooth-scrolls to #activity-feed
+- [x] Add id="activity-feed" to the activity feed section div in Dashboard.tsx
+- [x] Enhance RecentActivityCard row hover states — navy-tinted bg, subtle box-shadow, scale(0.99) press feedback

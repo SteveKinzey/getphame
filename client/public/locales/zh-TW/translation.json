@@ -1764,7 +1764,8 @@
     "recentActivity": {
       "title": "最近活動",
       "engagedBadge": "{{count}} 位已互動",
-      "noActivity": "目前尚無最近活動"
+      "noActivity": "目前尚無最近活動",
+      "viewAll": "查看全部 →"
     }
   },
   "pricing": {

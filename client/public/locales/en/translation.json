@@ -2019,7 +2019,8 @@
     "recentActivity": {
       "title": "Recent Activity",
       "engagedBadge": "{{count}} engaged",
-      "noActivity": "No recent activity yet"
+      "noActivity": "No recent activity yet",
+      "viewAll": "View all →"
     }
   },
   "pricing": {

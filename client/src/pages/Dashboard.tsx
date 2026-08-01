@@ -300,7 +300,7 @@ export default function DashboardPage() {
         )}
 
         {/* Activity Feed */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <div id="activity-feed" className="bg-white rounded-2xl p-4 shadow-sm">
           {/* Header row */}
           <div className="flex items-center justify-between mb-3">
             <h3

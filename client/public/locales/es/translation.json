@@ -2178,7 +2178,8 @@
     "recentActivity": {
       "title": "Actividad reciente",
       "engagedBadge": "{{count}} activos",
-      "noActivity": "Aún no hay actividad reciente"
+      "noActivity": "Aún no hay actividad reciente",
+      "viewAll": "Ver todo →"
     },
     "viewAll": "Ver todo"
   },

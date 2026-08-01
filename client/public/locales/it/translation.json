@@ -714,7 +714,8 @@
     "recentActivity": {
       "title": "Attività recente",
       "engagedBadge": "{{count}} coinvolti",
-      "noActivity": "Nessuna attività recente"
+      "noActivity": "Nessuna attività recente",
+      "viewAll": "Vedi tutto →"
     }
   },
   "settings": {

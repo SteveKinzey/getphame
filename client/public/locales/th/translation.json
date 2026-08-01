@@ -1921,7 +1921,8 @@
     "recentActivity": {
       "title": "กิจกรรมล่าสุด",
       "engagedBadge": "{{count}} มีส่วนร่วม",
-      "noActivity": "ยังไม่มีกิจกรรมล่าสุด"
+      "noActivity": "ยังไม่มีกิจกรรมล่าสุด",
+      "viewAll": "ดูทั้งหมด →"
     }
   },
   "pricing": {

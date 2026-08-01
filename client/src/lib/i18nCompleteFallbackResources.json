@@ -11065,5 +11065,13 @@
       "csvDownloaded": "活動趨勢 CSV 已下載。",
       "pngDownloaded": "活動趨勢 PNG 已下載。"
     }
+  },
+  "dashboard": {
+    "recentActivity": {
+      "viewAll": "View all →",
+      "title": "Recent Activity",
+      "engagedBadge": "{{count}} engaged",
+      "noActivity": "No recent activity yet"
+    }
   }
 }

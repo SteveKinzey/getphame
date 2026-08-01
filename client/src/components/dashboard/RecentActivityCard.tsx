@@ -87,17 +87,28 @@ export default function RecentActivityCard({
             {t("dashboard.recentActivity.title", { defaultValue: "Recent Activity" })}
           </h3>
         </div>
-        {!isLoading && engagedCount > 0 && (
-          <span
-            className="text-xs font-bold px-2 py-0.5 rounded-full"
-            style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
+        <div className="flex items-center gap-2">
+          {!isLoading && engagedCount > 0 && (
+            <span
+              className="text-xs font-bold px-2 py-0.5 rounded-full"
+              style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
+            >
+              {t("dashboard.recentActivity.engagedBadge", {
+                defaultValue: "{{count}} engaged",
+                count: engagedCount,
+              })}
+            </span>
+          )}
+          <a
+            href="#activity-feed"
+            className="text-xs font-bold transition-colors"
+            style={{ color: "oklch(0.55 0.12 260)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.80 0.18 80)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.55 0.12 260)")}
           >
-            {t("dashboard.recentActivity.engagedBadge", {
-              defaultValue: "{{count}} engaged",
-              count: engagedCount,
-            })}
-          </span>
-        )}
+            {t("dashboard.recentActivity.viewAll", { defaultValue: "View all →" })}
+          </a>
+        </div>
       </div>
 
       {/* Loading skeletons */}
@@ -134,12 +145,27 @@ export default function RecentActivityCard({
               <button
                 key={req.id}
                 onClick={() => onSelectRequest(req.id)}
-                className="flex items-center gap-3 py-2.5 text-left hover:bg-gray-50 rounded-lg px-1 -mx-1 transition-colors"
+                className="flex items-center gap-3 py-2.5 text-left rounded-lg px-2 -mx-2 transition-all duration-150 cursor-pointer group"
                 style={{
                   borderBottom:
                     idx < recent.length - 1
                       ? "1px solid oklch(0.96 0.005 260)"
                       : "none",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.975 0.008 260)";
+                  (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 1px 4px oklch(0.22 0.09 260 / 0.06)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "";
+                  (e.currentTarget as HTMLButtonElement).style.boxShadow = "";
+                }}
+                onMouseDown={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.96 0.015 260)";
+                  (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.99)";
+                }}
+                onMouseUp={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.transform = "";
                 }}
               >
                 {/* Avatar */}
