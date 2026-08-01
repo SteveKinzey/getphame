@@ -434,7 +434,7 @@ describe("native-quality localization audit", () => {
       path.join(projectRoot, "client/public/sw.js"),
       "utf8"
     );
-    expect(i18nSource).toContain("{{ns}}.json?v=phame54");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v25'");
+    expect(i18nSource).toContain("{{ns}}.json?v=phame55");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v26'");
   });
 });

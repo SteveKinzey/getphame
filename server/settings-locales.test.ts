@@ -75,7 +75,7 @@ describe("Settings locale coverage", () => {
     );
     expect(i18nSource).toContain("supportedLngs: [...SUPPORTED_LANGS]");
     expect(i18nSource).toContain(
-      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame54"'
+      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame55"'
     );
     expect(i18nSource).toContain(
       'ns: ["landing", "translation", "cancellation"]'
