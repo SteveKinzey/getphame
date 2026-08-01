@@ -1685,6 +1685,11 @@
       "updateFailed": "更新请求失败。",
       "updatedSuccess": "已更新{{count}}个请求。",
       "updatedSuccessPlural": "已更新{{count}}个请求。"
+    },
+    "recentActivity": {
+      "title": "最近活动",
+      "engagedBadge": "{{count}} 位已互动",
+      "noActivity": "暂无最近活动"
     }
   },
   "pricing": {

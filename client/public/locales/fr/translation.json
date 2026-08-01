@@ -2175,7 +2175,11 @@
     "clickRate": "Taux de clic",
     "thisMonth": "Ce mois-ci",
     "allTime": "Depuis toujours",
-    "recentActivity": "Activité récente",
+    "recentActivity": {
+      "title": "Activité récente",
+      "engagedBadge": "{{count}} engagés",
+      "noActivity": "Aucune activité récente pour l'instant"
+    },
     "viewAll": "Voir tout"
   },
   "pricing": {

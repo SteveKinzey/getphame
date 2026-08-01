@@ -1760,6 +1760,11 @@
       "updateFailed": "更新請求失敗。",
       "updatedSuccess": "已更新{{count}}個請求。",
       "updatedSuccessPlural": "已更新{{count}}個請求。"
+    },
+    "recentActivity": {
+      "title": "最近活動",
+      "engagedBadge": "{{count}} 位已互動",
+      "noActivity": "目前尚無最近活動"
     }
   },
   "pricing": {

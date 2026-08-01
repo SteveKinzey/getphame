@@ -710,7 +710,12 @@
     "reviewsCollected": "Recensioni Raccolte",
     "pendingRequests": "Richieste in Attesa",
     "failedRequests": "Richieste Fallite",
-    "successRate": "Tasso di Successo"
+    "successRate": "Tasso di Successo",
+    "recentActivity": {
+      "title": "Attività recente",
+      "engagedBadge": "{{count}} coinvolti",
+      "noActivity": "Nessuna attività recente"
+    }
   },
   "settings": {
     "pageTitle": "Impostazioni",

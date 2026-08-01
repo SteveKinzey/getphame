@@ -1917,6 +1917,11 @@
       "updateFailed": "อัปเดตคำขอไม่สำเร็จ",
       "updatedSuccess": "อัปเดตคำขอแล้ว {{count}} รายการ",
       "updatedSuccessPlural": "อัปเดตคำขอแล้ว {{count}} รายการ"
+    },
+    "recentActivity": {
+      "title": "กิจกรรมล่าสุด",
+      "engagedBadge": "{{count}} มีส่วนร่วม",
+      "noActivity": "ยังไม่มีกิจกรรมล่าสุด"
     }
   },
   "pricing": {
