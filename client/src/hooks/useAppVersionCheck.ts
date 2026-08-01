@@ -13,8 +13,6 @@ import {
   VERSION_POLL_INTERVAL_MS,
 } from "@/lib/appVersion";
 import { useUpdateSafety } from "@/contexts/UpdateSafetyContext";
-import { trpc } from "@/lib/trpc";
-import type { PwaUpdateTelemetryEvent } from "@shared/pwaUpdateTelemetry";
 
 export type AppUpdateState =
   | "current"
@@ -43,7 +41,6 @@ export type AppVersionDiagnostics = {
 const NOTIFIED_PREFIX = "getphame:update-notified:";
 const DEFERRED_PREFIX = "getphame:update-deferred:";
 const WAITING_WORKER_TIMEOUT_MS = 1_500;
-export const APPLYING_UPDATE_FEEDBACK_MS = 220;
 
 function isSensitiveUpdateRoute(pathname: string, search: string): boolean {
   const normalized = pathname.toLowerCase();
@@ -111,8 +108,6 @@ export function useAppVersionCheck() {
     getCriticalActivityCount,
     getDirtySourceCount,
   } = useUpdateSafety();
-  const { mutate: trackPwaUpdateEvent } =
-    trpc.analytics.trackPwaUpdateEvent.useMutation();
   const [state, setState] = useState<AppUpdateState>("current");
   const [blocker, setBlocker] = useState<AppUpdateBlocker>(null);
   const [availableVersion, setAvailableVersion] = useState<string | null>(null);
@@ -133,7 +128,6 @@ export function useAppVersionCheck() {
   const pollingTimerRef = useRef<number | null>(null);
   const reloadingRef = useRef(false);
   const availableVersionRef = useRef<string | null>(null);
-  const recordedUpdateEventsRef = useRef(new Set<string>());
 
   const refreshWorkerDiagnostics = useCallback(async () => {
     if (typeof navigator === "undefined") return;
@@ -150,20 +144,6 @@ export function useAppVersionCheck() {
       setDiagnostics(current => ({ ...current, state: nextState, ...extras }));
     },
     []
-  );
-
-  const recordUpdateEvent = useCallback(
-    (
-      event: PwaUpdateTelemetryEvent,
-      version = availableVersionRef.current
-    ) => {
-      if (!version) return;
-      const key = `${version}:${event}`;
-      if (recordedUpdateEventsRef.current.has(key)) return;
-      recordedUpdateEventsRef.current.add(key);
-      trackPwaUpdateEvent({ event });
-    },
-    [trackPwaUpdateEvent]
   );
 
   const showAvailableNotice = useCallback(
@@ -185,10 +165,9 @@ export function useAppVersionCheck() {
       if (!wasNoticeShown(version) || !noticeVisible) {
         markNoticeShown(version);
         setNoticeVisible(true);
-        recordUpdateEvent("notice_shown", version);
       }
     },
-    [noticeVisible, recordUpdateEvent]
+    [noticeVisible]
   );
 
   const checkForUpdate = useCallback(
@@ -246,9 +225,7 @@ export function useAppVersionCheck() {
   const completeReload = useCallback(() => {
     if (reloadingRef.current) return;
     reloadingRef.current = true;
-    // Let the non-modal applying-update status paint before this intentional,
-    // user-approved current-tab reload. Peer tabs are never affected.
-    window.setTimeout(() => window.location.reload(), APPLYING_UPDATE_FEEDBACK_MS);
+    window.location.reload();
   }, []);
 
   const reloadCurrentTab = useCallback(async () => {
@@ -268,7 +245,6 @@ export function useAppVersionCheck() {
       return;
     }
 
-    recordUpdateEvent("update_applying", version);
     recordState("reloading");
     setNoticeVisible(false);
 
@@ -309,30 +285,26 @@ export function useAppVersionCheck() {
       // A worker diagnostic failure must not block a deliberate safe reload.
       completeReload();
     }
-  }, [completeReload, recordState, recordUpdateEvent]);
+  }, [completeReload, recordState]);
 
   const requestUpdate = useCallback(() => {
     if (!availableVersionRef.current || typeof window === "undefined") return;
-    recordUpdateEvent("update_requested");
 
     if (isSensitiveUpdateRoute(window.location.pathname, window.location.search)) {
       setBlocker("sensitive-flow");
       recordState("blocked");
-      recordUpdateEvent("update_blocked");
       return;
     }
 
     if (pendingMutationCount > 0) {
       setBlocker("pending-mutation");
       recordState("blocked");
-      recordUpdateEvent("update_blocked");
       return;
     }
 
     if (getCriticalActivityCount() > 0) {
       setBlocker("critical-activity");
       recordState("blocked");
-      recordUpdateEvent("update_blocked");
       return;
     }
 
@@ -348,7 +320,6 @@ export function useAppVersionCheck() {
     getDirtySourceCount,
     pendingMutationCount,
     recordState,
-    recordUpdateEvent,
     reloadCurrentTab,
   ]);
 
@@ -356,33 +327,23 @@ export function useAppVersionCheck() {
     if (isSensitiveUpdateRoute(window.location.pathname, window.location.search)) {
       setBlocker("sensitive-flow");
       recordState("blocked");
-      recordUpdateEvent("update_blocked");
       return;
     }
 
     if (pendingMutationCount > 0) {
       setBlocker("pending-mutation");
       recordState("blocked");
-      recordUpdateEvent("update_blocked");
       return;
     }
 
     if (getCriticalActivityCount() > 0) {
       setBlocker("critical-activity");
       recordState("blocked");
-      recordUpdateEvent("update_blocked");
       return;
     }
 
-    recordUpdateEvent("update_discard_confirmed");
     void reloadCurrentTab();
-  }, [
-    getCriticalActivityCount,
-    pendingMutationCount,
-    recordState,
-    recordUpdateEvent,
-    reloadCurrentTab,
-  ]);
+  }, [getCriticalActivityCount, pendingMutationCount, recordState, reloadCurrentTab]);
 
   const cancelDiscard = useCallback(() => {
     setBlocker(null);
@@ -400,10 +361,9 @@ export function useAppVersionCheck() {
     } catch {
       // In-memory hiding still prevents a repeated toast in the current render.
     }
-    recordUpdateEvent("update_deferred", version);
     setNoticeVisible(false);
     recordState("available");
-  }, [recordState, recordUpdateEvent]);
+  }, [recordState]);
 
   useEffect(() => {
     void checkForUpdate("initial");
