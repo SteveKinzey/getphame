@@ -21,7 +21,10 @@ describe("magic-link request and confirmation UX", () => {
     expect(form).toContain('data-testid="magic-link-confirmation"');
     expect(form).toContain("setSentTo(result.email)");
     expect(form).toContain('fetch("/api/auth/magic-link"');
-    expect(login).toContain('<MagicLinkForm idPrefix="login" autoFocus />');
+    expect(login).toContain('<MagicLinkForm');
+    expect(login).toContain('idPrefix="login"');
+    expect(login).toContain("autoFocus");
+    expect(login).toContain('humanVerificationToken={humanVerificationToken}');
     expect(onboarding).toContain("<MagicLinkForm");
     expect(onboarding).toContain('idPrefix="onboarding"');
   });
@@ -132,6 +135,6 @@ describe("localized magic-link UX contract", () => {
 
   it("bumps the runtime locale cache after catalog changes", () => {
     const i18n = read("client/src/lib/i18n.ts");
-    expect(i18n).toContain("{{ns}}.json?v=phame53");
+    expect(i18n).toContain("{{ns}}.json?v=phame55");
   });
 });

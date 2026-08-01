@@ -23,6 +23,7 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
+import { recordSignupRiskEvent, verifySignedHumanProof } from "./signupRisk";
 import {
   isValidExpectedEmailHash,
   PASSKEY_ENROLLMENT_CANCEL_PATH,
@@ -41,15 +42,20 @@ type AppleOAuthState = {
   expiresAt: number;
   intent?: typeof PASSKEY_ENROLLMENT_INTENT;
   expectedEmailHash?: string;
+  humanProof?: string;
 };
 
-function createSignedAppleState(redirectUri: string, enrollment?: { intent: typeof PASSKEY_ENROLLMENT_INTENT; expectedEmailHash: string }): { state: string; nonce: string } {
+function createSignedAppleState(redirectUri: string, input?: {
+  intent?: typeof PASSKEY_ENROLLMENT_INTENT;
+  expectedEmailHash?: string;
+  humanProof?: string;
+}): { state: string; nonce: string } {
   const nonce = crypto.randomBytes(32).toString("base64url");
   const payload: AppleOAuthState = {
     redirectUri,
     nonce,
     expiresAt: Date.now() + APPLE_STATE_TTL_MS,
-    ...(enrollment ?? {}),
+    ...(input ?? {}),
   };
   const encodedPayload = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const signature = crypto
@@ -91,7 +97,8 @@ function verifySignedAppleState(state: string | undefined): AppleOAuthState | nu
       typeof parsed.nonce !== "string" ||
       typeof parsed.expiresAt !== "number" ||
       parsed.expiresAt < Date.now() ||
-      (parsed.intent !== undefined && (parsed.intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(parsed.expectedEmailHash)))
+      (parsed.intent !== undefined && (parsed.intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(parsed.expectedEmailHash))) ||
+      (parsed.humanProof !== undefined && (typeof parsed.humanProof !== "string" || parsed.humanProof.length < 20 || parsed.humanProof.length > 4096))
     ) {
       return null;
     }
@@ -135,12 +142,17 @@ export function registerAppleAuthRoutes(app: Express) {
     const redirectUri = buildRedirectUri(req);
     const intent = typeof req.query.intent === "string" ? req.query.intent : undefined;
     const expectedEmailHash = typeof req.query.expected_email_hash === "string" ? req.query.expected_email_hash : undefined;
+    const humanProof = typeof req.query.human_proof === "string" ? req.query.human_proof : undefined;
     if (intent !== undefined && (intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(expectedEmailHash))) {
       return res.status(400).send("Invalid verification request.");
     }
-    const { state, nonce } = createSignedAppleState(redirectUri, intent === PASSKEY_ENROLLMENT_INTENT
-      ? { intent, expectedEmailHash: expectedEmailHash! }
-      : undefined);
+    if (humanProof !== undefined && (humanProof.length < 20 || humanProof.length > 4096)) {
+      return res.status(400).send("Invalid verification request.");
+    }
+    const { state, nonce } = createSignedAppleState(redirectUri, {
+      ...(intent === PASSKEY_ENROLLMENT_INTENT ? { intent, expectedEmailHash: expectedEmailHash! } : {}),
+      ...(humanProof ? { humanProof } : {}),
+    });
     const authUrl = new URL(APPLE_AUTHORIZATION_ENDPOINT);
     authUrl.searchParams.set("response_type", "code id_token");
     authUrl.searchParams.set("response_mode", "form_post");
@@ -261,6 +273,9 @@ export function registerAppleAuthRoutes(app: Express) {
         let sessionUser = canonicalUser ?? providerUser;
         let isNewEnrollmentUser = false;
         if (!sessionUser) {
+          if (!verifySignedHumanProof(verifiedState.humanProof, "provider-oauth")) {
+            return res.redirect(302, "/login?auth_error=human_verification_required");
+          }
           await db.upsertUser({ openId, name, email: verifiedEmail, loginMethod: "apple", lastSignedIn: new Date() });
           sessionUser = await db.getUserByOpenId(openId);
           isNewEnrollmentUser = true;
@@ -270,19 +285,24 @@ export function registerAppleAuthRoutes(app: Express) {
         if (!sessionUser) throw new Error("Session user unavailable after Apple verification");
 
         if (isNewEnrollmentUser) {
-          const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
-          if (ownerUser) sendUserWelcomeEmail({ ownerUserId: ownerUser.id, toEmail: verifiedEmail, toName: name }).catch((err: unknown) => console.warn("[AppleAuth] Welcome email failed (non-fatal):", err));
+          sendUserWelcomeEmail({ toEmail: verifiedEmail, toName: name }).catch((err: unknown) => console.warn("[AppleAuth] Welcome email failed (non-fatal):", err));
+          void recordSignupRiskEvent({ userId: sessionUser.id, subject: verifiedEmail, provider: "apple", outcome: "verified", reasonCode: "human_proof_verified", humanVerified: true });
         }
         await issueSecuritySession({ userId: sessionUser.id, authMethod: "oauth", assurance: "a1", req, res });
         return res.redirect(302, `/auth/apple/landing?return=${encodeURIComponent(PASSKEY_ENROLLMENT_SUCCESS_PATH)}`);
       }
 
       const existingIdentityUser = await db.getUserByOpenId(openId);
-      const existingEmailUser = !existingIdentityUser && email
+      const emailVerified = appleUser.email_verified === true || appleUser.email_verified === "true";
+      const existingEmailUser = !existingIdentityUser && email && emailVerified
         ? await db.getUserByEmail(email)
         : undefined;
       const existingUser = existingIdentityUser ?? existingEmailUser;
       const isNewUser = !existingUser;
+
+      if (isNewUser && (!email || !emailVerified || !verifySignedHumanProof(verifiedState.humanProof, "provider-oauth"))) {
+        return res.redirect(302, "/login?auth_error=human_verification_required");
+      }
 
       // If returning user, preserve their stored name
       if (!isNewUser && !name) {
@@ -308,16 +328,9 @@ export function registerAppleAuthRoutes(app: Express) {
 
       // Send welcome email to new users (fire-and-forget)
       if (isNewUser && email) {
-        const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
-        if (ownerUser) {
-          sendUserWelcomeEmail({
-            ownerUserId: ownerUser.id,
-            toEmail: email,
-            toName: name,
-          }).catch((err: unknown) => {
-            console.warn("[AppleAuth] Welcome email failed (non-fatal):", err);
-          });
-        }
+        sendUserWelcomeEmail({ toEmail: email, toName: name }).catch((err: unknown) => {
+          console.warn("[AppleAuth] Welcome email failed (non-fatal):", err);
+        });
       }
 
       // Create the session with the canonical account identity. For an Apple
@@ -326,6 +339,9 @@ export function registerAppleAuthRoutes(app: Express) {
       const sessionOpenId = existingUser?.openId ?? openId;
       const sessionUser = await db.getUserByOpenId(sessionOpenId);
       if (!sessionUser) throw new Error("Session user unavailable after Apple account update");
+      if (isNewUser && email) {
+        void recordSignupRiskEvent({ userId: sessionUser.id, subject: email, provider: "apple", outcome: "verified", reasonCode: "human_proof_verified", humanVerified: true });
+      }
       await issueSecuritySession({
         userId: sessionUser.id,
         authMethod: "oauth",

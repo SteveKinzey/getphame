@@ -18,7 +18,6 @@ import type { Express, Request, Response } from "express";
 import crypto from "crypto";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { COOKIE_NAME } from "@shared/const";
-import { ENV } from "./_core/env";
 import * as db from "./db";
 import { getDb } from "./db";
 import { magicLinks } from "../drizzle/schema";
@@ -36,6 +35,12 @@ import {
   issueSecuritySession,
   revokeSecuritySessionFromRequest,
 } from "./security/passkeySessions";
+import {
+  createSignedHumanProof,
+  recordSignupRiskEvent,
+  verifySignedHumanProof,
+  verifyTurnstileHuman,
+} from "./signupRisk";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -168,7 +173,11 @@ export function registerEmailAuthRoutes(app: Express) {
    * If the email doesn't exist yet, the account will be created on verification.
    */
   app.post("/api/auth/magic-link", async (req: Request, res: Response) => {
-    const { email, intent } = req.body as { email?: string; intent?: string };
+    const { email, intent, humanVerificationToken } = req.body as {
+      email?: string;
+      intent?: string;
+      humanVerificationToken?: unknown;
+    };
     const requestId = crypto.randomUUID();
     const requestStartedAt = Date.now();
 
@@ -229,6 +238,26 @@ export function registerEmailAuthRoutes(app: Express) {
         return res.status(500).json({ error: "Service temporarily unavailable." });
       }
 
+      // Only a genuinely new account requires a browser challenge. Existing
+      // customers continue to receive a normal sign-in link without a new
+      // verification hurdle.
+      const existingAccount =
+        (await db.getUserByEmail(normalizedEmail)) ??
+        (await db.getUserByOpenId(`email_${normalizedEmail}`));
+      const humanProof = existingAccount
+        ? undefined
+        : (await verifyTurnstileHuman(
+            humanVerificationToken,
+            typeof req.ip === "string" ? req.ip : undefined,
+          ))
+          ? createSignedHumanProof(normalizedEmail)
+          : null;
+      if (humanProof === null) {
+        return res.status(403).json({
+          error: "Human verification is required before creating a new account.",
+        });
+      }
+
       // Generate secure token
       const token = crypto.randomBytes(TOKEN_LENGTH).toString("hex");
       const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_MS);
@@ -255,6 +284,7 @@ export function registerEmailAuthRoutes(app: Express) {
         magicLinkParams.set("intent", PASSKEY_ENROLLMENT_INTENT);
         magicLinkParams.set("intent_signature", signPasskeyEnrollmentIntent(token, normalizedEmail));
       }
+      if (humanProof) magicLinkParams.set("human_proof", humanProof);
       const magicLinkUrl = `${baseUrl}/api/auth/magic-link/verify?${magicLinkParams.toString()}`;
 
       // Send email
@@ -309,6 +339,7 @@ export function registerEmailAuthRoutes(app: Express) {
     const token = typeof req.query.token === "string" ? req.query.token : null;
     const requestedIntent = typeof req.query.intent === "string" ? req.query.intent : null;
     const intentSignature = typeof req.query.intent_signature === "string" ? req.query.intent_signature : null;
+    const humanProof = typeof req.query.human_proof === "string" ? req.query.human_proof : undefined;
     const verificationStartedAt = Date.now();
     let requestId: string = crypto.randomUUID();
     let verificationEmail: string | null = null;
@@ -393,6 +424,9 @@ export function registerEmailAuthRoutes(app: Express) {
         (await db.getUserByEmail(email)) ??
         (await db.getUserByOpenId(emailOpenId));
       const isNewUser = !existingUser;
+      if (isNewUser && !verifySignedHumanProof(humanProof, email)) {
+        return res.redirect(302, "/login?auth_error=human_verification_required");
+      }
       const sessionOpenId = existingUser?.openId ?? emailOpenId;
       // Session verification requires a non-empty name. The previous empty
       // string produced a signed cookie that was immediately rejected as
@@ -410,20 +444,30 @@ export function registerEmailAuthRoutes(app: Express) {
 
       // Send welcome email to new users (fire-and-forget)
       if (isNewUser) {
-        const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
-        if (ownerUser) {
-          sendUserWelcomeEmail({
-            ownerUserId: ownerUser.id,
-            toEmail: email,
-            toName: null,
-          }).catch((err: unknown) =>
-            console.warn("[MagicLink] Welcome email failed:", err)
-          );
-        }
+        sendUserWelcomeEmail({
+          toEmail: email,
+          toName: null,
+        }).catch((err: unknown) =>
+          console.warn("[MagicLink] Welcome email failed:", err)
+        );
       }
 
       const sessionUser = await db.getUserByOpenId(sessionOpenId);
       if (!sessionUser) throw new Error("Session user unavailable after magic-link account update");
+      if (isNewUser) {
+        try {
+          await recordSignupRiskEvent({
+            userId: sessionUser.id,
+            subject: email,
+            provider: "email",
+            outcome: "verified",
+            reasonCode: "human_proof_verified",
+            humanVerified: true,
+          });
+        } catch (riskError) {
+          console.warn("[MagicLink] Signup-risk audit write failed:", redactAuthDiagnosticDetail(riskError));
+        }
+      }
       const { token: sessionToken, maxAge: sessionMaxAge } = await issueSecuritySession({
         userId: sessionUser.id,
         authMethod: "magic_link",

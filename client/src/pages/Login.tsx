@@ -21,6 +21,7 @@ import {
 } from "@/lib/authFeedback";
 import PasskeySignIn from "@/components/security/PasskeySignIn";
 import MagicLinkForm from "@/components/auth/MagicLinkForm";
+import HumanVerification from "@/components/auth/HumanVerification";
 import { AlertTriangle } from "lucide-react";
 import { isPasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
 
@@ -30,6 +31,10 @@ import { isPasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
 
 interface GoogleStatusResponse {
   enabled: boolean;
+}
+
+interface HumanProofResponse {
+  proof?: string;
 }
 
 const GOOGLE_REDIRECT_FEEDBACK_MS = 420;
@@ -125,6 +130,7 @@ export default function Login() {
   const [googleStatus, setGoogleStatus] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [magicLinkRecovery, setMagicLinkRecovery] = useState<MagicLinkRecoveryKind>(null);
+  const [humanVerificationToken, setHumanVerificationToken] = useState<string | null>(null);
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
@@ -164,7 +170,23 @@ export default function Login() {
     }
   }, [t]);
 
-  const handleGoogleSignIn = useCallback(() => {
+  const createProviderHumanProof = useCallback(async (): Promise<string | undefined> => {
+    if (!humanVerificationToken) return undefined;
+    try {
+      const response = await fetch("/api/auth/human-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: humanVerificationToken }),
+      });
+      if (!response.ok) return undefined;
+      const data = (await response.json()) as HumanProofResponse;
+      return typeof data.proof === "string" ? data.proof : undefined;
+    } catch {
+      return undefined;
+    }
+  }, [humanVerificationToken]);
+
+  const handleGoogleSignIn = useCallback(async () => {
     if (isGoogleSubmitting) return;
 
     flushSync(() => {
@@ -178,11 +200,15 @@ export default function Login() {
     });
 
     try {
+      const humanProof = await createProviderHumanProof();
+      const destination = humanProof
+        ? `/api/auth/google?human_proof=${encodeURIComponent(humanProof)}`
+        : "/api/auth/google";
       window.setTimeout(() => {
         setGoogleStatus(t("authFeedback.redirectingGoogle", { defaultValue: "Redirecting to Google. Keep this tab open." }));
       }, GOOGLE_REDIRECT_STATUS_MS);
       window.setTimeout(() => {
-        window.location.assign("/api/auth/google");
+        window.location.assign(destination);
       }, GOOGLE_REDIRECT_FEEDBACK_MS);
     } catch {
       clearGoogleSignInPending();
@@ -192,7 +218,15 @@ export default function Login() {
         id: GOOGLE_SIGN_IN_TOAST_ID,
       });
     }
-  }, [isGoogleSubmitting, t]);
+  }, [createProviderHumanProof, isGoogleSubmitting, t]);
+
+  const handleAppleSignIn = useCallback(async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const humanProof = await createProviderHumanProof();
+    window.location.assign(humanProof
+      ? `/api/auth/apple?human_proof=${encodeURIComponent(humanProof)}`
+      : "/api/auth/apple");
+  }, [createProviderHumanProof]);
 
   const recoveryCopy = magicLinkRecovery === "expired"
     ? {
@@ -283,7 +317,12 @@ export default function Login() {
                 <span>{formError}</span>
               </div>
             )}
-            <MagicLinkForm idPrefix="login" autoFocus />
+            <HumanVerification onTokenChange={setHumanVerificationToken} />
+            <MagicLinkForm
+              idPrefix="login"
+              autoFocus
+              humanVerificationToken={humanVerificationToken}
+            />
             {shouldShowSocialSection && (
               <>
                 <OrDivider label={t("login.or", { defaultValue: "or" })} />
@@ -321,6 +360,7 @@ export default function Login() {
                   {appleLoginEnabled && (
                     <a
                       href="/api/auth/apple"
+                      onClick={handleAppleSignIn}
                       className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
                     >
                       <AppleIcon />

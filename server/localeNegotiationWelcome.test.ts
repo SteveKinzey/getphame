@@ -154,8 +154,8 @@ describe("first-visit welcome experience", () => {
   it("invalidates old locale caches and precaches every maintained translation catalog", () => {
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
     const serviceWorker = readProjectFile("../client/public/sw.js");
-    expect(i18nSource).toContain('loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame53"');
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v24'");
+    expect(i18nSource).toContain('loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame55"');
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v26'");
     for (const locale of LOCALES) {
       expect(serviceWorker).toContain(`'/locales/${locale}/translation.json'`);
     }

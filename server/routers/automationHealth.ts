@@ -4,8 +4,10 @@ import { adminProcedure, router } from "../_core/trpc";
 import { AUTOMATION_HISTORY_MAX_RANGE_MS } from "../automationHealth";
 import {
   acknowledgeAutomationAlert,
+  getAutomationAlertAcknowledgementHistory,
   getAutomationAlert,
   getAutomationDashboard,
+  getAutomationRunsForDay,
 } from "../automationHealthDb";
 
 const dashboardSchema = z
@@ -38,6 +40,18 @@ const dashboardSchema = z
 
 const acknowledgeSchema = z
   .object({ eventId: z.number().int().positive() })
+  .strict();
+
+const runDetailsSchema = z
+  .object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    kind: z.enum(["drift_audit", "dependabot_merge"]),
+    limit: z.number().int().min(1).max(50).default(50),
+  })
+  .strict();
+
+const acknowledgementHistorySchema = z
+  .object({ limit: z.number().int().min(1).max(100).default(50) })
   .strict();
 
 export const automationHealthRouter = router({
@@ -75,5 +89,24 @@ export const automationHealthRouter = router({
         adminUserId: ctx.user.id,
         acknowledgedAt: Date.now(),
       })
+    ),
+
+  runDetails: adminProcedure
+    .input(runDetailsSchema)
+    .query(async ({ input }) => {
+      const fromMs = Date.parse(`${input.date}T00:00:00.000Z`);
+      if (!Number.isFinite(fromMs) || fromMs > Date.now()) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Choose a valid UTC date that is not in the future.",
+        });
+      }
+      return getAutomationRunsForDay(input);
+    }),
+
+  acknowledgementHistory: adminProcedure
+    .input(acknowledgementHistorySchema.optional())
+    .query(({ input }) =>
+      getAutomationAlertAcknowledgementHistory(input?.limit ?? 50)
     ),
 });

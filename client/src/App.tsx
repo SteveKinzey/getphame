@@ -115,6 +115,7 @@ const AdminSmtpStatsPage = lazy(() => import("./pages/AdminSmtpStats"));
 const AdminAuthDiagnosticsPage = lazy(
   () => import("./pages/AdminAuthDiagnostics")
 );
+const AdminSignupRiskPage = lazy(() => import("./pages/AdminSignupRisk"));
 const AdminChurnPage = lazy(() => import("./pages/AdminChurn"));
 const AdminRevenuePage = lazy(() => import("./pages/AdminRevenue"));
 const AdminRevenueControlsPage = lazy(
@@ -470,6 +471,7 @@ function AppShell() {
                     path="/admin/auth-diagnostics"
                     component={AdminAuthDiagnosticsPage}
                   />
+                  <Route path="/admin/signup-risk" component={AdminSignupRiskPage} />
                   <Route path="/admin/churn" component={AdminChurnPage} />
                   <Route path="/admin/revenue" component={AdminRevenuePage} />
                   <Route

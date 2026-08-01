@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "fb833a78-b880-4f09-a447-c3e3416cd45c",
+  "id": "fd03032b-1b8c-4ad4-90f6-5a3d38de00be",
   "prevId": "89a23961-0bf4-485c-932f-011fd3b3581a",
   "tables": {
     "access_code_redemptions": {
@@ -152,6 +152,146 @@
           ]
         }
       },
+      "checkConstraint": {}
+    },
+    "activity_trend_export_presets": {
+      "name": "activity_trend_export_presets",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "owner_user_id": {
+          "name": "owner_user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "normalized_name": {
+          "name": "normalized_name",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "range_key": {
+          "name": "range_key",
+          "type": "enum('30','60','90','custom')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "custom_start_date": {
+          "name": "custom_start_date",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "custom_end_date": {
+          "name": "custom_end_date",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "include_sends": {
+          "name": "include_sends",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "include_opens": {
+          "name": "include_opens",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "include_clicks": {
+          "name": "include_clicks",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "activity_trend_presets_owner_name_unique": {
+          "name": "activity_trend_presets_owner_name_unique",
+          "columns": [
+            "owner_user_id",
+            "normalized_name"
+          ],
+          "isUnique": true
+        },
+        "activity_trend_presets_owner_updated_idx": {
+          "name": "activity_trend_presets_owner_updated_idx",
+          "columns": [
+            "owner_user_id",
+            "updated_at"
+          ],
+          "isUnique": false
+        },
+        "activity_trend_presets_owner_sort_idx": {
+          "name": "activity_trend_presets_owner_sort_idx",
+          "columns": [
+            "owner_user_id",
+            "sort_order",
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "activity_trend_export_presets_id": {
+          "name": "activity_trend_export_presets_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
       "checkConstraint": {}
     },
     "api_abuse_limit_windows": {
@@ -4717,318 +4857,6 @@
       "compositePrimaryKeys": {
         "security_audit_events_id": {
           "name": "security_audit_events_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraint": {}
-    },
-    "security_audit_reports": {
-      "name": "security_audit_reports",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "event_key": {
-          "name": "event_key",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "oidc_jti_hash": {
-          "name": "oidc_jti_hash",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "outcome": {
-          "name": "outcome",
-          "type": "enum('clean','attention','failed')",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "production_info_count": {
-          "name": "production_info_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "production_low_count": {
-          "name": "production_low_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "production_moderate_count": {
-          "name": "production_moderate_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "production_high_count": {
-          "name": "production_high_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "production_critical_count": {
-          "name": "production_critical_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "full_info_count": {
-          "name": "full_info_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "full_low_count": {
-          "name": "full_low_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "full_moderate_count": {
-          "name": "full_moderate_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "full_high_count": {
-          "name": "full_high_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "full_critical_count": {
-          "name": "full_critical_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "production_dependency_count": {
-          "name": "production_dependency_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "full_dependency_count": {
-          "name": "full_dependency_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "updated_package_count": {
-          "name": "updated_package_count",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "test_status": {
-          "name": "test_status",
-          "type": "enum('passed','failed','not_run')",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "build_status": {
-          "name": "build_status",
-          "type": "enum('passed','failed','not_run')",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "failure_code": {
-          "name": "failure_code",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "failure_summary": {
-          "name": "failure_summary",
-          "type": "varchar(300)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "repository": {
-          "name": "repository",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "repository_id": {
-          "name": "repository_id",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "repository_owner_id": {
-          "name": "repository_owner_id",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "ref": {
-          "name": "ref",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "event_name": {
-          "name": "event_name",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "workflow": {
-          "name": "workflow",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "workflow_ref": {
-          "name": "workflow_ref",
-          "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "workflow_sha": {
-          "name": "workflow_sha",
-          "type": "varchar(40)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "run_id": {
-          "name": "run_id",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "run_number": {
-          "name": "run_number",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "run_attempt": {
-          "name": "run_attempt",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "run_url": {
-          "name": "run_url",
-          "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "event_at": {
-          "name": "event_at",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "duration_ms": {
-          "name": "duration_ms",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "received_at": {
-          "name": "received_at",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "security_audit_reports_event_key_unique": {
-          "name": "security_audit_reports_event_key_unique",
-          "columns": [
-            "event_key"
-          ],
-          "isUnique": true
-        },
-        "security_audit_reports_oidc_jti_unique": {
-          "name": "security_audit_reports_oidc_jti_unique",
-          "columns": [
-            "oidc_jti_hash"
-          ],
-          "isUnique": true
-        },
-        "security_audit_reports_event_idx": {
-          "name": "security_audit_reports_event_idx",
-          "columns": [
-            "event_at"
-          ],
-          "isUnique": false
-        },
-        "security_audit_reports_outcome_event_idx": {
-          "name": "security_audit_reports_outcome_event_idx",
-          "columns": [
-            "outcome",
-            "event_at"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "security_audit_reports_id": {
-          "name": "security_audit_reports_id",
           "columns": [
             "id"
           ]

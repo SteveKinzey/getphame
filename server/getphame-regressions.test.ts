@@ -189,7 +189,7 @@ describe("Get Phame regression contracts", () => {
     ).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v24'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v26'");
     expect(serviceWorker).toContain("'/locales/en/landing.json'");
     expect(serviceWorker).toContain("'/locales/zh-TW/landing.json'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
@@ -370,8 +370,8 @@ describe("Get Phame regression contracts", () => {
     expect(languageOptions).not.toContain('flag: "🇬🇧"');
     expect(languageOptions).toContain('{ code: "it"');
     expect(flyout).toContain("LANGUAGE_OPTIONS.map");
-    expect(i18n).toContain(
-      'export { detectBrowserLang, SUPPORTED_LANGS, type SupportedLang } from "./languageDetection";'
+    expect(i18n).toMatch(
+      /export\s*\{\s*detectBrowserLang,\s*SUPPORTED_LANGS,\s*type SupportedLang,?\s*\}\s*from "\.\/languageDetection";/
     );
     expect(preservedItalian).toContain('"account"');
   });
@@ -834,7 +834,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame53");
+    expect(i18n).toContain("v=phame55");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");
