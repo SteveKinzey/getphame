@@ -79,8 +79,8 @@
 - [x] Validate the disposable-domain release locally: 171 Vitest files passed (one suite skipped), 967 tests passed (seven skipped), TypeScript completed without errors, production build completed, and `/admin/signup-risk` was reviewed at 1280×900 and 375×812.
 - [x] Reconcile the concurrent protected-main security-audit release correction with the disposable-domain checkpoint without discarding either body of work; added the protected administrator route, privacy-bounded evidence contract, regression coverage, dashboard entry, and seven localized catalogs.
 - [x] Re-run affected security-audit and disposable-domain validation against the reconciled source tree: 9 focused suites / 56 tests and the full 173-file suite / 977 tests passed; TypeScript and production client/server builds passed; `/admin/security-audit-release` was reviewed at 1280×900 and 390×844.
-- [ ] Save a replacement managed checkpoint and synchronize its exact tree through a protected GitHub release pull request.
-- [ ] Verify the merged protected `main` tree matches the replacement checkpoint and record the completed release outcome.
+- [x] Save a replacement managed checkpoint and synchronize its exact tree through protected GitHub pull request #73; checkpoint `5f7f9fb6` was validated, review feedback was addressed, required quality checks passed, and the branch merged normally.
+- [x] Verify the merged protected `main` tree matches the replacement checkpoint: merge `bd60842ac6bc53aafa2babc9e5547260cb3d5fee` and managed checkpoint `5f7f9fb6` both resolve to tree `ca83bf888f05fcc89c352e998ae6ed4ff9a57024`.
 - [x] Add regression coverage for disposable-domain Heartbeat reconciliation: disabled, drift repair, creation, and duplicate-create recovery paths (4 focused assertions passed).
 - [x] Add endpoint-level coverage for the scheduled disposable-domain callback: cron authorization, task ownership, Pacific timing, deduplication, success recording, and failure handling (6 focused assertions passed).
 - [x] Run the complete Vitest regression suite after the protected-pull-request coverage remediation: 174 files passed, 1 skipped; 980 tests passed, 7 skipped.
