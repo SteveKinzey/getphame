@@ -4226,12 +4226,160 @@
     "lastDays": "Ultimi {{count}} giorni"
   },
   "securityAuditReleaseVerification": {
-    "dashboardCardTitle": "Verifica del rilascio dell’audit di sicurezza", "dashboardCardBody": "Esamina le prove del rilascio protetto e il primo passaggio di conferma dell’audit pianificato", "accessDenied": "Accesso negato", "adminOnly": "Solo amministratori", "loading": "Caricamento della verifica del rilascio", "errorTitle": "La verifica del rilascio non è disponibile", "errorBody": "Non è stato possibile caricare le prove del rilascio riservate agli amministratori.", "backToAdmin": "Torna all’amministrazione",
-    "title": "Verifica del rilascio dell’audit di sicurezza", "description": "Un registro di prove protetto per il rilascio della Cronologia degli audit di sicurezza, i relativi controlli di autorizzazione, lo schema di produzione e la prima conferma del report pianificato.", "releaseStatusLabel": "Stato del rilascio", "statusEyebrow": "Stato del rilascio", "statusVerified": "Verificato", "statusBody": "Il rilascio esaminato, le route protette, la disponibilità dello schema e i controlli dell’interfaccia autorizzata sono completi.",
-    "evidenceEyebrow": "Prove del rilascio verificate", "evidenceTitle": "I controlli di produzione sono attivi", "evidenceDescription": "Questa vista contiene un registro operativo conciso. Esclude deliberatamente log non elaborati delle dipendenze, dettagli degli avvisi, dati dei clienti e credenziali.", "evidenceListLabel": "Controlli di rilascio verificati",
-    "evidence": { "github-release": { "title": "Tracciabilità del rilascio esaminato", "detail": "Il rilascio esaminato della Cronologia degli audit di sicurezza è stato unito al main protetto." }, "ingestion-auth": { "title": "Autorizzazione all’acquisizione", "detail": "L’acquisizione non autenticata viene rifiutata prima che un report di audit possa essere archiviato." }, "admin-reporting-auth": { "title": "Autorizzazione ai report dell’amministratore", "detail": "Il payload dei report è servito solo tramite una procedura autorizzata per gli amministratori." }, "schema-readiness": { "title": "Prontezza dello schema della cronologia", "detail": "La tabella additiva dei report di audit e gli indici di reportistica sono disponibili in produzione." }, "admin-ui": { "title": "Interfaccia amministratore", "detail": "La Cronologia degli audit di sicurezza viene caricata per un amministratore autorizzato e non conserva log non elaborati delle dipendenze né dettagli degli avvisi." } },
-    "scopeEyebrow": "Rilascio verificato", "scopeTitle": "Cronologia degli audit di sicurezza", "scopeBody": "Acquisizione di audit protetta, report dell’amministratore e persistenza dell’audit sanificata.", "repository": "Archivio del codice", "protectedBranch": "Ramo protetto", "verifiedAt": "Verificato", "nextEyebrow": "Prossima conferma operativa", "nextTitle": "Conferma il primo audit pianificato", "reportRecorded": "È ora disponibile un report di audit verificato. Esaminalo nella Cronologia degli audit di sicurezza e conserva qualsiasi prova di esecuzione non riuscita prima di riprovare.", "reportPending": "Il rilascio è pronto. La prima prova operativa arriverà quando il prossimo workflow pianificato di audit delle dipendenze registrerà il suo riepilogo sanificato.", "recordedBadge": "Report registrato", "pendingBadge": "In attesa dell’audit pianificato",
-    "steps": { "1": "Consenti al workflow pianificato di audit delle dipendenze di terminare con la sua normale cadenza. Non avviare un’esecuzione duplicata solo per popolare la pagina.", "2": "Conferma che un riepilogo autenticato e sanificato venga accettato tramite il percorso di acquisizione degli audit.", "3": "Apri la Cronologia degli audit di sicurezza come amministratore e conferma che una nuova scheda dell’ultimo report mostri un risultato, gli stati di convalida, un timestamp, il conteggio degli aggiornamenti dei pacchetti e un riferimento al workflow.", "4": "Se non viene visualizzato alcun report, conserva la prova dell’esecuzione non riuscita e indaga sul workflow o sul risultato dell’acquisizione sanificata prima di riprovare." },
-    "nextNote": "Non creare un workflow duplicato soltanto per popolare questo dashboard. Una normale esecuzione pianificata conferma l’intero ciclo di reportistica di produzione.", "openHistory": "Apri Cronologia degli audit di sicurezza", "privacyEyebrow": "Gestione dei dati", "privacyTitle": "Report rispettosi della privacy", "privacyBody": "Il registro del rilascio esclude credenziali, dati dei clienti, log non elaborati e dettagli individuali degli avvisi.", "reportChecking": "Le evidenze della versione sono state caricate. Verifica in corso della registrazione del primo report di audit pianificato.", "reportUnavailable": "La versione è verificata, ma non è stato possibile caricare lo stato dell’ultimo report di audit. Apri Cronologia degli audit di sicurezza per riprovare in modo sicuro.", "checkingBadge": "Verifica della cronologia degli audit", "unavailableBadge": "Stato dell’audit non disponibile"
+    "dashboardCardTitle": "Dossier interno di Security Audit",
+    "dashboardCardBody": "Prove di rilascio riservate agli amministratori, controlli di produzione e stato dell'audit programmato",
+    "accessDenied": "Accesso negato",
+    "adminOnly": "Solo amministratori",
+    "loading": "Caricamento della verifica del rilascio",
+    "errorTitle": "La verifica del rilascio non è disponibile",
+    "errorBody": "Non è stato possibile caricare le prove del rilascio riservate agli amministratori.",
+    "backToAdmin": "Torna all’amministrazione",
+    "title": "Dossier interno di Security Audit",
+    "description": "Un dossier amministrativo protetto dal server per il rilascio Security Audit History, i suoi gate di validazione precisi, i controlli di produzione e la conferma programmata a cadenza normale in sospeso.",
+    "releaseStatusLabel": "Stato del rilascio",
+    "statusEyebrow": "Determinazione",
+    "statusVerified": "Rilascio verificato",
+    "statusBody": "Sorgente revisionata, gate candidati esatti, confini di produzione, preparazione dello schema e lineage protetto in main superati.",
+    "evidenceEyebrow": "Prove del rilascio verificate",
+    "evidenceTitle": "I controlli di produzione sono attivi",
+    "evidenceDescription": "Questa vista contiene un registro operativo conciso. Esclude deliberatamente log non elaborati delle dipendenze, dettagli degli avvisi, dati dei clienti e credenziali.",
+    "evidenceListLabel": "Controlli di rilascio verificati",
+    "evidence": {
+      "github-release": {
+        "title": "Tracciabilità del rilascio esaminato",
+        "detail": "Il rilascio esaminato della Cronologia degli audit di sicurezza è stato unito al main protetto."
+      },
+      "ingestion-auth": {
+        "title": "Autorizzazione all’acquisizione",
+        "detail": "L’acquisizione non autenticata viene rifiutata prima che un report di audit possa essere archiviato."
+      },
+      "admin-reporting-auth": {
+        "title": "Autorizzazione ai report dell’amministratore",
+        "detail": "Il payload dei report è servito solo tramite una procedura autorizzata per gli amministratori."
+      },
+      "schema-readiness": {
+        "title": "Prontezza dello schema della cronologia",
+        "detail": "La tabella additiva dei report di audit e gli indici di reportistica sono disponibili in produzione."
+      },
+      "admin-ui": {
+        "title": "Interfaccia amministratore",
+        "detail": "La Cronologia degli audit di sicurezza viene caricata per un amministratore autorizzato e non conserva log non elaborati delle dipendenze né dettagli degli avvisi."
+      }
+    },
+    "scopeEyebrow": "Rilascio verificato",
+    "scopeTitle": "Cronologia degli audit di sicurezza",
+    "scopeBody": "Acquisizione di audit protetta, report dell’amministratore e persistenza dell’audit sanificata.",
+    "repository": "Archivio del codice",
+    "protectedBranch": "Ramo protetto",
+    "verifiedAt": "Verificato",
+    "nextEyebrow": "Prossima conferma operativa",
+    "nextTitle": "Conferma il primo audit pianificato",
+    "reportRecorded": "È ora disponibile un report di audit verificato. Esaminalo nella Cronologia degli audit di sicurezza e conserva qualsiasi prova di esecuzione non riuscita prima di riprovare.",
+    "reportPending": "Il rilascio è verificato. Il primo rapporto programmato a cadenza normale rimane intenzionalmente in sospeso.",
+    "recordedBadge": "Report registrato",
+    "pendingBadge": "In attesa dell’audit pianificato",
+    "steps": {
+      "1": "Consenti al workflow pianificato di audit delle dipendenze di terminare con la sua normale cadenza. Non avviare un’esecuzione duplicata solo per popolare la pagina.",
+      "2": "Conferma che un riepilogo autenticato e sanificato venga accettato tramite il percorso di acquisizione degli audit.",
+      "3": "Apri la Cronologia degli audit di sicurezza come amministratore e conferma che una nuova scheda dell’ultimo report mostri un risultato, gli stati di convalida, un timestamp, il conteggio degli aggiornamenti dei pacchetti e un riferimento al workflow.",
+      "4": "Se non viene visualizzato alcun report, conserva la prova dell’esecuzione non riuscita e indaga sul workflow o sul risultato dell’acquisizione sanificata prima di riprovare."
+    },
+    "nextNote": "Non creare un workflow duplicato soltanto per popolare questo dashboard. Una normale esecuzione pianificata conferma l’intero ciclo di reportistica di produzione.",
+    "openHistory": "Apri Cronologia degli audit di sicurezza",
+    "privacyEyebrow": "Gestione dei dati",
+    "privacyTitle": "Report rispettosi della privacy",
+    "privacyBody": "Il record di rilascio esclude credenziali, dati clienti, righe di produzione, log grezzi, dettagli dei singoli avvisi e link ai report pubblici.",
+    "reportChecking": "Le evidenze della versione sono state caricate. Verifica in corso della registrazione del primo report di audit pianificato.",
+    "reportUnavailable": "La versione è verificata, ma non è stato possibile caricare lo stato dell’ultimo report di audit. Apri Cronologia degli audit di sicurezza per riprovare in modo sicuro.",
+    "checkingBadge": "Verifica della cronologia degli audit",
+    "unavailableBadge": "Stato dell’audit non disponibile",
+    "internalRecord": "Registro interno delle evidenze",
+    "pendingExpected": "Primo rapporto programmato: in sospeso — previsto",
+    "accessEyebrow": "Limite di autorizzazione",
+    "accessTitle": "Solo gli amministratori ricevono il payload del dossier",
+    "accessDescription": "La protezione nel browser migliora la navigazione; il middleware centralizzato sul server rimane il punto di controllo.",
+    "allowed": "Consentito",
+    "blocked": "Bloccato",
+    "pageOutcome": "Pagina",
+    "serverOutcome": "Payload del server",
+    "access": {
+      "unauthenticated": {
+        "context": "Visitatore non autenticato",
+        "page": "Solo pagina pubblica",
+        "server": "FORBIDDEN · nessun payload"
+      },
+      "non-admin": {
+        "context": "Utente autenticato non amministratore",
+        "page": "Reindirizzato altrove",
+        "server": "FORBIDDEN · nessun payload"
+      },
+      "administrator": {
+        "context": "Amministratore",
+        "page": "Dossier visualizzato",
+        "server": "Autorizzato · payload sanificato"
+      }
+    },
+    "validationEyebrow": "Validazione dei candidati esatti",
+    "validationTitle": "Tutti i gate di rilascio superati",
+    "validationDescription": "La merge di ripristino revisionata è stata testata indipendentemente dalle modifiche successive al repository.",
+    "passed": "Superato",
+    "validation": {
+      "focused-tests": {
+        "label": "Test di autorizzazione mirati",
+        "result": "23 / 23"
+      },
+      "full-suite": {
+        "label": "Suite di regressione completa",
+        "result": "948 superati · 17 saltati"
+      },
+      "typescript": {
+        "label": "Controllo TypeScript",
+        "result": "0 errori"
+      },
+      "dependency-audit": {
+        "label": "Audit delle dipendenze di produzione",
+        "result": "0 avvisi di produzione"
+      },
+      "production-build": {
+        "label": "Build di produzione",
+        "result": "Superato"
+      },
+      "responsive": {
+        "label": "Casi responsive e per tastiera",
+        "result": "4 casi viewport"
+      }
+    },
+    "productionEyebrow": "Prova di produzione non mutante",
+    "productionTitle": "Comportamento fail-closed in produzione con privacy mantenuta",
+    "production": {
+      "ingestion": {
+        "title": "Ingestione non autenticata",
+        "result": "401 · no-store · rifiutato",
+        "detail": "JSON valido senza autorizzazione è stato rifiutato senza esporre il payload del rapporto."
+      },
+      "admin-reporting": {
+        "title": "Reporting amministratore",
+        "result": "403 · nessun payload",
+        "detail": "Un chiamante senza autorizzazione amministrativa non ha ricevuto dati del dossier."
+      },
+      "schema": {
+        "title": "Schema di produzione",
+        "result": "Tabella + 2 indici",
+        "detail": "La tabella di reporting additiva per Security Audit e i due indici di reporting sono presenti."
+      },
+      "interfaces": {
+        "title": "Interfacce protette",
+        "result": "2 route protette",
+        "detail": "Security Audit History e questo dossier di rilascio restano all'interno dell'area amministratori."
+      }
+    },
+    "lineageEyebrow": "Lineage protetto",
+    "lineageTitle": "Rilascio revisionato preservato in main",
+    "pullRequest": "Richiesta di integrazione",
+    "mergeCommit": "Commit di merge",
+    "qualityGateRun": "Esecuzione della quality-gate",
+    "schemaEyebrow": "Prontezza dello schema",
+    "schemaTitle": "Storage di reporting additivo presente",
+    "noRowsOpened": "Nessuna riga di produzione è stata aperta o copiata."
   }
 }
