@@ -496,4 +496,4 @@
 - [x] Add a detailed administrator-only security and data-protection section covering truthful claims, least-privilege data handling, incident response, and privacy-request operations across all seven locales.
 - [x] Update manual versions, dates, locale/PWA cache markers, architecture inventory, and role/localization regression contracts without exposing administrator guidance to ordinary users.
 - [x] Run focused tests, the full suite, TypeScript, production dependency audit, production build, manual PDF checks, and responsive website/manual verification.
-- [ ] Synchronize the exact validated release through a history-preserving pull request into protected GitHub main and verify tree parity.
+- [x] Synchronize the exact validated release through a history-preserving pull request into protected GitHub main and verify tree parity.
