@@ -11,7 +11,9 @@ declare global {
           "expired-callback": () => void;
           "error-callback": () => void;
           theme: "light" | "dark" | "auto";
-          size: "normal" | "compact" | "invisible";
+          size: "normal" | "compact" | "flexible";
+          appearance: "always" | "execute" | "interaction-only";
+          execution: "render" | "execute";
         }
       ) => string;
       execute: (widgetId: string) => void | Promise<string>;
@@ -69,33 +71,39 @@ export default function HumanVerification({
         widgetIdRef.current
       )
         return;
-      widgetIdRef.current = window.turnstile.render(containerRef.current, {
-        sitekey: siteKey,
-        theme: "dark",
-        size: "invisible",
-        callback: token => {
-          if (!disposed) {
-            onTokenChange(token);
-            setStatus("ready");
-          }
-        },
-        "expired-callback": () => {
-          if (!disposed) {
-            onTokenChange(null);
-            setStatus("loading");
-            const widgetId = widgetIdRef.current;
-            if (!widgetId || !window.turnstile) return failUnavailable();
-            try {
-              window.turnstile.reset(widgetId);
-              executeWidget();
-            } catch {
-              failUnavailable();
+      try {
+        widgetIdRef.current = window.turnstile.render(containerRef.current, {
+          sitekey: siteKey,
+          theme: "dark",
+          size: "normal",
+          appearance: "interaction-only",
+          execution: "execute",
+          callback: token => {
+            if (!disposed) {
+              onTokenChange(token);
+              setStatus("ready");
             }
-          }
-        },
-        "error-callback": failUnavailable,
-      });
-      executeWidget();
+          },
+          "expired-callback": () => {
+            if (!disposed) {
+              onTokenChange(null);
+              setStatus("loading");
+              const widgetId = widgetIdRef.current;
+              if (!widgetId || !window.turnstile) return failUnavailable();
+              try {
+                window.turnstile.reset(widgetId);
+                executeWidget();
+              } catch {
+                failUnavailable();
+              }
+            }
+          },
+          "error-callback": failUnavailable,
+        });
+        executeWidget();
+      } catch {
+        failUnavailable();
+      }
     };
 
     const existing = document.getElementById(
@@ -132,18 +140,24 @@ export default function HumanVerification({
   }, [onTokenChange, siteKey]);
 
   return (
-    <div
-      className="sr-only"
-      aria-live="polite"
-      aria-atomic="true"
-      data-testid="human-verification-status"
-    >
-      {status === "loading"
-        ? "Preparing account security check."
-        : status === "ready"
-          ? "Account security check complete."
-          : "Account security check is unavailable."}
-      <div ref={containerRef} />
-    </div>
+    <>
+      <div
+        className="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+        data-testid="human-verification-status"
+      >
+        {status === "loading"
+          ? "Preparing account security check."
+          : status === "ready"
+            ? "Account security check complete."
+            : "Account security check is unavailable."}
+      </div>
+      <div
+        ref={containerRef}
+        className="flex justify-center"
+        data-testid="human-verification-widget"
+      />
+    </>
   );
 }
