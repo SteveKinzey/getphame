@@ -4274,6 +4274,8 @@
     "no": "No",
     "lastChecked": "Última comprobación satisfactoria",
     "check": "Buscar actualización",
-    "reloadTab": "Recargar esta pestaña"
+    "reloadTab": "Recargar esta pestaña",
+    "applyingTitle": "Aplicando tu actualización",
+    "applyingDescription": "GET PHAME está preparando la última versión. Esta pestaña se actualizará en breve."
   }
 }

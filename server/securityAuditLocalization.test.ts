@@ -81,9 +81,9 @@ describe("Security Audit History localization", () => {
 
   it("advances both locale HTTP and offline PWA cache contracts", () => {
     expect(i18nSource).toContain(
-      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame60"'
+      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame61"'
     );
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v28'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
 
     for (const locale of locales) {
       expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);

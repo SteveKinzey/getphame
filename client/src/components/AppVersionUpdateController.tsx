@@ -24,6 +24,7 @@ import {
 
 const UPDATE_TOAST_ID = "getphame-version-update";
 const UPDATE_STATUS_TOAST_ID = "getphame-version-update-status";
+const UPDATE_APPLYING_TOAST_ID = "getphame-version-update-applying";
 
 type AppVersionContextValue = ReturnType<typeof useAppVersionCheck>;
 
@@ -144,6 +145,48 @@ function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) 
   }, [availableVersion, deferUpdate, noticeVisible, requestUpdate, state, t]);
 
   useEffect(() => {
+    if (state !== "reloading") {
+      toast.dismiss(UPDATE_APPLYING_TOAST_ID);
+      return;
+    }
+
+    toast.custom(
+      () => (
+        <div
+          data-testid="pwa-update-applying"
+          role="status"
+          aria-live="polite"
+          className="pwa-update-applying-toast w-[min(25rem,calc(100vw-2rem))] rounded-2xl border border-[oklch(0.79_0.15_80_/_0.68)] bg-white p-4 shadow-lg"
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl rr-bg-gold">
+              <RefreshCw
+                size={17}
+                className="pwa-update-applying-icon rr-text-navy"
+                aria-hidden="true"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-black rr-text-navy">
+                {t("versionUpdate.applyingTitle", {
+                  defaultValue: "Applying your update",
+                })}
+              </p>
+              <p className="mt-1 text-xs leading-5 rr-text-navy-mid">
+                {t("versionUpdate.applyingDescription", {
+                  defaultValue:
+                    "GET PHAME is preparing the latest version. This tab will refresh shortly.",
+                })}
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+      { id: UPDATE_APPLYING_TOAST_ID, duration: Infinity }
+    );
+  }, [state, t]);
+
+  useEffect(() => {
     if (!statusMessage) return;
 
     if (state === "failed") {
@@ -153,6 +196,11 @@ function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) 
 
     if (state === "blocked") {
       toast.warning(statusMessage, { id: UPDATE_STATUS_TOAST_ID, duration: 6_000 });
+      return;
+    }
+
+    if (state === "reloading") {
+      toast.dismiss(UPDATE_STATUS_TOAST_ID);
       return;
     }
 
