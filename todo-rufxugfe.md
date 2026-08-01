@@ -81,3 +81,8 @@
 - [x] Re-run affected security-audit and disposable-domain validation against the reconciled source tree: 9 focused suites / 56 tests and the full 173-file suite / 977 tests passed; TypeScript and production client/server builds passed; `/admin/security-audit-release` was reviewed at 1280×900 and 390×844.
 - [ ] Save a replacement managed checkpoint and synchronize its exact tree through a protected GitHub release pull request.
 - [ ] Verify the merged protected `main` tree matches the replacement checkpoint and record the completed release outcome.
+- [x] Add regression coverage for disposable-domain Heartbeat reconciliation: disabled, drift repair, creation, and duplicate-create recovery paths (4 focused assertions passed).
+- [x] Add endpoint-level coverage for the scheduled disposable-domain callback: cron authorization, task ownership, Pacific timing, deduplication, success recording, and failure handling (6 focused assertions passed).
+- [x] Run the complete Vitest regression suite after the protected-pull-request coverage remediation: 174 files passed, 1 skipped; 980 tests passed, 7 skipped.
+- [x] Run the production build after the scheduler coverage remediation: the 703-package OSV audit passed, the full Vitest gate passed, and Vite plus the server bundle completed successfully.
+- [x] Run the defined one-shot TypeScript check after the scheduler coverage remediation; `tsc --noEmit` completed with no errors.
