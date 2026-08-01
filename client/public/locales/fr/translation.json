@@ -4249,5 +4249,31 @@
     "toastRequested": "Votre demande d’exception a été envoyée à support@getphame.app.",
     "toastAddressRequired": "Saisissez l’adresse physique de votre entreprise pour déterminer l’heure locale.",
     "toastReasonRequired": "Expliquez pourquoi une période de tranquillité plus courte est nécessaire."
+  },
+  "versionUpdate": {
+    "title": "Mise à jour prête",
+    "notice": "Une nouvelle version de GET PHAME est prête. Mettez à jour lorsque vous avez un moment disponible.",
+    "updateNow": "Mettre à jour",
+    "later": "Plus tard",
+    "blockedMutation": "Terminez l’action en cours avant de mettre à jour.",
+    "blockedSensitiveFlow": "Terminez cette étape de connexion ou de paiement avant de mettre à jour.",
+    "reloading": "Mise à jour de cet onglet en cours.",
+    "failed": "La mise à jour automatique n’a pas pu être terminée. Vous pouvez actualiser cet onglet lorsque vous serez prêt.",
+    "discardTitle": "Mettre à jour et ignorer les modifications non enregistrées ?",
+    "discardDescription": "Cet onglet contient du travail non enregistré. Enregistrez-le d’abord ou confirmez que vous souhaitez recharger et ignorer ces modifications.",
+    "keepEditing": "Continuer la modification",
+    "discardAndUpdate": "Ignorer et mettre à jour",
+    "notChecked": "Pas encore vérifiée",
+    "adminTitle": "Version de l’application",
+    "adminDescription": "Inspectez uniquement l’onglet actuel. Aucune donnée de compte ou de client n’est affichée.",
+    "deployedVersion": "Version déployée",
+    "workerScript": "Script du worker",
+    "workerCache": "Cache du worker",
+    "waitingWorker": "Worker en attente",
+    "yes": "Oui",
+    "no": "Non",
+    "lastChecked": "Dernière vérification réussie",
+    "check": "Rechercher une mise à jour",
+    "reloadTab": "Recharger cet onglet"
   }
 }

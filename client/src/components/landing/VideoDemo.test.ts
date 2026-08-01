@@ -438,7 +438,9 @@ describe("VideoDemo media contract", () => {
     expect(serviceWorker).toContain("'/getphame-walkthrough.pt.vtt'");
     expect(serviceWorker).toContain("'/locales/fr/landing.json'");
     expect(serviceWorker).toContain("url.pathname.startsWith('/manus-storage/')");
-    expect(serviceWorker).toContain(".filter((name) => name !== CACHE_NAME)");
+    expect(serviceWorker).toContain(
+      "filter(name => name.startsWith('getphame-') && name !== CACHE_NAME)"
+    );
     expect(serviceWorker).toContain("self.skipWaiting()");
     expect(serviceWorker).toContain("self.clients.claim()");
   });

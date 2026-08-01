@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { CheckCircle2, Loader2, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+  useUpdateCriticalActivity,
+  useUpdateDirtySource,
+} from "@/contexts/UpdateSafetyContext";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const MAGIC_LINK_RESEND_COOLDOWN_SECONDS = 60;
@@ -45,6 +49,15 @@ export default function MagicLinkForm({
 
   const isSending = requestState === "sending";
   const isResending = requestState === "resending";
+  const initialEmailValue = initialEmail.trim().toLowerCase();
+  useUpdateDirtySource(
+    `${idPrefix}-magic-link-email`,
+    !lockEmail && !sentTo && email !== initialEmailValue,
+  );
+  useUpdateCriticalActivity(
+    `${idPrefix}-magic-link-request`,
+    isSending || isResending || Boolean(sentTo),
+  );
   const canResend = Boolean(sentTo) && resendSeconds === 0 && !isResending;
   const timerId = `${idPrefix}-magic-link-resend-timer`;
   const sendingStatusId = `${idPrefix}-magic-link-sending-status`;

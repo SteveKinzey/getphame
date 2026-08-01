@@ -1,9 +1,9 @@
 {
   "locale": "it",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 48,
+  "sourceCandidateCount": 49,
   "translatedCount": 11,
-  "exceptionCount": 37,
+  "exceptionCount": 38,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -61,6 +61,7 @@
     "landing:landing.support.email|cross_language_equivalent",
     "landing:landing.support.topicOnboarding|cross_language_equivalent",
     "translation:settings.bulkSender.providers.mailjet.label|brand_or_product",
+    "translation:versionUpdate.no|cross_language_equivalent",
     "cancellation:brand|brand_or_product"
   ]
 }

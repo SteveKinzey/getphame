@@ -216,7 +216,7 @@ describe("Get Phame regression contracts", () => {
     expect(serviceWorker).toContain("return getOfflinePage()");
     expect(serviceWorker).toContain("'/offline.html'");
     expect(serviceWorker).toContain("cache.match('/offline.html')");
-    expect(serviceWorker).toContain("return self.clients.claim()");
+    expect(serviceWorker).toContain("await self.clients.claim()");
     expect(offlinePage).toContain("You’re offline");
     expect(offlinePage).toContain("GET PHAME");
     expect(offlinePage).toContain('onclick="window.location.reload()"');

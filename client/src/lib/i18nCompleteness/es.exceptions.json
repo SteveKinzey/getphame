@@ -1,9 +1,9 @@
 {
   "locale": "es",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 176,
+  "sourceCandidateCount": 177,
   "translatedCount": 119,
-  "exceptionCount": 57,
+  "exceptionCount": 58,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -193,6 +193,7 @@
     "landing:landing.modal.captionFontFamilySans|technical_term",
     "landing:landing.modal.captionFontFamilySerif|technical_term",
     "translation:settings.bulkSender.providers.mailjet.label|brand_or_product",
+    "translation:versionUpdate.no|cross_language_equivalent",
     "cancellation:brand|brand_or_product"
   ]
 }

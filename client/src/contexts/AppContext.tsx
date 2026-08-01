@@ -1,7 +1,7 @@
 // Phame — Global App Context
 // Manages business profile, requests, and reminder state across all screens
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import {
   BusinessProfile,
   ReviewRequest,
@@ -52,13 +52,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
     refreshData();
   }, [refreshData]);
-
-  // Register service worker
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(console.error);
-    }
-  }, []);
 
   const profile = data.profile;
   const requests = data.requests;

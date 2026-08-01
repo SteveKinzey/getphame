@@ -4462,5 +4462,31 @@
     "toastRequested": "La richiesta di eccezione è stata inviata a support@getphame.app.",
     "toastAddressRequired": "Inserisci l’indirizzo fisico dell’attività per determinare l’ora locale.",
     "toastReasonRequired": "Spiega perché è necessario un periodo di silenzio più breve."
+  },
+  "versionUpdate": {
+    "title": "Aggiornamento pronto",
+    "notice": "Una nuova versione di GET PHAME è pronta. Aggiorna quando hai un momento libero.",
+    "updateNow": "Aggiorna ora",
+    "later": "Più tardi",
+    "blockedMutation": "Completa l’azione corrente prima di aggiornare.",
+    "blockedSensitiveFlow": "Completa questo passaggio di accesso o pagamento prima di aggiornare.",
+    "reloading": "Aggiornamento di questa scheda in corso.",
+    "failed": "Non è stato possibile completare automaticamente l’aggiornamento. Puoi ricaricare questa scheda quando sei pronto.",
+    "discardTitle": "Aggiornare e ignorare le modifiche non salvate?",
+    "discardDescription": "Questa scheda contiene lavoro non salvato. Salvalo prima oppure conferma di voler ricaricare e ignorare tali modifiche.",
+    "keepEditing": "Continua a modificare",
+    "discardAndUpdate": "Ignora e aggiorna",
+    "notChecked": "Non ancora verificata",
+    "adminTitle": "Versione dell’applicazione",
+    "adminDescription": "Ispeziona solo la scheda corrente. Non vengono mostrati dati di account o clienti.",
+    "deployedVersion": "Versione distribuita",
+    "workerScript": "Script del worker",
+    "workerCache": "Cache del worker",
+    "waitingWorker": "Worker in attesa",
+    "yes": "Sì",
+    "no": "No",
+    "lastChecked": "Ultimo controllo riuscito",
+    "check": "Cerca aggiornamenti",
+    "reloadTab": "Ricarica questa scheda"
   }
 }

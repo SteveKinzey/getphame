@@ -53,6 +53,7 @@ import {
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import LanguageFlyout from "@/components/LanguageFlyout";
+import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -188,6 +189,14 @@ export default function EmailTemplates() {
     },
     onError: (e) => toast.error(e.message),
   });
+
+  const hasUnsavedTemplateChanges = dialogOpen && (
+    form.name !== (editTemplate?.name ?? emptyForm.name)
+    || form.subject !== (editTemplate?.subject ?? emptyForm.subject)
+    || form.body !== (editTemplate?.body ?? emptyForm.body)
+    || form.isDefault !== Boolean(editTemplate?.isDefault ?? emptyForm.isDefault)
+  );
+  useUpdateDirtySource("email-templates-editor", hasUnsavedTemplateChanges);
 
   if (authLoading) return null;
   if (!isAuthenticated) {

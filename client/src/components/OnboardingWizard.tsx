@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import LandingBrandLink from "@/components/LandingBrandLink";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -146,6 +147,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
   const [apiTermsAccepted, setApiTermsAccepted] = useState(false);
   const [apiAcceptableUseAccepted, setApiAcceptableUseAccepted] = useState(false);
+  useUpdateDirtySource(
+    "onboarding-connector",
+    apiTermsAccepted || apiAcceptableUseAccepted || revealedSecret !== null,
+  );
   const { data: apiKeyList } = trpc.apiKey.list.useQuery();
   const { data: enrollment, isLoading: enrollmentLoading } = trpc.apiKey.enrollment.useQuery();
   const downloadConnector = trpc.connector.download.useMutation({
@@ -432,6 +437,10 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null);
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
+  useUpdateDirtySource(
+    "onboarding-smtp",
+    Boolean(email || password || host || fromName || replyTo),
+  );
 
   const testCredentials = trpc.smtp.testCredentials.useMutation();
 
@@ -768,6 +777,10 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
   const utils = trpc.useUtils();
   const [platform, setPlatform] = useState<string>("google");
   const [url, setUrl] = useState("");
+  useUpdateDirtySource(
+    "onboarding-review-platform",
+    platform !== "google" || Boolean(url.trim()),
+  );
 
   const addPlatform = trpc.reviewPlatforms.add.useMutation({
     onSuccess: () => {
