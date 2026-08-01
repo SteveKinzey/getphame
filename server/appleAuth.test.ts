@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   anonymiseUserByOpenId: vi.fn(),
   issueSecuritySession: vi.fn(),
   sendUserWelcomeEmail: vi.fn().mockResolvedValue(undefined),
+  recordSignupRiskEvent: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("apple-signin-auth", () => ({
@@ -52,7 +53,13 @@ vi.mock("./smtp", () => ({
   sendUserWelcomeEmail: mocks.sendUserWelcomeEmail,
 }));
 
+vi.mock("./signupRisk", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./signupRisk")>();
+  return { ...actual, recordSignupRiskEvent: mocks.recordSignupRiskEvent };
+});
+
 import { registerAppleAuthRoutes } from "./appleAuth";
+import { createSignedHumanProof } from "./signupRisk";
 
 function createApp() {
   const app = express();
@@ -62,8 +69,10 @@ function createApp() {
   return app;
 }
 
-async function createAppleRequestState(app = createApp()) {
-  const response = await request(app).get("/api/auth/apple");
+async function createAppleRequestState(app = createApp(), humanProof?: string) {
+  const response = await request(app).get(humanProof
+    ? `/api/auth/apple?human_proof=${encodeURIComponent(humanProof)}`
+    : "/api/auth/apple");
   const authorizationUrl = new URL(response.headers.location);
   return {
     app,
@@ -77,10 +86,12 @@ describe("Apple Sign In callback", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.APP_BASE_URL = "https://getphame.app";
+    process.env.SIGNUP_RISK_HMAC_SECRET = "test-signup-risk-secret-which-is-long-enough";
     mocks.getAuthorizationToken.mockResolvedValue({ id_token: "verified-id-token" });
     mocks.verifyIdToken.mockResolvedValue({
       sub: "apple-user-123",
       email: "steve@example.test",
+      email_verified: true,
     });
     mocks.issueSecuritySession.mockImplementation(async ({ res }: { res: express.Response }) => {
       res.cookie("app_session_id", "revocable-session-token", { httpOnly: true, secure: true });
@@ -93,9 +104,11 @@ describe("Apple Sign In callback", () => {
   it("requests and verifies Apple's signed identity token directly from the form-post callback", async () => {
     mocks.getUserByOpenId
       .mockResolvedValueOnce(undefined)
-      .mockResolvedValueOnce({ id: 1, openId: "owner-open-id" })
       .mockResolvedValueOnce({ id: 77, openId: "apple_apple-user-123" });
-    const { app, state, nonce, authorizationUrl } = await createAppleRequestState();
+    const { app, state, nonce, authorizationUrl } = await createAppleRequestState(
+      createApp(),
+      createSignedHumanProof("provider-oauth"),
+    );
 
     expect(authorizationUrl.searchParams.get("response_type")).toBe("code id_token");
     expect(authorizationUrl.searchParams.get("response_mode")).toBe("form_post");

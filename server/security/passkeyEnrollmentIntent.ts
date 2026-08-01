@@ -11,6 +11,7 @@ interface ProviderStatePayload {
   issuedAt: number;
   intent?: typeof PASSKEY_ENROLLMENT_INTENT;
   expectedEmailHash?: string;
+  humanProof?: string;
 }
 
 export type ProviderOAuthCallbackState =
@@ -31,12 +32,17 @@ export function isValidExpectedEmailHash(value: unknown): value is string {
   return typeof value === "string" && /^[a-f0-9]{64}$/i.test(value);
 }
 
-export function createProviderOAuthState(input?: { intent?: typeof PASSKEY_ENROLLMENT_INTENT; expectedEmailHash?: string }): string {
+export function createProviderOAuthState(input?: {
+  intent?: typeof PASSKEY_ENROLLMENT_INTENT;
+  expectedEmailHash?: string;
+  humanProof?: string;
+}): string {
   const payload: ProviderStatePayload = {
     v: 1,
     csrf: crypto.randomBytes(16).toString("hex"),
     issuedAt: Date.now(),
     ...(input?.intent ? { intent: input.intent, expectedEmailHash: input.expectedEmailHash } : {}),
+    ...(input?.humanProof ? { humanProof: input.humanProof } : {}),
   };
   const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
   return `${encoded}.${sign(encoded)}`;
@@ -55,6 +61,7 @@ export function verifyProviderOAuthState(value: unknown): ProviderStatePayload |
     if (payload.v !== 1 || !payload.csrf || !Number.isFinite(payload.issuedAt)) return null;
     if (Date.now() - payload.issuedAt > 10 * 60 * 1000 || payload.issuedAt > Date.now() + 60_000) return null;
     if (payload.intent && (payload.intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(payload.expectedEmailHash))) return null;
+    if (payload.humanProof !== undefined && (typeof payload.humanProof !== "string" || payload.humanProof.length < 20 || payload.humanProof.length > 4096)) return null;
     return payload;
   } catch {
     return null;

@@ -14,11 +14,11 @@
  */
 import type { Express, Request, Response } from "express";
 import { google } from "googleapis";
-import { ENV } from "./_core/env";
 import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
+import { recordSignupRiskEvent, verifySignedHumanProof } from "./signupRisk";
 import {
   createProviderOAuthState,
   isValidExpectedEmailHash,
@@ -26,8 +26,8 @@ import {
   PASSKEY_ENROLLMENT_INTENT,
   PASSKEY_ENROLLMENT_MISMATCH_PATH,
   PASSKEY_ENROLLMENT_SUCCESS_PATH,
-  providerEmailMatches,
-  verifyProviderOAuthCallbackState,
+    providerEmailMatches,
+    verifyProviderOAuthCallbackState,
 } from "./security/passkeyEnrollmentIntent";
 
 // ---------------------------------------------------------------------------
@@ -90,12 +90,17 @@ export function registerGoogleAuthRoutes(app: Express) {
 
     const intent = typeof req.query.intent === "string" ? req.query.intent : undefined;
     const expectedEmailHash = typeof req.query.expected_email_hash === "string" ? req.query.expected_email_hash : undefined;
+    const humanProof = typeof req.query.human_proof === "string" ? req.query.human_proof : undefined;
     if (intent !== undefined && (intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(expectedEmailHash))) {
       return res.status(400).json({ error: "Invalid verification request." });
     }
-    const state = createProviderOAuthState(intent === PASSKEY_ENROLLMENT_INTENT
-      ? { intent, expectedEmailHash }
-      : undefined);
+    if (humanProof !== undefined && (humanProof.length < 20 || humanProof.length > 4096)) {
+      return res.status(400).json({ error: "Invalid verification request." });
+    }
+    const state = createProviderOAuthState({
+      ...(intent === PASSKEY_ENROLLMENT_INTENT ? { intent, expectedEmailHash } : {}),
+      ...(humanProof ? { humanProof } : {}),
+    });
 
     // Store state in a short-lived httpOnly cookie (10 minutes).
     // Must use sameSite: "none" + secure so the cookie survives the
@@ -188,6 +193,9 @@ export function registerGoogleAuthRoutes(app: Express) {
         let sessionUser = canonicalUser ?? providerUser;
         let isNewEnrollmentUser = false;
         if (!sessionUser) {
+          if (!verifySignedHumanProof(statePayload?.humanProof, "provider-oauth")) {
+            return res.redirect(302, "/login?auth_error=human_verification_required");
+          }
           await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
           sessionUser = await db.getUserByOpenId(openId);
           isNewEnrollmentUser = true;
@@ -197,41 +205,39 @@ export function registerGoogleAuthRoutes(app: Express) {
         if (!sessionUser) throw new Error("Session user unavailable after Google verification");
 
         if (isNewEnrollmentUser) {
-          const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
-          if (ownerUser) sendUserWelcomeEmail({ ownerUserId: ownerUser.id, toEmail: email, toName: name }).catch((err: unknown) => console.warn("[GoogleAuth] Welcome email failed:", err));
+          sendUserWelcomeEmail({ toEmail: email, toName: name }).catch((err: unknown) => console.warn("[GoogleAuth] Welcome email failed:", err));
+          void recordSignupRiskEvent({ userId: sessionUser.id, subject: email, provider: "google", outcome: "verified", reasonCode: "human_proof_verified", humanVerified: true });
         }
         await issueSecuritySession({ userId: sessionUser.id, authMethod: "oauth", assurance: "a1", req, res });
         return res.redirect(302, PASSKEY_ENROLLMENT_SUCCESS_PATH);
       }
 
-      // Check if this is a new user before upsert
-      const existingUser = await db.getUserByOpenId(openId);
-      const isNewUser = !existingUser;
+      const providerUser = await db.getUserByOpenId(openId);
+      const canonicalUser = email && googleUser.verified_email === true
+        ? await db.getUserByEmail(email)
+        : null;
+      let sessionUser = canonicalUser ?? providerUser;
+      const isNewUser = !sessionUser;
 
-      // Upsert user — on conflict (same openId) update name/email/lastSignedIn
-      // The email stored here becomes the default "from" email for review requests.
-      // Users can override this in Settings → Sending Email.
-      await db.upsertUser({
-        openId,
-        name,
-        email,
-        loginMethod: "google",
-        lastSignedIn: new Date(),
-      });
-
-      // Send welcome email to new users (fire-and-forget, non-blocking)
-      if (isNewUser && email) {
-        const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
-        if (ownerUser) {
-          sendUserWelcomeEmail({ ownerUserId: ownerUser.id, toEmail: email, toName: name })
-            .catch((err: unknown) =>
-              console.warn("[GoogleAuth] Welcome email failed:", err)
-            );
+      if (isNewUser) {
+        if (!email || googleUser.verified_email !== true || !verifySignedHumanProof(statePayload?.humanProof, "provider-oauth")) {
+          return res.redirect(302, "/login?auth_error=human_verification_required");
         }
+        await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
+        sessionUser = await db.getUserByOpenId(openId);
+      } else if (!providerUser) {
+        if (!sessionUser) throw new Error("Canonical Google account unavailable for identity linking");
+        await db.linkUserIdentity({ userId: sessionUser.id, openId, loginMethod: "google", lastSignedIn: new Date() });
+      } else {
+        await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
       }
 
-      const sessionUser = await db.getUserByOpenId(openId);
       if (!sessionUser) throw new Error("Session user unavailable after Google account update");
+      if (isNewUser && email) {
+        sendUserWelcomeEmail({ toEmail: email, toName: name })
+          .catch((err: unknown) => console.warn("[GoogleAuth] Welcome email failed:", err));
+        void recordSignupRiskEvent({ userId: sessionUser.id, subject: email, provider: "google", outcome: "verified", reasonCode: "human_proof_verified", humanVerified: true });
+      }
       await issueSecuritySession({
         userId: sessionUser.id,
         authMethod: "oauth",
