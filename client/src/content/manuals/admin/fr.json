@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "title": "Manuel d'administration",
   "eyebrow": "Opérations Get Phame",
   "introduction": "Ce manuel d'administration contient les directives utilisateur complètes suivies des procédures d'exploitation réservées aux administrateurs. Il n'est affiché qu'aux administrateurs authentifiés. Utilisez les sections opérationnelles pour gérer les comptes, les diagnostics, le support, les revenus, la récupération et la santé agrégée du produit sans exposer les identifiants ou des données clients inutiles.",
@@ -444,6 +444,79 @@
             "Confirmez un résultat sain durable avant de clôturer l'incident."
           ],
           "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-security-and-data-protection",
+      "title": "Opérations de sécurité et de protection des données",
+      "summary": "Utiliser des affirmations exactes, le moindre privilège, une réponse vérifiée aux incidents et des procédures protégées pour les demandes de confidentialité.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "security-claims",
+          "title": "Employer un langage exact sur la sécurité et la confidentialité",
+          "access": "admin",
+          "body": "Décrivez uniquement les contrôles mis en œuvre et vérifiés. Les affirmations approuvées comprennent l’absence de vente des données de compte ou de contact client, une collecte minimale liée au service, HTTPS/TLS en transit, le chiffrement au repos des identifiants de messagerie connectée, des sessions serveur révocables, des cookies protégés, des contrôles d’accès, des limites de fréquence, la prévention des abus et des vérifications des dépendances de production. Ne présentez pas Get Phame comme chiffré de bout en bout et ne garantissez pas l’absence de risque.",
+          "steps": [
+            "Vérifiez la Politique de confidentialité, Utilisation des données, la page Sécurité et les preuves de mise en œuvre actuelles avant de répondre à un questionnaire ou de publier une affirmation.",
+            "Distinguez le chiffrement en transit et des identifiants stockés du chiffrement de bout en bout.",
+            "Nuancez les affirmations de collecte en mentionnant les données opérationnelles, de prévention de la fraude et d’engagement annoncées.",
+            "Mettez à jour les contenus clients et les manuels lorsqu’un contrôle ou une information publiée change."
+          ],
+          "route": "/security"
+        },
+        {
+          "id": "least-privilege-data-handling",
+          "title": "Traiter les données selon le moindre privilège",
+          "access": "admin",
+          "body": "L’accès administrateur est réservé aux tâches approuvées d’assistance, de sécurité, de facturation, de conformité ou d’exploitation. Limitez les recherches, consultez le minimum de données, privilégiez les aperçus assainis et les rapports agrégés, et ne demandez ni n’exposez jamais de secrets stockés.",
+          "steps": [
+            "Vérifiez la finalité opérationnelle et le compte concerné avant d’ouvrir des enregistrements détaillés.",
+            "Utilisez des filtres bornés, des aperçus assainis et des colonnes d’exportation autorisées dès que possible.",
+            "Ne copiez pas les identifiants SMTP, clés API, liens magiques, jetons de session bruts, données de paiement ou fiches clients inutiles dans les tickets, journaux, captures ou rapports.",
+            "Restreignez les fichiers exportés, consignez la raison de l’accès et supprimez les copies locales lorsque la finalité approuvée prend fin."
+          ]
+        },
+        {
+          "id": "security-incident-response",
+          "title": "Répondre aux incidents présumés et aux comptes compromis",
+          "access": "admin",
+          "body": "Considérez tout comportement inhabituel d’authentification, de livraison, d’accès ou de données comme non vérifié jusqu’à l’examen des preuves persistantes. Contenez d’abord, conservez le minimum de preuves, utilisez les diagnostics et l’historique d’audit, et n’annoncez la reprise qu’après l’enregistrement d’un résultat sain.",
+          "steps": [
+            "Confirmez le compte, la période, la dépendance et l’impact observé sans élargir inutilement l’accès.",
+            "Révoquez les sessions, identifiants, connexions ou codes concernés lorsque la compromission est crédible ; évitez toute suppression destructive tant que des preuves sont nécessaires.",
+            "Examinez la santé de l’authentification, l’Historique d’audit de sécurité, l’état des fournisseurs, les versions récentes et les événements d’assistance ou d’exploitation pertinents.",
+            "Effectuez une vérification non destructive après correction et ne clôturez l’incident qu’après une preuve saine persistante et toute notification de reprise requise."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "privacy-request-operations",
+          "title": "Traiter les demandes de confidentialité et de suppression",
+          "access": "admin",
+          "body": "Les demandes de confidentialité exigent une vérification d’identité, un périmètre défini, une divulgation minimale et un résultat consigné. La suppression d’un compte peut affecter contacts, demandes, rappels, intégrations, exportations et abonnements ; utilisez donc la procédure protégée plutôt que des modifications ponctuelles de la base de données.",
+          "steps": [
+            "Vérifiez la propriété du compte avec des preuves approuvées et consignez la catégorie et le périmètre de la demande.",
+            "Utilisez les contrôles prévus d’exportation, de correction ou de suppression ; n’envoyez jamais les données d’un utilisateur à une autre adresse sans vérification.",
+            "Examinez les rappels actifs, intégrations, facturation, obligations de conservation et exportations légitimement demandées avant toute action destructive.",
+            "Confirmez l’exécution, consignez les exceptions ou catégories conservées et supprimez les copies de travail à la clôture."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "security-release-verification",
+          "title": "Maintenir des contrôles de sécurité vérifiables à chaque version",
+          "access": "admin",
+          "body": "Les affirmations de sécurité restent fiables uniquement si les contrôles de production et les preuves de publication sont à jour. Exigez les régressions ciblées, la suite complète, les contrôles TypeScript, l’audit des dépendances de production, la compilation de production, la vérification responsive, la revue de la branche main protégée et la parité exacte de l’arborescence publiée.",
+          "steps": [
+            "Bloquez la publication s’il subsiste une vulnérabilité de production connue, un contrat de sécurité en échec ou un problème d’autorisation non résolu.",
+            "Examinez les résultats automatisés et résolvez les remarques valides au lieu de contourner la protection de branche.",
+            "Fusionnez via une demande de tirage conservant l’historique et confirmez que la branche main protégée correspond à l’arborescence validée.",
+            "Vérifiez la page Sécurité publique et les diagnostics concernés après propagation, puis consignez les preuves sans exposer de secrets ni de données clients."
+          ],
+          "route": "/security"
         }
       ]
     },

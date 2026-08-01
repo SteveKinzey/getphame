@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "title": "Manual de usuario",
   "eyebrow": "Get Phame guidance",
   "introduction": "Use este manual para configurar Get Phame, enviar solicitudes de reseña conformes, gestionar contactos y recordatorios, conectar integraciones y comprender lo que incluye Free y las suscripciones de pago. Las capacidades de pago permanecen visibles para que pueda evaluarlas, y cada elemento exclusivo para suscriptores está claramente etiquetado.",
-  "lastUpdated": "2026-07-25",
+  "lastUpdated": "2026-08-01",
   "sections": [
     {
       "id": "getting-started",
@@ -619,6 +619,51 @@
             "Elimine passkeys o sesiones de dispositivos que ya no controle."
           ],
           "route": "/settings"
+        },
+        {
+          "id": "how-get-phame-protects-data",
+          "title": "Cómo protege Get Phame tu información",
+          "access": "all",
+          "body": "Get Phame no vende, alquila ni intercambia la información de la cuenta ni los datos de contacto de los clientes. Solo recopila la información necesaria para ofrecer los flujos de solicitud de reseñas, prevenir abusos y proporcionar los informes de actividad descritos. El inicio de sesión con Google aporta únicamente datos básicos de identidad; Get Phame no lee mensajes de Gmail, Contactos de Google, archivos de Drive ni eventos de Calendar. Las credenciales del correo conectado se cifran antes de almacenarse, el tráfico del navegador se protege con HTTPS/TLS y las sesiones revocables, las cookies protegidas, los controles de acceso, los límites de frecuencia y las comprobaciones de vulnerabilidades ayudan a proteger el servicio.",
+          "steps": [
+            "Lee la Política de privacidad para entender la recopilación, el uso, la conservación, el intercambio y tus opciones.",
+            "Lee la página de Seguridad para conocer las protecciones actuales y el proceso para informar vulnerabilidades.",
+            "Abre Uso de datos para confirmar a qué información de Google se accede y a cuál no.",
+            "Usa la dirección de contacto indicada en la política correspondiente cuando una cuestión de privacidad o seguridad requiera revisión."
+          ],
+          "notes": [
+            "El cifrado en tránsito y el cifrado de credenciales confidenciales almacenadas no equivalen al cifrado de extremo a extremo. Get Phame debe procesar los datos necesarios para ejecutar los flujos que solicitas."
+          ],
+          "route": "/security"
+        },
+        {
+          "id": "privacy-choices-and-requests",
+          "title": "Tus opciones de privacidad y solicitudes de datos",
+          "access": "all",
+          "body": "Importa únicamente información de clientes que estés autorizado a utilizar, consérvala solo para una finalidad empresarial definida y protege las copias exportadas. Según tu ubicación, la Política de privacidad explica cómo solicitar el acceso, la rectificación, la exportación, la eliminación, la oposición o la retirada del consentimiento respecto de los datos de cuenta aplicables.",
+          "steps": [
+            "Limita los registros de contactos al nombre, correo electrónico, consentimiento, origen e información del flujo necesarios para una comunicación legítima.",
+            "Corrige los registros inexactos y detén los envíos cuando un cliente se dé de baja o complete la acción solicitada.",
+            "Restringe el acceso a las exportaciones y elimina las copias locales cuando termine la finalidad aprobada.",
+            "Usa el flujo protegido de eliminación de cuenta o el método de contacto de la Política de privacidad para ejercer un derecho sobre los datos."
+          ],
+          "notes": [
+            "Get Phame puede necesitar verificar la identidad antes de tramitar una solicitud de privacidad."
+          ],
+          "route": "/privacy"
+        },
+        {
+          "id": "report-security-concern",
+          "title": "Informa de un problema de seguridad de forma segura",
+          "access": "all",
+          "body": "Informa en privado de posibles vulnerabilidades mediante el método de contacto de la página de Seguridad. No realices pruebas contra otro usuario, no interrumpas el servicio ni incluyas credenciales o datos de clientes en el informe.",
+          "steps": [
+            "Anota una descripción breve, la página o función afectada, pasos de reproducción seguros y el impacto observado.",
+            "Elimina de capturas y adjuntos los registros de clientes, credenciales, enlaces de sesión y datos personales no relacionados.",
+            "Envía el informe en privado al contacto de seguridad indicado en la página de Seguridad.",
+            "No publiques detalles hasta que Get Phame confirme la recepción y coordine una divulgación responsable."
+          ],
+          "route": "/security"
         },
         {
           "id": "data-responsibility",
