@@ -17,6 +17,7 @@ import { eq } from "drizzle-orm";
 import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
 import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
 import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
+import { assertReviewOutreachAllowed } from "./signupRisk";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -230,6 +231,7 @@ export interface SendMailOptions {
 
 export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSendStatus | null> {
   if (opts.safetyMode !== "system") {
+    await assertReviewOutreachAllowed(opts.userId);
     const channel = await resolveOutboundDeliveryChannel(opts.userId);
     if (!channel) throw new Error("No email account connected. Please connect your email in Settings.");
     const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);

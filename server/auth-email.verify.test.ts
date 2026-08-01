@@ -194,6 +194,44 @@ describe("email magic-link verification", () => {
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
   });
 
+  it("rejects a genuinely new account without a signed human proof while preserving the token", async () => {
+    const record = {
+      id: 90,
+      email: "new-account@example.test",
+      token: "new-account-without-proof",
+      expiresAt: new Date(Date.now() + 60_000),
+      usedAt: null,
+      createdAt: new Date(),
+    };
+    const database = {
+      select: vi.fn(() => ({
+        from: vi.fn(() => ({
+          where: vi.fn(() => ({ limit: vi.fn().mockResolvedValue([record]) })),
+        })),
+      })),
+      update: vi.fn(),
+    };
+
+    mocks.getDb.mockResolvedValue(database);
+    mocks.getUserByEmail.mockResolvedValue(undefined);
+    mocks.getUserByOpenId.mockResolvedValue(undefined);
+
+    const app = express();
+    app.use(express.json());
+    registerEmailAuthRoutes(app);
+
+    const response = await request(app)
+      .get("/api/auth/magic-link/verify")
+      .query({ token: record.token });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/login?auth_error=human_verification_required");
+    expect(mocks.upsertUser).not.toHaveBeenCalled();
+    expect(mocks.issueSecuritySession).not.toHaveBeenCalled();
+    expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
+    expect(database.update).not.toHaveBeenCalled();
+  });
+
   it("falls back to the normalized email when an existing account has no usable display name", async () => {
     const record = {
       id: 99,

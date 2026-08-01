@@ -188,6 +188,21 @@ describe("Apple Sign In callback", () => {
     expect(response.headers["set-cookie"]?.[0]).toContain("revocable-session-token");
   });
 
+  it("does not create a new Apple account without a signed human proof", async () => {
+    const { app, state } = await createAppleRequestState();
+
+    const response = await request(app)
+      .post("/api/auth/apple/callback")
+      .type("form")
+      .send({ code: "new-account-without-proof", state });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/login?auth_error=human_verification_required");
+    expect(mocks.upsertUser).not.toHaveBeenCalled();
+    expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
+    expect(mocks.issueSecuritySession).not.toHaveBeenCalled();
+  });
+
   it("returns a safe callback error when Apple does not provide an authorization code", async () => {
     const { app, state } = await createAppleRequestState();
     const response = await request(app)
