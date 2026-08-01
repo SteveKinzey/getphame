@@ -11,6 +11,7 @@ declare global {
         theme: "light" | "dark" | "auto";
         size: "normal" | "compact" | "invisible";
       }) => string;
+      execute: (widgetId: string) => void | Promise<string>;
       remove: (widgetId: string) => void;
     };
   }
@@ -61,6 +62,12 @@ export default function HumanVerification({ onTokenChange }: HumanVerificationPr
           }
         },
       });
+      try {
+        void window.turnstile.execute(widgetIdRef.current);
+      } catch {
+        onTokenChange(null);
+        setStatus("unavailable");
+      }
     };
 
     const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;

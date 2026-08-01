@@ -57,5 +57,7 @@
 - [x] Visual QA: `/admin/signup-risk` renders readable privacy-safe status cards, a bounded outcome filter, and a no-evidence empty state at 1280×900 and 390×844 without raw identifiers.
 - [x] Production verification note: local production build passed; the published login URL returned the app shell before the browser session reset, while managed runtime logs were unavailable because no Cloud Run service was found.
 - [x] Production browser recheck: `https://getphame.app/login` rendered the live sign-in route; the sandbox browser reported its invisible account-security control unavailable with no client-console errors, which may reflect third-party challenge availability in that browser rather than a runtime crash.
+- [x] Repeat live-browser check after the key update: the production login hydrated, while the sandbox browser still reported the invisible challenge unavailable; the external Turnstile API endpoint was independently reachable from the sandbox network.
 - [ ] Verify that the user-supplied Turnstile keys are embedded in the refreshed production login experience and that the invisible challenge initializes.
+- [x] Explicitly execute the rendered invisible Turnstile widget so successful script initialization can produce a signed human-proof token for new-account flows.
 - [ ] Complete focused tests, full suite, type check, production build, desktop/mobile review, final checkpoint, production checks, and protected-main GitHub synchronization.
