@@ -2020,7 +2020,10 @@
       "title": "Recent Activity",
       "engagedBadge": "{{count}} engaged",
       "noActivity": "No recent activity yet",
-      "viewAll": "View all →"
+      "viewAll": "View all →",
+      "markAllReviewed": "Mark all as reviewed",
+      "markingAll": "Marking…",
+      "markAllShort": "Mark all"
     }
   },
   "pricing": {

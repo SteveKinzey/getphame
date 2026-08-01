@@ -715,7 +715,10 @@
       "title": "Attività recente",
       "engagedBadge": "{{count}} coinvolti",
       "noActivity": "Nessuna attività recente",
-      "viewAll": "Vedi tutto →"
+      "viewAll": "Vedi tutto →",
+      "markAllReviewed": "Segna tutto come esaminato",
+      "markingAll": "Marcatura…",
+      "markAllShort": "Segna tutto"
     }
   },
   "settings": {

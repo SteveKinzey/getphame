@@ -1641,3 +1641,10 @@
 - [x] Add View All anchor link to RecentActivityCard header — smooth-scrolls to #activity-feed
 - [x] Add id="activity-feed" to the activity feed section div in Dashboard.tsx
 - [x] Enhance RecentActivityCard row hover states — navy-tinted bg, subtle box-shadow, scale(0.99) press feedback
+
+## Session — Mark All, Smooth Scroll, Fallback Fix (2026-08-01)
+- [x] Fix loose top-level dashboard key in i18nCompleteFallbackResources.json (caused wordpressPairing test failure)
+- [x] Add scroll-behavior: smooth to html element in index.css
+- [x] Add Mark All as Reviewed bulk action to RecentActivityCard (uses trpc.requests.bulkMarkResponded)
+- [x] Add markAllReviewed, markingAll, markAllShort i18n keys to all 7 locale files and fallback bundle
+- [x] Create getphame-github-pr-release skill

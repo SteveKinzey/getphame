@@ -1690,7 +1690,10 @@
       "title": "最近活动",
       "engagedBadge": "{{count}} 位已互动",
       "noActivity": "暂无最近活动",
-      "viewAll": "查看全部 →"
+      "viewAll": "查看全部 →",
+      "markAllReviewed": "全部标记为已审阅",
+      "markingAll": "标记中…",
+      "markAllShort": "全部标记"
     }
   },
   "pricing": {

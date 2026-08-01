@@ -1,10 +1,11 @@
 // RecentActivityCard — lightweight "last 5 interactions" summary card
 // Sits above the full activity feed on the dashboard for quick at-a-glance status.
 
-import { useMemo } from "react";
-import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap, CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, isToday, isYesterday } from "date-fns";
+import { trpc } from "@/lib/trpc";
 
 interface Request {
   id: number;
@@ -24,6 +25,7 @@ interface RecentActivityCardProps {
   trackingMap: Map<number, TrackingEntry>;
   isLoading: boolean;
   onSelectRequest: (id: number) => void;
+  onRefresh?: () => void;
 }
 
 function formatRelative(value: string | Date | number | null | undefined): string {
@@ -54,8 +56,29 @@ export default function RecentActivityCard({
   trackingMap,
   isLoading,
   onSelectRequest,
+  onRefresh,
 }: RecentActivityCardProps) {
   const { t } = useTranslation();
+  const [markingAll, setMarkingAll] = useState(false);
+
+  const utils = trpc.useUtils();
+  const bulkMark = trpc.requests.bulkMarkResponded.useMutation({
+    onSuccess: () => {
+      utils.requests.invalidate();
+      onRefresh?.();
+      setMarkingAll(false);
+    },
+    onError: () => setMarkingAll(false),
+  });
+
+  const handleMarkAllReviewed = () => {
+    const unreviewedIds = recent
+      .filter((r) => !r.respondedAt)
+      .map((r) => r.id);
+    if (unreviewedIds.length === 0) return;
+    setMarkingAll(true);
+    bulkMark.mutate({ ids: unreviewedIds, responded: true });
+  };
 
   // Last 5 requests sorted by sentAt descending
   const recent = useMemo(() => {
@@ -98,6 +121,29 @@ export default function RecentActivityCard({
                 count: engagedCount,
               })}
             </span>
+          )}
+          {!isLoading && recent.some((r) => !r.respondedAt) && (
+            <button
+              onClick={handleMarkAllReviewed}
+              disabled={markingAll}
+              className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full transition-all duration-150 disabled:opacity-50"
+              style={{
+                background: "oklch(0.88 0.10 80)",
+                color: "oklch(0.35 0.12 80)",
+              }}
+              onMouseEnter={(e) => {
+                if (!markingAll) (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.82 0.14 80)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.88 0.10 80)";
+              }}
+              title={t("dashboard.recentActivity.markAllReviewed", { defaultValue: "Mark all as reviewed" })}
+            >
+              <CheckCheck size={11} />
+              {markingAll
+                ? t("dashboard.recentActivity.markingAll", { defaultValue: "Marking…" })
+                : t("dashboard.recentActivity.markAllShort", { defaultValue: "Mark all" })}
+            </button>
           )}
           <a
             href="#activity-feed"

@@ -1098,6 +1098,15 @@
         "selectedCount": "{{count}} selected",
         "markReviewed": "Mark Reviewed",
         "markSent": "Mark Sent"
+      },
+      "recentActivity": {
+        "title": "Recent Activity",
+        "engagedBadge": "{{count}} engaged",
+        "noActivity": "No recent activity yet",
+        "viewAll": "View all →",
+        "markAllReviewed": "Mark all as reviewed",
+        "markingAll": "Marking…",
+        "markAllShort": "Mark all"
       }
     },
     "reminderRow": {
@@ -2619,6 +2628,15 @@
         "selectedCount": "{{count}} seleccionados",
         "markReviewed": "Marcar como revisado",
         "markSent": "Marcar como enviado"
+      },
+      "recentActivity": {
+        "title": "Actividad reciente",
+        "engagedBadge": "{{count}} activos",
+        "noActivity": "Aún no hay actividad reciente",
+        "viewAll": "Ver todo →",
+        "markAllReviewed": "Marcar todo como revisado",
+        "markingAll": "Marcando…",
+        "markAllShort": "Marcar todo"
       }
     },
     "reminderRow": {
@@ -4318,6 +4336,15 @@
       "toasts": {
         "updatedSuccess": "{{count}} demande mise à jour.",
         "updatedSuccessPlural": "{{count}} demandes mises à jour."
+      },
+      "recentActivity": {
+        "title": "Activité récente",
+        "engagedBadge": "{{count}} engagés",
+        "noActivity": "Aucune activité récente pour l'instant",
+        "viewAll": "Voir tout →",
+        "markAllReviewed": "Tout marquer comme examiné",
+        "markingAll": "Marquage…",
+        "markAllShort": "Tout marquer"
       }
     },
     "reminderRow": {
@@ -5994,6 +6021,15 @@
         "selectedCount": "{{count}} selezionato",
         "markReviewed": "Segna come recensito",
         "markSent": "Segna come inviato"
+      },
+      "recentActivity": {
+        "title": "Attività recente",
+        "engagedBadge": "{{count}} coinvolti",
+        "noActivity": "Nessuna attività recente",
+        "viewAll": "Vedi tutto →",
+        "markAllReviewed": "Segna tutto come esaminato",
+        "markingAll": "Marcatura…",
+        "markAllShort": "Segna tutto"
       }
     },
     "reminderRow": {
@@ -7539,6 +7575,15 @@
         "selectedCount": "{{count}} ถูกเลือก",
         "markReviewed": "ทำเครื่องหมายว่ารีวิวแล้ว",
         "markSent": "ทำเครื่องหมายว่า ส่งแล้ว"
+      },
+      "recentActivity": {
+        "title": "กิจกรรมล่าสุด",
+        "engagedBadge": "{{count}} มีส่วนร่วม",
+        "noActivity": "ยังไม่มีกิจกรรมล่าสุด",
+        "viewAll": "ดูทั้งหมด →",
+        "markAllReviewed": "ทำเครื่องหมายทั้งหมดว่าตรวจสอบแล้ว",
+        "markingAll": "กำลังทำเครื่องหมาย…",
+        "markAllShort": "ทำเครื่องหมายทั้งหมด"
       }
     },
     "reminderRow": {
@@ -9081,6 +9126,15 @@
         "selectedCount": "已选择 {{count}} 项",
         "markReviewed": "标记为已评价",
         "markSent": "标记为已发送"
+      },
+      "recentActivity": {
+        "title": "最近活动",
+        "engagedBadge": "{{count}} 位已互动",
+        "noActivity": "暂无最近活动",
+        "viewAll": "查看全部 →",
+        "markAllReviewed": "全部标记为已审阅",
+        "markingAll": "标记中…",
+        "markAllShort": "全部标记"
       }
     },
     "reminderRow": {
@@ -10616,6 +10670,15 @@
         "selectedCount": "已選擇 {{count}} 項",
         "markReviewed": "標記為已審查",
         "markSent": "標記為已發送"
+      },
+      "recentActivity": {
+        "title": "最近活動",
+        "engagedBadge": "{{count}} 位已互動",
+        "noActivity": "目前尚無最近活動",
+        "viewAll": "查看全部 →",
+        "markAllReviewed": "全部標記為已審閱",
+        "markingAll": "標記中…",
+        "markAllShort": "全部標記"
       }
     },
     "reminderRow": {
@@ -11064,14 +11127,6 @@
     "activityTrend": {
       "csvDownloaded": "活動趨勢 CSV 已下載。",
       "pngDownloaded": "活動趨勢 PNG 已下載。"
-    }
-  },
-  "dashboard": {
-    "recentActivity": {
-      "viewAll": "View all →",
-      "title": "Recent Activity",
-      "engagedBadge": "{{count}} engaged",
-      "noActivity": "No recent activity yet"
     }
   }
 }
