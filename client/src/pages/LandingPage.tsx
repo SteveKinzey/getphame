@@ -6,6 +6,7 @@ import Hero from "@/components/landing/Hero";
 import AppPurpose from "@/components/landing/AppPurpose";
 import SEOHead from "@/components/landing/SEOHead";
 import TrustBar from "@/components/landing/TrustBar";
+import SecuritySummary from "@/components/landing/SecuritySummary";
 import VideoDemo from "@/components/landing/VideoDemo";
 import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
@@ -30,6 +31,7 @@ export default function LandingPage() {
       <Hero />
       <AppPurpose />
       <TrustBar />
+      <SecuritySummary />
       <VideoDemo />
       <Features />
       <HowItWorks />

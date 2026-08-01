@@ -398,6 +398,28 @@
         "messageMax": "Keep the message to 4,000 characters or fewer.",
         "nameMax": "Keep your name to 80 characters or fewer."
       }
+    },
+    "securitySummary": {
+      "eyebrow": "Privacy & Security",
+      "title": "Your customer data stays yours",
+      "description": "Get Phame uses only the information needed to send review requests, never sells your data, and protects sensitive details with modern safeguards.",
+      "noSelling": {
+        "title": "We do not sell your data",
+        "description": "Your account and customer information are used to run Get Phame—not for advertising or resale."
+      },
+      "minimalData": {
+        "title": "We collect only what we need",
+        "description": "Google sign-in shares only your name and email. We do not read your inbox, contacts, Drive files, or Calendar."
+      },
+      "protected": {
+        "title": "Sensitive details are protected",
+        "description": "Your connected-email password is encrypted before storage, and your connection to Get Phame is protected with HTTPS."
+      },
+      "account": {
+        "title": "Your account is protected",
+        "description": "Secure sign-in sessions, access controls, rate limits, abuse checks, and continuous vulnerability monitoring help protect the service."
+      },
+      "cta": "See how Get Phame protects your data"
     }
   }
 }

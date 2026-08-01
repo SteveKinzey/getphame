@@ -398,6 +398,28 @@
         "messageMax": "El mensaje debe tener 4.000 caracteres o menos.",
         "nameMax": "El nombre debe tener 80 caracteres o menos."
       }
+    },
+    "securitySummary": {
+      "eyebrow": "Privacidad y seguridad",
+      "title": "Los datos de tus clientes siguen siendo tuyos",
+      "description": "Get Phame usa solo la información necesaria para enviar solicitudes de reseña, nunca vende tus datos y protege la información sensible con medidas de seguridad modernas.",
+      "noSelling": {
+        "title": "No vendemos tus datos",
+        "description": "La información de tu cuenta y de tus clientes se usa para operar Get Phame, no para publicidad ni reventa."
+      },
+      "minimalData": {
+        "title": "Recopilamos solo lo necesario",
+        "description": "El inicio de sesión con Google solo comparte tu nombre y correo electrónico. No leemos tu bandeja de entrada, contactos, archivos de Drive ni Calendar."
+      },
+      "protected": {
+        "title": "Protegemos la información sensible",
+        "description": "La contraseña de tu correo conectado se cifra antes de almacenarse y tu conexión con Get Phame está protegida mediante HTTPS."
+      },
+      "account": {
+        "title": "Tu cuenta está protegida",
+        "description": "Las sesiones de inicio de sesión seguras, los controles de acceso, los límites de solicitudes, las comprobaciones contra abusos y la supervisión continua de vulnerabilidades ayudan a proteger el servicio."
+      },
+      "cta": "Consulta cómo Get Phame protege tus datos"
     }
   },
   "support": {
