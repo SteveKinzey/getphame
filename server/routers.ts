@@ -4770,8 +4770,13 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const [totalRow] = await db.select({ value: count() }).from(adminPlatformEmailMessages).where(eq(adminPlatformEmailMessages.recipientUserId, input.userId));
-        const entries = await db.select().from(adminPlatformEmailMessages).where(eq(adminPlatformEmailMessages.recipientUserId, input.userId)).orderBy(desc(adminPlatformEmailMessages.createdAt)).limit(input.pageSize).offset((input.page - 1) * input.pageSize);
+        const now = Date.now();
+        const outboxVisibilityPredicate = and(
+          eq(adminPlatformEmailMessages.recipientUserId, input.userId),
+          gte(adminPlatformEmailMessages.expiresAt, now),
+        );
+        const [totalRow] = await db.select({ value: count() }).from(adminPlatformEmailMessages).where(outboxVisibilityPredicate);
+        const entries = await db.select().from(adminPlatformEmailMessages).where(outboxVisibilityPredicate).orderBy(desc(adminPlatformEmailMessages.createdAt)).limit(input.pageSize).offset((input.page - 1) * input.pageSize);
         return { entries, total: Number(totalRow?.value ?? 0) };
       }),
 
