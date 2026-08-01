@@ -30,5 +30,11 @@ describe("versioned service-worker delivery", () => {
       "Release manifest: locale dictionaries phame58; service worker getphame-v28."
     );
     expect(legacyWorker).toContain("const CACHE_NAME = 'getphame-v28'");
+
+    for (const locale of ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
+      const cancellationNamespace = `/locales/${locale}/cancellation.json`;
+      expect(versionedWorker).toContain(cancellationNamespace);
+      expect(legacyWorker).toContain(cancellationNamespace);
+    }
   });
 });

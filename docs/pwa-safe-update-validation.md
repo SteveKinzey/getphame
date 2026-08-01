@@ -17,3 +17,9 @@ The managed preview served `/sw-v28.js` as `text/javascript` and `/__manus__/ver
 Responsive review completed at `1280×720` and `375×812`. The root shell and its existing onboarding overlay remained readable, responsive, and unobstructed after the global coordinator and safety registry were mounted. Recent console entries contained only development-server WebSocket reconnect noise during preview capture; no PWA registration, MIME-type, worker, or application runtime error was observed in the refreshed preview check.
 
 > This is the documented bootstrap release. The live two-tab, cross-deployment notice can only be observed after this version is published and a subsequent deployment changes the platform version. The implementation does not force-refresh open tabs; source and unit contracts verify the independent per-tab, user-controlled path in the interim.
+
+## Protected-main review reconciliation
+
+After protected-main review, the managed release was revalidated with the three review remediations: a bounded internal timeout for deployment-version requests, visible-tab-only polling, and an explicit `worker-timeout` diagnostic before a customer-requested reload proceeds. The reconciled worker also preserves the concurrent cancellation-localization offline cache for every supported language in both v28 delivery paths.
+
+The managed workspace passed the focused PWA suite (`15` tests), TypeScript check, complete one-worker regression suite, production build, and production dependency audit with no known high-severity vulnerabilities. Final responsive captures at `1280×720` and `375×812` remained readable and functional with the existing onboarding overlay; no update-coordinator visual regression was observed.

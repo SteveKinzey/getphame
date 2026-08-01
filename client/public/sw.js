@@ -37,13 +37,27 @@ const LANDING_ASSETS = [
   '/locales/zh-TW/landing.json',
 ];
 
+// Authenticated cancellation controls must be usable on the first offline
+// launch rather than degrading to the locale fallback JSON response.
+const CANCELLATION_ASSETS = [
+  '/locales/en/cancellation.json',
+  '/locales/es/cancellation.json',
+  '/locales/fr/cancellation.json',
+  '/locales/it/cancellation.json',
+  '/locales/th/cancellation.json',
+  '/locales/zh-CN/cancellation.json',
+  '/locales/zh-TW/cancellation.json',
+];
+
 // Pre-cache both historical unversioned locale URLs and the exact query-versioned
 // URLs issued by i18next so installation keeps language switching available offline.
 const LOCALIZED_ASSETS = [
   ...TRANSLATION_ASSETS,
   ...LANDING_ASSETS,
+  ...CANCELLATION_ASSETS,
   ...TRANSLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`),
   ...LANDING_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`),
+  ...CANCELLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`),
 ];
 
 const STATIC_ASSETS = [

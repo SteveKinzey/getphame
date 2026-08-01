@@ -3,6 +3,7 @@ import {
   buildDeploymentVersionUrl,
   clearReloadGuard,
   clearReloadTarget,
+  DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS,
   fetchDeploymentVersion,
   getReloadTarget,
   hasReloadGuard,
@@ -51,6 +52,31 @@ describe("appVersion", () => {
       buildDeploymentVersionUrl(1_725_000_000_000),
       expect.objectContaining({ cache: "no-store" })
     );
+  });
+
+  it("silently recovers when an internally bounded version request stalls", async () => {
+    vi.useFakeTimers();
+    try {
+      const fetchImpl = vi.fn(
+        (_input: RequestInfo | URL, init?: RequestInit) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener("abort", () => {
+              reject(new DOMException("Aborted", "AbortError"));
+            });
+          })
+      ) as unknown as typeof fetch;
+
+      const request = fetchDeploymentVersion({ fetchImpl, now: () => 1_785_588_893_259 });
+      await vi.advanceTimersByTimeAsync(DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS);
+
+      await expect(request).resolves.toBeNull();
+      expect(fetchImpl).toHaveBeenCalledWith(
+        expect.stringContaining("?_t="),
+        expect.objectContaining({ signal: expect.any(AbortSignal) })
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("treats invalid, unavailable, and malformed deployment responses as silent no-results", async () => {

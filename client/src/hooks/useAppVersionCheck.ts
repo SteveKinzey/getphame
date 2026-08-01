@@ -125,6 +125,7 @@ export function useAppVersionCheck() {
   const baselineVersionRef = useRef<string | null>(null);
   const inFlightRef = useRef(false);
   const deferredTimerRef = useRef<number | null>(null);
+  const pollingTimerRef = useRef<number | null>(null);
   const reloadingRef = useRef(false);
   const availableVersionRef = useRef<string | null>(null);
 
@@ -271,6 +272,7 @@ export function useAppVersionCheck() {
         if (!completed) {
           navigator.serviceWorker.removeEventListener("controllerchange", finish);
           completed = true;
+          recordState("failed", { failure: "worker-timeout" });
           completeReload();
         }
       }, WAITING_WORKER_TIMEOUT_MS);
@@ -368,8 +370,32 @@ export function useAppVersionCheck() {
     void refreshWorkerDiagnostics();
 
     const onFocus = () => void checkForUpdate("focus");
+    const stopPolling = () => {
+      if (pollingTimerRef.current !== null) {
+        window.clearInterval(pollingTimerRef.current);
+        pollingTimerRef.current = null;
+      }
+    };
+    const startPolling = () => {
+      if (
+        pollingTimerRef.current !== null ||
+        document.visibilityState !== "visible"
+      ) {
+        return;
+      }
+
+      pollingTimerRef.current = window.setInterval(() => {
+        void checkForUpdate("timer");
+      }, VERSION_POLL_INTERVAL_MS);
+    };
     const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") void checkForUpdate("visibility");
+      if (document.visibilityState === "visible") {
+        void checkForUpdate("visibility");
+        startPolling();
+        return;
+      }
+
+      stopPolling();
     };
     const onWorkerMessage = (event: MessageEvent<unknown>) => {
       const data = event.data;
@@ -388,13 +414,10 @@ export function useAppVersionCheck() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("message", onWorkerMessage);
     }
-
-    const timer = window.setInterval(() => {
-      void checkForUpdate("timer");
-    }, VERSION_POLL_INTERVAL_MS);
+    startPolling();
 
     return () => {
-      window.clearInterval(timer);
+      stopPolling();
       if (deferredTimerRef.current !== null) {
         window.clearTimeout(deferredTimerRef.current);
       }
