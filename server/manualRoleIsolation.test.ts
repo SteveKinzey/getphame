@@ -20,6 +20,12 @@ const SUPPORTED_LOCALES = [
   "zh-TW",
 ] as const;
 
+const ADMIN_SKILL_SECTION_ID = "admin-security-audit-release-verification";
+const ADMIN_SKILL_TOPIC_IDS = [
+  "security-audit-skill-capabilities",
+  "security-audit-skill-instructions",
+] as const;
+
 const MANUAL_UI_KEYS = [
   "nav.userManual",
   "nav.adminManual",
@@ -134,6 +140,71 @@ describe("role-aware Get Phame manuals", () => {
         ),
         `${locale} admin supplement contains guidance without an administrator-only label`
       ).toBe(true);
+    }
+  });
+
+  it("keeps the installed security-audit skill summary and instructions exclusively in every localized Admin Manual", () => {
+    const englishAdmin = readManual("admin", "en");
+    const englishSection = englishAdmin.sections.find(
+      section => section.id === ADMIN_SKILL_SECTION_ID
+    );
+
+    expect(englishSection).toBeDefined();
+    if (!englishSection) throw new Error("English administrator skill section is missing");
+
+    for (const locale of SUPPORTED_LOCALES) {
+      const authoredUserManual = readManual("user", locale);
+      const authoredAdminSupplement = readManual("admin", locale);
+      const userManual = getManualDocument(locale, "user");
+      const adminManual = getManualDocument(locale, "admin");
+      const section = authoredAdminSupplement.sections.find(
+        candidate => candidate.id === ADMIN_SKILL_SECTION_ID
+      );
+
+      expect(authoredAdminSupplement.version, `${locale} admin manual version`).toBe(2);
+      expect(authoredAdminSupplement.lastUpdated, `${locale} admin manual update date`).toBe(
+        "2026-08-01"
+      );
+      expect(section, `${locale} administrator skill section`).toBeDefined();
+      if (!section) throw new Error(`${locale} administrator skill section is missing`);
+
+      expect(section.access, `${locale} section access`).toBe("admin");
+      expect(
+        section.topics.map(topic => topic.id),
+        `${locale} administrator skill topic structure`
+      ).toEqual(ADMIN_SKILL_TOPIC_IDS);
+      expect(
+        section.topics.every(topic => topic.access === "admin"),
+        `${locale} administrator skill topic access`
+      ).toBe(true);
+      expect(section.topics[0]?.steps, `${locale} capability steps`).toHaveLength(4);
+      expect(section.topics[1]?.steps, `${locale} instruction steps`).toHaveLength(10);
+      expect(section.topics[1]?.notes, `${locale} instruction safeguards`).toHaveLength(2);
+
+      expect(
+        authoredUserManual.sections.some(candidate => candidate.id === ADMIN_SKILL_SECTION_ID),
+        `${locale} authored user manual leaked the administrator skill section`
+      ).toBe(false);
+      expect(
+        userManual.sections.some(candidate => candidate.id === ADMIN_SKILL_SECTION_ID),
+        `${locale} composed user manual leaked the administrator skill section`
+      ).toBe(false);
+      expect(
+        adminManual.sections.some(candidate => candidate.id === ADMIN_SKILL_SECTION_ID),
+        `${locale} composed Admin Manual omitted the administrator skill section`
+      ).toBe(true);
+
+      if (locale !== "en") {
+        expect(section.title, `${locale} localized section title`).not.toBe(
+          englishSection.title
+        );
+        expect(section.topics[0]?.body, `${locale} localized capability body`).not.toBe(
+          englishSection.topics[0]?.body
+        );
+        expect(section.topics[1]?.body, `${locale} localized instructions body`).not.toBe(
+          englishSection.topics[1]?.body
+        );
+      }
     }
   });
 
@@ -264,8 +335,8 @@ describe("role-aware Get Phame manuals", () => {
     const i18n = readProjectFile("../client/src/lib/i18n.ts");
     const serviceWorker = readProjectFile("../client/public/sw.js");
 
-    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame57");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v27'");
+    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame58");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v28'");
     for (const locale of SUPPORTED_LOCALES) {
       expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);
     }
