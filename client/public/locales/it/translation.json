@@ -4223,5 +4223,70 @@
       "run": "Esecuzione"
     },
     "lastDays": "Ultimi {{count}} giorni"
+  },
+  "securityAuditReleaseVerification": {
+    "dashboardCardTitle": "Verifica del rilascio dell’audit di sicurezza",
+    "dashboardCardBody": "Esamina le prove del rilascio protetto e il primo passaggio di conferma dell’audit pianificato",
+    "accessDenied": "Accesso negato",
+    "adminOnly": "Solo amministratori",
+    "loading": "Caricamento della verifica del rilascio",
+    "errorTitle": "La verifica del rilascio non è disponibile",
+    "errorBody": "Non è stato possibile caricare le prove del rilascio riservate agli amministratori.",
+    "backToAdmin": "Torna all’amministrazione",
+    "title": "Verifica del rilascio dell’audit di sicurezza",
+    "description": "Un registro di prove protetto per il rilascio della Cronologia degli audit di sicurezza, i relativi controlli di autorizzazione, lo schema di produzione e la prima conferma del report pianificato.",
+    "releaseStatusLabel": "Stato del rilascio",
+    "statusEyebrow": "Stato del rilascio",
+    "statusVerified": "Verificato",
+    "statusBody": "Il rilascio esaminato, le route protette, la disponibilità dello schema e i controlli dell’interfaccia autorizzata sono completi.",
+    "evidenceEyebrow": "Prove del rilascio verificate",
+    "evidenceTitle": "I controlli di produzione sono attivi",
+    "evidenceDescription": "Questa vista contiene un registro operativo conciso. Esclude deliberatamente log non elaborati delle dipendenze, dettagli degli avvisi, dati dei clienti e credenziali.",
+    "evidenceListLabel": "Controlli di rilascio verificati",
+    "evidence": {
+      "github-release": {
+        "title": "Tracciabilità del rilascio esaminato",
+        "detail": "Il rilascio esaminato della Cronologia degli audit di sicurezza è stato unito al main protetto."
+      },
+      "ingestion-auth": {
+        "title": "Autorizzazione all’acquisizione",
+        "detail": "L’acquisizione non autenticata viene rifiutata prima che un report di audit possa essere archiviato."
+      },
+      "admin-reporting-auth": {
+        "title": "Autorizzazione ai report dell’amministratore",
+        "detail": "Il payload dei report è servito solo tramite una procedura autorizzata per gli amministratori."
+      },
+      "schema-readiness": {
+        "title": "Prontezza dello schema della cronologia",
+        "detail": "La tabella additiva dei report di audit e gli indici di reportistica sono disponibili in produzione."
+      },
+      "admin-ui": {
+        "title": "Interfaccia amministratore",
+        "detail": "La Cronologia degli audit di sicurezza viene caricata per un amministratore autorizzato e non conserva log non elaborati delle dipendenze né dettagli degli avvisi."
+      }
+    },
+    "scopeEyebrow": "Rilascio verificato",
+    "scopeTitle": "Cronologia degli audit di sicurezza",
+    "scopeBody": "Acquisizione di audit protetta, report dell’amministratore e persistenza dell’audit sanificata.",
+    "repository": "Archivio del codice",
+    "protectedBranch": "Ramo protetto",
+    "verifiedAt": "Verificato",
+    "nextEyebrow": "Prossima conferma operativa",
+    "nextTitle": "Conferma il primo audit pianificato",
+    "reportRecorded": "È ora disponibile un report di audit verificato. Esaminalo nella Cronologia degli audit di sicurezza e conserva qualsiasi prova di esecuzione non riuscita prima di riprovare.",
+    "reportPending": "Il rilascio è pronto. La prima prova operativa arriverà quando il prossimo workflow pianificato di audit delle dipendenze registrerà il suo riepilogo sanificato.",
+    "recordedBadge": "Report registrato",
+    "pendingBadge": "In attesa dell’audit pianificato",
+    "steps": {
+      "1": "Consenti al workflow pianificato di audit delle dipendenze di terminare con la sua normale cadenza. Non avviare un’esecuzione duplicata solo per popolare la pagina.",
+      "2": "Conferma che un riepilogo autenticato e sanificato venga accettato tramite il percorso di acquisizione degli audit.",
+      "3": "Apri la Cronologia degli audit di sicurezza come amministratore e conferma che una nuova scheda dell’ultimo report mostri un risultato, gli stati di convalida, un timestamp, il conteggio degli aggiornamenti dei pacchetti e un riferimento al workflow.",
+      "4": "Se non viene visualizzato alcun report, conserva la prova dell’esecuzione non riuscita e indaga sul workflow o sul risultato dell’acquisizione sanificata prima di riprovare."
+    },
+    "nextNote": "Non creare un workflow duplicato soltanto per popolare questo dashboard. Una normale esecuzione pianificata conferma l’intero ciclo di reportistica di produzione.",
+    "openHistory": "Apri Cronologia degli audit di sicurezza",
+    "privacyEyebrow": "Gestione dei dati",
+    "privacyTitle": "Report rispettosi della privacy",
+    "privacyBody": "Il registro del rilascio esclude credenziali, dati dei clienti, log non elaborati e dettagli individuali degli avvisi."
   }
 }

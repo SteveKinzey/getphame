@@ -316,6 +316,7 @@ import { signupRiskReviewRouter } from "./routers/signupRiskReview";
 import { activityTrendExportPresetsRouter } from "./routers/activityTrendExportPresets";
 import { automationHealthRouter } from "./routers/automationHealth";
 import { securityAuditsRouter } from "./routers/securityAudits";
+import { securityAuditReleaseVerificationRouter } from "./routers/securityAuditReleaseVerification";
 import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
 import { passkeysRouter } from "./routers/passkeys";
 import { recoveryDrillsRouter } from "./routers/recoveryDrills";
@@ -1010,6 +1011,7 @@ export const appRouter = router({
   signupRiskReview: signupRiskReviewRouter,
   automationHealth: automationHealthRouter,
   securityAudits: securityAuditsRouter,
+  securityAuditReleaseVerification: securityAuditReleaseVerificationRouter,
   githubCleanupShowcase: githubCleanupShowcaseRouter,
   passkeys: passkeysRouter,
   recoveryDrills: recoveryDrillsRouter,
