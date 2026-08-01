@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   issueSecuritySession: vi.fn(),
   sendUserWelcomeEmail: vi.fn().mockResolvedValue(undefined),
   recordSignupRiskEvent: vi.fn().mockResolvedValue(undefined),
+  isHighConfidenceDisposableEmail: vi.fn().mockResolvedValue(false),
 }));
 
 vi.mock("apple-signin-auth", () => ({
@@ -53,6 +54,10 @@ vi.mock("./smtp", () => ({
   sendUserWelcomeEmail: mocks.sendUserWelcomeEmail,
 }));
 
+vi.mock("./disposableDomains", () => ({
+  isHighConfidenceDisposableEmail: mocks.isHighConfidenceDisposableEmail,
+}));
+
 vi.mock("./signupRisk", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./signupRisk")>();
   return { ...actual, recordSignupRiskEvent: mocks.recordSignupRiskEvent };
@@ -83,6 +88,10 @@ async function createAppleRequestState(app = createApp(), humanProof?: string) {
 }
 
 describe("Apple Sign In callback", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(false);
+  });
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.APP_BASE_URL = "https://getphame.app";

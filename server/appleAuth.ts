@@ -23,6 +23,7 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
+import { isHighConfidenceDisposableEmail } from "./disposableDomains";
 import { recordSignupRiskEvent, verifySignedHumanProof } from "./signupRisk";
 import {
   isValidExpectedEmailHash,
@@ -276,6 +277,9 @@ export function registerAppleAuthRoutes(app: Express) {
           if (!verifySignedHumanProof(verifiedState.humanProof, "provider-oauth")) {
             return res.redirect(302, "/login?auth_error=human_verification_required");
           }
+          if (await isHighConfidenceDisposableEmail(verifiedEmail)) {
+            return res.redirect(302, "/login?auth_error=disposable_email");
+          }
           await db.upsertUser({ openId, name, email: verifiedEmail, loginMethod: "apple", lastSignedIn: new Date() });
           sessionUser = await db.getUserByOpenId(openId);
           isNewEnrollmentUser = true;
@@ -302,6 +306,9 @@ export function registerAppleAuthRoutes(app: Express) {
 
       if (isNewUser && (!email || !emailVerified || !verifySignedHumanProof(verifiedState.humanProof, "provider-oauth"))) {
         return res.redirect(302, "/login?auth_error=human_verification_required");
+      }
+      if (isNewUser && await isHighConfidenceDisposableEmail(email)) {
+        return res.redirect(302, "/login?auth_error=disposable_email");
       }
 
       // If returning user, preserve their stored name

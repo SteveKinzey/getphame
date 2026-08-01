@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => ({
   sendUserWelcomeEmail: vi.fn(),
   recordAuthLifecycleEvent: vi.fn().mockResolvedValue(null),
   findAuthRequestByToken: vi.fn().mockResolvedValue(null),
+  isHighConfidenceDisposableEmail: vi.fn().mockResolvedValue(false),
 }));
 
 vi.mock("./db", () => ({
@@ -22,6 +23,10 @@ vi.mock("./db", () => ({
 
 vi.mock("./security/passkeySessions", () => ({
   issueSecuritySession: mocks.issueSecuritySession,
+}));
+
+vi.mock("./disposableDomains", () => ({
+  isHighConfidenceDisposableEmail: mocks.isHighConfidenceDisposableEmail,
 }));
 
 vi.mock("./_core/cookies", () => ({
@@ -54,6 +59,7 @@ import { registerEmailAuthRoutes } from "./auth-email";
 describe("email magic-link verification", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(false);
   });
 
   it("does not consume the token when session creation fails and permits a successful retry", async () => {
@@ -226,6 +232,45 @@ describe("email magic-link verification", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/login?auth_error=human_verification_required");
+    expect(mocks.upsertUser).not.toHaveBeenCalled();
+    expect(mocks.issueSecuritySession).not.toHaveBeenCalled();
+    expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
+    expect(database.update).not.toHaveBeenCalled();
+  });
+
+  it("rejects a genuinely new high-confidence disposable-domain account without consuming the token", async () => {
+    const record = {
+      id: 91,
+      email: "new-account@disposable.test",
+      token: "new-disposable-account",
+      expiresAt: new Date(Date.now() + 60_000),
+      usedAt: null,
+      createdAt: new Date(),
+    };
+    const database = {
+      select: vi.fn(() => ({
+        from: vi.fn(() => ({
+          where: vi.fn(() => ({ limit: vi.fn().mockResolvedValue([record]) })),
+        })),
+      })),
+      update: vi.fn(),
+    };
+
+    mocks.getDb.mockResolvedValue(database);
+    mocks.getUserByEmail.mockResolvedValue(undefined);
+    mocks.getUserByOpenId.mockResolvedValue(undefined);
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(true);
+
+    const app = express();
+    app.use(express.json());
+    registerEmailAuthRoutes(app);
+
+    const response = await request(app)
+      .get("/api/auth/magic-link/verify")
+      .query({ token: record.token });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/login?auth_error=disposable_email");
     expect(mocks.upsertUser).not.toHaveBeenCalled();
     expect(mocks.issueSecuritySession).not.toHaveBeenCalled();
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();

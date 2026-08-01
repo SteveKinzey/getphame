@@ -41,6 +41,7 @@ import {
   verifySignedHumanProof,
   verifyTurnstileHuman,
 } from "./signupRisk";
+import { isHighConfidenceDisposableEmail } from "./disposableDomains";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -424,6 +425,9 @@ export function registerEmailAuthRoutes(app: Express) {
         (await db.getUserByEmail(email)) ??
         (await db.getUserByOpenId(emailOpenId));
       const isNewUser = !existingUser;
+      if (isNewUser && await isHighConfidenceDisposableEmail(email)) {
+        return res.redirect(302, "/login?auth_error=disposable_email");
+      }
       if (isNewUser && !verifySignedHumanProof(humanProof, email)) {
         return res.redirect(302, "/login?auth_error=human_verification_required");
       }

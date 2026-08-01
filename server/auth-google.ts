@@ -18,6 +18,7 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
+import { isHighConfidenceDisposableEmail } from "./disposableDomains";
 import { recordSignupRiskEvent, verifySignedHumanProof } from "./signupRisk";
 import {
   createProviderOAuthState,
@@ -196,6 +197,9 @@ export function registerGoogleAuthRoutes(app: Express) {
           if (!verifySignedHumanProof(statePayload?.humanProof, "provider-oauth")) {
             return res.redirect(302, "/login?auth_error=human_verification_required");
           }
+          if (await isHighConfidenceDisposableEmail(email)) {
+            return res.redirect(302, "/login?auth_error=disposable_email");
+          }
           await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
           sessionUser = await db.getUserByOpenId(openId);
           isNewEnrollmentUser = true;
@@ -222,6 +226,9 @@ export function registerGoogleAuthRoutes(app: Express) {
       if (isNewUser) {
         if (!email || googleUser.verified_email !== true || !verifySignedHumanProof(statePayload?.humanProof, "provider-oauth")) {
           return res.redirect(302, "/login?auth_error=human_verification_required");
+        }
+        if (await isHighConfidenceDisposableEmail(email)) {
+          return res.redirect(302, "/login?auth_error=disposable_email");
         }
         await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
         sessionUser = await db.getUserByOpenId(openId);

@@ -6,6 +6,7 @@ import { ENV } from "./env";
 import { parse as parseCookieHeader } from "cookie";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
+import { isHighConfidenceDisposableEmail } from "../disposableDomains";
 import { sendUserWelcomeEmail } from "../smtp";
 import { sdk } from "./sdk";
 import { issueSecuritySession } from "../security/passkeySessions";
@@ -49,6 +50,9 @@ export function registerOAuthRoutes(app: Express) {
       // Check if this is a new user before upserting
       const existingUser = await db.getUserByOpenId(userInfo.openId);
       const isNewUser = !existingUser;
+      if (isNewUser && await isHighConfidenceDisposableEmail(userInfo.email)) {
+        return res.redirect(302, "/login?auth_error=disposable_email");
+      }
 
       await db.upsertUser({
         openId: userInfo.openId,

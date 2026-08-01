@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   issueSecuritySession: vi.fn(),
   sendUserWelcomeEmail: vi.fn().mockResolvedValue(undefined),
   recordSignupRiskEvent: vi.fn().mockResolvedValue(undefined),
+  isHighConfidenceDisposableEmail: vi.fn().mockResolvedValue(false),
 }));
 
 vi.mock("googleapis", () => ({
@@ -33,6 +34,7 @@ vi.mock("./db", () => ({
 
 vi.mock("./security/passkeySessions", () => ({ issueSecuritySession: mocks.issueSecuritySession }));
 vi.mock("./smtp", () => ({ sendUserWelcomeEmail: mocks.sendUserWelcomeEmail }));
+vi.mock("./disposableDomains", () => ({ isHighConfidenceDisposableEmail: mocks.isHighConfidenceDisposableEmail }));
 vi.mock("./signupRisk", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./signupRisk")>();
   return { ...actual, recordSignupRiskEvent: mocks.recordSignupRiskEvent };
@@ -63,6 +65,7 @@ function callbackRequest(app: express.Express, state: string) {
 describe("Google callback human-proof enforcement", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.isHighConfidenceDisposableEmail.mockResolvedValue(false);
     process.env.JWT_SECRET = "google-callback-test-secret-with-sufficient-entropy";
     process.env.SIGNUP_RISK_HMAC_SECRET = "signup-risk-test-secret-with-sufficient-entropy";
     process.env.GOOGLE_CLIENT_ID = "google-client-id";

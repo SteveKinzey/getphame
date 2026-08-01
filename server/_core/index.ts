@@ -48,6 +48,11 @@ import {
   SOURCE_HEALTH_CALLBACK_PATH,
   reconcileSourceHealthHeartbeat,
 } from "../sourceHealthHeartbeat";
+import { disposableDomainHandler } from "../disposableDomainRoutes";
+import {
+  DISPOSABLE_DOMAIN_CALLBACK_PATH,
+  reconcileDisposableDomainHeartbeat,
+} from "../disposableDomainHeartbeat";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
@@ -520,6 +525,7 @@ async function startServer() {
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
   app.post(SOURCE_HEALTH_CALLBACK_PATH, sourceHealthHandler);
+  app.post(DISPOSABLE_DOMAIN_CALLBACK_PATH, disposableDomainHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
 
@@ -703,6 +709,13 @@ async function startServer() {
         )
         .catch(() =>
           console.error("[SourceHealth] Heartbeat reconciliation failed.")
+        );
+      void reconcileDisposableDomainHeartbeat()
+        .then(result =>
+          console.log(`[DisposableDomains] Heartbeat ${result.status}.`)
+        )
+        .catch(() =>
+          console.error("[DisposableDomains] Heartbeat reconciliation failed.")
         );
     }
     startSmtpWeeklyDigestScheduler();
