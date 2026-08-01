@@ -115,6 +115,30 @@
       "dependabotMerge": "Fusion Dependabot",
       "driftAudit": "Audit de dérive"
     },
+    "ackHistory": {
+      "acknowledgedAt": "Acquittée le {{date}}",
+      "actorFallback": "Administrateur {{id}}",
+      "awaitingRecovery": "En attente de récupération",
+      "description": "L’acquittement indique qui a examiné une alerte. La récupération n’apparaît qu’après un audit de dérive ultérieur réussi.",
+      "empty": "Aucune alerte de dérive n’a encore été acquittée.",
+      "error": "Impossible de charger l’historique des acquittements.",
+      "eyebrow": "Piste d’audit des alertes",
+      "loading": "Chargement de l’historique des acquittements…",
+      "noFailureSummary": "Aucun résumé de l’échec n’a été enregistré.",
+      "openAlertRun": "Ouvrir l’exécution d’alerte n° {{number}}",
+      "recovered": "Rétablie",
+      "recoveredAt": "Rétablie le {{date}}",
+      "title": "Historique des acquittements d’alertes de dérive"
+    },
+    "drilldown": {
+      "description": "Exécutions vérifiées du {{date}}. Jusqu’aux 50 enregistrements les plus récents sont affichés.",
+      "empty": "Aucune exécution vérifiée n’a été enregistrée ce jour-là.",
+      "error": "Impossible de charger le détail des exécutions.",
+      "loading": "Chargement du détail des exécutions…",
+      "openRun": "Ouvrir l’exécution GitHub vérifiée",
+      "title": "Exécutions quotidiennes d’automatisation",
+      "viewRuns": "Voir les exécutions du jour"
+    },
     "metrics": {
       "auditCount": "{{count}} vérifications dans la période",
       "auditCount_one": "{{count}} audit dans la période",
@@ -162,7 +186,38 @@
     "rangeFutureEnd": "La date de fin ne peut pas être dans le futur.",
     "rangeTooLong": "Choisissez une plage de {{count}} jours ou moins.",
     "activeRange": "Exportation du {{start}} au {{end}} ({{count}} jours).",
-    "emptyRange": "Aucune activité du {{start}} au {{end}}."
+    "emptyRange": "Aucune activité du {{start}} au {{end}}.",
+    "presets": {
+      "title": "Préréglages d’export enregistrés",
+      "help": "Enregistrez puis réappliquez rapidement cette période et ces types d’automatisation.",
+      "undoOrder": "Annuler le réordonnancement",
+      "nameLabel": "Nom du préréglage",
+      "namePlaceholder": "Exemple : Performance mensuelle",
+      "save": "Enregistrer",
+      "loading": "Chargement des préréglages…",
+      "empty": "Aucun préréglage d’export enregistré.",
+      "listLabel": "Préréglages d’export enregistrés",
+      "rangeCustom": "Du {{start}} au {{end}}",
+      "rangeDays": "{{count}} jours",
+      "seriesCount": "{{count}} catégories",
+      "apply": "Appliquer",
+      "applied": "Préréglage d’export appliqué.",
+      "invalid": "Ce préréglage contient une période non valide.",
+      "rename": "Renommer {{name}}",
+      "renamePrompt": "Saisissez un nouveau nom",
+      "renamed": "Préréglage renommé.",
+      "duplicate": "Dupliquer {{name}}",
+      "duplicated": "Préréglage dupliqué.",
+      "moveUp": "Déplacer {{name}} vers le haut",
+      "moveDown": "Déplacer {{name}} vers le bas",
+      "delete": "Supprimer {{name}}",
+      "deleteConfirm": "Supprimer {{name}} ?",
+      "deleted": "Préréglage supprimé.",
+      "updating": "Mise à jour des préréglages d’export.",
+      "error": "Impossible de mettre à jour le préréglage d’export.",
+      "saved": "{{name}} enregistré.",
+      "reordered": "Ordre des préréglages enregistré."
+    }
   },
   "csvDiagnostics": {
     "preImportTitle": "Corrigez ces lignes avant l’importation",
@@ -3955,74 +4010,5 @@
       "run": "Exécution"
     },
     "lastDays": "Derniers {{count}} jours"
-  },
-  "securityAuditReleaseVerification": {
-    "dashboardCardTitle": "Vérification de la mise en production de l’audit de sécurité",
-    "dashboardCardBody": "Consultez les preuves de la mise en production protégée et l’étape de confirmation du premier audit planifié",
-    "accessDenied": "Accès refusé",
-    "adminOnly": "Administrateurs uniquement",
-    "loading": "Chargement de la vérification de mise en production",
-    "errorTitle": "La vérification de mise en production est indisponible",
-    "errorBody": "Les preuves de mise en production réservées aux administrateurs n’ont pas pu être chargées.",
-    "backToAdmin": "Retour à l’administration",
-    "title": "Vérification de la mise en production de l’audit de sécurité",
-    "description": "Un registre de preuves protégé pour la mise en production de l’Historique des audits de sécurité, ses contrôles d’autorisation, son schéma de production et la première confirmation de rapport planifié.",
-    "releaseStatusLabel": "État de la mise en production",
-    "statusEyebrow": "État de la mise en production",
-    "statusVerified": "Vérifiée",
-    "statusBody": "La mise en production revue, les routes protégées, la préparation du schéma et les contrôles de l’interface autorisée sont terminés.",
-    "evidenceEyebrow": "Preuves de mise en production vérifiées",
-    "evidenceTitle": "Les contrôles de production sont en place",
-    "evidenceDescription": "Cette vue contient un registre opérationnel concis. Elle exclut volontairement les journaux bruts des dépendances, les détails d’avis, les données client et les identifiants.",
-    "evidenceListLabel": "Contrôles de mise en production vérifiés",
-    "evidence": {
-      "github-release": {
-        "title": "Traçabilité de la version revue",
-        "detail": "La version revue de l’Historique des audits de sécurité est fusionnée dans main protégé."
-      },
-      "ingestion-auth": {
-        "title": "Autorisation d’ingestion",
-        "detail": "Toute ingestion non authentifiée est refusée avant qu’un rapport d’audit puisse être enregistré."
-      },
-      "admin-reporting-auth": {
-        "title": "Autorisation des rapports administrateur",
-        "detail": "La charge utile des rapports est servie uniquement via une procédure autorisée pour les administrateurs."
-      },
-      "schema-readiness": {
-        "title": "Préparation du schéma d’historique",
-        "detail": "La table additive de rapports d’audit et les index de reporting sont disponibles en production."
-      },
-      "admin-ui": {
-        "title": "Interface administrateur",
-        "detail": "L’Historique des audits de sécurité se charge pour un administrateur autorisé sans conserver les journaux bruts de dépendances ni les détails d’avis."
-      }
-    },
-    "scopeEyebrow": "Mise en production vérifiée",
-    "scopeTitle": "Historique des audits de sécurité",
-    "scopeBody": "Ingestion d’audit protégée, reporting administrateur et persistance d’audit assainie.",
-    "repository": "Dépôt",
-    "protectedBranch": "Branche protégée",
-    "verifiedAt": "Vérifiée",
-    "nextEyebrow": "Prochaine confirmation opérationnelle",
-    "nextTitle": "Confirmez le premier audit planifié",
-    "reportRecorded": "Un rapport d’audit vérifié est désormais disponible. Consultez-le dans l’Historique des audits de sécurité et conservez toute preuve d’exécution en échec avant de réessayer.",
-    "reportPending": "La mise en production est prête. La première preuve opérationnelle arrivera lorsque le prochain workflow d’audit des dépendances planifié enregistrera son résumé assaini.",
-    "recordedBadge": "Rapport enregistré",
-    "pendingBadge": "En attente de l’audit planifié",
-    "steps": {
-      "1": "Laissez le workflow planifié d’audit des dépendances se terminer à sa cadence normale. Ne déclenchez pas d’exécution dupliquée uniquement pour remplir la page.",
-      "2": "Confirmez qu’un résumé authentifié et assaini est accepté via la route d’ingestion des audits.",
-      "3": "Ouvrez l’Historique des audits de sécurité comme administrateur et vérifiez qu’une nouvelle carte de rapport affiche un résultat, les statuts de validation, un horodatage, le nombre de mises à jour de paquets et une référence de workflow.",
-      "4": "Si aucun rapport n’apparaît, conservez la preuve de l’exécution en échec et examinez le workflow ou le résultat de l’ingestion assainie avant de réessayer."
-    },
-    "nextNote": "Ne créez pas de workflow dupliqué uniquement pour remplir ce tableau de bord. Une exécution planifiée normale confirme l’ensemble de la boucle de reporting de production.",
-    "openHistory": "Ouvrir l’Historique des audits de sécurité",
-    "privacyEyebrow": "Traitement des données",
-    "privacyTitle": "Reporting respectueux de la confidentialité",
-    "privacyBody": "Le registre de mise en production exclut les identifiants, les données client, les journaux bruts et les détails d’avis individuels.",
-    "reportChecking": "Les éléments de preuve de la version sont chargés. Vérification de l’enregistrement du premier rapport d’audit planifié.",
-    "reportUnavailable": "La version est vérifiée, mais l’état du dernier rapport d’audit n’a pas pu être chargé. Ouvrez l’Historique des audits de sécurité pour réessayer en toute sécurité.",
-    "checkingBadge": "Vérification de l’historique des audits",
-    "unavailableBadge": "État de l’audit indisponible"
   }
 }

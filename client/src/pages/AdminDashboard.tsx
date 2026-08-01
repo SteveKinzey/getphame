@@ -587,23 +587,6 @@ export default function AdminDashboard() {
                     Icon: CheckCircle2,
                   },
                   {
-                    path: "/admin/security-audit-release",
-                    label: t(
-                      "securityAuditReleaseVerification.dashboardCardTitle",
-                      {
-                        defaultValue: "Security Audit release verification",
-                      }
-                    ),
-                    detail: t(
-                      "securityAuditReleaseVerification.dashboardCardBody",
-                      {
-                        defaultValue:
-                          "Review the protected release evidence and the first scheduled-audit confirmation step",
-                      }
-                    ),
-                    Icon: CheckCircle2,
-                  },
-                  {
                     path: "/admin/reminder-performance",
                     label: "Reminder operations",
                     detail: `${stats.pendingReminders} pending · ${stats.dueReminders} due`,

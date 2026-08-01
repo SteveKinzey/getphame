@@ -14,6 +14,10 @@ const mocks = vi.hoisted(() => ({
   anonymiseUserByOpenId: vi.fn(),
   issueSecuritySession: vi.fn(),
   sendUserWelcomeEmail: vi.fn().mockResolvedValue(undefined),
+  recordSignupRiskEvent: vi.fn().mockResolvedValue(undefined),
+  createProviderHumanVerificationAttempt: vi.fn(),
+  consumeProviderHumanVerificationAttempt: vi.fn(),
+  verifyProviderStartHumanToken: vi.fn(),
 }));
 
 vi.mock("apple-signin-auth", () => ({
@@ -43,13 +47,29 @@ vi.mock("./_core/env", () => ({
     appleClientId: "app.getphame.signin",
     appleTeamId: "TEAM123456",
     appleKeyId: "KEY1234567",
-    applePrivateKey: "-----BEGIN PRIVATE KEY-----\\ntest\\n-----END PRIVATE KEY-----",
+    applePrivateKey:
+      "-----BEGIN PRIVATE KEY-----\\ntest\\n-----END PRIVATE KEY-----",
     ownerOpenId: "owner-open-id",
   },
 }));
 
 vi.mock("./smtp", () => ({
   sendUserWelcomeEmail: mocks.sendUserWelcomeEmail,
+}));
+
+vi.mock("./signupRisk", async importOriginal => {
+  const actual = await importOriginal<typeof import("./signupRisk")>();
+  return {
+    ...actual,
+    recordSignupRiskEvent: mocks.recordSignupRiskEvent,
+    createProviderHumanVerificationAttempt:
+      mocks.createProviderHumanVerificationAttempt,
+    consumeProviderHumanVerificationAttempt:
+      mocks.consumeProviderHumanVerificationAttempt,
+  };
+});
+vi.mock("./security/humanVerification", () => ({
+  verifyProviderStartHumanToken: mocks.verifyProviderStartHumanToken,
 }));
 
 import { registerAppleAuthRoutes } from "./appleAuth";
@@ -62,9 +82,18 @@ function createApp() {
   return app;
 }
 
-async function createAppleRequestState(app = createApp()) {
-  const response = await request(app).get("/api/auth/apple");
-  const authorizationUrl = new URL(response.headers.location);
+async function createAppleRequestState(
+  app = createApp(),
+  verifiedStart = false
+) {
+  const response = verifiedStart
+    ? await request(app)
+        .post("/api/auth/apple/start")
+        .send({ token: "turnstile-token-that-is-long-enough" })
+    : await request(app).get("/api/auth/apple");
+  const authorizationUrl = new URL(
+    verifiedStart ? response.body.url : response.headers.location
+  );
   return {
     app,
     state: authorizationUrl.searchParams.get("state"),
@@ -77,30 +106,61 @@ describe("Apple Sign In callback", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.APP_BASE_URL = "https://getphame.app";
-    mocks.getAuthorizationToken.mockResolvedValue({ id_token: "verified-id-token" });
+    process.env.SIGNUP_RISK_HMAC_SECRET =
+      "test-signup-risk-secret-which-is-long-enough";
+    mocks.getAuthorizationToken.mockResolvedValue({
+      id_token: "verified-id-token",
+    });
     mocks.verifyIdToken.mockResolvedValue({
       sub: "apple-user-123",
       email: "steve@example.test",
+      email_verified: true,
     });
-    mocks.issueSecuritySession.mockImplementation(async ({ res }: { res: express.Response }) => {
-      res.cookie("app_session_id", "revocable-session-token", { httpOnly: true, secure: true });
-      return { id: "session-id", token: "revocable-session-token", maxAge: 30 * 24 * 60 * 60 * 1000 };
-    });
+    mocks.issueSecuritySession.mockImplementation(
+      async ({ res }: { res: express.Response }) => {
+        res.cookie("app_session_id", "revocable-session-token", {
+          httpOnly: true,
+          secure: true,
+        });
+        return {
+          id: "session-id",
+          token: "revocable-session-token",
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+        };
+      }
+    );
     mocks.getUserByOpenId.mockResolvedValue(undefined);
     mocks.getUserByEmail.mockResolvedValue(undefined);
+    mocks.verifyProviderStartHumanToken.mockResolvedValue(true);
+    mocks.createProviderHumanVerificationAttempt.mockResolvedValue(
+      "33333333-3333-4333-8333-333333333333"
+    );
+    mocks.consumeProviderHumanVerificationAttempt.mockResolvedValue(false);
   });
 
   it("requests and verifies Apple's signed identity token directly from the form-post callback", async () => {
     mocks.getUserByOpenId
       .mockResolvedValueOnce(undefined)
-      .mockResolvedValueOnce({ id: 1, openId: "owner-open-id" })
       .mockResolvedValueOnce({ id: 77, openId: "apple_apple-user-123" });
-    const { app, state, nonce, authorizationUrl } = await createAppleRequestState();
+    mocks.consumeProviderHumanVerificationAttempt.mockResolvedValueOnce(true);
+    const { app, state, nonce, authorizationUrl } =
+      await createAppleRequestState(createApp(), true);
 
-    expect(authorizationUrl.searchParams.get("response_type")).toBe("code id_token");
-    expect(authorizationUrl.searchParams.get("response_mode")).toBe("form_post");
+    expect(authorizationUrl.searchParams.get("response_type")).toBe(
+      "code id_token"
+    );
+    expect(authorizationUrl.searchParams.get("response_mode")).toBe(
+      "form_post"
+    );
     expect(state).toBeTruthy();
     expect(nonce).toBeTruthy();
+    expect(mocks.verifyProviderStartHumanToken).toHaveBeenCalledWith(
+      expect.anything(),
+      "turnstile-token-that-is-long-enough"
+    );
+    expect(mocks.createProviderHumanVerificationAttempt).toHaveBeenCalledWith(
+      "apple"
+    );
 
     const response = await request(app)
       .post("/api/auth/apple/callback")
@@ -123,20 +183,30 @@ describe("Apple Sign In callback", () => {
       expect.objectContaining({
         audience: "app.getphame.signin",
         nonce,
-      }),
+      })
     );
-    expect(mocks.upsertUser).toHaveBeenCalledWith(expect.objectContaining({
-      openId: "apple_apple-user-123",
-      email: "steve@example.test",
-      name: "Steve Kinzey",
-      loginMethod: "apple",
-    }));
-    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 77,
-      authMethod: "oauth",
-      assurance: "a1",
-    }));
-    expect(response.headers["set-cookie"]?.[0]).toContain("revocable-session-token");
+    expect(mocks.upsertUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        openId: "apple_apple-user-123",
+        email: "steve@example.test",
+        name: "Steve Kinzey",
+        loginMethod: "apple",
+      })
+    );
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 77,
+        authMethod: "oauth",
+        assurance: "a1",
+      })
+    );
+    expect(response.headers["set-cookie"]?.[0]).toContain(
+      "revocable-session-token"
+    );
+    expect(mocks.consumeProviderHumanVerificationAttempt).toHaveBeenCalledWith(
+      "33333333-3333-4333-8333-333333333333",
+      "apple"
+    );
   });
 
   it("links Apple identity to an existing matching-email account instead of creating a duplicate", async () => {
@@ -149,7 +219,7 @@ describe("Apple Sign In callback", () => {
     };
     mocks.getUserByEmail.mockResolvedValue(existingAccount);
     mocks.getUserByOpenId.mockImplementation(async (openId: string) =>
-      openId === existingAccount.openId ? existingAccount : undefined,
+      openId === existingAccount.openId ? existingAccount : undefined
     );
     const { app, state } = await createAppleRequestState();
 
@@ -160,19 +230,71 @@ describe("Apple Sign In callback", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/auth/apple/landing?return=%2F");
-    expect(mocks.linkUserIdentity).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 42,
-      openId: "apple_apple-user-123",
-      loginMethod: "apple",
-    }));
+    expect(mocks.linkUserIdentity).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 42,
+        openId: "apple_apple-user-123",
+        loginMethod: "apple",
+      })
+    );
     expect(mocks.upsertUser).not.toHaveBeenCalled();
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
-    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
-      userId: existingAccount.id,
-      authMethod: "oauth",
-      assurance: "a1",
-    }));
-    expect(response.headers["set-cookie"]?.[0]).toContain("revocable-session-token");
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: existingAccount.id,
+        authMethod: "oauth",
+        assurance: "a1",
+      })
+    );
+    expect(response.headers["set-cookie"]?.[0]).toContain(
+      "revocable-session-token"
+    );
+    expect(
+      mocks.consumeProviderHumanVerificationAttempt
+    ).not.toHaveBeenCalled();
+  });
+
+  it("does not create a new Apple account without a signed human proof", async () => {
+    const { app, state } = await createAppleRequestState();
+
+    const response = await request(app)
+      .post("/api/auth/apple/callback")
+      .type("form")
+      .send({ code: "new-account-without-proof", state });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe(
+      "/login?auth_error=human_verification_required"
+    );
+    expect(mocks.upsertUser).not.toHaveBeenCalled();
+    expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
+    expect(mocks.issueSecuritySession).not.toHaveBeenCalled();
+  });
+
+  it("rejects replay of a consumed provider-bound Apple attempt", async () => {
+    mocks.consumeProviderHumanVerificationAttempt
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false);
+    mocks.getUserByOpenId
+      .mockResolvedValueOnce(undefined)
+      .mockResolvedValueOnce({ id: 77, openId: "apple_apple-user-123" })
+      .mockResolvedValueOnce(undefined);
+    const { app, state } = await createAppleRequestState(createApp(), true);
+
+    const accepted = await request(app)
+      .post("/api/auth/apple/callback")
+      .type("form")
+      .send({ code: "first-code", state });
+    const replayed = await request(app)
+      .post("/api/auth/apple/callback")
+      .type("form")
+      .send({ code: "second-code", state });
+
+    expect(accepted.headers.location).toBe("/auth/apple/landing?return=%2F");
+    expect(replayed.headers.location).toBe(
+      "/login?auth_error=human_verification_required"
+    );
+    expect(mocks.upsertUser).toHaveBeenCalledTimes(1);
   });
 
   it("returns a safe callback error when Apple does not provide an authorization code", async () => {
@@ -180,10 +302,16 @@ describe("Apple Sign In callback", () => {
     const response = await request(app)
       .post("/api/auth/apple/callback")
       .type("form")
-      .send({ error: "access_denied", error_description: "The user cancelled", state });
+      .send({
+        error: "access_denied",
+        error_description: "The user cancelled",
+        state,
+      });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/?auth_error=apple_authorization_failed");
+    expect(response.headers.location).toBe(
+      "/?auth_error=apple_authorization_failed"
+    );
     expect(mocks.getAuthorizationToken).not.toHaveBeenCalled();
     expect(mocks.upsertUser).not.toHaveBeenCalled();
   });
@@ -198,7 +326,9 @@ describe("Apple Sign In callback", () => {
       .send({ code: "expired-or-reused-code", state });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/?auth_error=apple_token_exchange_failed");
+    expect(response.headers.location).toBe(
+      "/?auth_error=apple_token_exchange_failed"
+    );
     expect(mocks.verifyIdToken).not.toHaveBeenCalled();
     expect(mocks.linkUserIdentity).not.toHaveBeenCalled();
     expect(mocks.upsertUser).not.toHaveBeenCalled();

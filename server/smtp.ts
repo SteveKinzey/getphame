@@ -17,6 +17,7 @@ import { eq } from "drizzle-orm";
 import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
 import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
 import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
+import { assertReviewOutreachAllowed } from "./signupRisk";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -230,6 +231,7 @@ export interface SendMailOptions {
 
 export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSendStatus | null> {
   if (opts.safetyMode !== "system") {
+    await assertReviewOutreachAllowed(opts.userId);
     const channel = await resolveOutboundDeliveryChannel(opts.userId);
     if (!channel) throw new Error("No email account connected. Please connect your email in Settings.");
     const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);
@@ -525,21 +527,29 @@ export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
   };
 }
 
-// ── Transactional emails (sent from owner's SMTP to app users) ────────────────
+// ── Platform administrative emails (sent from managed no-reply SMTP) ──────────
 
 /**
- * Send a welcome email to a new user via the owner's connected SMTP.
- * Silently skips if the owner has no SMTP configured.
+ * Send a first-account welcome notice only through the managed platform sender.
+ * The optional owner identifier remains solely for backwards-compatible callers;
+ * it is intentionally never used to obtain a customer mailbox.
  */
 export async function sendUserWelcomeEmail(opts: {
-  ownerUserId: number;
+  ownerUserId?: number;
   toEmail: string;
   toName: string | null;
 }): Promise<void> {
-  const creds = await getSmtpCredentials(opts.ownerUserId);
-  if (!creds) return; // Owner has no SMTP — skip gracefully
+  const host = process.env.SYSTEM_SMTP_HOST;
+  const user = process.env.SYSTEM_SMTP_USER;
+  const pass = process.env.SYSTEM_SMTP_PASS;
+  const fromEmail = process.env.SYSTEM_FROM_EMAIL;
+  const port = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "587", 10);
+  if (!host || !user || !pass || !fromEmail || !Number.isFinite(port)) {
+    console.warn("[PlatformEmail] Welcome email skipped because managed SMTP is not configured");
+    return;
+  }
 
-  const fromName = creds.fromName ?? creds.user;
+  const fromName = "Get Phame";
   const displayName = opts.toName || "there";
 
   const html = `<!DOCTYPE html>
@@ -597,18 +607,11 @@ export async function sendUserWelcomeEmail(opts: {
 
   const text = `Hi ${displayName},\n\nWelcome to Get Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://getphame.app\n\n— ${fromName}`;
 
-  const pass = decryptPassword(creds.encryptedPass);
-  const transporter = createTransporter({
-    host: creds.host,
-    port: creds.port,
-    secure: creds.secure === 1,
-    user: creds.user,
-    pass,
-  });
-  const from = `"${fromName}" <${creds.user}>`;
+  const transporter = createTransporter({ host, port, secure: port === 465, user, pass });
+  const from = `"${fromName}" <${fromEmail}>`;
   await transporter.sendMail({
     from,
-    replyTo: creds.replyTo ?? creds.user,
+    replyTo: fromEmail,
     to: opts.toEmail,
     subject: "Welcome to Get Phame! 🚀",
     html,

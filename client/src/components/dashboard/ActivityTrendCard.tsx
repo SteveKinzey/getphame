@@ -1,5 +1,4 @@
 import { useMemo, useRef, useState } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
 import {
   CalendarRange,
   Download,
@@ -23,6 +22,10 @@ import {
 import { Line } from "react-chartjs-2";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import {
+  ActivityTrendPresetManager,
+  type ActivityTrendPresetConfig,
+} from "./ActivityTrendPresetManager";
 import {
   ACTIVITY_TREND_EXPORT_SERIES,
   buildActivityTrendExportFilename,
@@ -72,8 +75,6 @@ export default function ActivityTrendCard({
   velocity,
 }: ActivityTrendCardProps) {
   const { t, i18n } = useTranslation("translation");
-  const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
   const [selectedExportSeries, setSelectedExportSeries] = useState<
     ActivityTrendExportSeries[]
   >(() => [...ACTIVITY_TREND_EXPORT_SERIES]);
@@ -184,6 +185,46 @@ export default function ActivityTrendCard({
         start: customRange.query.startDate,
         end: customRange.query.endDate,
         defaultValue: "Activity Trend updated for {{start}} to {{end}}.",
+      })
+    );
+  };
+
+  const currentPresetConfig = useMemo<ActivityTrendPresetConfig>(
+    () => ({
+      rangeKey: String(rangeMode) as ActivityTrendPresetConfig["rangeKey"],
+      customStartDate:
+        rangeMode === "custom" ? appliedCustomRange.startDate : null,
+      customEndDate: rangeMode === "custom" ? appliedCustomRange.endDate : null,
+      series: selectedExportSeries,
+    }),
+    [appliedCustomRange, rangeMode, selectedExportSeries]
+  );
+
+  const applySavedPreset = (preset: ActivityTrendPresetConfig) => {
+    if (preset.rangeKey === "custom") {
+      const resolved = resolveActivityTrendCustomRange(
+        preset.customStartDate ?? "",
+        preset.customEndDate ?? ""
+      );
+      if (!resolved.query) {
+        toast.error(
+          t("activityTrend.presets.invalid", {
+            defaultValue: "This saved preset has an invalid date range.",
+          })
+        );
+        return;
+      }
+      setCustomStartDate(resolved.query.startDate);
+      setCustomEndDate(resolved.query.endDate);
+      setAppliedCustomRange(resolved.query);
+      setRangeMode("custom");
+    } else {
+      setRangeMode(Number(preset.rangeKey) as 30 | 60 | 90);
+    }
+    setSelectedExportSeries(preset.series);
+    toast.success(
+      t("activityTrend.presets.applied", {
+        defaultValue: "Saved export preset applied.",
       })
     );
   };
@@ -429,67 +470,69 @@ export default function ActivityTrendCard({
         </div>
       ) : null}
 
-      {isAdmin ? (
-        <fieldset
-          className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3"
-          aria-describedby="activity-trend-export-filter-help activity-trend-export-filter-status"
+      <fieldset
+        className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3"
+        aria-describedby="activity-trend-export-filter-help activity-trend-export-filter-status"
+      >
+        <legend className="flex items-center gap-1.5 px-1 text-xs font-black rr-text-navy">
+          <Filter size={13} aria-hidden="true" />
+          {t("activityTrend.exportFilterLabel", {
+            defaultValue: "Export automation types",
+          })}
+        </legend>
+        <p
+          id="activity-trend-export-filter-help"
+          className="mt-1 text-xs rr-text-navy-muted"
         >
-          <legend className="flex items-center gap-1.5 px-1 text-xs font-black rr-text-navy">
-            <Filter size={13} aria-hidden="true" />
-            {t("activityTrend.exportFilterLabel", {
-              defaultValue: "Export automation types",
+          {t("activityTrend.exportFilterHelp", {
+            defaultValue:
+              "Select which activity series to include. The dashboard chart stays unchanged.",
+          })}
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {ACTIVITY_TREND_EXPORT_SERIES.map(series => {
+            const checked = selectedExportSeries.includes(series);
+            return (
+              <label
+                key={series}
+                className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-white px-3 text-xs font-bold rr-text-navy focus-within:ring-2 focus-within:ring-amber-500"
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => toggleExportSeries(series)}
+                  className="h-4 w-4 accent-amber-500"
+                />
+                {exportSeriesLabels[series]}
+              </label>
+            );
+          })}
+        </div>
+        <div
+          id="activity-trend-export-filter-status"
+          className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold"
+          aria-live="polite"
+        >
+          <span className="rr-text-navy-muted">
+            {t("activityTrend.exportSelection", {
+              count: selectedExportSeries.length,
+              defaultValue: "{{count}} of 3 selected",
             })}
-          </legend>
-          <p
-            id="activity-trend-export-filter-help"
-            className="mt-1 text-xs rr-text-navy-muted"
-          >
-            {t("activityTrend.exportFilterHelp", {
-              defaultValue:
-                "Select which activity series to include. The dashboard chart stays unchanged.",
-            })}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {ACTIVITY_TREND_EXPORT_SERIES.map(series => {
-              const checked = selectedExportSeries.includes(series);
-              return (
-                <label
-                  key={series}
-                  className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border border-slate-300 bg-white px-3 text-xs font-bold rr-text-navy focus-within:ring-2 focus-within:ring-amber-500"
-                >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => toggleExportSeries(series)}
-                    className="h-4 w-4 accent-amber-500"
-                  />
-                  {exportSeriesLabels[series]}
-                </label>
-              );
-            })}
-          </div>
-          <div
-            id="activity-trend-export-filter-status"
-            className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs font-semibold"
-            aria-live="polite"
-          >
-            <span className="rr-text-navy-muted">
-              {t("activityTrend.exportSelection", {
-                count: selectedExportSeries.length,
-                defaultValue: "{{count}} of 3 selected",
+          </span>
+          {!trendLoading && !trendFetching && !hasSelectedExportData ? (
+            <span className="text-red-700">
+              {t("activityTrend.exportSelectionEmpty", {
+                defaultValue:
+                  "The selected automation types have no activity in this date range.",
               })}
             </span>
-            {!trendLoading && !trendFetching && !hasSelectedExportData ? (
-              <span className="text-red-700">
-                {t("activityTrend.exportSelectionEmpty", {
-                  defaultValue:
-                    "The selected automation types have no activity in this date range.",
-                })}
-              </span>
-            ) : null}
-          </div>
-        </fieldset>
-      ) : null}
+          ) : null}
+        </div>
+        <ActivityTrendPresetManager
+          current={currentPresetConfig}
+          onApply={applySavedPreset}
+        />
+      </fieldset>
 
       {trendLoading || trendFetching ? (
         <div className="flex justify-center py-8">

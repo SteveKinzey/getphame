@@ -44,3 +44,20 @@
 - [x] Localize the new filter, clipboard, and rationale UI across every supported language and add focused regression coverage.
 - [x] Run focused tests, full Vitest, TypeScript validation, production build, responsive QA, checkpoint release, and GitHub synchronization for the tone-diff enhancement.
 - [x] Complete TypeScript validation using a memory-aware release-check strategy after the bounded compiler process exhausted its heap.
+- [x] Preserve the pre-existing richer signup-risk database table and checkpoint a privacy-bounded administrator review API without duplicate migration DDL.
+- [x] Route first-account administrative welcome notices only through the managed platform no-reply sender, never a connected user mailbox.
+- [x] Require signed, short-lived human verification only when a web magic-link, Google, or Apple flow would create a genuinely new account.
+- [x] Add and register the signed human-proof exchange endpoint with subject-bound integrity, expiry, tamper, and malformed-token coverage.
+- [x] Gate magic-link new-account issuance and creation on a subject-bound signed human proof while retaining returning-account access and safe verified outcome recording.
+- [x] Carry provider-purpose signed proofs through Google and Apple redirects; require them only before new provider-verified account creation while preserving canonical identity linking for existing users.
+- [x] Preserve existing-account sign-in and provider-verified canonical identity linking while recording only privacy-safe signup-risk outcomes.
+- [x] Add direct regression coverage for proof integrity, administrator-only risk review access, user-owned review outreach, and platform administrative email delivery.
+- [x] Add behavior-level regression coverage showing Google and magic-link existing accounts bypass proof while new accounts fail closed without a valid proof.
+- [x] Add focused privacy-persistence coverage showing signup-risk records retain only bounded safe fields and exclude raw network, device, and account identifiers.
+- [x] Visual QA: `/admin/signup-risk` renders readable privacy-safe status cards, a bounded outcome filter, and a no-evidence empty state at 1280×900 and 390×844 without raw identifiers.
+- [x] Production verification note: local production build passed; the published login URL returned the app shell before the browser session reset, while managed runtime logs were unavailable because no Cloud Run service was found.
+- [x] Production browser recheck: `https://getphame.app/login` rendered the live sign-in route; the sandbox browser reported its invisible account-security control unavailable with no client-console errors, which may reflect third-party challenge availability in that browser rather than a runtime crash.
+- [x] Repeat live-browser check after the key update: the production login hydrated, while the sandbox browser still reported the invisible challenge unavailable; the external Turnstile API endpoint was independently reachable from the sandbox network.
+- [ ] Verify that the user-supplied Turnstile keys are embedded in the refreshed production login experience and that the invisible challenge initializes.
+- [x] Explicitly execute the rendered invisible Turnstile widget so successful script initialization can produce a signed human-proof token for new-account flows.
+- [ ] Complete focused tests, full suite, type check, production build, desktop/mobile review, final checkpoint, production checks, and protected-main GitHub synchronization.

@@ -3,6 +3,7 @@ import {
   automationAlertAcknowledgements,
   automationEvents,
   type InsertAutomationEvent,
+  users,
 } from "../drizzle/schema";
 import { AUTOMATION_EVENT_RETENTION_MS } from "./automationHealth";
 import { getDb } from "./db";
@@ -307,4 +308,106 @@ export async function acknowledgeAutomationAlert(input: {
     .values(input)
     .onDuplicateKeyUpdate({ set: { acknowledgedAt: input.acknowledgedAt } });
   return { acknowledged: true };
+}
+
+export type AutomationRunDrilldownFilters = {
+  date: string;
+  kind: "drift_audit" | "dependabot_merge";
+  limit: number;
+};
+
+export async function getAutomationRunsForDay(
+  filters: AutomationRunDrilldownFilters
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const fromMs = Date.parse(`${filters.date}T00:00:00.000Z`);
+  const toMs = fromMs + 24 * 60 * 60 * 1000;
+  const rows = await db
+    .select({
+      id: automationEvents.id,
+      kind: automationEvents.kind,
+      result: automationEvents.result,
+      workflow: automationEvents.workflow,
+      runNumber: automationEvents.runNumber,
+      runAttempt: automationEvents.runAttempt,
+      runUrl: automationEvents.runUrl,
+      eventAt: automationEvents.eventAt,
+      durationMs: automationEvents.durationMs,
+      pullRequestNumber: automationEvents.pullRequestNumber,
+      failureCode: automationEvents.failureCode,
+      failureSummary: automationEvents.failureSummary,
+    })
+    .from(automationEvents)
+    .where(
+      and(
+        eq(automationEvents.kind, filters.kind),
+        gte(automationEvents.eventAt, fromMs),
+        lt(automationEvents.eventAt, toMs)
+      )
+    )
+    .orderBy(desc(automationEvents.eventAt), desc(automationEvents.id))
+    .limit(filters.limit);
+  return {
+    date: filters.date,
+    kind: filters.kind,
+    limit: filters.limit,
+    runs: rows,
+  };
+}
+
+export async function getAutomationAlertAcknowledgementHistory(limit: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const rows = await db
+    .select({
+      id: automationAlertAcknowledgements.id,
+      eventId: automationAlertAcknowledgements.eventId,
+      acknowledgedAt: automationAlertAcknowledgements.acknowledgedAt,
+      adminUserId: automationAlertAcknowledgements.adminUserId,
+      actorName: users.name,
+      eventAt: automationEvents.eventAt,
+      workflow: automationEvents.workflow,
+      runNumber: automationEvents.runNumber,
+      runUrl: automationEvents.runUrl,
+      failureCode: automationEvents.failureCode,
+      failureSummary: automationEvents.failureSummary,
+    })
+    .from(automationAlertAcknowledgements)
+    .innerJoin(
+      automationEvents,
+      eq(automationAlertAcknowledgements.eventId, automationEvents.id)
+    )
+    .leftJoin(users, eq(automationAlertAcknowledgements.adminUserId, users.id))
+    .orderBy(
+      desc(automationAlertAcknowledgements.acknowledgedAt),
+      desc(automationAlertAcknowledgements.id)
+    )
+    .limit(limit);
+
+  if (rows.length === 0) return { history: [], limit };
+  const earliestEventAt = Math.min(...rows.map(row => row.eventAt));
+  const recoveries = await db
+    .select({ eventAt: automationEvents.eventAt })
+    .from(automationEvents)
+    .where(
+      and(
+        eq(automationEvents.kind, "drift_audit"),
+        eq(automationEvents.result, "success"),
+        gte(automationEvents.eventAt, earliestEventAt)
+      )
+    )
+    .orderBy(asc(automationEvents.eventAt))
+    .limit(500);
+
+  return {
+    limit,
+    history: rows.map(row => ({
+      ...row,
+      actorName: row.actorName?.trim() || null,
+      recoveredAt:
+        recoveries.find(recovery => recovery.eventAt > row.eventAt)?.eventAt ??
+        null,
+    })),
+  };
 }

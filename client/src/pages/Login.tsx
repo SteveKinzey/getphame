@@ -8,7 +8,10 @@
  */
 import React, { useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
-import { isGoogleSignInHost, isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
+import {
+  isGoogleSignInHost,
+  isStagingSocialLoginHost,
+} from "@/lib/socialLoginAvailability";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
@@ -21,6 +24,7 @@ import {
 } from "@/lib/authFeedback";
 import PasskeySignIn from "@/components/security/PasskeySignIn";
 import MagicLinkForm from "@/components/auth/MagicLinkForm";
+import HumanVerification from "@/components/auth/HumanVerification";
 import { AlertTriangle } from "lucide-react";
 import { isPasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
 
@@ -40,7 +44,13 @@ const GOOGLE_REDIRECT_STATUS_MS = 140;
 // ---------------------------------------------------------------------------
 
 const GoogleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+  >
     <path
       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
       fill="#4285F4"
@@ -61,13 +71,27 @@ const GoogleIcon = () => (
 );
 
 const AppleIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+  >
     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
   </svg>
 );
 
 const MailIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    aria-hidden="true"
+  >
     <rect x="2" y="4" width="20" height="16" rx="2" />
     <path d="M22 7l-10 7L2 7" />
   </svg>
@@ -85,7 +109,14 @@ const Spinner = () => (
     viewBox="0 0 24 24"
     aria-hidden="true"
   >
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    />
     <path
       className="opacity-75"
       fill="currentColor"
@@ -104,7 +135,9 @@ const OrDivider = ({ label }: { label: string }) => (
       <div className="w-full border-t border-white/10" />
     </div>
     <div className="relative flex justify-center text-sm">
-      <span className="px-3 bg-[#0F1B2D] text-white/40 font-medium tracking-wide">{label}</span>
+      <span className="px-3 bg-[#0F1B2D] text-white/40 font-medium tracking-wide">
+        {label}
+      </span>
     </div>
   </div>
 );
@@ -118,13 +151,19 @@ export default function Login() {
   const googleLoginEnabled = isGoogleSignInHost(window.location.hostname);
   const appleLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
-  const shouldShowSocialSection = appleLoginEnabled || (googleLoginEnabled && googleEnabled !== false);
+  const shouldShowSocialSection =
+    appleLoginEnabled || (googleLoginEnabled && googleEnabled !== false);
 
   // Form state
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [isAppleSubmitting, setIsAppleSubmitting] = useState(false);
   const [googleStatus, setGoogleStatus] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [magicLinkRecovery, setMagicLinkRecovery] = useState<MagicLinkRecoveryKind>(null);
+  const [magicLinkRecovery, setMagicLinkRecovery] =
+    useState<MagicLinkRecoveryKind>(null);
+  const [humanVerificationToken, setHumanVerificationToken] = useState<
+    string | null
+  >(null);
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
@@ -134,8 +173,8 @@ export default function Login() {
     }
 
     fetch("/api/auth/google/status")
-      .then((r) => r.json() as Promise<GoogleStatusResponse>)
-      .then((data) => setGoogleEnabled(data.enabled))
+      .then(r => r.json() as Promise<GoogleStatusResponse>)
+      .then(data => setGoogleEnabled(data.enabled))
       .catch(() => setGoogleEnabled(false));
   }, [googleLoginEnabled]);
 
@@ -164,58 +203,129 @@ export default function Login() {
     }
   }, [t]);
 
-  const handleGoogleSignIn = useCallback(() => {
+  const createVerifiedProviderUrl = useCallback(
+    async (provider: "google" | "apple") => {
+      if (!humanVerificationToken) return `/api/auth/${provider}`;
+      const response = await fetch(`/api/auth/${provider}/start`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: humanVerificationToken }),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        url?: string;
+        error?: string;
+      };
+      if (!response.ok || typeof data.url !== "string") {
+        throw new Error(
+          data.error ?? "Secure sign-in could not be started. Please try again."
+        );
+      }
+      return data.url;
+    },
+    [humanVerificationToken]
+  );
+
+  const handleGoogleSignIn = useCallback(async () => {
     if (isGoogleSubmitting) return;
 
     flushSync(() => {
       setFormError(null);
       setIsGoogleSubmitting(true);
-      setGoogleStatus(t("authFeedback.preparingGoogle", { defaultValue: "Preparing a secure Google sign-in…" }));
+      setGoogleStatus(
+        t("authFeedback.preparingGoogle", {
+          defaultValue: "Preparing a secure Google sign-in…",
+        })
+      );
     });
     rememberGoogleSignInPending();
-    toast.loading(t("authFeedback.openingGoogle", { defaultValue: "Opening Google sign-in…" }), {
-      id: GOOGLE_SIGN_IN_TOAST_ID,
-    });
+    toast.loading(
+      t("authFeedback.openingGoogle", {
+        defaultValue: "Opening Google sign-in…",
+      }),
+      {
+        id: GOOGLE_SIGN_IN_TOAST_ID,
+      }
+    );
 
     try {
+      const destination = await createVerifiedProviderUrl("google");
       window.setTimeout(() => {
-        setGoogleStatus(t("authFeedback.redirectingGoogle", { defaultValue: "Redirecting to Google. Keep this tab open." }));
+        setGoogleStatus(
+          t("authFeedback.redirectingGoogle", {
+            defaultValue: "Redirecting to Google. Keep this tab open.",
+          })
+        );
       }, GOOGLE_REDIRECT_STATUS_MS);
       window.setTimeout(() => {
-        window.location.assign("/api/auth/google");
+        window.location.assign(destination);
       }, GOOGLE_REDIRECT_FEEDBACK_MS);
     } catch {
       clearGoogleSignInPending();
       setIsGoogleSubmitting(false);
       setGoogleStatus(null);
-      toast.error(t("authFeedback.googleOpenFailed", { defaultValue: "Google sign-in could not be opened. Please try again." }), {
-        id: GOOGLE_SIGN_IN_TOAST_ID,
-      });
-    }
-  }, [isGoogleSubmitting, t]);
-
-  const recoveryCopy = magicLinkRecovery === "expired"
-    ? {
-        title: t("login.expiredMagicLinkTitle", { defaultValue: "This sign-in link has expired" }),
-        description: t("login.expiredMagicLinkDescription", {
-          defaultValue: "For your security, sign-in links are valid for 15 minutes.",
+      toast.error(
+        t("authFeedback.googleOpenFailed", {
+          defaultValue: "Google sign-in could not be opened. Please try again.",
         }),
+        {
+          id: GOOGLE_SIGN_IN_TOAST_ID,
+        }
+      );
+    }
+  }, [createVerifiedProviderUrl, isGoogleSubmitting, t]);
+
+  const handleAppleSignIn = useCallback(
+    async (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      if (isAppleSubmitting) return;
+      setFormError(null);
+      setIsAppleSubmitting(true);
+      try {
+        window.location.assign(await createVerifiedProviderUrl("apple"));
+      } catch {
+        setIsAppleSubmitting(false);
+        setFormError(
+          t("login.appleSignInFailed", {
+            defaultValue: "Apple sign-in failed. Please try again.",
+          })
+        );
       }
-    : magicLinkRecovery === "invalid"
+    },
+    [createVerifiedProviderUrl, isAppleSubmitting, t]
+  );
+
+  const recoveryCopy =
+    magicLinkRecovery === "expired"
       ? {
-          title: t("login.invalidMagicLinkTitle", { defaultValue: "This sign-in link is no longer valid" }),
-          description: t("login.invalidMagicLinkDescription", {
-            defaultValue: "The link may have already been used or may be incomplete.",
+          title: t("login.expiredMagicLinkTitle", {
+            defaultValue: "This sign-in link has expired",
+          }),
+          description: t("login.expiredMagicLinkDescription", {
+            defaultValue:
+              "For your security, sign-in links are valid for 15 minutes.",
           }),
         }
-      : magicLinkRecovery === "failed"
+      : magicLinkRecovery === "invalid"
         ? {
-            title: t("login.verificationProblemTitle", { defaultValue: "We couldn't verify this link" }),
-            description: t("login.verificationProblemDescription", {
-              defaultValue: "Something interrupted verification. Request a fresh link to continue.",
+            title: t("login.invalidMagicLinkTitle", {
+              defaultValue: "This sign-in link is no longer valid",
+            }),
+            description: t("login.invalidMagicLinkDescription", {
+              defaultValue:
+                "The link may have already been used or may be incomplete.",
             }),
           }
-        : null;
+        : magicLinkRecovery === "failed"
+          ? {
+              title: t("login.verificationProblemTitle", {
+                defaultValue: "We couldn't verify this link",
+              }),
+              description: t("login.verificationProblemDescription", {
+                defaultValue:
+                  "Something interrupted verification. Request a fresh link to continue.",
+              }),
+            }
+          : null;
 
   // ---------------------------------------------------------------------------
   // Render
@@ -225,7 +335,10 @@ export default function Login() {
     <div className="min-h-screen bg-[#0F1B2D] flex flex-col items-center justify-center px-4 py-12">
       {/* Logo / Wordmark */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-black tracking-tight text-white" aria-label="Get Phame">
+        <h1
+          className="text-3xl font-black tracking-tight text-white"
+          aria-label="Get Phame"
+        >
           GET <span className="text-[#C9A84C]">PHAME</span>
         </h1>
         <p className="mt-2 text-sm text-white/50">
@@ -245,13 +358,19 @@ export default function Login() {
             <div className="mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-amber-300/10 text-[#C9A84C]">
               <AlertTriangle className="h-7 w-7" aria-hidden="true" />
             </div>
-            <h2 id="magic-link-recovery-title" className="mb-3 text-xl font-bold text-white">
+            <h2
+              id="magic-link-recovery-title"
+              className="mb-3 text-xl font-bold text-white"
+            >
               {recoveryCopy.title}
             </h2>
-            <p className="mb-3 text-sm leading-relaxed text-white/70">{recoveryCopy.description}</p>
+            <p className="mb-3 text-sm leading-relaxed text-white/70">
+              {recoveryCopy.description}
+            </p>
             <p className="mb-6 text-sm leading-relaxed text-white/55">
               {t("login.magicLinkRecoveryHelp", {
-                defaultValue: "Use the same email address and we'll send you a fresh secure link.",
+                defaultValue:
+                  "Use the same email address and we'll send you a fresh secure link.",
               })}
             </p>
             <button
@@ -263,7 +382,9 @@ export default function Login() {
               }}
               className="min-h-12 w-full rounded-xl bg-[#C9A84C] px-4 py-3 text-sm font-bold text-[#0F1B2D] transition-[background-color,transform] duration-150 hover:bg-[#b8943d] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              {t("login.requestNewLink", { defaultValue: "Request a New Link" })}
+              {t("login.requestNewLink", {
+                defaultValue: "Request a New Link",
+              })}
             </button>
             <a
               href="mailto:support@getphame.app"
@@ -283,7 +404,12 @@ export default function Login() {
                 <span>{formError}</span>
               </div>
             )}
-            <MagicLinkForm idPrefix="login" autoFocus />
+            <HumanVerification onTokenChange={setHumanVerificationToken} />
+            <MagicLinkForm
+              idPrefix="login"
+              autoFocus
+              humanVerificationToken={humanVerificationToken}
+            />
             {shouldShowSocialSection && (
               <>
                 <OrDivider label={t("login.or", { defaultValue: "or" })} />
@@ -297,16 +423,27 @@ export default function Login() {
                         onClick={handleGoogleSignIn}
                         disabled={isGoogleSubmitting}
                         aria-busy={isGoogleSubmitting}
-                        aria-describedby={isGoogleSubmitting ? "google-auth-status" : undefined}
+                        aria-describedby={
+                          isGoogleSubmitting ? "google-auth-status" : undefined
+                        }
                         className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
                       >
                         {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
                         {isGoogleSubmitting
-                          ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
-                          : t("login.continueWithGoogle", { defaultValue: "Continue with Google" })}
+                          ? t("authFeedback.connectingGoogle", {
+                              defaultValue: "Connecting to Google…",
+                            })
+                          : t("login.continueWithGoogle", {
+                              defaultValue: "Continue with Google",
+                            })}
                       </button>
                       {isGoogleSubmitting && googleStatus && (
-                        <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-white/70">
+                        <p
+                          id="google-auth-status"
+                          role="status"
+                          aria-live="polite"
+                          className="mt-2 text-center text-xs font-semibold text-white/70"
+                        >
                           {googleStatus}
                         </p>
                       )}
@@ -319,30 +456,47 @@ export default function Login() {
                   )}
 
                   {appleLoginEnabled && (
-                    <a
-                      href="/api/auth/apple"
-                      className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
+                    <button
+                      type="button"
+                      onClick={handleAppleSignIn}
+                      disabled={isAppleSubmitting}
+                      aria-busy={isAppleSubmitting}
+                      className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 disabled:cursor-wait disabled:text-white/60 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
                     >
-                      <AppleIcon />
-                      {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
-                    </a>
+                      {isAppleSubmitting ? <Spinner /> : <AppleIcon />}
+                      {t("login.continueWithApple", {
+                        defaultValue: "Continue with Apple",
+                      })}
+                    </button>
                   )}
                 </div>
               </>
             )}
-            <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
+            <OrDivider
+              label={t("passkeys.signIn.orAlternative", {
+                defaultValue: "or use another sign-in method",
+              })}
+            />
             <PasskeySignIn />
           </>
         )}
 
         {/* ── Legal ─────────────────────────────────────────────────────── */}
         <p className="mt-8 text-center text-xs text-white/25 leading-relaxed">
-          {t("login.termsPrefix", { defaultValue: "By continuing, you agree to our" })}{" "}
-          <a href="/terms-of-service" className="underline hover:text-white/50 transition-colors">
+          {t("login.termsPrefix", {
+            defaultValue: "By continuing, you agree to our",
+          })}{" "}
+          <a
+            href="/terms-of-service"
+            className="underline hover:text-white/50 transition-colors"
+          >
             {t("login.terms", { defaultValue: "Terms of Service" })}
           </a>{" "}
           {t("login.consentAnd", { defaultValue: "and" })}{" "}
-          <a href="/privacy-policy" className="underline hover:text-white/50 transition-colors">
+          <a
+            href="/privacy-policy"
+            className="underline hover:text-white/50 transition-colors"
+          >
             {t("login.privacy", { defaultValue: "Privacy Policy" })}
           </a>
           {t("login.consentSuffix", { defaultValue: "." })}
