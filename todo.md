@@ -1695,3 +1695,5 @@
 - [x] Show source health, recent failures, safe retry guidance, last successful event, and kill-switch state without exposing recipient or credential data
 - [x] Localize all new developer-integration and source-automation UI copy across en, es, fr, it, th, zh-CN, and zh-TW; update the offline fallback and locale cache version
 - [x] Add focused component and router tests for automation controls, preflight behavior, localization coverage, responsive layout, and accessibility states
+- [x] Pass the focused suites, full 1,045-test Vitest gate, TypeScript validation, production audit, client/server builds, whitespace validation, and added-line credential scan for the exact release tree
+- [x] Merge protected-main PR #93 after required checks and verify remote main tree parity with validated commit 24a2e9f00eea8ce901d9bf513d9cc0f777bb2e13
