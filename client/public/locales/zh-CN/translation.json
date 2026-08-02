@@ -244,7 +244,8 @@
     "copy": "复制",
     "off": "关",
     "on": "开",
-    "optional": "可选"
+    "optional": "可选",
+    "undo": "撤销"
   },
   "seo": {
     "title": "Get Phame — 通过邮箱发送个性化评论请求",

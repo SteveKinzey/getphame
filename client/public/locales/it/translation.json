@@ -2010,7 +2010,8 @@
     "copy": "Copia",
     "off": "Disattivo",
     "on": "Attivo",
-    "optional": "facoltativo"
+    "optional": "facoltativo",
+    "undo": "Annulla"
   },
   "profile": {
     "title": "Profilo Aziendale",

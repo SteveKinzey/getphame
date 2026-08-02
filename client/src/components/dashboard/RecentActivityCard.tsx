@@ -1,7 +1,7 @@
 // RecentActivityCard — lightweight "last 5 interactions" summary card
 // Sits above the full activity feed on the dashboard for quick at-a-glance status.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap, CheckCheck, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, isToday, isYesterday } from "date-fns";
@@ -59,13 +59,33 @@ export default function RecentActivityCard({
   onRefresh,
 }: RecentActivityCardProps) {
   const { t } = useTranslation();
+
+  // Bulk mark-all state
   const [markingAll, setMarkingAll] = useState(false);
-  const [markingId, setMarkingId] = useState<number | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [markedCount, setMarkedCount] = useState(0);
 
+  // Single-item mark state
+  const [markingId, setMarkingId] = useState<number | null>(null);
+  const [undoId, setUndoId] = useState<number | null>(null);
+  const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Touch-device detection — run once on mount
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    setIsTouch(window.matchMedia("(hover: none)").matches);
+  }, []);
+
+  // Cleanup undo timer on unmount
+  useEffect(() => {
+    return () => {
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    };
+  }, []);
+
   const utils = trpc.useUtils();
 
+  // Bulk mark mutation
   const bulkMark = trpc.requests.bulkMarkResponded.useMutation({
     onSuccess: () => {
       utils.requests.invalidate();
@@ -78,14 +98,28 @@ export default function RecentActivityCard({
     onError: () => setMarkingAll(false),
   });
 
-  // Separate mutation instance for single-item marking so it doesn't interfere with bulk state
+  // Single-item mark mutation — separate instance to avoid shared loading state with bulkMark
   const singleMark = trpc.requests.bulkMarkResponded.useMutation({
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       utils.requests.invalidate();
       onRefresh?.();
       setMarkingId(null);
+      // Show 4-second undo toast
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+      setUndoId(vars.ids[0]);
+      undoTimerRef.current = setTimeout(() => setUndoId(null), 4000);
     },
     onError: () => setMarkingId(null),
+  });
+
+  // Undo mutation — separate instance so its loading state doesn't affect singleMark
+  const undoMark = trpc.requests.bulkMarkResponded.useMutation({
+    onSuccess: () => {
+      utils.requests.invalidate();
+      onRefresh?.();
+      setUndoId(null);
+    },
+    onError: () => setUndoId(null),
   });
 
   const handleMarkAllReviewed = () => {
@@ -99,8 +133,15 @@ export default function RecentActivityCard({
 
   const handleMarkSingle = (e: React.MouseEvent, id: number) => {
     e.stopPropagation(); // prevent row click from opening the detail panel
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
     setMarkingId(id);
     singleMark.mutate({ ids: [id], responded: true });
+  };
+
+  const handleUndo = (id: number) => {
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    setUndoId(null);
+    undoMark.mutate({ ids: [id], responded: false });
   };
 
   // Last 5 requests sorted by sentAt descending
@@ -116,10 +157,11 @@ export default function RecentActivityCard({
 
   // Count how many have opens or clicks in last 5
   const engagedCount = useMemo(
-    () => recent.filter((r) => {
-      const t = trackingMap.get(r.id);
-      return t && (t.opens > 0 || t.clicks > 0);
-    }).length,
+    () =>
+      recent.filter((r) => {
+        const tr = trackingMap.get(r.id);
+        return tr && (tr.opens > 0 || tr.clicks > 0);
+      }).length,
     [recent, trackingMap]
   );
 
@@ -155,12 +197,15 @@ export default function RecentActivityCard({
                 color: "oklch(0.35 0.12 80)",
               }}
               onMouseEnter={(e) => {
-                if (!markingAll) (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.82 0.14 80)";
+                if (!markingAll)
+                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.82 0.14 80)";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.88 0.10 80)";
               }}
-              title={t("dashboard.recentActivity.markAllReviewed", { defaultValue: "Mark all as reviewed" })}
+              title={t("dashboard.recentActivity.markAllReviewed", {
+                defaultValue: "Mark all as reviewed",
+              })}
             >
               <CheckCheck size={11} />
               {markingAll
@@ -180,10 +225,10 @@ export default function RecentActivityCard({
         </div>
       </div>
 
-      {/* Success toast */}
+      {/* Bulk mark-all success toast */}
       {showSuccess && (
         <div
-          className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-fade-up"
+          className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
           style={{
             background: "oklch(0.92 0.10 145)",
             color: "oklch(0.30 0.12 145)",
@@ -194,6 +239,29 @@ export default function RecentActivityCard({
             defaultValue: "{{count}} items marked as reviewed",
             count: markedCount,
           })}
+        </div>
+      )}
+
+      {/* Single-item undo toast — 4-second window */}
+      {undoId !== null && (
+        <div
+          className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
+          style={{
+            background: "oklch(0.92 0.10 145)",
+            color: "oklch(0.30 0.12 145)",
+          }}
+        >
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 size={13} />
+            {t("dashboard.recentActivity.markReviewed", { defaultValue: "Mark as reviewed" })}
+          </span>
+          <button
+            onClick={() => handleUndo(undoId)}
+            className="text-xs font-black underline underline-offset-2 shrink-0"
+            style={{ color: "oklch(0.25 0.10 145)" }}
+          >
+            {t("common.undo", { defaultValue: "Undo" })}
+          </button>
         </div>
       )}
 
@@ -240,15 +308,18 @@ export default function RecentActivityCard({
                       : "none",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.975 0.008 260)";
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 1px 4px oklch(0.22 0.09 260 / 0.06)";
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "oklch(0.975 0.008 260)";
+                  (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                    "0 1px 4px oklch(0.22 0.09 260 / 0.06)";
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLButtonElement).style.background = "";
                   (e.currentTarget as HTMLButtonElement).style.boxShadow = "";
                 }}
                 onMouseDown={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.96 0.015 260)";
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "oklch(0.96 0.015 260)";
                   (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.99)";
                 }}
                 onMouseUp={(e) => {
@@ -256,9 +327,7 @@ export default function RecentActivityCard({
                 }}
               >
                 {/* Avatar */}
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 rr-bg-navy rr-text-gold"
-                >
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 rr-bg-navy rr-text-gold">
                   {req.customerName[0].toUpperCase()}
                 </div>
 
@@ -275,26 +344,41 @@ export default function RecentActivityCard({
                 {/* Badges + time + single-item mark button */}
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   <div className="flex items-center gap-1">
-                    {/* Single-item mark-as-reviewed — visible on row hover when not yet reviewed */}
+                    {/* Single-item mark-as-reviewed button
+                        - Desktop (hover-capable): hidden by default, revealed on row hover
+                        - Touch devices (isTouch): always visible */}
                     {!isReviewed && (
                       <button
                         onClick={(e) => handleMarkSingle(e, req.id)}
                         disabled={isMarkingThis}
-                        className="opacity-0 group-hover:opacity-100 flex items-center justify-center w-6 h-6 rounded-full transition-all duration-150 disabled:opacity-40"
+                        className={[
+                          "flex items-center justify-center w-6 h-6 rounded-full",
+                          "transition-all duration-150 disabled:opacity-40",
+                          isTouch
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100",
+                        ].join(" ")}
                         style={{
                           background: "oklch(0.92 0.10 145)",
                           color: "oklch(0.35 0.14 145)",
                         }}
                         onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.82 0.16 145)";
-                          (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)";
+                          (e.currentTarget as HTMLButtonElement).style.background =
+                            "oklch(0.82 0.16 145)";
+                          (e.currentTarget as HTMLButtonElement).style.transform =
+                            "scale(1.1)";
                         }}
                         onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.92 0.10 145)";
+                          (e.currentTarget as HTMLButtonElement).style.background =
+                            "oklch(0.92 0.10 145)";
                           (e.currentTarget as HTMLButtonElement).style.transform = "";
                         }}
-                        title={t("dashboard.recentActivity.markReviewed", { defaultValue: "Mark as reviewed" })}
-                        aria-label={t("dashboard.recentActivity.markReviewed", { defaultValue: "Mark as reviewed" })}
+                        title={t("dashboard.recentActivity.markReviewed", {
+                          defaultValue: "Mark as reviewed",
+                        })}
+                        aria-label={t("dashboard.recentActivity.markReviewed", {
+                          defaultValue: "Mark as reviewed",
+                        })}
                       >
                         {isMarkingThis ? (
                           <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />

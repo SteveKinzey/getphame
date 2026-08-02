@@ -820,7 +820,8 @@
     "copy": "Copiar",
     "off": "Desactivado",
     "on": "Activado",
-    "optional": "opcional"
+    "optional": "opcional",
+    "undo": "Deshacer"
   },
   "profile": {
     "title": "Perfil de empresa",
