@@ -17,7 +17,7 @@ import { getDefaultReviewPlatform, listReviewPlatforms, PLATFORM_LABELS } from "
 import { getDefaultTemplate, listTemplates } from "./templates";
 import { FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
-import { upsertApiContact } from "./contacts";
+import { findSavedContactByEmail, upsertApiContact } from "./contacts";
 import { fireWebhooks } from "./webhookHelpers";
 import { deliverReviewEmailOrQueue } from "./quietHours";
 import { buildReviewRequestEmail } from "./emailTemplates";
@@ -50,12 +50,30 @@ import {
 } from "./wordpressPairing";
 import { checkWordPressPairingStartRateLimit } from "./wordpressPairingRateLimit";
 import { redactAuthDiagnosticDetail } from "./authOperations";
+import {
+  consentTextHash,
+  outreachLocaleSchema,
+  reviewOutreachConsentSchema,
+} from "./integrationExpansion";
+import { deliverReviewRequest, validateReviewRequestDelivery } from "./reviewRequestDelivery";
+import {
+  attachContactToSourceAutomationEvent,
+  claimSourceAutomationEvent,
+  completeSourceAutomationEvent,
+  recordConsentEvidence,
+  retryOrFailSourceAutomationEvent,
+} from "./sourceAutomation";
 
 const consentSchema = z.object({
   confirmed: z.literal(true),
   basis: z.enum(["customer_relationship", "explicit_opt_in", "other"]),
   capturedAt: z.string().datetime({ offset: true }).optional(),
   source: z.string().trim().min(1).max(255),
+  purpose: z.literal("review_outreach").optional(),
+  channel: z.literal("email").optional(),
+  text: z.string().trim().min(20).max(2_000).optional(),
+  version: z.string().trim().min(1).max(64).optional(),
+  privacyPolicyUrl: z.string().url().max(2_048).optional(),
 });
 
 const contactImportSchema = z.object({
@@ -65,8 +83,26 @@ const contactImportSchema = z.object({
   notes: z.string().trim().max(2_000).optional(),
   tags: z.array(z.string().trim().min(1).max(64)).max(20).optional(),
   externalId: z.string().trim().min(1).max(191).optional(),
+  sourceSubmissionId: z.string().trim().min(1).max(191).optional(),
+  sourceFormId: z.string().trim().min(1).max(191).optional(),
+  preferredLocale: outreachLocaleSchema.optional(),
   sourceApp: z.string().trim().min(1).max(64).regex(/^[a-z0-9][a-z0-9._-]*$/i).optional(),
   consent: consentSchema.optional(),
+}).passthrough();
+
+const sourceEventSchema = z.object({
+  eventType: z.literal("review_request").default("review_request"),
+  sourceSubmissionId: z.string().trim().min(1).max(191),
+  sourceFormId: z.string().trim().min(1).max(191).optional(),
+  name: z.string().trim().min(1).max(255),
+  email: z.string().trim().email().max(320),
+  phone: z.string().trim().max(30).optional(),
+  notes: z.string().trim().max(2_000).optional(),
+  tags: z.array(z.string().trim().min(1).max(64)).max(20).optional(),
+  externalId: z.string().trim().min(1).max(191).optional(),
+  preferredLocale: outreachLocaleSchema.optional(),
+  sourceApp: z.string().trim().min(1).max(64).regex(/^[a-z0-9][a-z0-9._-]*$/i).optional(),
+  consent: reviewOutreachConsentSchema,
 }).passthrough();
 
 const wordpressPairingStartSchema = z.object({
@@ -90,7 +126,17 @@ export function normalizeContactImportPayload(input: unknown) {
   const record = input as Record<string, unknown>;
   if (record.consent && typeof record.consent === "object" && !Array.isArray(record.consent)) return record;
 
-  const hasFlatConsent = ["consentConfirmed", "consentBasis", "consentCapturedAt", "consentSource"]
+  const hasFlatConsent = [
+    "consentConfirmed",
+    "consentBasis",
+    "consentCapturedAt",
+    "consentSource",
+    "consentPurpose",
+    "consentChannel",
+    "consentText",
+    "consentVersion",
+    "privacyPolicyUrl",
+  ]
     .some((key) => record[key] !== undefined);
   if (!hasFlatConsent) return record;
 
@@ -101,6 +147,11 @@ export function normalizeContactImportPayload(input: unknown) {
       basis: record.consentBasis,
       capturedAt: record.consentCapturedAt,
       source: record.consentSource,
+      purpose: record.consentPurpose,
+      channel: record.consentChannel,
+      text: record.consentText,
+      version: record.consentVersion,
+      privacyPolicyUrl: record.privacyPolicyUrl,
     },
   };
 }
@@ -284,7 +335,8 @@ export function registerPublicApiRoutes(app: Router) {
     }
 
     const data = parsed.data;
-    if (requireConsent && !data.consent?.confirmed) {
+    const strongConsent = data.consent ? reviewOutreachConsentSchema.safeParse(data.consent) : null;
+    if (requireConsent && (!strongConsent?.success || !data.sourceSubmissionId)) {
       await logDeveloperApiImport({
         principal,
         sourceConnectionId,
@@ -294,7 +346,13 @@ export function registerPublicApiRoutes(app: Router) {
         email: data.email,
         errorCode: "CONSENT_REQUIRED",
       }).catch(() => undefined);
-      return sendApiError(res, 422, "CONSENT_REQUIRED", "Affirmative consent attestation is required.", requestId);
+      return sendApiError(
+        res,
+        422,
+        "CONSENT_REQUIRED",
+        "A stable sourceSubmissionId and complete review-outreach consent evidence are required.",
+        requestId,
+      );
     }
 
     const capturedAt = data.consent?.capturedAt ? Date.parse(data.consent.capturedAt) : Date.now();
@@ -318,6 +376,9 @@ export function registerPublicApiRoutes(app: Router) {
       notes: data.notes,
       tags: data.tags,
       externalId: data.externalId,
+      sourceSubmissionId: data.sourceSubmissionId,
+      sourceFormId: data.sourceFormId,
+      preferredLocale: data.preferredLocale,
       sourceApp: data.sourceApp ?? "generic-webhook",
       consent: data.consent ?? {
         confirmed: true as const,
@@ -338,7 +399,7 @@ export function registerPublicApiRoutes(app: Router) {
       sourceConnectionId,
     }))) return;
     const requestHash = hashDeveloperApiRequest(JSON.stringify({ sourcePublicId: sourceConnection?.publicId ?? null, normalized }));
-    const idempotencyKey = req.header("Idempotency-Key")?.trim().slice(0, 191) ?? "";
+    const idempotencyKey = (req.header("Idempotency-Key")?.trim() || data.sourceSubmissionId || "").slice(0, 191);
     let idempotencyHash: string | null = null;
     if (idempotencyKey) {
       const existing = await getDeveloperApiIdempotency({ principal, idempotencyKey, requestHash });
@@ -386,6 +447,14 @@ export function registerPublicApiRoutes(app: Router) {
         consentBasis: normalized.consent.basis,
         consentCapturedAt: normalized.consentCapturedAt,
         consentSource: normalized.consent.source,
+        consentPurpose: normalized.consent.purpose,
+        consentChannel: normalized.consent.channel,
+        consentTextHash: normalized.consent.text ? consentTextHash(normalized.consent.text) : undefined,
+        consentVersion: normalized.consent.version,
+        privacyPolicyUrl: normalized.consent.privacyPolicyUrl,
+        sourceSubmissionId: normalized.sourceSubmissionId,
+        sourceFormId: normalized.sourceFormId,
+        preferredLocale: normalized.preferredLocale,
       });
       const response = {
         success: true,
@@ -442,6 +511,363 @@ export function registerPublicApiRoutes(app: Router) {
 
   app.post("/api/v1/contacts", handleContactImport(true));
   app.post("/api/public/contacts", handleContactImport(false));
+
+  /**
+   * POST /api/v1/source-events
+   *
+   * One source-bound import-and-automation contract for Zapier, website forms,
+   * social lead forms, and the WordPress connector. Automation remains disabled
+   * until the account owner explicitly enables it on the bound source.
+   */
+  const handleSourceEventReviewRequest = async (req: Request, res: Response) => {
+    const requestId = randomUUID();
+    const auth = await authenticateApiRequest(req, "contacts:write");
+    if (auth.kind === "invalid" || auth.kind === "expired") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
+    }
+    if (auth.kind === "inactive") {
+      return sendApiError(res, 401, "API_KEY_INACTIVE", "This API key expired after 12 months without successful use. Create a replacement in Developer Integrations.", requestId);
+    }
+    if (auth.kind === "suspended") {
+      res.setHeader("Retry-After", String(auth.retryAfterSeconds ?? 86_400));
+      return sendApiError(res, 429, "API_KEY_SUSPENDED", "This API key is temporarily suspended by abuse protection.", requestId);
+    }
+    if (auth.kind !== "ok" || !developerApiKeyHasScope(auth.principal, "review_requests:send")) {
+      return sendApiError(res, 403, "INSUFFICIENT_SCOPE", "This API key requires contacts:write and review_requests:send scopes.", requestId);
+    }
+    const principal = auth.principal;
+    const sourcePublicId = req.header("X-Get-Phame-Source")?.trim().slice(0, 48) ?? "";
+    if (!sourcePublicId) {
+      return sendApiError(res, 400, "INVALID_REQUEST", "X-Get-Phame-Source is required for source events.", requestId);
+    }
+    const sourceConnection = await resolveSourceConnectionForPrincipal({
+      publicId: sourcePublicId,
+      userId: principal.userId,
+      apiKeyId: principal.apiKeyId,
+    });
+    if (!sourceConnection) {
+      return sendApiError(res, 403, "SOURCE_CONNECTION_FORBIDDEN", "This source identifier is not authorized for the supplied API key.", requestId);
+    }
+    if (!(await applyApiRateLimit(principal, res, requestId, sourceConnection.id))) return;
+    if (!sourceConnection.automationEnabled || sourceConnection.automationMode !== "review_request") {
+      return sendApiError(res, 409, "AUTOMATION_DISABLED", "Review-request automation is not enabled for this source.", requestId);
+    }
+    if (sourceConnection.pausedAt) {
+      return sendApiError(res, 409, "AUTOMATION_PAUSED", "Review-request automation is paused for this source.", requestId);
+    }
+
+    const parsed = sourceEventSchema.safeParse(normalizeContactImportPayload(req.body ?? {}));
+    if (!parsed.success) {
+      return sendApiError(res, 400, "INVALID_REQUEST", "The source event payload is invalid.", requestId);
+    }
+    const data = parsed.data;
+    const capturedAt = Date.parse(data.consent.capturedAt);
+    if (!Number.isFinite(capturedAt) || capturedAt > Date.now() + 5 * 60_000) {
+      return sendApiError(res, 400, "INVALID_REQUEST", "consent.capturedAt must be a valid timestamp that is not in the future.", requestId);
+    }
+    const locale = data.preferredLocale ?? outreachLocaleSchema.parse(sourceConnection.preferredLocale ?? "en");
+    const normalized = {
+      ...data,
+      email: data.email.toLowerCase(),
+      sourceApp: data.sourceApp ?? sourceConnection.provider,
+      preferredLocale: locale,
+    };
+    if (!(await applyApiAbuseProtection({
+      req,
+      res,
+      requestId,
+      principal,
+      action: "review_request_send",
+      recipientEmail: normalized.email,
+      sourceApp: normalized.sourceApp,
+      consentBasis: normalized.consent.basis,
+      sourceConnectionId: sourceConnection.id,
+    }))) return;
+
+    const requestHash = hashDeveloperApiRequest(JSON.stringify({ sourcePublicId, normalized }));
+    const claim = await claimSourceAutomationEvent({
+      userId: principal.userId,
+      sourceConnectionId: sourceConnection.id,
+      apiKeyId: principal.apiKeyId,
+      sourceEventId: normalized.sourceSubmissionId,
+      requestHash,
+      eventType: "review_request",
+      templateId: sourceConnection.templateId,
+      platformId: sourceConnection.platformId,
+      preferredLocale: locale,
+    });
+    if (claim.kind === "conflict") {
+      return sendApiError(res, 409, "IDEMPOTENCY_CONFLICT", "This sourceSubmissionId was already used with a different payload.", requestId);
+    }
+    if (claim.kind === "replay") {
+      const failed = claim.event.status === "failed";
+      return res.status(failed ? 409 : 200).json({
+        success: !failed,
+        idempotentReplay: true,
+        status: claim.event.status,
+        contactId: claim.event.contactId,
+        customerRequestId: claim.event.customerRequestId,
+        requestId,
+      });
+    }
+
+    try {
+      const contact = await upsertApiContact(principal.userId, {
+        name: normalized.name,
+        email: normalized.email,
+        phone: normalized.phone,
+        notes: normalized.notes,
+        tags: normalized.tags,
+        source: "api",
+        externalId: normalized.externalId,
+        sourceApp: normalized.sourceApp,
+        importedViaApiKeyId: principal.apiKeyId,
+        consentBasis: normalized.consent.basis,
+        consentCapturedAt: capturedAt,
+        consentSource: normalized.consent.source,
+        consentPurpose: normalized.consent.purpose,
+        consentChannel: normalized.consent.channel,
+        consentTextHash: consentTextHash(normalized.consent.text),
+        consentVersion: normalized.consent.version,
+        privacyPolicyUrl: normalized.consent.privacyPolicyUrl,
+        sourceSubmissionId: normalized.sourceSubmissionId,
+        sourceFormId: normalized.sourceFormId,
+        preferredLocale: locale,
+      });
+      await attachContactToSourceAutomationEvent({
+        userId: principal.userId,
+        eventId: claim.eventId,
+        contactId: contact.id,
+      });
+      await recordConsentEvidence({
+        userId: principal.userId,
+        sourceConnectionId: sourceConnection.id,
+        sourceSubmissionId: normalized.sourceSubmissionId,
+        contactId: contact.id,
+        consent: normalized.consent,
+      });
+      if (contact.created) {
+        fireWebhooks(principal.userId, "contact.created", {
+          contactId: contact.id,
+          email: normalized.email,
+          name: normalized.name,
+          source: normalized.sourceApp,
+        }).catch(() => undefined);
+      }
+      if (contact.optedOut) {
+        await completeSourceAutomationEvent({
+          userId: principal.userId,
+          eventId: claim.eventId,
+          sourceConnectionId: sourceConnection.id,
+          status: "suppressed",
+          contactId: contact.id,
+          errorCode: "CONTACT_SUPPRESSED",
+        });
+        await recordDeveloperApiKeySuccessfulUse(principal);
+        return res.status(202).json({ success: true, status: "suppressed", contactId: contact.id, requestId });
+      }
+      if (sourceConnection.dryRun) {
+        await validateReviewRequestDelivery({
+          userId: principal.userId,
+          customerName: normalized.name,
+          customerEmail: normalized.email,
+          preferredLocale: locale,
+          templateId: sourceConnection.templateId,
+          platformId: sourceConnection.platformId,
+          sourceConnectionId: sourceConnection.id,
+          sourceEventId: normalized.sourceSubmissionId,
+          contactId: contact.id,
+        });
+        await completeSourceAutomationEvent({
+          userId: principal.userId,
+          eventId: claim.eventId,
+          sourceConnectionId: sourceConnection.id,
+          status: "dry_run",
+          contactId: contact.id,
+        });
+        await recordDeveloperApiKeySuccessfulUse(principal);
+        return res.json({ success: true, status: "dry_run", contactId: contact.id, requestId });
+      }
+      const delayMinutes = Math.max(0, Math.min(43_200, sourceConnection.sendDelayMinutes ?? 0));
+      if (delayMinutes > 0) {
+        const scheduledAt = Date.now() + delayMinutes * 60_000;
+        await completeSourceAutomationEvent({
+          userId: principal.userId,
+          eventId: claim.eventId,
+          sourceConnectionId: sourceConnection.id,
+          status: "scheduled",
+          contactId: contact.id,
+          scheduledAt,
+        });
+        await recordDeveloperApiKeySuccessfulUse(principal);
+        return res.status(202).json({ success: true, status: "scheduled", scheduledAt, contactId: contact.id, requestId });
+      }
+
+      const delivery = await deliverReviewRequest({
+        userId: principal.userId,
+        customerName: normalized.name,
+        customerEmail: normalized.email,
+        preferredLocale: locale,
+        templateId: sourceConnection.templateId,
+        platformId: sourceConnection.platformId,
+        sourceConnectionId: sourceConnection.id,
+        sourceEventId: normalized.sourceSubmissionId,
+        contactId: contact.id,
+      });
+      await completeSourceAutomationEvent({
+        userId: principal.userId,
+        eventId: claim.eventId,
+        sourceConnectionId: sourceConnection.id,
+        status: delivery.delivery,
+        contactId: contact.id,
+        customerRequestId: delivery.requestId,
+      });
+      await recordDeveloperApiKeySuccessfulUse(principal);
+      return res.json({ success: true, status: delivery.delivery, contactId: contact.id, ...delivery, requestId });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Source automation failed.";
+      const templateNotReady = message.includes("approved") && message.includes("template");
+      const consentConflict = message.includes("Consent evidence conflicts");
+      if (consentConflict) {
+        await completeSourceAutomationEvent({
+          userId: principal.userId,
+          eventId: claim.eventId,
+          sourceConnectionId: sourceConnection.id,
+          status: "failed",
+          errorCode: "CONSENT_EVIDENCE_CONFLICT",
+        }).catch(() => undefined);
+        return sendApiError(res, 409, "INVALID_REQUEST", message, requestId);
+      }
+      const retryCode = error instanceof AdaptiveSendLimitError
+        ? "RATE_LIMITED"
+        : templateNotReady
+          ? "TEMPLATE_NOT_READY"
+          : message.includes("SMTP not configured")
+            ? "SMTP_NOT_READY"
+            : message.includes("review destination")
+              ? "PLATFORM_NOT_READY"
+              : "DELIVERY_FAILED";
+      const retry = await retryOrFailSourceAutomationEvent({
+        userId: principal.userId,
+        eventId: claim.eventId,
+        attemptCount: 1,
+        errorCode: retryCode,
+      }).catch(() => ({ failed: true, scheduledAt: null }));
+      if (error instanceof AdaptiveSendLimitError) {
+        res.setHeader("Retry-After", String(error.retryAfterSeconds));
+        return sendApiError(res, 429, "RATE_LIMITED", error.message, requestId);
+      }
+      if (!retry.failed && retry.scheduledAt) {
+        return res.status(202).json({
+          success: true,
+          status: "scheduled",
+          eventId: normalized.sourceSubmissionId,
+          retryAt: new Date(retry.scheduledAt).toISOString(),
+          reasonCode: retryCode,
+          requestId,
+        });
+      }
+      return sendApiError(
+        res,
+        templateNotReady ? 409 : 500,
+        templateNotReady ? "TEMPLATE_NOT_READY" : "INTERNAL_ERROR",
+        templateNotReady ? message : "The source event could not be completed. Please retry.",
+        requestId,
+      );
+    }
+  };
+
+  app.post("/api/v1/source-events", handleSourceEventReviewRequest);
+  app.post("/api/v1/source-events/review-request", handleSourceEventReviewRequest);
+
+  const handleSourceEventValidation = async (req: Request, res: Response) => {
+    const requestId = randomUUID();
+    const auth = await authenticateApiRequest(req, "contacts:write");
+    if (auth.kind === "invalid" || auth.kind === "expired") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
+    }
+    if (auth.kind === "inactive") {
+      return sendApiError(res, 401, "API_KEY_INACTIVE", "This API key expired after 12 months without successful use. Create a replacement in Developer Integrations.", requestId);
+    }
+    if (auth.kind === "suspended") {
+      res.setHeader("Retry-After", String(auth.retryAfterSeconds ?? 86_400));
+      return sendApiError(res, 429, "API_KEY_SUSPENDED", "This API key is temporarily suspended by abuse protection.", requestId);
+    }
+    if (auth.kind !== "ok" || !developerApiKeyHasScope(auth.principal, "review_requests:send")) {
+      return sendApiError(res, 403, "INSUFFICIENT_SCOPE", "This API key requires contacts:write and review_requests:send scopes.", requestId);
+    }
+    const principal = auth.principal;
+    const sourcePublicId = req.header("X-Get-Phame-Source")?.trim().slice(0, 48) ?? "";
+    if (!sourcePublicId) {
+      return sendApiError(res, 400, "INVALID_REQUEST", "X-Get-Phame-Source is required for source events.", requestId);
+    }
+    const sourceConnection = await resolveSourceConnectionForPrincipal({
+      publicId: sourcePublicId,
+      userId: principal.userId,
+      apiKeyId: principal.apiKeyId,
+    });
+    if (!sourceConnection) {
+      return sendApiError(res, 403, "SOURCE_CONNECTION_FORBIDDEN", "This source identifier is not authorized for the supplied API key.", requestId);
+    }
+    if (!(await applyApiRateLimit(principal, res, requestId, sourceConnection.id))) return;
+    if (!sourceConnection.automationEnabled || sourceConnection.automationMode !== "review_request") {
+      return sendApiError(res, 409, "AUTOMATION_DISABLED", "Review-request automation is not enabled for this source.", requestId);
+    }
+    if (sourceConnection.pausedAt) {
+      return sendApiError(res, 409, "AUTOMATION_PAUSED", "Review-request automation is paused for this source.", requestId);
+    }
+
+    const parsed = sourceEventSchema.safeParse(normalizeContactImportPayload(req.body ?? {}));
+    if (!parsed.success) {
+      return sendApiError(res, 400, "INVALID_REQUEST", "The source event payload is invalid.", requestId);
+    }
+    const data = parsed.data;
+    const capturedAt = Date.parse(data.consent.capturedAt);
+    if (!Number.isFinite(capturedAt) || capturedAt > Date.now() + 5 * 60_000) {
+      return sendApiError(res, 400, "INVALID_REQUEST", "consent.capturedAt must be a valid timestamp that is not in the future.", requestId);
+    }
+    const locale = data.preferredLocale ?? outreachLocaleSchema.parse(sourceConnection.preferredLocale ?? "en");
+    const existingContact = await findSavedContactByEmail(principal.userId, data.email);
+    if (existingContact?.optedOut) {
+      return sendApiError(res, 409, "CONTACT_SUPPRESSED", "This contact has opted out and cannot receive review requests.", requestId);
+    }
+    try {
+      const validation = await validateReviewRequestDelivery({
+        userId: principal.userId,
+        customerName: data.name,
+        customerEmail: data.email,
+        preferredLocale: locale,
+        templateId: sourceConnection.templateId,
+        platformId: sourceConnection.platformId,
+        sourceConnectionId: sourceConnection.id,
+        sourceEventId: data.sourceSubmissionId,
+        contactId: existingContact?.id ?? null,
+      });
+      await recordDeveloperApiKeySuccessfulUse(principal);
+      return res.json({
+        success: true,
+        requestId,
+        sourceId: sourcePublicId,
+        dryRun: Boolean(sourceConnection.dryRun),
+        sendDelayMinutes: sourceConnection.sendDelayMinutes ?? 0,
+        ...validation,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "The source event is not eligible for delivery.";
+      const templateNotReady = message.includes("approved") && message.includes("template");
+      const rateLimited = message.includes("limit") || message.includes("quota");
+      return sendApiError(
+        res,
+        templateNotReady ? 409 : rateLimited ? 429 : 400,
+        templateNotReady ? "TEMPLATE_NOT_READY" : rateLimited ? "RATE_LIMITED" : "INVALID_REQUEST",
+        message,
+        requestId,
+      );
+    }
+  };
+
+  app.post("/api/v1/source-events/validate", handleSourceEventValidation);
+  app.post("/api/v1/source-events/review-request/validate", handleSourceEventValidation);
 
   /**
    * POST /api/public/send

@@ -40,7 +40,7 @@ describe("Google OAuth branding-verification homepage", () => {
 
   it("refreshes cached landing translations for returning reviewers", () => {
     const i18n = read("client/src/lib/i18n.ts");
-    expect(i18n).toContain("{{ns}}.json?v=phame61");
+    expect(i18n).toContain("{{ns}}.json?v=phame63");
   });
 
   it("keeps root SEO metadata and navigation-logo alternative text within the required limits", () => {

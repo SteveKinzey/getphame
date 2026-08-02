@@ -1,0 +1,1 @@
+ALTER TABLE `customer_requests` ADD CONSTRAINT `customer_requests_source_event_unique` UNIQUE(`userId`,`sourceConnectionId`,`sourceEventId`);
