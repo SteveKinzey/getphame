@@ -1576,7 +1576,7 @@
 - [x] Replace DEMO_GIF manuscdn session URL in LandingPage.tsx with fresh CDN URL
 
 ## Landing Page Desktop Restoration (Jul 7, 2026)
-- [x] Copy all 17 Fly.io landing components into Manus project
+- [x] Copy all 17 legacy-deployment landing components into Manus project
 - [x] Wire component-based LandingPage.tsx (Navbar, Hero, TrustBar, VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Testimonials, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer)
 - [x] Add Plus Jakarta Sans font to index.html
 - [x] Fix container max-width for desktop (480px → 1280px)

@@ -7,4 +7,3 @@ dist
 .env.*
 .DS_Store
 .manus-logs
-fly.toml
