@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { SourceAutomationWorkspace } from "@/components/SourceAutomationWorkspace";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,23 +55,23 @@ const PROVIDER_STEPS: Record<SourceProvider, string[]> = {
     "Add Webhooks by Zapier and select Custom Request.",
     "Set Method to POST and paste the Get Phame endpoint.",
     "Add the protected headers exactly as shown below.",
-    "Map the JSON fields, using one stable provider ID for externalId and Idempotency-Key.",
-    "Test the action with one permitted record, then refresh health here.",
+    "Map sourceSubmissionId, preferredLocale, and the complete nested consent evidence object.",
+    "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live.",
   ],
   make: [
     "Choose the trigger module that produces an eligible customer record.",
     "Add HTTP and select Make a request.",
     "Set Method to POST, Body type to Raw, and Content type to application/json.",
     "Add the protected headers exactly as shown below.",
-    "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
-    "Run the scenario once with one permitted record, then refresh health here.",
+    "Map sourceSubmissionId, preferredLocale, and the complete nested consent evidence object.",
+    "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live.",
   ],
   custom: [
     "Use a trusted server-side workflow that supports POST and protected headers.",
     "Store the API key in the workflow secret store, never in browser code or a URL.",
     "Send JSON to the Get Phame endpoint with the headers shown below.",
-    "Use one immutable source record ID for externalId and Idempotency-Key.",
-    "Send one permitted record, then refresh health here.",
+    "Use one immutable source record ID for sourceSubmissionId and Idempotency-Key.",
+    "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live.",
   ],
 };
 
@@ -173,7 +174,7 @@ export function SourceOperationsPanel() {
 
   const activeKeys = manifestQuery.data?.apiKeys ?? [];
   const effectiveApiKeyId = apiKeyId || String(activeKeys[0]?.id ?? "");
-  const endpoint = `${typeof window === "undefined" ? "https://getphame.app" : window.location.origin}${manifestQuery.data?.endpointPath ?? "/api/v1/contacts"}`;
+  const endpoint = `${typeof window === "undefined" ? "https://getphame.app" : window.location.origin}${manifestQuery.data?.automationEndpointPath ?? "/api/v1/source-events/review-request"}`;
 
   const setProviderWithLabel = (nextProvider: SourceProvider) => {
     const previousDefault = PROVIDER_DEFAULTS[provider].label;
@@ -215,14 +216,25 @@ X-Get-Phame-Source: ${selectedSource.publicId}
 Idempotency-Key: <stable-provider-event-id>
 
 {
+  "eventType": "review_request",
+  "sourceSubmissionId": "<stable-provider-event-id>",
   "name": "<customer name>",
   "email": "<customer email>",
   "phone": "<optional phone>",
   "externalId": "<stable-provider-event-id>",
+  "preferredLocale": "${selectedSource.preferredLocale ?? "en"}",
   "sourceApp": "${PROVIDER_DEFAULTS[selectedSource.provider as SourceProvider]?.sourceApp ?? "custom-source"}",
-  "consentConfirmed": true,
-  "consentBasis": "customer_relationship",
-  "consentSource": "<where permission was captured>"
+  "consent": {
+    "confirmed": true,
+    "basis": "customer_relationship",
+    "purpose": "review_outreach",
+    "channel": "email",
+    "capturedAt": "<ISO-8601 consent timestamp>",
+    "source": "<where permission was captured>",
+    "text": "<exact permission disclosure shown to the customer>",
+    "version": "<consent-copy-version>",
+    "privacyPolicyUrl": "https://<your-domain>/privacy"
+  }
 }` : "";
 
   const number = new Intl.NumberFormat(i18n.language);
@@ -346,7 +358,9 @@ Idempotency-Key: <stable-provider-event-id>
       )}
 
       {selectedSource && (
-        <div className="mt-7 grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(20rem,0.8fr)]">
+        <>
+          <SourceAutomationWorkspace source={selectedSource} apiKeys={activeKeys} endpoint={endpoint} />
+          <div className="mt-7 grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(20rem,0.8fr)]">
           <section className="min-w-0 rounded-2xl rr-bg-navy p-4 text-white sm:p-5" aria-labelledby="source-template-title">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -370,7 +384,8 @@ Idempotency-Key: <stable-provider-event-id>
             <p className="mt-1 rr-l2 rr-text-navy-muted">{selectedSource.label}</p>
             {selectedHistory.length === 0 ? <p className="mt-5 rounded-xl bg-white p-4 text-sm text-slate-600">{t("developerIntegrations.sourceOps.noHealthHistory", { defaultValue: "No health checks yet. Send one permitted import, then refresh health." })}</p> : <ol className="mt-4 space-y-3">{selectedHistory.map(row => { const reasonKey = row.reasonCode.startsWith("error_") ? "recent_import_error" : row.reasonCode; return <li key={row.id} className="rounded-xl bg-white p-3"><div className="flex flex-wrap items-center justify-between gap-2"><span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${healthClasses(row.status)}`}>{t(`developerIntegrations.sourceOps.status.${row.status}`, { defaultValue: row.status })}</span><time className="text-[11px] font-bold text-slate-500">{formatDate(row.checkedAt, i18n.language, "")}</time></div><p className="mt-2 text-xs font-bold rr-text-navy">{t(`developerIntegrations.sourceOps.reasons.${reasonKey}`, { defaultValue: reasonKey.replaceAll("_", " ") })}</p><p className="mt-1 text-[11px] text-slate-500">{t("developerIntegrations.sourceOps.historyCounts", { defaultValue: "{{attempts}} attempts · {{failures}} failures", attempts: row.attemptsInWindow, failures: row.failuresInWindow })}</p></li>; })}</ol>}
           </section>
-        </div>
+          </div>
+        </>
       )}
 
       <AlertDialog open={pendingArchiveId !== null} onOpenChange={open => { if (!open) setPendingArchiveId(null); }}>

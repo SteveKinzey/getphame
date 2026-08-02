@@ -161,7 +161,7 @@ export default function DeveloperIntegrationsPage() {
     () => keyQuery.data?.reduce((total, key) => total + key.usageCount, 0) ?? 0,
     [keyQuery.data],
   );
-  const endpoint = `${typeof window === "undefined" ? "https://getphame.app" : window.location.origin}/api/v1/contacts`;
+  const endpoint = `${typeof window === "undefined" ? "https://getphame.app" : window.location.origin}/api/v1/source-events/review-request`;
 
   const toggleScope = (scope: DeveloperScope) => {
     if (scope === "review_requests:send" && !enrollmentQuery.data?.sendScopeApproved) {

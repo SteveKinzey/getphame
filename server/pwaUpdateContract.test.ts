@@ -37,22 +37,24 @@ const versionUpdateKeys = [
 ].sort();
 
 describe("PWA safe update release contract", () => {
-  it("keeps v27 intact while registering the path-versioned v28 worker from one canonical location", () => {
+  it("keeps historical workers intact while registering the path-versioned v31 worker from one canonical location", () => {
     const v27Worker = readProjectFile("../client/public/sw-v27.js");
     const v28Worker = readProjectFile("../client/public/sw-v28.js");
+    const v31Worker = readProjectFile("../client/public/sw-v31.js");
     const workerMirror = readProjectFile("../client/public/sw.js");
     const main = readProjectFile("../client/src/main.tsx");
     const appContext = readProjectFile("../client/src/contexts/AppContext.tsx");
 
     expect(v27Worker).toContain("const CACHE_NAME = 'getphame-v27'");
-    expect(main).toContain('const SERVICE_WORKER_URL = "/sw-v28.js"');
-    expect(appContext).not.toContain("navigator.serviceWorker.register");
-    expect(workerMirror).toBe(v28Worker);
     expect(v28Worker).toContain("const CACHE_NAME = 'getphame-v29'");
+    expect(main).toContain('const SERVICE_WORKER_URL = "/sw-v31.js"');
+    expect(appContext).not.toContain("navigator.serviceWorker.register");
+    expect(workerMirror).toBe(v31Worker);
+    expect(v31Worker).toContain("const CACHE_NAME = 'getphame-v31'");
   });
 
   it("excludes deployment metadata from every cache path and preserves existing PWA exclusions", () => {
-    const worker = readProjectFile("../client/public/sw-v28.js");
+    const worker = readProjectFile("../client/public/sw-v31.js");
     const versionEndpointIndex = worker.indexOf("url.pathname.startsWith('/__manus__/')");
     const apiEndpointIndex = worker.indexOf("url.pathname.startsWith('/api/')");
 
@@ -66,7 +68,7 @@ describe("PWA safe update release contract", () => {
   });
 
   it("does not force activation during install and accepts a waiting-worker message only when peer tabs are absent", () => {
-    const worker = readProjectFile("../client/public/sw-v28.js");
+    const worker = readProjectFile("../client/public/sw-v31.js");
     const installStart = worker.indexOf("self.addEventListener('install'");
     const activateStart = worker.indexOf("self.addEventListener('activate'");
     const installBlock = worker.slice(installStart, activateStart);
@@ -79,12 +81,12 @@ describe("PWA safe update release contract", () => {
   });
 
   it("couples the worker cache generation and locale cache buster with every supported catalog", () => {
-    const worker = readProjectFile("../client/public/sw-v28.js");
+    const worker = readProjectFile("../client/public/sw-v31.js");
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
 
-    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame61'");
+    expect(worker).toContain("const LOCALE_CACHE_VERSION = 'phame63'");
     expect(worker).toContain("...TRANSLATION_ASSETS.map(path => `${path}?v=${LOCALE_CACHE_VERSION}`)");
-    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame61');
+    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame63');
     for (const locale of localePaths) {
       expect(worker).toContain(`/locales/${locale}/translation.json`);
       expect(worker).toContain(`/locales/${locale}/landing.json`);

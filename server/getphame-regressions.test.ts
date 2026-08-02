@@ -189,7 +189,7 @@ describe("Get Phame regression contracts", () => {
     ).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v31'");
     expect(serviceWorker).toContain("'/locales/en/landing.json'");
     expect(serviceWorker).toContain("'/locales/zh-TW/landing.json'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
@@ -836,7 +836,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame61");
+    expect(i18n).toContain("v=phame63");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

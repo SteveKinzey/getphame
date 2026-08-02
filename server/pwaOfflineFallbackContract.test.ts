@@ -29,9 +29,9 @@ describe("Get Phame offline fallback", () => {
   });
 
   it("serves the cached locale-specific document after failed navigations from both worker entrypoints", () => {
-    for (const workerPath of ["client/public/sw-v28.js", "client/public/sw.js"]) {
+    for (const workerPath of ["client/public/sw-v31.js", "client/public/sw.js"]) {
       const worker = read(workerPath);
-      expect(worker).toContain("const CACHE_NAME = 'getphame-v29'");
+      expect(worker).toContain("const CACHE_NAME = 'getphame-v31'");
       expect(worker).toContain("event.request.mode === 'navigate'");
       expect(worker).toContain("return getOfflinePage();");
       expect(worker).toContain("/offline.en.html");

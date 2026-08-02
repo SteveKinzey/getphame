@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-type SourceId = "jotform" | "facebook" | "googleForms" | "airtable" | "other";
+type SourceId = "website" | "jotform" | "facebook" | "linkedin" | "tiktok" | "googleForms" | "airtable" | "other";
 
 interface SourceDefinition {
   id: SourceId;
@@ -21,8 +21,16 @@ interface SourceDefinition {
 }
 
 const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>";
+const REVIEW_OUTREACH_CONSENT = "I agree that {{business_name}} may email me about my recent purchase or service experience, including one review request and up to two follow-up reminders. I can unsubscribe at any time. Consent is not a condition of purchase. See the Privacy Policy.";
+const MARKETING_CONSENT = "I would like to receive occasional marketing emails and offers from {{business_name}}. I can unsubscribe at any time. Consent is not a condition of purchase. See the Privacy Policy.";
 
 const SOURCES: SourceDefinition[] = [
+  {
+    id: "website",
+    label: "Website form",
+    sourceApp: "website-form",
+    documentationUrl: "https://getphame.app/developer",
+  },
   {
     id: "jotform",
     label: "Jotform",
@@ -34,6 +42,18 @@ const SOURCES: SourceDefinition[] = [
     label: "Facebook Lead Ads",
     sourceApp: "facebook-lead-ads",
     documentationUrl: "https://developers.facebook.com/docs/graph-api/webhooks/getting-started/webhooks-for-leadgen/",
+  },
+  {
+    id: "linkedin",
+    label: "LinkedIn Lead Gen Forms",
+    sourceApp: "linkedin-lead-gen",
+    documentationUrl: "https://www.linkedin.com/help/lms/answer/a422701",
+  },
+  {
+    id: "tiktok",
+    label: "TikTok Lead Generation",
+    sourceApp: "tiktok-lead-generation",
+    documentationUrl: "https://ads.tiktok.com/help/article/lead-generation",
   },
   {
     id: "googleForms",
@@ -56,40 +76,63 @@ const SOURCES: SourceDefinition[] = [
 ];
 
 const FIELD_ROWS = [
+  ["eventType", "eventType"],
   ["name", "name"],
   ["email", "email"],
+  ["phone", "phone"],
   ["externalId", "externalId"],
   ["sourceApp", "sourceApp"],
-  ["consentConfirmed", "consentConfirmed"],
-  ["consentBasis", "consentBasis"],
-  ["consentSource", "consentSource"],
+  ["sourceFormId", "sourceFormId"],
+  ["sourceSubmissionId", "sourceSubmissionId"],
+  ["preferredLocale", "preferredLocale"],
+  ["consent.confirmed", "consentConfirmed"],
+  ["consent.basis", "consentBasis"],
+  ["consent.purpose", "consentPurpose"],
+  ["consent.channel", "consentChannel"],
+  ["consent.capturedAt", "consentCapturedAt"],
+  ["consent.source", "consentSource"],
+  ["consent.text", "consentText"],
+  ["consent.version", "consentVersion"],
+  ["consent.privacyPolicyUrl", "privacyPolicyUrl"],
 ] as const;
 
 const WORKFLOW_STEPS = ["choose", "key", "map", "test"] as const;
-const RULE_IDS = ["secret", "consent", "idempotency", "importOnly"] as const;
+const RULE_IDS = ["secret", "consent", "idempotency", "activation"] as const;
 
 const STEP_FALLBACKS = {
   choose: "Choose a source",
-  key: "Create an import key",
+  key: "Create a source key",
   map: "Map fields and consent",
-  test: "Send one permitted test",
+  test: "Preflight and dry run",
 } as const;
 
 const RULE_FALLBACKS = {
   secret: "Store the Get Phame API key only in a protected server-side secret field. Never place it in a form, URL, page source, or browser script.",
   consent: "Import only existing customers or people who affirmatively opted in. Keep optional consent boxes unchecked by default.",
   idempotency: "Reuse the same provider event ID for every retry so one submission cannot create duplicate work.",
-  importOnly: "This workflow imports or updates a contact. It never sends a review request automatically.",
+  activation: "Start in safe dry-run mode. Live review outreach stays off until an authorized user completes preflight, verifies one provider event, and explicitly activates that source.",
 } as const;
 
 const PROVIDER_FALLBACKS: Record<SourceId, { path: string; idempotency: string }> = {
+  website: {
+    path: "Post from your trusted server or a protected Zapier/Make webhook. Never expose the Get Phame API key in browser JavaScript, page source, or a public form action.",
+    idempotency: "Use the form provider's immutable submission ID for externalId, sourceSubmissionId, and Idempotency-Key.",
+  },
   jotform: {
     path: "Send each eligible Jotform submission through a trusted automation bridge that can store secrets and add protected headers before posting to Get Phame.",
     idempotency: "Use the immutable Jotform submission ID for both externalId and Idempotency-Key.",
   },
   facebook: {
-    path: "Receive Meta Lead Ads notifications on a verified server-side or trusted automation webhook, retrieve the permitted lead fields, then post the normalized record to Get Phame.",
+    path: "Use a trusted automation bridge to retrieve permitted Meta Lead Ads fields and the custom purpose-specific consent response, then post the normalized record to Get Phame.",
     idempotency: "Use Meta's leadgen ID as the stable externalId and Idempotency-Key.",
+  },
+  linkedin: {
+    path: "Use a trusted LinkedIn Lead Gen integration or automation bridge. Map the lead ID, form ID, explicit custom consent response, and exact consent wording shown on the form.",
+    idempotency: "Use LinkedIn's immutable lead response ID for externalId, sourceSubmissionId, and Idempotency-Key.",
+  },
+  tiktok: {
+    path: "Use a trusted TikTok Lead Generation integration or automation bridge. Import only the permitted fields and include affirmative, purpose-specific consent evidence.",
+    idempotency: "Use TikTok's immutable lead ID for externalId, sourceSubmissionId, and Idempotency-Key.",
   },
   googleForms: {
     path: "Use an installable Google Apps Script form-submit trigger or a trusted automation bridge. Keep the Get Phame key in protected script properties or the bridge's secret store.",
@@ -106,13 +149,24 @@ const PROVIDER_FALLBACKS: Record<SourceId, { path: string; idempotency: string }
 };
 
 const FIELD_FALLBACKS = {
+  eventType: "Fixed value: review_request",
   name: "Customer name field",
   email: "Customer email field",
+  phone: "Optional customer phone field",
   externalId: "Immutable provider event or record ID",
   sourceApp: "Fixed provider identifier shown above",
   consentConfirmed: "Boolean true only after affirmative permission",
   consentBasis: "customer_relationship, explicit_opt_in, or other",
   consentSource: "Short description of where permission was captured",
+  consentCapturedAt: "ISO 8601 timestamp with timezone from the source submission",
+  consentPurpose: "Fixed value: review_outreach",
+  consentChannel: "Fixed value: email",
+  consentText: "Exact review-outreach checkbox wording shown to the person",
+  consentVersion: "Immutable business-managed wording version, such as review-outreach-v1",
+  privacyPolicyUrl: "HTTPS privacy-policy URL shown beside the checkbox",
+  sourceFormId: "Stable provider form identifier",
+  sourceSubmissionId: "Immutable provider submission or lead identifier",
+  preferredLocale: "Explicit supported language tag, such as en, es, fr, it, th, zh-CN, or zh-TW",
 } as const;
 
 interface SourceSetupGuideProps {
@@ -121,7 +175,7 @@ interface SourceSetupGuideProps {
 
 export function SourceSetupGuide({ endpoint }: SourceSetupGuideProps) {
   const { t } = useTranslation();
-  const [sourceId, setSourceId] = useState<SourceId>("jotform");
+  const [sourceId, setSourceId] = useState<SourceId>("website");
   const source = SOURCES.find((item) => item.id === sourceId) ?? SOURCES[0];
   const getSourceLabel = (item: SourceDefinition) => item.id === "other"
     ? t("developerIntegrations.sources.providers.other.label", { defaultValue: "Other source" })
@@ -130,16 +184,30 @@ export function SourceSetupGuide({ endpoint }: SourceSetupGuideProps) {
   const recipe = useMemo(() => `POST ${endpoint}
 Authorization: Bearer ${API_KEY_PLACEHOLDER}
 Content-Type: application/json
+X-Get-Phame-Source: <YOUR_SOURCE_ID>
 Idempotency-Key: <stable-provider-event-id>
 
 {
+  "eventType": "review_request",
+  "sourceSubmissionId": "<stable-provider-event-id>",
   "name": "<customer name>",
   "email": "<customer email>",
+  "phone": "<optional customer phone>",
   "externalId": "<stable-provider-event-id>",
+  "sourceFormId": "<provider-form-id>",
   "sourceApp": "${source.sourceApp}",
-  "consentConfirmed": true,
-  "consentBasis": "customer_relationship",
-  "consentSource": "<where permission was captured>"
+  "preferredLocale": "en",
+  "consent": {
+    "confirmed": true,
+    "basis": "explicit_opt_in",
+    "purpose": "review_outreach",
+    "channel": "email",
+    "capturedAt": "<ISO-8601 timestamp with timezone>",
+    "source": "<provider and form name>",
+    "text": "${REVIEW_OUTREACH_CONSENT}",
+    "version": "review-outreach-v1",
+    "privacyPolicyUrl": "https://example.com/privacy"
+  }
 }`, [endpoint, source.sourceApp]);
 
   const copyRecipe = async () => {
@@ -162,11 +230,11 @@ Idempotency-Key: <stable-provider-event-id>
             </h2>
           </div>
           <p className="mt-1 text-sm leading-6 rr-text-navy-muted">
-            {t("developerIntegrations.sources.description", { defaultValue: "Choose where customer records start. Get Phame gives you a secure, import-only recipe for a trusted server-side automation." })}
+            {t("developerIntegrations.sources.description", { defaultValue: "Choose where an approved customer event starts. Get Phame validates purpose-specific consent, suppression, delivery readiness, and idempotency before any automated review request can go live." })}
           </p>
         </div>
         <span className="w-fit rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-800">
-          {t("developerIntegrations.sources.badge", { defaultValue: "Imports contacts only" })}
+          {t("developerIntegrations.sources.badge", { defaultValue: "Validate first · activate later" })}
         </span>
       </div>
 
@@ -183,7 +251,7 @@ Idempotency-Key: <stable-provider-event-id>
         <legend className="text-sm font-black rr-text-navy">
           {t("developerIntegrations.sources.choose", { defaultValue: "Choose a source" })}
         </legend>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {SOURCES.map((item) => {
             const selected = item.id === source.id;
             return (
@@ -252,7 +320,7 @@ Idempotency-Key: <stable-provider-event-id>
             <div>
               <div className="flex items-center gap-2 rr-text-gold">
                 <KeyRound size={17} aria-hidden="true" />
-                <h3 className="text-sm font-black">{t("developerIntegrations.sources.recipeTitle", { defaultValue: "Safe mapping recipe" })}</h3>
+                <h3 className="text-sm font-black">{t("developerIntegrations.sources.recipeTitle", { defaultValue: "Safe review-event recipe" })}</h3>
               </div>
               <p className="mt-1 max-w-xl text-xs leading-5 text-white/70">
                 {t("developerIntegrations.sources.recipeDescription", { defaultValue: "Use a placeholder while configuring. Paste the real key only into the automation service’s protected secret field." })}
@@ -280,17 +348,53 @@ Idempotency-Key: <stable-provider-event-id>
         </div>
       </div>
 
+      <div className="mt-5 grid gap-4 lg:grid-cols-2">
+        <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-5" aria-labelledby="review-consent-title">
+          <h3 id="review-consent-title" className="text-sm font-black text-emerald-950">
+            {t("developerIntegrations.sources.consentCopyTitle", { defaultValue: "Review-outreach checkbox — copy and customize" })}
+          </h3>
+          <p className="mt-2 text-xs leading-5 text-emerald-900">
+            {t("developerIntegrations.sources.consentCopyInstructions", { defaultValue: "Start this checkbox unchecked. You may require it for enrollment in automated review outreach, but not as a condition of an unrelated purchase, quote, or service. Have qualified counsel approve your final wording and workflow." })}
+          </p>
+          <blockquote className="mt-3 rounded-xl bg-white p-3 text-sm leading-6 text-slate-800">
+            <span aria-hidden="true">[ ] </span>{t("developerIntegrations.sources.reviewConsentCopy", { defaultValue: REVIEW_OUTREACH_CONSENT })}
+          </blockquote>
+          <h4 className="mt-4 text-xs font-black uppercase tracking-wide text-emerald-950">
+            {t("developerIntegrations.sources.marketingConsentTitle", { defaultValue: "Separate optional marketing permission" })}
+          </h4>
+          <blockquote className="mt-2 rounded-xl bg-white p-3 text-sm leading-6 text-slate-800">
+            <span aria-hidden="true">[ ] </span>{t("developerIntegrations.sources.marketingConsentCopy", { defaultValue: MARKETING_CONSENT })}
+          </blockquote>
+          <p className="mt-3 text-xs leading-5 text-emerald-900">
+            {t("developerIntegrations.sources.channelBoundary", { defaultValue: "Do not treat either email checkbox as permission for SMS, automated calls, or another purpose. Import submissions without valid review-outreach evidence as ineligible and do not send automatically." })}
+          </p>
+        </section>
+
+        <section className="rounded-2xl border border-sky-200 bg-sky-50 p-4 sm:p-5" aria-labelledby="source-test-title">
+          <h3 id="source-test-title" className="text-sm font-black text-sky-950">
+            {t("developerIntegrations.sources.testTitle", { defaultValue: "Test, retry, and revoke safely" })}
+          </h3>
+          <ol className="mt-3 space-y-2 text-xs leading-5 text-sky-950">
+            <li><strong>1.</strong> {t("developerIntegrations.sources.testImport", { defaultValue: "Run the read-only validation endpoint with one permitted recipient. Confirm source binding, suppression, SMTP, quota, template, and destination checks without importing or sending." })}</li>
+            <li><strong>2.</strong> {t("developerIntegrations.sources.testReplay", { defaultValue: "Enable safe dry run, submit one real provider event, then replay it with the same Idempotency-Key. Expect the same outcome, not duplicate work." })}</li>
+            <li><strong>3.</strong> {t("developerIntegrations.sources.testFailure", { defaultValue: "Treat consent conflicts and validation errors as terminal. Retry only recoverable responses, honor Retry-After, and always reuse the same event ID." })}</li>
+            <li><strong>4.</strong> {t("developerIntegrations.sources.testActivate", { defaultValue: "Verify the exact approved template, recipient language, destination, reminders, and delay before an authorized user switches from dry run to live delivery." })}</li>
+            <li><strong>5.</strong> {t("developerIntegrations.sources.testRevoke", { defaultValue: "To stop a source, pause it in Get Phame and in the provider, revoke or rotate its key, and preserve the redacted audit history." })}</li>
+          </ol>
+        </section>
+      </div>
+
       <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-black text-amber-950">{t("developerIntegrations.sources.nextTitle", { defaultValue: "Ready to connect?" })}</p>
-          <p className="mt-0.5 text-xs leading-5 text-amber-900">{t("developerIntegrations.sources.nextDescription", { defaultValue: "Create a contacts:write key, send one permitted test record, then confirm the masked result in Recent API imports." })}</p>
+          <p className="mt-0.5 text-xs leading-5 text-amber-900">{t("developerIntegrations.sources.nextDescription", { defaultValue: "Create a source key with contacts:write and review_requests:send, bind it to a managed source, then complete preflight and one safe dry run." })}</p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row">
           <a href="#create-key-title" className="inline-flex min-h-11 items-center justify-center rounded-xl px-4 text-sm font-black rr-bg-navy rr-text-gold">
-            {t("developerIntegrations.sources.createKey", { defaultValue: "Create import key" })}
+            {t("developerIntegrations.sources.createKey", { defaultValue: "Create source key" })}
           </a>
           <a href="#import-history-title" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-amber-300 bg-white px-4 text-sm font-black rr-text-navy">
-            {t("developerIntegrations.sources.viewImports", { defaultValue: "View imports" })}
+            {t("developerIntegrations.sources.viewImports", { defaultValue: "Manage sources" })}
           </a>
         </div>
       </div>
