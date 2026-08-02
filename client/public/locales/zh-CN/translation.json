@@ -244,7 +244,8 @@
     "copy": "复制",
     "off": "关",
     "on": "开",
-    "optional": "可选"
+    "optional": "可选",
+    "undo": "撤销"
   },
   "seo": {
     "title": "Get Phame — 通过邮箱发送个性化评论请求",
@@ -1685,6 +1686,17 @@
       "updateFailed": "更新请求失败。",
       "updatedSuccess": "已更新{{count}}个请求。",
       "updatedSuccessPlural": "已更新{{count}}个请求。"
+    },
+    "recentActivity": {
+      "title": "最近活动",
+      "engagedBadge": "{{count}} 人互动",
+      "noActivity": "暂无最近活动",
+      "viewAll": "查看全部 →",
+      "markAllReviewed": "全部标记为已审阅",
+      "markingAll": "标记中…",
+      "markAllShort": "全部标记",
+      "markAllSuccess": "{{count}} 条已标记为审阅",
+      "markReviewed": "标记为已审阅"
     }
   },
   "pricing": {

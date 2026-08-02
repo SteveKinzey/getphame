@@ -1624,3 +1624,49 @@
 - [x] Add 30/60/90 day range toggle to Dashboard trend chart
 - [x] Apply two-column layout to WooCustomers bulk send page (list left, email preview right)
 - [x] Add gold "Send Request" CTA button to desktop sidebar in AppLayout
+
+## Session — Skill, Features, and UX Enhancements (Aug 2026)
+
+- [x] Create github-managed-checkpoint-sync skill (reusable workflow for GitHub protected-main → managed checkpoint sync and publication)
+- [x] Landing page audit against GetPhame style guide — FAQ, ProductShowcase animations, and layout all confirmed compliant, no changes needed
+- [x] Share button on ClientReviews page — uses existing pwaShare helper, shows Share/Copied/Shared state with 2.5s reset, gold accent on success
+- [x] Dashboard stats skeleton loading animation — animated pulse bars replace "—" placeholder during API load
+- [x] RecentActivityCard component — compact last-5 interactions summary above full activity feed, with skeleton loading, engagement badge, and open/click tracking badges
+
+## Session — i18n Skill, View All, Fallback Bundle, Hover States (Aug 2026)
+
+- [x] Create getphame-i18n-key-coverage skill (reusable workflow for fixing directI18nKeyCoverage build failures)
+- [x] Add dashboard.recentActivity.viewAll key to all 7 locale files (en/es/fr/it/th/zh-CN/zh-TW)
+- [x] Update i18nCompleteFallbackResources.json with all 4 dashboard.recentActivity keys for offline PWA
+- [x] Add View All anchor link to RecentActivityCard header — smooth-scrolls to #activity-feed
+- [x] Add id="activity-feed" to the activity feed section div in Dashboard.tsx
+- [x] Enhance RecentActivityCard row hover states — navy-tinted bg, subtle box-shadow, scale(0.99) press feedback
+
+## Session — Mark All, Smooth Scroll, Fallback Fix (2026-08-01)
+- [x] Fix loose top-level dashboard key in i18nCompleteFallbackResources.json (caused wordpressPairing test failure)
+- [x] Add scroll-behavior: smooth to html element in index.css
+- [x] Add Mark All as Reviewed bulk action to RecentActivityCard (uses trpc.requests.bulkMarkResponded)
+- [x] Add markAllReviewed, markingAll, markAllShort i18n keys to all 7 locale files and fallback bundle
+- [x] Create getphame-github-pr-release skill
+
+## Session — Success Toast, Skills, CI Gate (Aug 1 2026)
+- [x] Add success toast to RecentActivityCard after Mark All as Reviewed completes
+- [x] Add dashboard.recentActivity.markAllSuccess to all 7 locale files with native translations
+- [x] Update offline fallback bundle with markAllSuccess key (properly nested under locale keys)
+- [x] Create getphame-native-localization-quality skill
+- [x] Update getphame-i18n-key-coverage skill with nativeLocalizationQuality pattern and loose-key warning
+- [x] Verify GitHub Actions CI is green on main (Quality Gate, Validate GitHub Actions, API Recovery Browser Check, API Health Monitor — all passing)
+
+## Session — Single-item Mark, Skill, PR (Aug 1 2026)
+- [x] Create getphame-success-toast-i18n reusable skill
+- [x] Sync checkpoint cb49ccd0 to SteveKinzey/getphame via PR
+- [x] Add single-item mark-as-reviewed action (checkmark icon on hover) to each RecentActivityCard row
+- [x] Add dashboard.recentActivity.markReviewed i18n key to all 7 locales and fallback bundle
+- [x] Update nativeLocalizationQuality manifests: document markAllSuccess in audit trail (keys have native translations, not English-identical, so no manifest change needed — totalCandidates=586 preserved)
+
+## Session — Undo Toast, Touch Fallback, Skill, PR Merge (Aug 1 2026)
+- [x] Create getphame-mark-reviewed-row reusable skill (single-item mark + undo + touch)
+- [x] Add 4-second undo toast after single-item mark-as-reviewed
+- [x] Add touch-device fallback: permanently visible checkmark on devices without hover
+- [ ] Merge PR #91 into main
+- [ ] Close PR #90 as superseded

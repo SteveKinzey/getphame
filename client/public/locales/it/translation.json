@@ -710,7 +710,18 @@
     "reviewsCollected": "Recensioni Raccolte",
     "pendingRequests": "Richieste in Attesa",
     "failedRequests": "Richieste Fallite",
-    "successRate": "Tasso di Successo"
+    "successRate": "Tasso di Successo",
+    "recentActivity": {
+      "title": "Attività recente",
+      "engagedBadge": "{{count}} hanno interagito",
+      "noActivity": "Nessuna attività recente",
+      "viewAll": "Vedi tutto →",
+      "markAllReviewed": "Segna tutto come esaminato",
+      "markingAll": "Contrassegnando…",
+      "markAllShort": "Segna tutto",
+      "markAllSuccess": "{{count}} elementi contrassegnati come esaminati",
+      "markReviewed": "Segna come esaminato"
+    }
   },
   "settings": {
     "pageTitle": "Impostazioni",
@@ -1999,7 +2010,8 @@
     "copy": "Copia",
     "off": "Disattivo",
     "on": "Attivo",
-    "optional": "facoltativo"
+    "optional": "facoltativo",
+    "undo": "Annulla"
   },
   "profile": {
     "title": "Profilo Aziendale",
