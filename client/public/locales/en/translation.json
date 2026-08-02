@@ -744,7 +744,8 @@
     "on": "On",
     "off": "Off",
     "copy": "Copy",
-    "optional": "optional"
+    "optional": "optional",
+    "undo": "Undo"
   },
   "profile": {
     "title": "Business Profile",

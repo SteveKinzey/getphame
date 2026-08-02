@@ -1663,3 +1663,10 @@
 - [x] Add single-item mark-as-reviewed action (checkmark icon on hover) to each RecentActivityCard row
 - [x] Add dashboard.recentActivity.markReviewed i18n key to all 7 locales and fallback bundle
 - [x] Update nativeLocalizationQuality manifests: document markAllSuccess in audit trail (keys have native translations, not English-identical, so no manifest change needed — totalCandidates=586 preserved)
+
+## Session — Undo Toast, Touch Fallback, Skill, PR Merge (Aug 1 2026)
+- [x] Create getphame-mark-reviewed-row reusable skill (single-item mark + undo + touch)
+- [x] Add 4-second undo toast after single-item mark-as-reviewed
+- [x] Add touch-device fallback: permanently visible checkmark on devices without hover
+- [ ] Merge PR #91 into main
+- [ ] Close PR #90 as superseded
