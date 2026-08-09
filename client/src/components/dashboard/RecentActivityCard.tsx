@@ -6,6 +6,7 @@ import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap, CheckCheck, C
 import { useTranslation } from "react-i18next";
 import { format, isToday, isYesterday } from "date-fns";
 import { trpc } from "@/lib/trpc";
+import { useTouchDevice } from "@/hooks/useTouchDevice";
 
 interface Request {
   id: number;
@@ -59,60 +60,72 @@ export default function RecentActivityCard({
   onRefresh,
 }: RecentActivityCardProps) {
   const { t } = useTranslation();
+  const isTouch = useTouchDevice();
 
   // Bulk mark-all state
   const [markingAll, setMarkingAll] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [markedCount, setMarkedCount] = useState(0);
+  // Bulk undo state (replaces non-undoable success banner)
+  const [bulkUndoIds, setBulkUndoIds] = useState<number[]>([]);
+  const [bulkUndoCount, setBulkUndoCount] = useState(0);
 
   // Single-item mark state
   const [markingId, setMarkingId] = useState<number | null>(null);
   const [undoId, setUndoId] = useState<number | null>(null);
+
+  // Shared undo timer — cleared before each new timer is set
   const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Touch-device detection — run once on mount
-  const [isTouch, setIsTouch] = useState(false);
-  useEffect(() => {
-    setIsTouch(window.matchMedia("(hover: none)").matches);
-  }, []);
-
-  // Cleanup undo timer on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
     };
   }, []);
 
+  // Helper — start/restart the shared undo timer
+  const startUndoTimer = (cb: () => void, ms = 4000) => {
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    undoTimerRef.current = setTimeout(cb, ms);
+  };
+
   const utils = trpc.useUtils();
 
   // Bulk mark mutation
   const bulkMark = trpc.requests.bulkMarkResponded.useMutation({
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       utils.requests.invalidate();
       onRefresh?.();
       setMarkingAll(false);
-      setMarkedCount(recent.filter((r) => !r.respondedAt).length);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      setBulkUndoIds(vars.ids);
+      setBulkUndoCount(vars.ids.length);
+      startUndoTimer(() => setBulkUndoIds([]));
     },
     onError: () => setMarkingAll(false),
   });
 
-  // Single-item mark mutation — separate instance to avoid shared loading state with bulkMark
+  // Bulk undo mutation — separate instance to avoid shared loading state with bulkMark
+  const bulkUndo = trpc.requests.bulkMarkResponded.useMutation({
+    onSuccess: () => {
+      utils.requests.invalidate();
+      onRefresh?.();
+      setBulkUndoIds([]);
+    },
+    onError: () => setBulkUndoIds([]),
+  });
+
+  // Single-item mark mutation — separate instance to avoid shared loading state
   const singleMark = trpc.requests.bulkMarkResponded.useMutation({
     onSuccess: (_data, vars) => {
       utils.requests.invalidate();
       onRefresh?.();
       setMarkingId(null);
-      // Show 4-second undo toast
-      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
       setUndoId(vars.ids[0]);
-      undoTimerRef.current = setTimeout(() => setUndoId(null), 4000);
+      startUndoTimer(() => setUndoId(null));
     },
     onError: () => setMarkingId(null),
   });
 
-  // Undo mutation — separate instance so its loading state doesn't affect singleMark
+  // Undo mutation for single-item — separate instance
   const undoMark = trpc.requests.bulkMarkResponded.useMutation({
     onSuccess: () => {
       utils.requests.invalidate();
@@ -133,7 +146,6 @@ export default function RecentActivityCard({
 
   const handleMarkSingle = (e: React.MouseEvent, id: number) => {
     e.stopPropagation(); // prevent row click from opening the detail panel
-    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
     setMarkingId(id);
     singleMark.mutate({ ids: [id], responded: true });
   };
@@ -142,6 +154,13 @@ export default function RecentActivityCard({
     if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
     setUndoId(null);
     undoMark.mutate({ ids: [id], responded: false });
+  };
+
+  const handleBulkUndo = () => {
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    const ids = bulkUndoIds;
+    setBulkUndoIds([]);
+    bulkUndo.mutate({ ids, responded: false });
   };
 
   // Last 5 requests sorted by sentAt descending
@@ -225,20 +244,26 @@ export default function RecentActivityCard({
         </div>
       </div>
 
-      {/* Bulk mark-all success toast */}
-      {showSuccess && (
+      {/* Bulk undo toast — 4-second window, replaces the old non-undoable success banner */}
+      {bulkUndoIds.length > 0 && (
         <div
-          className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
-          style={{
-            background: "oklch(0.92 0.10 145)",
-            color: "oklch(0.30 0.12 145)",
-          }}
+          className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
+          style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
         >
-          <CheckCheck size={13} />
-          {t("dashboard.recentActivity.markAllSuccess", {
-            defaultValue: "{{count}} items marked as reviewed",
-            count: markedCount,
-          })}
+          <span className="flex items-center gap-1.5">
+            <CheckCheck size={13} />
+            {t("dashboard.recentActivity.markAllSuccess", {
+              defaultValue: "{{count}} items marked as reviewed",
+              count: bulkUndoCount,
+            })}
+          </span>
+          <button
+            onClick={handleBulkUndo}
+            className="text-xs font-black underline underline-offset-2 shrink-0"
+            style={{ color: "oklch(0.25 0.10 145)" }}
+          >
+            {t("common.undo", { defaultValue: "Undo" })}
+          </button>
         </div>
       )}
 
@@ -246,10 +271,7 @@ export default function RecentActivityCard({
       {undoId !== null && (
         <div
           className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
-          style={{
-            background: "oklch(0.92 0.10 145)",
-            color: "oklch(0.30 0.12 145)",
-          }}
+          style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
         >
           <span className="flex items-center gap-1.5">
             <CheckCircle2 size={13} />
@@ -345,8 +367,8 @@ export default function RecentActivityCard({
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   <div className="flex items-center gap-1">
                     {/* Single-item mark-as-reviewed button
-                        - Desktop (hover-capable): hidden by default, revealed on row hover
-                        - Touch devices (isTouch): always visible */}
+                        - Desktop (hover-capable): hidden by default, revealed on row hover via useTouchDevice
+                        - Touch devices: always visible */}
                     {!isReviewed && (
                       <button
                         onClick={(e) => handleMarkSingle(e, req.id)}

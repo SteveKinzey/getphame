@@ -113,6 +113,7 @@ export default function FirstVisitWelcome() {
               src="https://assets.getphame.app/getphame-logo.svg"
               alt=""
               className="h-9 w-9 rounded-xl"
+            aria-hidden="true"
             />
             <span className="text-sm font-black tracking-[0.16em] text-white">GET <span className="rr-text-gold">PHAME</span></span>
           </div>

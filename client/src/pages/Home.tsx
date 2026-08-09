@@ -24,7 +24,6 @@ const TrackingSummaryCard = lazy(() => import("@/components/dashboard/TrackingSu
 const PlatformBreakdownChart = lazy(() => import("@/components/dashboard/PlatformBreakdownChart"));
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
-const HERO_IMG = "https://assets.getphame.app/getphame-logo.svg";
 
 function ReferralRewardsCard() {
   const { t } = useTranslation("translation");

@@ -260,7 +260,7 @@ describe("native-quality localization audit", () => {
     expect(verified).toBe(109);
   });
 
-  it("accounts for all 587 independently reviewed English-identical candidates", () => {
+  it("accounts for all 586 independently reviewed English-identical candidates", () => {
     let totalCandidates = 0;
     let totalTranslations = 0;
     let totalExceptions = 0;
@@ -358,9 +358,9 @@ describe("native-quality localization audit", () => {
       totalExceptions += manifest.exceptionCount;
     }
 
-    expect(totalCandidates).toBe(587);
+    expect(totalCandidates).toBe(586);
     expect(totalTranslations).toBe(349);
-    expect(totalExceptions).toBe(238);
+    expect(totalExceptions).toBe(237);
   });
 
   it("preserves natural Thai grammar across the partner-priority FAQ block", () => {
@@ -434,7 +434,7 @@ describe("native-quality localization audit", () => {
       path.join(projectRoot, "client/public/sw.js"),
       "utf8"
     );
-    expect(i18nSource).toContain("{{ns}}.json?v=phame63");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v31'");
+    expect(i18nSource).toContain("{{ns}}.json?v=phame61");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
   });
 });
