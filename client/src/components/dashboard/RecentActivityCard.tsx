@@ -247,7 +247,7 @@ export default function RecentActivityCard({
       {/* Bulk undo toast — 4-second window, replaces the old non-undoable success banner */}
       {bulkUndoIds.length > 0 && (
         <div
-          className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
+          className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
           style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
         >
           <span className="flex items-center gap-1.5">
@@ -270,7 +270,7 @@ export default function RecentActivityCard({
       {/* Single-item undo toast — 4-second window */}
       {undoId !== null && (
         <div
-          className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
+          className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
           style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
         >
           <span className="flex items-center gap-1.5">

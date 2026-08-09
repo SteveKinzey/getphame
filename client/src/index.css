@@ -734,7 +734,13 @@
   0%, 100% { box-shadow: 0 0 0 0 oklch(0.80 0.18 80 / 0); }
   50%       { box-shadow: 0 0 0 4px oklch(0.80 0.18 80 / 0.25); }
 }
-
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.animate-toast-in {
+  animation: toast-in 0.22s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
 .animate-fade-up {
   animation: fadeUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

@@ -1692,3 +1692,10 @@
 - [x] Add loading="lazy" to ProductShowcase tab images (already present at line 243)
 - [x] Add loading="lazy" to VideoDemo thumbnail (already present at line 678)
 - [x] Insert canonical link tag in landing page head (already in index.html line 12 + SEOHead canonical prop)
+
+## Session — SEO/Perf Skill, Hero fetchpriority, Robots Meta, Toast Animation (Aug 9 2026)
+- [x] Create getphame-seo-perf-optimization reusable skill
+- [x] Add fetchpriority="high" to hero phone mockup image (Hero.tsx line 218)
+- [x] Add robots meta tag to client/index.html (index, follow)
+- [x] Add fade-in animation to undo toast notifications (toast-in keyframe + animate-toast-in class on all 3 toasts)
+- [x] Run Lighthouse audit on landing page: Perf 40, A11y 96, Best Practices 73, SEO 100
