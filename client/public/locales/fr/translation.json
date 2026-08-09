@@ -1802,7 +1802,8 @@
     "signedInAs": "Connecté en tant que",
     "dashboard": "Tableau de bord",
     "darkMode": "Mode sombre",
-    "lightMode": "Mode clair"
+    "lightMode": "Mode clair",
+    "avatarAlt": "Votre photo de profil"
   },
   "account": {
     "administrator": "Administrateur",

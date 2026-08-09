@@ -1437,7 +1437,8 @@
     "signedInAs": "登入身分",
     "dashboard": "控制台",
     "darkMode": "深色模式",
-    "lightMode": "淺色模式"
+    "lightMode": "淺色模式",
+    "avatarAlt": "您的個人頭像"
   },
   "account": {
     "administrator": "管理員",

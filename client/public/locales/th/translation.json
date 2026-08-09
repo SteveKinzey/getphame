@@ -1448,7 +1448,8 @@
     "signedInAs": "ลงชื่อเข้าใช้ในชื่อ",
     "dashboard": "แดชบอร์ด",
     "darkMode": "โหมดมืด",
-    "lightMode": "โหมดสว่าง"
+    "lightMode": "โหมดสว่าง",
+    "avatarAlt": "รูปโปรไฟล์ของคุณ"
   },
   "account": {
     "administrator": "ผู้ดูแลระบบ",

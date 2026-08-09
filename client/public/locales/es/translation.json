@@ -1802,7 +1802,8 @@
     "signedInAs": "Sesión iniciada como",
     "dashboard": "Panel",
     "darkMode": "Modo oscuro",
-    "lightMode": "Modo claro"
+    "lightMode": "Modo claro",
+    "avatarAlt": "Tu foto de perfil"
   },
   "account": {
     "administrator": "Administrador",

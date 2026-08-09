@@ -2476,7 +2476,8 @@
     "signedInAs": "Accesso effettuato come",
     "dashboard": "Dashboard",
     "darkMode": "Modalità scura",
-    "lightMode": "Modalità chiara"
+    "lightMode": "Modalità chiara",
+    "avatarAlt": "La tua foto del profilo"
   },
   "account": {
     "administrator": "Amministratore",

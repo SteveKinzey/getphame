@@ -1668,8 +1668,8 @@
 - [x] Create getphame-mark-reviewed-row reusable skill (single-item mark + undo + touch)
 - [x] Add 4-second undo toast after single-item mark-as-reviewed
 - [x] Add touch-device fallback: permanently visible checkmark on devices without hover
-- [ ] Merge PR #91 into main
-- [ ] Close PR #90 as superseded
+- [x] Merge PR #91 into main (already merged in previous session — confirmed closed)
+- [x] Close PR #90 as superseded (already closed — confirmed closed)
 
 ## Session — Undo Pattern Skill, Bulk Undo, ActivityFeed Undo, useTouchDevice (Aug 2 2026)
 - [x] Create getphame-undo-toast-pattern reusable skill
@@ -1678,3 +1678,8 @@
 - [x] Extend undo toast to Mark All bulk action in RecentActivityCard (with count)
 - [x] Apply undo toast + touch fallback to activity feed rows (Dashboard.tsx ActivityFeed)
 - [x] Sync to GitHub via PR
+
+## Session — Build Fix, www Redirect, Alt Tags (Aug 9 2026)
+- [x] Fix deployment build failure: update pnpm-workspace.yaml overrides to nanoid 6.0.1, dompurify >=3.4.13, mermaid >=11.16.1, brace-expansion >=5.0.9 — audit now passes clean
+- [x] Ensure www.getphame.app redirects to getphame.app — 301 redirect already in server/_core/index.ts, confirmed working
+- [x] Add missing alt tags: BottomNav profile photo gets descriptive alt when avatarUrl set; aria-hidden on decorative logo images in FirstVisitWelcome, PWAInstallPrompt, PremiumUpgradeModal; remove unused HERO_IMG; add profileMenu.avatarAlt to all 7 locales + fallback bundle

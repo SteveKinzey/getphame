@@ -21,9 +21,9 @@ overrides:
   # Security: form-data CRLF injection fix
   form-data: ">=4.0.6"
   # Security: dompurify XSS fix (mermaid pulls an older advisory-affected release)
-  dompurify: "3.4.12"
+  dompurify: ">=3.4.13"
   # Security: mermaid XSS fix (streamdown pulls 11.12.x, needs >=11.15.0)
-  mermaid: ">=11.15.0"
+  mermaid: ">=11.16.1"
   # Security: esbuild dev server request smuggling fix
   esbuild: ">=0.28.1"
   # Security: follow-redirects URL leak fix
@@ -33,7 +33,7 @@ overrides:
   # Security: qs prototype pollution fix
   qs: ">=6.15.2"
   # Security: brace-expansion unbounded-length DoS fix (GHSA-mh99-v99m-4gvg)
-  brace-expansion: ">=5.0.8"
+  brace-expansion: ">=5.0.9"
   # Security: mdast-util-to-hast XSS fix
   mdast-util-to-hast: ">=13.2.1"
   # Existing overrides preserved

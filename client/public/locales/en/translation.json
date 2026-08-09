@@ -1537,7 +1537,8 @@
     "signedInAs": "Signed in as",
     "dashboard": "Dashboard",
     "darkMode": "Dark mode",
-    "lightMode": "Light mode"
+    "lightMode": "Light mode",
+    "avatarAlt": "Your profile photo"
   },
   "account": {
     "administrator": "Administrator",

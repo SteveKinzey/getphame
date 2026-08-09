@@ -159,8 +159,8 @@ export default function BottomNav() {
                 style={{ width: '40px', height: '32px' }}
               >
                 <img
-                  src={accountProfile?.avatarUrl || 'https://assets.getphame.app/getphame-logo.svg'}
-                  alt=""
+                src={accountProfile?.avatarUrl || 'https://assets.getphame.app/getphame-logo.svg'}
+                  alt={accountProfile?.avatarUrl ? t('profileMenu.avatarAlt', { defaultValue: 'Your profile photo' }) : ''}
                   className="h-7 w-7 rounded-full object-cover transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.5)]"
                 />
               </div>

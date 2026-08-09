@@ -670,7 +670,8 @@
       "dashboard": "Dashboard",
       "lightMode": "Light mode",
       "open": "Open account menu",
-      "signedInAs": "Signed in as"
+      "signedInAs": "Signed in as",
+      "avatarAlt": "Your profile photo"
     },
     "tabs": {
       "account": "Account & Profile",
@@ -2191,7 +2192,8 @@
       "dashboard": "Panel de control",
       "lightMode": "Modo claro",
       "open": "Abrir menú de cuenta",
-      "signedInAs": "Conectado como"
+      "signedInAs": "Conectado como",
+      "avatarAlt": "Tu foto de perfil"
     },
     "tabs": {
       "account": "Cuenta y perfil",
@@ -3896,7 +3898,8 @@
       "dashboard": "Tableau de bord",
       "lightMode": "Mode clair",
       "open": "Ouvrir le menu du compte",
-      "signedInAs": "Connecté en tant que"
+      "signedInAs": "Connecté en tant que",
+      "avatarAlt": "Votre photo de profil"
     },
     "tabs": {
       "account": "Compte et profil",
@@ -5599,7 +5602,8 @@
       "dashboard": "Dashboard",
       "lightMode": "Modalità chiara",
       "open": "Apri il menu dell'account",
-      "signedInAs": "Connesso come"
+      "signedInAs": "Connesso come",
+      "avatarAlt": "La tua foto del profilo"
     },
     "tabs": {
       "account": "Account e profilo",
@@ -7158,7 +7162,8 @@
       "dashboard": "แดชบอร์ด",
       "lightMode": "โหมดสว่าง",
       "open": "เปิดเมนูบัญชี",
-      "signedInAs": "เข้าสู่ระบบเป็น"
+      "signedInAs": "เข้าสู่ระบบเป็น",
+      "avatarAlt": "รูปโปรไฟล์ของคุณ"
     },
     "tabs": {
       "account": "บัญชีและโปรไฟล์",
@@ -8713,7 +8718,8 @@
       "dashboard": "仪表板",
       "lightMode": "浅色模式",
       "open": "打开账户菜单",
-      "signedInAs": "已登录为"
+      "signedInAs": "已登录为",
+      "avatarAlt": "您的个人头像"
     },
     "tabs": {
       "account": "账户与个人资料",
@@ -10260,7 +10266,8 @@
       "dashboard": "儀表板",
       "lightMode": "淺色模式",
       "open": "開啟帳戶選單",
-      "signedInAs": "已登入為"
+      "signedInAs": "已登入為",
+      "avatarAlt": "您的個人頭像"
     },
     "tabs": {
       "account": "帳戶與個人檔案",
