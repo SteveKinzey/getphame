@@ -6,7 +6,7 @@
  * Due reminders are processed by the managed hourly heartbeat endpoint.
  */
 import { getDb } from "./db";
-import { followUpReminders, businessProfiles, customerRequests } from "../drizzle/schema";
+import { followUpReminders, businessProfiles } from "../drizzle/schema";
 import { eq, and, lte } from "drizzle-orm";
 import { sendMailViaSmtp } from "./smtp";
 import {
@@ -52,21 +52,6 @@ export async function scheduleFollowUp(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const [requestSnapshot] = await db
-    .select({
-      preferredLocale: customerRequests.preferredLocale,
-      templateRevisionId: customerRequests.templateRevisionId,
-      englishTemplateRevisionId: customerRequests.englishTemplateRevisionId,
-    })
-    .from(customerRequests)
-    .where(
-      and(
-        eq(customerRequests.userId, userId),
-        eq(customerRequests.id, customerRequestId),
-      ),
-    )
-    .limit(1);
-
   const [profile] = await db
     .select({
       followUpEnabled: businessProfiles.followUpEnabled,
@@ -93,9 +78,6 @@ export async function scheduleFollowUp(
     secondDelayDaysSnapshot: secondDelayDays,
     firstStageEnabledSnapshot: firstStageEnabled ? 1 : 0,
     secondStageEnabledSnapshot: secondStageEnabled ? 1 : 0,
-    preferredLocale: requestSnapshot?.preferredLocale ?? "en",
-    templateRevisionId: requestSnapshot?.templateRevisionId ?? null,
-    englishTemplateRevisionId: requestSnapshot?.englishTemplateRevisionId ?? null,
   };
 
   if (firstStageEnabled) {

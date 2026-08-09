@@ -1925,7 +1925,8 @@
     "signedInAs": "当前登录账户",
     "dashboard": "控制面板",
     "darkMode": "深色模式",
-    "lightMode": "浅色模式"
+    "lightMode": "浅色模式",
+    "avatarAlt": "您的个人头像"
   },
   "account": {
     "renewsOn": "将于 {{date}} 续订",
@@ -2668,14 +2669,14 @@
   "developerIntegrations": {
     "sources": {
       "title": "连接数据来源",
-      "description": "选择获准客户事件的起点。Get Phame 会先验证特定用途同意、抑制状态、发送就绪情况和幂等性，然后才允许自动评价请求正式启用。",
-      "badge": "先验证 · 后启用",
+      "description": "选择客户记录的来源。Get Phame 会提供安全且仅用于导入的操作步骤，适用于可信的服务器端自动化流程。",
+      "badge": "仅导入联系人",
       "workflowTitle": "数据来源连接流程",
       "steps": {
-        "choose": "选择来源",
-        "key": "创建来源密钥",
-        "map": "映射字段和同意证据",
-        "test": "预检和安全试运行"
+        "choose": "选择数据来源",
+        "key": "创建导入密钥",
+        "map": "映射字段与同意信息",
+        "test": "发送一条已获同意的测试记录"
       },
       "choose": "选择数据来源",
       "recipeCopied": "已复制安全设置步骤。",
@@ -2687,8 +2688,7 @@
         "secret": "只把 Get Phame API 密钥保存在服务器端受保护的密钥字段中。切勿把密钥放入表单、URL、网页源代码或浏览器脚本。",
         "consent": "只导入现有客户或已明确同意的联系人。可选同意复选框默认必须保持未选中。",
         "idempotency": "每次重试都复用同一个服务商事件 ID，避免同一次提交产生重复操作。",
-        "importOnly": "此流程只会导入或更新联系人，绝不会自动发送评价请求。",
-        "activation": "从安全试运行模式开始。只有获授权人员完成预检、验证一个服务商事件并明确启用来源后，正式评价请求才会开启。"
+        "importOnly": "此流程只会导入或更新联系人，绝不会自动发送评价请求。"
       },
       "providers": {
         "jotform": {
@@ -2713,47 +2713,24 @@
           "idempotency": "每次重试都使用来源系统中不可变的提交、记录、订单或事件 ID。"
         }
       },
-      "recipeTitle": "安全评价事件模板",
+      "recipeTitle": "安全映射示例",
       "recipeDescription": "设置时使用占位符。只在自动化服务受保护的密钥字段中粘贴真实密钥。",
       "copyRecipe": "复制示例",
       "apiField": "API 字段",
       "mapTo": "映射自数据来源",
       "fields": {
         "name": "客户姓名字段",
-        "email": "客户邮箱字段",
-        "externalId": "不可变的服务商事件或记录 ID",
-        "sourceApp": "上方显示的固定服务商标识",
-        "consentConfirmed": "仅在明确授权后设为 true",
+        "email": "客户电子邮箱字段",
+        "externalId": "服务商中不可变的事件或记录 ID",
+        "sourceApp": "上方显示的固定服务商标识符",
+        "consentConfirmed": "仅在明确获准后才设为 true 的布尔值",
         "consentBasis": "customer_relationship、explicit_opt_in 或 other",
-        "consentSource": "简要说明授权的获取位置",
-        "eventType": "固定值：review_request",
-        "phone": "可选客户电话字段",
-        "sourceFormId": "稳定的服务商表单标识",
-        "sourceSubmissionId": "不可变的提交或潜在客户标识",
-        "preferredLocale": "受支持的语言代码：en、es、fr、it、th、zh-CN 或 zh-TW",
-        "consentPurpose": "固定值：review_outreach",
-        "consentChannel": "固定值：email",
-        "consentCapturedAt": "带时区的 ISO 8601 提交时间",
-        "consentText": "向该人员显示的评价沟通复选框原文",
-        "consentVersion": "由企业管理的不可变文案版本",
-        "privacyPolicyUrl": "复选框旁显示的 HTTPS 隐私政策网址"
+        "consentSource": "简要说明同意信息的收集位置"
       },
       "nextTitle": "准备连接了吗？",
-      "nextDescription": "创建同时具有 contacts:write 和 review_requests:send 权限的来源密钥，将其绑定到托管来源，然后完成预检和一次安全试运行。",
-      "createKey": "创建来源密钥",
-      "viewImports": "管理来源",
-      "consentCopyTitle": "评价沟通复选框——复制并调整",
-      "consentCopyInstructions": "此复选框默认不得勾选。可将其作为加入自动评价沟通的条件，但不得作为无关购买、报价或服务的条件。请由合格法律顾问审核最终文案和流程。",
-      "reviewConsentCopy": "我同意 {{business_name}} 就我最近的购买或服务体验向我发送电子邮件，包括一次评价请求和最多两次提醒。我可以随时取消订阅。同意并非购买条件。请参阅隐私政策。",
-      "marketingConsentTitle": "单独的可选营销许可",
-      "marketingConsentCopy": "我愿意偶尔接收 {{business_name}} 的营销电子邮件和优惠。我可以随时取消订阅。同意并非购买条件。请参阅隐私政策。",
-      "channelBoundary": "不得将任一电子邮件复选框视为对短信、自动电话或其他用途的许可。缺少有效评价沟通证据的提交必须标记为不合格，且不得自动发送。",
-      "testTitle": "安全地测试、重试和撤销",
-      "testImport": "使用一名获准收件人运行只读验证端点。在不导入或发送的情况下确认来源绑定、抑制状态、SMTP、配额、模板和目标。",
-      "testReplay": "启用安全试运行，提交一个真实服务商事件，再使用相同 Idempotency-Key 重放。应返回相同结果，而不是创建重复工作。",
-      "testFailure": "同意冲突和验证错误应视为终止错误。仅重试可恢复故障，遵守 Retry-After，并始终复用相同事件 ID。",
-      "testActivate": "在获授权人员从试运行切换为正式发送之前，确认已批准模板、收件人语言、目标、提醒和延迟。",
-      "testRevoke": "若要停止来源，请在 Get Phame 和服务商中暂停它，撤销或轮换密钥，并保留脱敏审计历史。"
+      "nextDescription": "创建 contacts:write 密钥，发送一条已获同意的测试记录，然后在“最近 API 导入”中确认脱敏后的结果。",
+      "createKey": "创建导入密钥",
+      "viewImports": "查看导入记录"
     },
     "back": "返回设置",
     "confirm": {
@@ -2932,8 +2909,8 @@
         "make": "Make 客户导入",
         "custom": "自定义客户导入"
       },
-      "apiKey": "来源 API 密钥",
-      "noKeys": "没有有效的来源密钥",
+      "apiKey": "导入 API 密钥",
+      "noKeys": "没有有效的导入密钥",
       "expected": "预期活动",
       "intervals": {
         "15": "每15分钟",
@@ -2978,8 +2955,8 @@
       "pause": "暂停监控",
       "resume": "恢复监控",
       "archive": "归档",
-      "template": "自动化事件模板",
-      "templateDescription": "将此评价请求事件原样复制到自动化工具受保护的 HTTP 或 Webhook 操作中。",
+      "template": "引导模板",
+      "templateDescription": "将此完整请求复制到自动化中的受保护 HTTP 或 webhook 操作。",
       "copyRecipe": "复制请求示例",
       "recipeCopied": "连接请求示例已复制。",
       "secretReminder": "仅在提供商的受保护密钥字段中使用原始 API 密钥。来源 ID 可安全复制，但只能与其关联的密钥一起使用。",
@@ -3003,89 +2980,24 @@
           "2": "添加 Webhooks by Zapier，并选择 Custom Request。",
           "3": "将 Method 设置为 POST，并粘贴 Get Phame 端点。",
           "4": "按下方所示准确添加受保护的请求头。",
-          "5": "映射 sourceSubmissionId、preferredLocale 以及完整的嵌套同意证据对象。",
-          "6": "运行只读预检，启用安全试运行，发送一个获准事件，然后决定是否正式启用。"
+          "5": "映射 JSON 字段，使用一个稳定的提供者 ID 作为 externalId 和 Idempotency-Key。",
+          "6": "使用一条允许的记录测试操作，然后在此刷新健康状态。"
         },
         "make": {
           "1": "选择会生成合格客户记录的触发模块。",
           "2": "添加 HTTP 模块并选择 Make a request。",
           "3": "将 Method 设置为 POST，Body type 设置为 Raw，Content type 设置为 application/json。",
           "4": "按下方所示准确添加受保护的请求头。",
-          "5": "映射 sourceSubmissionId、preferredLocale 以及完整的嵌套同意证据对象。",
-          "6": "运行只读预检，启用安全试运行，发送一个获准事件，然后决定是否正式启用。"
+          "5": "映射 JSON 字段，使用一个稳定的 bundle ID 作为 externalId 和 Idempotency-Key。",
+          "6": "运行场景一次，使用一条允许的记录，然后在此刷新健康状态。"
         },
         "custom": {
           "1": "使用支持 POST 和受保护请求头的可信服务器端工作流。",
           "2": "将 API 密钥存储在工作流的密钥存储中，切勿放在浏览器代码或 URL 中。",
           "3": "将 JSON 和下方所示的请求头一起发送到 Get Phame 端点。",
-          "4": "为 sourceSubmissionId 和 Idempotency-Key 使用同一个不可变的来源记录 ID。",
-          "5": "运行只读预检，启用安全试运行，发送一个获准事件，然后决定是否正式启用。"
+          "4": "为 externalId 和 Idempotency-Key 使用一个不可变的来源记录 ID。",
+          "5": "发送一条允许的记录，然后在此刷新健康状态。"
         }
-      },
-      "automation": {
-        "title": "评价请求自动化安全控制",
-        "description": "配置已批准的目标和模板，在不导入数据的情况下验证，完成一次安全的服务商试运行，然后再决定何时正式启用。",
-        "updated": "自动化安全控制已更新。",
-        "states": {
-          "live": "正式发送",
-          "dryRun": "安全试运行",
-          "paused": "已暂停"
-        },
-        "scopeTitle": "需要评价请求 API 密钥",
-        "scopeDescription": "此来源绑定的是仅导入密钥。请创建同时具有 contacts:write 和 review_requests:send 权限的密钥，然后使用该密钥新建来源连接。",
-        "mode": "工作流模式",
-        "modes": {
-          "importOnly": "仅导入",
-          "reviewRequest": "评价请求"
-        },
-        "locale": "收件人语言",
-        "template": "已批准模板",
-        "defaultTemplate": "已批准的默认模板",
-        "default": "默认",
-        "platform": "评价目标",
-        "defaultPlatform": "已验证的默认目标",
-        "delay": "发送延迟",
-        "delays": {
-          "immediate": "立即",
-          "day": "24 小时",
-          "minutes": "{{count}} 分钟"
-        },
-        "dryRunCompleted": "服务商试运行",
-        "notCompleted": "未完成",
-        "lastSuccess": "最近成功事件",
-        "lastFailure": "最近失败",
-        "failureCode": "最近安全错误代码",
-        "none": "无",
-        "refresh": "刷新设置状态",
-        "pause": "暂停自动评价请求",
-        "enableDryRun": "启用安全试运行",
-        "goLive": "切换到正式发送",
-        "returnDryRun": "返回试运行",
-        "preflightTitle": "只读预检",
-        "preflightDescription": "检查来源绑定、抑制状态、SMTP、配额、目标和已批准模板的就绪情况。此测试不会导入联系人或发送电子邮件。",
-        "testName": "获准的测试姓名",
-        "testEmail": "获准的测试邮箱",
-        "runPreflight": "运行预检",
-        "preflightResult": "预检结果",
-        "preflightEmpty": "在启用服务商试运行或正式发送之前，请先运行只读检查。",
-        "ready": "配置已准备好进行安全的服务商试运行。",
-        "blocked": "请先解决被阻止的检查项，再测试此来源。",
-        "checks": {
-          "sourceBinding": "来源与 API 密钥绑定",
-          "sendScope": "评价请求权限",
-          "automationMode": "评价请求模式",
-          "suppression": "收件人抑制状态",
-          "delivery": "SMTP、配额、模板和目标",
-          "dryRun": "已完成服务商试运行"
-        },
-        "checkStatuses": {
-          "ready": "就绪",
-          "blocked": "被阻止",
-          "required": "必需"
-        },
-        "deliveryCode": "就绪代码：{{code}}",
-        "retryTitle": "安全重试规则",
-        "retryDescription": "使用相同的 sourceSubmissionId 和 Idempotency-Key 重试同一事件。重试时切勿创建新 ID。Get Phame 会重放已完成结果，并对可恢复的发送失败安排有限次数的重试。"
       }
     },
     "wordpressPairing": {

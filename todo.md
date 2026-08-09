@@ -1576,7 +1576,7 @@
 - [x] Replace DEMO_GIF manuscdn session URL in LandingPage.tsx with fresh CDN URL
 
 ## Landing Page Desktop Restoration (Jul 7, 2026)
-- [x] Copy all 17 legacy-deployment landing components into Manus project
+- [x] Copy all 17 Fly.io landing components into Manus project
 - [x] Wire component-based LandingPage.tsx (Navbar, Hero, TrustBar, VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Testimonials, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer)
 - [x] Add Plus Jakarta Sans font to index.html
 - [x] Fix container max-width for desktop (480px → 1280px)
@@ -1668,32 +1668,18 @@
 - [x] Create getphame-mark-reviewed-row reusable skill (single-item mark + undo + touch)
 - [x] Add 4-second undo toast after single-item mark-as-reviewed
 - [x] Add touch-device fallback: permanently visible checkmark on devices without hover
-- [ ] Merge PR #91 into main
-- [ ] Close PR #90 as superseded
+- [x] Merge PR #91 into main (already merged in previous session — confirmed closed)
+- [x] Close PR #90 as superseded (already closed — confirmed closed)
 
-## Session — Integration Automation, AI Templates, Regional Platforms, and Manuals (Aug 2 2026)
-- [x] Audit existing Get Phame API keys, source ingestion, consent evidence, WooCommerce connector contract, template storage, platform settings, localization, and manuals
-- [x] Write the approved cross-repository architecture, consent contract, data model, migration plan, rollout gates, and rollback boundaries
-- [x] Add copy-ready website and social-lead consent guidance with an unchecked required checkbox, purpose-specific evidence fields, Zapier mapping, test procedure, retry guidance, and revocation handling
-- [x] Add a source-bound, idempotent automation endpoint that uses existing API scopes, eligibility, quiet-hours, suppression, audit, and abuse controls
-- [ ] Extend business profiles with bounded business description, business category, verified ISO country/region, preferred outreach locale, and onboarding template state
-- [ ] Add a centralized review-platform catalog with editable country/category-aware recommendations, explanatory evidence labels, custom regional destinations, and Yelp instruction-only handling
-- [ ] Add explicit recipient-language selection and persist language on contacts, requests, reminders, and immutable delivery evidence without inferring language from identity or IP address
-- [ ] Replace mutable-only templates with tenant-scoped template families and immutable revisions containing an English canonical counterpart, locale, version, provenance, approval, and safe AI-generation metadata
-- [ ] Generate structured business-specific template drafts during onboarding with strict input/output validation, shortcode allowlists, deterministic fallbacks, preview, regeneration, skip, and explicit approval before activation
-- [ ] Extend review-request composition, sending, reminders, completion, preview, and template management to use approved template revisions and friendly localized wording
-- [ ] Extend the WordPress/WooCommerce connector with explicit opt-in automatic review requests, dry run, eligibility, stable order idempotency, delay, template/language controls, pause/kill switches, failures, and safe retry behavior
-- [ ] Expand role-exclusive user and administrator manuals across all supported locales with detailed API/Zapier, consent, WooCommerce automation, AI templates, English counterparts, regional platforms, language selection, troubleshooting, rollback, and audit guidance
-- [ ] Add accessible screenshot metadata and verified redacted screenshots only where they materially improve complex manual workflows; keep PDF export behavior synchronized
-- [ ] Run focused tests, full suites, localization parity, TypeScript checks, production builds, WordPress/PHP validation, package validation, responsive verification, and security guardian gates
-- [ ] Synchronize validated changes through history-preserving protected GitHub release branches and verify exact remote-main parity without force-pushing
+## Session — Undo Pattern Skill, Bulk Undo, ActivityFeed Undo, useTouchDevice (Aug 2 2026)
+- [x] Create getphame-undo-toast-pattern reusable skill
+- [x] Create useTouchDevice hook at client/src/hooks/useTouchDevice.ts
+- [x] Refactor RecentActivityCard to use useTouchDevice hook
+- [x] Extend undo toast to Mark All bulk action in RecentActivityCard (with count)
+- [x] Apply undo toast + touch fallback to activity feed rows (Dashboard.tsx ActivityFeed)
+- [x] Sync to GitHub via PR
 
-## Session — Source Automation Setup and Health UX (Aug 2 2026)
-- [x] Upgrade managed-source recipes from import-only examples to the canonical source-event automation endpoint with nested consent evidence and explicit locale mapping
-- [x] Add keyboard-accessible per-source automation controls for enablement, dry run, bounded send delay, recipient locale, approved template, verified platform, pause, and resume
-- [x] Add a read-only preflight test action that reports source binding, suppression, SMTP, quota, platform, template, and bilingual approval readiness without importing or sending
-- [x] Show source health, recent failures, safe retry guidance, last successful event, and kill-switch state without exposing recipient or credential data
-- [x] Localize all new developer-integration and source-automation UI copy across en, es, fr, it, th, zh-CN, and zh-TW; update the offline fallback and locale cache version
-- [x] Add focused component and router tests for automation controls, preflight behavior, localization coverage, responsive layout, and accessibility states
-- [x] Pass the focused suites, full 1,045-test Vitest gate, TypeScript validation, production audit, client/server builds, whitespace validation, and added-line credential scan for the exact release tree
-- [x] Merge protected-main PR #93 after required checks and verify remote main tree parity with validated commit 24a2e9f00eea8ce901d9bf513d9cc0f777bb2e13
+## Session — Build Fix, www Redirect, Alt Tags (Aug 9 2026)
+- [x] Fix deployment build failure: update pnpm-workspace.yaml overrides to nanoid 6.0.1, dompurify >=3.4.13, mermaid >=11.16.1, brace-expansion >=5.0.9 — audit now passes clean
+- [x] Ensure www.getphame.app redirects to getphame.app — 301 redirect already in server/_core/index.ts, confirmed working
+- [x] Add missing alt tags: BottomNav profile photo gets descriptive alt when avatarUrl set; aria-hidden on decorative logo images in FirstVisitWelcome, PWAInstallPrompt, PremiumUpgradeModal; remove unused HERO_IMG; add profileMenu.avatarAlt to all 7 locales + fallback bundle

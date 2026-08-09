@@ -1802,7 +1802,8 @@
     "signedInAs": "Sesión iniciada como",
     "dashboard": "Panel",
     "darkMode": "Modo oscuro",
-    "lightMode": "Modo claro"
+    "lightMode": "Modo claro",
+    "avatarAlt": "Tu foto de perfil"
   },
   "account": {
     "administrator": "Administrador",
@@ -3048,14 +3049,14 @@
   "developerIntegrations": {
     "sources": {
       "title": "Conectar una fuente",
-      "description": "Elige dónde comienza un evento de cliente autorizado. Get Phame valida el consentimiento para esta finalidad, la supresión, la preparación de entrega y la idempotencia antes de activar solicitudes automáticas de reseña.",
-      "badge": "Validar primero · activar después",
+      "description": "Elija dónde se originan los registros de clientes. Get Phame le ofrece una receta segura y solo de importación para una automatización confiable del lado del servidor.",
+      "badge": "Solo importa contactos",
       "workflowTitle": "Flujo de conexión de fuentes",
       "steps": {
-        "choose": "Elige una fuente",
-        "key": "Crea una clave de fuente",
-        "map": "Mapea campos y consentimiento",
-        "test": "Comprobación y prueba segura"
+        "choose": "Elegir una fuente",
+        "key": "Crear una clave de importación",
+        "map": "Asignar campos y consentimiento",
+        "test": "Enviar una prueba permitida"
       },
       "choose": "Elegir una fuente",
       "recipeCopied": "Receta de configuración segura copiada.",
@@ -3067,8 +3068,7 @@
         "secret": "Guarde la clave API de Get Phame únicamente en un campo secreto protegido del servidor. Nunca la coloque en un formulario, URL, código fuente de página o script del navegador.",
         "consent": "Importe solo clientes existentes o personas que hayan dado su consentimiento expreso. Mantenga desmarcadas de forma predeterminada las casillas opcionales de consentimiento.",
         "idempotency": "Reutilice el mismo ID de evento del proveedor en cada reintento para que un envío no genere trabajo duplicado.",
-        "importOnly": "Este flujo importa o actualiza un contacto. Nunca envía automáticamente una solicitud de reseña.",
-        "activation": "Empieza en modo de prueba segura. Los envíos reales permanecen desactivados hasta que una persona autorizada complete la comprobación, verifique un evento del proveedor y active expresamente la fuente."
+        "importOnly": "Este flujo importa o actualiza un contacto. Nunca envía automáticamente una solicitud de reseña."
       },
       "providers": {
         "jotform": {
@@ -3093,47 +3093,24 @@
           "idempotency": "Use el ID inmutable de envío, registro, pedido o evento del sistema de origen en cada reintento."
         }
       },
-      "recipeTitle": "Receta segura del evento de reseña",
+      "recipeTitle": "Receta de asignación segura",
       "recipeDescription": "Use un marcador de posición durante la configuración. Pegue la clave real únicamente en el campo secreto protegido del servicio de automatización.",
       "copyRecipe": "Copiar receta",
       "apiField": "Campo de API",
       "mapTo": "Asignar desde la fuente",
       "fields": {
         "name": "Campo de nombre del cliente",
-        "email": "Campo de correo del cliente",
+        "email": "Campo de correo electrónico del cliente",
         "externalId": "ID inmutable del evento o registro del proveedor",
         "sourceApp": "Identificador fijo del proveedor mostrado arriba",
-        "consentConfirmed": "true solo después de un permiso afirmativo",
+        "consentConfirmed": "Valor booleano true solo tras un permiso afirmativo",
         "consentBasis": "customer_relationship, explicit_opt_in u other",
-        "consentSource": "Descripción breve de dónde se obtuvo el permiso",
-        "eventType": "Valor fijo: review_request",
-        "phone": "Campo opcional de teléfono del cliente",
-        "sourceFormId": "Identificador estable del formulario del proveedor",
-        "sourceSubmissionId": "Identificador inmutable del envío o lead",
-        "preferredLocale": "Código de idioma compatible: en, es, fr, it, th, zh-CN o zh-TW",
-        "consentPurpose": "Valor fijo: review_outreach",
-        "consentChannel": "Valor fijo: email",
-        "consentCapturedAt": "Fecha y hora ISO 8601 con zona horaria",
-        "consentText": "Texto exacto de la casilla de permiso mostrado a la persona",
-        "consentVersion": "Versión inmutable del texto administrada por la empresa",
-        "privacyPolicyUrl": "URL HTTPS de la política de privacidad mostrada junto a la casilla"
+        "consentSource": "Descripción breve de dónde se obtuvo el permiso"
       },
       "nextTitle": "¿Listo para conectar?",
-      "nextDescription": "Crea una clave con contacts:write y review_requests:send, vincúlala a una fuente administrada y completa la comprobación y una prueba segura.",
-      "createKey": "Crear clave de fuente",
-      "viewImports": "Administrar fuentes",
-      "consentCopyTitle": "Casilla para solicitar reseñas — copia y adapta",
-      "consentCopyInstructions": "Empieza con esta casilla sin marcar. Puedes exigirla para inscribirse en comunicaciones automatizadas de reseñas, pero no como condición de una compra, presupuesto o servicio no relacionado. Solicita a un profesional jurídico cualificado que apruebe el texto y el flujo finales.",
-      "reviewConsentCopy": "Acepto que {{business_name}} me envíe correos sobre mi compra o experiencia de servicio reciente, incluida una solicitud de reseña y hasta dos recordatorios. Puedo cancelar la suscripción en cualquier momento. El consentimiento no es condición de compra. Consulta la Política de privacidad.",
-      "marketingConsentTitle": "Permiso de marketing opcional separado",
-      "marketingConsentCopy": "Deseo recibir ocasionalmente correos de marketing y ofertas de {{business_name}}. Puedo cancelar la suscripción en cualquier momento. El consentimiento no es condición de compra. Consulta la Política de privacidad.",
-      "channelBoundary": "No interpretes ninguna casilla de correo como permiso para SMS, llamadas automatizadas u otra finalidad. Considera no aptos los envíos sin evidencia válida para solicitar reseñas y no los envíes automáticamente.",
-      "testTitle": "Prueba, reintenta y revoca con seguridad",
-      "testImport": "Ejecuta el endpoint de validación de solo lectura con un destinatario autorizado. Comprueba la fuente, la supresión, SMTP, la cuota, la plantilla y el destino sin importar ni enviar.",
-      "testReplay": "Activa la prueba segura, envía un evento real del proveedor y repítelo con la misma Idempotency-Key. Debe devolver el mismo resultado, no crear trabajo duplicado.",
-      "testFailure": "Considera terminales los conflictos de consentimiento y errores de validación. Reintenta solo fallos recuperables, respeta Retry-After y reutiliza siempre el mismo ID.",
-      "testActivate": "Verifica la plantilla aprobada, el idioma, el destino, los recordatorios y el retraso antes de pasar de prueba segura a envío real.",
-      "testRevoke": "Para detener una fuente, páusala en Get Phame y en el proveedor, revoca o rota su clave y conserva el historial de auditoría redactado."
+      "nextDescription": "Cree una clave contacts:write, envíe un registro de prueba permitido y confirme el resultado enmascarado en Importaciones API recientes.",
+      "createKey": "Crear clave de importación",
+      "viewImports": "Ver importaciones"
     },
     "back": "Volver a configuración",
     "confirm": {
@@ -3312,8 +3289,8 @@
         "make": "Importación de clientes de Make",
         "custom": "Importación de clientes personalizada"
       },
-      "apiKey": "Clave API de la fuente",
-      "noKeys": "No hay una clave activa para la fuente",
+      "apiKey": "Clave API de importación",
+      "noKeys": "No hay clave de importación activa",
       "expected": "Actividad esperada",
       "intervals": {
         "15": "Cada 15 minutos",
@@ -3358,8 +3335,8 @@
       "pause": "Pausar supervisión",
       "resume": "Reanudar supervisión",
       "archive": "Archivar",
-      "template": "plantilla de evento automatizado",
-      "templateDescription": "Copia este evento exacto de solicitud de reseña en la acción HTTP o webhook protegida de la automatización.",
+      "template": "plantilla guiada",
+      "templateDescription": "Copie esta solicitud exactamente en la acción HTTP o webhook protegida de la automatización.",
       "copyRecipe": "Copiar receta",
       "recipeCopied": "Receta de conexión copiada.",
       "secretReminder": "Use la clave API sin procesar solo dentro del campo secreto protegido del proveedor. El ID de origen es seguro de copiar pero solo funciona con su clave vinculada.",
@@ -3383,89 +3360,24 @@
           "2": "Agregue Webhooks by Zapier y seleccione Custom Request.",
           "3": "Establezca Method en POST y pegue el endpoint de Get Phame.",
           "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
-          "5": "Mapea sourceSubmissionId, preferredLocale y el objeto anidado completo de evidencia de consentimiento.",
-          "6": "Ejecuta la comprobación de solo lectura, activa la prueba segura, envía un evento autorizado y decide si pasar a producción."
+          "5": "Asigne los campos JSON, usando un ID de proveedor estable para externalId y Idempotency-Key.",
+          "6": "Pruebe la acción con un registro permitido, luego actualice el estado aquí."
         },
         "make": {
           "1": "Elija el módulo de trigger que genere un registro de cliente elegible.",
           "2": "Agregue HTTP y seleccione Make a request.",
           "3": "Establezca Method en POST, Body type en Raw y Content type en application/json.",
           "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
-          "5": "Mapea sourceSubmissionId, preferredLocale y el objeto anidado completo de evidencia de consentimiento.",
-          "6": "Ejecuta la comprobación de solo lectura, activa la prueba segura, envía un evento autorizado y decide si pasar a producción."
+          "5": "Asigne los campos JSON, usando un ID de bundle estable para externalId y Idempotency-Key.",
+          "6": "Ejecute el escenario una vez con un registro permitido, luego actualice el estado aquí."
         },
         "custom": {
           "1": "Use un flujo de trabajo del lado del servidor de confianza que admita POST y encabezados protegidos.",
           "2": "Almacene la clave API en el almacén secreto del flujo de trabajo, nunca en código del navegador ni en una URL.",
           "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
-          "4": "Usa un ID de registro inmutable para sourceSubmissionId e Idempotency-Key.",
-          "5": "Ejecuta la comprobación de solo lectura, activa la prueba segura, envía un evento autorizado y decide si pasar a producción."
+          "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
+          "5": "Envíe un registro permitido y luego actualice el estado aquí."
         }
-      },
-      "automation": {
-        "title": "Protecciones para automatizar solicitudes de reseña",
-        "description": "Configura un destino y una plantilla aprobados, valida sin importar, completa una prueba segura en el proveedor y luego decide cuándo activar los envíos.",
-        "updated": "Se actualizaron las protecciones de automatización.",
-        "states": {
-          "live": "Envío activo",
-          "dryRun": "Prueba segura",
-          "paused": "En pausa"
-        },
-        "scopeTitle": "Se requiere una clave API para solicitudes de reseña",
-        "scopeDescription": "Esta fuente está vinculada a una clave solo para importación. Crea una clave con los permisos contacts:write y review_requests:send y, después, una nueva conexión de fuente con esa clave.",
-        "mode": "Modo del flujo",
-        "modes": {
-          "importOnly": "Solo importar",
-          "reviewRequest": "Solicitud de reseña"
-        },
-        "locale": "Idioma del destinatario",
-        "template": "Plantilla aprobada",
-        "defaultTemplate": "Plantilla predeterminada aprobada",
-        "default": "predeterminada",
-        "platform": "Destino de la reseña",
-        "defaultPlatform": "Destino predeterminado verificado",
-        "delay": "Retraso del envío",
-        "delays": {
-          "immediate": "Inmediatamente",
-          "day": "24 horas",
-          "minutes": "{{count}} minutos"
-        },
-        "dryRunCompleted": "Prueba del proveedor",
-        "notCompleted": "No completada",
-        "lastSuccess": "Último evento correcto",
-        "lastFailure": "Último fallo",
-        "failureCode": "Último código de error seguro",
-        "none": "Ninguno",
-        "refresh": "Actualizar estado de configuración",
-        "pause": "Pausar solicitudes automatizadas",
-        "enableDryRun": "Activar prueba segura",
-        "goLive": "Pasar a envíos reales",
-        "returnDryRun": "Volver a la prueba",
-        "preflightTitle": "Comprobación previa de solo lectura",
-        "preflightDescription": "Comprueba la vinculación de la fuente, la supresión, SMTP, la cuota, el destino y la plantilla aprobada. Esta prueba no importa contactos ni envía correos.",
-        "testName": "Nombre de prueba autorizado",
-        "testEmail": "Correo de prueba autorizado",
-        "runPreflight": "Ejecutar comprobación",
-        "preflightResult": "Resultado de la comprobación",
-        "preflightEmpty": "Ejecuta una comprobación de solo lectura antes de activar una prueba del proveedor o el envío real.",
-        "ready": "La configuración está lista para una prueba segura del proveedor.",
-        "blocked": "Resuelve las comprobaciones bloqueadas antes de probar esta fuente.",
-        "checks": {
-          "sourceBinding": "Vinculación de fuente y clave API",
-          "sendScope": "Permiso para solicitar reseñas",
-          "automationMode": "Modo de solicitud de reseña",
-          "suppression": "Supresión del destinatario",
-          "delivery": "SMTP, cuota, plantilla y destino",
-          "dryRun": "Prueba del proveedor completada"
-        },
-        "checkStatuses": {
-          "ready": "Lista",
-          "blocked": "Bloqueada",
-          "required": "Obligatoria"
-        },
-        "deliveryCode": "Código de preparación: {{code}}",
-        "retryTitle": "Regla de reintento seguro",
-        "retryDescription": "Reintenta el mismo evento con el mismo sourceSubmissionId e Idempotency-Key. Nunca crees un ID nuevo al reintentar. Get Phame reproduce los resultados completados y programa reintentos limitados para fallos recuperables."
       }
     },
     "wordpressPairing": {

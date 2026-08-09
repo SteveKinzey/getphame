@@ -1537,7 +1537,8 @@
     "signedInAs": "Signed in as",
     "dashboard": "Dashboard",
     "darkMode": "Dark mode",
-    "lightMode": "Light mode"
+    "lightMode": "Light mode",
+    "avatarAlt": "Your profile photo"
   },
   "account": {
     "administrator": "Administrator",
@@ -3099,14 +3100,14 @@
   "developerIntegrations": {
     "sources": {
       "title": "Connect a source",
-      "description": "Choose where an approved customer event starts. Get Phame validates purpose-specific consent, suppression, delivery readiness, and idempotency before any automated review request can go live.",
-      "badge": "Validate first · activate later",
+      "description": "Choose where customer records start. Get Phame gives you a secure, import-only recipe for a trusted server-side automation.",
+      "badge": "Imports contacts only",
       "workflowTitle": "Source connection workflow",
       "steps": {
         "choose": "Choose a source",
-        "key": "Create a source key",
+        "key": "Create an import key",
         "map": "Map fields and consent",
-        "test": "Preflight and dry run"
+        "test": "Send one permitted test"
       },
       "choose": "Choose a source",
       "recipeCopied": "Safe setup recipe copied.",
@@ -3118,8 +3119,7 @@
         "secret": "Store the Get Phame API key only in a protected server-side secret field. Never place it in a form, URL, page source, or browser script.",
         "consent": "Import only existing customers or people who affirmatively opted in. Keep optional consent boxes unchecked by default.",
         "idempotency": "Reuse the same provider event ID for every retry so one submission cannot create duplicate work.",
-        "importOnly": "This workflow imports or updates a contact. It never sends a review request automatically.",
-        "activation": "Start in safe dry-run mode. Live review outreach stays off until an authorized user completes preflight, verifies one provider event, and explicitly activates that source."
+        "importOnly": "This workflow imports or updates a contact. It never sends a review request automatically."
       },
       "providers": {
         "jotform": {
@@ -3144,7 +3144,7 @@
           "idempotency": "Use the source system's immutable submission, record, order, or event ID for every retry."
         }
       },
-      "recipeTitle": "Safe review-event recipe",
+      "recipeTitle": "Safe mapping recipe",
       "recipeDescription": "Use a placeholder while configuring. Paste the real key only into the automation service's protected secret field.",
       "copyRecipe": "Copy recipe",
       "apiField": "API field",
@@ -3156,35 +3156,12 @@
         "sourceApp": "Fixed provider identifier shown above",
         "consentConfirmed": "Boolean true only after affirmative permission",
         "consentBasis": "customer_relationship, explicit_opt_in, or other",
-        "consentSource": "Short description of where permission was captured",
-        "eventType": "Fixed value: review_request",
-        "phone": "Optional customer phone field",
-        "sourceFormId": "Stable provider form identifier",
-        "sourceSubmissionId": "Immutable provider submission or lead identifier",
-        "preferredLocale": "Explicit supported language tag: en, es, fr, it, th, zh-CN, or zh-TW",
-        "consentPurpose": "Fixed value: review_outreach",
-        "consentChannel": "Fixed value: email",
-        "consentCapturedAt": "ISO 8601 timestamp with timezone from the source submission",
-        "consentText": "Exact review-outreach checkbox wording shown to the person",
-        "consentVersion": "Immutable business-managed wording version",
-        "privacyPolicyUrl": "HTTPS privacy-policy URL shown beside the checkbox"
+        "consentSource": "Short description of where permission was captured"
       },
       "nextTitle": "Ready to connect?",
-      "nextDescription": "Create a source key with contacts:write and review_requests:send, bind it to a managed source, then complete preflight and one safe dry run.",
-      "createKey": "Create source key",
-      "viewImports": "Manage sources",
-      "consentCopyTitle": "Review-outreach checkbox — copy and customize",
-      "consentCopyInstructions": "Start this checkbox unchecked. You may require it for enrollment in automated review outreach, but not as a condition of an unrelated purchase, quote, or service. Have qualified counsel approve your final wording and workflow.",
-      "reviewConsentCopy": "I agree that {{business_name}} may email me about my recent purchase or service experience, including one review request and up to two follow-up reminders. I can unsubscribe at any time. Consent is not a condition of purchase. See the Privacy Policy.",
-      "marketingConsentTitle": "Separate optional marketing permission",
-      "marketingConsentCopy": "I would like to receive occasional marketing emails and offers from {{business_name}}. I can unsubscribe at any time. Consent is not a condition of purchase. See the Privacy Policy.",
-      "channelBoundary": "Do not treat either email checkbox as permission for SMS, automated calls, or another purpose. Import submissions without valid review-outreach evidence as ineligible and do not send automatically.",
-      "testTitle": "Test, retry, and revoke safely",
-      "testImport": "Run the read-only validation endpoint with one permitted recipient. Confirm source binding, suppression, SMTP, quota, template, and destination checks without importing or sending.",
-      "testReplay": "Enable safe dry run, submit one real provider event, then replay it with the same Idempotency-Key. Expect the same outcome, not duplicate work.",
-      "testFailure": "Treat consent conflicts and validation errors as terminal. Retry only recoverable responses, honor Retry-After, and always reuse the same event ID.",
-      "testActivate": "Verify the exact approved template, recipient language, destination, reminders, and delay before an authorized user switches from dry run to live delivery.",
-      "testRevoke": "To stop a source, pause it in Get Phame and in the provider, revoke or rotate its key, and preserve the redacted audit history."
+      "nextDescription": "Create a contacts:write key, send one permitted test record, then confirm the masked result in Recent API imports.",
+      "createKey": "Create import key",
+      "viewImports": "View imports"
     },
     "sourceOps": {
       "title": "Managed source connections",
@@ -3199,8 +3176,8 @@
         "make": "Make customer import",
         "custom": "Custom customer import"
       },
-      "apiKey": "Source API key",
-      "noKeys": "No active source key",
+      "apiKey": "Import API key",
+      "noKeys": "No active import key",
       "expected": "Expected activity",
       "intervals": {
         "15": "Every 15 minutes",
@@ -3245,8 +3222,8 @@
       "pause": "Pause monitoring",
       "resume": "Resume monitoring",
       "archive": "Archive",
-      "template": "automation event template",
-      "templateDescription": "Copy this exact review-request event into the automation’s protected HTTP or webhook action.",
+      "template": "guided template",
+      "templateDescription": "Copy this exact request into the automation's protected HTTP or webhook action.",
       "copyRecipe": "Copy recipe",
       "recipeCopied": "Connection recipe copied.",
       "secretReminder": "Use the raw API key only inside the provider's protected secret field. The source ID is safe to copy but works only with its linked key.",
@@ -3270,89 +3247,24 @@
           "2": "Add Webhooks by Zapier and select Custom Request.",
           "3": "Set Method to POST and paste the Get Phame endpoint.",
           "4": "Add the protected headers exactly as shown below.",
-          "5": "Map sourceSubmissionId, preferredLocale, and the complete nested consent evidence object.",
-          "6": "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live."
+          "5": "Map the JSON fields, using one stable provider ID for externalId and Idempotency-Key.",
+          "6": "Test the action with one permitted record, then refresh health here."
         },
         "make": {
           "1": "Choose the trigger module that produces an eligible customer record.",
           "2": "Add HTTP and select Make a request.",
           "3": "Set Method to POST, Body type to Raw, and Content type to application/json.",
           "4": "Add the protected headers exactly as shown below.",
-          "5": "Map sourceSubmissionId, preferredLocale, and the complete nested consent evidence object.",
-          "6": "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live."
+          "5": "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
+          "6": "Run the scenario once with one permitted record, then refresh health here."
         },
         "custom": {
           "1": "Use a trusted server-side workflow that supports POST and protected headers.",
           "2": "Store the API key in the workflow secret store, never in browser code or a URL.",
           "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
-          "4": "Use one immutable source record ID for sourceSubmissionId and Idempotency-Key.",
-          "5": "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live."
+          "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
+          "5": "Send one permitted record, then refresh health here."
         }
-      },
-      "automation": {
-        "title": "Review-request automation safeguards",
-        "description": "Configure an approved destination and template, validate without importing, complete one safe provider dry run, then choose when to go live.",
-        "updated": "Automation safeguards updated.",
-        "states": {
-          "live": "Live delivery",
-          "dryRun": "Safe dry run",
-          "paused": "Paused"
-        },
-        "scopeTitle": "A review-request API key is required",
-        "scopeDescription": "This source is linked to an import-only key. Create a key with contacts:write and review_requests:send scopes, then create a new source connection with that key.",
-        "mode": "Workflow mode",
-        "modes": {
-          "importOnly": "Import only",
-          "reviewRequest": "Review request"
-        },
-        "locale": "Recipient language",
-        "template": "Approved template",
-        "defaultTemplate": "Approved default template",
-        "default": "default",
-        "platform": "Review destination",
-        "defaultPlatform": "Verified default destination",
-        "delay": "Send delay",
-        "delays": {
-          "immediate": "Immediately",
-          "day": "24 hours",
-          "minutes": "{{count}} minutes"
-        },
-        "dryRunCompleted": "Provider dry run",
-        "notCompleted": "Not completed",
-        "lastSuccess": "Last successful event",
-        "lastFailure": "Last failure",
-        "failureCode": "Latest safe error code",
-        "none": "None",
-        "refresh": "Refresh setup status",
-        "pause": "Pause automated requests",
-        "enableDryRun": "Enable safe dry run",
-        "goLive": "Move to live delivery",
-        "returnDryRun": "Return to dry run",
-        "preflightTitle": "Read-only preflight",
-        "preflightDescription": "Check source binding, suppression, SMTP, quota, destination, and approved template readiness. This test does not import a contact or send email.",
-        "testName": "Permitted test name",
-        "testEmail": "Permitted test email",
-        "runPreflight": "Run preflight",
-        "preflightResult": "Preflight result",
-        "preflightEmpty": "Run a read-only check before enabling a provider dry run or live delivery.",
-        "ready": "Configuration is ready for a safe provider dry run.",
-        "blocked": "Resolve the blocked checks before testing this source.",
-        "checks": {
-          "sourceBinding": "Source and API-key binding",
-          "sendScope": "Review-request permission",
-          "automationMode": "Review-request mode",
-          "suppression": "Recipient suppression",
-          "delivery": "SMTP, quota, template, and destination",
-          "dryRun": "Completed provider dry run"
-        },
-        "checkStatuses": {
-          "ready": "Ready",
-          "blocked": "Blocked",
-          "required": "Required"
-        },
-        "deliveryCode": "Readiness code: {{code}}",
-        "retryTitle": "Safe retry rule",
-        "retryDescription": "Retry the same event with the same sourceSubmissionId and Idempotency-Key. Never create a new ID for a retry. Get Phame replays completed outcomes and schedules bounded retries for recoverable delivery failures."
       }
     },
     "guides": {

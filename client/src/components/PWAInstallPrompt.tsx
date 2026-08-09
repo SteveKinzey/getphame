@@ -252,6 +252,7 @@ export default function PWAInstallPrompt() {
                 src="https://assets.getphame.app/getphame-logo.svg"
                 alt=""
                 className="pwa-install-attention h-7 w-7 rounded-lg"
+              aria-hidden="true"
               />
               <span className="text-sm font-black tracking-widest uppercase text-white">
                 Get <span className="rr-text-gold">Phame</span>

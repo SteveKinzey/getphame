@@ -24,45 +24,36 @@ describe("Developer Sources workflow", () => {
     expect(component).toContain('label: "Other source"');
   });
 
-  it("uses the canonical source-event endpoint, source binding, and a placeholder secret", () => {
+  it("uses only the canonical import endpoint and a placeholder secret", () => {
     const component = readProjectFile("../client/src/components/SourceSetupGuide.tsx");
-    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
     const publicApi = readProjectFile("./publicApi.ts");
 
     expect(component).toContain('const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>"');
     expect(component).not.toContain("gp_live_");
     expect(component).toContain("Authorization: Bearer ${API_KEY_PLACEHOLDER}");
-    expect(component).toContain("X-Get-Phame-Source: <YOUR_SOURCE_ID>");
     expect(component).toContain("Idempotency-Key: <stable-provider-event-id>");
     expect(component).not.toContain("/api/public/send");
     expect(component).not.toContain("apiKeyRaw");
-    expect(page).toContain('/api/v1/source-events/review-request');
-    expect(publicApi).toContain('authenticateApiRequest(req, "review_requests:send")');
-    expect(publicApi).toContain('app.post("/api/v1/source-events/review-request", handleSourceEventReviewRequest)');
+    expect(publicApi).toContain('authenticateApiRequest(req, "contacts:write")');
+    expect(publicApi).toContain('app.post("/api/v1/contacts", handleContactImport(true))');
   });
 
-  it("maps nested purpose-specific consent, stable source metadata, idempotency, and guarded automation", () => {
+  it("maps consent, stable source metadata, idempotency, and deduplication without automatic sending", () => {
     const component = readProjectFile("../client/src/components/SourceSetupGuide.tsx");
     const publicApi = readProjectFile("./publicApi.ts");
 
-    for (const field of ["eventType", "name", "email", "externalId", "sourceApp", "sourceSubmissionId", "preferredLocale"]) {
+    for (const field of ["name", "email", "externalId", "sourceApp", "consentConfirmed", "consentBasis", "consentSource"]) {
       expect(component).toContain(`["${field}"`);
     }
-    expect(component).toContain('"consent": {');
-    expect(component).toContain('"purpose": "review_outreach"');
-    expect(component).toContain('"channel": "email"');
-    expect(component).toContain('"privacyPolicyUrl": "https://example.com/privacy"');
     expect(component).toContain('sourceApp: "jotform"');
     expect(component).toContain('sourceApp: "facebook-lead-ads"');
     expect(component).toContain('sourceApp: "google-forms"');
     expect(component).toContain('sourceApp: "airtable"');
-    expect(component).toContain('defaultValue: "Validate first · activate later"');
-    expect(component).toContain('test: "Preflight and dry run"');
+    expect(component).toContain('defaultValue: "Imports contacts only"');
     expect(publicApi).toContain('"CONSENT_REQUIRED"');
     expect(publicApi).toContain('"IDEMPOTENCY_CONFLICT"');
-    expect(publicApi).toContain("claimSourceAutomationEvent");
-    expect(publicApi).toContain("automationEnabled");
-    expect(publicApi).toContain("dryRun");
+    expect(publicApi).toContain("deduplicated: !result.created");
+    expect(publicApi).not.toContain('app.post("/api/v1/contacts", handleSendRequest');
   });
 
   it("ships guided Zapier and Make recipes through a protected managed Sources workspace", () => {
@@ -84,37 +75,13 @@ describe("Developer Sources workflow", () => {
 
     expect(router).toContain("setupManifest: protectedProcedure");
     expect(router).toContain('sourceHeaderName: "X-Get-Phame-Source"');
-    expect(router).toContain('automationEndpointPath: "/api/v1/source-events/review-request"');
+    expect(router).toContain('endpointPath: "/api/v1/contacts"');
     expect(router).toContain("Webhooks by Zapier");
     expect(router).toContain("https://help.zapier.com/hc/en-us/articles/8496288690317-Send-webhooks-in-Zaps");
     expect(router).toContain('actionApp: "HTTP"');
     expect(router).toContain("https://apps.make.com/http");
     expect(router).toContain("keyHint: key.keyHint");
     expect(router).not.toContain("keyHash: key.keyHash");
-  });
-
-  it("ships keyboard-accessible automation controls, read-only preflight, safe activation, and retry guidance", () => {
-    const panel = readProjectFile("../client/src/components/SourceOperationsPanel.tsx");
-    const workspace = readProjectFile("../client/src/components/SourceAutomationWorkspace.tsx");
-    const router = readProjectFile("./routers/sourceOperations.ts");
-    const sources = readProjectFile("./sourceConnections.ts");
-
-    expect(panel).toContain("<SourceAutomationWorkspace");
-    expect(workspace).toContain('data-testid="source-automation-workspace"');
-    expect(workspace).toContain("trpc.sources.preflight.useMutation");
-    expect(workspace).toContain('aria-live="polite"');
-    expect(workspace).toContain('type="email"');
-    expect(workspace).toContain('defaultValue: "Read-only preflight"');
-    expect(workspace).toContain('defaultValue: "Enable safe dry run"');
-    expect(workspace).toContain('defaultValue: "Move to live delivery"');
-    expect(workspace).toContain('defaultValue: "Pause automated requests"');
-    expect(workspace).toContain("sourceSubmissionId and Idempotency-Key");
-    expect(workspace).toContain("sm:grid-cols-2");
-    expect(workspace).toContain("xl:grid-cols-5");
-    expect(router).toContain("preflight: protectedProcedure");
-    expect(router).toContain("validateReviewRequestDelivery");
-    expect(sources).toContain("dryRunCompletedAt");
-    expect(sources).toContain("Complete one successful source dry run before enabling live review requests.");
   });
 
   it("attributes every authorized import to an owned source and exposes only owner-scoped analytics and health operations", () => {
@@ -184,8 +151,8 @@ describe("Developer Sources workflow", () => {
     }
 
     const serviceWorker = readProjectFile("../client/public/sw.js");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v31'");
-    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame63');
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
+    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame61');
     expect(component).toContain("const STEP_FALLBACKS");
     expect(component).toContain("const RULE_FALLBACKS");
     expect(component).toContain("const PROVIDER_FALLBACKS");

@@ -106,7 +106,7 @@ export default function PremiumUpgradeModal() {
           </button>
 
           <div className="mb-5 flex items-center gap-2 pr-12" aria-label="GET PHAME" translate="no">
-            <img src="https://assets.getphame.app/getphame-logo.svg" alt="" className="h-9 w-9 rounded-xl" />
+            <img src="https://assets.getphame.app/getphame-logo.svg" alt="" aria-hidden="true" className="h-9 w-9 rounded-xl" />
             <span className="text-sm font-black tracking-[0.16em] text-white">GET <span className="rr-text-gold">PHAME</span></span>
           </div>
 
