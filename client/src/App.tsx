@@ -40,6 +40,7 @@ import AutoTextLocalizer from "./components/AutoTextLocalizer";
 import HelpAssistant from "./components/HelpAssistant";
 import { UpdateSafetyProvider } from "./contexts/UpdateSafetyContext";
 import { AppVersionProvider } from "./components/AppVersionUpdateController";
+import WebMcpPublicDiscovery from "./components/WebMcpPublicDiscovery";
 import {
   GOOGLE_SIGN_IN_TOAST_ID,
   clearGoogleSignInPending,
@@ -558,6 +559,7 @@ function App() {
         <TooltipProvider>
           <UpdateSafetyProvider>
             <AppVersionProvider>
+              <WebMcpPublicDiscovery />
               <AutoTextLocalizer />
               <Toaster position="top-center" richColors />
               <AppShell />
