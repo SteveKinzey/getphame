@@ -1670,3 +1670,11 @@
 - [x] Add touch-device fallback: permanently visible checkmark on devices without hover
 - [ ] Merge PR #91 into main
 - [ ] Close PR #90 as superseded
+
+## Session — Undo Pattern Skill, Bulk Undo, ActivityFeed Undo, useTouchDevice (Aug 2 2026)
+- [x] Create getphame-undo-toast-pattern reusable skill
+- [x] Create useTouchDevice hook at client/src/hooks/useTouchDevice.ts
+- [x] Refactor RecentActivityCard to use useTouchDevice hook
+- [x] Extend undo toast to Mark All bulk action in RecentActivityCard (with count)
+- [x] Apply undo toast + touch fallback to activity feed rows (Dashboard.tsx ActivityFeed)
+- [x] Sync to GitHub via PR
