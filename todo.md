@@ -1683,3 +1683,12 @@
 - [x] Fix deployment build failure: update pnpm-workspace.yaml overrides to nanoid 6.0.1, dompurify >=3.4.13, mermaid >=11.16.1, brace-expansion >=5.0.9 — audit now passes clean
 - [x] Ensure www.getphame.app redirects to getphame.app — 301 redirect already in server/_core/index.ts, confirmed working
 - [x] Add missing alt tags: BottomNav profile photo gets descriptive alt when avatarUrl set; aria-hidden on decorative logo images in FirstVisitWelcome, PWAInstallPrompt, PremiumUpgradeModal; remove unused HERO_IMG; add profileMenu.avatarAlt to all 7 locales + fallback bundle
+
+## Session — Audit/A11y Skill, PR Merge, Lazy Load, Canonical (Aug 9 2026)
+- [x] Create getphame-audit-a11y-fix reusable skill
+- [x] Merge PR #98 into main (squash-merged, 659d4c7f)
+- [x] Close PR #91 as superseded (already closed)
+- [x] Close PR #97 as superseded (already closed)
+- [x] Add loading="lazy" to ProductShowcase tab images (already present at line 243)
+- [x] Add loading="lazy" to VideoDemo thumbnail (already present at line 678)
+- [x] Insert canonical link tag in landing page head (already in index.html line 12 + SEOHead canonical prop)
