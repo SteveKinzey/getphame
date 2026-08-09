@@ -2,12 +2,9 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure, router } from "../_core/trpc";
 import { listDeveloperApiKeys } from "../developerApiKeys";
-import { findSavedContactByEmail } from "../contacts";
-import { validateReviewRequestDelivery } from "../reviewRequestDelivery";
 import { evaluateSourceConnection } from "../sourceHealthRoutes";
 import {
   SOURCE_PROVIDERS,
-  SOURCE_AUTOMATION_MODES,
   archiveSourceConnection,
   createSourceConnection,
   getSourceAnalytics,
@@ -16,19 +13,8 @@ import {
   listSourceHealthHistoryForUser,
   updateSourceConnection,
 } from "../sourceConnections";
-import { OUTREACH_LOCALES, outreachLocaleSchema } from "../integrationExpansion";
 
 const sourceIdInput = z.object({ id: z.number().int().positive() });
-
-function deliveryReadinessCode(error: unknown) {
-  const message = error instanceof Error ? error.message : "";
-  if (message.includes("Business profile")) return "PROFILE_NOT_CONFIGURED" as const;
-  if (message.includes("SMTP")) return "SMTP_NOT_CONFIGURED" as const;
-  if (message.includes("quota") || message.includes("limit")) return "QUOTA_LIMITED" as const;
-  if (message.includes("platform") || message.includes("destination")) return "PLATFORM_NOT_READY" as const;
-  if (message.includes("template") || message.includes("approved")) return "TEMPLATE_NOT_READY" as const;
-  return "DELIVERY_NOT_READY" as const;
-}
 
 const PROVIDER_RECIPES = {
   zapier: {
@@ -54,15 +40,6 @@ const FIELD_MAPPING = [
   { field: "email", required: true, description: "Customer email from the trigger record." },
   { field: "phone", required: false, description: "Customer phone, when available." },
   { field: "externalId", required: false, description: "Stable order, form, or customer ID for traceability." },
-  { field: "sourceSubmissionId", required: true, description: "Stable provider submission ID; reuse it for every retry." },
-  { field: "sourceFormId", required: false, description: "Provider form or campaign ID." },
-  { field: "preferredLocale", required: false, description: "Explicit outreach locale; never infer it from identity or IP address." },
-  { field: "consentPurpose", required: true, description: "Use review_outreach for review-request enrollment." },
-  { field: "consentChannel", required: true, description: "Use email for this workflow; SMS or calls require separate consent." },
-  { field: "consentCapturedAt", required: true, description: "ISO-8601 timestamp from the source submission." },
-  { field: "consentText", required: true, description: "Exact checkbox wording shown when permission was captured." },
-  { field: "consentVersion", required: true, description: "Version label for the consent copy." },
-  { field: "privacyPolicyUrl", required: true, description: "HTTPS privacy-policy URL shown with the form." },
   { field: "notes", required: false, description: "Short operational context; do not include secrets or payment data." },
   { field: "tags", required: false, description: "Up to 20 source or workflow tags." },
 ] as const;
@@ -72,18 +49,14 @@ export const sourceOperationsRouter = router({
     const keys = await listDeveloperApiKeys(ctx.user.id);
     return {
       endpointPath: "/api/v1/contacts",
-      automationEndpointPath: "/api/v1/source-events/review-request",
       sourceHeaderName: "X-Get-Phame-Source",
       authorizationHeaderName: "Authorization",
       idempotencyHeaderName: "Idempotency-Key",
       contentType: "application/json",
       consent: {
         confirmed: true,
-        allowedBasis: ["customer_relationship", "explicit_opt_in"] as const,
-        requiredPurpose: "review_outreach" as const,
-        requiredChannel: "email" as const,
+        allowedBasis: ["customer_relationship", "explicit_opt_in", "other"] as const,
       },
-      outreachLocales: OUTREACH_LOCALES,
       fieldMapping: FIELD_MAPPING,
       providerRecipes: PROVIDER_RECIPES,
       apiKeys: keys
@@ -107,11 +80,6 @@ export const sourceOperationsRouter = router({
     label: z.string().trim().min(1).max(100),
     expectedIntervalMinutes: z.number().int().min(15).max(10_080).default(1_440),
     monitoringEnabled: z.boolean().default(true),
-    automationEnabled: z.literal(false).default(false),
-    automationMode: z.enum(SOURCE_AUTOMATION_MODES).default("import_only"),
-    dryRun: z.literal(true).default(true),
-    sendDelayMinutes: z.number().int().min(0).max(43_200).default(0),
-    preferredLocale: z.enum(OUTREACH_LOCALES).default("en"),
   })).mutation(async ({ ctx, input }) => {
     const source = await createSourceConnection({ userId: ctx.user.id, ...input });
     if (!source) {
@@ -125,15 +93,7 @@ export const sourceOperationsRouter = router({
     label: z.string().trim().min(1).max(100).optional(),
     expectedIntervalMinutes: z.number().int().min(15).max(10_080).optional(),
     monitoringEnabled: z.boolean().optional(),
-    automationEnabled: z.boolean().optional(),
-    automationMode: z.enum(SOURCE_AUTOMATION_MODES).optional(),
-    dryRun: z.boolean().optional(),
-    sendDelayMinutes: z.number().int().min(0).max(43_200).optional(),
-    templateId: z.number().int().positive().nullable().optional(),
-    platformId: z.number().int().positive().nullable().optional(),
-    preferredLocale: z.enum(OUTREACH_LOCALES).optional(),
-    pauseReason: z.string().trim().max(255).nullable().optional(),
-  }).refine(value => Object.keys(value).some(key => key !== "id"), {
+  }).refine(value => value.label !== undefined || value.expectedIntervalMinutes !== undefined || value.monitoringEnabled !== undefined, {
     message: "Provide at least one field to update.",
   })).mutation(async ({ ctx, input }) => {
     const source = await updateSourceConnection({ userId: ctx.user.id, ...input });
@@ -170,66 +130,5 @@ export const sourceOperationsRouter = router({
     const evaluation = await evaluateSourceConnection(source);
     const updated = await getSourceConnectionForUser(ctx.user.id, input.id);
     return { source: updated, evaluation };
-  }),
-
-  preflight: protectedProcedure.input(z.object({
-    id: z.number().int().positive(),
-    customerName: z.string().trim().min(1).max(255),
-    customerEmail: z.string().trim().email().max(320),
-  })).mutation(async ({ ctx, input }) => {
-    const source = await getSourceConnectionForUser(ctx.user.id, input.id);
-    if (!source) throw new TRPCError({ code: "NOT_FOUND", message: "Source connection not found." });
-
-    const [keys, existingContact] = await Promise.all([
-      listDeveloperApiKeys(ctx.user.id),
-      findSavedContactByEmail(ctx.user.id, input.customerEmail),
-    ]);
-    const key = keys.find(candidate => candidate.id === source.apiKeyId && candidate.status === "active") ?? null;
-    const sourceBound = Boolean(key);
-    const sendScope = Boolean(key?.scopes.includes("review_requests:send"));
-    const reviewRequestMode = source.automationMode === "review_request";
-    const suppressed = Boolean(existingContact?.optedOut);
-
-    let delivery: Awaited<ReturnType<typeof validateReviewRequestDelivery>> | null = null;
-    let deliveryCode: ReturnType<typeof deliveryReadinessCode> | null = null;
-    try {
-      delivery = await validateReviewRequestDelivery({
-        userId: ctx.user.id,
-        customerName: input.customerName,
-        customerEmail: input.customerEmail,
-        preferredLocale: outreachLocaleSchema.parse(source.preferredLocale ?? "en"),
-        templateId: source.templateId,
-        platformId: source.platformId,
-        sourceConnectionId: source.id,
-        contactId: existingContact?.id ?? null,
-      });
-    } catch (error) {
-      deliveryCode = deliveryReadinessCode(error);
-    }
-
-    const configurationReady = sourceBound && sendScope && reviewRequestMode && !suppressed && delivery !== null;
-    return {
-      configurationReady,
-      readyForDryRun: configurationReady,
-      readyForLive: configurationReady && source.dryRunCompletedAt !== null,
-      checks: {
-        sourceBinding: sourceBound ? "ready" as const : "blocked" as const,
-        sendScope: sendScope ? "ready" as const : "blocked" as const,
-        automationMode: reviewRequestMode ? "ready" as const : "blocked" as const,
-        suppression: suppressed ? "blocked" as const : "ready" as const,
-        delivery: delivery ? "ready" as const : "blocked" as const,
-        dryRun: source.dryRunCompletedAt ? "ready" as const : "required" as const,
-      },
-      deliveryCode,
-      delivery,
-      source: {
-        publicId: source.publicId,
-        automationEnabled: source.automationEnabled,
-        dryRun: source.dryRun,
-        dryRunCompletedAt: source.dryRunCompletedAt,
-        sendDelayMinutes: source.sendDelayMinutes,
-        preferredLocale: source.preferredLocale,
-      },
-    };
   }),
 });

@@ -59,18 +59,11 @@ function permittedPayload() {
     name: "Permitted Customer",
     email: "customer@example.com",
     externalId: "order-123",
-    sourceSubmissionId: "order-123",
     sourceApp: "zapier",
     consent: {
       confirmed: true,
       basis: "customer_relationship",
-      purpose: "review_outreach",
-      channel: "email",
-      capturedAt: "2026-08-02T12:00:00.000Z",
       source: "Completed order",
-      text: "I agree to receive one email asking for a review.",
-      version: "2026-08-02",
-      privacyPolicyUrl: "https://getphame.app/privacy",
     },
   };
 }

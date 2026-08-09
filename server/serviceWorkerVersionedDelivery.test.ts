@@ -9,10 +9,10 @@ function readProjectFile(relativePath: string) {
 }
 
 describe("versioned service-worker delivery", () => {
-  it("registers the path-versioned v31 worker so edge caches cannot pin /sw.js", () => {
+  it("registers the path-versioned v28 worker so edge caches cannot pin /sw.js", () => {
     const mainSource = readProjectFile("client/src/main.tsx");
 
-    expect(mainSource).toContain('const SERVICE_WORKER_URL = "/sw-v31.js"');
+    expect(mainSource).toContain('const SERVICE_WORKER_URL = "/sw-v28.js"');
     expect(mainSource).toContain(
       "navigator.serviceWorker.register(SERVICE_WORKER_URL)"
     );
@@ -22,14 +22,14 @@ describe("versioned service-worker delivery", () => {
   });
 
   it("keeps the versioned file and runtime cache generation aligned", () => {
-    const versionedWorker = readProjectFile("client/public/sw-v31.js");
+    const versionedWorker = readProjectFile("client/public/sw-v28.js");
     const legacyWorker = readProjectFile("client/public/sw.js");
 
-    expect(versionedWorker).toContain("const CACHE_NAME = 'getphame-v31'");
+    expect(versionedWorker).toContain("const CACHE_NAME = 'getphame-v29'");
     expect(versionedWorker).toContain(
-      "Release manifest: locale dictionaries phame63; service worker getphame-v31."
+      "Release manifest: locale dictionaries phame61; service worker getphame-v29."
     );
-    expect(legacyWorker).toContain("const CACHE_NAME = 'getphame-v31'");
+    expect(legacyWorker).toContain("const CACHE_NAME = 'getphame-v29'");
 
     for (const locale of ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
       const cancellationNamespace = `/locales/${locale}/cancellation.json`;
