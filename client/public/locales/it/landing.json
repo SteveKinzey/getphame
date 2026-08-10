@@ -310,5 +310,8 @@
       },
       "cta": "Scopri come Get Phame protegge i tuoi dati"
     }
+  },
+  "leadCapture": {
+    "consentGuideLink": "Scarica la Guida alla Conformità del Consenso (PDF)"
   }
 }

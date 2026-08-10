@@ -208,6 +208,16 @@ export default function LeadCapture() {
               <p className="text-sm text-slate-300 font-medium mt-4">
                 {t("landing.leadCapture.noSpamMessage", { defaultValue: "No spam. Unsubscribe anytime. We respect your inbox." })}
               </p>
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <a
+                  href="/consent-guide.pdf"
+                  download="GetPhame-Consent-Compliance-Guide.pdf"
+                  className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+                >
+                  <Download size={14} />
+                  {t("landing.leadCapture.consentGuideLink", { defaultValue: "Download Consent Compliance Guide (PDF)" })}
+                </a>
+              </div>
             </div>
           </div>
         </FadeUp>

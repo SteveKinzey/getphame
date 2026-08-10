@@ -1683,3 +1683,130 @@
 - [x] Fix deployment build failure: update pnpm-workspace.yaml overrides to nanoid 6.0.1, dompurify >=3.4.13, mermaid >=11.16.1, brace-expansion >=5.0.9 — audit now passes clean
 - [x] Ensure www.getphame.app redirects to getphame.app — 301 redirect already in server/_core/index.ts, confirmed working
 - [x] Add missing alt tags: BottomNav profile photo gets descriptive alt when avatarUrl set; aria-hidden on decorative logo images in FirstVisitWelcome, PWAInstallPrompt, PremiumUpgradeModal; remove unused HERO_IMG; add profileMenu.avatarAlt to all 7 locales + fallback bundle
+
+## Session — Audit/A11y Skill, PR Merge, Lazy Load, Canonical (Aug 9 2026)
+- [x] Create getphame-audit-a11y-fix reusable skill
+- [x] Merge PR #98 into main (squash-merged, 659d4c7f)
+- [x] Close PR #91 as superseded (already closed)
+- [x] Close PR #97 as superseded (already closed)
+- [x] Add loading="lazy" to ProductShowcase tab images (already present at line 243)
+- [x] Add loading="lazy" to VideoDemo thumbnail (already present at line 678)
+- [x] Insert canonical link tag in landing page head (already in index.html line 12 + SEOHead canonical prop)
+
+## Session — SEO/Perf Skill, Hero fetchpriority, Robots Meta, Toast Animation (Aug 9 2026)
+- [x] Create getphame-seo-perf-optimization reusable skill
+- [x] Add fetchpriority="high" to hero phone mockup image (Hero.tsx line 218)
+- [x] Add robots meta tag to client/index.html (index, follow)
+- [x] Add fade-in animation to undo toast notifications (toast-in keyframe + animate-toast-in class on all 3 toasts)
+- [x] Run Lighthouse audit on landing page: Perf 40, A11y 96, Best Practices 73, SEO 100
+
+## Session — PWA Perf/A11y Skill, Viewport Fix, Preload, Code-Split (Aug 9 2026)
+- [x] Create getphame-pwa-perf-a11y reusable skill
+- [x] Remove maximum-scale=1 from viewport meta tag in index.html (a11y fix)
+- [x] Add preload link for hero background image (phame-hero-bg.webp) in index.html
+- [x] Implement React.lazy() code-splitting for landing page: VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer
+- [x] Integrate SendGrid as system email relay: server/sendgrid.ts helper, wired into auth-email.ts (magic links), smtp.ts (welcome email), accountDeletionEmail.ts, adminPlatformEmail.ts. SENDGRID_API_KEY secret needed.
+
+## Session — SendGrid Skill, PR, Resend Button, Email Templates
+- [x] Create getphame-sendgrid-system-relay reusable skill
+- [x] Open GitHub PR for checkpoint a82dfe62 → PR #99 at https://github.com/SteveKinzey/getphame/pull/99
+- [x] Add Resend Magic Link button with 60-second cooldown to login page (already fully implemented in MagicLinkForm.tsx — verified)
+- [x] Create responsive HTML email templates: magic link (security notice, fallback URL, mobile CSS) + welcome (gold numbered steps, gold CTA, mobile CSS)
+
+## Session — Email Templates Skill, PR #99 Merge, Receipt Email, Preview Route
+- [x] Create getphame-email-templates reusable skill
+- [x] Squash-merge PR #99 into protected main (merged, branch deleted)
+- [x] Upgrade upgrade receipt email template to responsive gold style (gold CTA, perks box, mobile CSS)
+- [x] Create in-app admin email preview route (/admin/email-preview) — 6 templates, desktop/mobile toggle, iframe preview, adminEmailPreview i18n keys in all 7 locales
+
+## Session — Email Preview Skill, PR #100, Test Send Button, Dark Mode Toggle
+- [x] Create getphame-email-preview reusable skill (architecture, template registry, add-template guide, send test email pattern, dark mode toggle, i18n keys, critical constraints)
+- [x] Open GitHub PR #100 for checkpoint dd8c5be2 (email preview, receipt gold style, SendGrid dual-sender, React.lazy, viewport a11y, hero fetchPriority)
+- [x] Add Send Test Email button to AdminEmailPreview — gold CTA, fires admin.sendTestEmail mutation to user.email, spinner + toast feedback
+- [x] Add dark mode toggle to AdminEmailPreview — Moon/Sun icon button, injects dark background style into iframe srcDoc
+- [x] Add sendTest/sending/testSent/testFailed/darkMode i18n keys to all 7 locales with native translations + fallback bundle
+
+## Session — Admin Email Preview Workflow Skill, PR #100 Merge, All Templates
+- [x] Create getphame-admin-email-preview-workflow reusable skill (architecture, template registry, add-template checklist, UI controls table, i18n keys, critical constraints)
+- [x] Squash-merge PR #100 into protected main (squash-merged, branch deleted)
+- [x] Extend sendTestEmail switch to cover all 6 email templates (welcome, upgrade-receipt-pro/annual/lifetime, account-deletion) — all produce full gold HTML matching emailPreview output
+
+## Session — Email Preview Enhancements Skill, PR, Copy HTML, Custom Email Input
+- [x] Create getphame-email-preview-enhancements reusable skill (Copy HTML, custom email input, success toast patterns)
+- [x] Open GitHub PR for checkpoint 9663419c — PR #101 at github.com/SteveKinzey/getphame/pull/101
+- [x] Add Copy HTML button to AdminEmailPreview page (clipboard API + textarea fallback, 1.5s Copied! label swap)
+- [x] Add custom email input field to AdminEmailPreview page (replaces hard-coded user.email, pre-seeded from auth)
+- [x] Success toast shows recipient address: "Test email sent! → user@example.com" via sonner onSuccess
+
+## Session — Email Preview Tab/Spinner/DataPanel Skill, PR #101 Merge
+- [x] Update getphame-email-preview-enhancements skill with Preview in New Tab, loading spinner, and data injection panel patterns
+- [x] Squash-merge PR #101 into main (merged 2026-08-10T07:03:20Z)
+- [x] Add Preview in New Tab button (Blob URL, revokeObjectURL after 10s, noopener)
+- [x] Loading spinner confirmed on send button (sendTest.isPending + Loader2 animate-spin)
+- [x] Add dynamic data injection panel ([name]/[company]/[plan]/[email] substitution, collapsible, grid layout)
+- [x] Fix nativeLocalizationQuality: adminEmailPreview.variables is cross_language_equivalent in es/fr — added to exceptions, updated counts (totalCandidates=588, totalExceptions=239)
+
+## Session — Email Preview Advanced Skill, PR bbbb7814, Reset/Split/Presets
+- [x] Create getphame-email-preview-advanced skill (reset vars, split-screen, save preset patterns)
+- [x] Open GitHub PR for checkpoint bbbb7814 (PR #102)
+- [x] Add Reset Variables button (RotateCcw icon, restores DEFAULT_VARS in one click)
+- [x] Add split-screen view (Desktop 800px + Mobile 390px side-by-side, overflow-x-auto)
+- [x] Add Save Preset feature (localStorage, named chips with load/delete, Enter-to-save)
+- [x] Fix nativeLocalizationQuality: resetVars/split are cross_language_equivalent in es; split in fr — totalCandidates=591, totalExceptions=242
+
+## Session — Stripe Webhook Check, Status Indicator, PR 32c1194f
+- [x] Verified Stripe webhook — was pointing to dead sandbox tunnel; updated to https://getphame.app/api/stripe/webhook
+- [x] Add Stripe status indicator to admin dashboard (mode/webhook status/secret/events, color-coded card)
+- [x] Open GitHub PR for checkpoint 32c1194f (PR #103)
+
+## Session — Consent Compliance, Onboarding Step, Unsubscribe Fix
+- [x] Add consentBasis/consentCapturedAt/consentSource to contacts.create procedure and createSavedContact db function
+- [x] Add consent checkbox to Add Contact dialog (required, blocks save)
+- [x] Add consent acknowledgment checkbox to Send Request compliance checklist (4th item)
+- [x] Add consent implementation as first onboarding step with downloadable PDF guide
+- [x] Fix requests.send to always inject unsubscribeUrl footer when not already present
+- [x] Regenerate consent PDF with social media forms section (Facebook, Instagram, LinkedIn, TikTok, Pinterest)
+- [x] Add PDF download link to landing page LeadCapture section
+- [x] Add consentAcknowledgedAt column to business_profiles DB table
+- [x] Add onboarding.acknowledgeConsent tRPC procedure
+- [x] All 7 locales and fallback bundle updated with new consent keys
+- [x] nativeLocalizationQuality totalCandidates remains 591
+- [x] All 1022 tests pass
+- [x] Save checkpoint (e699c660)
+- [x] Open GitHub PR for checkpoint (PR #104)
+
+## Session — Consent Badges, Settings, Unsubscribe Handler, Skill
+- [x] Create getphame-consent-compliance reusable skill
+- [x] Add consent badge (ShieldCheck/ShieldOff) to contacts list in SavedContacts.tsx
+- [x] Add consentLabelName field to business_profiles schema and DB
+- [x] Add consentLabelName setting to Settings page (Email Sender Settings section)
+- [x] Update profile.upsert procedure to accept consentLabelName
+- [x] Update SavedContacts consent label to use consentLabelName when set
+- [x] Enhance unsubscribe handler to set consentBasis = "opted_out" on unsubscribe
+- [x] All 1022 tests pass, nativeLocalizationQuality totalCandidates remains 591
+- [x] Save checkpoint (5e676038)
+- [x] Open GitHub PR for checkpoint (PR #105)
+
+## Session — Consent Filter, Tooltip, Bulk Consent Email, Skill
+- [x] Add consent status filter dropdown to contacts list (All / Consent / No consent / Opted out)
+- [x] Add date/time tooltip to consent badge (shows consentCapturedAt formatted date)
+- [x] Implement bulk consent request email for legacy contacts (no consent on file)
+- [x] Create reusable skill for consent badge/filter/bulk-consent workflow (getphame-consent-badge-filter)
+- [x] Run full test suite and save checkpoint (b6e64483, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #106)
+
+## Session — Consent Template Editor, Activity Log, Confirm Modal, Skill
+- [x] Add confirmation modal before bulk consent request send
+- [x] Add consent email template editor (subject + body customization with variable preview)
+- [x] Implement consent activity log in contact history drawer
+- [x] Create reusable skill for consent template editor workflow (getphame-consent-template-editor)
+- [x] Run full test suite and save checkpoint (96626f42, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #107)
+
+## Session — Live Preview, Variable Tags, Toast, Skill
+- [x] Add live preview pane to consent template editor modal
+- [x] Add clickable variable tags ({{name}}, {{businessName}}) below editor
+- [x] Add success toast after bulk consent send completes (replaced result dialog)
+- [x] Create reusable skill for live-preview template editor pattern (getphame-consent-preview-editor)
+- [ ] Run full test suite and save checkpoint
+- [ ] Open GitHub PR for checkpoint
