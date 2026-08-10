@@ -1840,3 +1840,9 @@
 - [x] Add consent progress indicator to onboarding checklist
 - [x] Make consent count widget clickable to filter contacts list
 - [x] Create reusable skill for consent health monitoring pattern (getphame-consent-health-monitoring)
+
+## Session: Consent health UX polish (Aug 10, 2026)
+- [x] Make banner bulk consent text a direct link to open modal in SavedContacts
+- [x] Add consent health score to admin user list
+- [x] Add tooltip to consent progress bar in SetupProgressCard
+- [x] Update getphame-consent-health-monitoring skill with new patterns

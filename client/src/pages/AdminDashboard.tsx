@@ -106,8 +106,14 @@ function ConsentHealthBanner() {
           Low consent coverage — {Math.round(pct)}% of contacts have consented
         </p>
         <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.08 60)" }}>
-          {stats.consented} of {stats.total} contacts have given explicit consent.
-          Consider sending a bulk consent request to the remaining {stats.total - stats.consented} contacts.
+          {stats.consented} of {stats.total} contacts have given explicit consent.{' '}
+          Consider sending a{' '}
+          <a href="/contacts?openConsentModal=1"
+            className="underline font-semibold"
+            style={{ color: "oklch(0.35 0.10 60)" }}>
+            bulk consent request
+          </a>{' '}
+          to the remaining {stats.total - stats.consented} contacts.
         </p>
       </div>
     </div>

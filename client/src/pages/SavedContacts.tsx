@@ -167,6 +167,19 @@ export default function SavedContacts() {
     }
     return "all";
   });
+  // Auto-open bulk consent modal from URL param: ?openConsentModal=1
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("openConsentModal") === "1") {
+        setConsentConfirmOpen(true);
+        // Clean up the URL param without reloading
+        const url = new URL(window.location.href);
+        url.searchParams.delete("openConsentModal");
+        window.history.replaceState({}, "", url.toString());
+      }
+    }
+  }, []);
   const [tagInputId, setTagInputId] = useState<number | null>(null);
   const [tagInputValue, setTagInputValue] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);

@@ -435,6 +435,20 @@ export default function AdminUsersPage() {
                           </span>
                         )}
                         {account.smtpFromEmail && <span className="truncate text-xs font-semibold rr-text-navy-muted">{account.smtpFromEmail}</span>}
+                        {(account as any).consentStats && (account as any).consentStats.total > 0 && (() => {
+                          const cs = (account as any).consentStats as { consented: number; total: number };
+                          const pct = Math.round((cs.consented / cs.total) * 100);
+                          const isGood = pct >= 50;
+                          return (
+                            <span
+                              title={`${cs.consented} of ${cs.total} contacts have consented (${pct}%)`}
+                              className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-black ${isGood ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-900"}`}
+                            >
+                              <ShieldCheck size={12} />
+                              {pct}% consent
+                            </span>
+                          );
+                        })()}
                       </div>
                       {smtpRecovery?.userId === account.id && (
                         <p data-testid={`smtp-recovery-${account.id}`} className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-2.5 py-1.5 text-xs font-black text-emerald-800">

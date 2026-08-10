@@ -4674,6 +4674,23 @@ export const appRouter = router({
           .limit(input.pageSize)
           .offset((input.page - 1) * input.pageSize);
 
+        // Fetch consent stats per user in one query
+        const userIds = rows.map(r => r.id);
+        let consentMap: Record<number, { consented: number; total: number }> = {};
+        if (userIds.length > 0) {
+          const consentRows = await db
+            .select({
+              userId: savedContacts.userId,
+              consentBasis: savedContacts.consentBasis,
+            })
+            .from(savedContacts)
+            .where(inArray(savedContacts.userId, userIds));
+          for (const r of consentRows) {
+            if (!consentMap[r.userId]) consentMap[r.userId] = { consented: 0, total: 0 };
+            consentMap[r.userId].total++;
+            if (r.consentBasis === "explicit") consentMap[r.userId].consented++;
+          }
+        }
         return {
           users: rows.map(row => ({
             ...row,
@@ -4682,6 +4699,7 @@ export const appRouter = router({
             smtpConnected: row.smtpCredentialId !== null,
             smtpVerified: row.smtpVerified === 1,
             isSuspended: typeof row.suspendedUntil === "number" && row.suspendedUntil > Date.now(),
+            consentStats: consentMap[row.id] ?? { consented: 0, total: 0 },
           })),
           page: input.page,
           pageSize: input.pageSize,

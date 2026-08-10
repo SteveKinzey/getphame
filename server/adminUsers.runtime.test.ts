@@ -81,6 +81,11 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
         };
         return { from: () => countChain };
       }
+      if ("consentBasis" in selection && "userId" in selection && !("smtpCredentialId" in selection)) {
+        // Mock for consent stats query in listUsers
+        const consentChain = { where: async () => [] };
+        return { from: () => consentChain };
+      }
       if ("smtpCredentialId" in selection) {
         const listChain = {
           leftJoin: () => listChain,
