@@ -4307,6 +4307,10 @@
     "emailPlaceholder": "Envoyer à…",
     "openTab": "Ouvrir dans un onglet",
     "variables": "Variables",
-    "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle"
+    "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle",
+    "resetVars": "Réinitialiser",
+    "split": "Split",
+    "savePreset": "Enregistrer",
+    "presetNamePlaceholder": "Nom du profil…"
   }
 }

@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/_core/hooks/useAuth";
 import {
   Mail, ChevronDown, Moon, Sun, Send, Loader2, Copy, Check,
-  ExternalLink, SlidersHorizontal, ChevronUp,
+  ExternalLink, SlidersHorizontal, ChevronUp, RotateCcw, Save, X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,6 +18,7 @@ const TEMPLATES = [
 ] as const;
 
 type TemplateKey = (typeof TEMPLATES)[number]["value"];
+type ViewMode = "desktop" | "mobile" | "split";
 
 const DEFAULT_VARS = {
   name: "Alex Johnson",
@@ -26,16 +27,26 @@ const DEFAULT_VARS = {
   email: "alex@example.com",
 };
 
+const PRESET_KEY = "getphame-email-preview-presets";
+type Preset = { name: string; vars: typeof DEFAULT_VARS };
+
 export default function AdminEmailPreview() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [selected, setSelected] = useState<TemplateKey>("magic-link");
-  const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
+  const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [darkMode, setDarkMode] = useState(false);
   const [testEmail, setTestEmail] = useState(user?.email ?? "");
   const [copied, setCopied] = useState(false);
   const [showVars, setShowVars] = useState(false);
   const [vars, setVars] = useState(DEFAULT_VARS);
+
+  // Preset state
+  const [presets, setPresets] = useState<Preset[]>(() => {
+    try { return JSON.parse(localStorage.getItem(PRESET_KEY) ?? "[]"); }
+    catch { return []; }
+  });
+  const [presetName, setPresetName] = useState("");
 
   // Seed testEmail once user auth resolves
   useEffect(() => {
@@ -60,7 +71,7 @@ export default function AdminEmailPreview() {
   });
 
   // Apply variable substitutions to raw HTML
-  const buildPreviewHtml = (raw: string) => {
+  const buildPreviewHtml = useCallback((raw: string) => {
     let html = raw
       .replace(/\[name\]/gi, vars.name)
       .replace(/\[company\]/gi, vars.company)
@@ -73,9 +84,22 @@ export default function AdminEmailPreview() {
       );
     }
     return html;
-  };
+  }, [vars, darkMode]);
 
   const previewHtml = data?.html ? buildPreviewHtml(data.html) : null;
+
+  // Auto-height iframe handler
+  const autoHeight = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
+    const iframe = e.currentTarget;
+    try {
+      const body = iframe.contentDocument?.body;
+      if (body) iframe.style.height = `${body.scrollHeight + 32}px`;
+    } catch {
+      // cross-origin — use default height
+    }
+  }, []);
+
+  const iframeKey = `${selected}-${viewMode}-${darkMode}-${JSON.stringify(vars)}`;
 
   const handleCopy = () => {
     if (!data?.html) return;
@@ -105,6 +129,58 @@ export default function AdminEmailPreview() {
     window.open(url, "_blank", "noopener");
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
   };
+
+  // Preset management
+  const savePreset = () => {
+    if (!presetName.trim()) return;
+    const next = [
+      ...presets.filter(p => p.name !== presetName.trim()),
+      { name: presetName.trim(), vars: { ...vars } },
+    ];
+    setPresets(next);
+    localStorage.setItem(PRESET_KEY, JSON.stringify(next));
+    setPresetName("");
+  };
+
+  const loadPreset = (name: string) => {
+    const p = presets.find(p => p.name === name);
+    if (p) setVars({ ...p.vars });
+  };
+
+  const deletePreset = (name: string) => {
+    const next = presets.filter(p => p.name !== name);
+    setPresets(next);
+    localStorage.setItem(PRESET_KEY, JSON.stringify(next));
+  };
+
+  // Shared iframe pane renderer
+  const renderIframePane = (label: string, width: number, key: string) => (
+    <div
+      className="shrink-0 overflow-hidden rounded-2xl border border-gray-200 shadow-lg"
+      style={{ width, background: darkMode ? "#1a1a1a" : "#fff" }}
+    >
+      <div className="border-b border-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-400">
+        {label}
+      </div>
+      {previewHtml ? (
+        <iframe
+          key={key}
+          srcDoc={previewHtml}
+          title={`${label} preview`}
+          className="block w-full border-0"
+          style={{ minHeight: 500, height: "auto" }}
+          onLoad={autoHeight}
+          sandbox="allow-same-origin"
+        />
+      ) : (
+        <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
+          {isLoading
+            ? t("adminEmailPreview.loading", { defaultValue: "Loading preview…" })
+            : t("adminEmailPreview.noPreview", { defaultValue: "No preview available." })}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="min-h-screen" style={{ background: "oklch(0.975 0.003 100)" }}>
@@ -141,9 +217,9 @@ export default function AdminEmailPreview() {
           <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" aria-hidden="true" />
         </div>
 
-        {/* Viewport toggle */}
+        {/* Viewport toggle — desktop / mobile / split */}
         <div className="flex rounded-xl border border-white/20 bg-white shadow-sm overflow-hidden">
-          {(["desktop", "mobile"] as const).map(mode => (
+          {(["desktop", "mobile", "split"] as const).map(mode => (
             <button
               key={mode}
               type="button"
@@ -154,7 +230,9 @@ export default function AdminEmailPreview() {
                 color: viewMode === mode ? "#fff" : "#555",
               }}
             >
-              {mode}
+              {mode === "split"
+                ? t("adminEmailPreview.split", { defaultValue: "Split" })
+                : mode}
             </button>
           ))}
         </div>
@@ -167,11 +245,7 @@ export default function AdminEmailPreview() {
           style={{ color: darkMode ? "oklch(0.22 0.09 260)" : "#555" }}
           aria-pressed={darkMode}
         >
-          {darkMode ? (
-            <Sun className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <Moon className="h-4 w-4" aria-hidden="true" />
-          )}
+          {darkMode ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
           {t("adminEmailPreview.darkMode", { defaultValue: "Dark mode" })}
         </button>
 
@@ -184,11 +258,7 @@ export default function AdminEmailPreview() {
           style={{ color: copied ? "oklch(0.22 0.09 260)" : "#555" }}
           aria-label={t("adminEmailPreview.copyHtml", { defaultValue: "Copy HTML" })}
         >
-          {copied ? (
-            <Check className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <Copy className="h-4 w-4" aria-hidden="true" />
-          )}
+          {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
           {copied
             ? t("adminEmailPreview.copied", { defaultValue: "Copied!" })
             : t("adminEmailPreview.copyHtml", { defaultValue: "Copy HTML" })}
@@ -217,11 +287,7 @@ export default function AdminEmailPreview() {
         >
           <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
           {t("adminEmailPreview.variables", { defaultValue: "Variables" })}
-          {showVars ? (
-            <ChevronUp className="h-3 w-3" aria-hidden="true" />
-          ) : (
-            <ChevronDown className="h-3 w-3" aria-hidden="true" />
-          )}
+          {showVars ? <ChevronUp className="h-3 w-3" aria-hidden="true" /> : <ChevronDown className="h-3 w-3" aria-hidden="true" />}
         </button>
 
         {/* Custom email input + send button */}
@@ -269,9 +335,25 @@ export default function AdminEmailPreview() {
       {/* Variable injection panel */}
       {showVars && (
         <div className="mx-5 mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-          <p className="mb-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            {t("adminEmailPreview.variablesNote", { defaultValue: "Substitute [name], [company], [plan], [email] placeholders in the template" })}
-          </p>
+          {/* Panel header */}
+          <div className="mb-3 flex items-center gap-2">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              {t("adminEmailPreview.variablesNote", { defaultValue: "Substitute [name], [company], [plan], [email] placeholders in the template" })}
+            </p>
+            {/* Reset button */}
+            <button
+              type="button"
+              onClick={() => setVars(DEFAULT_VARS)}
+              className="ml-auto flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition hover:bg-gray-100"
+              style={{ color: "#888" }}
+              title={t("adminEmailPreview.resetVars", { defaultValue: "Reset to defaults" })}
+            >
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+              {t("adminEmailPreview.resetVars", { defaultValue: "Reset" })}
+            </button>
+          </div>
+
+          {/* Variable inputs */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {(Object.keys(vars) as (keyof typeof vars)[]).map(key => (
               <label key={key} className="flex flex-col gap-1">
@@ -289,46 +371,96 @@ export default function AdminEmailPreview() {
               </label>
             ))}
           </div>
+
+          {/* Preset chips */}
+          {presets.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {presets.map(p => (
+                <div
+                  key={p.name}
+                  className="flex items-center gap-1 rounded-lg border border-gray-200 bg-gray-50 px-2 py-1"
+                >
+                  <button
+                    type="button"
+                    onClick={() => loadPreset(p.name)}
+                    className="text-xs font-semibold text-gray-700 hover:underline"
+                  >
+                    {p.name}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => deletePreset(p.name)}
+                    className="text-gray-400 transition hover:text-red-500"
+                    aria-label={`Delete preset ${p.name}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Save preset row */}
+          <div className="mt-3 flex gap-2">
+            <input
+              type="text"
+              value={presetName}
+              onChange={e => setPresetName(e.target.value)}
+              placeholder={t("adminEmailPreview.presetNamePlaceholder", { defaultValue: "Preset name…" })}
+              className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2"
+              style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
+              onKeyDown={e => e.key === "Enter" && savePreset()}
+            />
+            <button
+              type="button"
+              onClick={savePreset}
+              disabled={!presetName.trim()}
+              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition disabled:opacity-40"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+            >
+              <Save className="h-4 w-4" aria-hidden="true" />
+              {t("adminEmailPreview.savePreset", { defaultValue: "Save" })}
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Preview iframe */}
+      {/* Preview area */}
       <div className="px-5 pb-10">
-        <div
-          className="mx-auto overflow-hidden rounded-2xl border border-gray-200 shadow-lg transition-all duration-300"
-          style={{
-            maxWidth: viewMode === "mobile" ? 390 : 800,
-            background: darkMode ? "#1a1a1a" : "#fff",
-          }}
-        >
-          {previewHtml ? (
-            <iframe
-              key={`${selected}-${viewMode}-${darkMode}-${JSON.stringify(vars)}`}
-              srcDoc={previewHtml}
-              title={`Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`}
-              className="block w-full border-0"
-              style={{ minHeight: 600, height: "auto" }}
-              onLoad={e => {
-                const iframe = e.currentTarget;
-                try {
-                  const body = iframe.contentDocument?.body;
-                  if (body) {
-                    iframe.style.height = `${body.scrollHeight + 32}px`;
-                  }
-                } catch {
-                  // cross-origin — use default height
-                }
-              }}
-              sandbox="allow-same-origin"
-            />
-          ) : (
-            <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
-              {isLoading
-                ? t("adminEmailPreview.loading", { defaultValue: "Loading preview…" })
-                : t("adminEmailPreview.noPreview", { defaultValue: "No preview available." })}
-            </div>
-          )}
-        </div>
+        {viewMode === "split" ? (
+          /* Split-screen: desktop + mobile side-by-side */
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {renderIframePane("Desktop — 800px", 800, `split-desktop-${iframeKey}`)}
+            {renderIframePane("Mobile — 390px", 390, `split-mobile-${iframeKey}`)}
+          </div>
+        ) : (
+          /* Single viewport */
+          <div
+            className="mx-auto overflow-hidden rounded-2xl border border-gray-200 shadow-lg transition-all duration-300"
+            style={{
+              maxWidth: viewMode === "mobile" ? 390 : 800,
+              background: darkMode ? "#1a1a1a" : "#fff",
+            }}
+          >
+            {previewHtml ? (
+              <iframe
+                key={iframeKey}
+                srcDoc={previewHtml}
+                title={`Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`}
+                className="block w-full border-0"
+                style={{ minHeight: 600, height: "auto" }}
+                onLoad={autoHeight}
+                sandbox="allow-same-origin"
+              />
+            ) : (
+              <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
+                {isLoading
+                  ? t("adminEmailPreview.loading", { defaultValue: "Loading preview…" })
+                  : t("adminEmailPreview.noPreview", { defaultValue: "No preview available." })}
+              </div>
+            )}
+          </div>
+        )}
         <p className="mt-3 text-center text-xs text-gray-400">
           {t("adminEmailPreview.note", { defaultValue: "Preview uses sample data. Actual emails are sent with real user names and secure links." })}
           {testEmail && (

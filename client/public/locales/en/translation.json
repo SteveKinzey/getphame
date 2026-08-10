@@ -4256,6 +4256,10 @@
     "emailPlaceholder": "Send to…",
     "openTab": "Open in tab",
     "variables": "Variables",
-    "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template"
+    "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template",
+    "resetVars": "Reset",
+    "split": "Split",
+    "savePreset": "Save",
+    "presetNamePlaceholder": "Preset name…"
   }
 }

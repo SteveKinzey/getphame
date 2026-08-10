@@ -1513,7 +1513,11 @@
       "emailPlaceholder": "Send to…",
       "openTab": "Open in tab",
       "variables": "Variables",
-      "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template"
+      "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template",
+      "resetVars": "Reset",
+      "split": "Split",
+      "savePreset": "Save",
+      "presetNamePlaceholder": "Preset name…"
     }
   },
   "es": {
@@ -3235,7 +3239,11 @@
       "emailPlaceholder": "Enviar a…",
       "openTab": "Abrir en pestaña",
       "variables": "Variables",
-      "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla"
+      "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla",
+      "resetVars": "Reset",
+      "split": "Split",
+      "savePreset": "Guardar",
+      "presetNamePlaceholder": "Nombre del perfil…"
     }
   },
   "fr": {
@@ -4978,7 +4986,11 @@
       "emailPlaceholder": "Envoyer à…",
       "openTab": "Ouvrir dans un onglet",
       "variables": "Variables",
-      "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle"
+      "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle",
+      "resetVars": "Réinitialiser",
+      "split": "Split",
+      "savePreset": "Enregistrer",
+      "presetNamePlaceholder": "Nom du profil…"
     }
   },
   "it": {
@@ -6564,7 +6576,11 @@
       "emailPlaceholder": "Invia a…",
       "openTab": "Apri in una nuova scheda",
       "variables": "Variabili",
-      "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello"
+      "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello",
+      "resetVars": "Ripristina",
+      "split": "Dividi",
+      "savePreset": "Salva",
+      "presetNamePlaceholder": "Nome del profilo…"
     }
   },
   "th": {
@@ -8140,7 +8156,11 @@
       "emailPlaceholder": "ส่งถึง…",
       "openTab": "เปิดในแท็บใหม่",
       "variables": "ตัวแปร",
-      "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต"
+      "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต",
+      "resetVars": "รีเซ็ต",
+      "split": "แบ่งหน้าจอ",
+      "savePreset": "บันทึก",
+      "presetNamePlaceholder": "ชื่อโปรไฟล์…"
     }
   },
   "zh-CN": {
@@ -9706,7 +9726,11 @@
       "emailPlaceholder": "发送至…",
       "openTab": "在新标签页打开",
       "variables": "变量",
-      "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符"
+      "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符",
+      "resetVars": "重置",
+      "split": "分屏",
+      "savePreset": "保存",
+      "presetNamePlaceholder": "预设名称…"
     }
   },
   "zh-TW": {
@@ -11287,7 +11311,11 @@
       "emailPlaceholder": "傳送至…",
       "openTab": "在新標簽頁開啟",
       "variables": "變數",
-      "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符"
+      "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符",
+      "resetVars": "重置",
+      "split": "分屏",
+      "savePreset": "儲存",
+      "presetNamePlaceholder": "預設名稱…"
     }
   }
 }

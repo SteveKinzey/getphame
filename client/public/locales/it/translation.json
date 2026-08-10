@@ -4521,6 +4521,10 @@
     "emailPlaceholder": "Invia a…",
     "openTab": "Apri in una nuova scheda",
     "variables": "Variabili",
-    "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello"
+    "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello",
+    "resetVars": "Ripristina",
+    "split": "Dividi",
+    "savePreset": "Salva",
+    "presetNamePlaceholder": "Nome del profilo…"
   }
 }

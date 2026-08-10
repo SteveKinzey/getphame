@@ -3939,6 +3939,10 @@
     "emailPlaceholder": "ส่งถึง…",
     "openTab": "เปิดในแท็บใหม่",
     "variables": "ตัวแปร",
-    "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต"
+    "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต",
+    "resetVars": "รีเซ็ต",
+    "split": "แบ่งหน้าจอ",
+    "savePreset": "บันทึก",
+    "presetNamePlaceholder": "ชื่อโปรไฟล์…"
   }
 }

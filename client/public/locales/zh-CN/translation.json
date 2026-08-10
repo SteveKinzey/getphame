@@ -3796,6 +3796,10 @@
     "emailPlaceholder": "发送至…",
     "openTab": "在新标签页打开",
     "variables": "变量",
-    "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符"
+    "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符",
+    "resetVars": "重置",
+    "split": "分屏",
+    "savePreset": "保存",
+    "presetNamePlaceholder": "预设名称…"
   }
 }

@@ -4307,6 +4307,10 @@
     "emailPlaceholder": "Enviar a…",
     "openTab": "Abrir en pestaña",
     "variables": "Variables",
-    "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla"
+    "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla",
+    "resetVars": "Reset",
+    "split": "Split",
+    "savePreset": "Guardar",
+    "presetNamePlaceholder": "Nombre del perfil…"
   }
 }

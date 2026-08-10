@@ -1745,3 +1745,11 @@
 - [x] Loading spinner confirmed on send button (sendTest.isPending + Loader2 animate-spin)
 - [x] Add dynamic data injection panel ([name]/[company]/[plan]/[email] substitution, collapsible, grid layout)
 - [x] Fix nativeLocalizationQuality: adminEmailPreview.variables is cross_language_equivalent in es/fr — added to exceptions, updated counts (totalCandidates=588, totalExceptions=239)
+
+## Session — Email Preview Advanced Skill, PR bbbb7814, Reset/Split/Presets
+- [x] Create getphame-email-preview-advanced skill (reset vars, split-screen, save preset patterns)
+- [x] Open GitHub PR for checkpoint bbbb7814 (PR #102)
+- [x] Add Reset Variables button (RotateCcw icon, restores DEFAULT_VARS in one click)
+- [x] Add split-screen view (Desktop 800px + Mobile 390px side-by-side, overflow-x-auto)
+- [x] Add Save Preset feature (localStorage, named chips with load/delete, Enter-to-save)
+- [x] Fix nativeLocalizationQuality: resetVars/split are cross_language_equivalent in es; split in fr — totalCandidates=591, totalExceptions=242

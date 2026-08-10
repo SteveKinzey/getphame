@@ -3818,6 +3818,10 @@
     "emailPlaceholder": "傳送至…",
     "openTab": "在新標簽頁開啟",
     "variables": "變數",
-    "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符"
+    "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符",
+    "resetVars": "重置",
+    "split": "分屏",
+    "savePreset": "儲存",
+    "presetNamePlaceholder": "預設名稱…"
   }
 }
