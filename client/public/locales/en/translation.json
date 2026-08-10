@@ -1070,7 +1070,9 @@
         "created": "Created",
         "page": "Page {{current}} of {{total}}"
       }
-    }
+    },
+    "addConsentLabel": "I confirm this customer has consented to be contacted by {businessName} via email and/or text about their experience and purchases",
+    "addConsentRequired": "Consent confirmation is required to add a contact"
   },
   "pageHeader": {
     "title": "Saved Contacts",
@@ -1163,7 +1165,8 @@
     "allCustomersCheck": "I'm sending to all customers, not filtering by satisfaction",
     "cancel": "Cancel",
     "sending": "Sending…",
-    "sendButton": "Send {{count}} Requests"
+    "sendButton": "Send {{count}} Requests",
+    "consentCheck": "I confirm customers have consented to be contacted by my business via email and/or text"
   },
   "wooSyncHistory": {
     "title": "WooCommerce Sync History",
@@ -2063,7 +2066,12 @@
   "onboarding": {
     "googleBtn": "Continue with Google",
     "appleBtn": "Continue with Apple",
-    "finePrint": "Start free — 10 review requests included. No credit card required."
+    "finePrint": "Start free — 10 review requests included. No credit card required.",
+    "consentStepTitle": "Add a consent checkbox to your forms",
+    "consentStepDesc": "Before collecting contacts or sending review requests, your forms must include a consent checkbox. This is required by CAN-SPAM, TCPA, and GDPR.",
+    "consentStepAction": "Download Consent Guide (PDF)",
+    "consentStepAck": "I have added (or will add) a consent checkbox to my customer-facing forms",
+    "consentStepAckRequired": "Please confirm you will add the consent checkbox before continuing"
   },
   "changelog": {
     "title": "What's New",
@@ -4250,6 +4258,16 @@
     "sending": "Sending…",
     "testSent": "Test email sent!",
     "testFailed": "Failed to send test email.",
-    "darkMode": "Dark mode"
+    "darkMode": "Dark mode",
+    "copyHtml": "Copy HTML",
+    "copied": "Copied!",
+    "emailPlaceholder": "Send to…",
+    "openTab": "Open in tab",
+    "variables": "Variables",
+    "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template",
+    "resetVars": "Reset",
+    "split": "Split",
+    "savePreset": "Save",
+    "presetNamePlaceholder": "Preset name…"
   }
 }

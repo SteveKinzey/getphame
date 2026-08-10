@@ -135,8 +135,8 @@ function parseTags(raw: string | null): string[] {
   try { return JSON.parse(raw); } catch { return []; }
 }
 
-type FormData = { name: string; email: string; phone: string; notes: string };
-const emptyForm: FormData = { name: "", email: "", phone: "", notes: "" };
+type FormData = { name: string; email: string; phone: string; notes: string; consentGiven: boolean };
+const emptyForm: FormData = { name: "", email: "", phone: "", notes: "", consentGiven: false };
 
 export default function SavedContacts() {
   const { t, i18n } = useTranslation();
@@ -188,6 +188,7 @@ export default function SavedContacts() {
   );
 
   // Daily send status
+  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
   const { data: dailyStatus } = trpc.contacts.getDailyStatus.useQuery(undefined, { enabled: isAuthenticated });
 
   // Review platforms
@@ -432,6 +433,10 @@ export default function SavedContacts() {
       toast.error("Name and email are required.");
       return;
     }
+    if (!editContact && !form.consentGiven) {
+      toast.error(t("contactsTools.addConsentRequired", "Consent confirmation is required to add a contact"));
+      return;
+    }
     const payload = {
       name: form.name.trim(),
       email: form.email.trim(),
@@ -441,7 +446,7 @@ export default function SavedContacts() {
     if (editContact) {
       updateMutation.mutate({ id: editContact.id, ...payload });
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate({ ...payload, consentGiven: true, consentSource: "manual_add_contact_form" });
     }
   }
 
@@ -1239,6 +1244,22 @@ export default function SavedContacts() {
               <Label>Notes (optional)</Label>
               <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="e.g. Regular customer, prefers email" rows={2} />
             </div>
+            {!editContact && (
+              <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                <Checkbox
+                  id="consent-checkbox"
+                  checked={form.consentGiven}
+                  onCheckedChange={(checked) => setForm({ ...form, consentGiven: !!checked })}
+                  className="mt-0.5 shrink-0"
+                />
+                <label htmlFor="consent-checkbox" className="cursor-pointer text-xs leading-snug text-amber-900">
+                  {t("contactsTools.addConsentLabel", {
+                    businessName: profile?.businessName || "your business",
+                    defaultValue: "I confirm this customer has consented to be contacted by {{businessName}} via email and/or text about their experience and purchases",
+                  })}
+                </label>
+              </div>
+            )}
           </div>
           <DialogFooter className="mt-2">
             <Button variant="outline" onClick={() => { setDialogOpen(false); setForm(emptyForm); }}>Cancel</Button>
