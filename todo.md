@@ -1824,5 +1824,5 @@
 - [x] Add consent badge to admin lead list (LeadsSection in AdminDashboard)
 - [x] Build public email preferences page (/preferences)
 - [x] Create getphame-lead-consent-compliance skill
-- [ ] Run full test suite and save checkpoint
-- [ ] Open GitHub PR for checkpoint
+- [x] Run full test suite and save checkpoint (17124cdc, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #110)

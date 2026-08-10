@@ -39,7 +39,6 @@ import {
   Clock3,
   GitBranch,
   BadgePercent,
-  Mail,
 } from "lucide-react";
 import { CreditCard } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
