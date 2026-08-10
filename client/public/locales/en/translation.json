@@ -768,7 +768,9 @@
     "dailySendLimitSaved": "Daily send limit saved!",
     "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
     "consentLabelName": "Consent checkbox business name",
-    "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
+    "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above.",
+    "consentCoverageGoal": "Consent coverage goal (%)",
+    "consentCoverageGoalDescription": "The consent coverage percentage at which the health warning banner disappears. Default is 50%."
   },
   "reviewPlatforms": {
     "title": "Review Platforms",

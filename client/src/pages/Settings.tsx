@@ -1243,6 +1243,7 @@ export default function SettingsPage() {
   const [businessName, setBusinessName] = useState("");
   const [reviewLink, setPhame] = useState("");
   const [consentLabelName, setConsentLabelName] = useState("");
+  const [consentCoverageGoal, setConsentCoverageGoal] = useState(50);
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
   const [physicalAddress, setPhysicalAddress] = useState("");
@@ -1331,6 +1332,7 @@ export default function SettingsPage() {
       setBusinessName(profile.businessName);
       setPhame(profile.reviewLink);
       setConsentLabelName(profile.consentLabelName ?? "");
+      setConsentCoverageGoal((profile as any).consentCoverageGoal ?? 50);
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
       setPhysicalAddress(profile.physicalAddress ?? "");
@@ -1669,6 +1671,7 @@ export default function SettingsPage() {
       fromName: fromName.trim() || undefined,
       replyTo: replyTo.trim() || undefined,
       consentLabelName: consentLabelName.trim() || undefined,
+      consentCoverageGoal: consentCoverageGoal,
     });
   }
 
@@ -1683,7 +1686,8 @@ export default function SettingsPage() {
       reviewLink !== profile.reviewLink ||
       fromName !== (profile.fromName ?? "") ||
       replyTo !== (profile.replyTo ?? "") ||
-      consentLabelName !== (profile.consentLabelName ?? "")
+      consentLabelName !== (profile.consentLabelName ?? "") ||
+      consentCoverageGoal !== ((profile as any).consentCoverageGoal ?? 50)
     )
     : false;
   const quietHoursHasUnsavedChanges = profile
@@ -1898,6 +1902,27 @@ export default function SettingsPage() {
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.consentLabelNameDescription', { defaultValue: 'The business name shown in the consent checkbox label on your forms. Defaults to your business name above.' })}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                      {t('profile.consentCoverageGoal', { defaultValue: 'Consent coverage goal (%)' })}
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="range"
+                        min={10}
+                        max={100}
+                        step={5}
+                        value={consentCoverageGoal}
+                        onChange={(e) => setConsentCoverageGoal(Number(e.target.value))}
+                        className="flex-1"
+                        aria-label="Consent coverage goal percentage"
+                      />
+                      <span className="text-sm font-black rr-text-navy w-10 text-right">{consentCoverageGoal}%</span>
+                    </div>
+                    <p className="text-xs mt-1 rr-text-navy-muted">
+                      {t('profile.consentCoverageGoalDescription', { defaultValue: 'The consent coverage percentage at which the health warning banner disappears. Default is 50%.' })}
                     </p>
                   </div>
                 </div>

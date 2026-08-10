@@ -859,7 +859,9 @@
     "changeEmail": "Changer d'e-mail",
     "disconnectEmail": "Déconnecter l'e-mail",
     "consentLabelName": "Nom de l'entreprise dans la case de consentement",
-    "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
+    "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus.",
+    "consentCoverageGoal": "Objectif de couverture du consentement (%)",
+    "consentCoverageGoalDescription": "Le pourcentage de couverture du consentement à partir duquel la bannière d'avertissement disparaît. La valeur par défaut est 50%."
   },
   "reviewPlatforms": {
     "title": "Plateformes d'avis",

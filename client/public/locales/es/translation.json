@@ -859,7 +859,9 @@
     "changeEmail": "Cambiar correo",
     "disconnectEmail": "Desconectar correo",
     "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
-    "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
+    "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba.",
+    "consentCoverageGoal": "Meta de cobertura de consentimiento (%)",
+    "consentCoverageGoalDescription": "El porcentaje de cobertura de consentimiento en el que desaparece el banner de advertencia. El valor predeterminado es 50%."
   },
   "reviewPlatforms": {
     "title": "Plataformas de reseñas",

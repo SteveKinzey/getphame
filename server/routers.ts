@@ -1421,6 +1421,7 @@ export const appRouter = router({
           fromName: z.string().max(255).optional(),
           replyTo: z.string().email().optional().or(z.literal("")),
           consentLabelName: z.string().max(255).optional().or(z.literal("")),
+          consentCoverageGoal: z.number().int().min(1).max(100).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1437,6 +1438,7 @@ export const appRouter = router({
           fromName: input.fromName ?? existing?.fromName ?? null,
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
           consentLabelName: input.consentLabelName?.trim() || null,
+          ...(input.consentCoverageGoal !== undefined && { consentCoverageGoal: input.consentCoverageGoal }),
         });
         return getBusinessProfile(ctx.user.id);
       }),
@@ -2886,6 +2888,11 @@ export const appRouter = router({
           } catch {
             failed++;
           }
+        }
+        // Record the last consent request timestamp on the user's profile
+        const db2 = await getDb();
+        if (db2) {
+          await db2.update(businessProfiles).set({ lastConsentRequestAt: Date.now() } as any).where(eq(businessProfiles.userId, ctx.user.id));
         }
         return { ok: true, sent, failed, total: targets.length };
       }),
@@ -4665,6 +4672,7 @@ export const appRouter = router({
             smtpCredentialId: smtpCredentials.id,
             smtpVerified: smtpCredentials.verified,
             smtpFromEmail: smtpCredentials.user,
+            lastConsentRequestAt: businessProfiles.lastConsentRequestAt,
           })
           .from(users)
           .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
@@ -4700,6 +4708,7 @@ export const appRouter = router({
             smtpVerified: row.smtpVerified === 1,
             isSuspended: typeof row.suspendedUntil === "number" && row.suspendedUntil > Date.now(),
             consentStats: consentMap[row.id] ?? { consented: 0, total: 0 },
+            lastConsentRequestAt: row.lastConsentRequestAt ?? null,
           })),
           page: input.page,
           pageSize: input.pageSize,

@@ -1846,3 +1846,9 @@
 - [x] Add consent health score to admin user list
 - [x] Add tooltip to consent progress bar in SetupProgressCard
 - [x] Update getphame-consent-health-monitoring skill with new patterns
+
+## Session: Admin user list enhancements (Aug 10, 2026)
+- [x] Add last consent request date to admin user list
+- [x] Add configurable consent coverage goal to Settings
+- [x] Add sort-by-consent-percentage to admin user list
+- [x] Update getphame-consent-health-monitoring skill

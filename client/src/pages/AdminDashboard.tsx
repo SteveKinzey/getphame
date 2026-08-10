@@ -91,9 +91,11 @@ type SubscriptionPlan = "monthly" | "annual" | "lifetime";
 /** Shows a warning if less than 50% of contacts have given explicit consent */
 function ConsentHealthBanner() {
   const { data: stats } = trpc.contacts.consentStats.useQuery();
+  const { data: profile } = trpc.profile.get.useQuery();
+  const goal = (profile as any)?.consentCoverageGoal ?? 50;
   if (!stats || stats.total < 5) return null; // Don't show for tiny contact lists
   const pct = stats.total > 0 ? (stats.consented / stats.total) * 100 : 0;
-  if (pct >= 50) return null; // All good
+  if (pct >= goal) return null; // Goal reached
   return (
     <div
       className="flex items-start gap-3 rounded-2xl px-4 py-3 mb-4"
@@ -103,7 +105,7 @@ function ConsentHealthBanner() {
       <AlertTriangle size={18} style={{ color: "oklch(0.55 0.18 60)", flexShrink: 0, marginTop: 2 }} />
       <div className="min-w-0">
         <p className="text-sm font-bold" style={{ color: "oklch(0.35 0.10 60)" }}>
-          Low consent coverage — {Math.round(pct)}% of contacts have consented
+          Low consent coverage — {Math.round(pct)}% of {stats.total} contacts have consented (goal: {goal}%)
         </p>
         <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.08 60)" }}>
           {stats.consented} of {stats.total} contacts have given explicit consent.{' '}

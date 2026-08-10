@@ -725,7 +725,9 @@
     "dailySendLimitSaved": "每日发送限制已保存！",
     "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。",
     "consentLabelName": "同意复选框中的企业名称",
-    "consentLabelNameDescription": "在表单同意复选框标签中显示的企业名称。默认使用上方的企业名称。"
+    "consentLabelNameDescription": "在表单同意复选框标签中显示的企业名称。默认使用上方的企业名称。",
+    "consentCoverageGoal": "同意覆盖率目标 (%)",
+    "consentCoverageGoalDescription": "同意覆盖率达到此百分比时，健康警告横幅将消失。默认值为 50%。"
   },
   "reviewPlatforms": {
     "title": "评论平台",

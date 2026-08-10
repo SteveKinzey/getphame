@@ -680,6 +680,8 @@ export const businessProfiles = pgTable("business_profiles", {
   consentAcknowledgedAt: bigint("consentAcknowledgedAt", { mode: "number" }),
   // Optional custom name for the consent checkbox label (defaults to businessName)
   consentLabelName: varchar("consentLabelName", { length: 255 }),
+  lastConsentRequestAt: bigint("lastConsentRequestAt", { mode: "number" }),
+  consentCoverageGoal: int("consentCoverageGoal").default(50),
 });
 export type BusinessProfile = typeof businessProfiles.$inferSelect;
 export type InsertBusinessProfile = typeof businessProfiles.$inferInsert;

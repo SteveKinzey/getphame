@@ -708,7 +708,9 @@
       "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
       "emailSenderSettings": "Email Sender Settings",
       "consentLabelName": "Consent checkbox business name",
-      "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
+      "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above.",
+      "consentCoverageGoal": "Consent coverage goal (%)",
+      "consentCoverageGoalDescription": "The consent coverage percentage at which the health warning banner disappears. Default is 50%."
     },
     "homePage": {
       "annualPro": "Annual Pro",
@@ -2275,7 +2277,9 @@
       "emailSenderSettings": "Configuración del remitente de correo",
       "reviewLink": "Enlace principal de reseñas de Google",
       "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
-      "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
+      "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba.",
+      "consentCoverageGoal": "Meta de cobertura de consentimiento (%)",
+      "consentCoverageGoalDescription": "El porcentaje de cobertura de consentimiento en el que desaparece el banner de advertencia. El valor predeterminado es 50%."
     },
     "homePage": {
       "annualPro": "Pro anual",
@@ -4024,7 +4028,9 @@
       "reviewLink": "Lien principal d'avis Google",
       "saveProfile": "Enregistrer le profil",
       "consentLabelName": "Nom de l'entreprise dans la case de consentement",
-      "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
+      "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus.",
+      "consentCoverageGoal": "Objectif de couverture du consentement (%)",
+      "consentCoverageGoalDescription": "Le pourcentage de couverture du consentement à partir duquel la bannière d'avertissement disparaît. La valeur par défaut est 50%."
     },
     "homePage": {
       "annualPro": "Pro annuel",
@@ -5768,7 +5774,9 @@
       "addBusinessNameAndLink": "Aggiungi prima il nome della tua attività e il link alle recensioni Google nelle Impostazioni.",
       "emailSenderSettings": "Impostazioni mittente email",
       "consentLabelName": "Nome azienda nella casella di consenso",
-      "consentLabelNameDescription": "Il nome dell'azienda mostrato nell'etichetta della casella di consenso nei tuoi moduli. Per impostazione predefinita usa il nome dell'azienda sopra."
+      "consentLabelNameDescription": "Il nome dell'azienda mostrato nell'etichetta della casella di consenso nei tuoi moduli. Per impostazione predefinita usa il nome dell'azienda sopra.",
+      "consentCoverageGoal": "Obiettivo di copertura del consenso (%)",
+      "consentCoverageGoalDescription": "La percentuale di copertura del consenso alla quale scompare il banner di avviso. Il valore predefinito è 50%."
     },
     "homePage": {
       "annualPro": "Pro annuale",
@@ -7372,7 +7380,9 @@
       "addBusinessNameAndLink": "เพิ่มชื่อธุรกิจและลิงก์รีวิว Google ในการตั้งค่าก่อน",
       "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล",
       "consentLabelName": "ชื่อธุรกิจในช่องทำเครื่องหมายความยินยอม",
-      "consentLabelNameDescription": "ชื่อธุรกิจที่แสดงในป้ายกำกับช่องทำเครื่องหมายความยินยอมในแบบฟอร์มของคุณ ค่าเริ่มต้นคือชื่อธุรกิจด้านบน"
+      "consentLabelNameDescription": "ชื่อธุรกิจที่แสดงในป้ายกำกับช่องทำเครื่องหมายความยินยอมในแบบฟอร์มของคุณ ค่าเริ่มต้นคือชื่อธุรกิจด้านบน",
+      "consentCoverageGoal": "เป้าหมายความครอบคลุมการยินยอม (%)",
+      "consentCoverageGoalDescription": "เปอร์เซ็นต์ความครอบคลุมการยินยอมที่แบนเนอร์เตือนจะหายไป ค่าเริ่มต้นคือ 50%"
     },
     "homePage": {
       "annualPro": "Pro รายปี",
@@ -8972,7 +8982,9 @@
       "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。",
       "emailSenderSettings": "发件人设置",
       "consentLabelName": "同意复选框中的企业名称",
-      "consentLabelNameDescription": "在表单同意复选框标签中显示的企业名称。默认使用上方的企业名称。"
+      "consentLabelNameDescription": "在表单同意复选框标签中显示的企业名称。默认使用上方的企业名称。",
+      "consentCoverageGoal": "同意覆盖率目标 (%)",
+      "consentCoverageGoalDescription": "同意覆盖率达到此百分比时，健康警告横幅将消失。默认值为 50%。"
     },
     "homePage": {
       "annualPro": "年度专业版",
@@ -10564,7 +10576,9 @@
       "addBusinessNameAndLink": "請先在設定中新增您的商家名稱與 Google 評論連結。",
       "emailSenderSettings": "電子郵件寄件者設定",
       "consentLabelName": "同意核取方塊中的企業名稱",
-      "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。"
+      "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。",
+      "consentCoverageGoal": "同意覆蓋率目標 (%)",
+      "consentCoverageGoalDescription": "同意覆蓋率達到此百分比時，健康警告橫幅將消失。預設值為 50%。"
     },
     "homePage": {
       "annualPro": "年度 Pro",

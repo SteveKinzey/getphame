@@ -726,7 +726,9 @@
     "dailySendLimitSaved": "每日傳送限制已儲存！",
     "addBusinessNameAndLink": "請先在設定中新增您的商家名稱和 Google 評價連結。",
     "consentLabelName": "同意核取方塊中的企業名稱",
-    "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。"
+    "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。",
+    "consentCoverageGoal": "同意覆蓋率目標 (%)",
+    "consentCoverageGoalDescription": "同意覆蓋率達到此百分比時，健康警告橫幅將消失。預設值為 50%。"
   },
   "reviewPlatforms": {
     "title": "評論平臺",
