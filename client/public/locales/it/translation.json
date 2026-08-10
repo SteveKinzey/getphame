@@ -2040,7 +2040,9 @@
     "saving": "Salvataggio...",
     "saved": "Profilo salvato.",
     "error": "Salvataggio profilo non riuscito.",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "consentLabelName": "Nome azienda nella casella di consenso",
+    "consentLabelNameDescription": "Il nome dell'azienda mostrato nell'etichetta della casella di consenso nei tuoi moduli. Per impostazione predefinita usa il nome dell'azienda sopra."
   },
   "smtp": {
     "description": "Collega il tuo account e-mail per inviare richieste di recensione. La password viene crittografata e non viene mai condivisa.",

@@ -857,7 +857,9 @@
     "emailNotConnected": "Correo no conectado",
     "connectEmail": "Conectar correo",
     "changeEmail": "Cambiar correo",
-    "disconnectEmail": "Desconectar correo"
+    "disconnectEmail": "Desconectar correo",
+    "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
+    "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
   },
   "reviewPlatforms": {
     "title": "Plataformas de reseñas",

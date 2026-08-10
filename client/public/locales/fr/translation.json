@@ -857,7 +857,9 @@
     "emailNotConnected": "E-mail non connecté",
     "connectEmail": "Connecter l'e-mail",
     "changeEmail": "Changer d'e-mail",
-    "disconnectEmail": "Déconnecter l'e-mail"
+    "disconnectEmail": "Déconnecter l'e-mail",
+    "consentLabelName": "Nom de l'entreprise dans la case de consentement",
+    "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
   },
   "reviewPlatforms": {
     "title": "Plateformes d'avis",

@@ -1772,5 +1772,17 @@
 - [x] All 7 locales and fallback bundle updated with new consent keys
 - [x] nativeLocalizationQuality totalCandidates remains 591
 - [x] All 1022 tests pass
+- [x] Save checkpoint (e699c660)
+- [x] Open GitHub PR for checkpoint (PR #104)
+
+## Session — Consent Badges, Settings, Unsubscribe Handler, Skill
+- [x] Create getphame-consent-compliance reusable skill
+- [x] Add consent badge (ShieldCheck/ShieldOff) to contacts list in SavedContacts.tsx
+- [x] Add consentLabelName field to business_profiles schema and DB
+- [x] Add consentLabelName setting to Settings page (Email Sender Settings section)
+- [x] Update profile.upsert procedure to accept consentLabelName
+- [x] Update SavedContacts consent label to use consentLabelName when set
+- [x] Enhance unsubscribe handler to set consentBasis = "opted_out" on unsubscribe
+- [x] All 1022 tests pass, nativeLocalizationQuality totalCandidates remains 591
 - [ ] Save checkpoint
 - [ ] Open GitHub PR for checkpoint

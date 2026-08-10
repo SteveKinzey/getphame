@@ -766,7 +766,9 @@
     "saveProfile": "Save Profile",
     "successToast": "Business profile saved!",
     "dailySendLimitSaved": "Daily send limit saved!",
-    "addBusinessNameAndLink": "Add your business name and Google review link in Settings first."
+    "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
+    "consentLabelName": "Consent checkbox business name",
+    "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
   },
   "reviewPlatforms": {
     "title": "Review Platforms",

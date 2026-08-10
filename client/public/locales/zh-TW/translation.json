@@ -724,7 +724,9 @@
     "saveProfile": "儲存資料",
     "successToast": "商家資料已儲存！",
     "dailySendLimitSaved": "每日傳送限制已儲存！",
-    "addBusinessNameAndLink": "請先在設定中新增您的商家名稱和 Google 評價連結。"
+    "addBusinessNameAndLink": "請先在設定中新增您的商家名稱和 Google 評價連結。",
+    "consentLabelName": "同意核取方塊中的企業名稱",
+    "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。"
   },
   "reviewPlatforms": {
     "title": "評論平臺",

@@ -1420,6 +1420,7 @@ export const appRouter = router({
           tier: z.enum(["free", "pro"]).optional(),
           fromName: z.string().max(255).optional(),
           replyTo: z.string().email().optional().or(z.literal("")),
+          consentLabelName: z.string().max(255).optional().or(z.literal("")),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1435,6 +1436,7 @@ export const appRouter = router({
           monthlyResetDate: existing?.monthlyResetDate ?? yearMonth,
           fromName: input.fromName ?? existing?.fromName ?? null,
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
+          consentLabelName: input.consentLabelName?.trim() || null,
         });
         return getBusinessProfile(ctx.user.id);
       }),
@@ -2821,7 +2823,12 @@ export const appRouter = router({
         if (decoded.contactType === "contact") {
           await db
             .update(savedContacts)
-            .set({ optedOut: 1, optedOutAt: Date.now() })
+            .set({
+              optedOut: 1,
+              optedOutAt: Date.now(),
+              // Record that consent was withdrawn via unsubscribe link
+              consentBasis: "opted_out",
+            })
             .where(eqU(savedContacts.id, decoded.id));
         } else {
           await db

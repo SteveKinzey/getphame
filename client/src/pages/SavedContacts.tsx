@@ -61,6 +61,7 @@ import {
   History,
   AlertTriangle,
   ShieldCheck,
+  ShieldOff,
   CheckCircle2,
   ExternalLink,
   Sparkles,
@@ -1137,6 +1138,24 @@ export default function SavedContacts() {
                           <ShoppingCart size={9} /> WooCommerce
                         </span>
                       )}
+                      {/* Consent badge */}
+                      {c.consentBasis === "explicit_opt_in" ? (
+                        <span
+                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full"
+                          style={{ background: "oklch(0.93 0.06 145)", color: "oklch(0.38 0.12 145)" }}
+                          title="Customer has given explicit consent to be contacted"
+                        >
+                          <ShieldCheck size={9} /> Consent
+                        </span>
+                      ) : c.consentBasis === "opted_out" ? null : (
+                        <span
+                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full"
+                          style={{ background: "oklch(0.95 0.01 260)", color: "oklch(0.60 0.04 260)" }}
+                          title="No explicit consent recorded for this contact"
+                        >
+                          <ShieldOff size={9} /> No consent
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -1254,7 +1273,7 @@ export default function SavedContacts() {
                 />
                 <label htmlFor="consent-checkbox" className="cursor-pointer text-xs leading-snug text-amber-900">
                   {t("contactsTools.addConsentLabel", {
-                    businessName: profile?.businessName || "your business",
+                    businessName: profile?.consentLabelName || profile?.businessName || "your business",
                     defaultValue: "I confirm this customer has consented to be contacted by {{businessName}} via email and/or text about their experience and purchases",
                   })}
                 </label>
