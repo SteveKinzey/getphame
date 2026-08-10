@@ -4245,6 +4245,11 @@
     "loading": "Loading preview…",
     "error": "Failed to load preview.",
     "noPreview": "No preview available.",
-    "note": "Preview uses sample data. Actual emails are sent with real user names and secure links."
+    "note": "Preview uses sample data. Actual emails are sent with real user names and secure links.",
+    "sendTest": "Send test email",
+    "sending": "Sending…",
+    "testSent": "Test email sent!",
+    "testFailed": "Failed to send test email.",
+    "darkMode": "Dark mode"
   }
 }

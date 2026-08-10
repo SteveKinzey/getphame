@@ -4296,6 +4296,11 @@
     "loading": "Cargando vista previa…",
     "error": "Error al cargar la vista previa.",
     "noPreview": "No hay vista previa disponible.",
-    "note": "La vista previa usa datos de muestra. Los correos reales se envían con nombres y enlaces seguros."
+    "note": "La vista previa usa datos de muestra. Los correos reales se envían con nombres y enlaces seguros.",
+    "sendTest": "Enviar correo de prueba",
+    "sending": "Enviando…",
+    "testSent": "¡Correo de prueba enviado!",
+    "testFailed": "Error al enviar el correo de prueba.",
+    "darkMode": "Modo oscuro"
   }
 }
