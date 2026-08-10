@@ -490,7 +490,10 @@
         "downloadReadyMessage": "Your guide is ready to download.",
         "consentGuideLink": "Download Consent Compliance Guide (PDF)",
         "consentCheckLabel": "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time.",
-        "consentRequired": "Please check the box to continue."
+        "consentRequired": "Please check the box to continue.",
+        "thankYouHeading": "You're all set!",
+        "thankYouMessage": "Your guide is on its way to {{email}}. Check spam if it doesn't arrive.",
+        "thankYouDownload": "Email delivery wasn't available. Download your guide directly below."
       },
       "feature3": {
         "title": "Every platform. Your choice.",
@@ -2033,7 +2036,10 @@
         "downloadReadyMessage": "Tu guía está lista para descargar.",
         "consentGuideLink": "Descargar Guía de Cumplimiento de Consentimiento (PDF)",
         "consentCheckLabel": "Acepto que Get Phame (getphame.app) pueda contactarme por correo electrónico con actualizaciones y consejos del producto. Puedo darme de baja en cualquier momento.",
-        "consentRequired": "Por favor, marque la casilla para continuar."
+        "consentRequired": "Por favor, marque la casilla para continuar.",
+        "thankYouHeading": "¡Todo listo!",
+        "thankYouMessage": "Tu guía está en camino a {{email}}. Revisa el spam si no llega.",
+        "thankYouDownload": "El envío por correo no estuvo disponible. Descarga tu guía directamente abajo."
       },
       "feature3": {
         "title": "Todas las plataformas. Tú eliges.",
@@ -3774,7 +3780,10 @@
         "downloadReadyMessage": "Votre guide est prêt à être téléchargé.",
         "consentGuideLink": "Télécharger le Guide de Conformité au Consentement (PDF)",
         "consentCheckLabel": "J'accepte que Get Phame (getphame.app) me contacte par e-mail avec des mises à jour et des conseils sur le produit. Je peux me désabonner à tout moment.",
-        "consentRequired": "Veuillez cocher la case pour continuer."
+        "consentRequired": "Veuillez cocher la case pour continuer.",
+        "thankYouHeading": "C'est tout bon !",
+        "thankYouMessage": "Votre guide est en route vers {{email}}. Vérifiez les spams s'il n'arrive pas.",
+        "thankYouDownload": "L'envoi par e-mail n'était pas disponible. Téléchargez votre guide directement ci-dessous."
       },
       "feature3": {
         "title": "Toutes les plateformes. À vous de choisir.",
@@ -5531,7 +5540,10 @@
         "downloadReadyMessage": "La tua guida è pronta per il download.",
         "consentGuideLink": "Scarica la Guida alla Conformità del Consenso (PDF)",
         "consentCheckLabel": "Accetto che Get Phame (getphame.app) mi contatti via e-mail con aggiornamenti e suggerimenti sul prodotto. Posso annullare l'iscrizione in qualsiasi momento.",
-        "consentRequired": "Si prega di spuntare la casella per continuare."
+        "consentRequired": "Si prega di spuntare la casella per continuare.",
+        "thankYouHeading": "Tutto pronto!",
+        "thankYouMessage": "La tua guida è in arrivo a {{email}}. Controlla lo spam se non arriva.",
+        "thankYouDownload": "L'invio via e-mail non era disponibile. Scarica la tua guida direttamente qui sotto."
       },
       "feature3": {
         "title": "Ogni piattaforma. La tua scelta.",
@@ -7138,7 +7150,10 @@
         "downloadReadyMessage": "คำแนะนำของคุณพร้อมให้ดาวน์โหลดแล้ว.",
         "consentGuideLink": "ดาวน์โหลดคู่มือการปฏิบัติตามกฎระเบียบความยินยอม (PDF)",
         "consentCheckLabel": "ฉันยินยอมให้ Get Phame (getphame.app) ติดต่อฉันทางอีเมลเกี่ยวกับการอัปเดตและเคล็ดลับของผลิตภัณฑ์ ฉันสามารถยกเลิกการสมัครได้ตลอดเวลา",
-        "consentRequired": "กรุณาทำเครื่องหมายในช่องเพื่อดำเนินการต่อ"
+        "consentRequired": "กรุณาทำเครื่องหมายในช่องเพื่อดำเนินการต่อ",
+        "thankYouHeading": "เรียบร้อยแล้ว!",
+        "thankYouMessage": "คู่มือของคุณกำลังส่งไปที่ {{email}} ตรวจสอบโฟลเดอร์สแปมหากไม่ได้รับ",
+        "thankYouDownload": "ไม่สามารถส่งอีเมลได้ ดาวน์โหลดคู่มือของคุณโดยตรงด้านล่าง"
       },
       "feature3": {
         "title": "ทุกแพลตฟอร์ม ทางเลือกเป็นของคุณ.",
@@ -8734,7 +8749,10 @@
         "downloadReadyMessage": "您的指南已可下载。",
         "consentGuideLink": "下载同意合规指南（PDF）",
         "consentCheckLabel": "我同意 Get Phame (getphame.app) 通过电子邮件向我发送产品更新和使用技巧。我可以随时取消订阅。",
-        "consentRequired": "请勾选复选框以继续。"
+        "consentRequired": "请勾选复选框以继续。",
+        "thankYouHeading": "一切就绪！",
+        "thankYouMessage": "您的指南正在发送至 {{email}}。如未收到，请检查垃圾邮件文件夹。",
+        "thankYouDownload": "邮件发送不可用。请直接在下方下载您的指南。"
       },
       "feature3": {
         "title": "支持所有平台，由您选择。",
@@ -10322,7 +10340,10 @@
         "downloadReadyMessage": "您的指南已可下載。",
         "consentGuideLink": "下載同意合規指南（PDF）",
         "consentCheckLabel": "我同意 Get Phame (getphame.app) 透過電子郵件向我發送產品更新和使用技巧。我可以隨時取消訂閱。",
-        "consentRequired": "請勾選核取方塊以繼續。"
+        "consentRequired": "請勾選核取方塊以繼續。",
+        "thankYouHeading": "一切就緒！",
+        "thankYouMessage": "您的指南正在發送至 {{email}}。如未收到，請檢查垃圾郵件資料夾。",
+        "thankYouDownload": "郵件發送不可用。請直接在下方下載您的指南。"
       },
       "feature3": {
         "title": "所有平台，由您選擇。",

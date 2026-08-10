@@ -39,7 +39,7 @@ export default function LeadCapture() {
     if (validation.error) return;
     if (!consentChecked) return;
     setError(null);
-    submitLead.mutate({ email: validation.normalized });
+    submitLead.mutate({ email: validation.normalized, consentGiven: consentChecked });
   };
 
   const handleRetry = () => {
@@ -167,50 +167,71 @@ export default function LeadCapture() {
                   )}
                 </>
               ) : (
-                <div className="flex flex-col items-center gap-4" role="status" aria-live="polite">
-                  <div className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl border ${delivery?.providerAccepted ? "bg-emerald-500/10 border-emerald-500/20" : "bg-amber-400/10 border-amber-400/20"}`}>
-                    <Check size={18} className="text-emerald-400" />
-                    <span className={`font-medium ${delivery?.providerAccepted ? "text-emerald-300" : "text-amber-200"}`}>
-                      {delivery?.providerAccepted
-                        ? t("landing.leadCapture.providerAcceptedMessage", { defaultValue: "Your email provider accepted the guide for delivery." })
-                        : t("landing.leadCapture.downloadReadyMessage", { defaultValue: "Your guide is ready to download." })}
-                    </span>
+                <div className="flex flex-col items-center gap-5 py-4" role="status" aria-live="polite">
+                  {/* Animated checkmark circle */}
+                  <div className="animate-success-pop w-20 h-20 rounded-full flex items-center justify-center" style={{ background: "oklch(0.80 0.18 80 / 0.15)", border: "2px solid oklch(0.80 0.18 80 / 0.4)" }}>
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                      <path
+                        className="animate-check-draw"
+                        d="M8 18L15 25L28 11"
+                        stroke="oklch(0.80 0.18 80)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </div>
-                  <p className="max-w-lg text-sm font-medium leading-relaxed text-slate-200">
-                    {delivery?.providerAccepted
-                      ? t("landing.leadCapture.addressConfirmation", { defaultValue: "We sent it to {{email}}. Confirm the spelling and check spam if it does not arrive. Provider acceptance does not guarantee inbox placement.", email: submittedEmail })
-                      : t("landing.leadCapture.deliveryFallback", { defaultValue: "Email delivery was unavailable for {{email}}. Confirm the spelling, retry, or download the guide now.", email: submittedEmail })}
-                  </p>
+
+                  {/* Thank-you heading */}
+                  <div className="animate-fade-in-up-delay text-center">
+                    <h3 className="font-display font-bold text-xl text-white mb-1">
+                      {t("landing.leadCapture.thankYouHeading", { defaultValue: "You're all set!" })}
+                    </h3>
+                    <p className="text-sm font-medium text-slate-300 max-w-sm mx-auto">
+                      {delivery?.providerAccepted
+                        ? t("landing.leadCapture.thankYouMessage", { defaultValue: "Your guide is on its way to {{email}}. Check spam if it doesn't arrive. Provider acceptance does not guarantee inbox placement.", email: submittedEmail })
+                        : t("landing.leadCapture.thankYouDownload", { defaultValue: "Email delivery wasn't available. Download your guide directly below.", email: submittedEmail })}
+                    </p>
+                  </div>
+
+                  {/* Download button */}
                   {delivery?.downloadUrl && (
-                    <a
-                      href={delivery.downloadUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)] transition-all duration-200 hover:brightness-110 active:scale-[0.97]"
-                    >
-                      <Download size={16} />
-                      {t("landing.leadCapture.downloadGuideButton", { defaultValue: "Download the PDF guide" })}
-                    </a>
+                    <div className="animate-fade-in-up-delay">
+                      <a
+                        href={delivery.downloadUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)] transition-all duration-200 hover:brightness-110 active:scale-[0.97]"
+                      >
+                        <Download size={16} />
+                        {t("landing.leadCapture.downloadGuideButton", { defaultValue: "Download the PDF guide" })}
+                      </a>
+                    </div>
                   )}
-                  <div className="flex flex-wrap items-center justify-center gap-3">
+
+                  {/* Retry / edit links */}
+                  <div className="animate-fade-in-up-delay flex flex-wrap items-center justify-center gap-3">
                     <button
                       type="button"
                       onClick={handleEditEmail}
-                      className="inline-flex items-center gap-2 rounded-lg border border-slate-500/50 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:border-primary/60 hover:text-primary"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors"
                     >
-                      <Pencil size={15} />
+                      <Pencil size={13} />
                       {t("landing.leadCapture.editEmail", { defaultValue: "Edit email" })}
                     </button>
                     {!delivery?.providerAccepted && (
-                      <button
-                        type="button"
-                        onClick={handleRetry}
-                        disabled={submitLead.isPending}
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-500/50 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:border-primary/60 hover:text-primary disabled:opacity-60"
-                      >
-                        <RotateCw size={15} className={submitLead.isPending ? "animate-spin" : ""} />
-                        {t("landing.leadCapture.tryAgain", { defaultValue: "Try email again" })}
-                      </button>
+                      <>
+                        <span className="text-slate-600">·</span>
+                        <button
+                          type="button"
+                          onClick={handleRetry}
+                          disabled={submitLead.isPending}
+                          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors disabled:opacity-60"
+                        >
+                          <RotateCw size={13} className={submitLead.isPending ? "animate-spin" : ""} />
+                          {t("landing.leadCapture.tryAgain", { defaultValue: "Try email again" })}
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>

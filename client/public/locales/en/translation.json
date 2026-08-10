@@ -2505,7 +2505,10 @@
       "tryAgain": "Try email again",
       "sharePrompt": "Share the free review-request playbook.",
       "consentCheckLabel": "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time.",
-      "consentRequired": "Please check the box to continue."
+      "consentRequired": "Please check the box to continue.",
+      "thankYouHeading": "You're all set!",
+      "thankYouMessage": "Your guide is on its way to {{email}}. Check spam if it doesn't arrive.",
+      "thankYouDownload": "Email delivery wasn't available. Download your guide directly below."
     },
     "navbar": {
       "howItWorks": "How It Works",

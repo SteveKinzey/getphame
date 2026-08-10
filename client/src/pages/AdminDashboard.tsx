@@ -28,6 +28,9 @@ import {
   Download,
   Sparkles,
   Smartphone,
+  ShieldCheck,
+  ShieldOff,
+  Mail,
   Share2,
   Languages,
   MousePointerClick,
@@ -85,6 +88,62 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type SubscriptionPlan = "monthly" | "annual" | "lifetime";
+
+function LeadsSection() {
+  const { data: leads, isLoading } = trpc.admin.listLeads.useQuery();
+  const total = leads?.length ?? 0;
+  const consented = leads?.filter((l) => l.consentGivenAt).length ?? 0;
+  return (
+    <section className="rounded-2xl bg-white p-4 shadow-sm" aria-labelledby="leads-section-title">
+      <div className="flex items-start gap-3 mb-4">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+          <Mail size={21} />
+        </span>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">Lead Capture</p>
+          <h2 id="leads-section-title" className="text-base font-black rr-text-navy">Email Subscribers</h2>
+          <p className="text-xs rr-text-navy-muted mt-0.5">{total} total · {consented} with consent</p>
+        </div>
+      </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8"><Loader2 size={20} className="animate-spin rr-text-navy-muted" /></div>
+      ) : !leads || leads.length === 0 ? (
+        <p className="text-sm rr-text-navy-muted text-center py-6">No leads yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Email</th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Consent</th>
+                <th className="text-left py-2 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.map((lead) => (
+                <tr key={lead.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="py-2 pr-4 font-medium rr-text-navy truncate max-w-[200px]">{lead.email}</td>
+                  <td className="py-2 pr-4">
+                    {lead.consentGivenAt ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.08 145)", color: "oklch(0.35 0.12 145)" }} title={`Consent given on ${new Date(lead.consentGivenAt).toLocaleString()}`}>
+                        <ShieldCheck size={11} /> Consented
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.02 260)", color: "oklch(0.55 0.04 260)" }}>
+                        <ShieldOff size={11} /> No consent
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-2 text-xs rr-text-navy-muted">{new Date(lead.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
 
 export default function AdminDashboard() {
   const { t } = useTranslation("translation");
@@ -1471,6 +1530,9 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </section>
+
+            {/* ── Lead Capture List ─────────────────────────────────────────── */}
+            <LeadsSection />
 
             <section
               data-testid="system-health-trend-chart"

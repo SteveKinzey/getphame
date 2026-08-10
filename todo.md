@@ -1818,3 +1818,11 @@
 - [x] Update getphame-consent-preview-editor skill with new patterns
 - [x] Run full test suite and save checkpoint (fa2513dd, 1022 tests pass)
 - [x] Open GitHub PR for checkpoint (PR #109)
+
+## Session — Success Animation, Admin Lead Badge, Preferences Page, Skill
+- [x] Add smooth success animation and thank-you state to LeadCapture form
+- [x] Add consent badge to admin lead list (LeadsSection in AdminDashboard)
+- [x] Build public email preferences page (/preferences)
+- [x] Create getphame-lead-consent-compliance skill
+- [ ] Run full test suite and save checkpoint
+- [ ] Open GitHub PR for checkpoint

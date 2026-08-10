@@ -2950,7 +2950,10 @@
       "tryAgain": "重新傳送電子郵件",
       "description": "取得免費指南，規劃清楚且合規的評論邀請，並接收產品更新與實用的口碑管理建議。",
       "consentCheckLabel": "我同意 Get Phame (getphame.app) 透過電子郵件向我發送產品更新和使用技巧。我可以隨時取消訂閱。",
-      "consentRequired": "請勾選核取方塊以繼續。"
+      "consentRequired": "請勾選核取方塊以繼續。",
+      "thankYouHeading": "一切就緒！",
+      "thankYouMessage": "您的指南正在發送至 {{email}}。如未收到，請檢查垃圾郵件資料夾。",
+      "thankYouDownload": "郵件發送不可用。請直接在下方下載您的指南。"
     },
     "purpose": {
       "description": "Get Phame 幫助在地商家使用其已連接的電子郵件帳號寄送個人化的評論邀請郵件。適用於商家老闆、攝影師、咖啡館與餐廳、到府服務團隊、診所與沙龍、代理商，以及想要更簡單方式向真實顧客徵求回饋的 WooCommerce 商店。",

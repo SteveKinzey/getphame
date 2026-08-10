@@ -3439,7 +3439,10 @@
       "tryAgain": "Reintentar envío",
       "description": "Obtén una guía gratuita para planificar solicitudes de reseña claras y conformes, además de novedades del producto y consejos prácticos de reputación.",
       "consentCheckLabel": "Acepto que Get Phame (getphame.app) pueda contactarme por correo electrónico con actualizaciones y consejos del producto. Puedo darme de baja en cualquier momento.",
-      "consentRequired": "Por favor, marque la casilla para continuar."
+      "consentRequired": "Por favor, marque la casilla para continuar.",
+      "thankYouHeading": "¡Todo listo!",
+      "thankYouMessage": "Tu guía está en camino a {{email}}. Revisa el spam si no llega.",
+      "thankYouDownload": "El envío por correo no estuvo disponible. Descarga tu guía directamente abajo."
     },
     "purpose": {
       "description": "Get Phame ayuda a negocios locales a enviar correos personalizados para solicitar reseñas desde su propia cuenta de correo conectada. Está diseñado para propietarios de negocios, fotógrafos, cafeterías y restaurantes, equipos de servicios a domicilio, clínicas y salones, agencias y tiendas WooCommerce que desean una manera más sencilla de pedir reseñas a clientes reales.",

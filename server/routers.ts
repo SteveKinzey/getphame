@@ -7910,6 +7910,17 @@ export const appRouter = router({
         return { ok: true as const };
       }),
 
+    listLeads: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) return [];
+      const rows = await db
+        .select()
+        .from(leads)
+        .orderBy(desc(leads.createdAt))
+        .limit(200);
+      return rows;
+    }),
+
     stripeStatus: adminProcedure.query(async () => {
       const stripeKey = process.env.STRIPE_SECRET_KEY ?? "";
       const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
@@ -7948,8 +7959,54 @@ export const appRouter = router({
     }),
   /** Landing page lead capture — stores email and sends the free guide PDF */
   leadCapture: router({
+    /**
+     * Get email preferences for a lead by email (public, no auth).
+     * Used by the /preferences page to show current status.
+     */
+    getPreferences: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return null;
+        const { eq: eqP } = await import("drizzle-orm");
+        const rows = await db.select().from(leads).where(eqP(leads.email, input.email.toLowerCase())).limit(1);
+        if (!rows.length) return null;
+        const lead = rows[0];
+        return {
+          email: lead.email,
+          consentGiven: !!lead.consentGivenAt,
+          consentGivenAt: lead.consentGivenAt,
+          unsubscribed: !!lead.unsubscribedAt,
+          unsubscribedAt: lead.unsubscribedAt,
+        };
+      }),
+    /**
+     * Update email preferences for a lead (public, no auth).
+     * Allows unsubscribing or re-subscribing.
+     */
+    updatePreferences: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        unsubscribe: z.boolean(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const { eq: eqP } = await import("drizzle-orm");
+        const normalizedEmail = input.email.toLowerCase();
+        const rows = await db.select().from(leads).where(eqP(leads.email, normalizedEmail)).limit(1);
+        if (!rows.length) throw new TRPCError({ code: "NOT_FOUND", message: "Email address not found." });
+        await db.update(leads).set({
+          unsubscribedAt: input.unsubscribe ? Date.now() : null,
+          // If re-subscribing, preserve existing consent timestamp
+        }).where(eqP(leads.email, normalizedEmail));
+        return { ok: true, unsubscribed: input.unsubscribe };
+      }),
     submit: publicProcedure
-      .input(z.object({ email: z.string().trim().toLowerCase().email() }))
+      .input(z.object({
+        email: z.string().trim().toLowerCase().email(),
+        consentGiven: z.boolean().optional(),
+      }))
       .mutation(async ({ input }) => {
         const db = await getDb();
         const now = Date.now();
@@ -7961,8 +8018,17 @@ export const appRouter = router({
             // Upsert without coupling guide access to app signup or duplicate rows.
             await db
               .insert(leads)
-              .values({ email: normalizedEmail, createdAt: now })
-              .onDuplicateKeyUpdate({ set: { email: normalizedEmail } });
+              .values({
+                email: normalizedEmail,
+                createdAt: now,
+                consentGivenAt: input.consentGiven ? now : undefined,
+              })
+              .onDuplicateKeyUpdate({
+                set: {
+                  email: normalizedEmail,
+                  ...(input.consentGiven ? { consentGivenAt: now } : {}),
+                },
+              });
             stored = true;
           } catch (error) {
             // A persistence outage must not block access to the promised guide.
