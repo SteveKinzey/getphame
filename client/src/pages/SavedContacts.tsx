@@ -156,7 +156,17 @@ export default function SavedContacts() {
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = useState<"all" | "stripe" | "woocommerce" | "manual">("all");
   const [optedOutFilter, setOptedOutFilter] = useState<"all" | "unsubscribed">("all");
-  const [consentFilter, setConsentFilter] = useState<"all" | "consent" | "no_consent" | "opted_out">("all");
+  const [consentFilter, setConsentFilter] = useState<"all" | "consent" | "no_consent" | "opted_out">(() => {
+    // Initialize from URL query param: ?consent=consented
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const c = params.get("consent");
+      if (c === "consented") return "consent";
+      if (c === "no_consent") return "no_consent";
+      if (c === "opted_out") return "opted_out";
+    }
+    return "all";
+  });
   const [tagInputId, setTagInputId] = useState<number | null>(null);
   const [tagInputValue, setTagInputValue] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);

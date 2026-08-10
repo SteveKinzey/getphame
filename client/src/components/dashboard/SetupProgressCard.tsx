@@ -20,6 +20,7 @@ interface SetupProgressCardProps {
 export default function SetupProgressCard({ status, userId, onNavigate }: SetupProgressCardProps) {
   const { t } = useTranslation("translation");
   const { mutate: submitChecklistEvent } = trpc.analytics.trackOnboardingChecklistEvent.useMutation();
+  const { data: consentStats } = trpc.contacts.consentStats.useQuery();
   const trackedEvents = useRef(new Set<string>());
   const steps = useMemo(() => [
     {
@@ -133,6 +134,38 @@ export default function SetupProgressCard({ status, userId, onNavigate }: SetupP
           );
         })}
       </ol>
+      {/* Consent progress indicator */}
+      {consentStats && consentStats.total >= 1 && (
+        <div className="mt-4 pt-4" style={{ borderTop: "1px solid oklch(0.92 0.005 100)" }}>
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck size={14} className="rr-text-green" />
+              <span className="text-xs font-bold rr-text-navy">Contact consent</span>
+            </div>
+            <span className="text-xs font-black rr-text-navy">
+              {consentStats.consented}/{consentStats.total}
+            </span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full rr-bg-surface">
+            <div
+              className="h-full rounded-full transition-[width] duration-300"
+              style={{
+                width: `${consentStats.total > 0 ? (consentStats.consented / consentStats.total) * 100 : 0}%`,
+                background: consentStats.consented / consentStats.total >= 0.5
+                  ? "oklch(0.55 0.15 145)"
+                  : "oklch(0.70 0.18 60)",
+              }}
+            />
+          </div>
+          <p className="text-xs mt-1 rr-text-navy-mid">
+            {consentStats.consented === consentStats.total
+              ? "All contacts have consented ✓"
+              : consentStats.consented / consentStats.total >= 0.5
+              ? `${Math.round((consentStats.consented / consentStats.total) * 100)}% consented — good coverage`
+              : `${Math.round((consentStats.consented / consentStats.total) * 100)}% consented — consider a bulk consent request`}
+          </p>
+        </div>
+      )}
     </section>
   );
 }
