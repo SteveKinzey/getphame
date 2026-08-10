@@ -2249,6 +2249,7 @@ export const leads = pgTable("leads", {
   guideSentAt: bigint("guideSentAt", { mode: "number" }),
   consentGivenAt: bigint("consentGivenAt", { mode: "number" }),
   unsubscribedAt: bigint("unsubscribedAt", { mode: "number" }),
+  unsubscribeReason: varchar("unsubscribeReason", { length: 100 }),
 });
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;

@@ -7988,6 +7988,7 @@ export const appRouter = router({
       .input(z.object({
         email: z.string().email(),
         unsubscribe: z.boolean(),
+        reason: z.string().max(100).optional(),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -7998,7 +7999,7 @@ export const appRouter = router({
         if (!rows.length) throw new TRPCError({ code: "NOT_FOUND", message: "Email address not found." });
         await db.update(leads).set({
           unsubscribedAt: input.unsubscribe ? Date.now() : null,
-          // If re-subscribing, preserve existing consent timestamp
+          unsubscribeReason: input.unsubscribe ? (input.reason ?? null) : null,
         }).where(eqP(leads.email, normalizedEmail));
         return { ok: true, unsubscribed: input.unsubscribe };
       }),

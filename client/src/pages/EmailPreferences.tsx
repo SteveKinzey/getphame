@@ -10,6 +10,7 @@ export default function EmailPreferences() {
   const [emailSubmitted, setEmailSubmitted] = useState("");
   const [step, setStep] = useState<"enter" | "manage">("enter");
   const [lookupError, setLookupError] = useState<string | null>(null);
+  const [unsubscribeReason, setUnsubscribeReason] = useState("");
 
   const prefsQuery = trpc.leadCapture.getPreferences.useQuery(
     { email: emailSubmitted },
@@ -154,7 +155,7 @@ export default function EmailPreferences() {
                     </div>
                   </div>
                   <button
-                    onClick={() => updateMutation.mutate({ email: prefs.email, unsubscribe: !prefs.unsubscribed })}
+                    onClick={() => updateMutation.mutate({ email: prefs.email, unsubscribe: !prefs.unsubscribed, reason: !prefs.unsubscribed ? (unsubscribeReason || undefined) : undefined })}
                     disabled={updateMutation.isPending}
                     className="flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-60"
                     style={prefs.unsubscribed
@@ -172,6 +173,29 @@ export default function EmailPreferences() {
                   </button>
                 </div>
               </div>
+
+              {/* Unsubscribe feedback dropdown — shown only when not yet unsubscribed */}
+              {!prefs.unsubscribed && (
+                <div className="rounded-2xl p-4" style={{ background: "oklch(0.975 0.003 100)", border: "1px solid oklch(0.90 0.02 260)" }}>
+                  <label className="block text-xs font-bold rr-text-navy mb-2">
+                    Why are you unsubscribing? <span className="font-normal rr-text-navy-muted">(optional)</span>
+                  </label>
+                  <select
+                    value={unsubscribeReason}
+                    onChange={(e) => setUnsubscribeReason(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl text-xs font-medium outline-none"
+                    style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "white", color: "oklch(0.22 0.09 260)" }}
+                  >
+                    <option value="">Select a reason…</option>
+                    <option value="too_many_emails">Too many emails</option>
+                    <option value="not_relevant">Content not relevant to me</option>
+                    <option value="never_signed_up">I never signed up for this</option>
+                    <option value="privacy_concerns">Privacy concerns</option>
+                    <option value="using_competitor">Using a different service</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              )}
 
               {updateMutation.isSuccess && (
                 <p className="text-xs text-center font-medium" style={{ color: "oklch(0.45 0.15 145)" }}>
