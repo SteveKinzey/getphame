@@ -260,7 +260,7 @@ describe("native-quality localization audit", () => {
     expect(verified).toBe(109);
   });
 
-  it("accounts for all 586 independently reviewed English-identical candidates", () => {
+  it("accounts for all 591 independently reviewed English-identical candidates", () => {
     let totalCandidates = 0;
     let totalTranslations = 0;
     let totalExceptions = 0;
@@ -358,9 +358,9 @@ describe("native-quality localization audit", () => {
       totalExceptions += manifest.exceptionCount;
     }
 
-    expect(totalCandidates).toBe(586);
+    expect(totalCandidates).toBe(591);
     expect(totalTranslations).toBe(349);
-    expect(totalExceptions).toBe(237);
+    expect(totalExceptions).toBe(242);
   });
 
   it("preserves natural Thai grammar across the partner-priority FAQ block", () => {
