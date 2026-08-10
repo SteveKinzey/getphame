@@ -1826,3 +1826,11 @@
 - [x] Create getphame-lead-consent-compliance skill
 - [x] Run full test suite and save checkpoint (17124cdc, 1022 tests pass)
 - [x] Open GitHub PR for checkpoint (PR #110)
+
+## Session: TS fixes + consent widget (Aug 10, 2026)
+- [x] Fix 18 TypeScript errors in routers.ts (moved floating procedures into admin router, fixed null coalescing, fixed acknowledgeConsentMutation scope, fixed emptyForm reset)
+- [x] Close PR #103 as superseded (Stripe status already in main via PR #112)
+- [x] Add consent count widget to Dashboard (4th stat card: Consented / of total)
+- [x] Add contacts.consentStats tRPC procedure
+- [x] Add dashboard.stats.consented i18n key to all 7 locales + fallback bundle
+- [x] admin-csv-preview-export skill already exists (no new skill needed)

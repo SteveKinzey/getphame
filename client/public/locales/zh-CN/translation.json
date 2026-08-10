@@ -1643,7 +1643,8 @@
     "stats": {
       "thisMonth": "本月",
       "allTime": "所有时间",
-      "last7Days": "过去7天"
+      "last7Days": "过去7天",
+      "consented": "已同意"
     },
     "weeklyBreakdown": {
       "title": "过去7天",

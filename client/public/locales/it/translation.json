@@ -721,6 +721,9 @@
       "markAllShort": "Segna tutto",
       "markAllSuccess": "{{count}} elementi contrassegnati come esaminati",
       "markReviewed": "Segna come esaminato"
+    },
+    "stats": {
+      "consented": "Consenso dato"
     }
   },
   "settings": {

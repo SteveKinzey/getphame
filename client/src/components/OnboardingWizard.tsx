@@ -891,9 +891,6 @@ function Step3Send({
   const [, navigate] = useLocation();
   const trpcUtils = trpc.useUtils();
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
-  const acknowledgeConsentMutation = trpc.onboarding.acknowledgeConsent.useMutation({
-    onSuccess: () => trpcUtils.onboarding.status.invalidate(),
-  });
 
   function handleGoSend() {
     dismissAndNavigateToSend({
@@ -951,6 +948,10 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   const { t } = useTranslation();
   const { data: status, isLoading } = trpc.onboarding.status.useQuery(undefined, {
     refetchInterval: 3000, // poll so steps auto-advance when completed elsewhere
+  });
+  const trpcUtilsWizard = trpc.useUtils();
+  const acknowledgeConsentMutation = trpc.onboarding.acknowledgeConsent.useMutation({
+    onSuccess: () => trpcUtilsWizard.onboarding.status.invalidate(),
   });
 
   const dismissMutation = trpc.onboarding.dismiss.useMutation();

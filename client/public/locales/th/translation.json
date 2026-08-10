@@ -1876,7 +1876,8 @@
     "stats": {
       "thisMonth": "เดือนนี้",
       "allTime": "ตลอดเวลา",
-      "last7Days": "7 วันที่ผ่านมา"
+      "last7Days": "7 วันที่ผ่านมา",
+      "consented": "ยินยอมแล้ว"
     },
     "weeklyBreakdown": {
       "title": "7 วันที่ผ่านมา",
