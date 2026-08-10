@@ -3437,7 +3437,9 @@
       "providerAcceptedMessage": "Votre fournisseur de messagerie a accepté le guide pour l'envoi.",
       "sharePrompt": "Partagez le guide gratuit des demandes d'avis.",
       "tryAgain": "Réessayer l'envoi par e‑mail",
-      "description": "Recevez un guide gratuit pour planifier des demandes d'avis claires et conformes, ainsi que des nouveautés produit et des conseils pratiques de réputation."
+      "description": "Recevez un guide gratuit pour planifier des demandes d'avis claires et conformes, ainsi que des nouveautés produit et des conseils pratiques de réputation.",
+      "consentCheckLabel": "J'accepte que Get Phame (getphame.app) me contacte par e-mail avec des mises à jour et des conseils sur le produit. Je peux me désabonner à tout moment.",
+      "consentRequired": "Veuillez cocher la case pour continuer."
     },
     "purpose": {
       "description": "Get Phame aide les commerces locaux à envoyer des e‑mails personnalisés de demande d'avis depuis leur propre compte e‑mail connecté. Il est conçu pour les propriétaires d'entreprise, les photographes, les cafés et restaurants, les équipes de services à domicile, les cliniques et salons, les agences et les boutiques WooCommerce qui souhaitent une façon plus simple de demander un retour à de vrais clients.",

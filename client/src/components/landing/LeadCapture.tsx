@@ -13,6 +13,8 @@ export default function LeadCapture() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [delivery, setDelivery] = useState<{ providerAccepted: boolean; downloadUrl: string } | null>(null);
+  const [consentChecked, setConsentChecked] = useState(false);
+  const [consentTouched, setConsentTouched] = useState(false);
   const validation = validateLeadEmail(email);
   const showEmailError = emailTouched && validation.error !== null;
   const shareUrls = buildGuideShareUrls();
@@ -33,7 +35,9 @@ export default function LeadCapture() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setEmailTouched(true);
+    setConsentTouched(true);
     if (validation.error) return;
+    if (!consentChecked) return;
     setError(null);
     submitLead.mutate({ email: validation.normalized });
   };
@@ -49,6 +53,8 @@ export default function LeadCapture() {
     setDelivery(null);
     setError(null);
     setEmailTouched(true);
+    setConsentChecked(false);
+    setConsentTouched(false);
   };
 
   const emailErrorMessage = validation.error === "required"
@@ -97,7 +103,7 @@ export default function LeadCapture() {
                       />
                       <button
                         type="submit"
-                        disabled={submitLead.isPending || validation.error !== null}
+                        disabled={submitLead.isPending || validation.error !== null || !consentChecked}
                         className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] whitespace-nowrap shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)] disabled:opacity-60 disabled:cursor-not-allowed"
                       >
                       {submitLead.isPending ? (
@@ -120,8 +126,41 @@ export default function LeadCapture() {
                     >
                       {showEmailError
                         ? emailErrorMessage
-                        : t("landing.leadCapture.emailConfirmationHint", { defaultValue: "We’ll show the address again before you leave so you can catch a typo." })}
+                        : t("landing.leadCapture.emailConfirmationHint", { defaultValue: "We'll show the address again before you leave so you can catch a typo." })}
                     </p>
+                    {/* Consent checkbox */}
+                    <label className="flex items-start gap-3 mt-4 cursor-pointer text-left group">
+                      <div className="relative flex-shrink-0 mt-0.5">
+                        <input
+                          type="checkbox"
+                          checked={consentChecked}
+                          onChange={(e) => { setConsentChecked(e.target.checked); setConsentTouched(true); }}
+                          className="sr-only"
+                          aria-describedby="lead-consent-error"
+                        />
+                        <div
+                          className="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-150"
+                          style={{
+                            background: consentChecked ? "oklch(0.80 0.18 80)" : "transparent",
+                            borderColor: consentTouched && !consentChecked ? "#f87171" : consentChecked ? "oklch(0.80 0.18 80)" : "#4a5a7c",
+                          }}
+                        >
+                          {consentChecked && (
+                            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                              <path d="M1 4L4 7L10 1" stroke="#0f1d32" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-sm text-slate-300 leading-relaxed group-hover:text-slate-200 transition-colors">
+                        {t("landing.leadCapture.consentCheckLabel", { defaultValue: "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time." })}
+                      </span>
+                    </label>
+                    {consentTouched && !consentChecked && (
+                      <p id="lead-consent-error" className="mt-1.5 text-left text-sm font-medium text-red-300" aria-live="polite">
+                        {t("landing.leadCapture.consentRequired", { defaultValue: "Please check the box to continue." })}
+                      </p>
+                    )}
                   </form>
                   {error && (
                     <p className="text-sm text-red-400 font-medium mt-3">{error}</p>

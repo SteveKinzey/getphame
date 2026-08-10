@@ -2565,7 +2565,9 @@
       "providerAcceptedMessage": "您的邮箱服务商已接受该指南以进行投递。",
       "sharePrompt": "分享免费的评论请求指南。",
       "tryAgain": "重试发送邮件",
-      "description": "获取免费指南，规划清晰、合规的评论请求沟通，并接收产品更新和实用的口碑管理建议。"
+      "description": "获取免费指南，规划清晰、合规的评论请求沟通，并接收产品更新和实用的口碑管理建议。",
+      "consentCheckLabel": "我同意 Get Phame (getphame.app) 通过电子邮件向我发送产品更新和使用技巧。我可以随时取消订阅。",
+      "consentRequired": "请勾选复选框以继续。"
     },
     "purpose": {
       "description": "Get Phame 帮助本地商家使用其已连接的邮箱，从自有邮箱发送个性化的评价请求邮件。适用于希望更简便向真实客户征求反馈的商家、摄影师、咖啡馆与餐厅、家政与上门服务团队、诊所与沙龙、代理机构及 WooCommerce 商店。",

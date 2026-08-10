@@ -2503,7 +2503,9 @@
       "downloadGuideButton": "Download the PDF guide",
       "editEmail": "Edit email",
       "tryAgain": "Try email again",
-      "sharePrompt": "Share the free review-request playbook."
+      "sharePrompt": "Share the free review-request playbook.",
+      "consentCheckLabel": "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time.",
+      "consentRequired": "Please check the box to continue."
     },
     "navbar": {
       "howItWorks": "How It Works",
