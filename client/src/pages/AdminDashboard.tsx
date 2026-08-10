@@ -28,6 +28,9 @@ import {
   Download,
   Sparkles,
   Smartphone,
+  ShieldCheck,
+  ShieldOff,
+  Mail,
   Share2,
   Languages,
   MousePointerClick,
@@ -36,8 +39,8 @@ import {
   Clock3,
   GitBranch,
   BadgePercent,
-  Mail,
 } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
   CartesianGrid,
@@ -84,6 +87,152 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type SubscriptionPlan = "monthly" | "annual" | "lifetime";
+
+function LeadsSection() {
+  const { data: leads, isLoading } = trpc.admin.listLeads.useQuery();
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "consented" | "no-consent" | "unsubscribed">("all");
+
+  const total = leads?.length ?? 0;
+  const consented = leads?.filter((l) => l.consentGivenAt).length ?? 0;
+
+  const filtered = (leads ?? []).filter((l) => {
+    const matchesSearch = !search || l.email.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" ? true :
+      statusFilter === "consented" ? !!l.consentGivenAt :
+      statusFilter === "no-consent" ? !l.consentGivenAt && !l.unsubscribedAt :
+      statusFilter === "unsubscribed" ? !!l.unsubscribedAt : true;
+    return matchesSearch && matchesStatus;
+  });
+
+  const handleExportCsv = () => {
+    const rows = [
+      ["Email", "Consent Given", "Consent Date", "Unsubscribed", "Unsubscribed Date", "Unsub Reason", "Joined"],
+      ...filtered.map((l) => [
+        l.email,
+        l.consentGivenAt ? "Yes" : "No",
+        l.consentGivenAt ? new Date(l.consentGivenAt).toLocaleDateString() : "",
+        l.unsubscribedAt ? "Yes" : "No",
+        l.unsubscribedAt ? new Date(l.unsubscribedAt).toLocaleDateString() : "",
+        (l as any).unsubscribeReason ?? "",
+        new Date(l.createdAt).toLocaleDateString(),
+      ]),
+    ];
+    const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const dateStr = new Date().toISOString().split("T")[0];
+    a.download = `getphame-leads-${statusFilter}-${dateStr}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <section className="rounded-2xl bg-white p-4 shadow-sm" aria-labelledby="leads-section-title">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div className="flex items-start gap-3">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+            <Mail size={21} />
+          </span>
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">Lead Capture</p>
+            <h2 id="leads-section-title" className="text-base font-black rr-text-navy">Email Subscribers</h2>
+            <p className="text-xs rr-text-navy-muted mt-0.5">{total} total · {consented} with consent · {filtered.length} shown</p>
+          </div>
+        </div>
+        {/* Export CSV button */}
+        {filtered.length > 0 && (
+          <button
+            onClick={handleExportCsv}
+            className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+            style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+            title="Download filtered leads as CSV"
+          >
+            <Download size={13} />
+            Export CSV
+          </button>
+        )}
+      </div>
+
+      {/* Search + Filter row */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        <div className="relative flex-1 min-w-[180px]">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 rr-text-navy-muted pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by email…"
+            className="w-full pl-8 pr-3 py-2 rounded-xl text-xs font-medium outline-none"
+            style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "oklch(0.975 0.003 100)" }}
+            onFocus={(e) => (e.target.style.borderColor = "oklch(0.22 0.09 260)")}
+            onBlur={(e) => (e.target.style.borderColor = "oklch(0.88 0.02 260)")}
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+          className="px-3 py-2 rounded-xl text-xs font-bold outline-none cursor-pointer"
+          style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "oklch(0.975 0.003 100)", color: "oklch(0.22 0.09 260)" }}
+        >
+          <option value="all">All statuses</option>
+          <option value="consented">Consented</option>
+          <option value="no-consent">No consent</option>
+          <option value="unsubscribed">Unsubscribed</option>
+        </select>
+      </div>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8"><Loader2 size={20} className="animate-spin rr-text-navy-muted" /></div>
+      ) : filtered.length === 0 ? (
+        <p className="text-sm rr-text-navy-muted text-center py-6">{total === 0 ? "No leads yet." : "No leads match your filter."}</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Email</th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Consent</th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Status</th>
+                <th className="text-left py-2 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((lead) => (
+                <tr key={lead.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="py-2 pr-4 font-medium rr-text-navy truncate max-w-[200px]">{lead.email}</td>
+                  <td className="py-2 pr-4">
+                    {lead.consentGivenAt ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.08 145)", color: "oklch(0.35 0.12 145)" }} title={`Consent given on ${new Date(lead.consentGivenAt).toLocaleString()}`}>
+                        <ShieldCheck size={11} /> Consented
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.02 260)", color: "oklch(0.55 0.04 260)" }}>
+                        <ShieldOff size={11} /> No consent
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-2 pr-4">
+                    {lead.unsubscribedAt ? (
+                      <span className="text-xs font-semibold" style={{ color: "oklch(0.55 0.12 30)" }}>Unsubscribed</span>
+                    ) : (
+                      <span className="text-xs font-semibold" style={{ color: "oklch(0.45 0.15 145)" }}>Active</span>
+                    )}
+                  </td>
+                  <td className="py-2 text-xs rr-text-navy-muted">{new Date(lead.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
 
 export default function AdminDashboard() {
   const { t } = useTranslation("translation");
@@ -187,6 +336,11 @@ export default function AdminDashboard() {
       enabled: user?.role === "admin",
       refetchInterval: 30_000,
     });
+
+  const { data: stripeStatus } = trpc.admin.stripeStatus.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 5 * 60_000,
+  });
 
   const { data: systemHealthTrend, isLoading: systemHealthLoading } =
     trpc.admin.systemHealthTrend.useQuery(
@@ -617,11 +771,19 @@ export default function AdminDashboard() {
                     Icon: TrendingUp,
                   },
                   {
-                    path: "/admin/smtp-stats",
-                    label: "SMTP health",
-                    detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
-                    Icon: Wifi,
-                  },
+                   path: "/admin/smtp-stats",
+                   label: "SMTP health",
+                   detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
+                   Icon: Wifi,
+                 },
+                 {
+                   path: "/admin/stripe-status",
+                   label: "Stripe status",
+                   detail: stripeStatus?.configured
+                     ? `${stripeStatus.mode?.toUpperCase() ?? "?"} mode · webhook ${stripeStatus.webhookStatus ?? "unknown"}`
+                     : "Not configured",
+                   Icon: CreditCard,
+                 },
                   {
                     path: "/admin/codes",
                     label: "System access codes",
@@ -1378,6 +1540,88 @@ export default function AdminDashboard() {
                 Review SMTP accounts →
               </button>
             </section>
+
+            {/* Stripe status widget */}
+            <section
+              data-testid="stripe-status-widget"
+              className={`rounded-2xl border-2 p-4 shadow-sm ${
+                !stripeStatus?.configured
+                  ? "border-gray-200 bg-gray-50"
+                  : stripeStatus.webhookStatus === "enabled"
+                  ? "border-emerald-200 bg-emerald-50"
+                  : "border-amber-200 bg-amber-50"
+              }`}
+              aria-labelledby="stripe-status-title"
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-white ${
+                    !stripeStatus?.configured
+                      ? "bg-gray-400"
+                      : stripeStatus.webhookStatus === "enabled"
+                      ? "bg-emerald-700"
+                      : "bg-amber-600"
+                  }`}
+                >
+                  <CreditCard size={22} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p
+                    id="stripe-status-title"
+                    className={`text-xs font-black uppercase tracking-[0.14em] ${
+                      !stripeStatus?.configured
+                        ? "text-gray-500"
+                        : stripeStatus.webhookStatus === "enabled"
+                        ? "text-emerald-800"
+                        : "text-amber-700"
+                    }`}
+                  >
+                    Stripe payment integration
+                  </p>
+                  {!stripeStatus ? (
+                    <p className="mt-1 text-sm text-gray-400">Loading…</p>
+                  ) : !stripeStatus.configured ? (
+                    <p className="mt-1 text-sm font-semibold text-gray-600">
+                      No Stripe key configured. Add <code className="rounded bg-gray-200 px-1 text-xs">STRIPE_SECRET_KEY</code> to activate payments.
+                    </p>
+                  ) : (
+                    <div className="mt-1 space-y-1">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold">
+                        <span>
+                          Mode:{" "}
+                          <span className={`font-black ${stripeStatus.mode === "live" ? "text-emerald-700" : "text-amber-700"}`}>
+                            {stripeStatus.mode?.toUpperCase() ?? "—"}
+                          </span>
+                        </span>
+                        <span>
+                          Webhook:{" "}
+                          <span className={`font-black ${stripeStatus.webhookStatus === "enabled" ? "text-emerald-700" : "text-red-600"}`}>
+                            {stripeStatus.webhookStatus ?? "unknown"}
+                          </span>
+                        </span>
+                        <span>
+                          Secret:{" "}
+                          <span className={`font-black ${stripeStatus.webhookSecretSet ? "text-emerald-700" : "text-red-600"}`}>
+                            {stripeStatus.webhookSecretSet ? "set" : "missing"}
+                          </span>
+                        </span>
+                      </div>
+                      {stripeStatus.webhookUrl && (
+                        <p className="truncate text-xs text-gray-500">{stripeStatus.webhookUrl}</p>
+                      )}
+                      {stripeStatus.events.length > 0 && (
+                        <p className="text-xs text-gray-400">
+                          {stripeStatus.events.length} event{stripeStatus.events.length !== 1 ? "s" : ""} subscribed
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* ── Lead Capture List ─────────────────────────────────────────── */}
+            <LeadsSection />
 
             <section
               data-testid="system-health-trend-chart"

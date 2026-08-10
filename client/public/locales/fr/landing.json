@@ -454,5 +454,8 @@
       "fileReadFailed": "Le fichier sélectionné n’a pas pu être lu. Réessayez.",
       "submitFailed": "Votre demande n’a pas pu être envoyée. Réessayez."
     }
+  },
+  "leadCapture": {
+    "consentGuideLink": "Télécharger le Guide de Conformité au Consentement (PDF)"
   }
 }

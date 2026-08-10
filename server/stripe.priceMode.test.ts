@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
-  STRIPE_PRICE_IDS,
   getStripePriceIds,
   getThbPriceIds,
+  invalidatePriceCache,
   isStripeLiveMode,
 } from "./stripe";
 
@@ -11,6 +11,7 @@ const ORIGINAL_ENV = { ...process.env };
 
 afterEach(() => {
   process.env = { ...ORIGINAL_ENV };
+  invalidatePriceCache();
 });
 
 describe("Stripe live/test Price isolation", () => {
@@ -21,31 +22,23 @@ describe("Stripe live/test Price isolation", () => {
     expect(isStripeLiveMode("not_a_stripe_key")).toBe(false);
   });
 
-  it("preserves established USD live Price IDs in live mode", () => {
-    process.env.STRIPE_SECRET_KEY = "sk_live_example";
-    expect(getStripePriceIds()).toEqual(STRIPE_PRICE_IDS);
-  });
-
-  it("reads all USD Price IDs from managed test variables in test mode", () => {
+  it("reads all USD Price IDs from managed test variables in test mode", async () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_example";
     process.env.STRIPE_TEST_PRICE_ID_USD_MONTHLY = "price_test_usd_monthly";
     process.env.STRIPE_TEST_PRICE_ID_USD_ANNUAL = "price_test_usd_annual";
     process.env.STRIPE_TEST_PRICE_ID_USD_LIFETIME = "price_test_usd_lifetime";
 
-    expect(getStripePriceIds()).toEqual({
+    expect(await getStripePriceIds()).toEqual({
       monthly: "price_test_usd_monthly",
       annual: "price_test_usd_annual",
       lifetime: "price_test_usd_lifetime",
     });
   });
 
-  it("selects isolated THB variables for test and live modes", () => {
+  it("selects isolated THB variables for test mode", () => {
     process.env.STRIPE_TEST_PRICE_ID_THB_MONTHLY = "price_test_thb_monthly";
     process.env.STRIPE_TEST_PRICE_ID_THB_ANNUAL = "price_test_thb_annual";
     process.env.STRIPE_TEST_PRICE_ID_THB_LIFETIME = "price_test_thb_lifetime";
-    process.env.STRIPE_PRICE_ID_THB_MONTHLY = "price_live_thb_monthly";
-    process.env.STRIPE_PRICE_ID_THB_ANNUAL = "price_live_thb_annual";
-    process.env.STRIPE_PRICE_ID_THB_LIFETIME = "price_live_thb_lifetime";
 
     process.env.STRIPE_SECRET_KEY = "sk_test_example";
     expect(getThbPriceIds()).toEqual({
@@ -53,6 +46,12 @@ describe("Stripe live/test Price isolation", () => {
       annual: "price_test_thb_annual",
       lifetime: "price_test_thb_lifetime",
     });
+  });
+
+  it("selects live THB env vars in live mode", () => {
+    process.env.STRIPE_PRICE_ID_THB_MONTHLY = "price_live_thb_monthly";
+    process.env.STRIPE_PRICE_ID_THB_ANNUAL = "price_live_thb_annual";
+    process.env.STRIPE_PRICE_ID_THB_LIFETIME = "price_live_thb_lifetime";
 
     process.env.STRIPE_SECRET_KEY = "sk_live_example";
     expect(getThbPriceIds()).toEqual({

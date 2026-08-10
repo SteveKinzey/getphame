@@ -61,11 +61,13 @@ import {
   History,
   AlertTriangle,
   ShieldCheck,
+  ShieldOff,
   CheckCircle2,
   ExternalLink,
   Sparkles,
   FileSpreadsheet,
   FileText,
+  Eye,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -86,6 +88,8 @@ type Contact = {
   sourceApp?: string | null;
   consentBasis?: string | null;
   consentCapturedAt?: number | null;
+  consentSource?: string | null;
+  optedOutAt?: number | null;
   createdAt?: Date | number | null;
 };
 
@@ -135,8 +139,8 @@ function parseTags(raw: string | null): string[] {
   try { return JSON.parse(raw); } catch { return []; }
 }
 
-type FormData = { name: string; email: string; phone: string; notes: string };
-const emptyForm: FormData = { name: "", email: "", phone: "", notes: "" };
+type FormData = { name: string; email: string; phone: string; notes: string; consentGiven: boolean };
+const emptyForm: FormData = { name: "", email: "", phone: "", notes: "", consentGiven: false };
 
 export default function SavedContacts() {
   const { t, i18n } = useTranslation();
@@ -152,6 +156,7 @@ export default function SavedContacts() {
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = useState<"all" | "stripe" | "woocommerce" | "manual">("all");
   const [optedOutFilter, setOptedOutFilter] = useState<"all" | "unsubscribed">("all");
+  const [consentFilter, setConsentFilter] = useState<"all" | "consent" | "no_consent" | "opted_out">("all");
   const [tagInputId, setTagInputId] = useState<number | null>(null);
   const [tagInputValue, setTagInputValue] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -188,6 +193,7 @@ export default function SavedContacts() {
   );
 
   // Daily send status
+  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
   const { data: dailyStatus } = trpc.contacts.getDailyStatus.useQuery(undefined, { enabled: isAuthenticated });
 
   // Review platforms
@@ -311,6 +317,28 @@ export default function SavedContacts() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const [consentConfirmOpen, setConsentConfirmOpen] = useState(false);
+  const [consentCustomSubject, setConsentCustomSubject] = useState("");
+  const [consentCustomBody, setConsentCustomBody] = useState("");
+  const [consentPreviewOpen, setConsentPreviewOpen] = useState(false);
+  const [consentPreviewMode, setConsentPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const bulkConsentRequestMutation = trpc.contacts.bulkConsentRequest.useMutation({
+    onSuccess: (result) => {
+      toast.success(`Consent emails sent: ${result.sent} delivered${result.failed > 0 ? `, ${result.failed} failed — check SMTP settings` : ""}.`);
+      utils.contacts.list.invalidate();
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+  const sendConsentTestMutation = trpc.contacts.sendConsentTestEmail.useMutation({
+    onSuccess: (result) => {
+      toast.success(`Test email sent to ${result.to}`);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   // Collect all unique tags across all contacts for the filter row
   const allTags = Array.from(
@@ -355,6 +383,9 @@ export default function SavedContacts() {
     if (tagFilter && !parseTags(c.tags).includes(tagFilter)) return false;
     if (sourceFilter !== "all" && c.source !== sourceFilter) return false;
     if (optedOutFilter === "unsubscribed" && !c.optedOut) return false;
+    if (consentFilter === "consent" && c.consentBasis !== "explicit_opt_in") return false;
+    if (consentFilter === "no_consent" && (c.consentBasis === "explicit_opt_in" || c.consentBasis === "opted_out")) return false;
+    if (consentFilter === "opted_out" && c.consentBasis !== "opted_out") return false;
     if (dormancyFilter === "all") return true;
     const days = parseInt(dormancyFilter, 10);
     const cutoff = now - days * 24 * 60 * 60 * 1000;
@@ -432,6 +463,10 @@ export default function SavedContacts() {
       toast.error("Name and email are required.");
       return;
     }
+    if (!editContact && !form.consentGiven) {
+      toast.error(t("contactsTools.addConsentRequired", "Consent confirmation is required to add a contact"));
+      return;
+    }
     const payload = {
       name: form.name.trim(),
       email: form.email.trim(),
@@ -441,7 +476,7 @@ export default function SavedContacts() {
     if (editContact) {
       updateMutation.mutate({ id: editContact.id, ...payload });
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate({ ...payload, consentGiven: true, consentSource: "manual_add_contact_form" });
     }
   }
 
@@ -905,6 +940,44 @@ export default function SavedContacts() {
           </div>
         )}
 
+        {/* Consent status filter pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <ShieldCheck size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" as const }} />
+          {(["all", "consent", "no_consent", "opted_out"] as const).map((opt) => {
+            const labels: Record<string, string> = {
+              all: "All consent",
+              consent: "Consented",
+              no_consent: "No consent",
+              opted_out: "Opted out",
+            };
+            const colors: Record<string, string> = {
+              all: "oklch(0.22 0.09 260)",
+              consent: "oklch(0.38 0.12 145)",
+              no_consent: "oklch(0.50 0.04 260)",
+              opted_out: "oklch(0.60 0.18 25)",
+            };
+            const active = consentFilter === opt;
+            return (
+              <button
+                key={opt}
+                onClick={() => setConsentFilter(opt)}
+                className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+                style={{
+                  background: active ? colors[opt] : "white",
+                  color: active ? "white" : "oklch(0.45 0.05 260)",
+                  border: "1px solid oklch(0.88 0.02 260)",
+                }}
+              >
+                {labels[opt]}
+              </button>
+            );
+          })}
+          {consentFilter !== "all" && (
+            <span className="text-xs ml-1 rr-text-navy-muted">
+              {filtered.length} contact{filtered.length !== 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
         {/* Dormancy filter pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <Clock size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
@@ -1132,6 +1205,26 @@ export default function SavedContacts() {
                           <ShoppingCart size={9} /> WooCommerce
                         </span>
                       )}
+                      {/* Consent badge */}
+                      {c.consentBasis === "explicit_opt_in" ? (
+                        <span
+                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full cursor-default"
+                          style={{ background: "oklch(0.93 0.06 145)", color: "oklch(0.38 0.12 145)" }}
+                          title={c.consentCapturedAt
+                            ? `Consent given on ${format(new Date(c.consentCapturedAt), "MMM d, yyyy 'at' h:mm a")}${c.consentSource ? ` via ${c.consentSource.replace(/_/g, " ")}` : ""}`
+                            : "Customer has given explicit consent to be contacted"}
+                        >
+                          <ShieldCheck size={9} /> Consent
+                        </span>
+                      ) : c.consentBasis === "opted_out" ? null : (
+                        <span
+                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full cursor-default"
+                          style={{ background: "oklch(0.95 0.01 260)", color: "oklch(0.60 0.04 260)" }}
+                          title="No explicit consent recorded for this contact. Use the bulk consent request action to send them a consent email."
+                        >
+                          <ShieldOff size={9} /> No consent
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -1205,6 +1298,16 @@ export default function SavedContacts() {
                 <X size={16} />
               </button>
               <button
+                onClick={() => setConsentConfirmOpen(true)}
+                disabled={bulkConsentRequestMutation.isPending}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all"
+                style={{ background: "oklch(0.93 0.06 145)", color: "oklch(0.28 0.10 145)", border: "1px solid oklch(0.75 0.10 145)" }}
+                title="Send a consent request email to selected contacts with no consent on file"
+              >
+                <ShieldCheck size={13} />
+                Consent
+              </button>
+              <button
                 onClick={() => setBulkConfirmOpen(true)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black transition-all rr-bg-gold rr-text-navy"
               >
@@ -1239,6 +1342,22 @@ export default function SavedContacts() {
               <Label>Notes (optional)</Label>
               <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="e.g. Regular customer, prefers email" rows={2} />
             </div>
+            {!editContact && (
+              <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                <Checkbox
+                  id="consent-checkbox"
+                  checked={form.consentGiven}
+                  onCheckedChange={(checked) => setForm({ ...form, consentGiven: !!checked })}
+                  className="mt-0.5 shrink-0"
+                />
+                <label htmlFor="consent-checkbox" className="cursor-pointer text-xs leading-snug text-amber-900">
+                  {t("contactsTools.addConsentLabel", {
+                    businessName: profile?.consentLabelName || profile?.businessName || "your business",
+                    defaultValue: "I confirm this customer has consented to be contacted by {{businessName}} via email and/or text about their experience and purchases",
+                  })}
+                </label>
+              </div>
+            )}
           </div>
           <DialogFooter className="mt-2">
             <Button variant="outline" onClick={() => { setDialogOpen(false); setForm(emptyForm); }}>Cancel</Button>
@@ -1422,6 +1541,187 @@ export default function SavedContacts() {
                 <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
               ) : (
                 <><Star size={14} className="mr-1" /> Send {selectedCount} Requests</>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Consent Request Confirmation Modal with Template Editor */}
+      <AlertDialog open={consentConfirmOpen} onOpenChange={(o) => { if (!o) { setConsentConfirmOpen(false); setConsentPreviewOpen(false); } }}>
+        <AlertDialogContent className="max-w-md mx-4">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <ShieldCheck size={18} className="text-green-600" />
+              Send Consent Request?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Sending to <strong>{selectedCount}</strong> contact{selectedCount !== 1 ? "s" : ""} with no consent on file. Contacts with existing consent or who opted out are skipped automatically.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {/* Template Editor */}
+          <div className="flex flex-col gap-2 mt-1">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-bold rr-text-navy-mid">Customize email (optional)</p>
+              <button
+                onClick={() => setConsentPreviewOpen(p => !p)}
+                className="text-xs font-semibold flex items-center gap-1 px-2 py-1 rounded-lg transition-colors"
+                style={{ background: consentPreviewOpen ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.02 260)", color: consentPreviewOpen ? "white" : "oklch(0.40 0.06 260)" }}
+              >
+                <Eye size={11} /> {consentPreviewOpen ? "Hide preview" : "Preview"}
+              </button>
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-xs rr-text-navy-muted">Insert:</span>
+              {([
+                { label: "{{name}}", desc: "Contact's name" },
+                { label: "{{businessName}}", desc: "Your business name" },
+                { label: "{{email}}", desc: "Contact's email address" },
+                { label: "{{currentDate}}", desc: "Today's date (e.g. August 10, 2026)" },
+              ] as const).map(({ label, desc }) => (
+                <button
+                  key={label}
+                  title={desc}
+                  onClick={() => setConsentCustomBody(b => b ? b + " " + label : label)}
+                  className="text-xs font-mono px-1.5 py-0.5 rounded-md cursor-pointer transition-colors"
+                  style={{ background: "oklch(0.93 0.04 260)", color: "oklch(0.30 0.09 260)", border: "1px solid oklch(0.82 0.04 260)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold mb-1 rr-text-navy-mid">Subject</label>
+              <input
+                type="text"
+                value={consentCustomSubject}
+                onChange={(e) => setConsentCustomSubject(e.target.value)}
+                placeholder="A note about your email preferences from {{businessName}}"
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
+                style={{ border: "1.5px solid oklch(0.88 0.02 260)", fontSize: "13px" }}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold mb-1 rr-text-navy-mid">Message body</label>
+              <textarea
+                value={consentCustomBody}
+                onChange={(e) => setConsentCustomBody(e.target.value)}
+                placeholder={"We value your privacy...\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by {{businessName}} via email...\n\nIf you prefer not to receive future emails, you can unsubscribe at any time."}
+                rows={5}
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none resize-none"
+                style={{ border: "1.5px solid oklch(0.88 0.02 260)", fontSize: "13px", lineHeight: "1.5" }}
+              />
+            </div>
+            {(consentCustomSubject || consentCustomBody) && (
+              <button
+                onClick={() => { setConsentCustomSubject(""); setConsentCustomBody(""); }}
+                className="text-xs text-left rr-text-navy-muted hover:underline"
+              >
+                Reset to default
+              </button>
+            )}
+            {/* Live preview pane */}
+            {consentPreviewOpen && (() => {
+              const biz = profile?.consentLabelName || profile?.businessName || "Your Business";
+              const sampleName = "Jane Smith";
+              const sampleEmail = "jane.smith@example.com";
+              const sampleDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+              const defaultSubj = `A note about your email preferences from ${biz}`;
+              const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${biz}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${biz} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
+              const resolveVars = (t: string) => t
+                .replace(/\{\{name\}\}/g, sampleName)
+                .replace(/\{\{businessName\}\}/g, biz)
+                .replace(/\{\{email\}\}/g, sampleEmail)
+                .replace(/\{\{currentDate\}\}/g, sampleDate);
+              const previewSubject = resolveVars(consentCustomSubject || defaultSubj);
+              const previewBody = resolveVars(consentCustomBody || defaultBody);
+              const previewBodyHtml = previewBody.split(/\n\n+/).map((p: string) => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join("");
+              const isMobile = consentPreviewMode === "mobile";
+              return (
+                <div className="rounded-xl overflow-hidden mt-1" style={{ border: "1.5px solid oklch(0.85 0.04 260)" }}>
+                  <div className="px-3 py-1.5 flex items-center justify-between" style={{ background: "oklch(0.95 0.02 260)", borderBottom: "1px solid oklch(0.88 0.02 260)" }}>
+                    <div className="flex items-center gap-1.5">
+                      <Eye size={11} className="rr-text-navy-muted" />
+                      <span className="text-xs font-semibold rr-text-navy-mid">Preview (sample: {sampleName})</span>
+                    </div>
+                    {/* Desktop / Mobile toggle */}
+                    <div className="flex items-center gap-0.5 rounded-lg p-0.5" style={{ background: "oklch(0.88 0.02 260)" }}>
+                      {(["desktop", "mobile"] as const).map((mode) => (
+                        <button
+                          key={mode}
+                          onClick={() => setConsentPreviewMode(mode)}
+                          className="text-xs px-2 py-0.5 rounded-md font-semibold transition-colors capitalize"
+                          style={{
+                            background: consentPreviewMode === mode ? "white" : "transparent",
+                            color: consentPreviewMode === mode ? "oklch(0.22 0.09 260)" : "oklch(0.55 0.04 260)",
+                            boxShadow: consentPreviewMode === mode ? "0 1px 2px rgba(0,0,0,0.08)" : "none",
+                          }}
+                        >
+                          {mode}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="bg-white overflow-x-auto" style={{ maxHeight: "240px" }}>
+                    <div style={{
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: isMobile ? "12px" : "13px",
+                      color: "#1a1a2e",
+                      padding: "12px",
+                      maxWidth: isMobile ? "375px" : "600px",
+                      margin: "0 auto",
+                      overflowY: "auto",
+                    }}>
+                      <p style={{ margin: "0 0 8px", fontSize: "11px", color: "#6b7280" }}><strong>Subject:</strong> {previewSubject}</p>
+                      <hr style={{ border: "none", borderTop: "1px solid #e5e7eb", margin: "8px 0" }} />
+                      <h3 style={{ margin: "0 0 10px", fontSize: isMobile ? "14px" : "15px", color: "#1a1a2e" }}>A quick note from {biz}</h3>
+                      <p style={{ margin: "0 0 10px" }}>Hi {sampleName},</p>
+                      <div dangerouslySetInnerHTML={{ __html: previewBodyHtml }} />
+                      <p style={{ marginTop: "16px", paddingTop: "12px", borderTop: "1px solid #e5e7eb", fontSize: "11px", color: "#9ca3af", textAlign: "center" }}>
+                        You received this email because you are a customer of {biz}.{" "}
+                        <span style={{ color: "#9ca3af", textDecoration: "underline" }}>Unsubscribe</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+          <AlertDialogFooter className="mt-2">
+            <button
+              onClick={() => sendConsentTestMutation.mutate({
+                customSubject: consentCustomSubject.trim() || undefined,
+                customBody: consentCustomBody.trim() || undefined,
+              })}
+              disabled={sendConsentTestMutation.isPending}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors mr-auto"
+              style={{ background: "oklch(0.95 0.02 260)", color: "oklch(0.40 0.06 260)", border: "1px solid oklch(0.85 0.02 260)" }}
+              title="Send a test email to your own address to preview how it looks"
+            >
+              {sendConsentTestMutation.isPending ? (
+                <><Loader2 size={12} className="animate-spin" /> Sending…</>
+              ) : (
+                <><Mail size={12} /> Send test to me</>
+              )}
+            </button>
+            <AlertDialogCancel onClick={() => setConsentConfirmOpen(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setConsentConfirmOpen(false);
+                setConsentPreviewOpen(false);
+                bulkConsentRequestMutation.mutate({
+                  contactIds: Array.from(selected),
+                  customSubject: consentCustomSubject.trim() || undefined,
+                  customBody: consentCustomBody.trim() || undefined,
+                });
+              }}
+              className="flex items-center gap-1.5"
+              style={{ background: "oklch(0.38 0.12 145)", color: "white" }}
+            >
+              {bulkConsentRequestMutation.isPending ? (
+                <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
+              ) : (
+                <><ShieldCheck size={14} className="mr-1" /> Send Consent Emails</>
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -1641,6 +1941,56 @@ export default function SavedContacts() {
             </div>
           )}
 
+          {/* Consent Activity Log */}
+          {historyContact && (
+            <div className="mt-3 pt-3" style={{ borderTop: "1px solid oklch(0.92 0.02 260)" }}>
+              <p className="text-xs font-bold mb-2 flex items-center gap-1.5 rr-text-navy-mid">
+                <ShieldCheck size={12} /> Consent Activity
+              </p>
+              <div className="flex flex-col gap-1.5">
+                {historyContact.consentBasis === "explicit_opt_in" ? (
+                  <div className="rounded-lg px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.96 0.03 145)", border: "1px solid oklch(0.85 0.06 145)" }}>
+                    <ShieldCheck size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.38 0.12 145)" }} />
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "oklch(0.28 0.10 145)" }}>Consent given</p>
+                      {historyContact.consentCapturedAt && (
+                        <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.08 145)" }}>
+                          {format(new Date(historyContact.consentCapturedAt), "MMM d, yyyy 'at' h:mm a")}
+                        </p>
+                      )}
+                      {historyContact.consentSource && (
+                        <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.06 145)" }}>
+                          via {historyContact.consentSource.replace(/_/g, " ")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : historyContact.consentBasis === "opted_out" ? (
+                  <div className="rounded-lg px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.96 0.02 27)", border: "1px solid oklch(0.85 0.08 27)" }}>
+                    <ShieldOff size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.15 27)" }} />
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "oklch(0.45 0.15 27)" }}>Opted out</p>
+                      {historyContact.optedOutAt && (
+                        <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.10 27)" }}>
+                          {format(new Date(historyContact.optedOutAt), "MMM d, yyyy 'at' h:mm a")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
+                    <ShieldOff size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.60 0.04 260)" }} />
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "oklch(0.50 0.04 260)" }}>No consent recorded</p>
+                      <p className="text-xs mt-0.5" style={{ color: "oklch(0.60 0.03 260)" }}>
+                        Select this contact and use the Consent button to send a consent request email.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           <DialogFooter>
             <Button
               variant="outline"
