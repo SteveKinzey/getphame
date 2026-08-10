@@ -146,7 +146,7 @@ describe("Get Phame regression contracts", () => {
     const app = readProjectFile("../client/src/App.tsx");
 
     expect(html).toContain(
-      'content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover"'
+      'content="width=device-width, initial-scale=1.0, viewport-fit=cover"'
     );
     expect(html).toContain(
       '<meta name="apple-mobile-web-app-title" content="Get Phame"'

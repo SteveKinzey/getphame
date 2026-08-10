@@ -1,4 +1,4 @@
-import { createTransporter } from "./smtp";
+import { sendSystemEmail } from "./sendgrid";
 
 export const ADMIN_GENERAL_FROM_EMAIL = "hello@getphame.app";
 export const ADMIN_MESSAGE_RETENTION_MS = 180 * 24 * 60 * 60 * 1000;
@@ -51,22 +51,25 @@ If you need help, reply to hello@getphame.app with your provider name. Do not in
 }
 
 export async function sendAdminPlatformEmail(input: { to: string; subject: string; bodyText: string; replyTo?: string }) {
-  const host = process.env.SYSTEM_SMTP_HOST;
-  const port = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "465", 10);
-  const user = process.env.SYSTEM_SMTP_USER;
-  const pass = process.env.SYSTEM_SMTP_PASS;
-  const configuredFrom = process.env.HELLO_FROM_EMAIL?.trim() || ADMIN_GENERAL_FROM_EMAIL;
-  if (!host || !user || !pass || !Number.isFinite(port)) return { sent: false, providerMessageId: null, failureCode: "not_configured" };
-  if (configuredFrom.toLowerCase() !== ADMIN_GENERAL_FROM_EMAIL) return { sent: false, providerMessageId: null, failureCode: "invalid_from_address" };
+  const hasSendGrid = !!(process.env.SENDGRID_API_KEY);
+  const smtpPort = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "465", 10);
+  const hasSystemSmtp = !!(
+    process.env.SYSTEM_SMTP_HOST &&
+    process.env.SYSTEM_SMTP_USER &&
+    process.env.SYSTEM_SMTP_PASS &&
+    Number.isFinite(smtpPort)
+  );
+  if (!hasSendGrid && !hasSystemSmtp) return { sent: false, providerMessageId: null, failureCode: "not_configured" };
   try {
-    const transporter = createTransporter({ host, port, secure: port === 465, user, pass });
-    const result = await transporter.sendMail({
-      from: `"Get Phame" <${ADMIN_GENERAL_FROM_EMAIL}>`, to: input.to, replyTo: input.replyTo || ADMIN_GENERAL_FROM_EMAIL,
-      subject: input.subject, text: input.bodyText,
+    await sendSystemEmail({
+      to: input.to,
+      from: ADMIN_GENERAL_FROM_EMAIL,
+      replyTo: input.replyTo || ADMIN_GENERAL_FROM_EMAIL,
+      subject: input.subject,
+      text: input.bodyText,
       html: `<!doctype html><html lang="en"><body style="margin:0;padding:32px;background:#f6f7f9;color:#10213d;font-family:Arial,sans-serif"><main style="max-width:640px;margin:auto;background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:32px"><h1 style="margin:0 0 20px;font-size:22px;color:#0b1d3a">Get Phame</h1><div style="white-space:pre-wrap;line-height:1.6">${escapeHtml(input.bodyText)}</div></main></body></html>`,
     });
-    const accepted = Array.isArray(result.accepted) && result.accepted.length > 0;
-    return { sent: accepted, providerMessageId: typeof result.messageId === "string" ? result.messageId.slice(0, 255) : null, failureCode: accepted ? null : "not_accepted" };
+    return { sent: true, providerMessageId: null, failureCode: null };
   } catch (error) {
     console.warn("[AdminPlatformEmail] Provider delivery failed", { name: error instanceof Error ? error.name : "UnknownError" });
     return { sent: false, providerMessageId: null, failureCode: "delivery_failed" };

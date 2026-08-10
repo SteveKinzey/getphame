@@ -1699,3 +1699,10 @@
 - [x] Add robots meta tag to client/index.html (index, follow)
 - [x] Add fade-in animation to undo toast notifications (toast-in keyframe + animate-toast-in class on all 3 toasts)
 - [x] Run Lighthouse audit on landing page: Perf 40, A11y 96, Best Practices 73, SEO 100
+
+## Session — PWA Perf/A11y Skill, Viewport Fix, Preload, Code-Split (Aug 9 2026)
+- [x] Create getphame-pwa-perf-a11y reusable skill
+- [x] Remove maximum-scale=1 from viewport meta tag in index.html (a11y fix)
+- [x] Add preload link for hero background image (phame-hero-bg.webp) in index.html
+- [x] Implement React.lazy() code-splitting for landing page: VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer
+- [x] Integrate SendGrid as system email relay: server/sendgrid.ts helper, wired into auth-email.ts (magic links), smtp.ts (welcome email), accountDeletionEmail.ts, adminPlatformEmail.ts. SENDGRID_API_KEY secret needed.
