@@ -1753,3 +1753,8 @@
 - [x] Add split-screen view (Desktop 800px + Mobile 390px side-by-side, overflow-x-auto)
 - [x] Add Save Preset feature (localStorage, named chips with load/delete, Enter-to-save)
 - [x] Fix nativeLocalizationQuality: resetVars/split are cross_language_equivalent in es; split in fr — totalCandidates=591, totalExceptions=242
+
+## Session — Stripe Webhook Check, Status Indicator, PR 32c1194f
+- [x] Verified Stripe webhook — was pointing to dead sandbox tunnel; updated to https://getphame.app/api/stripe/webhook
+- [x] Add Stripe status indicator to admin dashboard (mode/webhook status/secret/events, color-coded card)
+- [x] Open GitHub PR for checkpoint 32c1194f (PR #103)

@@ -7795,6 +7795,42 @@ export const appRouter = router({
         return { ok: true as const };
       }),
 
+    stripeStatus: adminProcedure.query(async () => {
+      const stripeKey = process.env.STRIPE_SECRET_KEY ?? "";
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+      if (!stripeKey) return { configured: false as const, mode: null, webhookUrl: null, webhookStatus: null, events: [] };
+      const mode = stripeKey.startsWith("sk_live") ? "live" : "test";
+      // Fetch webhook endpoints from Stripe API
+      try {
+        const https = await import("https");
+        const webhookData = await new Promise<{ url: string; status: string; enabled_events: string[] }[]>((resolve, reject) => {
+          const req = https.get("https://api.stripe.com/v1/webhook_endpoints?limit=5", {
+            headers: { Authorization: "Bearer " + stripeKey },
+          }, (res) => {
+            let data = "";
+            res.on("data", (d: Buffer) => (data += d));
+            res.on("end", () => {
+              try {
+                const json = JSON.parse(data);
+                resolve(json.data ?? []);
+              } catch { reject(new Error("Parse error")); }
+            });
+          });
+          req.on("error", reject);
+        });
+        const wh = webhookData[0] ?? null;
+        return {
+          configured: true as const,
+          mode,
+          webhookUrl: wh?.url ?? null,
+          webhookStatus: wh?.status ?? null,
+          events: wh?.enabled_events ?? [],
+          webhookSecretSet: webhookSecret.length > 0,
+        };
+      } catch {
+        return { configured: true as const, mode, webhookUrl: null, webhookStatus: "error", events: [], webhookSecretSet: webhookSecret.length > 0 };
+      }
+    }),
   /** Landing page lead capture — stores email and sends the free guide PDF */
   leadCapture: router({
     submit: publicProcedure
