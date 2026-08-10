@@ -2861,7 +2861,7 @@ export const appRouter = router({
           .filter(c => c && !c.optedOut && c.consentBasis !== "explicit_opt_in") as typeof allContacts;
         if (targets.length === 0)
           throw new TRPCError({ code: "BAD_REQUEST", message: "No eligible contacts (all have consent or are opted out)." });
-        const businessName = (profile as any).consentLabelName || profile.businessName;
+        const businessName = String((profile as any).consentLabelName || profile.businessName || "");
         const defaultSubject = `A note about your email preferences from ${businessName}`;
         const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${businessName}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
         let sent = 0;
@@ -2901,7 +2901,7 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found." });
-        const businessName = (profile as any).consentLabelName || profile.businessName;
+        const businessName = String((profile as any).consentLabelName || profile.businessName || "");
         const toAddress = input.toEmail || ctx.user.email;
         const defaultSubject = `[TEST] A note about your email preferences from ${businessName}`;
         const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${businessName}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
