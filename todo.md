@@ -1772,5 +1772,57 @@
 - [x] All 7 locales and fallback bundle updated with new consent keys
 - [x] nativeLocalizationQuality totalCandidates remains 591
 - [x] All 1022 tests pass
-- [ ] Save checkpoint
-- [ ] Open GitHub PR for checkpoint
+- [x] Save checkpoint (e699c660)
+- [x] Open GitHub PR for checkpoint (PR #104)
+
+## Session — Consent Badges, Settings, Unsubscribe Handler, Skill
+- [x] Create getphame-consent-compliance reusable skill
+- [x] Add consent badge (ShieldCheck/ShieldOff) to contacts list in SavedContacts.tsx
+- [x] Add consentLabelName field to business_profiles schema and DB
+- [x] Add consentLabelName setting to Settings page (Email Sender Settings section)
+- [x] Update profile.upsert procedure to accept consentLabelName
+- [x] Update SavedContacts consent label to use consentLabelName when set
+- [x] Enhance unsubscribe handler to set consentBasis = "opted_out" on unsubscribe
+- [x] All 1022 tests pass, nativeLocalizationQuality totalCandidates remains 591
+- [x] Save checkpoint (5e676038)
+- [x] Open GitHub PR for checkpoint (PR #105)
+
+## Session — Consent Filter, Tooltip, Bulk Consent Email, Skill
+- [x] Add consent status filter dropdown to contacts list (All / Consent / No consent / Opted out)
+- [x] Add date/time tooltip to consent badge (shows consentCapturedAt formatted date)
+- [x] Implement bulk consent request email for legacy contacts (no consent on file)
+- [x] Create reusable skill for consent badge/filter/bulk-consent workflow (getphame-consent-badge-filter)
+- [x] Run full test suite and save checkpoint (b6e64483, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #106)
+
+## Session — Consent Template Editor, Activity Log, Confirm Modal, Skill
+- [x] Add confirmation modal before bulk consent request send
+- [x] Add consent email template editor (subject + body customization with variable preview)
+- [x] Implement consent activity log in contact history drawer
+- [x] Create reusable skill for consent template editor workflow (getphame-consent-template-editor)
+- [x] Run full test suite and save checkpoint (96626f42, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #107)
+
+## Session — Live Preview, Variable Tags, Toast, Skill
+- [x] Add live preview pane to consent template editor modal
+- [x] Add clickable variable tags ({{name}}, {{businessName}}) below editor
+- [x] Add success toast after bulk consent send completes (replaced result dialog)
+- [x] Create reusable skill for live-preview template editor pattern (getphame-consent-preview-editor)
+- [x] Run full test suite and save checkpoint (7214aa79, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #108)
+
+## Session — Send Test Email, Preview Toggle, Variable Tags, Skill
+- [x] Add desktop/mobile preview toggle to live preview pane
+- [x] Add {{email}} and {{currentDate}} variable tags
+- [x] Add Send Test Email button to template editor modal
+- [x] Update getphame-consent-preview-editor skill with new patterns
+- [x] Run full test suite and save checkpoint (fa2513dd, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #109)
+
+## Session — Success Animation, Admin Lead Badge, Preferences Page, Skill
+- [x] Add smooth success animation and thank-you state to LeadCapture form
+- [x] Add consent badge to admin lead list (LeadsSection in AdminDashboard)
+- [x] Build public email preferences page (/preferences)
+- [x] Create getphame-lead-consent-compliance skill
+- [x] Run full test suite and save checkpoint (17124cdc, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #110)

@@ -766,7 +766,9 @@
     "saveProfile": "Save Profile",
     "successToast": "Business profile saved!",
     "dailySendLimitSaved": "Daily send limit saved!",
-    "addBusinessNameAndLink": "Add your business name and Google review link in Settings first."
+    "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
+    "consentLabelName": "Consent checkbox business name",
+    "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
   },
   "reviewPlatforms": {
     "title": "Review Platforms",
@@ -2501,7 +2503,12 @@
       "downloadGuideButton": "Download the PDF guide",
       "editEmail": "Edit email",
       "tryAgain": "Try email again",
-      "sharePrompt": "Share the free review-request playbook."
+      "sharePrompt": "Share the free review-request playbook.",
+      "consentCheckLabel": "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time.",
+      "consentRequired": "Please check the box to continue.",
+      "thankYouHeading": "You're all set!",
+      "thankYouMessage": "Your guide is on its way to {{email}}. Check spam if it doesn't arrive.",
+      "thankYouDownload": "Email delivery wasn't available. Download your guide directly below."
     },
     "navbar": {
       "howItWorks": "How It Works",
