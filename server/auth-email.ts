@@ -23,6 +23,7 @@ import { getDb } from "./db";
 import { magicLinks } from "../drizzle/schema";
 import { eq, and, gt, isNull } from "drizzle-orm";
 import { createTransporter, sendUserWelcomeEmail } from "./smtp";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import {
   classifyAuthDiagnosticError,
@@ -208,15 +209,16 @@ export function registerEmailAuthRoutes(app: Express) {
 
     // Check system SMTP is configured
     const smtpConfig = getSystemSmtpConfig();
-    if (!smtpConfig) {
-      console.error("[MagicLink] System SMTP not configured");
+    const hasSendGrid = !!(process.env.SENDGRID_API_KEY);
+    if (!smtpConfig && !hasSendGrid) {
+      console.error("[MagicLink] Neither SendGrid nor System SMTP is configured");
       void recordAuthLifecycleEvent({
         requestId,
         eventType: "provider_failed",
         outcome: "fail",
         email: normalizedEmail,
         detailCode: "provider_config_missing",
-        detail: "System SMTP is not configured",
+        detail: "No email relay configured (set SENDGRID_API_KEY or SYSTEM_SMTP_*)",
         durationMs: Date.now() - requestStartedAt,
       });
       return res.status(503).json({
@@ -289,20 +291,13 @@ export function registerEmailAuthRoutes(app: Express) {
       const magicLinkUrl = `${baseUrl}/api/auth/magic-link/verify?${magicLinkParams.toString()}`;
 
       // Send email
-      const transporter = createTransporter({
-        host: smtpConfig.host,
-        port: smtpConfig.port,
-        secure: smtpConfig.port === 465,
-        user: smtpConfig.user,
-        pass: smtpConfig.pass,
-      });
-
-      const delivery = await transporter.sendMail({
-        from: `"GetPhame" <${smtpConfig.fromEmail}>`,
+      await sendSystemEmail({
         to: normalizedEmail,
         subject: "Your GetPhame login link",
         html: buildMagicLinkEmailHtml(magicLinkUrl),
+        from: NOREPLY_FROM,
       });
+      const delivery = { messageId: "system-relay" };
 
       void recordAuthLifecycleEvent({
         requestId,

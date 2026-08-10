@@ -213,9 +213,10 @@ export default function Hero() {
                         style={{ width: '260px', height: 'auto', display: 'block' }}
                         width={400}
                         height={711}
-                        loading="eager"
-                        decoding="async"
-                      />
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+      />
                     </picture>
                     {/* Screen glare overlay */}
                     <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%)', borderRadius: '36px' }} />

@@ -18,6 +18,7 @@ import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
 import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
 import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 import { assertReviewOutreachAllowed } from "./signupRisk";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -539,17 +540,6 @@ export async function sendUserWelcomeEmail(opts: {
   toEmail: string;
   toName: string | null;
 }): Promise<void> {
-  const host = process.env.SYSTEM_SMTP_HOST;
-  const user = process.env.SYSTEM_SMTP_USER;
-  const pass = process.env.SYSTEM_SMTP_PASS;
-  const fromEmail = process.env.SYSTEM_FROM_EMAIL;
-  const port = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "587", 10);
-  if (!host || !user || !pass || !fromEmail || !Number.isFinite(port)) {
-    console.warn("[PlatformEmail] Welcome email skipped because managed SMTP is not configured");
-    return;
-  }
-
-  const fromName = "Get Phame";
   const displayName = opts.toName || "there";
 
   const html = `<!DOCTYPE html>
@@ -605,15 +595,12 @@ export async function sendUserWelcomeEmail(opts: {
 </body>
 </html>`;
 
-  const text = `Hi ${displayName},\n\nWelcome to Get Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://getphame.app\n\n— ${fromName}`;
+  const text = `Hi ${displayName},\n\nWelcome to Get Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://getphame.app\n\n— Get Phame`;
 
-  const transporter = createTransporter({ host, port, secure: port === 465, user, pass });
-  const from = `"${fromName}" <${fromEmail}>`;
-  await transporter.sendMail({
-    from,
-    replyTo: fromEmail,
+  await sendSystemEmail({
     to: opts.toEmail,
     subject: "Welcome to Get Phame! 🚀",
+    from: NOREPLY_FROM,
     html,
     text,
   });
