@@ -4515,6 +4515,16 @@
     "sending": "Invio in corso…",
     "testSent": "Email di prova inviata!",
     "testFailed": "Invio dell’email di prova fallito.",
-    "darkMode": "Modalità scura"
+    "darkMode": "Modalità scura",
+    "copyHtml": "Copia HTML",
+    "copied": "Copiato!",
+    "emailPlaceholder": "Invia a…",
+    "openTab": "Apri in una nuova scheda",
+    "variables": "Variabili",
+    "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello",
+    "resetVars": "Ripristina",
+    "split": "Dividi",
+    "savePreset": "Salva",
+    "presetNamePlaceholder": "Nome del profilo…"
   }
 }

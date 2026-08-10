@@ -3933,6 +3933,16 @@
     "sending": "กำลังส่ง…",
     "testSent": "ส่งอีเมลทดสอบแล้ว!",
     "testFailed": "ส่งอีเมลทดสอบไม่สำเร็จ",
-    "darkMode": "โหมดมืด"
+    "darkMode": "โหมดมืด",
+    "copyHtml": "คัดลอก HTML",
+    "copied": "คัดลอกแล้ว!",
+    "emailPlaceholder": "ส่งถึง…",
+    "openTab": "เปิดในแท็บใหม่",
+    "variables": "ตัวแปร",
+    "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต",
+    "resetVars": "รีเซ็ต",
+    "split": "แบ่งหน้าจอ",
+    "savePreset": "บันทึก",
+    "presetNamePlaceholder": "ชื่อโปรไฟล์…"
   }
 }
