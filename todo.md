@@ -1784,5 +1784,13 @@
 - [x] Update SavedContacts consent label to use consentLabelName when set
 - [x] Enhance unsubscribe handler to set consentBasis = "opted_out" on unsubscribe
 - [x] All 1022 tests pass, nativeLocalizationQuality totalCandidates remains 591
-- [ ] Save checkpoint
+- [x] Save checkpoint (5e676038)
+- [x] Open GitHub PR for checkpoint (PR #105)
+
+## Session — Consent Filter, Tooltip, Bulk Consent Email, Skill
+- [x] Add consent status filter dropdown to contacts list (All / Consent / No consent / Opted out)
+- [x] Add date/time tooltip to consent badge (shows consentCapturedAt formatted date)
+- [x] Implement bulk consent request email for legacy contacts (no consent on file)
+- [x] Create reusable skill for consent badge/filter/bulk-consent workflow (getphame-consent-badge-filter)
+- [ ] Run full test suite and save checkpoint
 - [ ] Open GitHub PR for checkpoint

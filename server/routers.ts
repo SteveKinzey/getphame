@@ -2838,6 +2838,48 @@ export const appRouter = router({
         }
         return { ok: true, contactType: decoded.contactType };
       }),
+    /**
+     * Bulk consent request — sends a consent request email to selected contacts
+     * who have no explicit consent on file. Uses the user's SMTP credentials.
+     */
+    bulkConsentRequest: protectedProcedure
+      .input(
+        z.object({
+          contactIds: z.array(z.number().int()).min(1).max(200),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile)
+          throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found." });
+        const allContacts = await listSavedContacts(ctx.user.id);
+        const contactMap = new Map(allContacts.map(c => [c.id, c]));
+        const targets = input.contactIds
+          .map(id => contactMap.get(id))
+          .filter(c => c && !c.optedOut && c.consentBasis !== "explicit_opt_in") as typeof allContacts;
+        if (targets.length === 0)
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No eligible contacts (all have consent or are opted out)." });
+        const businessName = (profile as any).consentLabelName || profile.businessName;
+        let sent = 0;
+        let failed = 0;
+        for (const contact of targets) {
+          try {
+            const unsubUrl = buildUnsubUrl("contact", contact.id, ctx.user.id);
+            const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${contact.name},</p><p>We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with <strong>${businessName}</strong>.</p><p>By continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.</p><p>If you prefer not to receive future emails, you can unsubscribe at any time.</p><p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
+            const result = await sendMailViaSmtp({
+              userId: ctx.user.id,
+              to: contact.email,
+              subject: `A note about your email preferences from ${businessName}`,
+              html,
+            });
+            if (result && result.accepted) sent++;
+            else failed++;
+          } catch {
+            failed++;
+          }
+        }
+        return { ok: true, sent, failed, total: targets.length };
+      }),
   }),
 
   templates: router({

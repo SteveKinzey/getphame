@@ -153,6 +153,7 @@ export default function SavedContacts() {
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = useState<"all" | "stripe" | "woocommerce" | "manual">("all");
   const [optedOutFilter, setOptedOutFilter] = useState<"all" | "unsubscribed">("all");
+  const [consentFilter, setConsentFilter] = useState<"all" | "consent" | "no_consent" | "opted_out">("all");
   const [tagInputId, setTagInputId] = useState<number | null>(null);
   const [tagInputValue, setTagInputValue] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -313,6 +314,18 @@ export default function SavedContacts() {
     },
     onError: (e) => toast.error(e.message),
   });
+  const [consentReqOpen, setConsentReqOpen] = useState(false);
+  const [consentReqResult, setConsentReqResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+  const bulkConsentRequestMutation = trpc.contacts.bulkConsentRequest.useMutation({
+    onSuccess: (result) => {
+      setConsentReqResult(result);
+      setConsentReqOpen(true);
+      utils.contacts.list.invalidate();
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   // Collect all unique tags across all contacts for the filter row
   const allTags = Array.from(
@@ -357,6 +370,9 @@ export default function SavedContacts() {
     if (tagFilter && !parseTags(c.tags).includes(tagFilter)) return false;
     if (sourceFilter !== "all" && c.source !== sourceFilter) return false;
     if (optedOutFilter === "unsubscribed" && !c.optedOut) return false;
+    if (consentFilter === "consent" && c.consentBasis !== "explicit_opt_in") return false;
+    if (consentFilter === "no_consent" && (c.consentBasis === "explicit_opt_in" || c.consentBasis === "opted_out")) return false;
+    if (consentFilter === "opted_out" && c.consentBasis !== "opted_out") return false;
     if (dormancyFilter === "all") return true;
     const days = parseInt(dormancyFilter, 10);
     const cutoff = now - days * 24 * 60 * 60 * 1000;
@@ -911,6 +927,44 @@ export default function SavedContacts() {
           </div>
         )}
 
+        {/* Consent status filter pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <ShieldCheck size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" as const }} />
+          {(["all", "consent", "no_consent", "opted_out"] as const).map((opt) => {
+            const labels: Record<string, string> = {
+              all: "All consent",
+              consent: "Consented",
+              no_consent: "No consent",
+              opted_out: "Opted out",
+            };
+            const colors: Record<string, string> = {
+              all: "oklch(0.22 0.09 260)",
+              consent: "oklch(0.38 0.12 145)",
+              no_consent: "oklch(0.50 0.04 260)",
+              opted_out: "oklch(0.60 0.18 25)",
+            };
+            const active = consentFilter === opt;
+            return (
+              <button
+                key={opt}
+                onClick={() => setConsentFilter(opt)}
+                className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+                style={{
+                  background: active ? colors[opt] : "white",
+                  color: active ? "white" : "oklch(0.45 0.05 260)",
+                  border: "1px solid oklch(0.88 0.02 260)",
+                }}
+              >
+                {labels[opt]}
+              </button>
+            );
+          })}
+          {consentFilter !== "all" && (
+            <span className="text-xs ml-1 rr-text-navy-muted">
+              {filtered.length} contact{filtered.length !== 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
         {/* Dormancy filter pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <Clock size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
@@ -1141,17 +1195,19 @@ export default function SavedContacts() {
                       {/* Consent badge */}
                       {c.consentBasis === "explicit_opt_in" ? (
                         <span
-                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full"
+                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full cursor-default"
                           style={{ background: "oklch(0.93 0.06 145)", color: "oklch(0.38 0.12 145)" }}
-                          title="Customer has given explicit consent to be contacted"
+                          title={c.consentCapturedAt
+                            ? `Consent given on ${format(new Date(c.consentCapturedAt), "MMM d, yyyy 'at' h:mm a")}${c.consentSource ? ` via ${c.consentSource.replace(/_/g, " ")}` : ""}`
+                            : "Customer has given explicit consent to be contacted"}
                         >
                           <ShieldCheck size={9} /> Consent
                         </span>
                       ) : c.consentBasis === "opted_out" ? null : (
                         <span
-                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full"
+                          className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full cursor-default"
                           style={{ background: "oklch(0.95 0.01 260)", color: "oklch(0.60 0.04 260)" }}
-                          title="No explicit consent recorded for this contact"
+                          title="No explicit consent recorded for this contact. Use the bulk consent request action to send them a consent email."
                         >
                           <ShieldOff size={9} /> No consent
                         </span>
@@ -1227,6 +1283,19 @@ export default function SavedContacts() {
                 style={{ color: "var(--text-on-dark-secondary)" }}
               >
                 <X size={16} />
+              </button>
+              <button
+                onClick={() => {
+                  const ids = Array.from(selected);
+                  bulkConsentRequestMutation.mutate({ contactIds: ids });
+                }}
+                disabled={bulkConsentRequestMutation.isPending}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all"
+                style={{ background: "oklch(0.93 0.06 145)", color: "oklch(0.28 0.10 145)", border: "1px solid oklch(0.75 0.10 145)" }}
+                title="Send a consent request email to selected contacts with no consent on file"
+              >
+                <ShieldCheck size={13} />
+                Consent
               </button>
               <button
                 onClick={() => setBulkConfirmOpen(true)}
@@ -1468,6 +1537,31 @@ export default function SavedContacts() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Consent Request Result Dialog */}
+      <AlertDialog open={consentReqOpen} onOpenChange={(o) => { if (!o) { setConsentReqOpen(false); setConsentReqResult(null); } }}>
+        <AlertDialogContent className="max-w-xs mx-4">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <ShieldCheck size={18} className="text-green-600" />
+              Consent Emails Sent
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {consentReqResult && (
+                <span>
+                  Sent <strong>{consentReqResult.sent}</strong> consent request email{consentReqResult.sent !== 1 ? "s" : ""}.
+                  {consentReqResult.failed > 0 && ` ${consentReqResult.failed} failed (check your SMTP settings).`}
+                  {" "}Contacts who unsubscribe via the email link will be automatically updated.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => { setConsentReqOpen(false); setConsentReqResult(null); }}>
+              Done
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* WooCommerce Sync History Modal */}
       <Dialog open={wooSyncHistoryOpen} onOpenChange={(open) => { setWooSyncHistoryOpen(open); if (!open) setWooHistorySearch(""); }}>
         <DialogContent className="max-w-sm mx-auto">
