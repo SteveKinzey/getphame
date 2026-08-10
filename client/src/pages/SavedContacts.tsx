@@ -87,6 +87,8 @@ type Contact = {
   sourceApp?: string | null;
   consentBasis?: string | null;
   consentCapturedAt?: number | null;
+  consentSource?: string | null;
+  optedOutAt?: number | null;
   createdAt?: Date | number | null;
 };
 
@@ -315,6 +317,9 @@ export default function SavedContacts() {
     onError: (e) => toast.error(e.message),
   });
   const [consentReqOpen, setConsentReqOpen] = useState(false);
+  const [consentConfirmOpen, setConsentConfirmOpen] = useState(false);
+  const [consentCustomSubject, setConsentCustomSubject] = useState("");
+  const [consentCustomBody, setConsentCustomBody] = useState("");
   const [consentReqResult, setConsentReqResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
   const bulkConsentRequestMutation = trpc.contacts.bulkConsentRequest.useMutation({
     onSuccess: (result) => {
@@ -1285,10 +1290,7 @@ export default function SavedContacts() {
                 <X size={16} />
               </button>
               <button
-                onClick={() => {
-                  const ids = Array.from(selected);
-                  bulkConsentRequestMutation.mutate({ contactIds: ids });
-                }}
+                onClick={() => setConsentConfirmOpen(true)}
                 disabled={bulkConsentRequestMutation.isPending}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all"
                 style={{ background: "oklch(0.93 0.06 145)", color: "oklch(0.28 0.10 145)", border: "1px solid oklch(0.75 0.10 145)" }}
@@ -1537,6 +1539,80 @@ export default function SavedContacts() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Consent Request Confirmation Modal with Template Editor */}
+      <AlertDialog open={consentConfirmOpen} onOpenChange={(o) => { if (!o) setConsentConfirmOpen(false); }}>
+        <AlertDialogContent className="max-w-sm mx-4">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <ShieldCheck size={18} className="text-green-600" />
+              Send Consent Request?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Sending to <strong>{selectedCount}</strong> contact{selectedCount !== 1 ? "s" : ""} with no consent on file. Contacts with existing consent or who opted out are skipped automatically.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {/* Template Editor */}
+          <div className="flex flex-col gap-2 mt-1">
+            <p className="text-xs font-bold rr-text-navy-mid">Customize email (optional)</p>
+            <p className="text-xs rr-text-navy-muted">Use <code className="bg-gray-100 px-1 rounded text-xs">{"{{name}}"}</code> and <code className="bg-gray-100 px-1 rounded text-xs">{"{{businessName}}"}</code> as variables.</p>
+            <div>
+              <label className="block text-xs font-semibold mb-1 rr-text-navy-mid">Subject</label>
+              <input
+                type="text"
+                value={consentCustomSubject}
+                onChange={(e) => setConsentCustomSubject(e.target.value)}
+                placeholder="A note about your email preferences from {{businessName}}"
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
+                style={{ border: "1.5px solid oklch(0.88 0.02 260)", fontSize: "13px" }}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold mb-1 rr-text-navy-mid">Message body</label>
+              <textarea
+                value={consentCustomBody}
+                onChange={(e) => setConsentCustomBody(e.target.value)}
+                placeholder={"We value your privacy and want to make sure you are comfortable receiving emails from us...
+
+By continuing to receive our emails, you confirm that you consent to be contacted by {{businessName}} via email...
+
+If you prefer not to receive future emails, you can unsubscribe at any time."}
+                rows={5}
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none resize-none"
+                style={{ border: "1.5px solid oklch(0.88 0.02 260)", fontSize: "13px", lineHeight: "1.5" }}
+              />
+            </div>
+            {(consentCustomSubject || consentCustomBody) && (
+              <button
+                onClick={() => { setConsentCustomSubject(""); setConsentCustomBody(""); }}
+                className="text-xs text-left rr-text-navy-muted hover:underline"
+              >
+                Reset to default
+              </button>
+            )}
+          </div>
+          <AlertDialogFooter className="mt-2">
+            <AlertDialogCancel onClick={() => setConsentConfirmOpen(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setConsentConfirmOpen(false);
+                bulkConsentRequestMutation.mutate({
+                  contactIds: Array.from(selected),
+                  customSubject: consentCustomSubject.trim() || undefined,
+                  customBody: consentCustomBody.trim() || undefined,
+                });
+              }}
+              className="flex items-center gap-1.5"
+              style={{ background: "oklch(0.38 0.12 145)", color: "white" }}
+            >
+              {bulkConsentRequestMutation.isPending ? (
+                <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
+              ) : (
+                <><ShieldCheck size={14} className="mr-1" /> Send Consent Emails</>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* Consent Request Result Dialog */}
       <AlertDialog open={consentReqOpen} onOpenChange={(o) => { if (!o) { setConsentReqOpen(false); setConsentReqResult(null); } }}>
         <AlertDialogContent className="max-w-xs mx-4">
@@ -1775,6 +1851,56 @@ export default function SavedContacts() {
             </div>
           )}
 
+          {/* Consent Activity Log */}
+          {historyContact && (
+            <div className="mt-3 pt-3" style={{ borderTop: "1px solid oklch(0.92 0.02 260)" }}>
+              <p className="text-xs font-bold mb-2 flex items-center gap-1.5 rr-text-navy-mid">
+                <ShieldCheck size={12} /> Consent Activity
+              </p>
+              <div className="flex flex-col gap-1.5">
+                {historyContact.consentBasis === "explicit_opt_in" ? (
+                  <div className="rounded-lg px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.96 0.03 145)", border: "1px solid oklch(0.85 0.06 145)" }}>
+                    <ShieldCheck size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.38 0.12 145)" }} />
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "oklch(0.28 0.10 145)" }}>Consent given</p>
+                      {historyContact.consentCapturedAt && (
+                        <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.08 145)" }}>
+                          {format(new Date(historyContact.consentCapturedAt), "MMM d, yyyy 'at' h:mm a")}
+                        </p>
+                      )}
+                      {historyContact.consentSource && (
+                        <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.06 145)" }}>
+                          via {historyContact.consentSource.replace(/_/g, " ")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : historyContact.consentBasis === "opted_out" ? (
+                  <div className="rounded-lg px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.96 0.02 27)", border: "1px solid oklch(0.85 0.08 27)" }}>
+                    <ShieldOff size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.15 27)" }} />
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "oklch(0.45 0.15 27)" }}>Opted out</p>
+                      {historyContact.optedOutAt && (
+                        <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.10 27)" }}>
+                          {format(new Date(historyContact.optedOutAt), "MMM d, yyyy 'at' h:mm a")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
+                    <ShieldOff size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.60 0.04 260)" }} />
+                    <div>
+                      <p className="text-xs font-semibold" style={{ color: "oklch(0.50 0.04 260)" }}>No consent recorded</p>
+                      <p className="text-xs mt-0.5" style={{ color: "oklch(0.60 0.03 260)" }}>
+                        Select this contact and use the Consent button to send a consent request email.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           <DialogFooter>
             <Button
               variant="outline"

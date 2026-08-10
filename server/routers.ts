@@ -2846,6 +2846,8 @@ export const appRouter = router({
       .input(
         z.object({
           contactIds: z.array(z.number().int()).min(1).max(200),
+          customSubject: z.string().max(200).optional(),
+          customBody: z.string().max(5000).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -2860,16 +2862,23 @@ export const appRouter = router({
         if (targets.length === 0)
           throw new TRPCError({ code: "BAD_REQUEST", message: "No eligible contacts (all have consent or are opted out)." });
         const businessName = (profile as any).consentLabelName || profile.businessName;
+        const defaultSubject = `A note about your email preferences from ${businessName}`;
+        const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${businessName}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
         let sent = 0;
         let failed = 0;
         for (const contact of targets) {
           try {
             const unsubUrl = buildUnsubUrl("contact", contact.id, ctx.user.id);
-            const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${contact.name},</p><p>We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with <strong>${businessName}</strong>.</p><p>By continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.</p><p>If you prefer not to receive future emails, you can unsubscribe at any time.</p><p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
+            const resolveVars = (tpl: string) =>
+              tpl.replace(/\{\{name\}\}/g, contact.name).replace(/\{\{businessName\}\}/g, businessName);
+            const subject = resolveVars(input.customSubject || defaultSubject);
+            const bodyText = resolveVars(input.customBody || defaultBody);
+            const bodyHtml = bodyText.split(/\n\n+/).map((p: string) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+            const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${contact.name},</p>${bodyHtml}<p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
             const result = await sendMailViaSmtp({
               userId: ctx.user.id,
               to: contact.email,
-              subject: `A note about your email preferences from ${businessName}`,
+              subject,
               html,
             });
             if (result && result.accepted) sent++;

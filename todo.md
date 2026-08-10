@@ -1792,5 +1792,13 @@
 - [x] Add date/time tooltip to consent badge (shows consentCapturedAt formatted date)
 - [x] Implement bulk consent request email for legacy contacts (no consent on file)
 - [x] Create reusable skill for consent badge/filter/bulk-consent workflow (getphame-consent-badge-filter)
+- [x] Run full test suite and save checkpoint (b6e64483, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #106)
+
+## Session — Consent Template Editor, Activity Log, Confirm Modal, Skill
+- [x] Add confirmation modal before bulk consent request send
+- [x] Add consent email template editor (subject + body customization with variable preview)
+- [x] Implement consent activity log in contact history drawer
+- [x] Create reusable skill for consent template editor workflow (getphame-consent-template-editor)
 - [ ] Run full test suite and save checkpoint
 - [ ] Open GitHub PR for checkpoint
