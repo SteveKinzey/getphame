@@ -329,7 +329,7 @@ export default function DashboardPage() {
           {/* Feed undo toast — 4-second window, shown after marking a row as reviewed */}
           {feedUndoId !== null && (
             <div
-              className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold"
+              className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
               style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
             >
               <span className="flex items-center gap-1.5">
