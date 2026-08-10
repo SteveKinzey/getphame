@@ -236,32 +236,29 @@ export default function DashboardPage() {
             { label: t('dashboard.stats.thisMonth'), value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
             { label: t('dashboard.stats.allTime'), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             { label: t('dashboard.stats.last7Days'), value: velocity?.last7 ?? 0, icon: <Star size={14} /> },
-            { label: t('dashboard.stats.consented', 'Consented'), value: consentStats?.consented ?? 0, icon: <ShieldCheck size={14} />, subtitle: consentStats ? `of ${consentStats.total}` : undefined },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid"
-            >
-              <div
-                className="flex items-center justify-center gap-1 mb-1 rr-text-gold"
-              >
-                {s.icon}
-              </div>
-              <div className="text-2xl font-black text-white">
-                {isLoading ? (
-                  <div className="h-7 w-10 mx-auto rounded-md animate-pulse" style={{ background: "oklch(1 0 0 / 0.15)" }} />
-                ) : s.value}
-              </div>
-              <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
-                {s.label}
-              </div>
-              {(s as any).subtitle && (
-                <div className="text-xs mt-0.5" style={{ color: "var(--text-on-dark-secondary)", opacity: 0.7 }}>
-                  {(s as any).subtitle}
+            { label: t('dashboard.stats.consented', 'Consented'), value: consentStats?.consented ?? 0, icon: <ShieldCheck size={14} />, subtitle: consentStats ? `of ${consentStats.total}` : undefined, href: '/contacts?consent=consented' },
+          ].map((s) => {
+            const inner = (
+              <>
+                <div className="flex items-center justify-center gap-1 mb-1 rr-text-gold">{s.icon}</div>
+                <div className="text-2xl font-black text-white">
+                  {isLoading ? <div className="h-7 w-10 mx-auto rounded-md animate-pulse" style={{ background: "oklch(1 0 0 / 0.15)" }} /> : s.value}
                 </div>
-              )}
-            </div>
-          ))}
+                <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{s.label}</div>
+                {(s as any).subtitle && (
+                  <div className="text-xs mt-0.5" style={{ color: "var(--text-on-dark-secondary)", opacity: 0.7 }}>{(s as any).subtitle}</div>
+                )}
+              </>
+            );
+            return (s as any).href ? (
+              <a key={s.label} href={(s as any).href} title="View consented contacts"
+                className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid block hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none">
+                {inner}
+              </a>
+            ) : (
+              <div key={s.label} className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid">{inner}</div>
+            );
+          })}
         </div>
       </div>
 

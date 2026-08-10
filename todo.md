@@ -1834,3 +1834,9 @@
 - [x] Add contacts.consentStats tRPC procedure
 - [x] Add dashboard.stats.consented i18n key to all 7 locales + fallback bundle
 - [x] admin-csv-preview-export skill already exists (no new skill needed)
+
+## Session: Consent health + onboarding progress + clickable widget (Aug 10, 2026)
+- [x] Add consent health warning banner to admin dashboard (< 50% consented)
+- [x] Add consent progress indicator to onboarding checklist
+- [x] Make consent count widget clickable to filter contacts list
+- [x] Create reusable skill for consent health monitoring pattern (getphame-consent-health-monitoring)
