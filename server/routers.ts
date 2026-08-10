@@ -2332,10 +2332,17 @@ export const appRouter = router({
           email: z.string().email(),
           phone: z.string().optional(),
           notes: z.string().optional(),
+          consentGiven: z.boolean().optional(), // true = user confirmed consent checkbox
+          consentSource: z.string().max(255).optional(), // e.g. "manual_add_contact_form"
         })
       )
       .mutation(async ({ ctx, input }) => {
-        await createSavedContact(ctx.user.id, input);
+        await createSavedContact(ctx.user.id, {
+          ...input,
+          consentBasis: input.consentGiven ? "explicit_opt_in" : undefined,
+          consentCapturedAt: input.consentGiven ? Date.now() : undefined,
+          consentSource: input.consentGiven ? (input.consentSource ?? "manual_add_contact_form") : undefined,
+        });
         return { ok: true };
       }),
 
@@ -3168,6 +3175,15 @@ export const appRouter = router({
           ctx.user.id,
           resolvedTemplate?.id ?? null
         );
+        // Inject unsubscribe URL into the email body if not already present
+        const unsubUrl = buildUnsubUrl("contact", newRequestId, ctx.user.id);
+        if (!htmlBody.includes("unsubscribe") && !htmlBody.includes("Unsubscribe")) {
+          // Append unsubscribe footer to email body
+          htmlBody = htmlBody.replace(
+            /<\/div>\s*$/,
+            `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#9ca3af;">You received this email because you are a customer of ${profile.businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></div></div>`
+          );
+        }
         const baseUrl =
           (ctx.req.headers.origin as string | undefined) ??
           "https://getphame.app";
@@ -4071,6 +4087,7 @@ export const appRouter = router({
         allDone,
         dismissed,
         canAccessConnector,
+        consentAcknowledgedAt: profile?.consentAcknowledgedAt ?? null,
       };
     }),
 
@@ -4095,6 +4112,17 @@ export const appRouter = router({
           message: "Profile not found",
         });
       await upsertBusinessProfile({ ...profile, onboardingDismissed: 0 });
+      return { ok: true };
+    }),
+    /** Records when the user acknowledged the consent checkbox requirement. */
+    acknowledgeConsent: protectedProcedure.mutation(async ({ ctx }) => {
+      const profile = await getBusinessProfile(ctx.user.id);
+      if (!profile)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Profile not found",
+        });
+      await upsertBusinessProfile({ ...profile, consentAcknowledgedAt: Date.now() });
       return { ok: true };
     }),
   }),

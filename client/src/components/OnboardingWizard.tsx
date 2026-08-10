@@ -889,7 +889,11 @@ function Step3Send({
 }) {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
+  const trpcUtils = trpc.useUtils();
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
+  const acknowledgeConsentMutation = trpc.onboarding.acknowledgeConsent.useMutation({
+    onSuccess: () => trpcUtils.onboarding.status.invalidate(),
+  });
 
   function handleGoSend() {
     dismissAndNavigateToSend({
@@ -1051,7 +1055,102 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     setViewStep((prev) => Math.max((prev ?? currentStep) - 1, 1));
   }
 
+  // Consent pre-step: show if user has never acknowledged the consent requirement
+  const [consentAcknowledged, setConsentAcknowledged] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
+  const showConsentStep = !status?.consentAcknowledgedAt && !consentAcknowledged;
+
   if (isLoading) return null;
+
+  // Consent pre-step overlay — shown before the main wizard if user hasn't acknowledged
+  if (showConsentStep) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
+        style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("onboarding.consentStepTitle", "Add a consent checkbox to your forms")}
+      >
+        <div
+          className="w-full max-w-md rounded-3xl flex flex-col"
+          style={{ background: "oklch(0.14 0.05 260)", maxHeight: "calc(100dvh - 7rem)", overflow: "hidden" }}
+        >
+          {/* Header */}
+          <div className="px-6 pt-6 pb-4 rr-bg-navy">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Star size={18} className="rr-text-gold" />
+                <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
+                  {t("onboardingWizard.header.title")}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleDismiss}
+                className="p-2 rounded-xl transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                style={{ color: "var(--text-on-dark-primary)" }}
+                aria-label={t("onboardingWizard.header.skipSetupTooltip")}
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+          {/* Content */}
+          <div className="px-6 py-6 overflow-y-auto flex-1">
+            <div className="mb-5">
+              <h2 className="text-lg font-black mb-1 text-white">
+                {t("onboarding.consentStepTitle", "Add a consent checkbox to your forms")}
+              </h2>
+              <p className="text-sm" style={{ color: "oklch(0.82 0.02 260)" }}>
+                {t("onboarding.consentStepDesc", "Before collecting contacts or sending review requests, your forms must include a consent checkbox. This is required by CAN-SPAM, TCPA, and GDPR.")}
+              </p>
+            </div>
+            {/* PDF Download */}
+            <a
+              href="/consent-guide.pdf"
+              download="GetPhame-Consent-Compliance-Guide.pdf"
+              className="flex items-center gap-3 rounded-2xl px-4 py-3 mb-5 text-sm font-bold transition-transform active:scale-95 rr-bg-gold rr-text-navy w-full justify-center"
+            >
+              <Download size={16} />
+              {t("onboarding.consentStepAction", "Download Consent Guide (PDF)")}
+            </a>
+            {/* Acknowledgment checkbox */}
+            <label className="flex items-start gap-3 rounded-2xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consentChecked}
+                onChange={(e) => setConsentChecked(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[oklch(0.80_0.18_80)]"
+              />
+              <span className="text-sm leading-snug" style={{ color: "oklch(0.90 0.05 80)" }}>
+                {t("onboarding.consentStepAck", "I have added (or will add) a consent checkbox to my customer-facing forms")}
+              </span>
+            </label>
+            {/* Continue button */}
+            <button
+              type="button"
+              disabled={!consentChecked || acknowledgeConsentMutation.isPending}
+              onClick={() => {
+                acknowledgeConsentMutation.mutate(undefined, {
+                  onSuccess: () => setConsentAcknowledged(true),
+                });
+              }}
+              className="mt-5 w-full flex items-center justify-center gap-2 rounded-2xl px-4 py-3 font-black text-sm transition-transform active:scale-95 rr-bg-navy disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ color: "oklch(0.80 0.18 80)", border: "1px solid oklch(0.35 0.06 260)" }}
+            >
+              {acknowledgeConsentMutation.isPending ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <ChevronRight size={16} />
+              )}
+              {t("onboardingWizard.navigation.nextStep")}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <OnboardingTourContext.Provider value={{ tipsHidden }}>

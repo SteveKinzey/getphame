@@ -1027,7 +1027,9 @@
         "created": "创建时间",
         "page": "第 {{current}} 页，共 {{total}} 页"
       }
-    }
+    },
+    "addConsentLabel": "我确认此客户已同意{businessName}通过电子邮件和/或短信联系他们，了解其体验和购买情况",
+    "addConsentRequired": "添加联系人需要确认同意"
   },
   "pageHeader": {
     "title": "已保存的联系人",
@@ -1113,7 +1115,8 @@
     "allCustomersCheck": "我正在向所有客户发送，而不是根据满意度进行筛选",
     "cancel": "取消",
     "sending": "发送中…",
-    "sendButton": "发送 {{count}} 个请求"
+    "sendButton": "发送 {{count}} 个请求",
+    "consentCheck": "我确认客户已同意我的企业通过电子邮件和/或短信与其联系"
   },
   "wooSyncHistory": {
     "title": "WooCommerce 同步历史",
@@ -1732,7 +1735,12 @@
   "onboarding": {
     "googleBtn": "使用 Google 继续",
     "appleBtn": "使用 Apple 继续",
-    "finePrint": "免费开始 — 包含10次评价请求，无需信用卡。"
+    "finePrint": "免费开始 — 包含10次评价请求，无需信用卡。",
+    "consentStepTitle": "在您的表单中添加同意复选框",
+    "consentStepDesc": "在收集联系人或发送评价请求之前，您的表单必须包含同意复选框。这是CAN-SPAM、TCPA和GDPR的要求。",
+    "consentStepAction": "下载同意指南（PDF）",
+    "consentStepAck": "我已经（或将会）在我的客户表单中添加同意复选框",
+    "consentStepAckRequired": "请确认您将在继续之前添加同意复选框"
   },
   "bulkBar": {
     "sendTo": "发送给 {{count}} 位联系人"

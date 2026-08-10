@@ -1758,3 +1758,19 @@
 - [x] Verified Stripe webhook — was pointing to dead sandbox tunnel; updated to https://getphame.app/api/stripe/webhook
 - [x] Add Stripe status indicator to admin dashboard (mode/webhook status/secret/events, color-coded card)
 - [x] Open GitHub PR for checkpoint 32c1194f (PR #103)
+
+## Session — Consent Compliance, Onboarding Step, Unsubscribe Fix
+- [x] Add consentBasis/consentCapturedAt/consentSource to contacts.create procedure and createSavedContact db function
+- [x] Add consent checkbox to Add Contact dialog (required, blocks save)
+- [x] Add consent acknowledgment checkbox to Send Request compliance checklist (4th item)
+- [x] Add consent implementation as first onboarding step with downloadable PDF guide
+- [x] Fix requests.send to always inject unsubscribeUrl footer when not already present
+- [x] Regenerate consent PDF with social media forms section (Facebook, Instagram, LinkedIn, TikTok, Pinterest)
+- [x] Add PDF download link to landing page LeadCapture section
+- [x] Add consentAcknowledgedAt column to business_profiles DB table
+- [x] Add onboarding.acknowledgeConsent tRPC procedure
+- [x] All 7 locales and fallback bundle updated with new consent keys
+- [x] nativeLocalizationQuality totalCandidates remains 591
+- [x] All 1022 tests pass
+- [ ] Save checkpoint
+- [ ] Open GitHub PR for checkpoint
