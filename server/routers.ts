@@ -7751,10 +7751,36 @@ export const appRouter = router({
         const goldCta = (href: string, label: string) =>
           `<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:16px 40px;"><a href="${href}" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">${label}</a></td></tr></table>`;
         let html = "";
+        const tierMap: Record<string, { label: string; perks: string[] }> = {
+          "upgrade-receipt-pro": { label: "Pro Monthly", perks: ["Unlimited review requests", "Automated follow-up reminders", "Priority support"] },
+          "upgrade-receipt-annual": { label: "Pro Annual", perks: ["Everything in Pro Monthly", "2 months free vs monthly billing", "Priority support"] },
+          "upgrade-receipt-lifetime": { label: "Lifetime", perks: ["Everything in Pro Annual", "Never pay again — one-time fee", "Lifetime updates included"] },
+        };
         switch (input.template) {
           case "magic-link": {
-            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">Click the button below to sign in to your Get Phame account. This link expires in 15 minutes.</p>${goldCta(SAMPLE_LINK, "Sign in to Get Phame")}<div style="margin:24px 0 0;padding:16px;background:#f8f9fb;border-radius:8px;border-left:3px solid #C9A84C;"><p style="margin:0;font-size:12px;color:#777;">If you did not request this link, you can safely ignore this email.</p></div>`;
-            html = wrapHtml("Sign in to Get Phame", body);
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">Click the button below to sign in to your Get Phame account. This link expires in 15 minutes.</p>${goldCta(SAMPLE_LINK, "Sign in to Get Phame")}<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:24px 0 0;"><tr><td style="padding:14px 18px;"><p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:.8px;">Security notice</p><p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">Get Phame will never ask for your password by email. This link can only be used once.</p></td></tr></table>`;
+            html = wrapHtml("Your secure sign-in link", body);
+            break;
+          }
+          case "welcome": {
+            const steps: [string, string][] = [["Connect your email account in Settings", "1"], ["Add your Google review link", "2"], ["Send your first review request — under 30 seconds", "3"]];
+            const stepsHtml = steps.map(([t, n]) => `<p style="margin:0 0 12px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">${n}</span>${t}</p>`).join("");
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Welcome to Get Phame! You're now set up to send personalised review request emails directly from your own email account.</p><p style="margin:0 0 16px;font-size:14px;font-weight:700;color:#0F1B2D;text-transform:uppercase;letter-spacing:.8px;">Get started in 3 steps</p><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;"><tr><td style="padding:20px 24px;">${stepsHtml}</td></tr></table>${goldCta("https://getphame.app", "Get Started →")}`;
+            html = wrapHtml("Welcome aboard", body);
+            break;
+          }
+          case "upgrade-receipt-pro":
+          case "upgrade-receipt-annual":
+          case "upgrade-receipt-lifetime": {
+            const { label, perks } = tierMap[input.template]!;
+            const perksHtml = perks.map(p => `<li style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:11px;border-radius:50%;width:20px;height:20px;text-align:center;line-height:20px;margin-right:8px;">✓</span>${p}</li>`).join("");
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">Your Get Phame account has been upgraded to <strong style="color:#0F1B2D;">${label}</strong>. Here's what you now have access to:</p><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;"><tr><td style="padding:20px 24px;"><ul style="margin:0;padding:0;list-style:none;">${perksHtml}</ul></td></tr></table>${goldCta("https://getphame.app/send", "Start Sending Reviews →")}`;
+            html = wrapHtml(`You're on ${label}!`, body);
+            break;
+          }
+          case "account-deletion": {
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your Get Phame account and all associated data have been permanently deleted as requested.</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">If you change your mind, you're always welcome to create a new account at <a href="https://getphame.app" style="color:#C9A84C;">getphame.app</a>.</p>`;
+            html = wrapHtml("Your account has been deleted", body);
             break;
           }
           default:

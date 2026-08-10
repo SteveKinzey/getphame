@@ -1725,3 +1725,8 @@
 - [x] Add Send Test Email button to AdminEmailPreview — gold CTA, fires admin.sendTestEmail mutation to user.email, spinner + toast feedback
 - [x] Add dark mode toggle to AdminEmailPreview — Moon/Sun icon button, injects dark background style into iframe srcDoc
 - [x] Add sendTest/sending/testSent/testFailed/darkMode i18n keys to all 7 locales with native translations + fallback bundle
+
+## Session — Admin Email Preview Workflow Skill, PR #100 Merge, All Templates
+- [x] Create getphame-admin-email-preview-workflow reusable skill (architecture, template registry, add-template checklist, UI controls table, i18n keys, critical constraints)
+- [x] Squash-merge PR #100 into protected main (squash-merged, branch deleted)
+- [x] Extend sendTestEmail switch to cover all 6 email templates (welcome, upgrade-receipt-pro/annual/lifetime, account-deletion) — all produce full gold HTML matching emailPreview output
