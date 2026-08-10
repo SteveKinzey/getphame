@@ -91,6 +91,7 @@ const DataUsagePage = lazy(() => import("./pages/DataUsage"));
 const ChangelogPage = lazy(() => import("./pages/Changelog"));
 const SecurityPolicyPage = lazy(() => import("./pages/SecurityPolicy"));
 const UnsubscribePage = lazy(() => import("./pages/Unsubscribe"));
+const EmailPreferencesPage = lazy(() => import("./pages/EmailPreferences"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccess"));
 const ChurnSurveyPage = lazy(() => import("./pages/ChurnSurvey"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -333,6 +334,12 @@ function AppShell() {
         <PublicLayout>
           <PaymentSuccessPage />
         </PublicLayout>
+      </Suspense>
+    );
+  if (path === "/preferences")
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <EmailPreferencesPage />
       </Suspense>
     );
   if (path === "/unsubscribe")

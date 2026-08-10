@@ -488,7 +488,12 @@
         "emailConfirmationHint": "We’ll show the address again before you leave so you can catch a typo.",
         "providerAcceptedMessage": "Your email provider accepted the guide for delivery.",
         "downloadReadyMessage": "Your guide is ready to download.",
-        "consentGuideLink": "Download Consent Compliance Guide (PDF)"
+        "consentGuideLink": "Download Consent Compliance Guide (PDF)",
+        "consentCheckLabel": "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time.",
+        "consentRequired": "Please check the box to continue.",
+        "thankYouHeading": "You're all set!",
+        "thankYouMessage": "Your guide is on its way to {{email}}. Check spam if it doesn't arrive.",
+        "thankYouDownload": "Email delivery wasn't available. Download your guide directly below."
       },
       "feature3": {
         "title": "Every platform. Your choice.",
@@ -701,7 +706,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
-      "emailSenderSettings": "Email Sender Settings"
+      "emailSenderSettings": "Email Sender Settings",
+      "consentLabelName": "Consent checkbox business name",
+      "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
     },
     "homePage": {
       "annualPro": "Annual Pro",
@@ -2027,7 +2034,12 @@
         "emailConfirmationHint": "Mostraremos la dirección de nuevo antes de que te vayas para que puedas corregir un error tipográfico.",
         "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía de entrega.",
         "downloadReadyMessage": "Tu guía está lista para descargar.",
-        "consentGuideLink": "Descargar Guía de Cumplimiento de Consentimiento (PDF)"
+        "consentGuideLink": "Descargar Guía de Cumplimiento de Consentimiento (PDF)",
+        "consentCheckLabel": "Acepto que Get Phame (getphame.app) pueda contactarme por correo electrónico con actualizaciones y consejos del producto. Puedo darme de baja en cualquier momento.",
+        "consentRequired": "Por favor, marque la casilla para continuar.",
+        "thankYouHeading": "¡Todo listo!",
+        "thankYouMessage": "Tu guía está en camino a {{email}}. Revisa el spam si no llega.",
+        "thankYouDownload": "El envío por correo no estuvo disponible. Descarga tu guía directamente abajo."
       },
       "feature3": {
         "title": "Todas las plataformas. Tú eliges.",
@@ -2260,7 +2272,9 @@
     "profile": {
       "addBusinessNameAndLink": "Añade primero el nombre de tu negocio y el enlace de reseñas de Google en Configuración.",
       "emailSenderSettings": "Configuración del remitente de correo",
-      "reviewLink": "Enlace principal de reseñas de Google"
+      "reviewLink": "Enlace principal de reseñas de Google",
+      "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
+      "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
     },
     "homePage": {
       "annualPro": "Pro anual",
@@ -3764,7 +3778,12 @@
         "emailConfirmationHint": "Nous afficherons l'adresse à nouveau avant votre départ afin que vous puissiez corriger une faute de frappe.",
         "providerAcceptedMessage": "Votre fournisseur de messagerie a accepté le guide pour la livraison.",
         "downloadReadyMessage": "Votre guide est prêt à être téléchargé.",
-        "consentGuideLink": "Télécharger le Guide de Conformité au Consentement (PDF)"
+        "consentGuideLink": "Télécharger le Guide de Conformité au Consentement (PDF)",
+        "consentCheckLabel": "J'accepte que Get Phame (getphame.app) me contacte par e-mail avec des mises à jour et des conseils sur le produit. Je peux me désabonner à tout moment.",
+        "consentRequired": "Veuillez cocher la case pour continuer.",
+        "thankYouHeading": "C'est tout bon !",
+        "thankYouMessage": "Votre guide est en route vers {{email}}. Vérifiez les spams s'il n'arrive pas.",
+        "thankYouDownload": "L'envoi par e-mail n'était pas disponible. Téléchargez votre guide directement ci-dessous."
       },
       "feature3": {
         "title": "Toutes les plateformes. À vous de choisir.",
@@ -4001,7 +4020,9 @@
       "addBusinessNameAndLink": "Ajoutez d'abord le nom de votre entreprise et le lien d'avis Google dans les Paramètres.",
       "emailSenderSettings": "Paramètres de l'expéditeur e‑mail",
       "reviewLink": "Lien principal d'avis Google",
-      "saveProfile": "Enregistrer le profil"
+      "saveProfile": "Enregistrer le profil",
+      "consentLabelName": "Nom de l'entreprise dans la case de consentement",
+      "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
     },
     "homePage": {
       "annualPro": "Pro annuel",
@@ -5517,7 +5538,12 @@
         "emailConfirmationHint": "Mostreremo di nuovo l'indirizzo prima che tu esca così puoi correggere eventuali errori di battitura.",
         "providerAcceptedMessage": "Il tuo provider email ha accettato la guida per la consegna.",
         "downloadReadyMessage": "La tua guida è pronta per il download.",
-        "consentGuideLink": "Scarica la Guida alla Conformità del Consenso (PDF)"
+        "consentGuideLink": "Scarica la Guida alla Conformità del Consenso (PDF)",
+        "consentCheckLabel": "Accetto che Get Phame (getphame.app) mi contatti via e-mail con aggiornamenti e suggerimenti sul prodotto. Posso annullare l'iscrizione in qualsiasi momento.",
+        "consentRequired": "Si prega di spuntare la casella per continuare.",
+        "thankYouHeading": "Tutto pronto!",
+        "thankYouMessage": "La tua guida è in arrivo a {{email}}. Controlla lo spam se non arriva.",
+        "thankYouDownload": "L'invio via e-mail non era disponibile. Scarica la tua guida direttamente qui sotto."
       },
       "feature3": {
         "title": "Ogni piattaforma. La tua scelta.",
@@ -5737,7 +5763,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "Aggiungi prima il nome della tua attività e il link alle recensioni Google nelle Impostazioni.",
-      "emailSenderSettings": "Impostazioni mittente email"
+      "emailSenderSettings": "Impostazioni mittente email",
+      "consentLabelName": "Nome azienda nella casella di consenso",
+      "consentLabelNameDescription": "Il nome dell'azienda mostrato nell'etichetta della casella di consenso nei tuoi moduli. Per impostazione predefinita usa il nome dell'azienda sopra."
     },
     "homePage": {
       "annualPro": "Pro annuale",
@@ -7120,7 +7148,12 @@
         "emailConfirmationHint": "เราจะแสดงที่อยู่อีกครั้งก่อนที่คุณจะออกเพื่อให้คุณตรวจสอบการสะกดผิด.",
         "providerAcceptedMessage": "ผู้ให้บริการอีเมลของคุณยอมรับคำแนะนำสำหรับการจัดส่งแล้ว.",
         "downloadReadyMessage": "คำแนะนำของคุณพร้อมให้ดาวน์โหลดแล้ว.",
-        "consentGuideLink": "ดาวน์โหลดคู่มือการปฏิบัติตามกฎระเบียบความยินยอม (PDF)"
+        "consentGuideLink": "ดาวน์โหลดคู่มือการปฏิบัติตามกฎระเบียบความยินยอม (PDF)",
+        "consentCheckLabel": "ฉันยินยอมให้ Get Phame (getphame.app) ติดต่อฉันทางอีเมลเกี่ยวกับการอัปเดตและเคล็ดลับของผลิตภัณฑ์ ฉันสามารถยกเลิกการสมัครได้ตลอดเวลา",
+        "consentRequired": "กรุณาทำเครื่องหมายในช่องเพื่อดำเนินการต่อ",
+        "thankYouHeading": "เรียบร้อยแล้ว!",
+        "thankYouMessage": "คู่มือของคุณกำลังส่งไปที่ {{email}} ตรวจสอบโฟลเดอร์สแปมหากไม่ได้รับ",
+        "thankYouDownload": "ไม่สามารถส่งอีเมลได้ ดาวน์โหลดคู่มือของคุณโดยตรงด้านล่าง"
       },
       "feature3": {
         "title": "ทุกแพลตฟอร์ม ทางเลือกเป็นของคุณ.",
@@ -7333,7 +7366,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "เพิ่มชื่อธุรกิจและลิงก์รีวิว Google ในการตั้งค่าก่อน",
-      "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล"
+      "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล",
+      "consentLabelName": "ชื่อธุรกิจในช่องทำเครื่องหมายความยินยอม",
+      "consentLabelNameDescription": "ชื่อธุรกิจที่แสดงในป้ายกำกับช่องทำเครื่องหมายความยินยอมในแบบฟอร์มของคุณ ค่าเริ่มต้นคือชื่อธุรกิจด้านบน"
     },
     "homePage": {
       "annualPro": "Pro รายปี",
@@ -8712,7 +8747,12 @@
         "emailConfirmationHint": "在您离开前我们会再次显示该地址，方便您检查是否有拼写错误。",
         "providerAcceptedMessage": "您的邮箱提供商已接受该投递指南。",
         "downloadReadyMessage": "您的指南已可下载。",
-        "consentGuideLink": "下载同意合规指南（PDF）"
+        "consentGuideLink": "下载同意合规指南（PDF）",
+        "consentCheckLabel": "我同意 Get Phame (getphame.app) 通过电子邮件向我发送产品更新和使用技巧。我可以随时取消订阅。",
+        "consentRequired": "请勾选复选框以继续。",
+        "thankYouHeading": "一切就绪！",
+        "thankYouMessage": "您的指南正在发送至 {{email}}。如未收到，请检查垃圾邮件文件夹。",
+        "thankYouDownload": "邮件发送不可用。请直接在下方下载您的指南。"
       },
       "feature3": {
         "title": "支持所有平台，由您选择。",
@@ -8925,7 +8965,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。",
-      "emailSenderSettings": "发件人设置"
+      "emailSenderSettings": "发件人设置",
+      "consentLabelName": "同意复选框中的企业名称",
+      "consentLabelNameDescription": "在表单同意复选框标签中显示的企业名称。默认使用上方的企业名称。"
     },
     "homePage": {
       "annualPro": "年度专业版",
@@ -10296,7 +10338,12 @@
         "emailConfirmationHint": "在您離開前我們會再顯示該地址，讓您能發現並修正錯字。",
         "providerAcceptedMessage": "您的電子郵件供應商已接受送達指引。",
         "downloadReadyMessage": "您的指南已可下載。",
-        "consentGuideLink": "下載同意合規指南（PDF）"
+        "consentGuideLink": "下載同意合規指南（PDF）",
+        "consentCheckLabel": "我同意 Get Phame (getphame.app) 透過電子郵件向我發送產品更新和使用技巧。我可以隨時取消訂閱。",
+        "consentRequired": "請勾選核取方塊以繼續。",
+        "thankYouHeading": "一切就緒！",
+        "thankYouMessage": "您的指南正在發送至 {{email}}。如未收到，請檢查垃圾郵件資料夾。",
+        "thankYouDownload": "郵件發送不可用。請直接在下方下載您的指南。"
       },
       "feature3": {
         "title": "所有平台，由您選擇。",
@@ -10509,7 +10556,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "請先在設定中新增您的商家名稱與 Google 評論連結。",
-      "emailSenderSettings": "電子郵件寄件者設定"
+      "emailSenderSettings": "電子郵件寄件者設定",
+      "consentLabelName": "同意核取方塊中的企業名稱",
+      "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。"
     },
     "homePage": {
       "annualPro": "年度 Pro",
