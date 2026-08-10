@@ -38,6 +38,7 @@ import {
   BadgePercent,
   Mail,
 } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
   CartesianGrid,
@@ -187,6 +188,11 @@ export default function AdminDashboard() {
       enabled: user?.role === "admin",
       refetchInterval: 30_000,
     });
+
+  const { data: stripeStatus } = trpc.admin.stripeStatus.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 5 * 60_000,
+  });
 
   const { data: systemHealthTrend, isLoading: systemHealthLoading } =
     trpc.admin.systemHealthTrend.useQuery(
@@ -617,11 +623,19 @@ export default function AdminDashboard() {
                     Icon: TrendingUp,
                   },
                   {
-                    path: "/admin/smtp-stats",
-                    label: "SMTP health",
-                    detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
-                    Icon: Wifi,
-                  },
+                   path: "/admin/smtp-stats",
+                   label: "SMTP health",
+                   detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
+                   Icon: Wifi,
+                 },
+                 {
+                   path: "/admin/stripe-status",
+                   label: "Stripe status",
+                   detail: stripeStatus?.configured
+                     ? `${stripeStatus.mode?.toUpperCase() ?? "?"} mode · webhook ${stripeStatus.webhookStatus ?? "unknown"}`
+                     : "Not configured",
+                   Icon: CreditCard,
+                 },
                   {
                     path: "/admin/codes",
                     label: "System access codes",
@@ -1377,6 +1391,85 @@ export default function AdminDashboard() {
               >
                 Review SMTP accounts →
               </button>
+            </section>
+
+            {/* Stripe status widget */}
+            <section
+              data-testid="stripe-status-widget"
+              className={`rounded-2xl border-2 p-4 shadow-sm ${
+                !stripeStatus?.configured
+                  ? "border-gray-200 bg-gray-50"
+                  : stripeStatus.webhookStatus === "enabled"
+                  ? "border-emerald-200 bg-emerald-50"
+                  : "border-amber-200 bg-amber-50"
+              }`}
+              aria-labelledby="stripe-status-title"
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-white ${
+                    !stripeStatus?.configured
+                      ? "bg-gray-400"
+                      : stripeStatus.webhookStatus === "enabled"
+                      ? "bg-emerald-700"
+                      : "bg-amber-600"
+                  }`}
+                >
+                  <CreditCard size={22} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p
+                    id="stripe-status-title"
+                    className={`text-xs font-black uppercase tracking-[0.14em] ${
+                      !stripeStatus?.configured
+                        ? "text-gray-500"
+                        : stripeStatus.webhookStatus === "enabled"
+                        ? "text-emerald-800"
+                        : "text-amber-700"
+                    }`}
+                  >
+                    Stripe payment integration
+                  </p>
+                  {!stripeStatus ? (
+                    <p className="mt-1 text-sm text-gray-400">Loading…</p>
+                  ) : !stripeStatus.configured ? (
+                    <p className="mt-1 text-sm font-semibold text-gray-600">
+                      No Stripe key configured. Add <code className="rounded bg-gray-200 px-1 text-xs">STRIPE_SECRET_KEY</code> to activate payments.
+                    </p>
+                  ) : (
+                    <div className="mt-1 space-y-1">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold">
+                        <span>
+                          Mode:{" "}
+                          <span className={`font-black ${stripeStatus.mode === "live" ? "text-emerald-700" : "text-amber-700"}`}>
+                            {stripeStatus.mode?.toUpperCase() ?? "—"}
+                          </span>
+                        </span>
+                        <span>
+                          Webhook:{" "}
+                          <span className={`font-black ${stripeStatus.webhookStatus === "enabled" ? "text-emerald-700" : "text-red-600"}`}>
+                            {stripeStatus.webhookStatus ?? "unknown"}
+                          </span>
+                        </span>
+                        <span>
+                          Secret:{" "}
+                          <span className={`font-black ${stripeStatus.webhookSecretSet ? "text-emerald-700" : "text-red-600"}`}>
+                            {stripeStatus.webhookSecretSet ? "set" : "missing"}
+                          </span>
+                        </span>
+                      </div>
+                      {stripeStatus.webhookUrl && (
+                        <p className="truncate text-xs text-gray-500">{stripeStatus.webhookUrl}</p>
+                      )}
+                      {stripeStatus.events.length > 0 && (
+                        <p className="text-xs text-gray-400">
+                          {stripeStatus.events.length} event{stripeStatus.events.length !== 1 ? "s" : ""} subscribed
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </section>
 
             <section

@@ -1028,7 +1028,9 @@
         "created": "建立時間",
         "page": "第 {{current}} 頁，共 {{total}} 頁"
       }
-    }
+    },
+    "addConsentLabel": "我確認此客戶已同意{businessName}透過電子郵件和/或簡訊聯繫他們，了解其體驗和購買情況",
+    "addConsentRequired": "新增聯絡人需要確認同意"
   },
   "pageHeader": {
     "title": "已儲存的聯絡人",
@@ -1114,7 +1116,8 @@
     "allCustomersCheck": "我正在向所有客戶傳送，而不是根據滿意度進行篩選",
     "cancel": "取消",
     "sending": "傳送中…",
-    "sendButton": "傳送 {{count}} 個請求"
+    "sendButton": "傳送 {{count}} 個請求",
+    "consentCheck": "我確認客戶已同意我的企業透過電子郵件和/或簡訊與其聯繫"
   },
   "wooSyncHistory": {
     "title": "WooCommerce 同步歷史",
@@ -1808,7 +1811,12 @@
   "onboarding": {
     "googleBtn": "使用 Google 繼續",
     "appleBtn": "使用 Apple 繼續",
-    "finePrint": "免費開始 — 包含10次評價請求，無需信用卡。"
+    "finePrint": "免費開始 — 包含10次評價請求，無需信用卡。",
+    "consentStepTitle": "在您的表單中新增同意核取方塊",
+    "consentStepDesc": "在收集聯絡人或發送評價請求之前，您的表單必須包含同意核取方塊。這是CAN-SPAM、TCPA和GDPR的要求。",
+    "consentStepAction": "下載同意指南（PDF）",
+    "consentStepAck": "我已經（或將會）在我的客戶表單中新增同意核取方塊",
+    "consentStepAckRequired": "請確認您將在繼續之前新增同意核取方塊"
   },
   "bulkBar": {
     "sendTo": "傳送給 {{count}} 位聯絡人"
@@ -3812,6 +3820,16 @@
     "sending": "發送中…",
     "testSent": "測試郵件已發送！",
     "testFailed": "測試郵件發送失敗。",
-    "darkMode": "深色模式"
+    "darkMode": "深色模式",
+    "copyHtml": "複製 HTML",
+    "copied": "已複製！",
+    "emailPlaceholder": "傳送至…",
+    "openTab": "在新標簽頁開啟",
+    "variables": "變數",
+    "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符",
+    "resetVars": "重置",
+    "split": "分屏",
+    "savePreset": "儲存",
+    "presetNamePlaceholder": "預設名稱…"
   }
 }
