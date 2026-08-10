@@ -1712,3 +1712,9 @@
 - [x] Open GitHub PR for checkpoint a82dfe62 → PR #99 at https://github.com/SteveKinzey/getphame/pull/99
 - [x] Add Resend Magic Link button with 60-second cooldown to login page (already fully implemented in MagicLinkForm.tsx — verified)
 - [x] Create responsive HTML email templates: magic link (security notice, fallback URL, mobile CSS) + welcome (gold numbered steps, gold CTA, mobile CSS)
+
+## Session — Email Templates Skill, PR #99 Merge, Receipt Email, Preview Route
+- [x] Create getphame-email-templates reusable skill
+- [x] Squash-merge PR #99 into protected main (merged, branch deleted)
+- [x] Upgrade upgrade receipt email template to responsive gold style (gold CTA, perks box, mobile CSS)
+- [x] Create in-app admin email preview route (/admin/email-preview) — 6 templates, desktop/mobile toggle, iframe preview, adminEmailPreview i18n keys in all 7 locales

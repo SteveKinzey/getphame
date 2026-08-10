@@ -656,43 +656,57 @@ export async function sendUpgradeReceiptEmail(opts: {
   };
   const perks = tierPerks[opts.tier] ?? [];
 
-  const perksHtml = perks.map(p => `<li style="margin:0 0 8px;font-size:14px;color:#333;line-height:1.6;">✅ ${p}</li>`).join("");
-
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>You're now on Get Phame ${tierLabel}!</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-wrapper { padding: 16px 0 !important; }
+      .email-card { border-radius: 0 !important; width: 100% !important; }
+      .email-body { padding: 28px 20px !important; }
+      .email-footer { padding: 16px 20px !important; }
+      .perks-box { padding: 16px !important; }
+      .cta-btn { padding: 16px 24px !important; font-size: 15px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+<body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-wrapper" style="background:#eef0f4;padding:40px 0;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+        <table width="560" cellpadding="0" cellspacing="0" role="presentation" class="email-card" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);max-width:560px;width:100%;">
           ${renderGetPhameEmailHeader(`You're on ${tierLabel}!`)}
           <tr>
-            <td style="padding:36px 40px;">
-              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Your Get Phame account has been upgraded to <strong>${tierLabel}</strong>. Here's what you now have access to:
+            <td class="email-body" style="padding:36px 40px 32px;">
+              <p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;line-height:1.4;">Hi ${displayName},</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">
+                Your Get Phame account has been upgraded to <strong style="color:#0F1B2D;">${tierLabel}</strong>.
+                Here's what you now have access to:
               </p>
-              <ul style="margin:0 0 24px;padding:0 0 0 4px;list-style:none;">
-                ${perksHtml}
-              </ul>
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;">
+                <tr><td class="perks-box" style="padding:20px 24px;">
+                  <ul style="margin:0;padding:0;list-style:none;">
+                    ${perks.map(p => `<li style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:11px;border-radius:50%;width:20px;height:20px;text-align:center;line-height:20px;margin-right:8px;">✓</span>${p}</li>`).join("")}
+                  </ul>
+                </td></tr>
+              </table>
+              <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;">
                 <tr>
-                  <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://getphame.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Start Sending Reviews →</a>
+                  <td style="background:#C9A84C;border-radius:12px;padding:16px 40px;text-align:center;mso-padding-alt:0;">
+                    <a href="https://getphame.app/send" class="cta-btn" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">Start Sending Reviews →</a>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+            <td class="email-footer" style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                Questions? Reply to this email or visit <a href="https://getphame.app/settings" style="color:#1a2744;">your settings</a>.
+                Questions? Reply to this email or visit <a href="https://getphame.app/settings" style="color:#888;text-decoration:none;">your settings</a>.<br/>
+                Get Phame · <a href="https://getphame.app" style="color:#888;text-decoration:none;">getphame.app</a>
               </p>
             </td>
           </tr>
