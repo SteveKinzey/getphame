@@ -1510,7 +1510,10 @@
       "darkMode": "Dark mode",
       "copyHtml": "Copy HTML",
       "copied": "Copied!",
-      "emailPlaceholder": "Send to…"
+      "emailPlaceholder": "Send to…",
+      "openTab": "Open in tab",
+      "variables": "Variables",
+      "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template"
     }
   },
   "es": {
@@ -3229,7 +3232,10 @@
       "darkMode": "Modo oscuro",
       "copyHtml": "Copiar HTML",
       "copied": "¡Copiado!",
-      "emailPlaceholder": "Enviar a…"
+      "emailPlaceholder": "Enviar a…",
+      "openTab": "Abrir en pestaña",
+      "variables": "Variables",
+      "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla"
     }
   },
   "fr": {
@@ -4969,7 +4975,10 @@
       "darkMode": "Mode sombre",
       "copyHtml": "Copier le HTML",
       "copied": "Copié !",
-      "emailPlaceholder": "Envoyer à…"
+      "emailPlaceholder": "Envoyer à…",
+      "openTab": "Ouvrir dans un onglet",
+      "variables": "Variables",
+      "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle"
     }
   },
   "it": {
@@ -6552,7 +6561,10 @@
       "darkMode": "Modalità scura",
       "copyHtml": "Copia HTML",
       "copied": "Copiato!",
-      "emailPlaceholder": "Invia a…"
+      "emailPlaceholder": "Invia a…",
+      "openTab": "Apri in una nuova scheda",
+      "variables": "Variabili",
+      "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello"
     }
   },
   "th": {
@@ -8125,7 +8137,10 @@
       "darkMode": "โหมดมืด",
       "copyHtml": "คัดลอก HTML",
       "copied": "คัดลอกแล้ว!",
-      "emailPlaceholder": "ส่งถึง…"
+      "emailPlaceholder": "ส่งถึง…",
+      "openTab": "เปิดในแท็บใหม่",
+      "variables": "ตัวแปร",
+      "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต"
     }
   },
   "zh-CN": {
@@ -9688,7 +9703,10 @@
       "darkMode": "深色模式",
       "copyHtml": "复制 HTML",
       "copied": "已复制！",
-      "emailPlaceholder": "发送至…"
+      "emailPlaceholder": "发送至…",
+      "openTab": "在新标签页打开",
+      "variables": "变量",
+      "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符"
     }
   },
   "zh-TW": {
@@ -11266,7 +11284,10 @@
       "darkMode": "深色模式",
       "copyHtml": "複製 HTML",
       "copied": "已複製！",
-      "emailPlaceholder": "傳送至…"
+      "emailPlaceholder": "傳送至…",
+      "openTab": "在新標簽頁開啟",
+      "variables": "變數",
+      "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符"
     }
   }
 }

@@ -4518,6 +4518,9 @@
     "darkMode": "Modalità scura",
     "copyHtml": "Copia HTML",
     "copied": "Copiato!",
-    "emailPlaceholder": "Invia a…"
+    "emailPlaceholder": "Invia a…",
+    "openTab": "Apri in una nuova scheda",
+    "variables": "Variabili",
+    "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello"
   }
 }

@@ -4253,6 +4253,9 @@
     "darkMode": "Dark mode",
     "copyHtml": "Copy HTML",
     "copied": "Copied!",
-    "emailPlaceholder": "Send to…"
+    "emailPlaceholder": "Send to…",
+    "openTab": "Open in tab",
+    "variables": "Variables",
+    "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template"
   }
 }

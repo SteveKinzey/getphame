@@ -4304,6 +4304,9 @@
     "darkMode": "Modo oscuro",
     "copyHtml": "Copiar HTML",
     "copied": "¡Copiado!",
-    "emailPlaceholder": "Enviar a…"
+    "emailPlaceholder": "Enviar a…",
+    "openTab": "Abrir en pestaña",
+    "variables": "Variables",
+    "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla"
   }
 }

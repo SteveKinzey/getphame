@@ -1737,3 +1737,11 @@
 - [x] Add Copy HTML button to AdminEmailPreview page (clipboard API + textarea fallback, 1.5s Copied! label swap)
 - [x] Add custom email input field to AdminEmailPreview page (replaces hard-coded user.email, pre-seeded from auth)
 - [x] Success toast shows recipient address: "Test email sent! → user@example.com" via sonner onSuccess
+
+## Session — Email Preview Tab/Spinner/DataPanel Skill, PR #101 Merge
+- [x] Update getphame-email-preview-enhancements skill with Preview in New Tab, loading spinner, and data injection panel patterns
+- [x] Squash-merge PR #101 into main (merged 2026-08-10T07:03:20Z)
+- [x] Add Preview in New Tab button (Blob URL, revokeObjectURL after 10s, noopener)
+- [x] Loading spinner confirmed on send button (sendTest.isPending + Loader2 animate-spin)
+- [x] Add dynamic data injection panel ([name]/[company]/[plan]/[email] substitution, collapsible, grid layout)
+- [x] Fix nativeLocalizationQuality: adminEmailPreview.variables is cross_language_equivalent in es/fr — added to exceptions, updated counts (totalCandidates=588, totalExceptions=239)

@@ -3936,6 +3936,9 @@
     "darkMode": "โหมดมืด",
     "copyHtml": "คัดลอก HTML",
     "copied": "คัดลอกแล้ว!",
-    "emailPlaceholder": "ส่งถึง…"
+    "emailPlaceholder": "ส่งถึง…",
+    "openTab": "เปิดในแท็บใหม่",
+    "variables": "ตัวแปร",
+    "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต"
   }
 }

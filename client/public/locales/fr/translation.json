@@ -4304,6 +4304,9 @@
     "darkMode": "Mode sombre",
     "copyHtml": "Copier le HTML",
     "copied": "Copié !",
-    "emailPlaceholder": "Envoyer à…"
+    "emailPlaceholder": "Envoyer à…",
+    "openTab": "Ouvrir dans un onglet",
+    "variables": "Variables",
+    "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle"
   }
 }
