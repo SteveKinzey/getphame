@@ -3778,5 +3778,13 @@
     "reloadTab": "重新加载此标签页",
     "applyingTitle": "正在应用更新",
     "applyingDescription": "GET PHAME 正在准备最新版本。此标签页将很快刷新。"
+  },
+  "adminEmailPreview": {
+    "title": "电子邮件模板预览",
+    "selectTemplate": "选择模板",
+    "loading": "正在加载预览…",
+    "error": "加载预览失败。",
+    "noPreview": "暂无预览。",
+    "note": "预览使用示例数据，实际邮件将使用真实用户名和安全链接发送。"
   }
 }

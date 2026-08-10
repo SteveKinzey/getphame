@@ -4238,5 +4238,13 @@
     "toastRequested": "Your exception request has been sent to support@getphame.app.",
     "toastAddressRequired": "Enter your physical business address so we can determine local time.",
     "toastReasonRequired": "Please explain why a shorter quiet period is needed."
+  },
+  "adminEmailPreview": {
+    "title": "Email Template Preview",
+    "selectTemplate": "Select template",
+    "loading": "Loading preview…",
+    "error": "Failed to load preview.",
+    "noPreview": "No preview available.",
+    "note": "Preview uses sample data. Actual emails are sent with real user names and secure links."
   }
 }

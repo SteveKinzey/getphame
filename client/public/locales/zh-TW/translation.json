@@ -3800,5 +3800,13 @@
     "reloadTab": "重新載入此分頁",
     "applyingTitle": "正在套用更新",
     "applyingDescription": "GET PHAME 正在準備最新版本。此分頁即將重新整理。"
+  },
+  "adminEmailPreview": {
+    "title": "電子郵件樣板預覽",
+    "selectTemplate": "選擇樣板",
+    "loading": "正在載入預覽…",
+    "error": "載入預覽失敗。",
+    "noPreview": "暫無預覽。",
+    "note": "預覽使用範例資料，實際郵件將以真實用戶名稱和安全連結發送。"
   }
 }

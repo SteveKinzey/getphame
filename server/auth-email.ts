@@ -110,39 +110,65 @@ function buildMagicLinkEmailHtml(magicLinkUrl: string): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your GetPhame Login Link</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-wrapper { padding: 16px 0 !important; }
+      .email-card { border-radius: 0 !important; width: 100% !important; }
+      .email-body { padding: 28px 20px !important; }
+      .email-header { padding: 22px 20px !important; }
+      .email-footer { padding: 16px 20px !important; }
+      .cta-btn { padding: 16px 24px !important; font-size: 15px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+<body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-wrapper" style="background:#eef0f4;padding:40px 0;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+        <table width="560" cellpadding="0" cellspacing="0" role="presentation" class="email-card" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);max-width:560px;width:100%;">
           ${renderGetPhameEmailHeader("Your secure sign-in link")}
           <tr>
-            <td style="padding:36px 40px;text-align:center;">
-              <p style="margin:0 0 20px;font-size:16px;color:#333;line-height:1.6;">
-                Click below to sign in to GetPhame
+            <td class="email-body" style="padding:40px 40px 32px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:18px;font-weight:700;color:#0F1B2D;line-height:1.4;">
+                Ready to sign in?
               </p>
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
+              <p style="margin:0 0 28px;font-size:15px;color:#555;line-height:1.6;">
+                Click the button below to securely sign in to your Get Phame account.
+                This link is single-use and expires in <strong>15 minutes</strong>.
+              </p>
+              <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 28px;">
                 <tr>
-                  <td style="background:#C9A84C;border-radius:10px;padding:16px 40px;text-align:center;">
-                    <a href="${magicLinkUrl}" style="color:#0F1B2D;font-size:16px;font-weight:700;text-decoration:none;display:inline-block;">
+                  <td style="background:#C9A84C;border-radius:12px;padding:18px 48px;text-align:center;mso-padding-alt:0;">
+                    <a href="${magicLinkUrl}" class="cta-btn" style="color:#0F1B2D;font-size:17px;font-weight:800;text-decoration:none;display:inline-block;letter-spacing:0.2px;">
                       Sign In to GetPhame
                     </a>
                   </td>
                 </tr>
               </table>
-              <p style="margin:0 0 8px;font-size:13px;color:#888;line-height:1.5;">
-                This link expires in 15 minutes.
-              </p>
-              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.5;">
-                If you didn't request this link, you can safely ignore this email.
+              <!-- Security notice -->
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:0 0 20px;">
+                <tr>
+                  <td style="padding:14px 18px;text-align:left;">
+                    <p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:0.8px;">Security notice</p>
+                    <p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">
+                      Get Phame will never ask for your password by email. This link can only be used once.
+                      If you didn't request it, no action is needed — your account is safe.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              <!-- Fallback URL -->
+              <p style="margin:0;font-size:11px;color:#bbb;line-height:1.6;word-break:break-all;">
+                Button not working? Copy and paste this link into your browser:<br/>
+                <a href="${magicLinkUrl}" style="color:#C9A84C;text-decoration:underline;">${magicLinkUrl}</a>
               </p>
             </td>
           </tr>
           <tr>
-            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+            <td class="email-footer" style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                <a href="https://getphame.app" style="color:#0F1B2D;text-decoration:none;">getphame.app</a>
+                Get Phame · <a href="https://getphame.app" style="color:#888;text-decoration:none;">getphame.app</a><br/>
+                You received this because a sign-in was requested for this email address.
               </p>
             </td>
           </tr>

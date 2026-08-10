@@ -4503,5 +4503,13 @@
     "reloadTab": "Ricarica questa scheda",
     "applyingTitle": "Applicazione dell’aggiornamento",
     "applyingDescription": "GET PHAME sta preparando l’ultima versione. Questa scheda si aggiornerà a breve."
+  },
+  "adminEmailPreview": {
+    "title": "Anteprima modelli e-mail",
+    "selectTemplate": "Seleziona modello",
+    "loading": "Caricamento anteprima…",
+    "error": "Impossibile caricare l’anteprima.",
+    "noPreview": "Nessuna anteprima disponibile.",
+    "note": "L’anteprima usa dati di esempio. Le email reali vengono inviate con nomi utente reali e link sicuri."
   }
 }
