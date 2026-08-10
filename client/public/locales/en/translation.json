@@ -1974,7 +1974,8 @@
     "stats": {
       "thisMonth": "This Month",
       "allTime": "All Time",
-      "last7Days": "Last 7 Days"
+      "last7Days": "Last 7 Days",
+      "consented": "Consented"
     },
     "weeklyBreakdown": {
       "title": "Last 7 Days",

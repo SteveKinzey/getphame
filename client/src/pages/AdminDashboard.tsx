@@ -198,6 +198,7 @@ function LeadsSection() {
                 <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Email</th>
                 <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Consent</th>
                 <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Status</th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Reason</th>
                 <th className="text-left py-2 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Joined</th>
               </tr>
             </thead>
@@ -222,6 +223,11 @@ function LeadsSection() {
                     ) : (
                       <span className="text-xs font-semibold" style={{ color: "oklch(0.45 0.15 145)" }}>Active</span>
                     )}
+                  </td>
+                  <td className="py-2 pr-4 text-xs rr-text-navy-muted">
+                    {(lead as any).unsubscribeReason
+                      ? <span className="italic">{String((lead as any).unsubscribeReason).replace(/_/g, ' ')}</span>
+                      : <span className="text-gray-300">—</span>}
                   </td>
                   <td className="py-2 text-xs rr-text-navy-muted">{new Date(lead.createdAt).toLocaleDateString()}</td>
                 </tr>
