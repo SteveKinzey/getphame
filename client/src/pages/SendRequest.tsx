@@ -90,6 +90,7 @@ export default function SendRequestPage() {
     noIncentives: false,
     allCustomers: false,
   });
+  const [consentCheckCompliance, setConsentCheckCompliance] = useState(false);
   const [contactPickerOpen, setContactPickerOpen] = useState(false);
   const { isNative } = useContacts();
   const [selectedPlatformId, setSelectedPlatformId] = useState<number | null>(null);
@@ -301,7 +302,8 @@ export default function SendRequestPage() {
 
   const allComplianceChecked = complianceChecked.realCustomers
     && complianceChecked.noIncentives
-    && complianceChecked.allCustomers;
+    && complianceChecked.allCustomers
+    && consentCheckCompliance;
   const hasUnsavedSendDraft = !sent && (
     customerName.trim().length > 0
     || customerEmail.trim().length > 0
@@ -349,6 +351,7 @@ export default function SendRequestPage() {
 
   function resetComplianceChecklist() {
     setComplianceChecked({ realCustomers: false, noIncentives: false, allCustomers: false });
+    setConsentCheckCompliance(false);
   }
 
   function handleReviewBeforeSend() {
@@ -1199,6 +1202,15 @@ export default function SendRequestPage() {
                   <span className="text-xs leading-relaxed rr-text-navy-mid">{item.label}</span>
                 </label>
               ))}
+              <label className="flex min-h-10 cursor-pointer items-start gap-3 rounded-xl px-2 py-2 hover:bg-white/70">
+                <input
+                  type="checkbox"
+                  checked={consentCheckCompliance}
+                  onChange={(e) => setConsentCheckCompliance(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-[oklch(0.55_0.18_145)]"
+                />
+                <span className="text-xs leading-relaxed rr-text-navy-mid">{t("bulkSendDialog.consentCheck", "I confirm customers have consented to be contacted by my business via email and/or text")}</span>
+              </label>
             </div>
           </div>
         </div>
