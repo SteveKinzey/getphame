@@ -1242,6 +1242,7 @@ export default function SettingsPage() {
   const { data: adaptiveSendStatus } = trpc.contacts.getDailyStatus.useQuery();
   const [businessName, setBusinessName] = useState("");
   const [reviewLink, setPhame] = useState("");
+  const [consentLabelName, setConsentLabelName] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
   const [physicalAddress, setPhysicalAddress] = useState("");
@@ -1329,6 +1330,7 @@ export default function SettingsPage() {
     if (profile) {
       setBusinessName(profile.businessName);
       setPhame(profile.reviewLink);
+      setConsentLabelName(profile.consentLabelName ?? "");
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
       setPhysicalAddress(profile.physicalAddress ?? "");
@@ -1666,6 +1668,7 @@ export default function SettingsPage() {
       reviewLink: reviewLink.trim(),
       fromName: fromName.trim() || undefined,
       replyTo: replyTo.trim() || undefined,
+      consentLabelName: consentLabelName.trim() || undefined,
     });
   }
 
@@ -1679,7 +1682,8 @@ export default function SettingsPage() {
       businessName !== profile.businessName ||
       reviewLink !== profile.reviewLink ||
       fromName !== (profile.fromName ?? "") ||
-      replyTo !== (profile.replyTo ?? "")
+      replyTo !== (profile.replyTo ?? "") ||
+      consentLabelName !== (profile.consentLabelName ?? "")
     )
     : false;
   const quietHoursHasUnsavedChanges = profile
@@ -1879,6 +1883,21 @@ export default function SettingsPage() {
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.replyToEmailDescription')}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                      {t('profile.consentLabelName', { defaultValue: 'Consent checkbox business name' })} <span className="font-normal">({t("common.optional", { defaultValue: "optional" })})</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={consentLabelName}
+                      onChange={(e) => setConsentLabelName(e.target.value)}
+                      placeholder={businessName || "e.g. Maria's Hair Salon"}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    />
+                    <p className="text-xs mt-1 rr-text-navy-muted">
+                      {t('profile.consentLabelNameDescription', { defaultValue: 'The business name shown in the consent checkbox label on your forms. Defaults to your business name above.' })}
                     </p>
                   </div>
                 </div>

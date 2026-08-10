@@ -421,5 +421,8 @@
       },
       "cta": "See how Get Phame protects your data"
     }
+  },
+  "leadCapture": {
+    "consentGuideLink": "Download Consent Compliance Guide (PDF)"
   }
 }

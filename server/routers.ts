@@ -1420,6 +1420,7 @@ export const appRouter = router({
           tier: z.enum(["free", "pro"]).optional(),
           fromName: z.string().max(255).optional(),
           replyTo: z.string().email().optional().or(z.literal("")),
+          consentLabelName: z.string().max(255).optional().or(z.literal("")),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1435,6 +1436,7 @@ export const appRouter = router({
           monthlyResetDate: existing?.monthlyResetDate ?? yearMonth,
           fromName: input.fromName ?? existing?.fromName ?? null,
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
+          consentLabelName: input.consentLabelName?.trim() || null,
         });
         return getBusinessProfile(ctx.user.id);
       }),
@@ -2332,10 +2334,17 @@ export const appRouter = router({
           email: z.string().email(),
           phone: z.string().optional(),
           notes: z.string().optional(),
+          consentGiven: z.boolean().optional(), // true = user confirmed consent checkbox
+          consentSource: z.string().max(255).optional(), // e.g. "manual_add_contact_form"
         })
       )
       .mutation(async ({ ctx, input }) => {
-        await createSavedContact(ctx.user.id, input);
+        await createSavedContact(ctx.user.id, {
+          ...input,
+          consentBasis: input.consentGiven ? "explicit_opt_in" : undefined,
+          consentCapturedAt: input.consentGiven ? Date.now() : undefined,
+          consentSource: input.consentGiven ? (input.consentSource ?? "manual_add_contact_form") : undefined,
+        });
         return { ok: true };
       }),
 
@@ -2814,7 +2823,12 @@ export const appRouter = router({
         if (decoded.contactType === "contact") {
           await db
             .update(savedContacts)
-            .set({ optedOut: 1, optedOutAt: Date.now() })
+            .set({
+              optedOut: 1,
+              optedOutAt: Date.now(),
+              // Record that consent was withdrawn via unsubscribe link
+              consentBasis: "opted_out",
+            })
             .where(eqU(savedContacts.id, decoded.id));
         } else {
           await db
@@ -3168,6 +3182,15 @@ export const appRouter = router({
           ctx.user.id,
           resolvedTemplate?.id ?? null
         );
+        // Inject unsubscribe URL into the email body if not already present
+        const unsubUrl = buildUnsubUrl("contact", newRequestId, ctx.user.id);
+        if (!htmlBody.includes("unsubscribe") && !htmlBody.includes("Unsubscribe")) {
+          // Append unsubscribe footer to email body
+          htmlBody = htmlBody.replace(
+            /<\/div>\s*$/,
+            `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#9ca3af;">You received this email because you are a customer of ${profile.businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></div></div>`
+          );
+        }
         const baseUrl =
           (ctx.req.headers.origin as string | undefined) ??
           "https://getphame.app";
@@ -4071,6 +4094,7 @@ export const appRouter = router({
         allDone,
         dismissed,
         canAccessConnector,
+        consentAcknowledgedAt: profile?.consentAcknowledgedAt ?? null,
       };
     }),
 
@@ -4095,6 +4119,17 @@ export const appRouter = router({
           message: "Profile not found",
         });
       await upsertBusinessProfile({ ...profile, onboardingDismissed: 0 });
+      return { ok: true };
+    }),
+    /** Records when the user acknowledged the consent checkbox requirement. */
+    acknowledgeConsent: protectedProcedure.mutation(async ({ ctx }) => {
+      const profile = await getBusinessProfile(ctx.user.id);
+      if (!profile)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Profile not found",
+        });
+      await upsertBusinessProfile({ ...profile, consentAcknowledgedAt: Date.now() });
       return { ok: true };
     }),
   }),
@@ -7795,6 +7830,42 @@ export const appRouter = router({
         return { ok: true as const };
       }),
 
+    stripeStatus: adminProcedure.query(async () => {
+      const stripeKey = process.env.STRIPE_SECRET_KEY ?? "";
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+      if (!stripeKey) return { configured: false as const, mode: null, webhookUrl: null, webhookStatus: null, events: [] };
+      const mode = stripeKey.startsWith("sk_live") ? "live" : "test";
+      // Fetch webhook endpoints from Stripe API
+      try {
+        const https = await import("https");
+        const webhookData = await new Promise<{ url: string; status: string; enabled_events: string[] }[]>((resolve, reject) => {
+          const req = https.get("https://api.stripe.com/v1/webhook_endpoints?limit=5", {
+            headers: { Authorization: "Bearer " + stripeKey },
+          }, (res) => {
+            let data = "";
+            res.on("data", (d: Buffer) => (data += d));
+            res.on("end", () => {
+              try {
+                const json = JSON.parse(data);
+                resolve(json.data ?? []);
+              } catch { reject(new Error("Parse error")); }
+            });
+          });
+          req.on("error", reject);
+        });
+        const wh = webhookData[0] ?? null;
+        return {
+          configured: true as const,
+          mode,
+          webhookUrl: wh?.url ?? null,
+          webhookStatus: wh?.status ?? null,
+          events: wh?.enabled_events ?? [],
+          webhookSecretSet: webhookSecret.length > 0,
+        };
+      } catch {
+        return { configured: true as const, mode, webhookUrl: null, webhookStatus: "error", events: [], webhookSecretSet: webhookSecret.length > 0 };
+      }
+    }),
   /** Landing page lead capture — stores email and sends the free guide PDF */
   leadCapture: router({
     submit: publicProcedure

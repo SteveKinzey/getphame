@@ -676,8 +676,11 @@ export const businessProfiles = pgTable("business_profiles", {
   ),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  // Consent acknowledgment — Unix ms when the user acknowledged the consent checkbox requirement during onboarding
+  consentAcknowledgedAt: bigint("consentAcknowledgedAt", { mode: "number" }),
+  // Optional custom name for the consent checkbox label (defaults to businessName)
+  consentLabelName: varchar("consentLabelName", { length: 255 }),
 });
-
 export type BusinessProfile = typeof businessProfiles.$inferSelect;
 export type InsertBusinessProfile = typeof businessProfiles.$inferInsert;
 

@@ -857,7 +857,9 @@
     "emailNotConnected": "E-mail non connecté",
     "connectEmail": "Connecter l'e-mail",
     "changeEmail": "Changer d'e-mail",
-    "disconnectEmail": "Déconnecter l'e-mail"
+    "disconnectEmail": "Déconnecter l'e-mail",
+    "consentLabelName": "Nom de l'entreprise dans la case de consentement",
+    "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
   },
   "reviewPlatforms": {
     "title": "Plateformes d'avis",
@@ -1265,7 +1267,9 @@
         "created": "Créé",
         "page": "Page {{current}} sur {{total}}"
       }
-    }
+    },
+    "addConsentLabel": "Je confirme que ce client a consenti à être contacté par {businessName} par e-mail et/ou SMS concernant son expérience et ses achats",
+    "addConsentRequired": "La confirmation du consentement est requise pour ajouter un contact"
   },
   "pageHeader": {
     "title": "Contacts enregistrés",
@@ -1406,7 +1410,8 @@
     "sending": "Envoi en cours…",
     "sendButton": "Envoyer {{count}} demandes",
     "confirmButton": "Envoyer {{count}} demande(s)",
-    "schedulingReminders": "Programmation des rappels…"
+    "schedulingReminders": "Programmation des rappels…",
+    "consentCheck": "Je confirme que les clients ont consenti à être contactés par mon entreprise par e-mail et/ou SMS"
   },
   "wooSyncHistory": {
     "title": "Historique de synchronisation",
@@ -2249,7 +2254,12 @@
   "onboarding": {
     "googleBtn": "Continuer with Google",
     "appleBtn": "Continuer with Apple",
-    "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Sans carte bancaire."
+    "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Sans carte bancaire.",
+    "consentStepTitle": "Ajoutez une case de consentement à vos formulaires",
+    "consentStepDesc": "Avant de collecter des contacts ou d'envoyer des demandes d'avis, vos formulaires doivent inclure une case de consentement. Ceci est requis par CAN-SPAM, TCPA et RGPD.",
+    "consentStepAction": "Télécharger le Guide de Consentement (PDF)",
+    "consentStepAck": "J'ai ajouté (ou j'ajouterai) une case de consentement à mes formulaires clients",
+    "consentStepAckRequired": "Veuillez confirmer que vous ajouterez la case de consentement avant de continuer"
   },
   "bulkBar": {
     "sendTo": "Envoyer à {{count}} contact(s)"
@@ -4301,6 +4311,16 @@
     "sending": "Envoi en cours…",
     "testSent": "E-mail test envoyé !",
     "testFailed": "Échec de l’envoi du test.",
-    "darkMode": "Mode sombre"
+    "darkMode": "Mode sombre",
+    "copyHtml": "Copier le HTML",
+    "copied": "Copié !",
+    "emailPlaceholder": "Envoyer à…",
+    "openTab": "Ouvrir dans un onglet",
+    "variables": "Variables",
+    "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle",
+    "resetVars": "Réinitialiser",
+    "split": "Split",
+    "savePreset": "Enregistrer",
+    "presetNamePlaceholder": "Nom du profil…"
   }
 }

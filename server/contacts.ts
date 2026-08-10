@@ -22,7 +22,7 @@ export async function listSavedContacts(userId: number) {
 
 export async function createSavedContact(
   userId: number,
-  data: { name: string; email: string; phone?: string; notes?: string }
+  data: { name: string; email: string; phone?: string; notes?: string; consentBasis?: string; consentCapturedAt?: number; consentSource?: string }
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -33,6 +33,9 @@ export async function createSavedContact(
     phone: data.phone ?? null,
     notes: data.notes ?? null,
     totalSent: 0,
+    consentBasis: data.consentBasis ?? null,
+    consentCapturedAt: data.consentCapturedAt ?? null,
+    consentSource: data.consentSource ?? null,
   });
 }
 
