@@ -1706,3 +1706,9 @@
 - [x] Add preload link for hero background image (phame-hero-bg.webp) in index.html
 - [x] Implement React.lazy() code-splitting for landing page: VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer
 - [x] Integrate SendGrid as system email relay: server/sendgrid.ts helper, wired into auth-email.ts (magic links), smtp.ts (welcome email), accountDeletionEmail.ts, adminPlatformEmail.ts. SENDGRID_API_KEY secret needed.
+
+## Session — SendGrid Skill, PR, Resend Button, Email Templates
+- [x] Create getphame-sendgrid-system-relay reusable skill
+- [x] Open GitHub PR for checkpoint a82dfe62 → PR #99 at https://github.com/SteveKinzey/getphame/pull/99
+- [x] Add Resend Magic Link button with 60-second cooldown to login page (already fully implemented in MagicLinkForm.tsx — verified)
+- [x] Create responsive HTML email templates: magic link (security notice, fallback URL, mobile CSS) + welcome (gold numbered steps, gold CTA, mobile CSS)

@@ -548,43 +548,63 @@ export async function sendUserWelcomeEmail(opts: {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to Get Phame!</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-wrapper { padding: 16px 0 !important; }
+      .email-card { border-radius: 0 !important; width: 100% !important; }
+      .email-body { padding: 28px 20px !important; }
+      .email-header { padding: 22px 20px !important; }
+      .email-footer { padding: 16px 20px !important; }
+      .steps-box { padding: 16px !important; }
+      .cta-btn { padding: 16px 24px !important; font-size: 15px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+<body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-wrapper" style="background:#eef0f4;padding:40px 0;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+        <table width="560" cellpadding="0" cellspacing="0" role="presentation" class="email-card" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);max-width:560px;width:100%;">
           ${renderGetPhameEmailHeader("Welcome aboard")}
           <tr>
-            <td style="padding:36px 40px;">
-              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
+            <td class="email-body" style="padding:36px 40px 32px;">
+              <p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;line-height:1.4;">Hi ${displayName},</p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Thanks for joining Get Phame! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
+                Welcome to Get Phame! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
               </p>
-              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">
-                Here's how to get started in 3 steps:
+              <p style="margin:0 0 16px;font-size:14px;font-weight:700;color:#0F1B2D;text-transform:uppercase;letter-spacing:0.8px;">
+                Get started in 3 steps
               </p>
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9ff;border:1px solid #e0e4f0;border-radius:12px;margin:0 0 24px;">
-                <tr><td style="padding:20px 24px;">
-                  <p style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><strong>1.</strong> Connect your email account in Settings</p>
-                  <p style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><strong>2.</strong> Add your Google (or Yelp, TripAdvisor, etc.) review link</p>
-                  <p style="margin:0;font-size:14px;color:#1a2744;line-height:1.6;"><strong>3.</strong> Send your first review request — takes under 30 seconds</p>
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;">
+                <tr><td class="steps-box" style="padding:20px 24px;">
+                  <p style="margin:0 0 12px;font-size:14px;color:#1a2744;line-height:1.6;">
+                    <span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">1</span>
+                    Connect your email account in <strong>Settings</strong>
+                  </p>
+                  <p style="margin:0 0 12px;font-size:14px;color:#1a2744;line-height:1.6;">
+                    <span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">2</span>
+                    Add your Google (or Yelp, TripAdvisor, etc.) review link
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#1a2744;line-height:1.6;">
+                    <span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">3</span>
+                    Send your first review request — takes under 30 seconds
+                  </p>
                 </td></tr>
               </table>
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+              <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;">
                 <tr>
-                  <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://getphame.app" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Get Started →</a>
+                  <td style="background:#C9A84C;border-radius:12px;padding:16px 40px;text-align:center;mso-padding-alt:0;">
+                    <a href="https://getphame.app" class="cta-btn" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">Get Started →</a>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+            <td class="email-footer" style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
                 You received this because you signed up for Get Phame.<br/>
-                <a href="https://getphame.app/settings" style="color:#1a2744;">Manage your settings</a>
+                <a href="https://getphame.app/settings" style="color:#888;text-decoration:none;">Manage your settings</a>
               </p>
             </td>
           </tr>
