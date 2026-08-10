@@ -1073,7 +1073,8 @@
       "stats": {
         "thisMonth": "This Month",
         "allTime": "All Time",
-        "last7Days": "Last 7 Days"
+        "last7Days": "Last 7 Days",
+        "consented": "Consented"
       },
       "emailPerformance": {
         "title": "Email Performance",
@@ -2650,7 +2651,8 @@
       "stats": {
         "thisMonth": "Este mes",
         "allTime": "Todo el tiempo",
-        "last7Days": "Últimos 7 días"
+        "last7Days": "Últimos 7 días",
+        "consented": "Con consentimiento"
       },
       "emailPerformance": {
         "title": "Rendimiento del correo",
@@ -4399,7 +4401,8 @@
       "stats": {
         "thisMonth": "Ce mois-ci",
         "allTime": "Depuis le début",
-        "last7Days": "7 derniers jours"
+        "last7Days": "7 derniers jours",
+        "consented": "Consentis"
       },
       "emailPerformance": {
         "title": "Performances des e‑mails",
@@ -6133,7 +6136,8 @@
       "stats": {
         "thisMonth": "Questo mese",
         "allTime": "Dall'inizio",
-        "last7Days": "Ultimi 7 giorni"
+        "last7Days": "Ultimi 7 giorni",
+        "consented": "Consenso dato"
       },
       "emailPerformance": {
         "title": "Prestazioni email",
@@ -7734,7 +7738,8 @@
       "stats": {
         "thisMonth": "เดือนนี้",
         "allTime": "ตลอดเวลา",
-        "last7Days": "7 วันที่ผ่านมา"
+        "last7Days": "7 วันที่ผ่านมา",
+        "consented": "ยินยอมแล้ว"
       },
       "emailPerformance": {
         "title": "ประสิทธิภาพอีเมล",
@@ -9332,7 +9337,8 @@
       "stats": {
         "thisMonth": "本月",
         "allTime": "所有时间",
-        "last7Days": "最近7天"
+        "last7Days": "最近7天",
+        "consented": "已同意"
       },
       "emailPerformance": {
         "title": "邮件表现",
@@ -10923,7 +10929,8 @@
       "stats": {
         "thisMonth": "本月",
         "allTime": "所有時間",
-        "last7Days": "過去 7 天"
+        "last7Days": "過去 7 天",
+        "consented": "已同意"
       },
       "emailPerformance": {
         "title": "電子郵件成效",

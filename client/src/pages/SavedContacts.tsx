@@ -454,7 +454,7 @@ export default function SavedContacts() {
 
   function openEdit(c: Contact) {
     setEditContact(c);
-    setForm({ name: c.name, email: c.email, phone: c.phone ?? "", notes: c.notes ?? "" });
+    setForm({ name: c.name, email: c.email, phone: c.phone ?? "", notes: c.notes ?? "", consentGiven: false });
     setDialogOpen(true);
   }
 

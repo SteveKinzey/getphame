@@ -2142,7 +2142,8 @@
     "stats": {
       "thisMonth": "Este mes",
       "allTime": "Total",
-      "last7Days": "Últimos 7 días"
+      "last7Days": "Últimos 7 días",
+      "consented": "Con consentimiento"
     },
     "weeklyBreakdown": {
       "title": "Últimos 7 días",

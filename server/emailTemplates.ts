@@ -76,9 +76,13 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
                 </tr>
               </table>`;
 
+  // Build preferences URL from unsubscribeUrl domain (e.g. https://getphame.app/preferences)
+  const preferencesUrl = unsubscribeUrl
+    ? (() => { try { const u = new URL(unsubscribeUrl); return `${u.origin}/preferences`; } catch { return null; } })()
+    : null;
   const footerText = unsubscribeUrl
     ? `You received this email because you are a customer of ${businessName}.<br/>
-       <a href="${unsubscribeUrl}" style="color:#aaa;text-decoration:underline;">Unsubscribe</a> to stop receiving these emails.`
+       <a href="${unsubscribeUrl}" style="color:#aaa;text-decoration:underline;">Unsubscribe</a>${preferencesUrl ? ` &nbsp;&middot;&nbsp; <a href="${preferencesUrl}" style="color:#aaa;text-decoration:underline;">Manage preferences</a>` : ''} &nbsp;&middot;&nbsp; to stop receiving these emails.`
     : `You received this email because you are a customer of ${businessName}.<br/>
        To stop receiving these emails, reply with &quot;unsubscribe&quot;.`;
 
@@ -145,8 +149,12 @@ export function buildReviewRequestText(opts: ReviewEmailOptions): string {
   const context = productName
     ? `Thank you for your recent purchase of ${productName}. We hope you love it!`
     : `Thank you for choosing ${businessName}. We hope you had a great experience!`;
+  const preferencesUrlText = unsubscribeUrl
+    ? (() => { try { const u = new URL(unsubscribeUrl); return `${u.origin}/preferences`; } catch { return null; } })()
+    : null;
   const unsubLine = unsubscribeUrl
-    ? `To unsubscribe: ${unsubscribeUrl}`
+    ? `To unsubscribe: ${unsubscribeUrl}${preferencesUrlText ? `
+Manage preferences: ${preferencesUrlText}` : ''}`
     : `To unsubscribe, reply with "unsubscribe".`;
   const poweredBy = showPoweredBy ? '\n\nPowered by Get Phame — https://getphame.app' : '';
   return `Hi ${customerName}!\n\n${context}\n\nCould you take 30 seconds to leave us a quick review?\n\n${reviewUrl}\n\nThank you so much!\nThe ${businessName} team\n\n---\nYou received this email because you are a customer of ${businessName}. ${unsubLine}${poweredBy}`;

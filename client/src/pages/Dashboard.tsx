@@ -3,7 +3,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw } from "lucide-react";
+import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
@@ -30,6 +30,7 @@ export default function DashboardPage() {
   const [, navigate] = useLocation();
   const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
   const { data: stats, isLoading } = trpc.requests.stats.useQuery();
+  const { data: consentStats } = trpc.contacts.consentStats.useQuery();
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: emailPerf } = trpc.tracking.overallStats.useQuery();
@@ -230,11 +231,12 @@ export default function DashboardPage() {
         </h1>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: t('dashboard.stats.thisMonth'), value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
             { label: t('dashboard.stats.allTime'), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             { label: t('dashboard.stats.last7Days'), value: velocity?.last7 ?? 0, icon: <Star size={14} /> },
+            { label: t('dashboard.stats.consented', 'Consented'), value: consentStats?.consented ?? 0, icon: <ShieldCheck size={14} />, subtitle: consentStats ? `of ${consentStats.total}` : undefined },
           ].map((s) => (
             <div
               key={s.label}
@@ -253,6 +255,11 @@ export default function DashboardPage() {
               <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
                 {s.label}
               </div>
+              {(s as any).subtitle && (
+                <div className="text-xs mt-0.5" style={{ color: "var(--text-on-dark-secondary)", opacity: 0.7 }}>
+                  {(s as any).subtitle}
+                </div>
+              )}
             </div>
           ))}
         </div>
