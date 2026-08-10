@@ -18,7 +18,7 @@ import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
 import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
 import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 import { assertReviewOutreachAllowed } from "./signupRisk";
-import { sendSystemEmail } from "./sendgrid";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -600,7 +600,7 @@ export async function sendUserWelcomeEmail(opts: {
   await sendSystemEmail({
     to: opts.toEmail,
     subject: "Welcome to Get Phame! 🚀",
-    from: process.env.SYSTEM_FROM_EMAIL?.trim() ?? "no-reply@getphame.com",
+    from: NOREPLY_FROM,
     html,
     text,
   });

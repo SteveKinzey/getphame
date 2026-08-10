@@ -23,7 +23,7 @@ import { getDb } from "./db";
 import { magicLinks } from "../drizzle/schema";
 import { eq, and, gt, isNull } from "drizzle-orm";
 import { createTransporter, sendUserWelcomeEmail } from "./smtp";
-import { sendSystemEmail } from "./sendgrid";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import {
   classifyAuthDiagnosticError,
@@ -295,7 +295,7 @@ export function registerEmailAuthRoutes(app: Express) {
         to: normalizedEmail,
         subject: "Your GetPhame login link",
         html: buildMagicLinkEmailHtml(magicLinkUrl),
-        from: process.env.SYSTEM_FROM_EMAIL?.trim() ?? "no-reply@getphame.com",
+        from: NOREPLY_FROM,
       });
       const delivery = { messageId: "system-relay" };
 

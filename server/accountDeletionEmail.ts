@@ -6,7 +6,7 @@
  * If system SMTP is not configured the function returns { sent: false } — non-fatal.
  */
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
-import { sendSystemEmail } from "./sendgrid";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 
 function buildDeletionEmailHtml(name: string): string {
   const firstName = name?.split(" ")[0] ?? "there";
@@ -84,7 +84,7 @@ export async function sendAccountDeletionEmail(
       subject: "Your GetPhame account has been deleted",
       html: buildDeletionEmailHtml(name),
       text: `Hi ${name?.split(" ")[0] ?? "there"},\n\nYour GetPhame account and all associated data has been permanently deleted as requested.\n\nIf you have questions, contact support@getphame.app.\n\nGetPhame`,
-      from: process.env.SYSTEM_FROM_EMAIL?.trim() ?? "no-reply@getphame.com",
+      from: NOREPLY_FROM,
     });
     return { sent: true };
   } catch (err: unknown) {

@@ -6,6 +6,12 @@
  * so existing deployments continue to work without any config change.
  *
  * User-facing review request emails still use the user's own SMTP credentials (smtp.ts).
+ *
+ * Sender policy:
+ *   SYSTEM_NOREPLY_EMAIL (default: no-reply@getphame.app)
+ *     → transactional / auth emails: magic links, welcome, account deletion
+ *   SYSTEM_HELLO_EMAIL  (default: hello@getphame.app)
+ *     → conversational emails: admin platform, lead guide, support
  */
 
 import sgMail from "@sendgrid/mail";
@@ -17,9 +23,14 @@ export interface SystemEmailOptions {
   subject: string;
   html: string;
   text?: string;
-  from?: string;   // defaults to SYSTEM_FROM_EMAIL or no-reply@getphame.com
+  from?: string;   // explicit override; prefer the helpers below
   replyTo?: string;
 }
+
+/** Transactional sender — magic links, auth, account deletion, welcome. */
+export const NOREPLY_FROM = process.env.SYSTEM_NOREPLY_EMAIL?.trim() ?? "no-reply@getphame.app";
+/** Conversational sender — admin messages, lead guide, support. */
+export const HELLO_FROM = process.env.SYSTEM_HELLO_EMAIL?.trim() ?? "hello@getphame.app";
 
 /**
  * Send a system email.
@@ -27,8 +38,7 @@ export interface SystemEmailOptions {
  */
 export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
   const fromEmail = opts.from
-    ?? process.env.SYSTEM_FROM_EMAIL?.trim()
-    ?? "no-reply@getphame.com";
+    ?? NOREPLY_FROM;
   const fromDisplay = `"Get Phame" <${fromEmail}>`;
 
   if (ENV.sendgridApiKey) {

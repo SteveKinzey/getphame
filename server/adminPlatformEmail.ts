@@ -1,4 +1,4 @@
-import { sendSystemEmail } from "./sendgrid";
+import { sendSystemEmail, HELLO_FROM } from "./sendgrid";
 
 export const ADMIN_GENERAL_FROM_EMAIL = "hello@getphame.app";
 export const ADMIN_MESSAGE_RETENTION_MS = 180 * 24 * 60 * 60 * 1000;
@@ -63,7 +63,7 @@ export async function sendAdminPlatformEmail(input: { to: string; subject: strin
   try {
     await sendSystemEmail({
       to: input.to,
-      from: ADMIN_GENERAL_FROM_EMAIL,
+      from: HELLO_FROM,
       replyTo: input.replyTo || ADMIN_GENERAL_FROM_EMAIL,
       subject: input.subject,
       text: input.bodyText,
