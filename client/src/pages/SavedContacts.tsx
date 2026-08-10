@@ -67,6 +67,7 @@ import {
   Sparkles,
   FileSpreadsheet,
   FileText,
+  Eye,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -316,15 +317,13 @@ export default function SavedContacts() {
     },
     onError: (e) => toast.error(e.message),
   });
-  const [consentReqOpen, setConsentReqOpen] = useState(false);
   const [consentConfirmOpen, setConsentConfirmOpen] = useState(false);
   const [consentCustomSubject, setConsentCustomSubject] = useState("");
   const [consentCustomBody, setConsentCustomBody] = useState("");
-  const [consentReqResult, setConsentReqResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+  const [consentPreviewOpen, setConsentPreviewOpen] = useState(false);
   const bulkConsentRequestMutation = trpc.contacts.bulkConsentRequest.useMutation({
     onSuccess: (result) => {
-      setConsentReqResult(result);
-      setConsentReqOpen(true);
+      toast.success(`Consent emails sent: ${result.sent} delivered${result.failed > 0 ? `, ${result.failed} failed — check SMTP settings` : ""}.`);
       utils.contacts.list.invalidate();
     },
     onError: (err) => {
@@ -1540,8 +1539,8 @@ export default function SavedContacts() {
       </AlertDialog>
 
       {/* Consent Request Confirmation Modal with Template Editor */}
-      <AlertDialog open={consentConfirmOpen} onOpenChange={(o) => { if (!o) setConsentConfirmOpen(false); }}>
-        <AlertDialogContent className="max-w-sm mx-4">
+      <AlertDialog open={consentConfirmOpen} onOpenChange={(o) => { if (!o) { setConsentConfirmOpen(false); setConsentPreviewOpen(false); } }}>
+        <AlertDialogContent className="max-w-md mx-4">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <ShieldCheck size={18} className="text-green-600" />
@@ -1553,8 +1552,33 @@ export default function SavedContacts() {
           </AlertDialogHeader>
           {/* Template Editor */}
           <div className="flex flex-col gap-2 mt-1">
-            <p className="text-xs font-bold rr-text-navy-mid">Customize email (optional)</p>
-            <p className="text-xs rr-text-navy-muted">Use <code className="bg-gray-100 px-1 rounded text-xs">{"{{name}}"}</code> and <code className="bg-gray-100 px-1 rounded text-xs">{"{{businessName}}"}</code> as variables.</p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-bold rr-text-navy-mid">Customize email (optional)</p>
+              <button
+                onClick={() => setConsentPreviewOpen(p => !p)}
+                className="text-xs font-semibold flex items-center gap-1 px-2 py-1 rounded-lg transition-colors"
+                style={{ background: consentPreviewOpen ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.02 260)", color: consentPreviewOpen ? "white" : "oklch(0.40 0.06 260)" }}
+              >
+                <Eye size={11} /> {consentPreviewOpen ? "Hide preview" : "Preview"}
+              </button>
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-xs rr-text-navy-muted">Insert:</span>
+              {([
+                { label: "{{name}}", desc: "Contact's name" },
+                { label: "{{businessName}}", desc: "Your business name" },
+              ] as const).map(({ label, desc }) => (
+                <button
+                  key={label}
+                  title={desc}
+                  onClick={() => setConsentCustomBody(b => b ? b + " " + label : label)}
+                  className="text-xs font-mono px-1.5 py-0.5 rounded-md cursor-pointer transition-colors"
+                  style={{ background: "oklch(0.93 0.04 260)", color: "oklch(0.30 0.09 260)", border: "1px solid oklch(0.82 0.04 260)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <div>
               <label className="block text-xs font-semibold mb-1 rr-text-navy-mid">Subject</label>
               <input
@@ -1571,11 +1595,7 @@ export default function SavedContacts() {
               <textarea
                 value={consentCustomBody}
                 onChange={(e) => setConsentCustomBody(e.target.value)}
-                placeholder={"We value your privacy and want to make sure you are comfortable receiving emails from us...
-
-By continuing to receive our emails, you confirm that you consent to be contacted by {{businessName}} via email...
-
-If you prefer not to receive future emails, you can unsubscribe at any time."}
+                placeholder={"We value your privacy...\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by {{businessName}} via email...\n\nIf you prefer not to receive future emails, you can unsubscribe at any time."}
                 rows={5}
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none resize-none"
                 style={{ border: "1.5px solid oklch(0.88 0.02 260)", fontSize: "13px", lineHeight: "1.5" }}
@@ -1589,12 +1609,43 @@ If you prefer not to receive future emails, you can unsubscribe at any time."}
                 Reset to default
               </button>
             )}
+            {/* Live preview pane */}
+            {consentPreviewOpen && (() => {
+              const biz = profile?.consentLabelName || profile?.businessName || "Your Business";
+              const sampleName = "Jane Smith";
+              const defaultSubj = `A note about your email preferences from ${biz}`;
+              const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${biz}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${biz} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
+              const resolveVars = (t: string) => t.replace(/\{\{name\}\}/g, sampleName).replace(/\{\{businessName\}\}/g, biz);
+              const previewSubject = resolveVars(consentCustomSubject || defaultSubj);
+              const previewBody = resolveVars(consentCustomBody || defaultBody);
+              const previewBodyHtml = previewBody.split(/\n\n+/).map((p: string) => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join("");
+              return (
+                <div className="rounded-xl overflow-hidden mt-1" style={{ border: "1.5px solid oklch(0.85 0.04 260)" }}>
+                  <div className="px-3 py-1.5 flex items-center gap-1.5" style={{ background: "oklch(0.95 0.02 260)", borderBottom: "1px solid oklch(0.88 0.02 260)" }}>
+                    <Eye size={11} className="rr-text-navy-muted" />
+                    <span className="text-xs font-semibold rr-text-navy-mid">Preview (sample: {sampleName})</span>
+                  </div>
+                  <div className="p-3 bg-white" style={{ fontFamily: "Arial, sans-serif", fontSize: "13px", color: "#1a1a2e", maxHeight: "220px", overflowY: "auto" }}>
+                    <p style={{ margin: "0 0 8px", fontSize: "11px", color: "#6b7280" }}><strong>Subject:</strong> {previewSubject}</p>
+                    <hr style={{ border: "none", borderTop: "1px solid #e5e7eb", margin: "8px 0" }} />
+                    <h3 style={{ margin: "0 0 10px", fontSize: "15px", color: "#1a1a2e" }}>A quick note from {biz}</h3>
+                    <p style={{ margin: "0 0 10px" }}>Hi {sampleName},</p>
+                    <div dangerouslySetInnerHTML={{ __html: previewBodyHtml }} />
+                    <p style={{ marginTop: "16px", paddingTop: "12px", borderTop: "1px solid #e5e7eb", fontSize: "11px", color: "#9ca3af", textAlign: "center" }}>
+                      You received this email because you are a customer of {biz}.{" "}
+                      <span style={{ color: "#9ca3af", textDecoration: "underline" }}>Unsubscribe</span>
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
           <AlertDialogFooter className="mt-2">
             <AlertDialogCancel onClick={() => setConsentConfirmOpen(false)}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setConsentConfirmOpen(false);
+                setConsentPreviewOpen(false);
                 bulkConsentRequestMutation.mutate({
                   contactIds: Array.from(selected),
                   customSubject: consentCustomSubject.trim() || undefined,
@@ -1613,31 +1664,7 @@ If you prefer not to receive future emails, you can unsubscribe at any time."}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      {/* Consent Request Result Dialog */}
-      <AlertDialog open={consentReqOpen} onOpenChange={(o) => { if (!o) { setConsentReqOpen(false); setConsentReqResult(null); } }}>
-        <AlertDialogContent className="max-w-xs mx-4">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <ShieldCheck size={18} className="text-green-600" />
-              Consent Emails Sent
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {consentReqResult && (
-                <span>
-                  Sent <strong>{consentReqResult.sent}</strong> consent request email{consentReqResult.sent !== 1 ? "s" : ""}.
-                  {consentReqResult.failed > 0 && ` ${consentReqResult.failed} failed (check your SMTP settings).`}
-                  {" "}Contacts who unsubscribe via the email link will be automatically updated.
-                </span>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => { setConsentReqOpen(false); setConsentReqResult(null); }}>
-              Done
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+
       {/* WooCommerce Sync History Modal */}
       <Dialog open={wooSyncHistoryOpen} onOpenChange={(open) => { setWooSyncHistoryOpen(open); if (!open) setWooHistorySearch(""); }}>
         <DialogContent className="max-w-sm mx-auto">

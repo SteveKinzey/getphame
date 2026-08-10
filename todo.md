@@ -1800,5 +1800,13 @@
 - [x] Add consent email template editor (subject + body customization with variable preview)
 - [x] Implement consent activity log in contact history drawer
 - [x] Create reusable skill for consent template editor workflow (getphame-consent-template-editor)
+- [x] Run full test suite and save checkpoint (96626f42, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #107)
+
+## Session — Live Preview, Variable Tags, Toast, Skill
+- [x] Add live preview pane to consent template editor modal
+- [x] Add clickable variable tags ({{name}}, {{businessName}}) below editor
+- [x] Add success toast after bulk consent send completes (replaced result dialog)
+- [x] Create reusable skill for live-preview template editor pattern (getphame-consent-preview-editor)
 - [ ] Run full test suite and save checkpoint
 - [ ] Open GitHub PR for checkpoint
