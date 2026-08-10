@@ -3790,6 +3790,12 @@
     "sending": "发送中…",
     "testSent": "测试邮件已发送！",
     "testFailed": "测试邮件发送失败。",
-    "darkMode": "深色模式"
+    "darkMode": "深色模式",
+    "copyHtml": "复制 HTML",
+    "copied": "已复制！",
+    "emailPlaceholder": "发送至…",
+    "openTab": "在新标签页打开",
+    "variables": "变量",
+    "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符"
   }
 }

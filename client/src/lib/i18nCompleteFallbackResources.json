@@ -1507,7 +1507,13 @@
       "sending": "Sending…",
       "testSent": "Test email sent!",
       "testFailed": "Failed to send test email.",
-      "darkMode": "Dark mode"
+      "darkMode": "Dark mode",
+      "copyHtml": "Copy HTML",
+      "copied": "Copied!",
+      "emailPlaceholder": "Send to…",
+      "openTab": "Open in tab",
+      "variables": "Variables",
+      "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template"
     }
   },
   "es": {
@@ -3223,7 +3229,13 @@
       "sending": "Enviando…",
       "testSent": "¡Correo de prueba enviado!",
       "testFailed": "Error al enviar el correo de prueba.",
-      "darkMode": "Modo oscuro"
+      "darkMode": "Modo oscuro",
+      "copyHtml": "Copiar HTML",
+      "copied": "¡Copiado!",
+      "emailPlaceholder": "Enviar a…",
+      "openTab": "Abrir en pestaña",
+      "variables": "Variables",
+      "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla"
     }
   },
   "fr": {
@@ -4960,7 +4972,13 @@
       "sending": "Envoi en cours…",
       "testSent": "E-mail test envoyé !",
       "testFailed": "Échec de l’envoi du test.",
-      "darkMode": "Mode sombre"
+      "darkMode": "Mode sombre",
+      "copyHtml": "Copier le HTML",
+      "copied": "Copié !",
+      "emailPlaceholder": "Envoyer à…",
+      "openTab": "Ouvrir dans un onglet",
+      "variables": "Variables",
+      "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle"
     }
   },
   "it": {
@@ -6540,7 +6558,13 @@
       "sending": "Invio in corso…",
       "testSent": "Email di prova inviata!",
       "testFailed": "Invio dell’email di prova fallito.",
-      "darkMode": "Modalità scura"
+      "darkMode": "Modalità scura",
+      "copyHtml": "Copia HTML",
+      "copied": "Copiato!",
+      "emailPlaceholder": "Invia a…",
+      "openTab": "Apri in una nuova scheda",
+      "variables": "Variabili",
+      "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello"
     }
   },
   "th": {
@@ -8110,7 +8134,13 @@
       "sending": "กำลังส่ง…",
       "testSent": "ส่งอีเมลทดสอบแล้ว!",
       "testFailed": "ส่งอีเมลทดสอบไม่สำเร็จ",
-      "darkMode": "โหมดมืด"
+      "darkMode": "โหมดมืด",
+      "copyHtml": "คัดลอก HTML",
+      "copied": "คัดลอกแล้ว!",
+      "emailPlaceholder": "ส่งถึง…",
+      "openTab": "เปิดในแท็บใหม่",
+      "variables": "ตัวแปร",
+      "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต"
     }
   },
   "zh-CN": {
@@ -9670,7 +9700,13 @@
       "sending": "发送中…",
       "testSent": "测试邮件已发送！",
       "testFailed": "测试邮件发送失败。",
-      "darkMode": "深色模式"
+      "darkMode": "深色模式",
+      "copyHtml": "复制 HTML",
+      "copied": "已复制！",
+      "emailPlaceholder": "发送至…",
+      "openTab": "在新标签页打开",
+      "variables": "变量",
+      "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符"
     }
   },
   "zh-TW": {
@@ -11245,7 +11281,13 @@
       "sending": "發送中…",
       "testSent": "測試郵件已發送！",
       "testFailed": "測試郵件發送失敗。",
-      "darkMode": "深色模式"
+      "darkMode": "深色模式",
+      "copyHtml": "複製 HTML",
+      "copied": "已複製！",
+      "emailPlaceholder": "傳送至…",
+      "openTab": "在新標簽頁開啟",
+      "variables": "變數",
+      "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符"
     }
   }
 }
