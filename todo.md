@@ -1730,3 +1730,10 @@
 - [x] Create getphame-admin-email-preview-workflow reusable skill (architecture, template registry, add-template checklist, UI controls table, i18n keys, critical constraints)
 - [x] Squash-merge PR #100 into protected main (squash-merged, branch deleted)
 - [x] Extend sendTestEmail switch to cover all 6 email templates (welcome, upgrade-receipt-pro/annual/lifetime, account-deletion) — all produce full gold HTML matching emailPreview output
+
+## Session — Email Preview Enhancements Skill, PR, Copy HTML, Custom Email Input
+- [x] Create getphame-email-preview-enhancements reusable skill (Copy HTML, custom email input, success toast patterns)
+- [x] Open GitHub PR for checkpoint 9663419c — PR #101 at github.com/SteveKinzey/getphame/pull/101
+- [x] Add Copy HTML button to AdminEmailPreview page (clipboard API + textarea fallback, 1.5s Copied! label swap)
+- [x] Add custom email input field to AdminEmailPreview page (replaces hard-coded user.email, pre-seeded from auth)
+- [x] Success toast shows recipient address: "Test email sent! → user@example.com" via sonner onSuccess

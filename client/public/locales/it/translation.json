@@ -4515,6 +4515,9 @@
     "sending": "Invio in corso…",
     "testSent": "Email di prova inviata!",
     "testFailed": "Invio dell’email di prova fallito.",
-    "darkMode": "Modalità scura"
+    "darkMode": "Modalità scura",
+    "copyHtml": "Copia HTML",
+    "copied": "Copiato!",
+    "emailPlaceholder": "Invia a…"
   }
 }

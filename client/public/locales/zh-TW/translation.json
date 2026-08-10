@@ -3812,6 +3812,9 @@
     "sending": "發送中…",
     "testSent": "測試郵件已發送！",
     "testFailed": "測試郵件發送失敗。",
-    "darkMode": "深色模式"
+    "darkMode": "深色模式",
+    "copyHtml": "複製 HTML",
+    "copied": "已複製！",
+    "emailPlaceholder": "傳送至…"
   }
 }

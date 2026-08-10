@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { Mail, ChevronDown, Moon, Sun, Send, Loader2 } from "lucide-react";
+import { Mail, ChevronDown, Moon, Sun, Send, Loader2, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 
 const TEMPLATES = [
@@ -22,6 +22,13 @@ export default function AdminEmailPreview() {
   const [selected, setSelected] = useState<TemplateKey>("magic-link");
   const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
   const [darkMode, setDarkMode] = useState(false);
+  const [testEmail, setTestEmail] = useState(user?.email ?? "");
+  const [copied, setCopied] = useState(false);
+
+  // Seed testEmail once user auth resolves
+  useEffect(() => {
+    if (user?.email && !testEmail) setTestEmail(user.email);
+  }, [user?.email]);
 
   const { data, isLoading, error } = trpc.admin.emailPreview.useQuery(
     { template: selected },
@@ -30,13 +37,35 @@ export default function AdminEmailPreview() {
 
   const sendTest = trpc.admin.sendTestEmail.useMutation({
     onSuccess: () =>
-      toast.success(t("adminEmailPreview.testSent", { defaultValue: "Test email sent!" })),
+      toast.success(
+        `${t("adminEmailPreview.testSent", { defaultValue: "Test email sent!" })} → ${testEmail}`
+      ),
     onError: (err) =>
       toast.error(
         t("adminEmailPreview.testFailed", { defaultValue: "Failed to send test email." }) +
           (err.message ? ` (${err.message})` : "")
       ),
   });
+
+  const handleCopy = () => {
+    if (!data?.html) return;
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(data.html).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      });
+    } else {
+      // textarea fallback for older browsers
+      const el = document.createElement("textarea");
+      el.value = data.html;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }
+  };
 
   // Inject dark background style when dark mode is active
   const previewHtml = data?.html
@@ -117,28 +146,54 @@ export default function AdminEmailPreview() {
           {t("adminEmailPreview.darkMode", { defaultValue: "Dark mode" })}
         </button>
 
-        {/* Send test email button */}
-        {user?.email && (
-          <button
-            type="button"
-            disabled={sendTest.isPending || isLoading || !data?.html}
-            onClick={() => sendTest.mutate({ template: selected, to: user.email! })}
-            className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm transition disabled:opacity-50"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
-          >
-            {sendTest.isPending ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                {t("adminEmailPreview.sending", { defaultValue: "Sending…" })}
-              </>
-            ) : (
-              <>
-                <Send className="h-4 w-4" aria-hidden="true" />
-                {t("adminEmailPreview.sendTest", { defaultValue: "Send test email" })}
-              </>
-            )}
-          </button>
-        )}
+        {/* Copy HTML button */}
+        <button
+          type="button"
+          disabled={!data?.html}
+          onClick={handleCopy}
+          className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:opacity-40"
+          style={{ color: copied ? "oklch(0.22 0.09 260)" : "#555" }}
+          aria-label={t("adminEmailPreview.copyHtml", { defaultValue: "Copy HTML" })}
+        >
+          {copied ? (
+            <Check className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Copy className="h-4 w-4" aria-hidden="true" />
+          )}
+          {copied
+            ? t("adminEmailPreview.copied", { defaultValue: "Copied!" })
+            : t("adminEmailPreview.copyHtml", { defaultValue: "Copy HTML" })}
+        </button>
+
+        {/* Custom email input + send button */}
+        <input
+          type="email"
+          value={testEmail}
+          onChange={e => setTestEmail(e.target.value)}
+          placeholder={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
+          className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 w-56"
+          style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
+          aria-label={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
+        />
+        <button
+          type="button"
+          disabled={sendTest.isPending || isLoading || !data?.html || !testEmail}
+          onClick={() => sendTest.mutate({ template: selected, to: testEmail })}
+          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm transition disabled:opacity-50"
+          style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+        >
+          {sendTest.isPending ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              {t("adminEmailPreview.sending", { defaultValue: "Sending…" })}
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4" aria-hidden="true" />
+              {t("adminEmailPreview.sendTest", { defaultValue: "Send test email" })}
+            </>
+          )}
+        </button>
 
         {isLoading && (
           <span className="text-xs text-gray-400 animate-pulse">
@@ -191,9 +246,9 @@ export default function AdminEmailPreview() {
         </div>
         <p className="mt-3 text-center text-xs text-gray-400">
           {t("adminEmailPreview.note", { defaultValue: "Preview uses sample data. Actual emails are sent with real user names and secure links." })}
-          {user?.email && (
+          {testEmail && (
             <span className="ml-1">
-              Test sends to <strong>{user.email}</strong>.
+              Test sends to <strong>{testEmail}</strong>.
             </span>
           )}
         </p>

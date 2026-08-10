@@ -4301,6 +4301,9 @@
     "sending": "Enviando…",
     "testSent": "¡Correo de prueba enviado!",
     "testFailed": "Error al enviar el correo de prueba.",
-    "darkMode": "Modo oscuro"
+    "darkMode": "Modo oscuro",
+    "copyHtml": "Copiar HTML",
+    "copied": "¡Copiado!",
+    "emailPlaceholder": "Enviar a…"
   }
 }
