@@ -454,5 +454,8 @@
       "fileReadFailed": "无法读取所选文件。请重试。",
       "submitFailed": "无法提交您的请求。请重试。"
     }
+  },
+  "leadCapture": {
+    "consentGuideLink": "下载同意合规指南（PDF）"
   }
 }

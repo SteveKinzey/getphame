@@ -857,7 +857,9 @@
     "emailNotConnected": "Correo no conectado",
     "connectEmail": "Conectar correo",
     "changeEmail": "Cambiar correo",
-    "disconnectEmail": "Desconectar correo"
+    "disconnectEmail": "Desconectar correo",
+    "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
+    "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
   },
   "reviewPlatforms": {
     "title": "Plataformas de reseñas",
@@ -1265,7 +1267,9 @@
         "created": "Creado",
         "page": "Página {{current}} de {{total}}"
       }
-    }
+    },
+    "addConsentLabel": "Confirmo que este cliente ha dado su consentimiento para ser contactado por {businessName} por correo electrónico y/o texto sobre su experiencia y compras",
+    "addConsentRequired": "La confirmación de consentimiento es obligatoria para agregar un contacto"
   },
   "pageHeader": {
     "title": "Contactos guardados",
@@ -1406,7 +1410,8 @@
     "sending": "Enviando…",
     "sendButton": "Enviar {{count}} solicitudes",
     "confirmButton": "Enviar {{count}} solicitud(es)",
-    "schedulingReminders": "Programando recordatorios…"
+    "schedulingReminders": "Programando recordatorios…",
+    "consentCheck": "Confirmo que los clientes han dado su consentimiento para ser contactados por mi empresa por correo electrónico y/o texto"
   },
   "wooSyncHistory": {
     "title": "Historial de sincronización",
@@ -2249,7 +2254,12 @@
   "onboarding": {
     "googleBtn": "Continuar with Google",
     "appleBtn": "Continuar with Apple",
-    "finePrint": "Comienza gratis — 10 solicitudes de reseñas incluidas. Sin tarjeta de crédito."
+    "finePrint": "Comienza gratis — 10 solicitudes de reseñas incluidas. Sin tarjeta de crédito.",
+    "consentStepTitle": "Agrega una casilla de consentimiento a tus formularios",
+    "consentStepDesc": "Antes de recopilar contactos o enviar solicitudes de reseñas, tus formularios deben incluir una casilla de consentimiento. Esto es requerido por CAN-SPAM, TCPA y GDPR.",
+    "consentStepAction": "Descargar Guía de Consentimiento (PDF)",
+    "consentStepAck": "He agregado (o agregaré) una casilla de consentimiento a mis formularios de clientes",
+    "consentStepAckRequired": "Por favor confirma que agregarás la casilla de consentimiento antes de continuar"
   },
   "bulkBar": {
     "sendTo": "Enviar a {{count}} contacto(s)"
@@ -3427,7 +3437,12 @@
       "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía para su entrega.",
       "sharePrompt": "Comparte la guía gratuita de solicitudes de reseña.",
       "tryAgain": "Reintentar envío",
-      "description": "Obtén una guía gratuita para planificar solicitudes de reseña claras y conformes, además de novedades del producto y consejos prácticos de reputación."
+      "description": "Obtén una guía gratuita para planificar solicitudes de reseña claras y conformes, además de novedades del producto y consejos prácticos de reputación.",
+      "consentCheckLabel": "Acepto que Get Phame (getphame.app) pueda contactarme por correo electrónico con actualizaciones y consejos del producto. Puedo darme de baja en cualquier momento.",
+      "consentRequired": "Por favor, marque la casilla para continuar.",
+      "thankYouHeading": "¡Todo listo!",
+      "thankYouMessage": "Tu guía está en camino a {{email}}. Revisa el spam si no llega.",
+      "thankYouDownload": "El envío por correo no estuvo disponible. Descarga tu guía directamente abajo."
     },
     "purpose": {
       "description": "Get Phame ayuda a negocios locales a enviar correos personalizados para solicitar reseñas desde su propia cuenta de correo conectada. Está diseñado para propietarios de negocios, fotógrafos, cafeterías y restaurantes, equipos de servicios a domicilio, clínicas y salones, agencias y tiendas WooCommerce que desean una manera más sencilla de pedir reseñas a clientes reales.",
@@ -4301,6 +4316,16 @@
     "sending": "Enviando…",
     "testSent": "¡Correo de prueba enviado!",
     "testFailed": "Error al enviar el correo de prueba.",
-    "darkMode": "Modo oscuro"
+    "darkMode": "Modo oscuro",
+    "copyHtml": "Copiar HTML",
+    "copied": "¡Copiado!",
+    "emailPlaceholder": "Enviar a…",
+    "openTab": "Abrir en pestaña",
+    "variables": "Variables",
+    "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla",
+    "resetVars": "Reset",
+    "split": "Split",
+    "savePreset": "Guardar",
+    "presetNamePlaceholder": "Nombre del perfil…"
   }
 }

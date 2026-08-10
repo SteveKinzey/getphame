@@ -487,7 +487,13 @@
         "addressConfirmation": "We sent it to {{email}}. Confirm the spelling and check spam if it does not arrive. Provider acceptance does not guarantee inbox placement.",
         "emailConfirmationHint": "We’ll show the address again before you leave so you can catch a typo.",
         "providerAcceptedMessage": "Your email provider accepted the guide for delivery.",
-        "downloadReadyMessage": "Your guide is ready to download."
+        "downloadReadyMessage": "Your guide is ready to download.",
+        "consentGuideLink": "Download Consent Compliance Guide (PDF)",
+        "consentCheckLabel": "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time.",
+        "consentRequired": "Please check the box to continue.",
+        "thankYouHeading": "You're all set!",
+        "thankYouMessage": "Your guide is on its way to {{email}}. Check spam if it doesn't arrive.",
+        "thankYouDownload": "Email delivery wasn't available. Download your guide directly below."
       },
       "feature3": {
         "title": "Every platform. Your choice.",
@@ -700,7 +706,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
-      "emailSenderSettings": "Email Sender Settings"
+      "emailSenderSettings": "Email Sender Settings",
+      "consentLabelName": "Consent checkbox business name",
+      "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
     },
     "homePage": {
       "annualPro": "Annual Pro",
@@ -1128,7 +1136,12 @@
     "onboarding": {
       "googleBtn": "Continue with Google",
       "appleBtn": "Continue with Apple",
-      "finePrint": "Start free — 10 review requests included. No credit card required."
+      "finePrint": "Start free — 10 review requests included. No credit card required.",
+      "consentStepTitle": "Add a consent checkbox to your forms",
+      "consentStepDesc": "Before collecting contacts or sending review requests, your forms must include a consent checkbox. This is required by CAN-SPAM, TCPA, and GDPR.",
+      "consentStepAction": "Download Consent Guide (PDF)",
+      "consentStepAck": "I have added (or will add) a consent checkbox to my customer-facing forms",
+      "consentStepAckRequired": "Please confirm you will add the consent checkbox before continuing"
     },
     "toastMessages": {
       "followUpReminderSent": "Follow-up reminder sent!",
@@ -1507,7 +1520,24 @@
       "sending": "Sending…",
       "testSent": "Test email sent!",
       "testFailed": "Failed to send test email.",
-      "darkMode": "Dark mode"
+      "darkMode": "Dark mode",
+      "copyHtml": "Copy HTML",
+      "copied": "Copied!",
+      "emailPlaceholder": "Send to…",
+      "openTab": "Open in tab",
+      "variables": "Variables",
+      "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template",
+      "resetVars": "Reset",
+      "split": "Split",
+      "savePreset": "Save",
+      "presetNamePlaceholder": "Preset name…"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "I confirm customers have consented to be contacted by my business via email and/or text"
+    },
+    "contactsTools": {
+      "addConsentLabel": "I confirm this customer has consented to be contacted by {businessName} via email and/or text about their experience and purchases",
+      "addConsentRequired": "Consent confirmation is required to add a contact"
     }
   },
   "es": {
@@ -2003,7 +2033,13 @@
         "addressConfirmation": "Lo enviamos a {{email}}. Confirma la ortografía y revisa spam si no llega. La aceptación por parte del proveedor no garantiza la entrega en la bandeja de entrada.",
         "emailConfirmationHint": "Mostraremos la dirección de nuevo antes de que te vayas para que puedas corregir un error tipográfico.",
         "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía de entrega.",
-        "downloadReadyMessage": "Tu guía está lista para descargar."
+        "downloadReadyMessage": "Tu guía está lista para descargar.",
+        "consentGuideLink": "Descargar Guía de Cumplimiento de Consentimiento (PDF)",
+        "consentCheckLabel": "Acepto que Get Phame (getphame.app) pueda contactarme por correo electrónico con actualizaciones y consejos del producto. Puedo darme de baja en cualquier momento.",
+        "consentRequired": "Por favor, marque la casilla para continuar.",
+        "thankYouHeading": "¡Todo listo!",
+        "thankYouMessage": "Tu guía está en camino a {{email}}. Revisa el spam si no llega.",
+        "thankYouDownload": "El envío por correo no estuvo disponible. Descarga tu guía directamente abajo."
       },
       "feature3": {
         "title": "Todas las plataformas. Tú eliges.",
@@ -2236,7 +2272,9 @@
     "profile": {
       "addBusinessNameAndLink": "Añade primero el nombre de tu negocio y el enlace de reseñas de Google en Configuración.",
       "emailSenderSettings": "Configuración del remitente de correo",
-      "reviewLink": "Enlace principal de reseñas de Google"
+      "reviewLink": "Enlace principal de reseñas de Google",
+      "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
+      "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
     },
     "homePage": {
       "annualPro": "Pro anual",
@@ -2675,7 +2713,12 @@
     "onboarding": {
       "googleBtn": "Continuar con Google",
       "appleBtn": "Continuar con Apple",
-      "finePrint": "Empieza gratis: incluye 10 solicitudes de reseña. No se requiere tarjeta de crédito."
+      "finePrint": "Empieza gratis: incluye 10 solicitudes de reseña. No se requiere tarjeta de crédito.",
+      "consentStepTitle": "Agrega una casilla de consentimiento a tus formularios",
+      "consentStepDesc": "Antes de recopilar contactos o enviar solicitudes de reseñas, tus formularios deben incluir una casilla de consentimiento. Esto es requerido por CAN-SPAM, TCPA y GDPR.",
+      "consentStepAction": "Descargar Guía de Consentimiento (PDF)",
+      "consentStepAck": "He agregado (o agregaré) una casilla de consentimiento a mis formularios de clientes",
+      "consentStepAckRequired": "Por favor confirma que agregarás la casilla de consentimiento antes de continuar"
     },
     "toastMessages": {
       "followUpReminderSent": "¡Recordatorio de seguimiento enviado!",
@@ -3042,7 +3085,8 @@
       "dailyLimitStatus": "{{sent}} enviados hoy · {{remaining}} restantes del límite diario de {{limit}}",
       "sendButton": "Enviar {{count}} solicitudes",
       "yelpWarning": "Nota de Yelp: Tu ficha de Yelp aparecerá como una sugerencia de búsqueda en lugar de un enlace directo. Yelp desaconseja la solicitud directa.",
-      "defaultPlatformWithName": "{{platformName}} (predeterminado)"
+      "defaultPlatformWithName": "{{platformName}} (predeterminado)",
+      "consentCheck": "Confirmo que los clientes han dado su consentimiento para ser contactados por mi empresa por correo electrónico y/o texto"
     },
     "callToAction": {
       "appleSignInButton": "Continuar con Apple",
@@ -3223,7 +3267,21 @@
       "sending": "Enviando…",
       "testSent": "¡Correo de prueba enviado!",
       "testFailed": "Error al enviar el correo de prueba.",
-      "darkMode": "Modo oscuro"
+      "darkMode": "Modo oscuro",
+      "copyHtml": "Copiar HTML",
+      "copied": "¡Copiado!",
+      "emailPlaceholder": "Enviar a…",
+      "openTab": "Abrir en pestaña",
+      "variables": "Variables",
+      "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla",
+      "resetVars": "Reset",
+      "split": "Split",
+      "savePreset": "Guardar",
+      "presetNamePlaceholder": "Nombre del perfil…"
+    },
+    "contactsTools": {
+      "addConsentLabel": "Confirmo que este cliente ha dado su consentimiento para ser contactado por {businessName} por correo electrónico y/o texto sobre su experiencia y compras",
+      "addConsentRequired": "La confirmación de consentimiento es obligatoria para agregar un contacto"
     }
   },
   "fr": {
@@ -3719,7 +3777,13 @@
         "addressConfirmation": "Nous l'avons envoyé à {{email}}. Vérifiez l'orthographe et consultez le courrier indésirable si vous ne le recevez pas. L'acceptation par le fournisseur ne garantit pas la livraison en boîte de réception.",
         "emailConfirmationHint": "Nous afficherons l'adresse à nouveau avant votre départ afin que vous puissiez corriger une faute de frappe.",
         "providerAcceptedMessage": "Votre fournisseur de messagerie a accepté le guide pour la livraison.",
-        "downloadReadyMessage": "Votre guide est prêt à être téléchargé."
+        "downloadReadyMessage": "Votre guide est prêt à être téléchargé.",
+        "consentGuideLink": "Télécharger le Guide de Conformité au Consentement (PDF)",
+        "consentCheckLabel": "J'accepte que Get Phame (getphame.app) me contacte par e-mail avec des mises à jour et des conseils sur le produit. Je peux me désabonner à tout moment.",
+        "consentRequired": "Veuillez cocher la case pour continuer.",
+        "thankYouHeading": "C'est tout bon !",
+        "thankYouMessage": "Votre guide est en route vers {{email}}. Vérifiez les spams s'il n'arrive pas.",
+        "thankYouDownload": "L'envoi par e-mail n'était pas disponible. Téléchargez votre guide directement ci-dessous."
       },
       "feature3": {
         "title": "Toutes les plateformes. À vous de choisir.",
@@ -3956,7 +4020,9 @@
       "addBusinessNameAndLink": "Ajoutez d'abord le nom de votre entreprise et le lien d'avis Google dans les Paramètres.",
       "emailSenderSettings": "Paramètres de l'expéditeur e‑mail",
       "reviewLink": "Lien principal d'avis Google",
-      "saveProfile": "Enregistrer le profil"
+      "saveProfile": "Enregistrer le profil",
+      "consentLabelName": "Nom de l'entreprise dans la case de consentement",
+      "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
     },
     "homePage": {
       "annualPro": "Pro annuel",
@@ -4400,7 +4466,12 @@
     "onboarding": {
       "googleBtn": "Continuer avec Google",
       "appleBtn": "Continuer avec Apple",
-      "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Aucune carte de crédit requise."
+      "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Aucune carte de crédit requise.",
+      "consentStepTitle": "Ajoutez une case de consentement à vos formulaires",
+      "consentStepDesc": "Avant de collecter des contacts ou d'envoyer des demandes d'avis, vos formulaires doivent inclure une case de consentement. Ceci est requis par CAN-SPAM, TCPA et RGPD.",
+      "consentStepAction": "Télécharger le Guide de Consentement (PDF)",
+      "consentStepAck": "J'ai ajouté (ou j'ajouterai) une case de consentement à mes formulaires clients",
+      "consentStepAckRequired": "Veuillez confirmer que vous ajouterez la case de consentement avant de continuer"
     },
     "toastMessages": {
       "followUpReminderSent": "Rappel de relance envoyé !",
@@ -4771,7 +4842,8 @@
       "sendButton": "Envoyer {{count}} demandes",
       "yelpWarning": "Remarque Yelp : votre fiche Yelp apparaîtra comme suggestion de recherche plutôt que comme lien direct. Yelp déconseille la sollicitation directe.",
       "complianceChecklistTitle": "Liste de contrôle de conformité",
-      "defaultPlatformWithName": "{{platformName}} (par défaut)"
+      "defaultPlatformWithName": "{{platformName}} (par défaut)",
+      "consentCheck": "Je confirme que les clients ont consenti à être contactés par mon entreprise par e-mail et/ou SMS"
     },
     "defaultTemplate": {
       "body": [
@@ -4960,7 +5032,21 @@
       "sending": "Envoi en cours…",
       "testSent": "E-mail test envoyé !",
       "testFailed": "Échec de l’envoi du test.",
-      "darkMode": "Mode sombre"
+      "darkMode": "Mode sombre",
+      "copyHtml": "Copier le HTML",
+      "copied": "Copié !",
+      "emailPlaceholder": "Envoyer à…",
+      "openTab": "Ouvrir dans un onglet",
+      "variables": "Variables",
+      "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle",
+      "resetVars": "Réinitialiser",
+      "split": "Split",
+      "savePreset": "Enregistrer",
+      "presetNamePlaceholder": "Nom du profil…"
+    },
+    "contactsTools": {
+      "addConsentLabel": "Je confirme que ce client a consenti à être contacté par {businessName} par e-mail et/ou SMS concernant son expérience et ses achats",
+      "addConsentRequired": "La confirmation du consentement est requise pour ajouter un contact"
     }
   },
   "it": {
@@ -5451,7 +5537,13 @@
         "addressConfirmation": "L'abbiamo inviato a {{email}}. Controlla l'ortografia e la cartella spam se non arriva. L'accettazione da parte del provider non garantisce la consegna nella posta in arrivo.",
         "emailConfirmationHint": "Mostreremo di nuovo l'indirizzo prima che tu esca così puoi correggere eventuali errori di battitura.",
         "providerAcceptedMessage": "Il tuo provider email ha accettato la guida per la consegna.",
-        "downloadReadyMessage": "La tua guida è pronta per il download."
+        "downloadReadyMessage": "La tua guida è pronta per il download.",
+        "consentGuideLink": "Scarica la Guida alla Conformità del Consenso (PDF)",
+        "consentCheckLabel": "Accetto che Get Phame (getphame.app) mi contatti via e-mail con aggiornamenti e suggerimenti sul prodotto. Posso annullare l'iscrizione in qualsiasi momento.",
+        "consentRequired": "Si prega di spuntare la casella per continuare.",
+        "thankYouHeading": "Tutto pronto!",
+        "thankYouMessage": "La tua guida è in arrivo a {{email}}. Controlla lo spam se non arriva.",
+        "thankYouDownload": "L'invio via e-mail non era disponibile. Scarica la tua guida direttamente qui sotto."
       },
       "feature3": {
         "title": "Ogni piattaforma. La tua scelta.",
@@ -5671,7 +5763,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "Aggiungi prima il nome della tua attività e il link alle recensioni Google nelle Impostazioni.",
-      "emailSenderSettings": "Impostazioni mittente email"
+      "emailSenderSettings": "Impostazioni mittente email",
+      "consentLabelName": "Nome azienda nella casella di consenso",
+      "consentLabelNameDescription": "Il nome dell'azienda mostrato nell'etichetta della casella di consenso nei tuoi moduli. Per impostazione predefinita usa il nome dell'azienda sopra."
     },
     "homePage": {
       "annualPro": "Pro annuale",
@@ -6102,7 +6196,12 @@
     "onboarding": {
       "googleBtn": "Continua con Google",
       "appleBtn": "Continua con Apple",
-      "finePrint": "Inizia gratis — incluse 10 richieste di recensione. Non è richiesta la carta di credito."
+      "finePrint": "Inizia gratis — incluse 10 richieste di recensione. Non è richiesta la carta di credito.",
+      "consentStepTitle": "Aggiungi una casella di consenso ai tuoi moduli",
+      "consentStepDesc": "Prima di raccogliere contatti o inviare richieste di recensioni, i tuoi moduli devono includere una casella di consenso. Questo è richiesto da CAN-SPAM, TCPA e GDPR.",
+      "consentStepAction": "Scarica la Guida al Consenso (PDF)",
+      "consentStepAck": "Ho aggiunto (o aggiungerò) una casella di consenso ai miei moduli clienti",
+      "consentStepAckRequired": "Conferma che aggiungerai la casella di consenso prima di continuare"
     },
     "toastMessages": {
       "followUpReminderSent": "Promemoria di follow-up inviato!",
@@ -6540,7 +6639,24 @@
       "sending": "Invio in corso…",
       "testSent": "Email di prova inviata!",
       "testFailed": "Invio dell’email di prova fallito.",
-      "darkMode": "Modalità scura"
+      "darkMode": "Modalità scura",
+      "copyHtml": "Copia HTML",
+      "copied": "Copiato!",
+      "emailPlaceholder": "Invia a…",
+      "openTab": "Apri in una nuova scheda",
+      "variables": "Variabili",
+      "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello",
+      "resetVars": "Ripristina",
+      "split": "Dividi",
+      "savePreset": "Salva",
+      "presetNamePlaceholder": "Nome del profilo…"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "Confermo che i clienti hanno acconsentito a essere contattati dalla mia azienda via e-mail e/o SMS"
+    },
+    "contactsTools": {
+      "addConsentLabel": "Confermo che questo cliente ha acconsentito a essere contattato da {businessName} via e-mail e/o SMS riguardo alla sua esperienza e ai suoi acquisti",
+      "addConsentRequired": "La conferma del consenso è obbligatoria per aggiungere un contatto"
     }
   },
   "th": {
@@ -7031,7 +7147,13 @@
         "addressConfirmation": "เราได้ส่งไปที่ {{email}} ตรวจสอบการสะกดและโฟลเดอร์สแปมหากยังไม่ได้รับ การยอมรับจากผู้ให้บริการไม่รับประกันว่าจะแสดงในกล่องจดหมาย.",
         "emailConfirmationHint": "เราจะแสดงที่อยู่อีกครั้งก่อนที่คุณจะออกเพื่อให้คุณตรวจสอบการสะกดผิด.",
         "providerAcceptedMessage": "ผู้ให้บริการอีเมลของคุณยอมรับคำแนะนำสำหรับการจัดส่งแล้ว.",
-        "downloadReadyMessage": "คำแนะนำของคุณพร้อมให้ดาวน์โหลดแล้ว."
+        "downloadReadyMessage": "คำแนะนำของคุณพร้อมให้ดาวน์โหลดแล้ว.",
+        "consentGuideLink": "ดาวน์โหลดคู่มือการปฏิบัติตามกฎระเบียบความยินยอม (PDF)",
+        "consentCheckLabel": "ฉันยินยอมให้ Get Phame (getphame.app) ติดต่อฉันทางอีเมลเกี่ยวกับการอัปเดตและเคล็ดลับของผลิตภัณฑ์ ฉันสามารถยกเลิกการสมัครได้ตลอดเวลา",
+        "consentRequired": "กรุณาทำเครื่องหมายในช่องเพื่อดำเนินการต่อ",
+        "thankYouHeading": "เรียบร้อยแล้ว!",
+        "thankYouMessage": "คู่มือของคุณกำลังส่งไปที่ {{email}} ตรวจสอบโฟลเดอร์สแปมหากไม่ได้รับ",
+        "thankYouDownload": "ไม่สามารถส่งอีเมลได้ ดาวน์โหลดคู่มือของคุณโดยตรงด้านล่าง"
       },
       "feature3": {
         "title": "ทุกแพลตฟอร์ม ทางเลือกเป็นของคุณ.",
@@ -7244,7 +7366,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "เพิ่มชื่อธุรกิจและลิงก์รีวิว Google ในการตั้งค่าก่อน",
-      "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล"
+      "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล",
+      "consentLabelName": "ชื่อธุรกิจในช่องทำเครื่องหมายความยินยอม",
+      "consentLabelNameDescription": "ชื่อธุรกิจที่แสดงในป้ายกำกับช่องทำเครื่องหมายความยินยอมในแบบฟอร์มของคุณ ค่าเริ่มต้นคือชื่อธุรกิจด้านบน"
     },
     "homePage": {
       "annualPro": "Pro รายปี",
@@ -7673,7 +7797,12 @@
     "onboarding": {
       "googleBtn": "ดำเนินการต่อด้วย Google",
       "appleBtn": "ดำเนินการต่อด้วย Apple",
-      "finePrint": "เริ่มทดลองใช้ฟรี — รวมคำขอรีวิว 10 ครั้ง ไม่ต้องใช้บัตรเครดิต"
+      "finePrint": "เริ่มทดลองใช้ฟรี — รวมคำขอรีวิว 10 ครั้ง ไม่ต้องใช้บัตรเครดิต",
+      "consentStepTitle": "เพิ่มช่องทำเครื่องหมายความยินยอมในแบบฟอร์มของคุณ",
+      "consentStepDesc": "ก่อนเก็บรวบรวมผู้ติดต่อหรือส่งคำขอรีวิว แบบฟอร์มของคุณต้องมีช่องทำเครื่องหมายความยินยอม ซึ่งเป็นข้อกำหนดของ CAN-SPAM, TCPA และ GDPR",
+      "consentStepAction": "ดาวน์โหลดคู่มือความยินยอม (PDF)",
+      "consentStepAck": "ฉันได้เพิ่ม (หรือจะเพิ่ม) ช่องทำเครื่องหมายความยินยอมในแบบฟอร์มลูกค้าของฉัน",
+      "consentStepAckRequired": "กรุณายืนยันว่าคุณจะเพิ่มช่องทำเครื่องหมายความยินยอมก่อนดำเนินการต่อ"
     },
     "toastMessages": {
       "followUpReminderSent": "ส่งการเตือนติดตามแล้ว!",
@@ -8110,7 +8239,24 @@
       "sending": "กำลังส่ง…",
       "testSent": "ส่งอีเมลทดสอบแล้ว!",
       "testFailed": "ส่งอีเมลทดสอบไม่สำเร็จ",
-      "darkMode": "โหมดมืด"
+      "darkMode": "โหมดมืด",
+      "copyHtml": "คัดลอก HTML",
+      "copied": "คัดลอกแล้ว!",
+      "emailPlaceholder": "ส่งถึง…",
+      "openTab": "เปิดในแท็บใหม่",
+      "variables": "ตัวแปร",
+      "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต",
+      "resetVars": "รีเซ็ต",
+      "split": "แบ่งหน้าจอ",
+      "savePreset": "บันทึก",
+      "presetNamePlaceholder": "ชื่อโปรไฟล์…"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "ฉันยืนยันว่าลูกค้าได้ยินยอมให้ธุรกิจของฉันติดต่อทางอีเมลและ/หรือข้อความ"
+    },
+    "contactsTools": {
+      "addConsentLabel": "ฉันยืนยันว่าลูกค้ารายนี้ยินยอมให้ {businessName} ติดต่อทางอีเมลและ/หรือข้อความเกี่ยวกับประสบการณ์และการซื้อของพวกเขา",
+      "addConsentRequired": "จำเป็นต้องยืนยันความยินยอมเพื่อเพิ่มผู้ติดต่อ"
     }
   },
   "zh-CN": {
@@ -8600,7 +8746,13 @@
         "addressConfirmation": "我们已发送至 {{email}}。请确认拼写并在未收到时检查垃圾邮箱。服务商接受并不保证邮件会被放入收件箱。",
         "emailConfirmationHint": "在您离开前我们会再次显示该地址，方便您检查是否有拼写错误。",
         "providerAcceptedMessage": "您的邮箱提供商已接受该投递指南。",
-        "downloadReadyMessage": "您的指南已可下载。"
+        "downloadReadyMessage": "您的指南已可下载。",
+        "consentGuideLink": "下载同意合规指南（PDF）",
+        "consentCheckLabel": "我同意 Get Phame (getphame.app) 通过电子邮件向我发送产品更新和使用技巧。我可以随时取消订阅。",
+        "consentRequired": "请勾选复选框以继续。",
+        "thankYouHeading": "一切就绪！",
+        "thankYouMessage": "您的指南正在发送至 {{email}}。如未收到，请检查垃圾邮件文件夹。",
+        "thankYouDownload": "邮件发送不可用。请直接在下方下载您的指南。"
       },
       "feature3": {
         "title": "支持所有平台，由您选择。",
@@ -8813,7 +8965,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。",
-      "emailSenderSettings": "发件人设置"
+      "emailSenderSettings": "发件人设置",
+      "consentLabelName": "同意复选框中的企业名称",
+      "consentLabelNameDescription": "在表单同意复选框标签中显示的企业名称。默认使用上方的企业名称。"
     },
     "homePage": {
       "annualPro": "年度专业版",
@@ -9241,7 +9395,12 @@
     "onboarding": {
       "googleBtn": "使用 Google 继续",
       "appleBtn": "使用 Apple 继续",
-      "finePrint": "免费开始 — 含10次评价请求。无需信用卡。"
+      "finePrint": "免费开始 — 含10次评价请求。无需信用卡。",
+      "consentStepTitle": "在您的表单中添加同意复选框",
+      "consentStepDesc": "在收集联系人或发送评价请求之前，您的表单必须包含同意复选框。这是CAN-SPAM、TCPA和GDPR的要求。",
+      "consentStepAction": "下载同意指南（PDF）",
+      "consentStepAck": "我已经（或将会）在我的客户表单中添加同意复选框",
+      "consentStepAckRequired": "请确认您将在继续之前添加同意复选框"
     },
     "toastMessages": {
       "followUpReminderSent": "跟进提醒已发送！",
@@ -9670,7 +9829,24 @@
       "sending": "发送中…",
       "testSent": "测试邮件已发送！",
       "testFailed": "测试邮件发送失败。",
-      "darkMode": "深色模式"
+      "darkMode": "深色模式",
+      "copyHtml": "复制 HTML",
+      "copied": "已复制！",
+      "emailPlaceholder": "发送至…",
+      "openTab": "在新标签页打开",
+      "variables": "变量",
+      "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符",
+      "resetVars": "重置",
+      "split": "分屏",
+      "savePreset": "保存",
+      "presetNamePlaceholder": "预设名称…"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "我确认客户已同意我的企业通过电子邮件和/或短信与其联系"
+    },
+    "contactsTools": {
+      "addConsentLabel": "我确认此客户已同意{businessName}通过电子邮件和/或短信联系他们，了解其体验和购买情况",
+      "addConsentRequired": "添加联系人需要确认同意"
     }
   },
   "zh-TW": {
@@ -10161,7 +10337,13 @@
         "addressConfirmation": "我們已傳送到 {{email}}。請確認拼寫並檢查垃圾郵件匣。供應商接收並不保證會進入收件匣。",
         "emailConfirmationHint": "在您離開前我們會再顯示該地址，讓您能發現並修正錯字。",
         "providerAcceptedMessage": "您的電子郵件供應商已接受送達指引。",
-        "downloadReadyMessage": "您的指南已可下載。"
+        "downloadReadyMessage": "您的指南已可下載。",
+        "consentGuideLink": "下載同意合規指南（PDF）",
+        "consentCheckLabel": "我同意 Get Phame (getphame.app) 透過電子郵件向我發送產品更新和使用技巧。我可以隨時取消訂閱。",
+        "consentRequired": "請勾選核取方塊以繼續。",
+        "thankYouHeading": "一切就緒！",
+        "thankYouMessage": "您的指南正在發送至 {{email}}。如未收到，請檢查垃圾郵件資料夾。",
+        "thankYouDownload": "郵件發送不可用。請直接在下方下載您的指南。"
       },
       "feature3": {
         "title": "所有平台，由您選擇。",
@@ -10374,7 +10556,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "請先在設定中新增您的商家名稱與 Google 評論連結。",
-      "emailSenderSettings": "電子郵件寄件者設定"
+      "emailSenderSettings": "電子郵件寄件者設定",
+      "consentLabelName": "同意核取方塊中的企業名稱",
+      "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。"
     },
     "homePage": {
       "annualPro": "年度 Pro",
@@ -10802,7 +10986,12 @@
     "onboarding": {
       "googleBtn": "以 Google 繼續",
       "appleBtn": "以 Apple 繼續",
-      "finePrint": "立即開始免費試用 — 含 10 次評論請求。免信用卡。"
+      "finePrint": "立即開始免費試用 — 含 10 次評論請求。免信用卡。",
+      "consentStepTitle": "在您的表單中新增同意核取方塊",
+      "consentStepDesc": "在收集聯絡人或發送評價請求之前，您的表單必須包含同意核取方塊。這是CAN-SPAM、TCPA和GDPR的要求。",
+      "consentStepAction": "下載同意指南（PDF）",
+      "consentStepAck": "我已經（或將會）在我的客戶表單中新增同意核取方塊",
+      "consentStepAckRequired": "請確認您將在繼續之前新增同意核取方塊"
     },
     "toastMessages": {
       "followUpReminderSent": "追蹤提醒已發送！",
@@ -11245,7 +11434,24 @@
       "sending": "發送中…",
       "testSent": "測試郵件已發送！",
       "testFailed": "測試郵件發送失敗。",
-      "darkMode": "深色模式"
+      "darkMode": "深色模式",
+      "copyHtml": "複製 HTML",
+      "copied": "已複製！",
+      "emailPlaceholder": "傳送至…",
+      "openTab": "在新標簽頁開啟",
+      "variables": "變數",
+      "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符",
+      "resetVars": "重置",
+      "split": "分屏",
+      "savePreset": "儲存",
+      "presetNamePlaceholder": "預設名稱…"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "我確認客戶已同意我的企業透過電子郵件和/或簡訊與其聯繫"
+    },
+    "contactsTools": {
+      "addConsentLabel": "我確認此客戶已同意{businessName}透過電子郵件和/或簡訊聯繫他們，了解其體驗和購買情況",
+      "addConsentRequired": "新增聯絡人需要確認同意"
     }
   }
 }

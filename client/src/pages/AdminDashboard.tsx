@@ -28,6 +28,9 @@ import {
   Download,
   Sparkles,
   Smartphone,
+  ShieldCheck,
+  ShieldOff,
+  Mail,
   Share2,
   Languages,
   MousePointerClick,
@@ -38,6 +41,7 @@ import {
   BadgePercent,
   Mail,
 } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
   CartesianGrid,
@@ -84,6 +88,62 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type SubscriptionPlan = "monthly" | "annual" | "lifetime";
+
+function LeadsSection() {
+  const { data: leads, isLoading } = trpc.admin.listLeads.useQuery();
+  const total = leads?.length ?? 0;
+  const consented = leads?.filter((l) => l.consentGivenAt).length ?? 0;
+  return (
+    <section className="rounded-2xl bg-white p-4 shadow-sm" aria-labelledby="leads-section-title">
+      <div className="flex items-start gap-3 mb-4">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+          <Mail size={21} />
+        </span>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">Lead Capture</p>
+          <h2 id="leads-section-title" className="text-base font-black rr-text-navy">Email Subscribers</h2>
+          <p className="text-xs rr-text-navy-muted mt-0.5">{total} total · {consented} with consent</p>
+        </div>
+      </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8"><Loader2 size={20} className="animate-spin rr-text-navy-muted" /></div>
+      ) : !leads || leads.length === 0 ? (
+        <p className="text-sm rr-text-navy-muted text-center py-6">No leads yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Email</th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Consent</th>
+                <th className="text-left py-2 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.map((lead) => (
+                <tr key={lead.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="py-2 pr-4 font-medium rr-text-navy truncate max-w-[200px]">{lead.email}</td>
+                  <td className="py-2 pr-4">
+                    {lead.consentGivenAt ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.08 145)", color: "oklch(0.35 0.12 145)" }} title={`Consent given on ${new Date(lead.consentGivenAt).toLocaleString()}`}>
+                        <ShieldCheck size={11} /> Consented
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.02 260)", color: "oklch(0.55 0.04 260)" }}>
+                        <ShieldOff size={11} /> No consent
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-2 text-xs rr-text-navy-muted">{new Date(lead.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
 
 export default function AdminDashboard() {
   const { t } = useTranslation("translation");
@@ -187,6 +247,11 @@ export default function AdminDashboard() {
       enabled: user?.role === "admin",
       refetchInterval: 30_000,
     });
+
+  const { data: stripeStatus } = trpc.admin.stripeStatus.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 5 * 60_000,
+  });
 
   const { data: systemHealthTrend, isLoading: systemHealthLoading } =
     trpc.admin.systemHealthTrend.useQuery(
@@ -617,11 +682,19 @@ export default function AdminDashboard() {
                     Icon: TrendingUp,
                   },
                   {
-                    path: "/admin/smtp-stats",
-                    label: "SMTP health",
-                    detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
-                    Icon: Wifi,
-                  },
+                   path: "/admin/smtp-stats",
+                   label: "SMTP health",
+                   detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
+                   Icon: Wifi,
+                 },
+                 {
+                   path: "/admin/stripe-status",
+                   label: "Stripe status",
+                   detail: stripeStatus?.configured
+                     ? `${stripeStatus.mode?.toUpperCase() ?? "?"} mode · webhook ${stripeStatus.webhookStatus ?? "unknown"}`
+                     : "Not configured",
+                   Icon: CreditCard,
+                 },
                   {
                     path: "/admin/codes",
                     label: "System access codes",
@@ -1378,6 +1451,88 @@ export default function AdminDashboard() {
                 Review SMTP accounts →
               </button>
             </section>
+
+            {/* Stripe status widget */}
+            <section
+              data-testid="stripe-status-widget"
+              className={`rounded-2xl border-2 p-4 shadow-sm ${
+                !stripeStatus?.configured
+                  ? "border-gray-200 bg-gray-50"
+                  : stripeStatus.webhookStatus === "enabled"
+                  ? "border-emerald-200 bg-emerald-50"
+                  : "border-amber-200 bg-amber-50"
+              }`}
+              aria-labelledby="stripe-status-title"
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-white ${
+                    !stripeStatus?.configured
+                      ? "bg-gray-400"
+                      : stripeStatus.webhookStatus === "enabled"
+                      ? "bg-emerald-700"
+                      : "bg-amber-600"
+                  }`}
+                >
+                  <CreditCard size={22} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p
+                    id="stripe-status-title"
+                    className={`text-xs font-black uppercase tracking-[0.14em] ${
+                      !stripeStatus?.configured
+                        ? "text-gray-500"
+                        : stripeStatus.webhookStatus === "enabled"
+                        ? "text-emerald-800"
+                        : "text-amber-700"
+                    }`}
+                  >
+                    Stripe payment integration
+                  </p>
+                  {!stripeStatus ? (
+                    <p className="mt-1 text-sm text-gray-400">Loading…</p>
+                  ) : !stripeStatus.configured ? (
+                    <p className="mt-1 text-sm font-semibold text-gray-600">
+                      No Stripe key configured. Add <code className="rounded bg-gray-200 px-1 text-xs">STRIPE_SECRET_KEY</code> to activate payments.
+                    </p>
+                  ) : (
+                    <div className="mt-1 space-y-1">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold">
+                        <span>
+                          Mode:{" "}
+                          <span className={`font-black ${stripeStatus.mode === "live" ? "text-emerald-700" : "text-amber-700"}`}>
+                            {stripeStatus.mode?.toUpperCase() ?? "—"}
+                          </span>
+                        </span>
+                        <span>
+                          Webhook:{" "}
+                          <span className={`font-black ${stripeStatus.webhookStatus === "enabled" ? "text-emerald-700" : "text-red-600"}`}>
+                            {stripeStatus.webhookStatus ?? "unknown"}
+                          </span>
+                        </span>
+                        <span>
+                          Secret:{" "}
+                          <span className={`font-black ${stripeStatus.webhookSecretSet ? "text-emerald-700" : "text-red-600"}`}>
+                            {stripeStatus.webhookSecretSet ? "set" : "missing"}
+                          </span>
+                        </span>
+                      </div>
+                      {stripeStatus.webhookUrl && (
+                        <p className="truncate text-xs text-gray-500">{stripeStatus.webhookUrl}</p>
+                      )}
+                      {stripeStatus.events.length > 0 && (
+                        <p className="text-xs text-gray-400">
+                          {stripeStatus.events.length} event{stripeStatus.events.length !== 1 ? "s" : ""} subscribed
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* ── Lead Capture List ─────────────────────────────────────────── */}
+            <LeadsSection />
 
             <section
               data-testid="system-health-trend-chart"

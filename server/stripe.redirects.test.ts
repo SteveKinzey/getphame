@@ -73,7 +73,7 @@ describe("Stripe Checkout and promotion safeguards", () => {
       expect.objectContaining({
         mode: "subscription",
         allow_promotion_codes: true,
-        line_items: [{ price: getStripePriceIds().monthly, quantity: 1 }],
+        line_items: [{ price: (await getStripePriceIds()).monthly, quantity: 1 }],
       }),
     );
   });
@@ -126,7 +126,7 @@ describe("Stripe Checkout and promotion safeguards", () => {
     });
 
     const { listStripePromotionCodes, getStripePriceIds } = await import("./stripe");
-    const selectedPriceIds = getStripePriceIds();
+    const selectedPriceIds = await getStripePriceIds();
     mockPricesRetrieve.mockImplementation(async (priceId: string) => ({
       product: priceId === selectedPriceIds.annual ? "prod_annual" : "prod_other",
     }));
