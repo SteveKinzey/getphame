@@ -321,10 +321,19 @@ export default function SavedContacts() {
   const [consentCustomSubject, setConsentCustomSubject] = useState("");
   const [consentCustomBody, setConsentCustomBody] = useState("");
   const [consentPreviewOpen, setConsentPreviewOpen] = useState(false);
+  const [consentPreviewMode, setConsentPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const bulkConsentRequestMutation = trpc.contacts.bulkConsentRequest.useMutation({
     onSuccess: (result) => {
       toast.success(`Consent emails sent: ${result.sent} delivered${result.failed > 0 ? `, ${result.failed} failed — check SMTP settings` : ""}.`);
       utils.contacts.list.invalidate();
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+  const sendConsentTestMutation = trpc.contacts.sendConsentTestEmail.useMutation({
+    onSuccess: (result) => {
+      toast.success(`Test email sent to ${result.to}`);
     },
     onError: (err) => {
       toast.error(err.message);
@@ -1567,6 +1576,8 @@ export default function SavedContacts() {
               {([
                 { label: "{{name}}", desc: "Contact's name" },
                 { label: "{{businessName}}", desc: "Your business name" },
+                { label: "{{email}}", desc: "Contact's email address" },
+                { label: "{{currentDate}}", desc: "Today's date (e.g. August 10, 2026)" },
               ] as const).map(({ label, desc }) => (
                 <button
                   key={label}
@@ -1613,34 +1624,86 @@ export default function SavedContacts() {
             {consentPreviewOpen && (() => {
               const biz = profile?.consentLabelName || profile?.businessName || "Your Business";
               const sampleName = "Jane Smith";
+              const sampleEmail = "jane.smith@example.com";
+              const sampleDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
               const defaultSubj = `A note about your email preferences from ${biz}`;
               const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${biz}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${biz} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
-              const resolveVars = (t: string) => t.replace(/\{\{name\}\}/g, sampleName).replace(/\{\{businessName\}\}/g, biz);
+              const resolveVars = (t: string) => t
+                .replace(/\{\{name\}\}/g, sampleName)
+                .replace(/\{\{businessName\}\}/g, biz)
+                .replace(/\{\{email\}\}/g, sampleEmail)
+                .replace(/\{\{currentDate\}\}/g, sampleDate);
               const previewSubject = resolveVars(consentCustomSubject || defaultSubj);
               const previewBody = resolveVars(consentCustomBody || defaultBody);
               const previewBodyHtml = previewBody.split(/\n\n+/).map((p: string) => `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`).join("");
+              const isMobile = consentPreviewMode === "mobile";
               return (
                 <div className="rounded-xl overflow-hidden mt-1" style={{ border: "1.5px solid oklch(0.85 0.04 260)" }}>
-                  <div className="px-3 py-1.5 flex items-center gap-1.5" style={{ background: "oklch(0.95 0.02 260)", borderBottom: "1px solid oklch(0.88 0.02 260)" }}>
-                    <Eye size={11} className="rr-text-navy-muted" />
-                    <span className="text-xs font-semibold rr-text-navy-mid">Preview (sample: {sampleName})</span>
+                  <div className="px-3 py-1.5 flex items-center justify-between" style={{ background: "oklch(0.95 0.02 260)", borderBottom: "1px solid oklch(0.88 0.02 260)" }}>
+                    <div className="flex items-center gap-1.5">
+                      <Eye size={11} className="rr-text-navy-muted" />
+                      <span className="text-xs font-semibold rr-text-navy-mid">Preview (sample: {sampleName})</span>
+                    </div>
+                    {/* Desktop / Mobile toggle */}
+                    <div className="flex items-center gap-0.5 rounded-lg p-0.5" style={{ background: "oklch(0.88 0.02 260)" }}>
+                      {(["desktop", "mobile"] as const).map((mode) => (
+                        <button
+                          key={mode}
+                          onClick={() => setConsentPreviewMode(mode)}
+                          className="text-xs px-2 py-0.5 rounded-md font-semibold transition-colors capitalize"
+                          style={{
+                            background: consentPreviewMode === mode ? "white" : "transparent",
+                            color: consentPreviewMode === mode ? "oklch(0.22 0.09 260)" : "oklch(0.55 0.04 260)",
+                            boxShadow: consentPreviewMode === mode ? "0 1px 2px rgba(0,0,0,0.08)" : "none",
+                          }}
+                        >
+                          {mode}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="p-3 bg-white" style={{ fontFamily: "Arial, sans-serif", fontSize: "13px", color: "#1a1a2e", maxHeight: "220px", overflowY: "auto" }}>
-                    <p style={{ margin: "0 0 8px", fontSize: "11px", color: "#6b7280" }}><strong>Subject:</strong> {previewSubject}</p>
-                    <hr style={{ border: "none", borderTop: "1px solid #e5e7eb", margin: "8px 0" }} />
-                    <h3 style={{ margin: "0 0 10px", fontSize: "15px", color: "#1a1a2e" }}>A quick note from {biz}</h3>
-                    <p style={{ margin: "0 0 10px" }}>Hi {sampleName},</p>
-                    <div dangerouslySetInnerHTML={{ __html: previewBodyHtml }} />
-                    <p style={{ marginTop: "16px", paddingTop: "12px", borderTop: "1px solid #e5e7eb", fontSize: "11px", color: "#9ca3af", textAlign: "center" }}>
-                      You received this email because you are a customer of {biz}.{" "}
-                      <span style={{ color: "#9ca3af", textDecoration: "underline" }}>Unsubscribe</span>
-                    </p>
+                  <div className="bg-white overflow-x-auto" style={{ maxHeight: "240px" }}>
+                    <div style={{
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: isMobile ? "12px" : "13px",
+                      color: "#1a1a2e",
+                      padding: "12px",
+                      maxWidth: isMobile ? "375px" : "600px",
+                      margin: "0 auto",
+                      overflowY: "auto",
+                    }}>
+                      <p style={{ margin: "0 0 8px", fontSize: "11px", color: "#6b7280" }}><strong>Subject:</strong> {previewSubject}</p>
+                      <hr style={{ border: "none", borderTop: "1px solid #e5e7eb", margin: "8px 0" }} />
+                      <h3 style={{ margin: "0 0 10px", fontSize: isMobile ? "14px" : "15px", color: "#1a1a2e" }}>A quick note from {biz}</h3>
+                      <p style={{ margin: "0 0 10px" }}>Hi {sampleName},</p>
+                      <div dangerouslySetInnerHTML={{ __html: previewBodyHtml }} />
+                      <p style={{ marginTop: "16px", paddingTop: "12px", borderTop: "1px solid #e5e7eb", fontSize: "11px", color: "#9ca3af", textAlign: "center" }}>
+                        You received this email because you are a customer of {biz}.{" "}
+                        <span style={{ color: "#9ca3af", textDecoration: "underline" }}>Unsubscribe</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
               );
             })()}
           </div>
           <AlertDialogFooter className="mt-2">
+            <button
+              onClick={() => sendConsentTestMutation.mutate({
+                customSubject: consentCustomSubject.trim() || undefined,
+                customBody: consentCustomBody.trim() || undefined,
+              })}
+              disabled={sendConsentTestMutation.isPending}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors mr-auto"
+              style={{ background: "oklch(0.95 0.02 260)", color: "oklch(0.40 0.06 260)", border: "1px solid oklch(0.85 0.02 260)" }}
+              title="Send a test email to your own address to preview how it looks"
+            >
+              {sendConsentTestMutation.isPending ? (
+                <><Loader2 size={12} className="animate-spin" /> Sending…</>
+              ) : (
+                <><Mail size={12} /> Send test to me</>
+              )}
+            </button>
             <AlertDialogCancel onClick={() => setConsentConfirmOpen(false)}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {

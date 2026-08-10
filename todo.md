@@ -1808,5 +1808,13 @@
 - [x] Add clickable variable tags ({{name}}, {{businessName}}) below editor
 - [x] Add success toast after bulk consent send completes (replaced result dialog)
 - [x] Create reusable skill for live-preview template editor pattern (getphame-consent-preview-editor)
+- [x] Run full test suite and save checkpoint (7214aa79, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #108)
+
+## Session — Send Test Email, Preview Toggle, Variable Tags, Skill
+- [x] Add desktop/mobile preview toggle to live preview pane
+- [x] Add {{email}} and {{currentDate}} variable tags
+- [x] Add Send Test Email button to template editor modal
+- [x] Update getphame-consent-preview-editor skill with new patterns
 - [ ] Run full test suite and save checkpoint
 - [ ] Open GitHub PR for checkpoint
