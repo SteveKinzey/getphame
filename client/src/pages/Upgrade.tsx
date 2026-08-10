@@ -509,13 +509,15 @@ export default function UpgradePage() {
               {selectedPlan === "monthly" ? t("pricingCard.monthlySub") : selectedPlan === "annual" ? t("pricingCard.annualSub") : t("pricingCard.lifetimeSub")}
             </span>
           </div>
-          {/* THB equivalent — display only, USD is the charge currency */}
-          <p className="text-sm mb-2 text-white/80 font-bold">
-            {t("pricingGrid.approximateThb", {
-              defaultValue: "≈ {{amount}} THB",
-              amount: PLANS[selectedPlan].thb,
-            })}
-          </p>
+          {/* THB equivalent — display only for Thai users */}
+          {isThai && (
+            <p className="text-sm mb-2 text-white/80 font-bold">
+              {t("pricingGrid.approximateThb", {
+                defaultValue: "≈ {{amount}} THB",
+                amount: PLANS[selectedPlan].thb,
+              })}
+            </p>
+          )}
           {PLANS[selectedPlan].savings && (
             <div
               className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold mb-4 rr-bg-navy rr-text-gold"
@@ -663,25 +665,7 @@ export default function UpgradePage() {
                 )}
               </p>
             </div>
-          ) : (
-            // Non-Thai locale: show a subtle reveal link
-            <p className="text-center text-sm font-bold mt-2 text-white/60">
-              {t("pricingCard.promptPayReveal")}{" "}
-              <button
-                onClick={() => {
-                  setShowPromptPay(true);
-                  trackPageView.mutate({
-                    page: "/upgrade/promptpay-reveal",
-                    utmSource: new URLSearchParams(window.location.search).get("utm_source") ?? undefined,
-                    utmCampaign: `plan:${selectedPlan}`,
-                  });
-                }}
-                className="underline font-semibold rr-text-gold"
-              >
-                {t("pricingCard.promptPayRevealLink")}
-              </button>
-            </p>
-          )}
+          ) : null}
 
         </div>
           </>
@@ -693,6 +677,7 @@ export default function UpgradePage() {
           isCheckoutPending={createCheckout.isPending}
           onSelectPlan={setSelectedPlan}
           onCheckout={handleStripeCheckout}
+          isThai={isThai}
         />
 
         <AlternativePaymentOptions
@@ -990,6 +975,7 @@ type PricingPlanGridProps = {
   isCheckoutPending: boolean;
   onSelectPlan: (plan: Plan) => void;
   onCheckout: (plan: Plan) => void;
+  isThai: boolean;
 };
 
 function PricingPlanGrid({
@@ -998,6 +984,7 @@ function PricingPlanGrid({
   isCheckoutPending,
   onSelectPlan,
   onCheckout,
+  isThai,
 }: PricingPlanGridProps) {
   const { t, i18n } = useTranslation();
 
@@ -1116,12 +1103,14 @@ function PricingPlanGrid({
                   <span className="text-4xl font-black rr-text-gold">{planConfig.price}</span>
                   <span className="mb-1 text-sm font-bold text-white">{planConfig.sub}</span>
                 </div>
-                <p className="mt-1 text-xs font-bold text-white/60">
-                  {t("pricingGrid.approximateThb", {
-                    defaultValue: "≈ {{amount}} THB",
-                    amount: planConfig.thb,
-                  })}
-                </p>
+                {isThai && (
+                  <p className="mt-1 text-xs font-bold text-white/60">
+                    {t("pricingGrid.approximateThb", {
+                      defaultValue: "≈ {{amount}} THB",
+                      amount: planConfig.thb,
+                    })}
+                  </p>
+                )}
               </button>
 
               {planConfig.savings && (
