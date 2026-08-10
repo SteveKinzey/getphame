@@ -57,6 +57,7 @@ import {
 import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import {
   deliverReviewEmailOrQueue,
   quietWindowDurationMinutes,
@@ -7719,6 +7720,54 @@ export const appRouter = router({
         return { html: wrapEmail("Your account has been deleted", body, footer()) };
       }),
   }),
+    sendTestEmail: adminProcedure
+      .input(
+        z.object({
+          template: z.enum([
+            "magic-link",
+            "welcome",
+            "upgrade-receipt-pro",
+            "upgrade-receipt-annual",
+            "upgrade-receipt-lifetime",
+            "account-deletion",
+          ]),
+          to: z.string().email(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const SAMPLE_LINK = "https://getphame.app/auth/verify?token=PREVIEW_TOKEN_SAMPLE";
+        const SAMPLE_NAME = (ctx.user.name ?? "").split(" ")[0] || "Alex";
+        const TEMPLATE_LABELS: Record<string, string> = {
+          "magic-link": "Magic Link (Sign-in)",
+          "welcome": "Welcome Email",
+          "upgrade-receipt-pro": "Upgrade Receipt — Pro Monthly",
+          "upgrade-receipt-annual": "Upgrade Receipt — Pro Annual",
+          "upgrade-receipt-lifetime": "Upgrade Receipt — Lifetime",
+          "account-deletion": "Account Deletion Confirmation",
+        };
+        const headerHtml = renderGetPhameEmailHeader("Email Preview");
+        const wrapHtml = (headTitle: string, bodyHtml: string) =>
+          `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${headTitle}</title></head><body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#eef0f4;padding:40px 0;"><tr><td align="center"><table width="560" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);max-width:560px;width:100%;"><tr>${headerHtml}</tr><tr><td style="padding:40px;">${bodyHtml}</td></tr><tr><td style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;"><p style="margin:0;font-size:12px;color:#999;">© ${new Date().getFullYear()} Get Phame. All rights reserved.</p></td></tr></table></td></tr></table></body></html>`;
+        const goldCta = (href: string, label: string) =>
+          `<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:16px 40px;"><a href="${href}" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">${label}</a></td></tr></table>`;
+        let html = "";
+        switch (input.template) {
+          case "magic-link": {
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">Click the button below to sign in to your Get Phame account. This link expires in 15 minutes.</p>${goldCta(SAMPLE_LINK, "Sign in to Get Phame")}<div style="margin:24px 0 0;padding:16px;background:#f8f9fb;border-radius:8px;border-left:3px solid #C9A84C;"><p style="margin:0;font-size:12px;color:#777;">If you did not request this link, you can safely ignore this email.</p></div>`;
+            html = wrapHtml("Sign in to Get Phame", body);
+            break;
+          }
+          default:
+            html = `<p style="font-family:sans-serif;padding:20px;">Template preview: ${input.template}</p>`;
+        }
+        await sendSystemEmail({
+          to: input.to,
+          subject: `[Test Preview] ${TEMPLATE_LABELS[input.template] ?? input.template}`,
+          html,
+          from: NOREPLY_FROM,
+        });
+        return { ok: true as const };
+      }),
 
   /** Landing page lead capture — stores email and sends the free guide PDF */
   leadCapture: router({

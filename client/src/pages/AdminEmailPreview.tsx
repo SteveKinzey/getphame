@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
-import { Mail, ChevronDown } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { Mail, ChevronDown, Moon, Sun, Send, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const TEMPLATES = [
   { value: "magic-link", label: "Magic Link (Sign-in)" },
@@ -16,13 +18,35 @@ type TemplateKey = (typeof TEMPLATES)[number]["value"];
 
 export default function AdminEmailPreview() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [selected, setSelected] = useState<TemplateKey>("magic-link");
   const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
+  const [darkMode, setDarkMode] = useState(false);
 
   const { data, isLoading, error } = trpc.admin.emailPreview.useQuery(
     { template: selected },
     { keepPreviousData: true }
   );
+
+  const sendTest = trpc.admin.sendTestEmail.useMutation({
+    onSuccess: () =>
+      toast.success(t("adminEmailPreview.testSent", { defaultValue: "Test email sent!" })),
+    onError: (err) =>
+      toast.error(
+        t("adminEmailPreview.testFailed", { defaultValue: "Failed to send test email." }) +
+          (err.message ? ` (${err.message})` : "")
+      ),
+  });
+
+  // Inject dark background style when dark mode is active
+  const previewHtml = data?.html
+    ? darkMode
+      ? data.html.replace(
+          "<body",
+          '<style>body{background:#1a1a1a!important}table[role="presentation"]{background:#1a1a1a!important}</style><body'
+        )
+      : data.html
+    : null;
 
   return (
     <div className="min-h-screen" style={{ background: "oklch(0.975 0.003 100)" }}>
@@ -77,6 +101,45 @@ export default function AdminEmailPreview() {
           ))}
         </div>
 
+        {/* Dark mode toggle */}
+        <button
+          type="button"
+          onClick={() => setDarkMode(d => !d)}
+          className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition"
+          style={{ color: darkMode ? "oklch(0.22 0.09 260)" : "#555" }}
+          aria-pressed={darkMode}
+        >
+          {darkMode ? (
+            <Sun className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Moon className="h-4 w-4" aria-hidden="true" />
+          )}
+          {t("adminEmailPreview.darkMode", { defaultValue: "Dark mode" })}
+        </button>
+
+        {/* Send test email button */}
+        {user?.email && (
+          <button
+            type="button"
+            disabled={sendTest.isPending || isLoading || !data?.html}
+            onClick={() => sendTest.mutate({ template: selected, to: user.email! })}
+            className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm transition disabled:opacity-50"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+          >
+            {sendTest.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                {t("adminEmailPreview.sending", { defaultValue: "Sending…" })}
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4" aria-hidden="true" />
+                {t("adminEmailPreview.sendTest", { defaultValue: "Send test email" })}
+              </>
+            )}
+          </button>
+        )}
+
         {isLoading && (
           <span className="text-xs text-gray-400 animate-pulse">
             {t("adminEmailPreview.loading", { defaultValue: "Loading preview…" })}
@@ -92,13 +155,16 @@ export default function AdminEmailPreview() {
       {/* Preview iframe */}
       <div className="px-5 pb-10">
         <div
-          className="mx-auto overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg transition-all duration-300"
-          style={{ maxWidth: viewMode === "mobile" ? 390 : 800 }}
+          className="mx-auto overflow-hidden rounded-2xl border border-gray-200 shadow-lg transition-all duration-300"
+          style={{
+            maxWidth: viewMode === "mobile" ? 390 : 800,
+            background: darkMode ? "#1a1a1a" : "#fff",
+          }}
         >
-          {data?.html ? (
+          {previewHtml ? (
             <iframe
-              key={`${selected}-${viewMode}`}
-              srcDoc={data.html}
+              key={`${selected}-${viewMode}-${darkMode}`}
+              srcDoc={previewHtml}
               title={`Email preview: ${TEMPLATES.find(t => t.value === selected)?.label ?? selected}`}
               className="block w-full border-0"
               style={{ minHeight: 600, height: "auto" }}
@@ -125,6 +191,11 @@ export default function AdminEmailPreview() {
         </div>
         <p className="mt-3 text-center text-xs text-gray-400">
           {t("adminEmailPreview.note", { defaultValue: "Preview uses sample data. Actual emails are sent with real user names and secure links." })}
+          {user?.email && (
+            <span className="ml-1">
+              Test sends to <strong>{user.email}</strong>.
+            </span>
+          )}
         </p>
       </div>
     </div>

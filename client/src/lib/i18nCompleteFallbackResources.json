@@ -1502,7 +1502,12 @@
       "loading": "Loading preview…",
       "error": "Failed to load preview.",
       "noPreview": "No preview available.",
-      "note": "Preview uses sample data. Actual emails are sent with real user names and secure links."
+      "note": "Preview uses sample data. Actual emails are sent with real user names and secure links.",
+      "sendTest": "Send test email",
+      "sending": "Sending…",
+      "testSent": "Test email sent!",
+      "testFailed": "Failed to send test email.",
+      "darkMode": "Dark mode"
     }
   },
   "es": {
@@ -3213,7 +3218,12 @@
       "loading": "Cargando vista previa…",
       "error": "Error al cargar la vista previa.",
       "noPreview": "No hay vista previa disponible.",
-      "note": "La vista previa usa datos de muestra. Los correos reales se envían con nombres y enlaces seguros."
+      "note": "La vista previa usa datos de muestra. Los correos reales se envían con nombres y enlaces seguros.",
+      "sendTest": "Enviar correo de prueba",
+      "sending": "Enviando…",
+      "testSent": "¡Correo de prueba enviado!",
+      "testFailed": "Error al enviar el correo de prueba.",
+      "darkMode": "Modo oscuro"
     }
   },
   "fr": {
@@ -4945,7 +4955,12 @@
       "loading": "Chargement de l’aperçu…",
       "error": "Échec du chargement de l’aperçu.",
       "noPreview": "Aucun aperçu disponible.",
-      "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés."
+      "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés.",
+      "sendTest": "Envoyer un e-mail test",
+      "sending": "Envoi en cours…",
+      "testSent": "E-mail test envoyé !",
+      "testFailed": "Échec de l’envoi du test.",
+      "darkMode": "Mode sombre"
     }
   },
   "it": {
@@ -6520,7 +6535,12 @@
       "loading": "Caricamento anteprima…",
       "error": "Impossibile caricare l’anteprima.",
       "noPreview": "Nessuna anteprima disponibile.",
-      "note": "L’anteprima usa dati di esempio. Le email reali vengono inviate con nomi utente reali e link sicuri."
+      "note": "L’anteprima usa dati di esempio. Le email reali vengono inviate con nomi utente reali e link sicuri.",
+      "sendTest": "Invia email di prova",
+      "sending": "Invio in corso…",
+      "testSent": "Email di prova inviata!",
+      "testFailed": "Invio dell’email di prova fallito.",
+      "darkMode": "Modalità scura"
     }
   },
   "th": {
@@ -8085,7 +8105,12 @@
       "loading": "กำลังโหลดตัวอย่าง…",
       "error": "ไม่สามารถโหลดตัวอย่างได้",
       "noPreview": "ไม่มีตัวอย่าง",
-      "note": "ตัวอย่างใช้ข้อมูลตัวอย่าง อีเมลจริงจะส่งด้วยชื่อผู้ใช้จริงและลิงก์ที่ปลอดภัย"
+      "note": "ตัวอย่างใช้ข้อมูลตัวอย่าง อีเมลจริงจะส่งด้วยชื่อผู้ใช้จริงและลิงก์ที่ปลอดภัย",
+      "sendTest": "ส่งอีเมลทดสอบ",
+      "sending": "กำลังส่ง…",
+      "testSent": "ส่งอีเมลทดสอบแล้ว!",
+      "testFailed": "ส่งอีเมลทดสอบไม่สำเร็จ",
+      "darkMode": "โหมดมืด"
     }
   },
   "zh-CN": {
@@ -9640,7 +9665,12 @@
       "loading": "正在加载预览…",
       "error": "加载预览失败。",
       "noPreview": "暂无预览。",
-      "note": "预览使用示例数据，实际邮件将使用真实用户名和安全链接发送。"
+      "note": "预览使用示例数据，实际邮件将使用真实用户名和安全链接发送。",
+      "sendTest": "发送测试邮件",
+      "sending": "发送中…",
+      "testSent": "测试邮件已发送！",
+      "testFailed": "测试邮件发送失败。",
+      "darkMode": "深色模式"
     }
   },
   "zh-TW": {
@@ -11210,7 +11240,12 @@
       "loading": "正在載入預覽…",
       "error": "載入預覽失敗。",
       "noPreview": "暫無預覽。",
-      "note": "預覽使用範例資料，實際郵件將以真實用戶名稱和安全連結發送。"
+      "note": "預覽使用範例資料，實際郵件將以真實用戶名稱和安全連結發送。",
+      "sendTest": "發送測試郵件",
+      "sending": "發送中…",
+      "testSent": "測試郵件已發送！",
+      "testFailed": "測試郵件發送失敗。",
+      "darkMode": "深色模式"
     }
   }
 }

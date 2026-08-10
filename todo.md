@@ -1718,3 +1718,10 @@
 - [x] Squash-merge PR #99 into protected main (merged, branch deleted)
 - [x] Upgrade upgrade receipt email template to responsive gold style (gold CTA, perks box, mobile CSS)
 - [x] Create in-app admin email preview route (/admin/email-preview) — 6 templates, desktop/mobile toggle, iframe preview, adminEmailPreview i18n keys in all 7 locales
+
+## Session — Email Preview Skill, PR #100, Test Send Button, Dark Mode Toggle
+- [x] Create getphame-email-preview reusable skill (architecture, template registry, add-template guide, send test email pattern, dark mode toggle, i18n keys, critical constraints)
+- [x] Open GitHub PR #100 for checkpoint dd8c5be2 (email preview, receipt gold style, SendGrid dual-sender, React.lazy, viewport a11y, hero fetchPriority)
+- [x] Add Send Test Email button to AdminEmailPreview — gold CTA, fires admin.sendTestEmail mutation to user.email, spinner + toast feedback
+- [x] Add dark mode toggle to AdminEmailPreview — Moon/Sun icon button, injects dark background style into iframe srcDoc
+- [x] Add sendTest/sending/testSent/testFailed/darkMode i18n keys to all 7 locales with native translations + fallback bundle

@@ -4296,6 +4296,11 @@
     "loading": "Chargement de l’aperçu…",
     "error": "Échec du chargement de l’aperçu.",
     "noPreview": "Aucun aperçu disponible.",
-    "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés."
+    "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés.",
+    "sendTest": "Envoyer un e-mail test",
+    "sending": "Envoi en cours…",
+    "testSent": "E-mail test envoyé !",
+    "testFailed": "Échec de l’envoi du test.",
+    "darkMode": "Mode sombre"
   }
 }

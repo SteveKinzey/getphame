@@ -4510,6 +4510,11 @@
     "loading": "Caricamento anteprima…",
     "error": "Impossibile caricare l’anteprima.",
     "noPreview": "Nessuna anteprima disponibile.",
-    "note": "L’anteprima usa dati di esempio. Le email reali vengono inviate con nomi utente reali e link sicuri."
+    "note": "L’anteprima usa dati di esempio. Le email reali vengono inviate con nomi utente reali e link sicuri.",
+    "sendTest": "Invia email di prova",
+    "sending": "Invio in corso…",
+    "testSent": "Email di prova inviata!",
+    "testFailed": "Invio dell’email di prova fallito.",
+    "darkMode": "Modalità scura"
   }
 }
