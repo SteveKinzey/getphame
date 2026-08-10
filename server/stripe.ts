@@ -34,27 +34,78 @@ export const stripe: Stripe = new Proxy({} as Stripe, {
 });
 
 /** Stripe Price IDs for each plan */
-export const STRIPE_PRICE_IDS = {
-  monthly:  "price_1TOTkwLryXlEZmjywwPjXYRn",
-  annual:   "price_1TOTnALryXlEZmjy8JdDiu3P",
-  lifetime: "price_1TxybPLryXlEZmjyI0hbybGn", // $349 one-time
-} as const;
+export type StripePlan = "monthly" | "annual" | "lifetime";
 
-export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
-
-/**
- * Stripe keeps live-mode and test-mode catalog objects completely separate.
- * Production therefore retains the established live IDs above, while local
- * and test runtimes read their isolated Price IDs from managed environment
- * configuration. Test IDs are deliberately never hardcoded in source.
- */
 export function isStripeLiveMode(secretKey = process.env.STRIPE_SECRET_KEY): boolean {
   return secretKey?.trim().startsWith("sk_live_") ?? false;
 }
 
-export function getStripePriceIds(): Record<StripePlan, string> {
-  if (isStripeLiveMode()) return { ...STRIPE_PRICE_IDS };
+// ── Dynamic price resolver ────────────────────────────────────────────────────
+// In live mode, prices are looked up from Stripe by product metadata:
+//   getphame_plan: monthly | annual | lifetime
+//   getphame_currency: usd | thb
+// Results are cached for 1 hour so every request doesn't hit the Stripe API.
+// In test mode, env vars are used as before (no metadata lookup needed).
 
+type PriceCache = {
+  usd: Record<StripePlan, string>;
+  thb: Record<StripePlan, string>;
+  fetchedAt: number;
+};
+
+let _priceCache: PriceCache | null = null;
+const PRICE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+async function fetchLivePricesFromStripe(): Promise<PriceCache> {
+  const products = await stripe.products.list({ active: true, limit: 100 });
+  const usd: Partial<Record<StripePlan, string>> = {};
+  const thb: Partial<Record<StripePlan, string>> = {};
+
+  for (const product of products.data) {
+    const plan = product.metadata?.getphame_plan as StripePlan | undefined;
+    const currency = product.metadata?.getphame_currency as "usd" | "thb" | undefined;
+    if (!plan || !currency) continue;
+    const priceId = typeof product.default_price === "string"
+      ? product.default_price
+      : product.default_price?.id;
+    if (!priceId) continue;
+    if (currency === "usd") usd[plan] = priceId;
+    if (currency === "thb") thb[plan] = priceId;
+  }
+
+  return {
+    usd: {
+      monthly: usd.monthly ?? "",
+      annual: usd.annual ?? "",
+      lifetime: usd.lifetime ?? "",
+    },
+    thb: {
+      monthly: thb.monthly ?? "",
+      annual: thb.annual ?? "",
+      lifetime: thb.lifetime ?? "",
+    },
+    fetchedAt: Date.now(),
+  };
+}
+
+export async function getLivePriceCache(): Promise<PriceCache> {
+  if (_priceCache && Date.now() - _priceCache.fetchedAt < PRICE_CACHE_TTL_MS) {
+    return _priceCache;
+  }
+  _priceCache = await fetchLivePricesFromStripe();
+  return _priceCache;
+}
+
+/** Invalidate the price cache (e.g. after updating products in Stripe) */
+export function invalidatePriceCache(): void {
+  _priceCache = null;
+}
+
+export async function getStripePriceIds(): Promise<Record<StripePlan, string>> {
+  if (isStripeLiveMode()) {
+    const cache = await getLivePriceCache();
+    return cache.usd;
+  }
   return {
     monthly: process.env.STRIPE_TEST_PRICE_ID_USD_MONTHLY ?? "",
     annual: process.env.STRIPE_TEST_PRICE_ID_USD_ANNUAL ?? "",
@@ -142,7 +193,7 @@ function promotionStatus(promotionCode: PromotionCodeDetails): StripePromotionSt
 }
 
 async function getPlanProductIds(): Promise<Record<StripePlan, string | null>> {
-  const priceIds = getStripePriceIds();
+  const priceIds = await getStripePriceIds();
   const plans = Object.keys(priceIds) as StripePlan[];
   const prices = await Promise.all(plans.map((plan) => stripe.prices.retrieve(priceIds[plan])));
   return Object.fromEntries(
@@ -152,7 +203,7 @@ async function getPlanProductIds(): Promise<Record<StripePlan, string | null>> {
 
 function getApplicablePlans(coupon: PromotionCoupon, planProductIds: Record<StripePlan, string | null>): StripePlan[] {
   const allowedProductIds = coupon.applies_to?.products ?? [];
-  const plans = Object.keys(STRIPE_PRICE_IDS) as StripePlan[];
+  const plans: StripePlan[] = ["monthly", "annual", "lifetime"];
   if (allowedProductIds.length === 0) return plans;
   return plans.filter((plan) => {
     const productId = planProductIds[plan];
@@ -220,7 +271,7 @@ export async function createStripePromotionCode(
   }
 
   const applicablePlans = Array.from(new Set(input.applicablePlans));
-  const validPlans = new Set<StripePlan>(Object.keys(STRIPE_PRICE_IDS) as StripePlan[]);
+  const validPlans = new Set<StripePlan>(["monthly", "annual", "lifetime"] as StripePlan[]);
   if (applicablePlans.length === 0 || applicablePlans.some((plan) => !validPlans.has(plan))) {
     throw new Error("Select at least one valid Get Phame plan.");
   }
@@ -665,7 +716,8 @@ export async function createCheckoutSession({
   plan?: StripePlan;
   promotionCode?: string | null;
 }): Promise<string> {
-  const priceId = getStripePriceIds()[plan];
+  const priceIds = await getStripePriceIds();
+  const priceId = priceIds[plan];
   if (!priceId) {
     throw new Error(`USD price ID not configured for plan: ${plan}. Set STRIPE_TEST_PRICE_ID_USD_${plan.toUpperCase()} for test mode.`);
   }
@@ -717,7 +769,8 @@ export async function createCheckoutSession({
  * STRIPE_TEST_PRICE_ID_THB_* so the catalogs can never be mixed.
  */
 // Read at call time (not module load) so tests can override env vars per-test
-export function getThbPriceIds() {
+// THB price IDs are always read from env vars (live: STRIPE_PRICE_ID_THB_*, test: STRIPE_TEST_PRICE_ID_THB_*)
+export function getThbPriceIds(): Record<StripePlan, string> {
   const prefix = isStripeLiveMode() ? "STRIPE_PRICE_ID_THB" : "STRIPE_TEST_PRICE_ID_THB";
   return {
     monthly:  process.env[`${prefix}_MONTHLY`] ?? "",
