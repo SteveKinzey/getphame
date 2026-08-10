@@ -4289,5 +4289,13 @@
     "reloadTab": "Recargar esta pestaña",
     "applyingTitle": "Aplicando tu actualización",
     "applyingDescription": "GET PHAME está preparando la última versión. Esta pestaña se actualizará en breve."
+  },
+  "adminEmailPreview": {
+    "title": "Vista previa de plantillas de correo",
+    "selectTemplate": "Seleccionar plantilla",
+    "loading": "Cargando vista previa…",
+    "error": "Error al cargar la vista previa.",
+    "noPreview": "No hay vista previa disponible.",
+    "note": "La vista previa usa datos de muestra. Los correos reales se envían con nombres y enlaces seguros."
   }
 }

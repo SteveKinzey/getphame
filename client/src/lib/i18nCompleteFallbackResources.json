@@ -1495,6 +1495,14 @@
     "activityTrend": {
       "csvDownloaded": "Activity Trend CSV downloaded.",
       "pngDownloaded": "Activity Trend PNG downloaded."
+    },
+    "adminEmailPreview": {
+      "title": "Email Template Preview",
+      "selectTemplate": "Select template",
+      "loading": "Loading preview…",
+      "error": "Failed to load preview.",
+      "noPreview": "No preview available.",
+      "note": "Preview uses sample data. Actual emails are sent with real user names and secure links."
     }
   },
   "es": {
@@ -3198,6 +3206,14 @@
     "activityTrend": {
       "csvDownloaded": "Se descargó el CSV de Tendencia de actividad.",
       "pngDownloaded": "Se descargó el PNG de Tendencia de actividad."
+    },
+    "adminEmailPreview": {
+      "title": "Vista previa de plantillas de correo",
+      "selectTemplate": "Seleccionar plantilla",
+      "loading": "Cargando vista previa…",
+      "error": "Error al cargar la vista previa.",
+      "noPreview": "No hay vista previa disponible.",
+      "note": "La vista previa usa datos de muestra. Los correos reales se envían con nombres y enlaces seguros."
     }
   },
   "fr": {
@@ -4922,6 +4938,14 @@
     "activityTrend": {
       "csvDownloaded": "Le CSV de tendance d’activité a été téléchargé.",
       "pngDownloaded": "Le PNG de tendance d’activité a été téléchargé."
+    },
+    "adminEmailPreview": {
+      "title": "Aperçu des modèles d’e-mail",
+      "selectTemplate": "Sélectionner un modèle",
+      "loading": "Chargement de l’aperçu…",
+      "error": "Échec du chargement de l’aperçu.",
+      "noPreview": "Aucun aperçu disponible.",
+      "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés."
     }
   },
   "it": {
@@ -6489,6 +6513,14 @@
     "activityTrend": {
       "csvDownloaded": "CSV dell’andamento attività scaricato.",
       "pngDownloaded": "PNG dell’andamento attività scaricato."
+    },
+    "adminEmailPreview": {
+      "title": "Anteprima modelli e-mail",
+      "selectTemplate": "Seleziona modello",
+      "loading": "Caricamento anteprima…",
+      "error": "Impossibile caricare l’anteprima.",
+      "noPreview": "Nessuna anteprima disponibile.",
+      "note": "L’anteprima usa dati di esempio. Le email reali vengono inviate con nomi utente reali e link sicuri."
     }
   },
   "th": {
@@ -8046,6 +8078,14 @@
     "activityTrend": {
       "csvDownloaded": "ดาวน์โหลด CSV แนวโน้มกิจกรรมแล้ว",
       "pngDownloaded": "ดาวน์โหลด PNG แนวโน้มกิจกรรมแล้ว"
+    },
+    "adminEmailPreview": {
+      "title": "ตัวอย่างแม่แบบอีเมล",
+      "selectTemplate": "เลือกแม่แบบ",
+      "loading": "กำลังโหลดตัวอย่าง…",
+      "error": "ไม่สามารถโหลดตัวอย่างได้",
+      "noPreview": "ไม่มีตัวอย่าง",
+      "note": "ตัวอย่างใช้ข้อมูลตัวอย่าง อีเมลจริงจะส่งด้วยชื่อผู้ใช้จริงและลิงก์ที่ปลอดภัย"
     }
   },
   "zh-CN": {
@@ -9593,6 +9633,14 @@
     "activityTrend": {
       "csvDownloaded": "活动趋势 CSV 已下载。",
       "pngDownloaded": "活动趋势 PNG 已下载。"
+    },
+    "adminEmailPreview": {
+      "title": "电子邮件模板预览",
+      "selectTemplate": "选择模板",
+      "loading": "正在加载预览…",
+      "error": "加载预览失败。",
+      "noPreview": "暂无预览。",
+      "note": "预览使用示例数据，实际邮件将使用真实用户名和安全链接发送。"
     }
   },
   "zh-TW": {
@@ -11155,6 +11203,14 @@
     "activityTrend": {
       "csvDownloaded": "活動趨勢 CSV 已下載。",
       "pngDownloaded": "活動趨勢 PNG 已下載。"
+    },
+    "adminEmailPreview": {
+      "title": "電子郵件樣板預覽",
+      "selectTemplate": "選擇樣板",
+      "loading": "正在載入預覽…",
+      "error": "載入預覽失敗。",
+      "noPreview": "暫無預覽。",
+      "note": "預覽使用範例資料，實際郵件將以真實用戶名稱和安全連結發送。"
     }
   }
 }

@@ -4289,5 +4289,13 @@
     "reloadTab": "Recharger cet onglet",
     "applyingTitle": "Application de votre mise à jour",
     "applyingDescription": "GET PHAME prépare la dernière version. Cet onglet s’actualisera dans un instant."
+  },
+  "adminEmailPreview": {
+    "title": "Aperçu des modèles d’e-mail",
+    "selectTemplate": "Sélectionner un modèle",
+    "loading": "Chargement de l’aperçu…",
+    "error": "Échec du chargement de l’aperçu.",
+    "noPreview": "Aucun aperçu disponible.",
+    "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés."
   }
 }

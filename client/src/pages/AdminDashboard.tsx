@@ -36,6 +36,7 @@ import {
   Clock3,
   GitBranch,
   BadgePercent,
+  Mail,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -674,6 +675,12 @@ export default function AdminDashboard() {
                         "Review ancestry, unique work, safety gates, and the presentation script",
                     }),
                     Icon: GitBranch,
+                  },
+                  {
+                    path: "/admin/email-preview",
+                    label: "Email template preview",
+                    detail: "Preview magic link, welcome, and receipt emails",
+                    Icon: Mail,
                   },
                 ].map(({ path, label, detail, Icon }) => (
                   <button
