@@ -1993,3 +1993,15 @@
 - [x] Update and validate the reusable renderer-resilience skill with the release workflow
 - [x] Complete release checks and prepare the release checklist
 - [x] Save and publish the approved managed checkpoint, then synchronize its exact tree to protected main through a pull request
+
+## Release history, retention, and renderer trend operations (Aug 12, 2026)
+- [x] Add a filtered and sortable administrator release-history view
+- [x] Add administrator-only audit-retention controls in settings
+- [x] Add a main-dashboard alert for repeat renderer failures
+- [x] Update and validate the reusable release-history workflow skill
+
+## Release operations verification and protected-main synchronization (Aug 12, 2026)
+- [x] Run the complete current public-route audit and inspect sanitized renderer-error history
+- [x] Verify all seven locale bundles and the offline fallback after release-operations updates
+- [x] Validate the reusable renderer-resilience workflow for this release
+- [x] Complete release validation, publish the managed checkpoint, and synchronize the exact tree to protected main

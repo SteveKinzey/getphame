@@ -414,6 +414,35 @@ export type InsertEmailPreviewRendererError =
   typeof emailPreviewRendererErrors.$inferInsert;
 
 /**
+ * Global, administrator-only retention policy for the sanitized route-audit and
+ * renderer-error logs. This contains configuration only; it never stores
+ * customer content, message HTML, browser logs, or raw error details.
+ */
+export const auditRetentionPolicies = pgTable(
+  "audit_retention_policies",
+  {
+    id: serial("id").primaryKey(),
+    policyKey: varchar("policy_key", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    routeAuditRetentionDays: integer("route_audit_retention_days")
+      .notNull()
+      .default(180),
+    rendererErrorRetentionDays: integer("renderer_error_retention_days")
+      .notNull()
+      .default(180),
+    updatedByUserId: integer("updated_by_user_id").notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  },
+  table => [index("audit_retention_policy_updated_idx").on(table.updatedAt)]
+);
+
+export type AuditRetentionPolicy = typeof auditRetentionPolicies.$inferSelect;
+export type InsertAuditRetentionPolicy =
+  typeof auditRetentionPolicies.$inferInsert;
+
+/**
  * Privacy-minimized GitHub automation outcomes received through verified OIDC.
  * Raw tokens, workflow payloads, logs, diffs, and pull-request bodies are excluded.
  */

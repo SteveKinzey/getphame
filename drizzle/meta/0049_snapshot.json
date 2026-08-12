@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "2a6b91f0-68c4-4b04-ab47-4f4805937ac9",
-  "prevId": "cc02c390-9dc6-40f0-a6df-82e1aa44c955",
+  "id": "28455d0a-a530-4be5-b967-23d203833893",
+  "prevId": "8e09afd2-0372-4a3c-9f5d-7bef674c78fa",
   "tables": {
     "access_code_redemptions": {
       "name": "access_code_redemptions",
@@ -1109,6 +1109,83 @@
         }
       },
       "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "audit_retention_policies": {
+      "name": "audit_retention_policies",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "policy_key": {
+          "name": "policy_key",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'global'"
+        },
+        "route_audit_retention_days": {
+          "name": "route_audit_retention_days",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 180
+        },
+        "renderer_error_retention_days": {
+          "name": "renderer_error_retention_days",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 180
+        },
+        "updated_by_user_id": {
+          "name": "updated_by_user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "audit_retention_policy_updated_idx": {
+          "name": "audit_retention_policy_updated_idx",
+          "columns": [
+            "updated_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "audit_retention_policies_id": {
+          "name": "audit_retention_policies_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "audit_retention_policies_policy_key_unique": {
+          "name": "audit_retention_policies_policy_key_unique",
+          "columns": [
+            "policy_key"
+          ]
+        }
+      },
       "checkConstraint": {}
     },
     "auth_diagnostic_events": {
@@ -2253,50 +2330,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "businessDescription": {
-          "name": "businessDescription",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "businessCategory": {
-          "name": "businessCategory",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "countryCode": {
-          "name": "countryCode",
-          "type": "varchar(2)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "regionCode": {
-          "name": "regionCode",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "preferredOutreachLocale": {
-          "name": "preferredOutreachLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "onboardingTemplateStatus": {
-          "name": "onboardingTemplateStatus",
-          "type": "varchar(24)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'not_started'"
-        },
         "quietHoursStartMinutes": {
           "name": "quietHoursStartMinutes",
           "type": "int",
@@ -2350,6 +2383,20 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(now())"
+        },
+        "consentAcknowledgedAt": {
+          "name": "consentAcknowledgedAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentLabelName": {
+          "name": "consentLabelName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -3631,6 +3678,89 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
+    "email_preview_renderer_errors": {
+      "name": "email_preview_renderer_errors",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "reported_by_user_id": {
+          "name": "reported_by_user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "template_key": {
+          "name": "template_key",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "viewport_mode": {
+          "name": "viewport_mode",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dark_mode": {
+          "name": "dark_mode",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "error_code": {
+          "name": "error_code",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "occurred_at": {
+          "name": "occurred_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "email_preview_renderer_errors_occurred_idx": {
+          "name": "email_preview_renderer_errors_occurred_idx",
+          "columns": [
+            "occurred_at"
+          ],
+          "isUnique": false
+        },
+        "email_preview_renderer_errors_reporter_idx": {
+          "name": "email_preview_renderer_errors_reporter_idx",
+          "columns": [
+            "reported_by_user_id",
+            "occurred_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "email_preview_renderer_errors_id": {
+          "name": "email_preview_renderer_errors_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "email_template_revisions": {
       "name": "email_template_revisions",
       "columns": {
@@ -4025,28 +4155,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "preferredLocale": {
-          "name": "preferredLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "templateRevisionId": {
-          "name": "templateRevisionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "englishTemplateRevisionId": {
-          "name": "englishTemplateRevisionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "createdAt": {
           "name": "createdAt",
           "type": "timestamp",
@@ -4420,6 +4528,27 @@
         "guideSentAt": {
           "name": "guideSentAt",
           "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentGivenAt": {
+          "name": "consentGivenAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "unsubscribedAt": {
+          "name": "unsubscribedAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "unsubscribeReason": {
+          "name": "unsubscribeReason",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5779,6 +5908,80 @@
       },
       "checkConstraint": {}
     },
+    "release_parity_records": {
+      "name": "release_parity_records",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "checkpoint_id": {
+          "name": "checkpoint_id",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "protected_main_commit": {
+          "name": "protected_main_commit",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "protected_main_tree": {
+          "name": "protected_main_tree",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "managed_tree": {
+          "name": "managed_tree",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "parity_status": {
+          "name": "parity_status",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "recorded_at": {
+          "name": "recorded_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "release_parity_recorded_idx": {
+          "name": "release_parity_recorded_idx",
+          "columns": [
+            "recorded_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "release_parity_records_id": {
+          "name": "release_parity_records_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "review_platforms": {
       "name": "review_platforms",
       "columns": {
@@ -5825,41 +6028,6 @@
           "autoincrement": false,
           "default": 0
         },
-        "countryCode": {
-          "name": "countryCode",
-          "type": "varchar(2)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "regionCode": {
-          "name": "regionCode",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "businessCategory": {
-          "name": "businessCategory",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "recommendationSource": {
-          "name": "recommendationSource",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "recommendationRank": {
-          "name": "recommendationRank",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "createdAt": {
           "name": "createdAt",
           "type": "timestamp",
@@ -5882,6 +6050,97 @@
       "compositePrimaryKeys": {
         "review_platforms_id": {
           "name": "review_platforms_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "route_audit_runs": {
+      "name": "route_audit_runs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "triggered_by_user_id": {
+          "name": "triggered_by_user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "routes_audited": {
+          "name": "routes_audited",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "failure_count": {
+          "name": "failure_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "findings": {
+          "name": "findings",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "runner_error_code": {
+          "name": "runner_error_code",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_ms": {
+          "name": "duration_ms",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "audited_at": {
+          "name": "audited_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "route_audit_runs_audited_idx": {
+          "name": "route_audit_runs_audited_idx",
+          "columns": [
+            "audited_at"
+          ],
+          "isUnique": false
+        },
+        "route_audit_runs_triggered_idx": {
+          "name": "route_audit_runs_triggered_idx",
+          "columns": [
+            "triggered_by_user_id",
+            "audited_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "route_audit_runs_id": {
+          "name": "route_audit_runs_id",
           "columns": [
             "id"
           ]
@@ -7704,6 +7963,13 @@
           "notNull": true,
           "autoincrement": false,
           "default": "'en'"
+        },
+        "dryRunCompletedAt": {
+          "name": "dryRunCompletedAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "pausedAt": {
           "name": "pausedAt",
