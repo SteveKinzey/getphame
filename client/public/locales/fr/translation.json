@@ -4392,6 +4392,11 @@
     "resetVars": "Réinitialiser",
     "split": "Split",
     "savePreset": "Enregistrer",
-    "presetNamePlaceholder": "Nom du profil…"
+    "presetNamePlaceholder": "Nom du profil…",
+    "previewReady": "Aperçu prêt",
+    "previewFallback": "Cet aperçu n’a pas pu s’afficher dans le cadre intégré.",
+    "previewLoading": "Génération de l’aperçu de l’e-mail…",
+    "exportHtml": "Exporter le code HTML",
+    "exported": "Téléchargé !"
   }
 }
