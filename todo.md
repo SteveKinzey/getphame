@@ -1826,3 +1826,48 @@
 - [x] Create getphame-lead-consent-compliance skill
 - [x] Run full test suite and save checkpoint (17124cdc, 1022 tests pass)
 - [x] Open GitHub PR for checkpoint (PR #110)
+
+## Admin email-preview route repair (Aug 12, 2026)
+- [x] Diagnose the signed-in redirect or error page at /admin/email-preview
+- [x] Repair the active preview route, access guard, or API contract
+- [x] Add regression coverage and validate the signed-in admin preview flow
+
+## Admin email-preview iframe renderer repair (Aug 12, 2026)
+- [x] Diagnose the blank or broken preview document in the iframe
+- [x] Repair generated HTML or iframe rendering configuration
+- [x] Add a preview-render regression test and validate all six email templates
+
+## Email-preview renderer resilience (Aug 12, 2026)
+- [x] Add an iframe render-error fallback with an Open in tab action
+- [x] Add visual preview-ready feedback after email HTML loads
+- [x] Add browser coverage for every preview template and viewport
+- [x] Create reusable email-preview renderer resilience skill
+
+## TypeScript validation timeout remediation (Aug 12, 2026)
+- [x] Diagnose and eliminate the standalone TypeScript validation timeout without weakening type-safety coverage
+- [x] Run TypeScript, focused tests, full suite, audit, and production build on the remediated tree
+
+## Persistent admin email-preview iframe failure (Aug 12, 2026)
+- [x] Diagnose the blank embedded email document seen after a manual refresh (production frame CSP blocked `blob:` URLs)
+- [x] Replace the failing render path with a browser-compatible preview and visible recovery path
+- [x] Verify primary Blob rendering and browser fallback coverage for all templates and desktop, mobile, and split viewports
+
+## Preview recovery skill and export enhancements (Aug 12, 2026)
+- [x] Create and validate a reusable email-preview recovery and delivery-validation skill
+- [x] Add an accessible loading skeleton while preview HTML is generated or rendered
+- [x] Add a rendered HTML-file export action with a safe filename
+- [x] Send an authorized test email and verify delivery and rendered output in the target inbox
+
+## Test Magic Link destination repair (Aug 12, 2026)
+- [x] Diagnose why the test Magic Link action reaches an error page (the preview used an intentionally invalid sample verification token)
+- [x] Replace the nonfunctional test link with a safe, valid destination and regression coverage
+- [x] Confirm the corrected test destination opens the standard sign-in page without an error
+
+## Managed admin email-preview recovery (Aug 12, 2026)
+- [x] Remove the unnecessary managed-preview login dependency from safe preview rendering
+- [x] Replace the broken embedded-document rendering path in the managed preview
+- [x] Verify the template renders in the managed preview on desktop, mobile, and split modes
+
+## Managed preview WebSocket recovery (Aug 12, 2026)
+- [x] Restore the Vite WebSocket connection for `/admin/email-preview?from_webdev=1`
+- [x] Verify the restarted development preview is reachable without console connection errors
