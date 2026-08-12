@@ -1,7 +1,7 @@
 import { trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Mail, ChevronDown, Moon, Sun, Send, Loader2, Copy, Check,
   ExternalLink, SlidersHorizontal, ChevronUp, RotateCcw, Save, X, Download,
@@ -20,6 +20,14 @@ const TEMPLATES = [
 type TemplateKey = (typeof TEMPLATES)[number]["value"];
 type ViewMode = "desktop" | "mobile" | "split";
 
+function getInitialTemplate(): TemplateKey {
+  if (typeof window === "undefined") return "magic-link";
+  const requested = new URLSearchParams(window.location.search).get("template");
+  return TEMPLATES.some(template => template.value === requested)
+    ? requested as TemplateKey
+    : "magic-link";
+}
+
 const DEFAULT_VARS = {
   name: "Alex Johnson",
   company: "Sunrise Bakery",
@@ -30,10 +38,69 @@ const DEFAULT_VARS = {
 const PRESET_KEY = "getphame-email-preview-presets";
 type Preset = { name: string; vars: typeof DEFAULT_VARS };
 
+function sanitizeEmailPreviewHtml(html: string): string {
+  const documentFragment = new DOMParser().parseFromString(html, "text/html");
+  documentFragment
+    .querySelectorAll("script, iframe, object, embed, base, form")
+    .forEach(node => node.remove());
+
+  documentFragment.querySelectorAll<HTMLElement>("*").forEach(node => {
+    for (const attribute of Array.from(node.attributes)) {
+      const name = attribute.name.toLowerCase();
+      const value = attribute.value.trim().toLowerCase();
+      if (name.startsWith("on") || (name === "srcdoc")) {
+        node.removeAttribute(attribute.name);
+        continue;
+      }
+      if ((name === "href" || name === "src") && value.startsWith("javascript:")) {
+        node.removeAttribute(attribute.name);
+      }
+    }
+  });
+
+  const headStyles = Array.from(documentFragment.head.querySelectorAll("style, link[rel='stylesheet']"))
+    .map(node => node.outerHTML)
+    .join("");
+
+  return `${headStyles}<div data-email-preview-content>${documentFragment.body.innerHTML}</div>`;
+}
+
+function EmailPreviewSurface({
+  html,
+  minHeight,
+  onReady,
+  onError,
+}: {
+  html: string;
+  minHeight: number;
+  onReady: () => void;
+  onError: () => void;
+}) {
+  const hostRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const host = hostRef.current;
+      if (!host) return;
+      const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
+      shadow.innerHTML = `<style>:host{display:block} [data-email-preview-content]{display:block;min-height:${minHeight}px;overflow-wrap:anywhere}</style>${sanitizeEmailPreviewHtml(html)}`;
+
+      const content = shadow.querySelector<HTMLElement>("[data-email-preview-content]");
+      const renderedText = content?.innerText?.trim() ?? "";
+      if (!content || !renderedText) throw new Error("Email preview contains no rendered content");
+      onReady();
+    } catch {
+      onError();
+    }
+  }, [html, minHeight, onError, onReady]);
+
+  return <div ref={hostRef} data-testid="email-preview-surface" style={{ minHeight }} />;
+}
+
 export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [selected, setSelected] = useState<TemplateKey>("magic-link");
+  const [selected, setSelected] = useState<TemplateKey>(getInitialTemplate);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [darkMode, setDarkMode] = useState(false);
   const [testEmail, setTestEmail] = useState(user?.email ?? "");
@@ -86,80 +153,31 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
     if (darkMode) {
       html = html.replace(
         "<body",
-        '<style>body{background:#1a1a1a!important}table[role="presentation"]{background:#1a1a1a!important}</style><body'
+        '<style>body{background:#111827!important;color:#f8fafc!important}table[role="presentation"]{background:#161b22!important}.email-card{background:#161b22!important}.email-body,.email-body *{color:#f8fafc!important}.email-body a{color:#f6d56e!important}.email-footer{background:#0f172a!important}.email-footer,.email-footer *{color:#cbd5e1!important}</style><body'
       );
     }
     return html;
   }, [vars, darkMode]);
 
   const previewHtml = data?.html ? buildPreviewHtml(data.html) : null;
-  const [previewDocumentUrl, setPreviewDocumentUrl] = useState<string | null>(null);
-  const [previewRenderState, setPreviewRenderState] = useState<"loading" | "ready" | "error">("loading");
-  const [previewRenderMode, setPreviewRenderMode] = useState<"blob" | "srcdoc">("blob");
-  const isManagedPreviewHost = (() => {
-    try {
-      return typeof window !== "undefined" && window.top !== window.self;
-    } catch {
-      return true;
-    }
-  })();
+  const [previewReadyKey, setPreviewReadyKey] = useState<string | null>(null);
+  const [previewErrorKey, setPreviewErrorKey] = useState<string | null>(null);
 
-  // Render a complete document from a Blob URL rather than srcDoc. This avoids
-  // preview failures caused by CSP/srcDoc handling while keeping the document
-  // static (the iframe sandbox does not permit scripts).
-  useEffect(() => {
-    setPreviewRenderState("loading");
-    // The managed preview runs inside an outer frame that can reject nested
-    // Blob documents. srcDoc remains static and avoids frame-src policy drift.
-    setPreviewRenderMode(isManagedPreviewHost ? "srcdoc" : "blob");
-    if (!previewHtml) {
-      setPreviewDocumentUrl(null);
-      return;
-    }
+  const previewKey = `${selected}-${viewMode}-${darkMode}-${JSON.stringify(vars)}`;
+  const previewRenderState = previewErrorKey === previewKey
+    ? "error"
+    : previewReadyKey === previewKey
+      ? "ready"
+      : "loading";
 
-    const url = URL.createObjectURL(
-      new Blob([previewHtml], { type: "text/html;charset=utf-8" })
-    );
-    setPreviewDocumentUrl(url);
-
-    return () => URL.revokeObjectURL(url);
-  }, [isManagedPreviewHost, previewHtml]);
-
-  // Auto-height iframe handler
-  const autoHeight = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
-    const iframe = e.currentTarget;
-    try {
-      const body = iframe.contentDocument?.body;
-      if (body) iframe.style.height = `${body.scrollHeight + 32}px`;
-    } catch {
-      // cross-origin — use default height
-    }
+  const handlePreviewReady = useCallback((key: string) => {
+    setPreviewErrorKey(current => current === key ? null : current);
+    setPreviewReadyKey(key);
   }, []);
-
-  const handlePreviewLoad = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
-    const iframe = e.currentTarget;
-    const renderedBody = iframe.contentDocument?.body?.innerHTML?.trim();
-
-    // A CSP-blocked Blob URL may become an empty document without firing iframe.onerror.
-    // Fall back only in that narrow case, retaining Blob rendering where it is supported.
-    if (previewRenderMode === "blob" && !renderedBody) {
-      setPreviewRenderMode("srcdoc");
-      return;
-    }
-
-    autoHeight(e);
-    setPreviewRenderState("ready");
-  }, [autoHeight, previewRenderMode]);
-
-  const handlePreviewError = useCallback(() => {
-    if (previewRenderMode === "blob") {
-      setPreviewRenderMode("srcdoc");
-      return;
-    }
-    setPreviewRenderState("error");
-  }, [previewRenderMode]);
-
-  const iframeKey = `${selected}-${viewMode}-${darkMode}-${previewRenderMode}-${JSON.stringify(vars)}`;
+  const handlePreviewError = useCallback((key: string) => {
+    setPreviewReadyKey(current => current === key ? null : current);
+    setPreviewErrorKey(key);
+  }, []);
 
   const handleCopy = () => {
     if (!data?.html) return;
@@ -242,31 +260,15 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
     </div>
   );
 
-  const renderPreviewFrame = (title: string, key: string, minHeight: number) =>
+  const renderPreviewDocument = (title: string, key: string, minHeight: number) =>
     <div className="relative" style={{ minHeight }}>
-      {previewRenderMode === "blob" ? (
-        <iframe
-          key={key}
-          src={previewDocumentUrl ?? undefined}
-          title={title}
-          className="block w-full border-0"
-          style={{ minHeight, height: "auto" }}
-          onLoad={handlePreviewLoad}
-          onError={handlePreviewError}
-          sandbox="allow-same-origin"
-        />
-      ) : (
-        <iframe
-          key={key}
-          srcDoc={previewHtml ?? ""}
-          title={title}
-          className="block w-full border-0"
-          style={{ minHeight, height: "auto" }}
-          onLoad={handlePreviewLoad}
-          onError={handlePreviewError}
-          sandbox="allow-same-origin"
-        />
-      )}
+      <EmailPreviewSurface
+        key={key}
+        html={previewHtml ?? ""}
+        minHeight={minHeight}
+        onReady={() => handlePreviewReady(previewKey)}
+        onError={() => handlePreviewError(previewKey)}
+      />
       {previewRenderState === "loading" && (
         <div className="absolute inset-0">{renderPreviewSkeleton(minHeight)}</div>
       )}
@@ -305,7 +307,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
         {label}
       </div>
       {previewRenderState === "error" ? renderPreviewFallback() : previewHtml ? (
-        renderPreviewFrame(`${label} preview`, key, 500)
+        renderPreviewDocument(`${label} preview`, key, 500)
       ) : (
         <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
           {isLoading
@@ -583,8 +585,8 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
         {viewMode === "split" ? (
           /* Split-screen: desktop + mobile side-by-side */
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {renderIframePane("Desktop — 800px", 800, `split-desktop-${iframeKey}`)}
-            {renderIframePane("Mobile — 390px", 390, `split-mobile-${iframeKey}`)}
+            {renderIframePane("Desktop — 800px", 800, `split-desktop-${previewKey}`)}
+            {renderIframePane("Mobile — 390px", 390, `split-mobile-${previewKey}`)}
           </div>
         ) : (
           /* Single viewport */
@@ -596,9 +598,9 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
             }}
           >
              {previewRenderState === "error" ? renderPreviewFallback() : previewHtml ? (
-               renderPreviewFrame(
+               renderPreviewDocument(
                  `Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`,
-                 iframeKey,
+                 previewKey,
                  600
                )
             ) : (
@@ -610,7 +612,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
             )}
           </div>
         )}
-        {previewRenderState === "ready" && previewDocumentUrl && (
+        {previewRenderState === "ready" && previewHtml && (
           <p className="mt-3 flex items-center justify-center gap-2 text-center text-xs font-semibold text-emerald-700" aria-live="polite">
             <Check className="h-4 w-4" aria-hidden="true" />
             {t("adminEmailPreview.previewReady", { defaultValue: "Preview ready" })}

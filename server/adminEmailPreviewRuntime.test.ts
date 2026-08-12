@@ -14,6 +14,9 @@ describe("admin email preview runtime contract", () => {
     expect(source).toMatch(/import\s*\{[^}]*useCallback[^}]*\}\s*from\s*["']react["']/s);
     expect(source).toContain("trpc.admin.emailPreview.useQuery");
     expect(source).toContain("trpc.admin.sendTestEmail.useMutation");
+    expect(source).toContain("function getInitialTemplate");
+    expect(source).toContain('new URLSearchParams(window.location.search).get("template")');
+    expect(source).toContain("TEMPLATES.some(template => template.value === requested)");
   });
 
   it("provides a public read-only preview while keeping email delivery administrative", () => {
@@ -38,21 +41,22 @@ describe("admin email preview runtime contract", () => {
     expect(appSource).toContain('path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage}');
   });
 
-  it("uses a Blob URL first and falls back to srcDoc only when a browser blocks that document", () => {
+  it("uses a sanitized Shadow DOM surface instead of a policy-sensitive nested document", () => {
     const previewSource = readFileSync(
       resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
       "utf8"
     );
 
-    expect(previewSource).toContain("URL.createObjectURL");
-    expect(previewSource).toContain('type: "text/html;charset=utf-8"');
-    expect(previewSource).toContain("src={previewDocumentUrl ?? undefined}");
-    expect(previewSource).toContain('previewRenderMode === "blob"');
-    expect(previewSource).toContain("srcDoc={previewHtml ?? \"\"}");
-    expect(previewSource).toContain('setPreviewRenderMode("srcdoc")');
+    expect(previewSource).toContain("function sanitizeEmailPreviewHtml");
+    expect(previewSource).toContain("function EmailPreviewSurface");
+    expect(previewSource).toContain("attachShadow({ mode: \"open\" })");
+    expect(previewSource).toContain("[data-email-preview-content]");
+    expect(previewSource).toContain("Email preview contains no rendered content");
+    expect(previewSource).not.toContain("srcDoc={previewHtml");
+    expect(previewSource).not.toContain("previewDocumentUrl");
   });
 
-  it("keeps static preview retrieval available in the managed preview host", () => {
+  it("keeps static preview retrieval available while verifying actual rendered content", () => {
     const previewSource = readFileSync(
       resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
       "utf8"
@@ -63,9 +67,11 @@ describe("admin email preview runtime contract", () => {
     );
 
     expect(previewSource).toContain("enabled: true");
-    expect(previewSource).toContain("isManagedPreviewHost");
-    expect(previewSource).toContain("window.top !== window.self");
-    expect(previewSource).toContain('isManagedPreviewHost ? "srcdoc" : "blob"');
+    expect(previewSource).toContain("renderedText");
+    expect(previewSource).toContain("const [previewReadyKey");
+    expect(previewSource).toContain("const [previewErrorKey");
+    expect(previewSource).toContain("previewReadyKey === previewKey");
+    expect(previewSource).toContain("previewErrorKey === previewKey");
     expect(routerSource).toContain("emailPreview: publicProcedure");
   });
 
@@ -101,6 +107,17 @@ describe("admin email preview runtime contract", () => {
     expect(previewSource).toContain("URL.revokeObjectURL(url)");
   });
 
+  it("keeps email body and footer text legible in dark-mode preview rendering", () => {
+    const previewSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
+      "utf8"
+    );
+
+    expect(previewSource).toContain(".email-body,.email-body *{color:#f8fafc!important}");
+    expect(previewSource).toContain(".email-body a{color:#f6d56e!important}");
+    expect(previewSource).toContain(".email-footer,.email-footer *{color:#cbd5e1!important}");
+  });
+
   it("does not nest the branded header row inside a second table row", () => {
     const routerSource = readFileSync(
       resolve(process.cwd(), "server/routers.ts"),
@@ -131,5 +148,17 @@ describe("admin email preview runtime contract", () => {
     expect(browserPreviewSource).toContain("https://getphame.app/login?from=email-preview");
     expect(browserPreviewSource).toContain("Open Get Phame sign-in");
     expect(browserPreviewSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
+  });
+
+  it("uses the same shared renderer for browser previews and dispatched test emails", () => {
+    const routerSource = readFileSync(
+      resolve(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
+
+    expect(routerSource).toContain('from "./adminEmailPreviewTemplates"');
+    expect(routerSource.match(/buildAdminEmailPreviewTemplate\(/g)).toHaveLength(2);
+    expect(routerSource).toContain("const testMessageId = Date.now().toString(36)");
+    expect(routerSource).toContain("[Test Preview ${testMessageId}]");
   });
 });

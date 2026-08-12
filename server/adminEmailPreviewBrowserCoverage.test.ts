@@ -26,25 +26,27 @@ describe("admin email preview browser coverage matrix", () => {
     expect((source.match(/value: "/g) ?? []).length).toBeGreaterThanOrEqual(templates.length);
   });
 
-  it("covers desktop, mobile, and split viewport rendering through the shared Blob-first document renderer", () => {
+  it("covers desktop, mobile, and split viewport rendering through the shared content-verified surface", () => {
     const source = previewSource();
     expect(source).toContain('type ViewMode = "desktop" | "mobile" | "split"');
     expect(source).toContain('renderIframePane("Desktop — 800px", 800');
     expect(source).toContain('renderIframePane("Mobile — 390px", 390');
-    expect(source).toContain("src={previewDocumentUrl ?? undefined}");
-    expect(source).toContain("renderPreviewFrame(`${label} preview`, key, 500)");
-    expect(source).toContain("iframeKey,");
+    expect(source).toContain("EmailPreviewSurface");
+    expect(source).toContain("renderPreviewDocument(`${label} preview`, key, 500)");
+    expect(source).toContain("const previewKey =");
+    expect(source).not.toContain("iframeKey");
+    expect(source).toContain("onReady={() => handlePreviewReady(previewKey)}");
   });
 
   it("exposes a loaded and a recoverable-error state to browser users", () => {
     const source = previewSource();
-    expect(source).toContain('setPreviewRenderState("ready")');
-    expect(source).toContain('setPreviewRenderState("error")');
+    expect(source).toContain("previewReadyKey === previewKey");
+    expect(source).toContain("previewErrorKey === previewKey");
     expect(source).toContain('previewRenderState === "error" ? renderPreviewFallback()');
-    expect(source).toContain('previewRenderState === "ready" && previewDocumentUrl');
+    expect(source).toContain('previewRenderState === "ready" && previewHtml');
     expect(source).toContain('role="alert"');
-    expect(source).toContain('previewRenderMode === "blob"');
-    expect(source).toContain('srcDoc={previewHtml ?? ""}');
+    expect(source).toContain("Email preview contains no rendered content");
+    expect(source).toContain('data-testid="email-preview-surface"');
     expect(source).toContain('previewRenderState === "loading"');
     expect(source).toContain("renderPreviewSkeleton(minHeight)");
     expect(source).toContain("handleExportHtml");
