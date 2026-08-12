@@ -9,7 +9,7 @@ overrides:
   nodemailer: '>=9.0.1'
   body-parser: 1.20.6
   tar: '>=7.5.22'
-  postcss: '>=8.5.18'
+  postcss: '>=8.5.23'
   picomatch: '>=4.0.4'
   lodash: '>=4.18.0'
   lodash-es: '>=4.18.0'
@@ -24,7 +24,7 @@ overrides:
   qs: '>=6.15.2'
   brace-expansion: '>=5.0.9'
   mdast-util-to-hast: '>=13.2.1'
-  tailwindcss>nanoid: 3.3.7
+  tailwindcss>nanoid: 3.3.17
   vite-plugin-manus-runtime>nanoid: 5.1.16
   postcss>nanoid: 3.3.17
   baseline-browser-mapping: ^2.10.20
@@ -384,7 +384,7 @@ importers:
         version: 2.0.6
       autoprefixer:
         specifier: ^10.4.20
-        version: 10.4.21(postcss@8.5.22)
+        version: 10.4.21(postcss@8.5.26)
       drizzle-kit:
         specifier: ^0.31.4
         version: 0.31.10
@@ -395,8 +395,8 @@ importers:
         specifier: ^10.34.4
         version: 10.34.4
       postcss:
-        specifier: '>=8.5.18'
-        version: 8.5.22
+        specifier: '>=8.5.23'
+        version: 8.5.26
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -2190,7 +2190,7 @@ packages:
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
-      postcss: '>=8.5.18'
+      postcss: '>=8.5.23'
 
   aws-ssl-profiles@1.1.2:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
@@ -3791,8 +3791,8 @@ packages:
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  postcss@8.5.22:
-    resolution: {integrity: sha512-KBDEIpLrvpv16pp3K0Fw+UCoZfopFjjgeB+0tA/aaThfEE74kKDLrgg603YvOWJyg3+WYtyq3xYsQWsIyZlPqQ==}
+  postcss@8.5.26:
+    resolution: {integrity: sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   postgres-array@2.0.0:
@@ -6512,14 +6512,14 @@ snapshots:
 
   at-least-node@1.0.0: {}
 
-  autoprefixer@10.4.21(postcss@8.5.22):
+  autoprefixer@10.4.21(postcss@8.5.26):
     dependencies:
       browserslist: 4.26.3
       caniuse-lite: 1.0.30001748
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.1.1
-      postcss: 8.5.22
+      postcss: 8.5.26
       postcss-value-parser: 4.2.0
 
   aws-ssl-profiles@1.1.2: {}
@@ -8319,7 +8319,7 @@ snapshots:
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.5.22:
+  postcss@8.5.26:
     dependencies:
       nanoid: 3.3.17
       picocolors: 1.1.1
@@ -9017,7 +9017,7 @@ snapshots:
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.5
-      postcss: 8.5.22
+      postcss: 8.5.26
       rolldown: 1.1.5
       tinyglobby: 0.2.17
     optionalDependencies:

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6993a83d-44e9-442f-a942-d8800021a6ae",
+  "id": "12ed24b2-f185-449b-9606-8361e2f6ed14",
   "prevId": "39f6be72-863a-41fc-98c3-5295fd2f6a15",
   "tables": {
     "access_code_redemptions": {
@@ -2253,50 +2253,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "businessDescription": {
-          "name": "businessDescription",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "businessCategory": {
-          "name": "businessCategory",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "countryCode": {
-          "name": "countryCode",
-          "type": "varchar(2)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "regionCode": {
-          "name": "regionCode",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "preferredOutreachLocale": {
-          "name": "preferredOutreachLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "onboardingTemplateStatus": {
-          "name": "onboardingTemplateStatus",
-          "type": "varchar(24)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'not_started'"
-        },
         "quietHoursStartMinutes": {
           "name": "quietHoursStartMinutes",
           "type": "int",
@@ -2350,6 +2306,35 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(now())"
+        },
+        "consentAcknowledgedAt": {
+          "name": "consentAcknowledgedAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentLabelName": {
+          "name": "consentLabelName",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lastConsentRequestAt": {
+          "name": "lastConsentRequestAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentCoverageGoal": {
+          "name": "consentCoverageGoal",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 50
         }
       },
       "indexes": {},
@@ -2683,167 +2668,6 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
-    "contact_consent_evidence": {
-      "name": "contact_consent_evidence",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "publicId": {
-          "name": "publicId",
-          "type": "varchar(48)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "userId": {
-          "name": "userId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "contactId": {
-          "name": "contactId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "sourceConnectionId": {
-          "name": "sourceConnectionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "sourceSubmissionId": {
-          "name": "sourceSubmissionId",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "purpose": {
-          "name": "purpose",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "channel": {
-          "name": "channel",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "basis": {
-          "name": "basis",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "confirmed": {
-          "name": "confirmed",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "capturedAt": {
-          "name": "capturedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "source": {
-          "name": "source",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "consentText": {
-          "name": "consentText",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "consentTextHash": {
-          "name": "consentTextHash",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "consentVersion": {
-          "name": "consentVersion",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "privacyPolicyUrl": {
-          "name": "privacyPolicyUrl",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "contact_consent_evidence_source_unique": {
-          "name": "contact_consent_evidence_source_unique",
-          "columns": [
-            "userId",
-            "sourceSubmissionId",
-            "purpose"
-          ],
-          "isUnique": true
-        },
-        "contact_consent_evidence_contact_idx": {
-          "name": "contact_consent_evidence_contact_idx",
-          "columns": [
-            "userId",
-            "contactId"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "contact_consent_evidence_id": {
-          "name": "contact_consent_evidence_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "contact_consent_evidence_publicId_unique": {
-          "name": "contact_consent_evidence_publicId_unique",
-          "columns": [
-            "publicId"
-          ]
-        }
-      },
-      "checkConstraint": {}
-    },
     "customer_requests": {
       "name": "customer_requests",
       "columns": {
@@ -2920,42 +2744,6 @@
         },
         "platformId": {
           "name": "platformId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "sourceConnectionId": {
-          "name": "sourceConnectionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "sourceEventId": {
-          "name": "sourceEventId",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "preferredLocale": {
-          "name": "preferredLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "templateRevisionId": {
-          "name": "templateRevisionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "englishTemplateRevisionId": {
-          "name": "englishTemplateRevisionId",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
@@ -3621,183 +3409,6 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
-    "email_template_revisions": {
-      "name": "email_template_revisions",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "publicId": {
-          "name": "publicId",
-          "type": "varchar(48)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "userId": {
-          "name": "userId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "templateId": {
-          "name": "templateId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "familyPublicId": {
-          "name": "familyPublicId",
-          "type": "varchar(48)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "version": {
-          "name": "version",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "locale": {
-          "name": "locale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "subject": {
-          "name": "subject",
-          "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "body": {
-          "name": "body",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "englishSubject": {
-          "name": "englishSubject",
-          "type": "varchar(512)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "englishBody": {
-          "name": "englishBody",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "englishRevisionId": {
-          "name": "englishRevisionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "provenance": {
-          "name": "provenance",
-          "type": "varchar(24)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "modelId": {
-          "name": "modelId",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "inputHash": {
-          "name": "inputHash",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar(24)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'draft'"
-        },
-        "approvedAt": {
-          "name": "approvedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "approvedByUserId": {
-          "name": "approvedByUserId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "email_template_revisions_family_version_unique": {
-          "name": "email_template_revisions_family_version_unique",
-          "columns": [
-            "userId",
-            "familyPublicId",
-            "locale",
-            "version"
-          ],
-          "isUnique": true
-        },
-        "email_template_revisions_template_status_idx": {
-          "name": "email_template_revisions_template_status_idx",
-          "columns": [
-            "templateId",
-            "status"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "email_template_revisions_id": {
-          "name": "email_template_revisions_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "email_template_revisions_publicId_unique": {
-          "name": "email_template_revisions_publicId_unique",
-          "columns": [
-            "publicId"
-          ]
-        }
-      },
-      "checkConstraint": {}
-    },
     "email_templates": {
       "name": "email_templates",
       "columns": {
@@ -3834,43 +3445,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "familyPublicId": {
-          "name": "familyPublicId",
-          "type": "varchar(48)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "locale": {
-          "name": "locale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "activeRevisionId": {
-          "name": "activeRevisionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "provenance": {
-          "name": "provenance",
-          "type": "varchar(24)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'manual'"
-        },
-        "approvedAt": {
-          "name": "approvedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "isDefault": {
@@ -4010,28 +3584,6 @@
         },
         "secondStageEnabledSnapshot": {
           "name": "secondStageEnabledSnapshot",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "preferredLocale": {
-          "name": "preferredLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "templateRevisionId": {
-          "name": "templateRevisionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "englishTemplateRevisionId": {
-          "name": "englishTemplateRevisionId",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
@@ -4410,6 +3962,27 @@
         "guideSentAt": {
           "name": "guideSentAt",
           "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentGivenAt": {
+          "name": "consentGivenAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "unsubscribedAt": {
+          "name": "unsubscribedAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "unsubscribeReason": {
+          "name": "unsubscribeReason",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5769,6 +5342,80 @@
       },
       "checkConstraint": {}
     },
+    "release_parity_records": {
+      "name": "release_parity_records",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "checkpoint_id": {
+          "name": "checkpoint_id",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "protected_main_commit": {
+          "name": "protected_main_commit",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "protected_main_tree": {
+          "name": "protected_main_tree",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "managed_tree": {
+          "name": "managed_tree",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "parity_status": {
+          "name": "parity_status",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "recorded_at": {
+          "name": "recorded_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "release_parity_recorded_idx": {
+          "name": "release_parity_recorded_idx",
+          "columns": [
+            "recorded_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "release_parity_records_id": {
+          "name": "release_parity_records_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "review_platforms": {
       "name": "review_platforms",
       "columns": {
@@ -5814,41 +5461,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": 0
-        },
-        "countryCode": {
-          "name": "countryCode",
-          "type": "varchar(2)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "regionCode": {
-          "name": "regionCode",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "businessCategory": {
-          "name": "businessCategory",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "recommendationSource": {
-          "name": "recommendationSource",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "recommendationRank": {
-          "name": "recommendationRank",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "createdAt": {
           "name": "createdAt",
@@ -5996,63 +5608,6 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
-        },
-        "consentPurpose": {
-          "name": "consentPurpose",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "consentChannel": {
-          "name": "consentChannel",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "consentTextHash": {
-          "name": "consentTextHash",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "consentVersion": {
-          "name": "consentVersion",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "privacyPolicyUrl": {
-          "name": "privacyPolicyUrl",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "sourceFormId": {
-          "name": "sourceFormId",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "sourceSubmissionId": {
-          "name": "sourceSubmissionId",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "preferredLocale": {
-          "name": "preferredLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
         },
         "optedOut": {
           "name": "optedOut",
@@ -7277,206 +6832,6 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
-    "source_automation_events": {
-      "name": "source_automation_events",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "publicId": {
-          "name": "publicId",
-          "type": "varchar(48)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "userId": {
-          "name": "userId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "sourceConnectionId": {
-          "name": "sourceConnectionId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "apiKeyId": {
-          "name": "apiKeyId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "sourceEventId": {
-          "name": "sourceEventId",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "requestHash": {
-          "name": "requestHash",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "eventType": {
-          "name": "eventType",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'review_request'"
-        },
-        "contactId": {
-          "name": "contactId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "templateId": {
-          "name": "templateId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "platformId": {
-          "name": "platformId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "preferredLocale": {
-          "name": "preferredLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "customerRequestId": {
-          "name": "customerRequestId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar(24)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "errorCode": {
-          "name": "errorCode",
-          "type": "varchar(64)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "scheduledAt": {
-          "name": "scheduledAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "attemptCount": {
-          "name": "attemptCount",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "lastAttemptAt": {
-          "name": "lastAttemptAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "claimExpiresAt": {
-          "name": "claimExpiresAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "completedAt": {
-          "name": "completedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "source_automation_events_source_event_unique": {
-          "name": "source_automation_events_source_event_unique",
-          "columns": [
-            "userId",
-            "sourceConnectionId",
-            "sourceEventId"
-          ],
-          "isUnique": true
-        },
-        "source_automation_events_status_idx": {
-          "name": "source_automation_events_status_idx",
-          "columns": [
-            "userId",
-            "status"
-          ],
-          "isUnique": false
-        },
-        "source_automation_events_due_idx": {
-          "name": "source_automation_events_due_idx",
-          "columns": [
-            "status",
-            "scheduledAt"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "source_automation_events_id": {
-          "name": "source_automation_events_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "source_automation_events_publicId_unique": {
-          "name": "source_automation_events_publicId_unique",
-          "columns": [
-            "publicId"
-          ]
-        }
-      },
-      "checkConstraint": {}
-    },
     "source_connections": {
       "name": "source_connections",
       "columns": {
@@ -7545,81 +6900,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": "'setup'"
-        },
-        "automationEnabled": {
-          "name": "automationEnabled",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": false
-        },
-        "automationMode": {
-          "name": "automationMode",
-          "type": "varchar(24)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'import_only'"
-        },
-        "dryRun": {
-          "name": "dryRun",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": true
-        },
-        "sendDelayMinutes": {
-          "name": "sendDelayMinutes",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "templateId": {
-          "name": "templateId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "platformId": {
-          "name": "platformId",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "preferredLocale": {
-          "name": "preferredLocale",
-          "type": "varchar(16)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'en'"
-        },
-        "pausedAt": {
-          "name": "pausedAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "pauseReason": {
-          "name": "pauseReason",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "lastAutomationAt": {
-          "name": "lastAutomationAt",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "lastEvaluatedAt": {
           "name": "lastEvaluatedAt",
