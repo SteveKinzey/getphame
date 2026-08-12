@@ -90,6 +90,21 @@ export default function AdminEmailPreview() {
   }, [vars, darkMode]);
 
   const previewHtml = data?.html ? buildPreviewHtml(data.html) : null;
+  const [previewDocumentUrl, setPreviewDocumentUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!previewHtml) {
+      setPreviewDocumentUrl(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(
+      new Blob([previewHtml], { type: "text/html;charset=utf-8" })
+    );
+    setPreviewDocumentUrl(url);
+
+    return () => URL.revokeObjectURL(url);
+  }, [previewHtml]);
 
   // Auto-height iframe handler
   const autoHeight = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
@@ -165,10 +180,10 @@ export default function AdminEmailPreview() {
       <div className="border-b border-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-400">
         {label}
       </div>
-      {previewHtml ? (
+      {previewDocumentUrl ? (
         <iframe
           key={key}
-          srcDoc={previewHtml}
+          src={previewDocumentUrl}
           title={`${label} preview`}
           className="block w-full border-0"
           style={{ minHeight: 500, height: "auto" }}
@@ -445,10 +460,10 @@ export default function AdminEmailPreview() {
               background: darkMode ? "#1a1a1a" : "#fff",
             }}
           >
-            {previewHtml ? (
-              <iframe
-                key={iframeKey}
-                srcDoc={previewHtml}
+             {previewDocumentUrl ? (
+               <iframe
+                 key={iframeKey}
+                 src={previewDocumentUrl}
                 title={`Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`}
                 className="block w-full border-0"
                 style={{ minHeight: 600, height: "auto" }}
