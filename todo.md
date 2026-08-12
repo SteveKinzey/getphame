@@ -1980,3 +1980,16 @@
 - [x] Fail the audit when its route list is absent or empty
 - [x] Keep route-audit findings machine-readable when evaluation fails
 - [x] Clear retry-attempt diagnostics so transient failures do not contaminate successful route results
+
+## Admin production audit and renderer history (Aug 12, 2026)
+- [x] Add an administrator-only control to trigger the production route audit and display results
+- [x] Persist renderer-error and route-audit history for a dedicated administrator page
+- [x] Verify the rendered-template Copy HTML action is accessible and reliable
+- [x] Update and validate the reusable renderer-recovery skill for the new admin workflow
+
+## Release audit, localization coverage, and protected-main synchronization (Aug 12, 2026)
+- [x] Run the remaining public-route audit and review durable renderer-error history
+- [x] Review the sanitized audit-log schema and offline localization coverage across all seven locales
+- [x] Update and validate the reusable renderer-resilience skill with the release workflow
+- [x] Complete release checks and prepare the release checklist
+- [x] Save and publish the approved managed checkpoint, then synchronize its exact tree to protected main through a pull request

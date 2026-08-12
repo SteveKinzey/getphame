@@ -355,6 +355,65 @@ export type AuthHealthCheck = typeof authHealthChecks.$inferSelect;
 export type InsertAuthHealthCheck = typeof authHealthChecks.$inferInsert;
 
 /**
+ * Sanitized production-route audit outcomes triggered by administrators. The
+ * findings payload contains only route paths, aggregate browser signal counts,
+ * and render metrics; it deliberately excludes cookies, page markup, request
+ * headers, and raw console output.
+ */
+export const routeAuditRuns = pgTable(
+  "route_audit_runs",
+  {
+    id: serial("id").primaryKey(),
+    triggeredByUserId: integer("triggered_by_user_id").notNull(),
+    routesAudited: integer("routes_audited").notNull().default(0),
+    failureCount: integer("failure_count").notNull().default(0),
+    findings: text("findings").notNull(),
+    runnerErrorCode: varchar("runner_error_code", { length: 64 }),
+    durationMs: integer("duration_ms").notNull(),
+    auditedAt: bigint("audited_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("route_audit_runs_audited_idx").on(table.auditedAt),
+    index("route_audit_runs_triggered_idx").on(
+      table.triggeredByUserId,
+      table.auditedAt
+    ),
+  ]
+);
+
+export type RouteAuditRun = typeof routeAuditRuns.$inferSelect;
+export type InsertRouteAuditRun = typeof routeAuditRuns.$inferInsert;
+
+/**
+ * Minimal administrator-reported renderer failures. Do not retain email HTML,
+ * recipient data, raw errors, or browser console content in this diagnostic log.
+ */
+export const emailPreviewRendererErrors = pgTable(
+  "email_preview_renderer_errors",
+  {
+    id: serial("id").primaryKey(),
+    reportedByUserId: integer("reported_by_user_id").notNull(),
+    templateKey: varchar("template_key", { length: 64 }).notNull(),
+    viewportMode: varchar("viewport_mode", { length: 16 }).notNull(),
+    darkMode: boolean("dark_mode").notNull().default(false),
+    errorCode: varchar("error_code", { length: 64 }).notNull(),
+    occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("email_preview_renderer_errors_occurred_idx").on(table.occurredAt),
+    index("email_preview_renderer_errors_reporter_idx").on(
+      table.reportedByUserId,
+      table.occurredAt
+    ),
+  ]
+);
+
+export type EmailPreviewRendererError =
+  typeof emailPreviewRendererErrors.$inferSelect;
+export type InsertEmailPreviewRendererError =
+  typeof emailPreviewRendererErrors.$inferInsert;
+
+/**
  * Privacy-minimized GitHub automation outcomes received through verified OIDC.
  * Raw tokens, workflow payloads, logs, diffs, and pull-request bodies are excluded.
  */

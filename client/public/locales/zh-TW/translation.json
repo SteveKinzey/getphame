@@ -3908,6 +3908,13 @@
     "previewFallback": "無法在內嵌框架中呈現此預覽。",
     "previewLoading": "正在產生電子郵件預覽…",
     "exportHtml": "匯出 HTML",
-    "exported": "已下載！"
+    "exported": "已下載！",
+    "copyFailed": "此瀏覽器封鎖了複製已轉譯的 HTML。"
+  },
+  "adminRouteAudit": {
+    "eyebrow": "正式環境保障", "title": "正式環境路由稽核", "description": "安全檢查網站地圖中的公開路由是否有瀏覽器轉譯錯誤。不會接觸帳戶、表單或客戶資料。", "run": "執行路由稽核", "running": "正在稽核路由…", "viewHistory": "查看歷程", "runningDescription": "正在為目前公開網站地圖啟動乾淨的瀏覽器。此程序最多可能需要兩分鐘。", "unavailable": "稽核執行器無法使用", "completedWithIssues": "稽核完成，但發現問題", "completed": "稽核已成功完成", "failureCode": "失敗代碼", "summary": "已稽核 {{routes}} 個路由 · {{failures}} 個失敗", "resultRoutes": "已稽核路由", "issue": "需要檢查", "rendered": "已轉譯", "passed": "正式環境路由稽核已通過。", "failed": "正式環境路由稽核發現問題。", "runFailed": "無法執行正式環境路由稽核。"
+  },
+  "adminAuditLog": {
+    "back": "管理儀表板", "title": "稽核與轉譯歷程", "description": "僅限管理員的營運歷程。儲存的記錄只包含已淨化的稽核訊號，絕不包含客戶內容、電子郵件 HTML、Cookie 或瀏覽器日誌。", "refresh": "重新整理歷程", "routeTitle": "正式環境路由稽核", "routeDescription": "對網站地圖發現的公開路由進行手動瀏覽器檢查，依最新優先排序。", "runAnother": "執行另一項稽核 →", "routeError": "無法載入路由稽核歷程。", "routes": "個路由", "issuesFound": "{{count}} 個問題", "passed": "通過", "routeEmpty": "尚未記錄任何正式環境路由稽核。", "routePagination": "路由稽核歷程分頁", "rendererTitle": "電子郵件預覽轉譯器錯誤", "rendererDescription": "只有在管理員預覽無法轉譯已驗證內容時，才會擷取已淨化的訊號。", "rendererError": "無法載入轉譯器錯誤歷程。", "rendererEmpty": "尚未記錄轉譯器錯誤。", "rendererPagination": "轉譯器錯誤歷程分頁", "records": "筆記錄", "previous": "上一頁", "next": "下一頁", "darkPreview": "深色"
   }
 }

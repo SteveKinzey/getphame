@@ -131,6 +131,80 @@ function ReleaseParityCard() {
   );
 }
 
+type RouteAuditDashboardResult = {
+  id: number;
+  auditedRoutes: number;
+  failureCount: number;
+  durationMs: number;
+  auditedAt: number;
+  runnerErrorCode: string | null;
+  findings: Array<{
+    route: string;
+    status: number | null;
+    navigationError: boolean;
+    evaluationError: boolean;
+    consoleErrorCount: number;
+    pageErrorCount: number;
+    rendered: { hasRoot: boolean; rootChildCount: number; textLength: number; title: string };
+  }>;
+};
+
+function RouteAuditControl() {
+  const { t } = useTranslation("translation");
+  const [, navigate] = useLocation();
+  const utils = trpc.useUtils();
+  const [result, setResult] = useState<RouteAuditDashboardResult | null>(null);
+  const runRouteAudit = trpc.admin.triggerRouteAudit.useMutation({
+    onSuccess: audit => {
+      setResult(audit);
+      void utils.admin.listRouteAuditRuns.invalidate();
+      audit.failureCount === 0
+        ? toast.success(t("adminRouteAudit.passed", { defaultValue: "Production route audit passed." }))
+        : toast.error(t("adminRouteAudit.failed", { defaultValue: "Production route audit found issues." }));
+    },
+    onError: error => toast.error(error.message || t("adminRouteAudit.runFailed", { defaultValue: "The production route audit could not run." })),
+  });
+  const hasFailures = (result?.failureCount ?? 0) > 0;
+
+  return (
+    <section className="rounded-2xl border bg-white p-4 shadow-sm" style={{ borderColor: hasFailures ? "oklch(0.84 0.08 27)" : "oklch(0.88 0.03 260)" }} aria-labelledby="route-audit-title">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Activity size={21} /></span>
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">{t("adminRouteAudit.eyebrow", { defaultValue: "Production assurance" })}</p>
+            <h2 id="route-audit-title" className="mt-0.5 text-xl font-black rr-text-navy">{t("adminRouteAudit.title", { defaultValue: "Production route audit" })}</h2>
+            <p className="mt-1 max-w-2xl text-sm font-semibold rr-text-navy-muted">{t("adminRouteAudit.description", { defaultValue: "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched." })}</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 sm:justify-end">
+          <button type="button" onClick={() => runRouteAudit.mutate()} disabled={runRouteAudit.isPending} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:cursor-wait disabled:opacity-60">
+            {runRouteAudit.isPending ? <Loader2 size={16} className="animate-spin" /> : <Activity size={16} />}
+            {runRouteAudit.isPending ? t("adminRouteAudit.running", { defaultValue: "Auditing routes…" }) : t("adminRouteAudit.run", { defaultValue: "Run route audit" })}
+          </button>
+          <button type="button" onClick={() => navigate("/admin/audit-log")} className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-black rr-text-navy" style={{ borderColor: "oklch(0.84 0.04 260)" }}>
+            {t("adminRouteAudit.viewHistory", { defaultValue: "View history" })}
+          </button>
+        </div>
+      </div>
+
+      {(runRouteAudit.isPending || result) && <div role={hasFailures ? "alert" : "status"} aria-live="polite" className="mt-4 rounded-xl p-3" style={{ background: runRouteAudit.isPending ? "oklch(0.98 0.03 80)" : hasFailures ? "oklch(0.97 0.03 27)" : "oklch(0.95 0.04 145)" }}>
+        {runRouteAudit.isPending ? <p className="flex items-center gap-2 text-sm font-black rr-text-navy"><Loader2 size={16} className="animate-spin" />{t("adminRouteAudit.runningDescription", { defaultValue: "Launching a clean browser for the current public sitemap. This can take up to two minutes." })}</p> : result && <>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-2 text-sm font-black" style={{ color: hasFailures ? "oklch(0.46 0.12 27)" : "oklch(0.40 0.14 145)" }}>{hasFailures ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}{result.runnerErrorCode ? t("adminRouteAudit.unavailable", { defaultValue: "Audit runner unavailable" }) : hasFailures ? t("adminRouteAudit.completedWithIssues", { defaultValue: "Audit completed with issues" }) : t("adminRouteAudit.completed", { defaultValue: "Audit completed successfully" })}</p>
+            <span className="text-xs font-black rr-text-navy-muted">{result.durationMs.toLocaleString()} ms</span>
+          </div>
+          <p className="mt-1 text-xs font-bold rr-text-navy-muted">{result.runnerErrorCode ? `${t("adminRouteAudit.failureCode", { defaultValue: "Failure code" })}: ${result.runnerErrorCode}` : t("adminRouteAudit.summary", { defaultValue: "{{routes}} routes audited · {{failures}} failures", routes: result.auditedRoutes, failures: result.failureCount })}</p>
+          {result.findings.length > 0 && <ul className="mt-3 space-y-1.5" aria-label={t("adminRouteAudit.resultRoutes", { defaultValue: "Audited routes" })}>{result.findings.map(finding => {
+            const failed = finding.navigationError || finding.evaluationError || (finding.status ?? 0) >= 400 || finding.consoleErrorCount > 0 || finding.pageErrorCount > 0 || finding.rendered.textLength === 0;
+            return <li key={finding.route} className="flex items-center justify-between gap-3 rounded-lg bg-white/70 px-2.5 py-2 text-xs font-bold rr-text-navy"><span className="truncate">{finding.route}</span><span className={failed ? "text-red-700" : "text-emerald-700"}>{failed ? t("adminRouteAudit.issue", { defaultValue: "Needs review" }) : `${finding.status ?? 200} · ${t("adminRouteAudit.rendered", { defaultValue: "Rendered" })}`}</span></li>;
+          })}</ul>}
+        </>}
+      </div>}
+    </section>
+  );
+}
+
 
 function LeadsSection() {
   const { data: leads, isLoading } = trpc.admin.listLeads.useQuery();
@@ -720,6 +794,8 @@ export default function AdminDashboard() {
             Failed to load stats: {error.message}
           </div>
         )}
+
+        <RouteAuditControl />
 
         {stats && (
           <>

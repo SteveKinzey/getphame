@@ -102,6 +102,7 @@ import {
   ADMIN_EMAIL_PREVIEW_LABELS,
   buildAdminEmailPreviewTemplate,
 } from "./adminEmailPreviewTemplates";
+import { RouteAuditError, runProductionRouteAudit } from "./routeAudit";
 import { sendSupportMessage } from "./supportEmail";
 import {
   checkSupportAttachmentRateLimit,
@@ -205,6 +206,8 @@ import {
   quietHoursQueuedSends,
   pwaUpdateEventTotals,
   releaseParityRecords,
+  routeAuditRuns,
+  emailPreviewRendererErrors,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -402,6 +405,31 @@ const validateSmtpAuditDateRange = (value: {
   value.dateFrom === undefined ||
   value.dateTo === undefined ||
   value.dateFrom <= value.dateTo;
+
+const EMAIL_PREVIEW_TEMPLATE_KEYS = [
+  "magic-link",
+  "welcome",
+  "upgrade-receipt-pro",
+  "upgrade-receipt-annual",
+  "upgrade-receipt-lifetime",
+  "account-deletion",
+] as const;
+
+const routeAuditHistoryInput = z.object({
+  page: z.number().int().min(1).default(1),
+  pageSize: z.number().int().min(1).max(50).default(20),
+});
+
+function parseRouteAuditFindings(raw: string) {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.slice(0, 25) : [];
+  } catch {
+    return [];
+  }
+}
+
+let routeAuditInFlight: Promise<Awaited<ReturnType<typeof runProductionRouteAudit>>> | null = null;
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
 
@@ -4298,6 +4326,162 @@ export const appRouter = router({
 
   /** Admin-only analytics and diagnostics */
   admin: router({
+    /** Run a serialized, non-authenticated browser audit of sitemap public routes. */
+    triggerRouteAudit: adminProcedure.mutation(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Audit history storage is unavailable.",
+        });
+      }
+      if (routeAuditInFlight) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "A production route audit is already in progress.",
+        });
+      }
+
+      const startedAt = Date.now();
+      routeAuditInFlight = runProductionRouteAudit();
+      try {
+        const result = await routeAuditInFlight;
+        const [inserted] = await db.insert(routeAuditRuns).values({
+          triggeredByUserId: ctx.user.id,
+          routesAudited: result.auditedRoutes,
+          failureCount: result.failureCount,
+          findings: JSON.stringify(result.findings),
+          durationMs: result.durationMs,
+          auditedAt: result.auditedAt,
+        });
+        return {
+          id: Number((inserted as unknown as { insertId: number }).insertId),
+          ...result,
+          runnerErrorCode: null,
+        };
+      } catch (error) {
+        const runnerErrorCode =
+          error instanceof RouteAuditError ? error.code : "route_audit_failed";
+        const auditedAt = Date.now();
+        const [inserted] = await db.insert(routeAuditRuns).values({
+          triggeredByUserId: ctx.user.id,
+          routesAudited: 0,
+          failureCount: 1,
+          findings: "[]",
+          runnerErrorCode,
+          durationMs: auditedAt - startedAt,
+          auditedAt,
+        });
+        return {
+          id: Number((inserted as unknown as { insertId: number }).insertId),
+          auditedRoutes: 0,
+          failureCount: 1,
+          findings: [],
+          durationMs: auditedAt - startedAt,
+          auditedAt,
+          runnerErrorCode,
+        };
+      } finally {
+        routeAuditInFlight = null;
+      }
+    }),
+
+    /** Bounded newest-first history of sanitized production route audits. */
+    listRouteAuditRuns: adminProcedure
+      .input(routeAuditHistoryInput.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Audit history storage is unavailable.",
+          });
+        }
+        const parsed = routeAuditHistoryInput.parse(input ?? {});
+        const [totalRow] = await db
+          .select({ value: count() })
+          .from(routeAuditRuns);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / parsed.pageSize));
+        const page = Math.min(parsed.page, pageCount);
+        const rows = await db
+          .select()
+          .from(routeAuditRuns)
+          .orderBy(desc(routeAuditRuns.auditedAt), desc(routeAuditRuns.id))
+          .limit(parsed.pageSize)
+          .offset((page - 1) * parsed.pageSize);
+        return {
+          rows: rows.map(row => ({
+            ...row,
+            findings: parseRouteAuditFindings(row.findings),
+          })),
+          page,
+          pageSize: parsed.pageSize,
+          total,
+          pageCount,
+        };
+      }),
+
+    /** Record a sanitized renderer failure from the authenticated admin preview. */
+    recordEmailPreviewRendererError: adminProcedure
+      .input(
+        z.object({
+          templateKey: z.enum(EMAIL_PREVIEW_TEMPLATE_KEYS),
+          viewportMode: z.enum(["desktop", "mobile", "split"]),
+          darkMode: z.boolean(),
+          errorCode: z.literal("render_content_unavailable"),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Renderer diagnostics storage is unavailable.",
+          });
+        }
+        const occurredAt = Date.now();
+        const [inserted] = await db.insert(emailPreviewRendererErrors).values({
+          reportedByUserId: ctx.user.id,
+          ...input,
+          occurredAt,
+        });
+        return {
+          id: Number((inserted as unknown as { insertId: number }).insertId),
+          occurredAt,
+        };
+      }),
+
+    /** Bounded newest-first history of sanitized email-preview renderer errors. */
+    listEmailPreviewRendererErrors: adminProcedure
+      .input(routeAuditHistoryInput.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Renderer diagnostics storage is unavailable.",
+          });
+        }
+        const parsed = routeAuditHistoryInput.parse(input ?? {});
+        const [totalRow] = await db
+          .select({ value: count() })
+          .from(emailPreviewRendererErrors);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / parsed.pageSize));
+        const page = Math.min(parsed.page, pageCount);
+        const rows = await db
+          .select()
+          .from(emailPreviewRendererErrors)
+          .orderBy(
+            desc(emailPreviewRendererErrors.occurredAt),
+            desc(emailPreviewRendererErrors.id)
+          )
+          .limit(parsed.pageSize)
+          .offset((page - 1) * parsed.pageSize);
+        return { rows, page, pageSize: parsed.pageSize, total, pageCount };
+      }),
+
     releaseParity: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) return null;

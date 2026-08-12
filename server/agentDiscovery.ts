@@ -66,17 +66,9 @@ Get Phame does not offer automatic agent account registration or OAuth client-cr
 
 An account owner signs in at ${BASE_URL}/login, opens Developer Integrations, and creates a scoped key for an approved integration. The key is shown once and must be stored as a secret. Agents must never request, transmit, log, or expose an account owner's API key.
 
-## Supported credential
-
-Use an owner-provisioned key in the HTTP Authorization header: \`Bearer gp_live_...\`. Supported scopes are \`contacts:write\` and \`review_requests:send\`. A key can be revoked, expire, or be suspended by abuse protection.
-
 ## Authorization and outreach policy
 
 Before a protected action, verify the account owner's authorization, source ownership, relevant API scope, and the customer's valid relationship or explicit opt-in basis. Treat review-request delivery as a consequential action. Never bypass consent, suppression, rate-limit, idempotency, or compliance safeguards.
-
-## Help
-
-Read ${BASE_URL}/docs/api before integration. For account access or provisioning assistance, use the in-app support flow after the account owner signs in.
 `;
 
 const AGENT_SKILL = `---
@@ -86,7 +78,7 @@ description: Discover Get Phame public integration resources and safely prepare 
 
 # Get Phame public API discovery
 
-Use this skill to identify the public Get Phame API documentation, OpenAPI description, authentication model, and compliance constraints before an account owner authorizes an integration.
+Use this skill to identify public Get Phame API documentation, authentication, and compliance constraints before an account owner authorizes an integration.
 
 ## Resources
 
@@ -106,10 +98,7 @@ export function countMarkdownTokens(markdown: string): number {
 
 export function acceptsMarkdown(req: Request): boolean {
   const accept = req.header("accept") ?? "";
-  return accept
-    .toLowerCase()
-    .split(",")
-    .some(value => value.trim().startsWith("text/markdown"));
+  return accept.toLowerCase().split(",").some(value => value.trim().startsWith("text/markdown"));
 }
 
 function sha256(value: string): string {
@@ -134,96 +123,25 @@ function sendJson(res: Response, content: unknown, contentType = "application/js
 function openApiDocument() {
   return {
     openapi: "3.1.0",
-    info: {
-      title: "Get Phame Developer API",
-      version: "1.0.0",
-      description:
-        "Account-owner-authorized, compliance-aware integrations for individual review outreach. Read /docs/api and /auth.md before use.",
-    },
+    info: { title: "Get Phame Developer API", version: "1.0.0", description: "Account-owner-authorized, compliance-aware integrations for individual review outreach. Read /docs/api and /auth.md before use." },
     servers: [{ url: BASE_URL }],
     security: [{ developerApiKey: [] }],
-    components: {
-      securitySchemes: {
-        developerApiKey: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "Get Phame developer API key",
-          description: "Owner-provisioned gp_live_ key. Not an OAuth access token.",
-        },
-      },
-    },
+    components: { securitySchemes: { developerApiKey: { type: "http", scheme: "bearer", bearerFormat: "Get Phame developer API key", description: "Owner-provisioned gp_live_ key. Not an OAuth access token." } } },
     paths: {
-      "/api/health": {
-        get: {
-          summary: "Read non-sensitive service readiness",
-          security: [],
-          responses: { "200": { description: "Service ready" } },
-        },
-      },
-      "/api/v1/contacts": {
-        post: {
-          summary: "Import a contact with consent evidence",
-          description: "Requires contacts:write and account-owner authorization.",
-          responses: {
-            "200": { description: "Contact imported or deduplicated" },
-            "401": { description: "Missing, revoked, expired, or invalid key" },
-            "403": { description: "Insufficient scope or source authorization" },
-            "422": { description: "Consent evidence is required" },
-            "429": { description: "Rate-limited or abuse-protected" },
-          },
-        },
-      },
-      "/api/v1/source-events/review-request/validate": {
-        post: {
-          summary: "Validate an eligible source-bound review request without delivery",
-          description: "Requires contacts:write and review_requests:send.",
-          responses: { "200": { description: "Eligibility result" } },
-        },
-      },
-      "/api/v1/source-events/review-request": {
-        post: {
-          summary: "Submit an eligible source-bound review-request event",
-          description: "Consequential. Requires owner authorization, source ownership, consent evidence, and configured account safeguards.",
-          responses: { "200": { description: "Delivered or queued event" }, "202": { description: "Scheduled or suppressed event" } },
-        },
-      },
+      "/api/health": { get: { summary: "Read non-sensitive service readiness", security: [], responses: { "200": { description: "Service ready" } } } },
+      "/api/v1/contacts": { post: { summary: "Import a contact with consent evidence", description: "Requires contacts:write and account-owner authorization.", responses: { "200": { description: "Contact imported or deduplicated" }, "401": { description: "Missing, revoked, expired, or invalid key" }, "403": { description: "Insufficient scope or source authorization" }, "422": { description: "Consent evidence is required" }, "429": { description: "Rate-limited or abuse-protected" } } } },
+      "/api/v1/source-events/review-request/validate": { post: { summary: "Validate an eligible source-bound review request without delivery", description: "Requires contacts:write and review_requests:send.", responses: { "200": { description: "Eligibility result" } } } },
+      "/api/v1/source-events/review-request": { post: { summary: "Submit an eligible source-bound review-request event", description: "Consequential. Requires owner authorization, source ownership, consent evidence, and configured account safeguards.", responses: { "200": { description: "Delivered or queued event" }, "202": { description: "Scheduled or suppressed event" } } } },
     },
   };
 }
 
 function publicMcpTool() {
-  return {
-    name: "get_phame_public_product_information",
-    title: "Get Phame public product information",
-    description:
-      "Returns public Get Phame product, developer documentation, authentication, privacy, and security resources. It does not access customer data or perform actions.",
-    inputSchema: {
-      type: "object",
-      additionalProperties: false,
-      properties: {},
-    },
-    annotations: { readOnlyHint: true, openWorldHint: false },
-  };
+  return { name: "get_phame_public_product_information", title: "Get Phame public product information", description: "Returns public Get Phame product, developer documentation, authentication, privacy, and security resources. It does not access customer data or perform actions.", inputSchema: { type: "object", additionalProperties: false, properties: {} }, annotations: { readOnlyHint: true, openWorldHint: false } };
 }
 
 function publicProductInformation() {
-  return {
-    product: "Get Phame",
-    description: "Compliance-aware individual customer feedback outreach.",
-    resources: {
-      home: `${BASE_URL}/`,
-      developerDocumentation: `${BASE_URL}/docs/api`,
-      openApi: `${BASE_URL}/openapi.json`,
-      authentication: `${BASE_URL}/auth.md`,
-      security: `${BASE_URL}/security`,
-      privacy: `${BASE_URL}/privacy-policy`,
-    },
-    safety: {
-      customerData: "Not available through this public discovery tool.",
-      consequentialActions: "Not available through this public discovery tool.",
-      protectedApi: "Requires an account-owner-provisioned, scoped developer API key.",
-    },
-  };
+  return { product: "Get Phame", description: "Compliance-aware individual customer feedback outreach.", resources: { home: `${BASE_URL}/`, developerDocumentation: `${BASE_URL}/docs/api`, openApi: `${BASE_URL}/openapi.json`, authentication: `${BASE_URL}/auth.md`, security: `${BASE_URL}/security`, privacy: `${BASE_URL}/privacy-policy` }, safety: { customerData: "Not available through this public discovery tool.", consequentialActions: "Not available through this public discovery tool.", protectedApi: "Requires an account-owner-provisioned, scoped developer API key." } };
 }
 
 function mcpError(res: Response, id: string | number | null, code: number, message: string) {
@@ -236,160 +154,37 @@ function mcpSuccess(res: Response, id: string | number | null, result: unknown) 
 
 export function registerAgentDiscoveryLinkHeaders(app: Express): void {
   app.use((req, res, next) => {
-    if (req.path === "/" && (req.method === "GET" || req.method === "HEAD")) {
-      res.setHeader("Link", HOMEPAGE_AGENT_LINK_HEADER);
-    }
+    if (req.path === "/" && (req.method === "GET" || req.method === "HEAD")) res.setHeader("Link", HOMEPAGE_AGENT_LINK_HEADER);
     next();
   });
 }
 
 export function registerAgentDiscoveryRoutes(app: Express): void {
-  app.get("/", (req, res, next) => {
-    if (!acceptsMarkdown(req)) return next();
-    return sendMarkdown(res, HOMEPAGE_MARKDOWN);
-  });
-
-  app.get("/.well-known/api-catalog", (_req, res) =>
-    sendJson(
-      res,
-      {
-        linkset: [
-          {
-            anchor: `${BASE_URL}/api/v1`,
-            link: [
-              { rel: "service-desc", href: `${BASE_URL}/openapi.json`, type: "application/vnd.oai.openapi+json" },
-              { rel: "service-doc", href: `${BASE_URL}/docs/api`, type: "text/markdown" },
-              { rel: "status", href: `${BASE_URL}/api/health`, type: "application/json" },
-            ],
-          },
-        ],
-      },
-      "application/linkset+json"
-    )
-  );
-
-  app.get("/openapi.json", (_req, res) =>
-    sendJson(res, openApiDocument(), "application/vnd.oai.openapi+json")
-  );
+  app.get("/", (req, res, next) => (acceptsMarkdown(req) ? sendMarkdown(res, HOMEPAGE_MARKDOWN) : next()));
+  app.get("/.well-known/api-catalog", (_req, res) => sendJson(res, { linkset: [{ anchor: `${BASE_URL}/api/v1`, link: [{ rel: "service-desc", href: `${BASE_URL}/openapi.json`, type: "application/vnd.oai.openapi+json" }, { rel: "service-doc", href: `${BASE_URL}/docs/api`, type: "text/markdown" }, { rel: "status", href: `${BASE_URL}/api/health`, type: "application/json" }] }] }, "application/linkset+json"));
+  app.get("/openapi.json", (_req, res) => sendJson(res, openApiDocument(), "application/vnd.oai.openapi+json"));
   app.get("/docs/api", (_req, res) => sendMarkdown(res, API_DOCS_MARKDOWN));
   app.get("/auth.md", (_req, res) => sendMarkdown(res, AUTH_MD));
-
-  app.get("/.well-known/openid-configuration", (_req, res) =>
-    sendJson(res, {
-      issuer: BASE_URL,
-      authorization_endpoint: `${BASE_URL}/api/agent/authorize`,
-      token_endpoint: `${BASE_URL}/api/agent/token`,
-      jwks_uri: `${BASE_URL}/.well-known/jwks.json`,
-      response_types_supported: [],
-      grant_types_supported: [],
-      scopes_supported: ["contacts:write", "review_requests:send"],
-      token_endpoint_auth_methods_supported: [],
-      service_documentation: `${BASE_URL}/auth.md`,
-      agent_auth: {
-        skill: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`,
-        register_uri: `${BASE_URL}/login`,
-        identity_types_supported: ["verified_email"],
-        identity_assertion: { assertion_types_supported: ["verified_email"] },
-        credential_types_supported: ["api_key"],
-        claim_uri: `${BASE_URL}/docs/api`,
-      },
-    })
-  );
-  app.get("/.well-known/oauth-authorization-server", (_req, res) =>
-    sendJson(res, {
-      issuer: BASE_URL,
-      authorization_endpoint: `${BASE_URL}/api/agent/authorize`,
-      token_endpoint: `${BASE_URL}/api/agent/token`,
-      jwks_uri: `${BASE_URL}/.well-known/jwks.json`,
-      response_types_supported: [],
-      grant_types_supported: [],
-      scopes_supported: ["contacts:write", "review_requests:send"],
-      token_endpoint_auth_methods_supported: [],
-      service_documentation: `${BASE_URL}/auth.md`,
-      agent_auth: {
-        skill: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`,
-        register_uri: `${BASE_URL}/login`,
-        identity_types_supported: ["verified_email"],
-        identity_assertion: { assertion_types_supported: ["verified_email"] },
-        credential_types_supported: ["api_key"],
-        claim_uri: `${BASE_URL}/docs/api`,
-      },
-    })
-  );
+  app.get("/.well-known/openid-configuration", (_req, res) => sendJson(res, { issuer: BASE_URL, authorization_endpoint: `${BASE_URL}/api/agent/authorize`, token_endpoint: `${BASE_URL}/api/agent/token`, jwks_uri: `${BASE_URL}/.well-known/jwks.json`, response_types_supported: [], grant_types_supported: [], scopes_supported: ["contacts:write", "review_requests:send"], token_endpoint_auth_methods_supported: [], service_documentation: `${BASE_URL}/auth.md`, agent_auth: { skill: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`, register_uri: `${BASE_URL}/login`, identity_types_supported: ["verified_email"], identity_assertion: { assertion_types_supported: ["verified_email"] }, credential_types_supported: ["api_key"], claim_uri: `${BASE_URL}/docs/api` } }));
+  app.get("/.well-known/oauth-authorization-server", (_req, res) => sendJson(res, { issuer: BASE_URL, authorization_endpoint: `${BASE_URL}/api/agent/authorize`, token_endpoint: `${BASE_URL}/api/agent/token`, jwks_uri: `${BASE_URL}/.well-known/jwks.json`, response_types_supported: [], grant_types_supported: [], scopes_supported: ["contacts:write", "review_requests:send"], token_endpoint_auth_methods_supported: [], service_documentation: `${BASE_URL}/auth.md`, agent_auth: { skill: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`, register_uri: `${BASE_URL}/login`, identity_types_supported: ["verified_email"], identity_assertion: { assertion_types_supported: ["verified_email"] }, credential_types_supported: ["api_key"], claim_uri: `${BASE_URL}/docs/api` } }));
   app.get("/.well-known/jwks.json", (_req, res) => sendJson(res, { keys: [] }));
-  app.get("/.well-known/oauth-protected-resource", (_req, res) =>
-    sendJson(res, {
-      resource: `${BASE_URL}/api/v1`,
-      authorization_servers: [BASE_URL],
-      scopes_supported: ["contacts:write", "review_requests:send"],
-      bearer_methods_supported: ["header"],
-      resource_documentation: `${BASE_URL}/docs/api`,
-    })
-  );
-
-  app.get("/.well-known/mcp/server-card.json", (_req, res) =>
-    sendJson(res, {
-      serverInfo: { name: "Get Phame public discovery", version: "1.0.0" },
-      transport: { type: "streamable-http", endpoint: `${BASE_URL}/mcp` },
-      transports: [{ type: "streamable-http", endpoint: `${BASE_URL}/mcp` }],
-      capabilities: { tools: { listChanged: false }, resources: {}, prompts: {} },
-    })
-  );
+  app.get("/.well-known/oauth-protected-resource", (_req, res) => sendJson(res, { resource: `${BASE_URL}/api/v1`, authorization_servers: [BASE_URL], scopes_supported: ["contacts:write", "review_requests:send"], bearer_methods_supported: ["header"], resource_documentation: `${BASE_URL}/docs/api` }));
+  app.get("/.well-known/mcp/server-card.json", (_req, res) => sendJson(res, { serverInfo: { name: "Get Phame public discovery", version: "1.0.0" }, transport: { type: "streamable-http", endpoint: `${BASE_URL}/mcp` }, transports: [{ type: "streamable-http", endpoint: `${BASE_URL}/mcp` }], capabilities: { tools: { listChanged: false }, resources: {}, prompts: {} } }));
   app.post("/mcp", (req, res) => {
     const body = req.body as { id?: unknown; method?: unknown; params?: unknown } | undefined;
     const id = typeof body?.id === "string" || typeof body?.id === "number" ? body.id : null;
-    if (!body || typeof body.method !== "string") {
-      return mcpError(res, id, -32600, "Invalid JSON-RPC request.");
-    }
-    if (body.method === "initialize") {
-      return mcpSuccess(res, id, {
-        protocolVersion: "2025-06-18",
-        capabilities: { tools: {} },
-        serverInfo: { name: "Get Phame public discovery", version: "1.0.0" },
-      });
-    }
+    if (!body || typeof body.method !== "string") return mcpError(res, id, -32600, "Invalid JSON-RPC request.");
+    if (body.method === "initialize") return mcpSuccess(res, id, { protocolVersion: "2025-06-18", capabilities: { tools: {} }, serverInfo: { name: "Get Phame public discovery", version: "1.0.0" } });
     if (body.method === "tools/list") return mcpSuccess(res, id, { tools: [publicMcpTool()] });
     if (body.method === "tools/call") {
       const name = (body.params as { name?: unknown } | undefined)?.name;
-      if (name !== "get_phame_public_product_information") {
-        return mcpError(res, id, -32602, "The requested tool is not available.");
-      }
-      return mcpSuccess(res, id, {
-        content: [{ type: "text", text: JSON.stringify(publicProductInformation()) }],
-        isError: false,
-      });
+      if (name !== "get_phame_public_product_information") return mcpError(res, id, -32602, "The requested tool is not available.");
+      return mcpSuccess(res, id, { content: [{ type: "text", text: JSON.stringify(publicProductInformation()) }], isError: false });
     }
     return mcpError(res, id, -32601, "Method not found.");
   });
-
-  app.get("/.well-known/agent-skills/get-phame-public-api/SKILL.md", (_req, res) =>
-    sendMarkdown(res, AGENT_SKILL)
-  );
-  app.get("/.well-known/agent-skills/index.json", (_req, res) =>
-    sendJson(res, {
-      $schema: "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
-      skills: [
-        {
-          name: "get-phame-public-api",
-          type: "skill-md",
-          description: "Discover Get Phame public integration resources and safely prepare an owner-authorized developer API integration.",
-          url: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`,
-          digest: `sha256:${sha256(AGENT_SKILL)}`,
-        },
-      ],
-    })
-  );
-
-  app.get("/api/agent/authorize", (_req, res) =>
-    res.status(400).json({
-      error: "unsupported_response_type",
-      error_description: "Get Phame does not provide automated OAuth authorization. Use account-owner-provisioned developer API keys as documented in /auth.md.",
-    })
-  );
-  app.post("/api/agent/token", (_req, res) =>
-    res.status(400).json({
-      error: "unsupported_grant_type",
-      error_description: "Get Phame does not mint OAuth access tokens. Use an owner-provisioned developer API key as documented in /auth.md.",
-    })
-  );
+  app.get("/.well-known/agent-skills/get-phame-public-api/SKILL.md", (_req, res) => sendMarkdown(res, AGENT_SKILL));
+  app.get("/.well-known/agent-skills/index.json", (_req, res) => sendJson(res, { $schema: "https://schemas.agentskills.io/discovery/0.2.0/schema.json", skills: [{ name: "get-phame-public-api", type: "skill-md", description: "Discover Get Phame public integration resources and safely prepare an owner-authorized developer API integration.", url: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`, digest: `sha256:${sha256(AGENT_SKILL)}` }] }));
+  app.get("/api/agent/authorize", (_req, res) => res.status(400).json({ error: "unsupported_response_type", error_description: "Get Phame does not provide automated OAuth authorization. Use account-owner-provisioned developer API keys as documented in /auth.md." }));
+  app.post("/api/agent/token", (_req, res) => res.status(400).json({ error: "unsupported_grant_type", error_description: "Get Phame does not mint OAuth access tokens. Use an owner-provisioned developer API key as documented in /auth.md." }));
 }
