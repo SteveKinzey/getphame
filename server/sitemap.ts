@@ -74,6 +74,7 @@ export function registerSitemapRoutes(app: Express): void {
       [
         "User-agent: *",
         "Allow: /",
+        "Content-Signal: ai-train=no, search=yes, ai-input=no",
         "",
         // Block JS/CSS asset bundles — not useful in search results
         "Disallow: /assets/",

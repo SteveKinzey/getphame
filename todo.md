@@ -1936,3 +1936,7 @@
 - [x] Mark PR #121 ready and squash-merge it into protected main after the user-approved release decision
 - [x] Prove the resulting protected-main tree matches the validated replacement release
 - [ ] Verify the deployed application only after a successful protected-main release
+
+## Managed agent-discovery release port (Aug 12, 2026)
+- [x] Port the verified protected-main agent-discovery server routes and safe browser discovery bridge into the managed Get Phame source
+- [x] Validate the managed public discovery routes before publication (focused contracts, split TypeScript checks, 1,070-test suite, audit, and production build passed)
