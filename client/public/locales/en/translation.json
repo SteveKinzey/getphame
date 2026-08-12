@@ -4346,6 +4346,13 @@
     "previewFallback": "This preview could not render in the embedded frame.",
     "previewLoading": "Generating email preview…",
     "exportHtml": "Export HTML",
-    "exported": "Downloaded!"
+    "exported": "Downloaded!",
+    "copyFailed": "Copying the rendered HTML was blocked by this browser."
+  },
+  "adminRouteAudit": {
+    "eyebrow": "Production assurance", "title": "Production route audit", "description": "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched.", "run": "Run route audit", "running": "Auditing routes…", "viewHistory": "View history", "runningDescription": "Launching a clean browser for the current public sitemap. This can take up to two minutes.", "unavailable": "Audit runner unavailable", "completedWithIssues": "Audit completed with issues", "completed": "Audit completed successfully", "failureCode": "Failure code", "summary": "{{routes}} routes audited · {{failures}} failures", "resultRoutes": "Audited routes", "issue": "Needs review", "rendered": "Rendered", "passed": "Production route audit passed.", "failed": "Production route audit found issues.", "runFailed": "The production route audit could not run."
+  },
+  "adminAuditLog": {
+    "back": "Admin dashboard", "title": "Audit and renderer history", "description": "Administrator-only operational history. Stored records contain sanitized audit signals, never customer content, email HTML, cookies, or browser logs.", "refresh": "Refresh history", "routeTitle": "Production route audits", "routeDescription": "Manual browser checks of sitemap-discovered public routes, newest first.", "runAnother": "Run another audit →", "routeError": "Route-audit history could not be loaded.", "routes": "routes", "issuesFound": "{{count}} issues", "passed": "Passed", "routeEmpty": "No production route audits have been recorded yet.", "routePagination": "Route audit history pagination", "rendererTitle": "Email-preview renderer errors", "rendererDescription": "Sanitized signals captured only if an administrator preview cannot render verified content.", "rendererError": "Renderer-error history could not be loaded.", "rendererEmpty": "No renderer errors have been recorded.", "rendererPagination": "Renderer-error history pagination", "records": "records", "previous": "Previous", "next": "Next", "darkPreview": "dark"
   }
 }

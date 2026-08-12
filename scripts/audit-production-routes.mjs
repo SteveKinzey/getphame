@@ -1,8 +1,8 @@
-import { chromium } from "@playwright/test";
 import { readFile, writeFile } from "node:fs/promises";
+import { chromium } from "playwright-core";
 
-const sitemapPath = "/tmp/getphame-production-routes.txt";
-const outputPath = "/tmp/getphame-production-route-audit.json";
+const sitemapPath = process.env.ROUTE_AUDIT_SITEMAP_PATH ?? "/tmp/getphame-production-routes.txt";
+const outputPath = process.env.ROUTE_AUDIT_OUTPUT_PATH ?? "/tmp/getphame-production-route-audit.json";
 let routes;
 try {
   routes = (await readFile(sitemapPath, "utf8"))
@@ -19,7 +19,11 @@ if (routes.length === 0) {
   process.exit(1);
 }
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  executablePath: process.env.ROUTE_AUDIT_CHROMIUM_PATH || undefined,
+  args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+});
 const findings = [];
 
 for (const url of routes) {
@@ -27,6 +31,7 @@ for (const url of routes) {
   const consoleErrors = [];
   const pageErrors = [];
   const failedRequests = [];
+  const failedResponses = [];
 
   page.on("console", message => {
     if (message.type() === "error") consoleErrors.push(message.text());
@@ -34,6 +39,15 @@ for (const url of routes) {
   page.on("pageerror", error => pageErrors.push(error.message));
   page.on("requestfailed", request => {
     failedRequests.push({ url: request.url(), error: request.failure()?.errorText ?? "unknown" });
+  });
+  page.on("response", response => {
+    try {
+      if (response.status() >= 400 && new URL(response.url()).origin === new URL(url).origin) {
+        failedResponses.push({ url: response.url(), status: response.status() });
+      }
+    } catch {
+      // Ignore malformed response URLs in diagnostics.
+    }
   });
 
   let status = null;
@@ -44,6 +58,7 @@ for (const url of routes) {
     consoleErrors.length = 0;
     pageErrors.length = 0;
     failedRequests.length = 0;
+    failedResponses.length = 0;
     try {
       const response = await page.goto(url, { waitUntil: "commit", timeout: 45_000 });
       status = response?.status() ?? null;
@@ -91,6 +106,7 @@ for (const url of routes) {
     externalCspWarnings,
     pageErrors,
     failedRequests,
+    failedResponses,
   });
   await page.close();
 }

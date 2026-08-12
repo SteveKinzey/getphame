@@ -12,11 +12,14 @@ const LINE_SPACING_KEY = "getphame-walkthrough-caption-line-spacing";
 const TEXT_EDGE_KEY = "getphame-walkthrough-caption-text-edge";
 
 async function selectMenuItem(page: Page, trigger: Locator, testId: string) {
-  if ((await trigger.getAttribute("aria-expanded")) === "true") {
+  const menus = page.getByRole("menu");
+  if ((await trigger.getAttribute("aria-expanded")) === "true" || (await menus.count()) > 0) {
     await page.keyboard.press("Escape");
+    await expect(menus).toHaveCount(0);
   }
 
   await trigger.click();
+  await expect(menus).toHaveCount(1);
   const item = page.getByTestId(testId);
   await expect(item).toBeVisible();
   await item.click();
@@ -24,6 +27,7 @@ async function selectMenuItem(page: Page, trigger: Locator, testId: string) {
   if ((await trigger.getAttribute("aria-expanded")) === "true") {
     await page.keyboard.press("Escape");
   }
+  await expect(menus).toHaveCount(0);
 }
 
 test("controls multilingual captions, appearance, keyboard safety, and persistence without viewport overflow", async ({
@@ -44,10 +48,7 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "languages", { get: () => ["pt-BR", "de-DE"] });
     Object.defineProperty(navigator, "language", { get: () => "pt-BR" });
-    localStorage.setItem("rr-lang", "en");
-    localStorage.setItem("rr-lang-chosen", "1");
     localStorage.setItem("rl-pwa-prompt-dismissed", "1");
-    localStorage.setItem("getphame:first-visit-welcome:v1", "1");
     if (localStorage.getItem("getphame-walkthrough-captions") === null) {
       localStorage.setItem("getphame-walkthrough-captions", "on");
     }
@@ -78,12 +79,21 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   });
   await page.goto("/landing?walkthrough-e2e=1");
 
-  const trigger = page.getByTestId("walkthrough-trigger");
-  await expect(trigger).toBeVisible({ timeout: 20_000 });
+  await expect(
+    page.getByText(
+      "Watch the 63-second platform walkthrough — English narration with optional captions",
+    ),
+  ).toBeVisible({ timeout: 20_000 });
+
+  const trigger = page.getByRole("button", {
+    name: "Play product walkthrough video",
+  });
   await trigger.scrollIntoViewIfNeeded();
   await trigger.click();
 
-  const dialog = page.getByTestId("walkthrough-dialog");
+  const dialog = page.getByRole("dialog", {
+    name: "Get Phame platform walkthrough",
+  });
   await expect(dialog).toBeVisible();
   await expect(page.getByRole("button", { name: "Close video" })).toBeFocused();
 
@@ -267,39 +277,39 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(livePreview).toHaveAttribute("data-caption-line-spacing", "standard");
   await expect(livePreview).toHaveAttribute("data-caption-text-edge", "shadow");
 
-  await selectMenuItem(page, settingsTrigger, "caption-size-large");
+  await page.getByTestId("caption-size-large").click();
   await expect(video).toHaveAttribute("data-caption-size", "large");
   await expect(livePreview).toHaveAttribute("data-caption-size", "large");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), SIZE_KEY)).toBe("large");
 
-  await selectMenuItem(page, settingsTrigger, "caption-background-translucent");
+  await page.getByTestId("caption-background-translucent").click();
   await expect(video).toHaveAttribute("data-caption-background", "translucent");
   await expect(livePreview).toHaveAttribute("data-caption-background", "translucent");
   await expect
     .poll(() => page.evaluate((key) => localStorage.getItem(key), BACKGROUND_KEY))
     .toBe("translucent");
 
-  await selectMenuItem(page, settingsTrigger, "caption-font-family-serif");
+  await page.getByTestId("caption-font-family-serif").click();
   await expect(video).toHaveAttribute("data-caption-font-family", "serif");
   await expect(livePreview).toHaveAttribute("data-caption-font-family", "serif");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), FONT_FAMILY_KEY)).toBe("serif");
 
-  await selectMenuItem(page, settingsTrigger, "caption-text-color-gold");
+  await page.getByTestId("caption-text-color-gold").click();
   await expect(video).toHaveAttribute("data-caption-text-color", "gold");
   await expect(livePreview).toHaveAttribute("data-caption-text-color", "gold");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_COLOR_KEY)).toBe("gold");
 
-  await selectMenuItem(page, settingsTrigger, "caption-text-opacity-high");
+  await page.getByTestId("caption-text-opacity-high").click();
   await expect(video).toHaveAttribute("data-caption-text-opacity", "high");
   await expect(livePreview).toHaveAttribute("data-caption-text-opacity", "high");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_OPACITY_KEY)).toBe("high");
 
-  await selectMenuItem(page, settingsTrigger, "caption-line-spacing-spacious");
+  await page.getByTestId("caption-line-spacing-spacious").click();
   await expect(video).toHaveAttribute("data-caption-line-spacing", "spacious");
   await expect(livePreview).toHaveAttribute("data-caption-line-spacing", "spacious");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), LINE_SPACING_KEY)).toBe("spacious");
 
-  await selectMenuItem(page, settingsTrigger, "caption-text-edge-outline");
+  await page.getByTestId("caption-text-edge-outline").click();
   await expect(video).toHaveAttribute("data-caption-text-edge", "outline");
   await expect(livePreview).toHaveAttribute("data-caption-text-edge", "outline");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_EDGE_KEY)).toBe("outline");
@@ -307,6 +317,7 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     path: testInfo.outputPath("caption-settings-live-preview.png"),
     fullPage: false,
   });
+  await expect(page.getByRole("menu")).toHaveCount(1);
   await page.keyboard.press("Escape");
 
   await selectMenuItem(page, settingsTrigger, "caption-settings-reset");
@@ -330,13 +341,15 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await page.keyboard.press("Escape");
   await expect(page.getByRole("menu")).toHaveCount(0);
 
-  await selectMenuItem(page, settingsTrigger, "caption-size-large");
-  await selectMenuItem(page, settingsTrigger, "caption-background-translucent");
-  await selectMenuItem(page, settingsTrigger, "caption-font-family-mono");
-  await selectMenuItem(page, settingsTrigger, "caption-text-color-cyan");
-  await selectMenuItem(page, settingsTrigger, "caption-text-opacity-soft");
-  await selectMenuItem(page, settingsTrigger, "caption-line-spacing-compact");
-  await selectMenuItem(page, settingsTrigger, "caption-text-edge-none");
+  await settingsTrigger.click();
+  await page.getByTestId("caption-size-large").click();
+  await page.getByTestId("caption-background-translucent").click();
+  await page.getByTestId("caption-font-family-mono").click();
+  await page.getByTestId("caption-text-color-cyan").click();
+  await page.getByTestId("caption-text-opacity-soft").click();
+  await page.getByTestId("caption-line-spacing-compact").click();
+  await page.getByTestId("caption-text-edge-none").click();
+  await page.keyboard.press("Escape");
 
   await expect
     .poll(() => video.evaluate((element) => element.readyState))
@@ -477,16 +490,13 @@ test("auto-detects the first supported browser caption language when no saved ch
       get: () => ["ja-JP", "it-IT", "pt-BR"],
     });
     Object.defineProperty(navigator, "language", { get: () => "ja-JP" });
-    localStorage.setItem("rr-lang", "en");
-    localStorage.setItem("rr-lang-chosen", "1");
     localStorage.setItem("rl-pwa-prompt-dismissed", "1");
-    localStorage.setItem("getphame:first-visit-welcome:v1", "1");
     localStorage.removeItem("getphame-walkthrough-caption-language");
   });
   await page.goto("/landing?walkthrough-language-detection-e2e=1");
-  await page.getByTestId("walkthrough-trigger").click();
+  await page.getByRole("button", { name: "Play product walkthrough video" }).click();
 
-  const dialog = page.getByTestId("walkthrough-dialog");
+  const dialog = page.getByRole("dialog", { name: "Get Phame platform walkthrough" });
   const video = dialog.locator("video");
   const captionsToggle = dialog.getByTestId("caption-toggle");
   await expect(video).toHaveAttribute("data-caption-language", "it");
@@ -518,16 +528,15 @@ test("auto-detects the first supported browser caption language when no saved ch
 
 test("offers recovery controls when the player reports a media error", async ({ page }) => {
   await page.addInitScript(() => {
-    localStorage.setItem("rr-lang", "en");
-    localStorage.setItem("rr-lang-chosen", "1");
     localStorage.setItem("rl-pwa-prompt-dismissed", "1");
-    localStorage.setItem("getphame:first-visit-welcome:v1", "1");
   });
   await page.goto("/landing?walkthrough-failure-e2e=1");
 
-  await page.getByTestId("walkthrough-trigger").click();
+  await page.getByRole("button", { name: "Play product walkthrough video" }).click();
 
-  const dialog = page.getByTestId("walkthrough-dialog");
+  const dialog = page.getByRole("dialog", {
+    name: "Get Phame platform walkthrough",
+  });
   await dialog.locator("video").evaluate((element) => {
     element.src = "/getphame-walkthrough.en.vtt";
     element.load();

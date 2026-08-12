@@ -664,7 +664,6 @@ export default function VideoDemo() {
               <button
                 type="button"
                 onClick={openVideo}
-                data-testid="walkthrough-trigger"
                 aria-label={t("landing.thumbnail.playButtonAriaLabel", { defaultValue: "Play product walkthrough video" })}
                 aria-haspopup="dialog"
                 aria-expanded={open}
@@ -730,7 +729,6 @@ export default function VideoDemo() {
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
             role="dialog"
-            data-testid="walkthrough-dialog"
             aria-modal="true"
             aria-labelledby="get-phame-video-title"
             aria-describedby="get-phame-video-description"

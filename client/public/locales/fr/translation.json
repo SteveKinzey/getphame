@@ -4397,6 +4397,13 @@
     "previewFallback": "Cet aperçu n’a pas pu s’afficher dans le cadre intégré.",
     "previewLoading": "Génération de l’aperçu de l’e-mail…",
     "exportHtml": "Exporter le code HTML",
-    "exported": "Téléchargé !"
+    "exported": "Téléchargé !",
+    "copyFailed": "La copie du HTML rendu a été bloquée par ce navigateur."
+  },
+  "adminRouteAudit": {
+    "eyebrow": "Assurance de production", "title": "Audit des routes de production", "description": "Vérifie en toute sécurité les routes publiques du plan de site pour détecter les erreurs de rendu du navigateur. Aucun compte, formulaire ni donnée client n’est utilisé.", "run": "Lancer l’audit des routes", "running": "Audit des routes…", "viewHistory": "Voir l’historique", "runningDescription": "Lancement d’un navigateur propre pour le plan de site public actuel. Cette opération peut prendre jusqu’à deux minutes.", "unavailable": "Exécuteur d’audit indisponible", "completedWithIssues": "Audit terminé avec des problèmes", "completed": "Audit terminé avec succès", "failureCode": "Code d’échec", "summary": "{{routes}} routes auditées · {{failures}} échecs", "resultRoutes": "Routes auditées", "issue": "À examiner", "rendered": "Rendue", "passed": "L’audit des routes de production a réussi.", "failed": "L’audit des routes de production a détecté des problèmes.", "runFailed": "L’audit des routes de production n’a pas pu être exécuté."
+  },
+  "adminAuditLog": {
+    "back": "Tableau de bord administrateur", "title": "Historique des audits et du rendu", "description": "Historique opérationnel réservé aux administrateurs. Les enregistrements contiennent des signaux d’audit assainis, jamais du contenu client, du HTML d’e-mail, des cookies ou des journaux de navigateur.", "refresh": "Actualiser l’historique", "routeTitle": "Audits des routes de production", "routeDescription": "Vérifications manuelles du navigateur pour les routes publiques détectées dans le plan de site, de la plus récente à la plus ancienne.", "runAnother": "Lancer un autre audit →", "routeError": "L’historique des audits de routes n’a pas pu être chargé.", "routes": "pages", "issuesFound": "{{count}} problèmes", "passed": "Réussi", "routeEmpty": "Aucun audit de route de production n’a encore été enregistré.", "routePagination": "Pagination de l’historique des audits de routes", "rendererTitle": "Erreurs du moteur d’aperçu des e-mails", "rendererDescription": "Signaux assainis capturés uniquement si un aperçu administrateur ne peut pas rendre du contenu vérifié.", "rendererError": "L’historique des erreurs de rendu n’a pas pu être chargé.", "rendererEmpty": "Aucune erreur de rendu n’a été enregistrée.", "rendererPagination": "Pagination de l’historique des erreurs de rendu", "records": "enregistrements", "previous": "Précédent", "next": "Suivant", "darkPreview": "sombre"
   }
 }
