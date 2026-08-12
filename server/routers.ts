@@ -98,6 +98,10 @@ import {
 } from "./stripe";
 import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
+import {
+  ADMIN_EMAIL_PREVIEW_LABELS,
+  buildAdminEmailPreviewTemplate,
+} from "./adminEmailPreviewTemplates";
 import { sendSupportMessage } from "./supportEmail";
 import {
   checkSupportAttachmentRateLimit,
@@ -5726,6 +5730,20 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input, ctx }) => {
+        const testMessageId = Date.now().toString(36);
+        const sharedHtml = buildAdminEmailPreviewTemplate({
+          template: input.template,
+          recipientName: (ctx.user.name ?? "").split(" ")[0] || "Alex",
+          magicLinkUrl: "https://getphame.app/login?from=test-email-preview",
+        });
+        await sendSystemEmail({
+          to: input.to,
+          subject: `[Test Preview ${testMessageId}] ${ADMIN_EMAIL_PREVIEW_LABELS[input.template] ?? input.template}`,
+          html: sharedHtml,
+          from: NOREPLY_FROM,
+        });
+        return { ok: true as const };
+
         const TEST_PREVIEW_LINK = "https://getphame.app/login?from=test-email-preview";
         const SAMPLE_NAME = (ctx.user.name ?? "").split(" ")[0] || "Alex";
         const TEMPLATE_LABELS: Record<string, string> = {
@@ -5850,6 +5868,8 @@ export const appRouter = router({
         })
       )
       .query(({ input }) => {
+        return { html: buildAdminEmailPreviewTemplate({ template: input.template }) };
+
         const SAMPLE_LINK = "https://getphame.app/login?from=email-preview";
         const SAMPLE_NAME = "Alex";
         const wrapEmail = (headTitle: string, bodyHtml: string, footerHtml: string) => {
