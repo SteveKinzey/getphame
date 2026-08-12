@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2 } from "lucide-react";
+import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { claimOnboardingChecklistTelemetryEvent, type OnboardingChecklistTelemetryEvent } from "@/lib/onboardingChecklistTelemetry";
@@ -146,7 +146,14 @@ export default function SetupProgressCard({ status, userId, onNavigate }: SetupP
               {consentStats.consented}/{consentStats.total}
             </span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full rr-bg-surface">
+          <div
+            className="h-1.5 overflow-hidden rounded-full rr-bg-surface"
+            title={`${consentStats.consented} of ${consentStats.total} contacts have consented (${Math.round(consentStats.total > 0 ? (consentStats.consented / consentStats.total) * 100 : 0)}%)`}
+            role="progressbar"
+            aria-valuenow={consentStats.consented}
+            aria-valuemin={0}
+            aria-valuemax={consentStats.total}
+          >
             <div
               className="h-full rounded-full transition-[width] duration-300"
               style={{

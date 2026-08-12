@@ -12,6 +12,8 @@ import { getDb } from "./db";
 
 export const SOURCE_PROVIDERS = ["zapier", "make", "custom", "woocommerce"] as const;
 export type SourceProvider = (typeof SOURCE_PROVIDERS)[number];
+export const SOURCE_AUTOMATION_MODES = ["import_only", "review_request"] as const;
+export type SourceAutomationMode = (typeof SOURCE_AUTOMATION_MODES)[number];
 
 export const SOURCE_HEALTH_STATUSES = ["setup", "healthy", "delayed", "failing", "paused"] as const;
 export type SourceHealthStatus = (typeof SOURCE_HEALTH_STATUSES)[number];
@@ -114,6 +116,14 @@ export async function updateSourceConnection(params: {
   label?: string;
   expectedIntervalMinutes?: number;
   monitoringEnabled?: boolean;
+  automationEnabled?: boolean;
+  automationMode?: SourceAutomationMode;
+  dryRun?: boolean;
+  sendDelayMinutes?: number;
+  templateId?: number | null;
+  platformId?: number | null;
+  preferredLocale?: string;
+  pauseReason?: string | null;
   now?: number;
 }) {
   const existing = await getSourceConnectionForUser(params.userId, params.id);
@@ -121,6 +131,18 @@ export async function updateSourceConnection(params: {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   const now = params.now ?? Date.now();
+  const deliveryConfigChanged = (
+    (params.preferredLocale !== undefined && params.preferredLocale !== existing.preferredLocale)
+    || (params.templateId !== undefined && params.templateId !== existing.templateId)
+    || (params.platformId !== undefined && params.platformId !== existing.platformId)
+    || (params.sendDelayMinutes !== undefined && params.sendDelayMinutes !== existing.sendDelayMinutes)
+  );
+  if (params.automationMode === "import_only" && existing.automationEnabled && params.automationEnabled !== false) {
+    throw new Error("Pause review-request automation before switching this source to import-only mode.");
+  }
+  if (params.dryRun === false && (!existing.dryRunCompletedAt || deliveryConfigChanged)) {
+    throw new Error("Complete one successful source dry run before enabling live review requests.");
+  }
   const set: Partial<typeof sourceConnections.$inferInsert> = { updatedAt: now };
   if (params.label !== undefined) set.label = params.label.slice(0, 100);
   if (params.expectedIntervalMinutes !== undefined) set.expectedIntervalMinutes = params.expectedIntervalMinutes;
@@ -134,6 +156,37 @@ export async function updateSourceConnection(params: {
       set.failureAlertOpen = false;
       set.consecutiveFailures = 0;
     }
+  }
+  if (params.automationMode !== undefined) {
+    set.automationMode = params.automationMode;
+    if (params.automationMode === "import_only") {
+      set.automationEnabled = false;
+      set.dryRun = true;
+      set.pausedAt = now;
+      set.pauseReason = params.pauseReason?.slice(0, 255) ?? "Switched to import-only mode";
+    }
+  }
+  if (params.automationEnabled !== undefined) {
+    set.automationEnabled = params.automationEnabled;
+    if (params.automationEnabled) {
+      set.pausedAt = null;
+      set.pauseReason = null;
+    } else {
+      set.pausedAt = now;
+      set.pauseReason = params.pauseReason?.slice(0, 255) ?? "Paused by account owner";
+    }
+  }
+  if (params.dryRun !== undefined) set.dryRun = params.dryRun;
+  if (params.sendDelayMinutes !== undefined) set.sendDelayMinutes = params.sendDelayMinutes;
+  if (params.templateId !== undefined) set.templateId = params.templateId;
+  if (params.platformId !== undefined) set.platformId = params.platformId;
+  if (params.preferredLocale !== undefined) set.preferredLocale = params.preferredLocale;
+  if (deliveryConfigChanged) {
+    set.dryRun = true;
+    set.dryRunCompletedAt = null;
+  }
+  if (params.pauseReason !== undefined && params.automationEnabled === undefined && params.automationMode === undefined) {
+    set.pauseReason = params.pauseReason?.slice(0, 255) ?? null;
   }
   await db.update(sourceConnections).set(set).where(and(
     eq(sourceConnections.id, params.id),

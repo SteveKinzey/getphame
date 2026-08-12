@@ -20,6 +20,19 @@ export async function listSavedContacts(userId: number) {
     .orderBy(desc(savedContacts.updatedAt));
 }
 
+/** Look up one saved contact for a tenant by normalized email address. */
+export async function findSavedContactByEmail(userId: number, email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const normalizedEmail = email.trim().toLowerCase();
+  const [contact] = await db
+    .select()
+    .from(savedContacts)
+    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.email, normalizedEmail)))
+    .limit(1);
+  return contact ?? null;
+}
+
 export async function createSavedContact(
   userId: number,
   data: { name: string; email: string; phone?: string; notes?: string; consentBasis?: string; consentCapturedAt?: number; consentSource?: string }
@@ -203,8 +216,16 @@ export async function upsertApiContact(
     consentBasis?: string;
     consentCapturedAt?: number;
     consentSource?: string;
+    consentPurpose?: string;
+    consentChannel?: string;
+    consentTextHash?: string;
+    consentVersion?: string;
+    privacyPolicyUrl?: string;
+    sourceFormId?: string;
+    sourceSubmissionId?: string;
+    preferredLocale?: string;
   }
-): Promise<{ id: number; created: boolean }> {
+): Promise<{ id: number; created: boolean; optedOut: number }> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
@@ -229,9 +250,17 @@ export async function upsertApiContact(
         consentBasis: data.consentBasis ?? existing.consentBasis,
         consentCapturedAt: data.consentCapturedAt ?? existing.consentCapturedAt,
         consentSource: data.consentSource ?? existing.consentSource,
+        consentPurpose: data.consentPurpose ?? existing.consentPurpose,
+        consentChannel: data.consentChannel ?? existing.consentChannel,
+        consentTextHash: data.consentTextHash ?? existing.consentTextHash,
+        consentVersion: data.consentVersion ?? existing.consentVersion,
+        privacyPolicyUrl: data.privacyPolicyUrl ?? existing.privacyPolicyUrl,
+        sourceFormId: data.sourceFormId ?? existing.sourceFormId,
+        sourceSubmissionId: data.sourceSubmissionId ?? existing.sourceSubmissionId,
+        preferredLocale: data.preferredLocale ?? existing.preferredLocale,
       })
       .where(eq(savedContacts.id, existing.id));
-    return { id: existing.id, created: false };
+    return { id: existing.id, created: false, optedOut: existing.optedOut };
   }
 
   const [result] = await db.insert(savedContacts).values({
@@ -249,6 +278,14 @@ export async function upsertApiContact(
     consentBasis: data.consentBasis ?? null,
     consentCapturedAt: data.consentCapturedAt ?? null,
     consentSource: data.consentSource ?? null,
+    consentPurpose: data.consentPurpose ?? null,
+    consentChannel: data.consentChannel ?? null,
+    consentTextHash: data.consentTextHash ?? null,
+    consentVersion: data.consentVersion ?? null,
+    privacyPolicyUrl: data.privacyPolicyUrl ?? null,
+    sourceFormId: data.sourceFormId ?? null,
+    sourceSubmissionId: data.sourceSubmissionId ?? null,
+    preferredLocale: data.preferredLocale ?? "en",
   }).$returningId();
-  return { id: result.id, created: true };
+  return { id: result.id, created: true, optedOut: 0 };
 }

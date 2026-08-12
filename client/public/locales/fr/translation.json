@@ -3389,6 +3389,71 @@
           "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
           "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
         }
+      },
+      "automation": {
+        "title": "Protections de l’automatisation des demandes d’avis",
+        "description": "Configurez une destination et un modèle approuvés, validez sans importer, effectuez un essai sécurisé chez le fournisseur, puis choisissez quand passer en production.",
+        "updated": "Les protections de l’automatisation ont été mises à jour.",
+        "states": {
+          "live": "Envoi en production",
+          "dryRun": "Essai sécurisé",
+          "paused": "En pause"
+        },
+        "scopeTitle": "Une clé API pour les demandes d’avis est requise",
+        "scopeDescription": "Cette source est liée à une clé d’importation uniquement. Créez une clé avec les autorisations contacts:write et review_requests:send, puis une nouvelle connexion source avec cette clé.",
+        "mode": "Mode du flux",
+        "modes": {
+          "importOnly": "Importer uniquement",
+          "reviewRequest": "Demande d’avis"
+        },
+        "locale": "Langue du destinataire",
+        "template": "Modèle approuvé",
+        "defaultTemplate": "Modèle par défaut approuvé",
+        "default": "par défaut",
+        "platform": "Destination de l’avis",
+        "defaultPlatform": "Destination par défaut vérifiée",
+        "delay": "Délai d’envoi",
+        "delays": {
+          "immediate": "Immédiatement",
+          "day": "24 heures",
+          "minutes": "{{count}} min"
+        },
+        "dryRunCompleted": "Essai du fournisseur",
+        "notCompleted": "Non effectué",
+        "lastSuccess": "Dernier événement réussi",
+        "lastFailure": "Dernier échec",
+        "failureCode": "Dernier code d’erreur sécurisé",
+        "none": "Aucun",
+        "refresh": "Actualiser l’état de configuration",
+        "pause": "Mettre en pause les demandes automatisées",
+        "enableDryRun": "Activer l’essai sécurisé",
+        "goLive": "Passer à l’envoi en production",
+        "returnDryRun": "Revenir à l’essai",
+        "preflightTitle": "Contrôle préalable en lecture seule",
+        "preflightDescription": "Vérifiez la liaison de la source, la suppression, SMTP, le quota, la destination et le modèle approuvé. Ce contrôle n’importe aucun contact et n’envoie aucun e-mail.",
+        "testName": "Nom de test autorisé",
+        "testEmail": "E-mail de test autorisé",
+        "runPreflight": "Lancer le contrôle",
+        "preflightResult": "Résultat du contrôle",
+        "preflightEmpty": "Lancez un contrôle en lecture seule avant d’activer un essai fournisseur ou l’envoi en production.",
+        "ready": "La configuration est prête pour un essai fournisseur sécurisé.",
+        "blocked": "Résolvez les contrôles bloqués avant de tester cette source.",
+        "checks": {
+          "sourceBinding": "Liaison de la source et de la clé API",
+          "sendScope": "Autorisation de demande d’avis",
+          "automationMode": "Mode de demande d’avis",
+          "suppression": "Suppression du destinataire",
+          "delivery": "SMTP, quota, modèle et destination",
+          "dryRun": "Essai fournisseur effectué"
+        },
+        "checkStatuses": {
+          "ready": "Prêt",
+          "blocked": "Bloqué",
+          "required": "Requis"
+        },
+        "deliveryCode": "Code de préparation : {{code}}",
+        "retryTitle": "Règle de nouvelle tentative sécurisée",
+        "retryDescription": "Relancez le même événement avec les mêmes sourceSubmissionId et Idempotency-Key. Ne créez jamais un nouvel ID pour une nouvelle tentative. Get Phame rejoue les résultats terminés et planifie des tentatives limitées pour les échecs récupérables."
       }
     },
     "wordpressPairing": {

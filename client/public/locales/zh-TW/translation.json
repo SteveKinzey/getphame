@@ -2896,6 +2896,71 @@
           "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
           "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
         }
+      },
+      "automation": {
+        "title": "評論請求自動化安全控制",
+        "description": "設定已核准的目標與範本，在不匯入資料的情況下驗證，完成一次安全的服務商試跑，再決定何時正式啟用。",
+        "updated": "自動化安全控制已更新。",
+        "states": {
+          "live": "正式傳送",
+          "dryRun": "安全試跑",
+          "paused": "已暫停"
+        },
+        "scopeTitle": "需要評論請求 API 金鑰",
+        "scopeDescription": "此來源綁定的是僅匯入金鑰。請建立同時具備 contacts:write 與 review_requests:send 權限的金鑰，然後使用該金鑰建立新的來源連線。",
+        "mode": "工作流程模式",
+        "modes": {
+          "importOnly": "僅匯入",
+          "reviewRequest": "評論請求"
+        },
+        "locale": "收件者語言",
+        "template": "已核准範本",
+        "defaultTemplate": "已核准的預設範本",
+        "default": "預設",
+        "platform": "評論目標",
+        "defaultPlatform": "已驗證的預設目標",
+        "delay": "傳送延遲",
+        "delays": {
+          "immediate": "立即",
+          "day": "24 小時",
+          "minutes": "{{count}} 分鐘"
+        },
+        "dryRunCompleted": "服務商試跑",
+        "notCompleted": "尚未完成",
+        "lastSuccess": "最近成功事件",
+        "lastFailure": "最近失敗",
+        "failureCode": "最近安全錯誤代碼",
+        "none": "無",
+        "refresh": "重新整理設定狀態",
+        "pause": "暫停自動評論請求",
+        "enableDryRun": "啟用安全試跑",
+        "goLive": "切換為正式傳送",
+        "returnDryRun": "返回試跑",
+        "preflightTitle": "唯讀預檢",
+        "preflightDescription": "檢查來源綁定、抑制狀態、SMTP、配額、目標及已核准範本是否就緒。此測試不會匯入聯絡人或傳送電子郵件。",
+        "testName": "獲准的測試姓名",
+        "testEmail": "獲准的測試電子郵件",
+        "runPreflight": "執行預檢",
+        "preflightResult": "預檢結果",
+        "preflightEmpty": "啟用服務商試跑或正式傳送之前，請先執行唯讀檢查。",
+        "ready": "設定已準備好進行安全的服務商試跑。",
+        "blocked": "請先處理被封鎖的檢查項目，再測試此來源。",
+        "checks": {
+          "sourceBinding": "來源與 API 金鑰綁定",
+          "sendScope": "評論請求權限",
+          "automationMode": "評論請求模式",
+          "suppression": "收件者抑制狀態",
+          "delivery": "SMTP、配額、範本與目標",
+          "dryRun": "已完成服務商試跑"
+        },
+        "checkStatuses": {
+          "ready": "就緒",
+          "blocked": "已封鎖",
+          "required": "必需"
+        },
+        "deliveryCode": "就緒代碼：{{code}}",
+        "retryTitle": "安全重試規則",
+        "retryDescription": "使用相同的 sourceSubmissionId 與 Idempotency-Key 重試同一事件。重試時絕不可建立新 ID。Get Phame 會重播已完成的結果，並針對可恢復的傳送失敗安排有限次數的重試。"
       }
     },
     "wordpressPairing": {

@@ -2881,7 +2881,7 @@ export const appRouter = router({
               subject,
               html,
             });
-            if (result && result.accepted) sent++;
+            if (result?.configured) sent++;
             else failed++;
           } catch {
             failed++;
@@ -2902,12 +2902,15 @@ export const appRouter = router({
         const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found." });
         const businessName = String((profile as any).consentLabelName || profile.businessName || "");
-        const toAddress = input.toEmail || ctx.user.email;
+        const toAddress = input.toEmail || ctx.user.email || "";
+        if (!toAddress) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "A test recipient email address is required." });
+        }
         const defaultSubject = `[TEST] A note about your email preferences from ${businessName}`;
         const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${businessName}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
         const resolveVars = (tpl: string) => tpl
           .replace(/\{\{name\}\}/g, ctx.user.name || "Test Contact")
-          .replace(/\{\{businessName\}\}/g, businessName ?? "")
+          .replace(/\{\{businessName\}\}/g, businessName)
           .replace(/\{\{email\}\}/g, toAddress)
           .replace(/\{\{currentDate\}\}/g, new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
         const subject = resolveVars(input.customSubject || defaultSubject);
