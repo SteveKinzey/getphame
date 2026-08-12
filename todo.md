@@ -1883,3 +1883,100 @@
 - [x] Add a public read-only email preview path without exposing test-send or administrative controls
 - [x] Run a complete current repository health check across source, tests, build, dependency, and CI status
 - [x] Repair the public preview component type so the authenticated route remains compatible with Wouter
+
+## Security-report repository notification cleanup (Aug 12, 2026)
+- [x] Inventory current security-report administration notifications and their repository state
+- [x] Classify obsolete versus actionable security-report notifications (two failed checks were on inactive branches; no open pull requests remain)
+- [x] Mark obsolete notifications done and preserve any current security follow-up
+
+## Cross-repository security and delivery audit (Aug 12, 2026)
+- [x] Audit dependency vulnerability exposure for getphame-security-report-admin
+- [x] Inspect current and recent CI/CD workflow status for getphame-security-report-admin
+- [x] Review and prioritize open issues in getphame and getphame-security-report-admin
+
+## Security-report dependency remediation and release validation (Aug 12, 2026)
+- [x] Upgrade the vulnerable direct and transitive dependency chain in getphame-security-report-admin
+- [x] Run complete local audit, type-check, test, and production build validation
+- [x] Open and monitor the protected-main dependency-remediation pull request (PR #16; Quality Gate passed)
+- [x] Inspect the security-report hosting deployment status (no GitHub deployment record, homepage URL, or deployment workflow is configured; hosting state is not observable from this repository)
+- [x] Resolve new Vite peer incompatibilities by retaining the minimum patched Vite 7 line and a compatible React plugin; an existing third-party Builder plugin peer warning remains
+
+## Security-report merge and cross-repository security review (Aug 12, 2026)
+- [x] Merge the passed security-report dependency-remediation PR and prove protected-main parity
+- [x] Inventory open issues and pull requests across related Get Phame repositories
+- [x] Run a deep security scan of the main Get Phame repository and report evidence-led findings
+- [x] Document the security-report hosting-test prerequisite: no target was provided, so no external deployment can be tested safely
+
+## Get Phame open pull-request review and optimized validation (Aug 12, 2026)
+- [x] Review PR #95 and PR #102 for unique scope, merge readiness, checks, and overlap with protected main
+- [x] Run memory-optimized client and server TypeScript validation on current Get Phame main
+- [x] Run a memory-optimized production build on current Get Phame main
+
+## PR 95 rebase, PR 102 retirement, and integration validation (Aug 12, 2026)
+- [x] Rebase PR #95 onto current protected main and resolve conflicts without losing its unique agent-discovery work
+- [x] Close PR #102 as superseded and delete its release branch
+- [x] Run end-to-end integration and complete regression validation for the rebased Get Phame application (clean CI Quality Gate passed)
+- [x] Repair the existing Playwright welcome-dialog setup so it no longer blocks video walkthrough scenarios
+- [x] Replace stale marketing-copy assertions in walkthrough end-to-end tests with the stable accessible video trigger contract
+- [x] Add a stable test identifier for the localized walkthrough trigger and use it in all walkthrough scenarios
+- [x] Pin the interface locale to English in walkthrough setup while continuing to simulate browser caption-language preferences independently
+- [x] Use the existing menu-selection helper for each caption-setting action so closed Radix menus do not cause long browser retries
+
+## PR 95 replacement review branch (Aug 12, 2026)
+- [x] Create a replacement review branch from the safely rebased agent-discovery candidate
+- [x] Add only the Playwright first-visit-dialog test setup required by walkthrough scenarios
+- [x] Run focused walkthrough coverage successfully in clean CI after the local browser resource constraint
+- [x] Run memory-optimized client/server TypeScript checks
+- [x] Open the replacement pull request after local validation passes
+
+## Conservative CI-first replacement release (Aug 12, 2026)
+- [x] Push the replacement branch without modifying protected main or production
+- [x] Use clean CI to validate the focused browser scenarios and investigate only reproducible failures (Quality Gate and API Recovery Browser Check passed on PR #121)
+- [x] Complete full release checks before a protected-main merge
+- [x] Mark PR #121 ready and squash-merge it into protected main after the user-approved release decision
+- [x] Prove the resulting protected-main tree matches the validated replacement release
+- [x] Verify the deployed application after propagation: catalog, OpenAPI, documentation, authentication guidance, and crawler signal are live on getphame.app
+
+## Managed agent-discovery release port (Aug 12, 2026)
+- [x] Port the verified protected-main agent-discovery server routes and safe browser discovery bridge into the managed Get Phame source
+- [x] Validate the managed public discovery routes before publication (focused contracts, split TypeScript checks, 1,070-test suite, audit, and production build passed)
+
+## Email-preview false-ready frame repair (Aug 12, 2026)
+- [x] Diagnose why the embedded email document remains blank after the frame reports ready (the managed host rejected the nested document; the first renderer replacement also exposed stale iframe key references)
+- [x] Implement a content-verified renderer that cannot report ready for a blank document
+- [x] Verify rendered email HTML is visible in the managed preview across desktop, mobile, and split modes
+- [x] Resolve the client TypeScript iteration compatibility error in the sanitized renderer
+
+## Email preview verification and reusable recovery skill (Aug 12, 2026)
+- [x] Update and validate the renderer-resilience skill with the Shadow DOM content-verification pattern
+- [x] Verify all six email templates and dark mode in the repaired preview
+- [x] Inspect the exported Welcome template HTML structure
+- [x] Send an authorized Welcome test email and verify inbox delivery and rendering
+- [x] Correct inadequate body-text contrast in dark-mode email preview rendering
+- [x] Support validated `?template=` deep links for deterministic all-template verification
+- [x] Run full release validation and publish the verified dark-mode and deep-link enhancements
+
+## Welcome test-email inbox rendering discrepancy (Aug 12, 2026)
+- [x] Compare the generated Welcome preview, dispatched test-email source, and received inbox document (the test sender used an independent, divergent HTML generator)
+- [x] Repair the divergent outbound template path by routing it through the shared browser-preview renderer
+- [x] Send and verify a corrected Welcome test email in the recipient inbox (complete branded card displayed)
+- [x] Consolidate preview and test-email templates behind one shared deterministic renderer
+- [x] Complete server type, focused contract, full-suite, dependency-audit, and production-build validation for the shared renderer
+- [x] Prevent Gmail conversation trimming of repeated test previews by making each test-email subject distinct
+
+## Remaining email-template inbox and viewport verification (Aug 12, 2026)
+- [x] Send and inspect the remaining five template tests in the confirmed inbox
+- [x] Verify dark-mode rendering across all six preview templates
+- [x] Verify mobile preview rendering across all six preview templates
+- [x] Update and validate the reusable renderer-resilience skill with the final full-template verification workflow
+
+## Renderer resilience audit, handoff, and verification deck (Aug 12, 2026)
+- [x] Update and validate the reusable renderer-recovery skill with the final operational workflow
+- [x] Audit production routes for hydration or rendering errors (five public sitemap routes; no hydration or rendering failures)
+- [x] Export optimized code patches and deployment instructions for the email-preview renderer fix
+- [x] Slide deck intentionally omitted at the user's request
+
+## Production route audit review hardening (Aug 12, 2026)
+- [ ] Fail the audit when its route list is absent or empty
+- [ ] Keep route-audit findings machine-readable when evaluation fails
+- [ ] Clear retry-attempt diagnostics so transient failures do not contaminate successful route results
