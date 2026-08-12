@@ -1905,7 +1905,7 @@
 - [x] Merge the passed security-report dependency-remediation PR and prove protected-main parity
 - [x] Inventory open issues and pull requests across related Get Phame repositories
 - [x] Run a deep security scan of the main Get Phame repository and report evidence-led findings
-- [ ] Run a hosting deployment test if the security-report hosting target is provided
+- [x] Document the security-report hosting-test prerequisite: no target was provided, so no external deployment can be tested safely
 
 ## Get Phame open pull-request review and optimized validation (Aug 12, 2026)
 - [x] Review PR #95 and PR #102 for unique scope, merge readiness, checks, and overlap with protected main
@@ -1935,8 +1935,14 @@
 - [x] Complete full release checks before a protected-main merge
 - [x] Mark PR #121 ready and squash-merge it into protected main after the user-approved release decision
 - [x] Prove the resulting protected-main tree matches the validated replacement release
-- [ ] Verify the deployed application only after a successful protected-main release
+- [x] Verify the deployed application after propagation: catalog, OpenAPI, documentation, authentication guidance, and crawler signal are live on getphame.app
 
 ## Managed agent-discovery release port (Aug 12, 2026)
 - [x] Port the verified protected-main agent-discovery server routes and safe browser discovery bridge into the managed Get Phame source
 - [x] Validate the managed public discovery routes before publication (focused contracts, split TypeScript checks, 1,070-test suite, audit, and production build passed)
+
+## Email-preview false-ready frame repair (Aug 12, 2026)
+- [x] Diagnose why the embedded email document remains blank after the frame reports ready (the managed host rejected the nested document; the first renderer replacement also exposed stale iframe key references)
+- [x] Implement a content-verified renderer that cannot report ready for a blank document
+- [x] Verify rendered email HTML is visible in the managed preview across desktop, mobile, and split modes
+- [x] Resolve the client TypeScript iteration compatibility error in the sanitized renderer

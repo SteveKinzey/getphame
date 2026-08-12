@@ -38,21 +38,22 @@ describe("admin email preview runtime contract", () => {
     expect(appSource).toContain('path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage}');
   });
 
-  it("uses a Blob URL first and falls back to srcDoc only when a browser blocks that document", () => {
+  it("uses a sanitized Shadow DOM surface instead of a policy-sensitive nested document", () => {
     const previewSource = readFileSync(
       resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
       "utf8"
     );
 
-    expect(previewSource).toContain("URL.createObjectURL");
-    expect(previewSource).toContain('type: "text/html;charset=utf-8"');
-    expect(previewSource).toContain("src={previewDocumentUrl ?? undefined}");
-    expect(previewSource).toContain('previewRenderMode === "blob"');
-    expect(previewSource).toContain("srcDoc={previewHtml ?? \"\"}");
-    expect(previewSource).toContain('setPreviewRenderMode("srcdoc")');
+    expect(previewSource).toContain("function sanitizeEmailPreviewHtml");
+    expect(previewSource).toContain("function EmailPreviewSurface");
+    expect(previewSource).toContain("attachShadow({ mode: \"open\" })");
+    expect(previewSource).toContain("[data-email-preview-content]");
+    expect(previewSource).toContain("Email preview contains no rendered content");
+    expect(previewSource).not.toContain("srcDoc={previewHtml");
+    expect(previewSource).not.toContain("previewDocumentUrl");
   });
 
-  it("keeps static preview retrieval available in the managed preview host", () => {
+  it("keeps static preview retrieval available while verifying actual rendered content", () => {
     const previewSource = readFileSync(
       resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
       "utf8"
@@ -63,9 +64,11 @@ describe("admin email preview runtime contract", () => {
     );
 
     expect(previewSource).toContain("enabled: true");
-    expect(previewSource).toContain("isManagedPreviewHost");
-    expect(previewSource).toContain("window.top !== window.self");
-    expect(previewSource).toContain('isManagedPreviewHost ? "srcdoc" : "blob"');
+    expect(previewSource).toContain("renderedText");
+    expect(previewSource).toContain("const [previewReadyKey");
+    expect(previewSource).toContain("const [previewErrorKey");
+    expect(previewSource).toContain("previewReadyKey === previewKey");
+    expect(previewSource).toContain("previewErrorKey === previewKey");
     expect(routerSource).toContain("emailPreview: publicProcedure");
   });
 
