@@ -4341,6 +4341,8 @@
     "resetVars": "Reset",
     "split": "Split",
     "savePreset": "Save",
-    "presetNamePlaceholder": "Preset name…"
+    "presetNamePlaceholder": "Preset name…",
+    "previewReady": "Preview ready",
+    "previewFallback": "This preview could not render in the embedded frame."
   }
 }

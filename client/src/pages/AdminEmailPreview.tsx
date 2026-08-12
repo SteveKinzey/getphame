@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useCallback, useEffect, useState } from "react";
 import {
   Mail, ChevronDown, Moon, Sun, Send, Loader2, Copy, Check,
   ExternalLink, SlidersHorizontal, ChevronUp, RotateCcw, Save, X,
@@ -91,11 +91,13 @@ export default function AdminEmailPreview() {
 
   const previewHtml = data?.html ? buildPreviewHtml(data.html) : null;
   const [previewDocumentUrl, setPreviewDocumentUrl] = useState<string | null>(null);
+  const [previewRenderState, setPreviewRenderState] = useState<"loading" | "ready" | "error">("loading");
 
   // Render a complete document from a Blob URL rather than srcDoc. This avoids
   // preview failures caused by CSP/srcDoc handling while keeping the document
   // static (the iframe sandbox does not permit scripts).
   useEffect(() => {
+    setPreviewRenderState("loading");
     if (!previewHtml) {
       setPreviewDocumentUrl(null);
       return;
@@ -119,6 +121,11 @@ export default function AdminEmailPreview() {
       // cross-origin — use default height
     }
   }, []);
+
+  const handlePreviewLoad = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
+    autoHeight(e);
+    setPreviewRenderState("ready");
+  }, [autoHeight]);
 
   const iframeKey = `${selected}-${viewMode}-${darkMode}-${JSON.stringify(vars)}`;
 
@@ -150,6 +157,21 @@ export default function AdminEmailPreview() {
     window.open(url, "_blank", "noopener");
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
   };
+
+  const renderPreviewFallback = () => (
+    <div className="mx-auto flex max-w-2xl items-center justify-between gap-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950" role="alert">
+      <span>{t("adminEmailPreview.previewFallback", { defaultValue: "This preview could not render in the embedded frame." })}</span>
+      <button
+        type="button"
+        onClick={handleOpenTab}
+        disabled={!data?.html}
+        className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-amber-200 px-3 py-2 text-xs font-bold text-amber-950 transition hover:bg-amber-300 disabled:opacity-50"
+      >
+        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+        {t("adminEmailPreview.openTab", { defaultValue: "Open in tab" })}
+      </button>
+    </div>
+  );
 
   // Preset management
   const savePreset = () => {
@@ -183,14 +205,15 @@ export default function AdminEmailPreview() {
       <div className="border-b border-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-400">
         {label}
       </div>
-      {previewDocumentUrl ? (
+      {previewRenderState === "error" ? renderPreviewFallback() : previewDocumentUrl ? (
         <iframe
           key={key}
           src={previewDocumentUrl}
           title={`${label} preview`}
           className="block w-full border-0"
           style={{ minHeight: 500, height: "auto" }}
-          onLoad={autoHeight}
+          onLoad={handlePreviewLoad}
+          onError={() => setPreviewRenderState("error")}
           sandbox="allow-same-origin"
         />
       ) : (
@@ -463,14 +486,15 @@ export default function AdminEmailPreview() {
               background: darkMode ? "#1a1a1a" : "#fff",
             }}
           >
-             {previewDocumentUrl ? (
+             {previewRenderState === "error" ? renderPreviewFallback() : previewDocumentUrl ? (
                <iframe
                  key={iframeKey}
                  src={previewDocumentUrl}
                  title={`Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`}
                 className="block w-full border-0"
                 style={{ minHeight: 600, height: "auto" }}
-                onLoad={autoHeight}
+                onLoad={handlePreviewLoad}
+                onError={() => setPreviewRenderState("error")}
                 sandbox="allow-same-origin"
               />
             ) : (
@@ -481,6 +505,12 @@ export default function AdminEmailPreview() {
               </div>
             )}
           </div>
+        )}
+        {previewRenderState === "ready" && previewDocumentUrl && (
+          <p className="mt-3 flex items-center justify-center gap-2 text-center text-xs font-semibold text-emerald-700" aria-live="polite">
+            <Check className="h-4 w-4" aria-hidden="true" />
+            {t("adminEmailPreview.previewReady", { defaultValue: "Preview ready" })}
+          </p>
         )}
         <p className="mt-3 text-center text-xs text-gray-400">
           {t("adminEmailPreview.note", { defaultValue: "Preview uses sample data. Actual emails are sent with real user names and secure links." })}

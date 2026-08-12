@@ -3881,6 +3881,8 @@
     "resetVars": "重置",
     "split": "分屏",
     "savePreset": "保存",
-    "presetNamePlaceholder": "预设名称…"
+    "presetNamePlaceholder": "预设名称…",
+    "previewReady": "预览已就绪",
+    "previewFallback": "无法在嵌入式框架中呈现此预览。"
   }
 }

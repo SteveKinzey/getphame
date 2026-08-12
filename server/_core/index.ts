@@ -451,6 +451,8 @@ async function startServer() {
                 ],
                 // Allow YouTube embeds and the official Turnstile challenge frame.
                 frameSrc: [
+                  // Admin email previews render local, static HTML through a revocable Blob URL.
+                  "blob:",
                   "https://www.youtube.com",
                   "https://youtube.com",
                   "https://challenges.cloudflare.com",

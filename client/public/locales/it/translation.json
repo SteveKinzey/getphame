@@ -4608,6 +4608,8 @@
     "resetVars": "Ripristina",
     "split": "Dividi",
     "savePreset": "Salva",
-    "presetNamePlaceholder": "Nome del profilo…"
+    "presetNamePlaceholder": "Nome del profilo…",
+    "previewReady": "Anteprima pronta",
+    "previewFallback": "Impossibile visualizzare questa anteprima nel riquadro incorporato."
   }
 }

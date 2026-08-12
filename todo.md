@@ -1836,3 +1836,18 @@
 - [x] Diagnose the blank or broken preview document in the iframe
 - [x] Repair generated HTML or iframe rendering configuration
 - [x] Add a preview-render regression test and validate all six email templates
+
+## Email-preview renderer resilience (Aug 12, 2026)
+- [x] Add an iframe render-error fallback with an Open in tab action
+- [x] Add visual preview-ready feedback after email HTML loads
+- [x] Add browser coverage for every preview template and viewport
+- [x] Create reusable email-preview renderer resilience skill
+
+## TypeScript validation timeout remediation (Aug 12, 2026)
+- [x] Diagnose and eliminate the standalone TypeScript validation timeout without weakening type-safety coverage
+- [x] Run TypeScript, focused tests, full suite, audit, and production build on the remediated tree
+
+## Persistent admin email-preview iframe failure (Aug 12, 2026)
+- [x] Diagnose the blank embedded email document seen after a manual refresh (production frame CSP blocked `blob:` URLs)
+- [x] Replace the failing render path with a browser-compatible preview and visible recovery path
+- [ ] Verify actual preview content is visible in the admin interface for all templates and viewports

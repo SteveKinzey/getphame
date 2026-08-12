@@ -4392,6 +4392,8 @@
     "resetVars": "Réinitialiser",
     "split": "Split",
     "savePreset": "Enregistrer",
-    "presetNamePlaceholder": "Nom du profil…"
+    "presetNamePlaceholder": "Nom du profil…",
+    "previewReady": "Aperçu prêt",
+    "previewFallback": "Cet aperçu n’a pas pu s’afficher dans le cadre intégré."
   }
 }

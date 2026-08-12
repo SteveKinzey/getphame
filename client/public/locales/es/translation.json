@@ -4392,6 +4392,8 @@
     "resetVars": "Reset",
     "split": "Split",
     "savePreset": "Guardar",
-    "presetNamePlaceholder": "Nombre del perfil…"
+    "presetNamePlaceholder": "Nombre del perfil…",
+    "previewReady": "Vista previa lista",
+    "previewFallback": "No se pudo mostrar esta vista previa en el marco integrado."
   }
 }
