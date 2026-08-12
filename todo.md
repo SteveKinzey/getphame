@@ -1867,3 +1867,19 @@
 - [x] Remove the unnecessary managed-preview login dependency from safe preview rendering
 - [x] Replace the broken embedded-document rendering path in the managed preview
 - [x] Verify the template renders in the managed preview on desktop, mobile, and split modes
+
+## Managed preview WebSocket recovery (Aug 12, 2026)
+- [x] Restore the Vite WebSocket connection for `/admin/email-preview?from_webdev=1`
+- [x] Verify the restarted development preview is reachable without console connection errors
+
+## Get Phame GitHub workflow notification remediation (Aug 12, 2026)
+- [x] Inventory active failed workflow runs and map them to the triggering commits or pull requests
+- [x] Diagnose and repair actionable protected-main or current-release workflow failures (no unresolved current failure remains)
+- [x] Re-run or verify required checks and close or classify obsolete failure notifications
+- [x] Mark notifications associated with obsolete branches, superseded commits, or merged fixes as resolved
+
+## Public email preview and repository health audit (Aug 12, 2026)
+- [x] Triage remaining Get Phame notifications for open pull requests and security alerts (PRs #95 and #102 remain open for separate review; Dependabot has zero open alerts)
+- [x] Add a public read-only email preview path without exposing test-send or administrative controls
+- [x] Run a complete current repository health check across source, tests, build, dependency, and CI status
+- [x] Repair the public preview component type so the authenticated route remains compatible with Wouter
