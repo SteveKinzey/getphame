@@ -31,4 +31,26 @@ describe("admin email preview runtime contract", () => {
     expect(appSource).toContain("authReturnPathStorageKey");
     expect(appSource).toContain("sessionStorage.setItem");
   });
+
+  it("renders preview documents through a Blob URL instead of a CSP-sensitive srcDoc attribute", () => {
+    const previewSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
+      "utf8"
+    );
+
+    expect(previewSource).toContain("URL.createObjectURL");
+    expect(previewSource).toContain('type: "text/html;charset=utf-8"');
+    expect(previewSource).toContain("src={previewDocumentUrl}");
+    expect(previewSource).not.toContain("srcDoc={previewHtml}");
+  });
+
+  it("does not nest the branded header row inside a second table row", () => {
+    const routerSource = readFileSync(
+      resolve(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
+
+    expect(routerSource).toContain("${headerHtml}<tr><td class=\"email-body\"");
+    expect(routerSource).not.toContain("<tr>${headerHtml}</tr><tr><td class=\"email-body\"");
+  });
 });

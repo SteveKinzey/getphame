@@ -1831,3 +1831,8 @@
 - [x] Diagnose the signed-in redirect or error page at /admin/email-preview
 - [x] Repair the active preview route, access guard, or API contract
 - [x] Add regression coverage and validate the signed-in admin preview flow
+
+## Admin email-preview iframe renderer repair (Aug 12, 2026)
+- [x] Diagnose the blank or broken preview document in the iframe
+- [x] Repair generated HTML or iframe rendering configuration
+- [x] Add a preview-render regression test and validate all six email templates
