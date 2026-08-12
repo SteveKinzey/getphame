@@ -3905,6 +3905,9 @@
     "savePreset": "儲存",
     "presetNamePlaceholder": "預設名稱…",
     "previewReady": "預覽已就緒",
-    "previewFallback": "無法在內嵌框架中呈現此預覽。"
+    "previewFallback": "無法在內嵌框架中呈現此預覽。",
+    "previewLoading": "正在產生電子郵件預覽…",
+    "exportHtml": "匯出 HTML",
+    "exported": "已下載！"
   }
 }

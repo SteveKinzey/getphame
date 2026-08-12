@@ -1851,3 +1851,9 @@
 - [x] Diagnose the blank embedded email document seen after a manual refresh (production frame CSP blocked `blob:` URLs)
 - [x] Replace the failing render path with a browser-compatible preview and visible recovery path
 - [x] Verify primary Blob rendering and browser fallback coverage for all templates and desktop, mobile, and split viewports
+
+## Preview recovery skill and export enhancements (Aug 12, 2026)
+- [x] Create and validate a reusable email-preview recovery and delivery-validation skill
+- [x] Add an accessible loading skeleton while preview HTML is generated or rendered
+- [x] Add a rendered HTML-file export action with a safe filename
+- [x] Send an authorized test email and verify delivery and rendered output in the target inbox

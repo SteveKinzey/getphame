@@ -1598,7 +1598,10 @@
       "savePreset": "Save",
       "presetNamePlaceholder": "Preset name…",
       "previewReady": "Preview ready",
-      "previewFallback": "This preview could not render in the embedded frame."
+      "previewFallback": "This preview could not render in the embedded frame.",
+      "previewLoading": "Generating email preview…",
+      "exportHtml": "Export HTML",
+      "exported": "Downloaded!"
     },
     "bulkSendDialog": {
       "consentCheck": "I confirm customers have consented to be contacted by my business via email and/or text"
@@ -3413,7 +3416,10 @@
       "savePreset": "Guardar",
       "presetNamePlaceholder": "Nombre del perfil…",
       "previewReady": "Vista previa lista",
-      "previewFallback": "No se pudo mostrar esta vista previa en el marco integrado."
+      "previewFallback": "No se pudo mostrar esta vista previa en el marco integrado.",
+      "previewLoading": "Generando vista previa del correo…",
+      "exportHtml": "Exportar HTML",
+      "exported": "¡Descargado!"
     },
     "contactsTools": {
       "addConsentLabel": "Confirmo que este cliente ha dado su consentimiento para ser contactado por {businessName} por correo electrónico y/o texto sobre su experiencia y compras",
@@ -5246,7 +5252,10 @@
       "savePreset": "Enregistrer",
       "presetNamePlaceholder": "Nom du profil…",
       "previewReady": "Aperçu prêt",
-      "previewFallback": "Cet aperçu n’a pas pu s’afficher dans le cadre intégré."
+      "previewFallback": "Cet aperçu n’a pas pu s’afficher dans le cadre intégré.",
+      "previewLoading": "Génération de l’aperçu de l’e-mail…",
+      "exportHtml": "Exporter le code HTML",
+      "exported": "Téléchargé !"
     },
     "contactsTools": {
       "addConsentLabel": "Je confirme que ce client a consenti à être contacté par {businessName} par e-mail et/ou SMS concernant son expérience et ses achats",
@@ -6921,7 +6930,10 @@
       "savePreset": "Salva",
       "presetNamePlaceholder": "Nome del profilo…",
       "previewReady": "Anteprima pronta",
-      "previewFallback": "Impossibile visualizzare questa anteprima nel riquadro incorporato."
+      "previewFallback": "Impossibile visualizzare questa anteprima nel riquadro incorporato.",
+      "previewLoading": "Generazione dell'anteprima dell'email…",
+      "exportHtml": "Esporta HTML",
+      "exported": "Scaricato!"
     },
     "bulkSendDialog": {
       "consentCheck": "Confermo che i clienti hanno acconsentito a essere contattati dalla mia azienda via e-mail e/o SMS"
@@ -8589,7 +8601,10 @@
       "savePreset": "บันทึก",
       "presetNamePlaceholder": "ชื่อโปรไฟล์…",
       "previewReady": "ตัวอย่างพร้อมแล้ว",
-      "previewFallback": "ไม่สามารถแสดงตัวอย่างนี้ในกรอบที่ฝังอยู่ได้"
+      "previewFallback": "ไม่สามารถแสดงตัวอย่างนี้ในกรอบที่ฝังอยู่ได้",
+      "previewLoading": "กำลังสร้างตัวอย่างอีเมล…",
+      "exportHtml": "ส่งออก HTML",
+      "exported": "ดาวน์โหลดแล้ว!"
     },
     "bulkSendDialog": {
       "consentCheck": "ฉันยืนยันว่าลูกค้าได้ยินยอมให้ธุรกิจของฉันติดต่อทางอีเมลและ/หรือข้อความ"
@@ -10247,7 +10262,10 @@
       "savePreset": "保存",
       "presetNamePlaceholder": "预设名称…",
       "previewReady": "预览已就绪",
-      "previewFallback": "无法在嵌入式框架中呈现此预览。"
+      "previewFallback": "无法在嵌入式框架中呈现此预览。",
+      "previewLoading": "正在生成邮件预览…",
+      "exportHtml": "导出 HTML",
+      "exported": "已下载！"
     },
     "bulkSendDialog": {
       "consentCheck": "我确认客户已同意我的企业通过电子邮件和/或短信与其联系"
@@ -11920,7 +11938,10 @@
       "savePreset": "儲存",
       "presetNamePlaceholder": "預設名稱…",
       "previewReady": "預覽已就緒",
-      "previewFallback": "無法在內嵌框架中呈現此預覽。"
+      "previewFallback": "無法在內嵌框架中呈現此預覽。",
+      "previewLoading": "正在產生電子郵件預覽…",
+      "exportHtml": "匯出 HTML",
+      "exported": "已下載！"
     },
     "bulkSendDialog": {
       "consentCheck": "我確認客戶已同意我的企業透過電子郵件和/或簡訊與其聯繫"

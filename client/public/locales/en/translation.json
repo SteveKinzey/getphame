@@ -4343,6 +4343,9 @@
     "savePreset": "Save",
     "presetNamePlaceholder": "Preset name…",
     "previewReady": "Preview ready",
-    "previewFallback": "This preview could not render in the embedded frame."
+    "previewFallback": "This preview could not render in the embedded frame.",
+    "previewLoading": "Generating email preview…",
+    "exportHtml": "Export HTML",
+    "exported": "Downloaded!"
   }
 }

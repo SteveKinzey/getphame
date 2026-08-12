@@ -4026,6 +4026,9 @@
     "savePreset": "บันทึก",
     "presetNamePlaceholder": "ชื่อโปรไฟล์…",
     "previewReady": "ตัวอย่างพร้อมแล้ว",
-    "previewFallback": "ไม่สามารถแสดงตัวอย่างนี้ในกรอบที่ฝังอยู่ได้"
+    "previewFallback": "ไม่สามารถแสดงตัวอย่างนี้ในกรอบที่ฝังอยู่ได้",
+    "previewLoading": "กำลังสร้างตัวอย่างอีเมล…",
+    "exportHtml": "ส่งออก HTML",
+    "exported": "ดาวน์โหลดแล้ว!"
   }
 }

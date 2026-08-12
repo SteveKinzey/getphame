@@ -45,5 +45,8 @@ describe("admin email preview browser coverage matrix", () => {
     expect(source).toContain('role="alert"');
     expect(source).toContain('previewRenderMode === "blob"');
     expect(source).toContain('srcDoc={previewHtml ?? ""}');
+    expect(source).toContain('previewRenderState === "loading"');
+    expect(source).toContain("renderPreviewSkeleton(minHeight)");
+    expect(source).toContain("handleExportHtml");
   });
 });

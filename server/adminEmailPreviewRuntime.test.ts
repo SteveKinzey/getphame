@@ -46,6 +46,22 @@ describe("admin email preview runtime contract", () => {
     expect(previewSource).toContain('setPreviewRenderMode("srcdoc")');
   });
 
+  it("shows an accessible email-shaped loading skeleton and exports resolved HTML safely", () => {
+    const previewSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
+      "utf8"
+    );
+
+    expect(previewSource).toContain("renderPreviewSkeleton");
+    expect(previewSource).toContain('role="status"');
+    expect(previewSource).toContain('aria-live="polite"');
+    expect(previewSource).toContain("handleExportHtml");
+    expect(previewSource).toContain('type: "text/html;charset=utf-8"');
+    expect(previewSource).toContain("get-phame-${templateSlug}-email-preview.html");
+    expect(previewSource).toContain("anchor.download");
+    expect(previewSource).toContain("URL.revokeObjectURL(url)");
+  });
+
   it("does not nest the branded header row inside a second table row", () => {
     const routerSource = readFileSync(
       resolve(process.cwd(), "server/routers.ts"),

@@ -4610,6 +4610,9 @@
     "savePreset": "Salva",
     "presetNamePlaceholder": "Nome del profilo…",
     "previewReady": "Anteprima pronta",
-    "previewFallback": "Impossibile visualizzare questa anteprima nel riquadro incorporato."
+    "previewFallback": "Impossibile visualizzare questa anteprima nel riquadro incorporato.",
+    "previewLoading": "Generazione dell'anteprima dell'email…",
+    "exportHtml": "Esporta HTML",
+    "exported": "Scaricato!"
   }
 }

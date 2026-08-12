@@ -4,7 +4,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useCallback, useEffect, useState } from "react";
 import {
   Mail, ChevronDown, Moon, Sun, Send, Loader2, Copy, Check,
-  ExternalLink, SlidersHorizontal, ChevronUp, RotateCcw, Save, X,
+  ExternalLink, SlidersHorizontal, ChevronUp, RotateCcw, Save, X, Download,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -38,6 +38,7 @@ export default function AdminEmailPreview() {
   const [darkMode, setDarkMode] = useState(false);
   const [testEmail, setTestEmail] = useState(user?.email ?? "");
   const [copied, setCopied] = useState(false);
+  const [exported, setExported] = useState(false);
   const [showVars, setShowVars] = useState(false);
   const [vars, setVars] = useState(DEFAULT_VARS);
 
@@ -169,6 +170,23 @@ export default function AdminEmailPreview() {
     }
   };
 
+  const handleExportHtml = () => {
+    if (!previewHtml) return;
+
+    const templateSlug = selected.replace(/[^a-z0-9-]+/gi, "-").replace(/^-+|-+$/g, "");
+    const blob = new Blob([previewHtml], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `get-phame-${templateSlug}-email-preview.html`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+    setExported(true);
+    window.setTimeout(() => setExported(false), 1500);
+  };
+
   const handleOpenTab = () => {
     if (!data?.html) return;
     const html = buildPreviewHtml(data.html);
@@ -193,30 +211,55 @@ export default function AdminEmailPreview() {
     </div>
   );
 
+  const renderPreviewSkeleton = (minHeight: number) => (
+    <div
+      className="flex flex-col gap-5 bg-white p-6"
+      style={{ minHeight }}
+      role="status"
+      aria-live="polite"
+      aria-label={t("adminEmailPreview.previewLoading", { defaultValue: "Generating email preview…" })}
+    >
+      <div className="h-14 w-full animate-pulse rounded-lg" style={{ background: "oklch(0.22 0.09 260 / 0.12)" }} />
+      <div className="h-6 w-3/5 animate-pulse rounded bg-gray-200" />
+      <div className="space-y-3 pt-3">
+        <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
+        <div className="h-4 w-11/12 animate-pulse rounded bg-gray-100" />
+        <div className="h-4 w-4/5 animate-pulse rounded bg-gray-100" />
+      </div>
+      <div className="mt-auto h-10 w-36 animate-pulse rounded-lg" style={{ background: "oklch(0.80 0.18 80 / 0.28)" }} />
+      <span className="sr-only">{t("adminEmailPreview.previewLoading", { defaultValue: "Generating email preview…" })}</span>
+    </div>
+  );
+
   const renderPreviewFrame = (title: string, key: string, minHeight: number) =>
-    previewRenderMode === "blob" ? (
-      <iframe
-        key={key}
-        src={previewDocumentUrl ?? undefined}
-        title={title}
-        className="block w-full border-0"
-        style={{ minHeight, height: "auto" }}
-        onLoad={handlePreviewLoad}
-        onError={handlePreviewError}
-        sandbox="allow-same-origin"
-      />
-    ) : (
-      <iframe
-        key={key}
-        srcDoc={previewHtml ?? ""}
-        title={title}
-        className="block w-full border-0"
-        style={{ minHeight, height: "auto" }}
-        onLoad={handlePreviewLoad}
-        onError={handlePreviewError}
-        sandbox="allow-same-origin"
-      />
-    );
+    <div className="relative" style={{ minHeight }}>
+      {previewRenderMode === "blob" ? (
+        <iframe
+          key={key}
+          src={previewDocumentUrl ?? undefined}
+          title={title}
+          className="block w-full border-0"
+          style={{ minHeight, height: "auto" }}
+          onLoad={handlePreviewLoad}
+          onError={handlePreviewError}
+          sandbox="allow-same-origin"
+        />
+      ) : (
+        <iframe
+          key={key}
+          srcDoc={previewHtml ?? ""}
+          title={title}
+          className="block w-full border-0"
+          style={{ minHeight, height: "auto" }}
+          onLoad={handlePreviewLoad}
+          onError={handlePreviewError}
+          sandbox="allow-same-origin"
+        />
+      )}
+      {previewRenderState === "loading" && (
+        <div className="absolute inset-0">{renderPreviewSkeleton(minHeight)}</div>
+      )}
+    </div>;
 
   // Preset management
   const savePreset = () => {
@@ -342,6 +385,21 @@ export default function AdminEmailPreview() {
           {copied
             ? t("adminEmailPreview.copied", { defaultValue: "Copied!" })
             : t("adminEmailPreview.copyHtml", { defaultValue: "Copy HTML" })}
+        </button>
+
+        {/* Export rendered HTML button */}
+        <button
+          type="button"
+          disabled={!previewHtml}
+          onClick={handleExportHtml}
+          className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:opacity-40"
+          style={{ color: exported ? "oklch(0.22 0.09 260)" : "#555" }}
+          aria-label={t("adminEmailPreview.exportHtml", { defaultValue: "Export HTML" })}
+        >
+          {exported ? <Check className="h-4 w-4" aria-hidden="true" /> : <Download className="h-4 w-4" aria-hidden="true" />}
+          {exported
+            ? t("adminEmailPreview.exported", { defaultValue: "Downloaded!" })
+            : t("adminEmailPreview.exportHtml", { defaultValue: "Export HTML" })}
         </button>
 
         {/* Open in new tab button */}
