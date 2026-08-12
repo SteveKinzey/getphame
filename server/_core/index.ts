@@ -61,6 +61,10 @@ import { registerTranscriptFontRoutes } from "../transcriptFontRoutes";
 import { registerStaticCopyRoutes } from "../staticCopyRoutes";
 import { registerAutomationHealthRoutes } from "../automationHealthRoutes";
 import { registerSecurityAuditReportRoutes } from "../securityAuditReportRoutes";
+import {
+  registerAgentDiscoveryLinkHeaders,
+  registerAgentDiscoveryRoutes,
+} from "../agentDiscovery";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -497,6 +501,7 @@ async function startServer() {
       crossOriginEmbedderPolicy: false, // required for OAuth popup flows
     })
   );
+  registerAgentDiscoveryLinkHeaders(app);
 
   // Body parser — 5 MB is sufficient for all current payloads
   // Cookie parsing must run before the OAuth callback so the Google CSRF state
@@ -506,6 +511,7 @@ async function startServer() {
   registerSecurityAuditReportRoutes(app);
   app.use(express.json({ limit: "5mb" }));
   app.use(express.urlencoded({ limit: "5mb", extended: true }));
+  registerAgentDiscoveryRoutes(app);
 
   // Public, non-sensitive readiness signal for the authenticated dashboard
   // shell. It must remain before tRPC and the SPA fallback so restart windows
