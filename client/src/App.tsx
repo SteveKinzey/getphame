@@ -34,6 +34,7 @@ import {
 import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
+import { getLoginUrl } from "./const";
 import { useHapticEvents } from "./hooks/useHapticEvents";
 import { useTranslation } from "react-i18next";
 import AutoTextLocalizer from "./components/AutoTextLocalizer";
@@ -53,6 +54,7 @@ import {
 const onboardingDismissedUserIds = new Set<string>();
 const onboardingDismissalKey = (userId: string) =>
   `getphame:onboarding-dismissed:${userId}`;
+const authReturnPathStorageKey = "getphame:auth-return-path";
 
 function wasOnboardingDismissed(userId: string | null) {
   if (!userId) return false;
@@ -170,6 +172,28 @@ function PageTransition({ children }: { children: React.ReactNode }) {
   );
 }
 
+function AuthRequiredRedirect({ returnPath }: { returnPath: string }) {
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(authReturnPathStorageKey, returnPath);
+    } catch {
+      // The query parameter remains a safe fallback when session storage is blocked.
+    }
+    window.location.replace(getLoginUrl(returnPath));
+  }, [returnPath]);
+
+  return <PageLoader />;
+}
+
+function getSafeReturnPath(search: string) {
+  const returnTo = new URLSearchParams(search).get("returnTo");
+  if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) {
+    return null;
+  }
+
+  return returnTo;
+}
+
 function AppShell() {
   const { t } = useTranslation("translation");
   const { user, loading, isAuthenticated } = useAuth();
@@ -236,8 +260,23 @@ function AppShell() {
   }, [loading, t, user]);
 
   useEffect(() => {
-    if (loading || !user || window.location.pathname !== "/onboarding") return;
-    navigate("/", { replace: true });
+    if (loading || !user) return;
+
+    let rememberedReturnPath: string | null = null;
+    try {
+      rememberedReturnPath = window.sessionStorage.getItem(authReturnPathStorageKey);
+      window.sessionStorage.removeItem(authReturnPathStorageKey);
+    } catch {
+      // The query-string return path remains available when storage is blocked.
+    }
+
+    const returnPath =
+      getSafeReturnPath(window.location.search) ??
+      (rememberedReturnPath && getSafeReturnPath(`?returnTo=${encodeURIComponent(rememberedReturnPath)}`));
+
+    if (returnPath && returnPath !== `${window.location.pathname}${window.location.search}`) {
+      navigate(returnPath, { replace: true });
+    }
   }, [loading, navigate, user]);
 
   useEffect(() => {
@@ -390,6 +429,14 @@ function AppShell() {
     );
 
   if (!user) {
+    if (path === "/admin/email-preview") {
+      return (
+        <AuthRequiredRedirect
+          returnPath={`${window.location.pathname}${window.location.search}`}
+        />
+      );
+    }
+
     if (path === "/onboarding")
       return (
         <Suspense fallback={<PageLoader />}>
