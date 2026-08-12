@@ -65,6 +65,35 @@ function sanitizeEmailPreviewHtml(html: string): string {
   return `${headStyles}<div data-email-preview-content>${documentFragment.body.innerHTML}</div>`;
 }
 
+async function copyTextWithFallback(text: string): Promise<boolean> {
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // A sandboxed or permission-restricted browser can still support the
+      // documented textarea fallback below.
+    }
+  }
+
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.setAttribute("aria-hidden", "true");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 function EmailPreviewSurface({
   html,
   minHeight,
@@ -108,6 +137,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
   const [exported, setExported] = useState(false);
   const [showVars, setShowVars] = useState(false);
   const [vars, setVars] = useState(DEFAULT_VARS);
+  const reportedRendererErrorKeys = useRef(new Set<string>());
 
   // Preset state
   const [presets, setPresets] = useState<Preset[]>(() => {
@@ -142,6 +172,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
           (err.message ? ` (${err.message})` : "")
       ),
   });
+  const recordRendererError = trpc.admin.recordEmailPreviewRendererError.useMutation();
 
   // Apply variable substitutions to raw HTML
   const buildPreviewHtml = useCallback((raw: string) => {
@@ -177,25 +208,34 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
   const handlePreviewError = useCallback((key: string) => {
     setPreviewReadyKey(current => current === key ? null : current);
     setPreviewErrorKey(key);
-  }, []);
-
-  const handleCopy = () => {
-    if (!data?.html) return;
-    const html = buildPreviewHtml(data.html);
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(html).then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
+    if (
+      !readOnly &&
+      user?.role === "admin" &&
+      !reportedRendererErrorKeys.current.has(key)
+    ) {
+      reportedRendererErrorKeys.current.add(key);
+      recordRendererError.mutate({
+        templateKey: selected,
+        viewportMode: viewMode,
+        darkMode,
+        errorCode: "render_content_unavailable",
       });
-    } else {
-      const el = document.createElement("textarea");
-      el.value = html;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand("copy");
-      document.body.removeChild(el);
+    }
+  }, [darkMode, readOnly, recordRendererError, selected, user?.role, viewMode]);
+
+  const handleCopy = async () => {
+    if (!previewHtml) return;
+    const copySucceeded = await copyTextWithFallback(previewHtml);
+    if (copySucceeded) {
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      toast.success(t("adminEmailPreview.copied", { defaultValue: "Rendered HTML copied." }));
+      window.setTimeout(() => setCopied(false), 1500);
+    } else {
+      toast.error(
+        t("adminEmailPreview.copyFailed", {
+          defaultValue: "Copying the rendered HTML was blocked by this browser.",
+        })
+      );
     }
   };
 

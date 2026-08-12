@@ -4397,6 +4397,13 @@
     "previewFallback": "No se pudo mostrar esta vista previa en el marco integrado.",
     "previewLoading": "Generando vista previa del correo…",
     "exportHtml": "Exportar HTML",
-    "exported": "¡Descargado!"
+    "exported": "¡Descargado!",
+    "copyFailed": "Este navegador bloqueó la copia del HTML renderizado."
+  },
+  "adminRouteAudit": {
+    "eyebrow": "Garantía de producción", "title": "Auditoría de rutas de producción", "description": "Comprueba de forma segura las rutas públicas del mapa del sitio para detectar errores de renderizado en el navegador. No se usan cuentas, formularios ni datos de clientes.", "run": "Ejecutar auditoría de rutas", "running": "Auditando rutas…", "viewHistory": "Ver historial", "runningDescription": "Se está iniciando un navegador limpio para el mapa del sitio público actual. Puede tardar hasta dos minutos.", "unavailable": "El ejecutor de auditoría no está disponible", "completedWithIssues": "La auditoría terminó con incidencias", "completed": "Auditoría completada correctamente", "failureCode": "Código de error", "summary": "{{routes}} rutas auditadas · {{failures}} fallos", "resultRoutes": "Rutas auditadas", "issue": "Requiere revisión", "rendered": "Renderizada", "passed": "La auditoría de rutas de producción se aprobó.", "failed": "La auditoría de rutas de producción encontró incidencias.", "runFailed": "No se pudo ejecutar la auditoría de rutas de producción."
+  },
+  "adminAuditLog": {
+    "back": "Panel de administración", "title": "Historial de auditorías y renderizador", "description": "Historial operativo solo para administradores. Los registros almacenados contienen señales de auditoría depuradas, nunca contenido de clientes, HTML de correo, cookies ni registros del navegador.", "refresh": "Actualizar historial", "routeTitle": "Auditorías de rutas de producción", "routeDescription": "Comprobaciones manuales del navegador de rutas públicas detectadas en el mapa del sitio, de más reciente a más antigua.", "runAnother": "Ejecutar otra auditoría →", "routeError": "No se pudo cargar el historial de auditorías de rutas.", "routes": "rutas", "issuesFound": "{{count}} incidencias", "passed": "Aprobada", "routeEmpty": "Aún no se han registrado auditorías de rutas de producción.", "routePagination": "Paginación del historial de auditorías de rutas", "rendererTitle": "Errores del renderizador de vista previa de correo", "rendererDescription": "Señales depuradas capturadas solo si una vista previa de administrador no puede renderizar contenido verificado.", "rendererError": "No se pudo cargar el historial de errores del renderizador.", "rendererEmpty": "No se han registrado errores del renderizador.", "rendererPagination": "Paginación del historial de errores del renderizador", "records": "registros", "previous": "Anterior", "next": "Siguiente", "darkPreview": "oscura"
   }
 }

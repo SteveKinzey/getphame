@@ -4613,6 +4613,13 @@
     "previewFallback": "Impossibile visualizzare questa anteprima nel riquadro incorporato.",
     "previewLoading": "Generazione dell'anteprima dell'email…",
     "exportHtml": "Esporta HTML",
-    "exported": "Scaricato!"
+    "exported": "Scaricato!",
+    "copyFailed": "La copia dell’HTML renderizzato è stata bloccata da questo browser."
+  },
+  "adminRouteAudit": {
+    "eyebrow": "Garanzia di produzione", "title": "Audit delle route di produzione", "description": "Controlla in modo sicuro le route pubbliche della sitemap per rilevare errori di rendering del browser. Non vengono coinvolti account, moduli o dati dei clienti.", "run": "Esegui audit delle route", "running": "Audit delle route in corso…", "viewHistory": "Visualizza cronologia", "runningDescription": "Avvio di un browser pulito per la sitemap pubblica corrente. L’operazione può richiedere fino a due minuti.", "unavailable": "Esecutore dell’audit non disponibile", "completedWithIssues": "Audit completato con problemi", "completed": "Audit completato correttamente", "failureCode": "Codice errore", "summary": "{{routes}} route controllate · {{failures}} errori", "resultRoutes": "Route controllate", "issue": "Da verificare", "rendered": "Renderizzata", "passed": "L’audit delle route di produzione è riuscito.", "failed": "L’audit delle route di produzione ha rilevato problemi.", "runFailed": "Non è stato possibile eseguire l’audit delle route di produzione."
+  },
+  "adminAuditLog": {
+    "back": "Dashboard amministratore", "title": "Cronologia audit e rendering", "description": "Cronologia operativa riservata agli amministratori. I record memorizzati contengono segnali di audit sanitizzati, mai contenuti dei clienti, HTML e-mail, cookie o log del browser.", "refresh": "Aggiorna cronologia", "routeTitle": "Audit delle route di produzione", "routeDescription": "Controlli manuali del browser sulle route pubbliche individuate nella sitemap, dalla più recente alla meno recente.", "runAnother": "Esegui un altro audit →", "routeError": "Impossibile caricare la cronologia degli audit delle route.", "routes": "route", "issuesFound": "{{count}} problemi", "passed": "Superato", "routeEmpty": "Non è stato ancora registrato alcun audit delle route di produzione.", "routePagination": "Paginazione della cronologia degli audit delle route", "rendererTitle": "Errori del renderer di anteprima e-mail", "rendererDescription": "Segnali sanitizzati acquisiti solo se un’anteprima amministratore non riesce a renderizzare contenuto verificato.", "rendererError": "Impossibile caricare la cronologia degli errori del renderer.", "rendererEmpty": "Non sono stati registrati errori del renderer.", "rendererPagination": "Paginazione della cronologia degli errori del renderer", "records": "record", "previous": "Precedente", "next": "Successivo", "darkPreview": "scura"
   }
 }
