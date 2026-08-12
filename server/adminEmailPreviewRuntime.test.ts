@@ -14,6 +14,9 @@ describe("admin email preview runtime contract", () => {
     expect(source).toMatch(/import\s*\{[^}]*useCallback[^}]*\}\s*from\s*["']react["']/s);
     expect(source).toContain("trpc.admin.emailPreview.useQuery");
     expect(source).toContain("trpc.admin.sendTestEmail.useMutation");
+    expect(source).toContain("function getInitialTemplate");
+    expect(source).toContain('new URLSearchParams(window.location.search).get("template")');
+    expect(source).toContain("TEMPLATES.some(template => template.value === requested)");
   });
 
   it("provides a public read-only preview while keeping email delivery administrative", () => {
@@ -102,6 +105,17 @@ describe("admin email preview runtime contract", () => {
     expect(previewSource).toContain("get-phame-${templateSlug}-email-preview.html");
     expect(previewSource).toContain("anchor.download");
     expect(previewSource).toContain("URL.revokeObjectURL(url)");
+  });
+
+  it("keeps email body and footer text legible in dark-mode preview rendering", () => {
+    const previewSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
+      "utf8"
+    );
+
+    expect(previewSource).toContain(".email-body,.email-body *{color:#f8fafc!important}");
+    expect(previewSource).toContain(".email-body a{color:#f6d56e!important}");
+    expect(previewSource).toContain(".email-footer,.email-footer *{color:#cbd5e1!important}");
   });
 
   it("does not nest the branded header row inside a second table row", () => {

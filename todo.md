@@ -1946,3 +1946,12 @@
 - [x] Implement a content-verified renderer that cannot report ready for a blank document
 - [x] Verify rendered email HTML is visible in the managed preview across desktop, mobile, and split modes
 - [x] Resolve the client TypeScript iteration compatibility error in the sanitized renderer
+
+## Email preview verification and reusable recovery skill (Aug 12, 2026)
+- [x] Update and validate the renderer-resilience skill with the Shadow DOM content-verification pattern
+- [x] Verify all six email templates and dark mode in the repaired preview
+- [x] Inspect the exported Welcome template HTML structure
+- [x] Send an authorized Welcome test email and verify inbox delivery and rendering
+- [x] Correct inadequate body-text contrast in dark-mode email preview rendering
+- [x] Support validated `?template=` deep links for deterministic all-template verification
+- [x] Run full release validation and publish the verified dark-mode and deep-link enhancements

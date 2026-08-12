@@ -20,6 +20,14 @@ const TEMPLATES = [
 type TemplateKey = (typeof TEMPLATES)[number]["value"];
 type ViewMode = "desktop" | "mobile" | "split";
 
+function getInitialTemplate(): TemplateKey {
+  if (typeof window === "undefined") return "magic-link";
+  const requested = new URLSearchParams(window.location.search).get("template");
+  return TEMPLATES.some(template => template.value === requested)
+    ? requested as TemplateKey
+    : "magic-link";
+}
+
 const DEFAULT_VARS = {
   name: "Alex Johnson",
   company: "Sunrise Bakery",
@@ -92,7 +100,7 @@ function EmailPreviewSurface({
 export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [selected, setSelected] = useState<TemplateKey>("magic-link");
+  const [selected, setSelected] = useState<TemplateKey>(getInitialTemplate);
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
   const [darkMode, setDarkMode] = useState(false);
   const [testEmail, setTestEmail] = useState(user?.email ?? "");
@@ -145,7 +153,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
     if (darkMode) {
       html = html.replace(
         "<body",
-        '<style>body{background:#1a1a1a!important}table[role="presentation"]{background:#1a1a1a!important}</style><body'
+        '<style>body{background:#111827!important;color:#f8fafc!important}table[role="presentation"]{background:#161b22!important}.email-card{background:#161b22!important}.email-body,.email-body *{color:#f8fafc!important}.email-body a{color:#f6d56e!important}.email-footer{background:#0f172a!important}.email-footer,.email-footer *{color:#cbd5e1!important}</style><body'
       );
     }
     return html;
