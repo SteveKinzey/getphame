@@ -1883,3 +1883,56 @@
 - [x] Add a public read-only email preview path without exposing test-send or administrative controls
 - [x] Run a complete current repository health check across source, tests, build, dependency, and CI status
 - [x] Repair the public preview component type so the authenticated route remains compatible with Wouter
+
+## Security-report repository notification cleanup (Aug 12, 2026)
+- [x] Inventory current security-report administration notifications and their repository state
+- [x] Classify obsolete versus actionable security-report notifications (two failed checks were on inactive branches; no open pull requests remain)
+- [x] Mark obsolete notifications done and preserve any current security follow-up
+
+## Cross-repository security and delivery audit (Aug 12, 2026)
+- [x] Audit dependency vulnerability exposure for getphame-security-report-admin
+- [x] Inspect current and recent CI/CD workflow status for getphame-security-report-admin
+- [x] Review and prioritize open issues in getphame and getphame-security-report-admin
+
+## Security-report dependency remediation and release validation (Aug 12, 2026)
+- [x] Upgrade the vulnerable direct and transitive dependency chain in getphame-security-report-admin
+- [x] Run complete local audit, type-check, test, and production build validation
+- [x] Open and monitor the protected-main dependency-remediation pull request (PR #16; Quality Gate passed)
+- [x] Inspect the security-report hosting deployment status (no GitHub deployment record, homepage URL, or deployment workflow is configured; hosting state is not observable from this repository)
+- [x] Resolve new Vite peer incompatibilities by retaining the minimum patched Vite 7 line and a compatible React plugin; an existing third-party Builder plugin peer warning remains
+
+## Security-report merge and cross-repository security review (Aug 12, 2026)
+- [x] Merge the passed security-report dependency-remediation PR and prove protected-main parity
+- [x] Inventory open issues and pull requests across related Get Phame repositories
+- [x] Run a deep security scan of the main Get Phame repository and report evidence-led findings
+- [ ] Run a hosting deployment test if the security-report hosting target is provided
+
+## Get Phame open pull-request review and optimized validation (Aug 12, 2026)
+- [x] Review PR #95 and PR #102 for unique scope, merge readiness, checks, and overlap with protected main
+- [x] Run memory-optimized client and server TypeScript validation on current Get Phame main
+- [x] Run a memory-optimized production build on current Get Phame main
+
+## PR 95 rebase, PR 102 retirement, and integration validation (Aug 12, 2026)
+- [x] Rebase PR #95 onto current protected main and resolve conflicts without losing its unique agent-discovery work
+- [x] Close PR #102 as superseded and delete its release branch
+- [x] Run end-to-end integration and complete regression validation for the rebased Get Phame application (clean CI Quality Gate passed)
+- [x] Repair the existing Playwright welcome-dialog setup so it no longer blocks video walkthrough scenarios
+- [x] Replace stale marketing-copy assertions in walkthrough end-to-end tests with the stable accessible video trigger contract
+- [x] Add a stable test identifier for the localized walkthrough trigger and use it in all walkthrough scenarios
+- [x] Pin the interface locale to English in walkthrough setup while continuing to simulate browser caption-language preferences independently
+- [x] Use the existing menu-selection helper for each caption-setting action so closed Radix menus do not cause long browser retries
+
+## PR 95 replacement review branch (Aug 12, 2026)
+- [x] Create a replacement review branch from the safely rebased agent-discovery candidate
+- [x] Add only the Playwright first-visit-dialog test setup required by walkthrough scenarios
+- [x] Run focused walkthrough coverage successfully in clean CI after the local browser resource constraint
+- [x] Run memory-optimized client/server TypeScript checks
+- [x] Open the replacement pull request after local validation passes
+
+## Conservative CI-first replacement release (Aug 12, 2026)
+- [x] Push the replacement branch without modifying protected main or production
+- [x] Use clean CI to validate the focused browser scenarios and investigate only reproducible failures (Quality Gate and API Recovery Browser Check passed on PR #121)
+- [x] Complete full release checks before a protected-main merge
+- [x] Mark PR #121 ready and squash-merge it into protected main after the user-approved release decision
+- [x] Prove the resulting protected-main tree matches the validated replacement release
+- [ ] Verify the deployed application only after a successful protected-main release
