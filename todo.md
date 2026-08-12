@@ -1977,6 +1977,6 @@
 - [x] Slide deck intentionally omitted at the user's request
 
 ## Production route audit review hardening (Aug 12, 2026)
-- [ ] Fail the audit when its route list is absent or empty
-- [ ] Keep route-audit findings machine-readable when evaluation fails
-- [ ] Clear retry-attempt diagnostics so transient failures do not contaminate successful route results
+- [x] Fail the audit when its route list is absent or empty
+- [x] Keep route-audit findings machine-readable when evaluation fails
+- [x] Clear retry-attempt diagnostics so transient failures do not contaminate successful route results
