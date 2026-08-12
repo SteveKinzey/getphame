@@ -32,7 +32,7 @@ describe("admin email preview runtime contract", () => {
     expect(appSource).toContain("sessionStorage.setItem");
   });
 
-  it("renders preview documents through a Blob URL instead of a CSP-sensitive srcDoc attribute", () => {
+  it("uses a Blob URL first and falls back to srcDoc only when a browser blocks that document", () => {
     const previewSource = readFileSync(
       resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
       "utf8"
@@ -40,8 +40,10 @@ describe("admin email preview runtime contract", () => {
 
     expect(previewSource).toContain("URL.createObjectURL");
     expect(previewSource).toContain('type: "text/html;charset=utf-8"');
-    expect(previewSource).toContain("src={previewDocumentUrl}");
-    expect(previewSource).not.toContain("srcDoc={previewHtml}");
+    expect(previewSource).toContain("src={previewDocumentUrl ?? undefined}");
+    expect(previewSource).toContain('previewRenderMode === "blob"');
+    expect(previewSource).toContain("srcDoc={previewHtml ?? \"\"}");
+    expect(previewSource).toContain('setPreviewRenderMode("srcdoc")');
   });
 
   it("does not nest the branded header row inside a second table row", () => {

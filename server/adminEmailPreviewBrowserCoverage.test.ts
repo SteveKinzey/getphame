@@ -26,12 +26,14 @@ describe("admin email preview browser coverage matrix", () => {
     expect((source.match(/value: "/g) ?? []).length).toBeGreaterThanOrEqual(templates.length);
   });
 
-  it("covers desktop, mobile, and split viewport rendering through the same Blob document URL", () => {
+  it("covers desktop, mobile, and split viewport rendering through the shared Blob-first document renderer", () => {
     const source = previewSource();
     expect(source).toContain('type ViewMode = "desktop" | "mobile" | "split"');
     expect(source).toContain('renderIframePane("Desktop — 800px", 800');
     expect(source).toContain('renderIframePane("Mobile — 390px", 390');
-    expect((source.match(/src=\{previewDocumentUrl\}/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    expect(source).toContain("src={previewDocumentUrl ?? undefined}");
+    expect(source).toContain("renderPreviewFrame(`${label} preview`, key, 500)");
+    expect(source).toContain("iframeKey,");
   });
 
   it("exposes a loaded and a recoverable-error state to browser users", () => {
@@ -41,5 +43,7 @@ describe("admin email preview browser coverage matrix", () => {
     expect(source).toContain('previewRenderState === "error" ? renderPreviewFallback()');
     expect(source).toContain('previewRenderState === "ready" && previewDocumentUrl');
     expect(source).toContain('role="alert"');
+    expect(source).toContain('previewRenderMode === "blob"');
+    expect(source).toContain('srcDoc={previewHtml ?? ""}');
   });
 });

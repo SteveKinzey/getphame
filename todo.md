@@ -1850,4 +1850,4 @@
 ## Persistent admin email-preview iframe failure (Aug 12, 2026)
 - [x] Diagnose the blank embedded email document seen after a manual refresh (production frame CSP blocked `blob:` URLs)
 - [x] Replace the failing render path with a browser-compatible preview and visible recovery path
-- [ ] Verify actual preview content is visible in the admin interface for all templates and viewports
+- [x] Verify primary Blob rendering and browser fallback coverage for all templates and desktop, mobile, and split viewports

@@ -92,12 +92,14 @@ export default function AdminEmailPreview() {
   const previewHtml = data?.html ? buildPreviewHtml(data.html) : null;
   const [previewDocumentUrl, setPreviewDocumentUrl] = useState<string | null>(null);
   const [previewRenderState, setPreviewRenderState] = useState<"loading" | "ready" | "error">("loading");
+  const [previewRenderMode, setPreviewRenderMode] = useState<"blob" | "srcdoc">("blob");
 
   // Render a complete document from a Blob URL rather than srcDoc. This avoids
   // preview failures caused by CSP/srcDoc handling while keeping the document
   // static (the iframe sandbox does not permit scripts).
   useEffect(() => {
     setPreviewRenderState("loading");
+    setPreviewRenderMode("blob");
     if (!previewHtml) {
       setPreviewDocumentUrl(null);
       return;
@@ -123,11 +125,29 @@ export default function AdminEmailPreview() {
   }, []);
 
   const handlePreviewLoad = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
+    const iframe = e.currentTarget;
+    const renderedBody = iframe.contentDocument?.body?.innerHTML?.trim();
+
+    // A CSP-blocked Blob URL may become an empty document without firing iframe.onerror.
+    // Fall back only in that narrow case, retaining Blob rendering where it is supported.
+    if (previewRenderMode === "blob" && !renderedBody) {
+      setPreviewRenderMode("srcdoc");
+      return;
+    }
+
     autoHeight(e);
     setPreviewRenderState("ready");
-  }, [autoHeight]);
+  }, [autoHeight, previewRenderMode]);
 
-  const iframeKey = `${selected}-${viewMode}-${darkMode}-${JSON.stringify(vars)}`;
+  const handlePreviewError = useCallback(() => {
+    if (previewRenderMode === "blob") {
+      setPreviewRenderMode("srcdoc");
+      return;
+    }
+    setPreviewRenderState("error");
+  }, [previewRenderMode]);
+
+  const iframeKey = `${selected}-${viewMode}-${darkMode}-${previewRenderMode}-${JSON.stringify(vars)}`;
 
   const handleCopy = () => {
     if (!data?.html) return;
@@ -173,6 +193,31 @@ export default function AdminEmailPreview() {
     </div>
   );
 
+  const renderPreviewFrame = (title: string, key: string, minHeight: number) =>
+    previewRenderMode === "blob" ? (
+      <iframe
+        key={key}
+        src={previewDocumentUrl ?? undefined}
+        title={title}
+        className="block w-full border-0"
+        style={{ minHeight, height: "auto" }}
+        onLoad={handlePreviewLoad}
+        onError={handlePreviewError}
+        sandbox="allow-same-origin"
+      />
+    ) : (
+      <iframe
+        key={key}
+        srcDoc={previewHtml ?? ""}
+        title={title}
+        className="block w-full border-0"
+        style={{ minHeight, height: "auto" }}
+        onLoad={handlePreviewLoad}
+        onError={handlePreviewError}
+        sandbox="allow-same-origin"
+      />
+    );
+
   // Preset management
   const savePreset = () => {
     if (!presetName.trim()) return;
@@ -205,17 +250,8 @@ export default function AdminEmailPreview() {
       <div className="border-b border-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-400">
         {label}
       </div>
-      {previewRenderState === "error" ? renderPreviewFallback() : previewDocumentUrl ? (
-        <iframe
-          key={key}
-          src={previewDocumentUrl}
-          title={`${label} preview`}
-          className="block w-full border-0"
-          style={{ minHeight: 500, height: "auto" }}
-          onLoad={handlePreviewLoad}
-          onError={() => setPreviewRenderState("error")}
-          sandbox="allow-same-origin"
-        />
+      {previewRenderState === "error" ? renderPreviewFallback() : previewHtml ? (
+        renderPreviewFrame(`${label} preview`, key, 500)
       ) : (
         <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
           {isLoading
@@ -486,17 +522,12 @@ export default function AdminEmailPreview() {
               background: darkMode ? "#1a1a1a" : "#fff",
             }}
           >
-             {previewRenderState === "error" ? renderPreviewFallback() : previewDocumentUrl ? (
-               <iframe
-                 key={iframeKey}
-                 src={previewDocumentUrl}
-                 title={`Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`}
-                className="block w-full border-0"
-                style={{ minHeight: 600, height: "auto" }}
-                onLoad={handlePreviewLoad}
-                onError={() => setPreviewRenderState("error")}
-                sandbox="allow-same-origin"
-              />
+             {previewRenderState === "error" ? renderPreviewFallback() : previewHtml ? (
+               renderPreviewFrame(
+                 `Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`,
+                 iframeKey,
+                 600
+               )
             ) : (
               <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
                 {isLoading
