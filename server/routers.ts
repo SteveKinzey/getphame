@@ -5730,6 +5730,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input, ctx }) => {
+        const testMessageId = Date.now().toString(36);
         const sharedHtml = buildAdminEmailPreviewTemplate({
           template: input.template,
           recipientName: (ctx.user.name ?? "").split(" ")[0] || "Alex",
@@ -5737,7 +5738,7 @@ export const appRouter = router({
         });
         await sendSystemEmail({
           to: input.to,
-          subject: `[Test Preview] ${ADMIN_EMAIL_PREVIEW_LABELS[input.template] ?? input.template}`,
+          subject: `[Test Preview ${testMessageId}] ${ADMIN_EMAIL_PREVIEW_LABELS[input.template] ?? input.template}`,
           html: sharedHtml,
           from: NOREPLY_FROM,
         });

@@ -158,5 +158,7 @@ describe("admin email preview runtime contract", () => {
 
     expect(routerSource).toContain('from "./adminEmailPreviewTemplates"');
     expect(routerSource.match(/buildAdminEmailPreviewTemplate\(/g)).toHaveLength(2);
+    expect(routerSource).toContain("const testMessageId = Date.now().toString(36)");
+    expect(routerSource).toContain("[Test Preview ${testMessageId}]");
   });
 });

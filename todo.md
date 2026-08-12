@@ -1962,3 +1962,4 @@
 - [ ] Send and verify a corrected Welcome test email in the recipient inbox
 - [x] Consolidate preview and test-email templates behind one shared deterministic renderer
 - [x] Complete server type, focused contract, full-suite, dependency-audit, and production-build validation for the shared renderer
+- [x] Prevent Gmail conversation trimming of repeated test previews by making each test-email subject distinct
