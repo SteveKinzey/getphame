@@ -1852,3 +1852,7 @@
 - [x] Add configurable consent coverage goal to Settings
 - [x] Add sort-by-consent-percentage to admin user list
 - [x] Update getphame-consent-health-monitoring skill
+
+## Hotfix: SetupProgressCard missing consent icon import (Aug 12, 2026)
+- [x] Import ShieldCheck in SetupProgressCard so the landing page renders
+- [x] Verify the landing page and focused test suite after the import fix

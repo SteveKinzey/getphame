@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2 } from "lucide-react";
+import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { claimOnboardingChecklistTelemetryEvent, type OnboardingChecklistTelemetryEvent } from "@/lib/onboardingChecklistTelemetry";
