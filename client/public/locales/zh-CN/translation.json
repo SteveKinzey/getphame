@@ -3014,6 +3014,71 @@
           "4": "为 externalId 和 Idempotency-Key 使用一个不可变的来源记录 ID。",
           "5": "发送一条允许的记录，然后在此刷新健康状态。"
         }
+      },
+      "automation": {
+        "title": "评价请求自动化安全控制",
+        "description": "配置已批准的目标和模板，在不导入数据的情况下验证，完成一次安全的服务商试运行，然后再决定何时正式启用。",
+        "updated": "自动化安全控制已更新。",
+        "states": {
+          "live": "正式发送",
+          "dryRun": "安全试运行",
+          "paused": "已暂停"
+        },
+        "scopeTitle": "需要评价请求 API 密钥",
+        "scopeDescription": "此来源绑定的是仅导入密钥。请创建同时具有 contacts:write 和 review_requests:send 权限的密钥，然后使用该密钥新建来源连接。",
+        "mode": "工作流模式",
+        "modes": {
+          "importOnly": "仅导入",
+          "reviewRequest": "评价请求"
+        },
+        "locale": "收件人语言",
+        "template": "已批准模板",
+        "defaultTemplate": "已批准的默认模板",
+        "default": "默认",
+        "platform": "评价目标",
+        "defaultPlatform": "已验证的默认目标",
+        "delay": "发送延迟",
+        "delays": {
+          "immediate": "立即",
+          "day": "24 小时",
+          "minutes": "{{count}} 分钟"
+        },
+        "dryRunCompleted": "服务商试运行",
+        "notCompleted": "未完成",
+        "lastSuccess": "最近成功事件",
+        "lastFailure": "最近失败",
+        "failureCode": "最近安全错误代码",
+        "none": "无",
+        "refresh": "刷新设置状态",
+        "pause": "暂停自动评价请求",
+        "enableDryRun": "启用安全试运行",
+        "goLive": "切换到正式发送",
+        "returnDryRun": "返回试运行",
+        "preflightTitle": "只读预检",
+        "preflightDescription": "检查来源绑定、抑制状态、SMTP、配额、目标和已批准模板的就绪情况。此测试不会导入联系人或发送电子邮件。",
+        "testName": "获准的测试姓名",
+        "testEmail": "获准的测试邮箱",
+        "runPreflight": "运行预检",
+        "preflightResult": "预检结果",
+        "preflightEmpty": "在启用服务商试运行或正式发送之前，请先运行只读检查。",
+        "ready": "配置已准备好进行安全的服务商试运行。",
+        "blocked": "请先解决被阻止的检查项，再测试此来源。",
+        "checks": {
+          "sourceBinding": "来源与 API 密钥绑定",
+          "sendScope": "评价请求权限",
+          "automationMode": "评价请求模式",
+          "suppression": "收件人抑制状态",
+          "delivery": "SMTP、配额、模板和目标",
+          "dryRun": "已完成服务商试运行"
+        },
+        "checkStatuses": {
+          "ready": "就绪",
+          "blocked": "被阻止",
+          "required": "必需"
+        },
+        "deliveryCode": "就绪代码：{{code}}",
+        "retryTitle": "安全重试规则",
+        "retryDescription": "使用相同的 sourceSubmissionId 和 Idempotency-Key 重试同一事件。重试时切勿创建新 ID。Get Phame 会重放已完成结果，并对可恢复的发送失败安排有限次数的重试。"
       }
     },
     "wordpressPairing": {

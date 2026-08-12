@@ -1,10 +1,14 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure, router } from "../_core/trpc";
+import { findSavedContactByEmail } from "../contacts";
 import { listDeveloperApiKeys } from "../developerApiKeys";
+import { outreachLocaleSchema, OUTREACH_LOCALES } from "../integrationExpansion";
+import { validateReviewRequestDelivery } from "../reviewRequestDelivery";
 import { evaluateSourceConnection } from "../sourceHealthRoutes";
 import {
   SOURCE_PROVIDERS,
+  SOURCE_AUTOMATION_MODES,
   archiveSourceConnection,
   createSourceConnection,
   getSourceAnalytics,
@@ -15,6 +19,16 @@ import {
 } from "../sourceConnections";
 
 const sourceIdInput = z.object({ id: z.number().int().positive() });
+
+function deliveryReadinessCode(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  if (message.includes("Business profile")) return "PROFILE_NOT_CONFIGURED" as const;
+  if (message.includes("SMTP")) return "SMTP_NOT_CONFIGURED" as const;
+  if (message.includes("quota") || message.includes("limit")) return "QUOTA_LIMITED" as const;
+  if (message.includes("platform") || message.includes("destination")) return "PLATFORM_NOT_READY" as const;
+  if (message.includes("template") || message.includes("approved")) return "TEMPLATE_NOT_READY" as const;
+  return "DELIVERY_NOT_READY" as const;
+}
 
 const PROVIDER_RECIPES = {
   zapier: {
@@ -93,9 +107,28 @@ export const sourceOperationsRouter = router({
     label: z.string().trim().min(1).max(100).optional(),
     expectedIntervalMinutes: z.number().int().min(15).max(10_080).optional(),
     monitoringEnabled: z.boolean().optional(),
-  }).refine(value => value.label !== undefined || value.expectedIntervalMinutes !== undefined || value.monitoringEnabled !== undefined, {
+    automationEnabled: z.boolean().optional(),
+    automationMode: z.enum(SOURCE_AUTOMATION_MODES).optional(),
+    dryRun: z.boolean().optional(),
+    sendDelayMinutes: z.number().int().min(0).max(1_440).optional(),
+    templateId: z.number().int().positive().nullable().optional(),
+    platformId: z.number().int().positive().nullable().optional(),
+    preferredLocale: z.enum(OUTREACH_LOCALES).optional(),
+    pauseReason: z.string().trim().max(255).nullable().optional(),
+  }).refine(value => Object.entries(value).some(([key, entry]) => key !== "id" && entry !== undefined), {
     message: "Provide at least one field to update.",
   })).mutation(async ({ ctx, input }) => {
+    const existing = await getSourceConnectionForUser(ctx.user.id, input.id);
+    if (!existing) throw new TRPCError({ code: "NOT_FOUND", message: "Source connection not found." });
+    if (input.automationEnabled || input.automationMode === "review_request") {
+      const key = (await listDeveloperApiKeys(ctx.user.id)).find(candidate => candidate.id === existing.apiKeyId && candidate.status === "active");
+      if (!key?.scopes.includes("review_requests:send")) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Choose a source API key with the review_requests:send scope before enabling automation." });
+      }
+    }
+    if (input.dryRun === false && !existing.dryRunCompletedAt) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Complete one safe provider dry run before enabling live delivery." });
+    }
     const source = await updateSourceConnection({ userId: ctx.user.id, ...input });
     if (!source) throw new TRPCError({ code: "NOT_FOUND", message: "Source connection not found." });
     return source;
@@ -130,5 +163,65 @@ export const sourceOperationsRouter = router({
     const evaluation = await evaluateSourceConnection(source);
     const updated = await getSourceConnectionForUser(ctx.user.id, input.id);
     return { source: updated, evaluation };
+  }),
+
+  preflight: protectedProcedure.input(z.object({
+    id: z.number().int().positive(),
+    customerName: z.string().trim().min(1).max(255),
+    customerEmail: z.string().trim().email().max(320),
+  })).mutation(async ({ ctx, input }) => {
+    const source = await getSourceConnectionForUser(ctx.user.id, input.id);
+    if (!source) throw new TRPCError({ code: "NOT_FOUND", message: "Source connection not found." });
+    const [keys, existingContact] = await Promise.all([
+      listDeveloperApiKeys(ctx.user.id),
+      findSavedContactByEmail(ctx.user.id, input.customerEmail),
+    ]);
+    const key = keys.find((candidate: { id: number; status: string; scopes: string[] }) => (
+      candidate.id === source.apiKeyId && candidate.status === "active"
+    )) ?? null;
+    const sourceBound = Boolean(key);
+    const sendScope = Boolean(key?.scopes.includes("review_requests:send"));
+    const reviewRequestMode = source.automationMode === "review_request";
+    const suppressed = Boolean(existingContact?.optedOut);
+    let delivery: Awaited<ReturnType<typeof validateReviewRequestDelivery>> | null = null;
+    let deliveryCode: ReturnType<typeof deliveryReadinessCode> | null = null;
+    try {
+      delivery = await validateReviewRequestDelivery({
+        userId: ctx.user.id,
+        customerName: input.customerName,
+        customerEmail: input.customerEmail,
+        preferredLocale: outreachLocaleSchema.parse(source.preferredLocale ?? "en"),
+        templateId: source.templateId,
+        platformId: source.platformId,
+        sourceConnectionId: source.id,
+        contactId: existingContact?.id ?? null,
+      });
+    } catch (error) {
+      deliveryCode = deliveryReadinessCode(error);
+    }
+    const configurationReady = sourceBound && sendScope && reviewRequestMode && !suppressed && delivery !== null;
+    return {
+      configurationReady,
+      readyForDryRun: configurationReady,
+      readyForLive: configurationReady && source.dryRunCompletedAt !== null,
+      checks: {
+        sourceBinding: sourceBound ? "ready" as const : "blocked" as const,
+        sendScope: sendScope ? "ready" as const : "blocked" as const,
+        automationMode: reviewRequestMode ? "ready" as const : "blocked" as const,
+        suppression: suppressed ? "blocked" as const : "ready" as const,
+        delivery: delivery ? "ready" as const : "blocked" as const,
+        dryRun: source.dryRunCompletedAt ? "ready" as const : "required" as const,
+      },
+      deliveryCode,
+      delivery,
+      source: {
+        publicId: source.publicId,
+        automationEnabled: source.automationEnabled,
+        dryRun: source.dryRun,
+        dryRunCompletedAt: source.dryRunCompletedAt,
+        sendDelayMinutes: source.sendDelayMinutes,
+        preferredLocale: source.preferredLocale,
+      },
+    };
   }),
 });

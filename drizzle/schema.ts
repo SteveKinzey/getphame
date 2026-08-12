@@ -698,10 +698,21 @@ export const customerRequests = pgTable("customer_requests", {
   sentAt: timestamp("sentAt"),
   followUpAt: timestamp("followUpAt"),
   platformId: integer("platformId"), // FK to review_platforms.id — which platform was linked in this request
+  sourceConnectionId: integer("sourceConnectionId"),
+  sourceEventId: varchar("sourceEventId", { length: 191 }),
+  preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
+  templateRevisionId: integer("templateRevisionId"),
+  englishTemplateRevisionId: integer("englishTemplateRevisionId"),
   emailSubject: varchar("emailSubject", { length: 500 }), // Subject line of the sent email
   emailBody: text("emailBody"), // HTML body of the sent email (stored for client detail view)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, table => [
+  uniqueIndex("customer_requests_source_event_unique").on(
+    table.userId,
+    table.sourceConnectionId,
+    table.sourceEventId,
+  ),
+]);
 export type CustomerRequest = typeof customerRequests.$inferSelect;
 export type InsertCustomerRequest = typeof customerRequests.$inferInsert;
 
@@ -870,6 +881,14 @@ export const savedContacts = pgTable("saved_contacts", {
   consentBasis: varchar("consentBasis", { length: 32 }),
   consentCapturedAt: bigint("consentCapturedAt", { mode: "number" }),
   consentSource: varchar("consentSource", { length: 255 }),
+  consentPurpose: varchar("consentPurpose", { length: 32 }),
+  consentChannel: varchar("consentChannel", { length: 16 }),
+  consentTextHash: varchar("consentTextHash", { length: 64 }),
+  consentVersion: varchar("consentVersion", { length: 64 }),
+  privacyPolicyUrl: text("privacyPolicyUrl"),
+  sourceFormId: varchar("sourceFormId", { length: 191 }),
+  sourceSubmissionId: varchar("sourceSubmissionId", { length: 191 }),
+  preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
   // Opt-out / unsubscribe tracking
   optedOut: integer("optedOut").default(0).notNull(), // 1 = unsubscribed, suppress future sends
   optedOutAt: bigint("optedOutAt", { mode: "number" }), // Unix ms when opted out
@@ -887,6 +906,11 @@ export const emailTemplates = pgTable("email_templates", {
   name: varchar("name", { length: 255 }).notNull(),
   subject: varchar("subject", { length: 512 }).notNull(),
   body: text("body").notNull(), // Supports {{customer_name}}, {{business_name}}, {{review_link}}
+  familyPublicId: varchar("familyPublicId", { length: 48 }),
+  locale: varchar("locale", { length: 16 }).default("en").notNull(),
+  activeRevisionId: integer("activeRevisionId"),
+  provenance: varchar("provenance", { length: 24 }).default("manual").notNull(),
+  approvedAt: bigint("approvedAt", { mode: "number" }),
   isDefault: integer("isDefault").default(0).notNull(), // 1 = default template for this user
   usageCount: integer("usageCount").default(0).notNull(), // incremented each time this template is used to send a request
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -895,6 +919,48 @@ export const emailTemplates = pgTable("email_templates", {
 
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
 export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
+
+/** Immutable, tenant-scoped template revisions with a canonical English counterpart. */
+export const emailTemplateRevisions = pgTable(
+  "email_template_revisions",
+  {
+    id: serial("id").primaryKey(),
+    publicId: varchar("publicId", { length: 48 }).notNull().unique(),
+    userId: integer("userId").notNull(),
+    templateId: integer("templateId").notNull(),
+    familyPublicId: varchar("familyPublicId", { length: 48 }).notNull(),
+    version: integer("version").notNull(),
+    locale: varchar("locale", { length: 16 }).notNull(),
+    subject: varchar("subject", { length: 512 }).notNull(),
+    body: text("body").notNull(),
+    englishSubject: varchar("englishSubject", { length: 512 }).notNull(),
+    englishBody: text("englishBody").notNull(),
+    englishRevisionId: integer("englishRevisionId"),
+    provenance: varchar("provenance", { length: 24 }).notNull(),
+    modelId: varchar("modelId", { length: 100 }),
+    inputHash: varchar("inputHash", { length: 64 }),
+    status: varchar("status", { length: 24 }).default("draft").notNull(),
+    approvedAt: bigint("approvedAt", { mode: "number" }),
+    approvedByUserId: integer("approvedByUserId"),
+    createdAt: bigint("createdAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+  },
+  table => [
+    uniqueIndex("email_template_revisions_family_version_unique").on(
+      table.userId,
+      table.familyPublicId,
+      table.locale,
+      table.version,
+    ),
+    index("email_template_revisions_template_status_idx").on(
+      table.templateId,
+      table.status,
+    ),
+  ],
+);
+export type EmailTemplateRevision = typeof emailTemplateRevisions.$inferSelect;
+export type InsertEmailTemplateRevision = typeof emailTemplateRevisions.$inferInsert;
 
 /** Follow-up reminders — scheduled follow-ups with immutable timing snapshots for reporting */
 export const followUpReminders = pgTable("follow_up_reminders", {
@@ -1497,6 +1563,19 @@ export const sourceConnections = pgTable(
       .default(1_440),
     monitoringEnabled: boolean("monitoringEnabled").notNull().default(true),
     status: varchar("status", { length: 20 }).notNull().default("setup"),
+    automationEnabled: boolean("automationEnabled").notNull().default(false),
+    automationMode: varchar("automationMode", { length: 24 })
+      .notNull()
+      .default("import_only"),
+    dryRun: boolean("dryRun").notNull().default(true),
+    sendDelayMinutes: integer("sendDelayMinutes").notNull().default(0),
+    templateId: integer("templateId"),
+    platformId: integer("platformId"),
+    preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
+    dryRunCompletedAt: bigint("dryRunCompletedAt", { mode: "number" }),
+    pausedAt: bigint("pausedAt", { mode: "number" }),
+    pauseReason: varchar("pauseReason", { length: 255 }),
+    lastAutomationAt: bigint("lastAutomationAt", { mode: "number" }),
     lastEvaluatedAt: bigint("lastEvaluatedAt", { mode: "number" }),
     nextEvaluationAt: bigint("nextEvaluationAt", { mode: "number" }),
     lastEventAt: bigint("lastEventAt", { mode: "number" }),
@@ -1532,6 +1611,107 @@ export const sourceConnections = pgTable(
 );
 export type SourceConnection = typeof sourceConnections.$inferSelect;
 export type InsertSourceConnection = typeof sourceConnections.$inferInsert;
+
+/** Immutable, privacy-bounded proof of permission captured by a source integration. */
+export const contactConsentEvidence = pgTable(
+  "contact_consent_evidence",
+  {
+    id: serial("id").primaryKey(),
+    publicId: varchar("publicId", { length: 48 }).notNull().unique(),
+    userId: integer("userId").notNull(),
+    contactId: integer("contactId"),
+    sourceConnectionId: integer("sourceConnectionId"),
+    sourceSubmissionId: varchar("sourceSubmissionId", { length: 191 }).notNull(),
+    purpose: varchar("purpose", { length: 32 }).notNull(),
+    channel: varchar("channel", { length: 16 }).notNull(),
+    basis: varchar("basis", { length: 32 }).notNull(),
+    confirmed: boolean("confirmed").notNull(),
+    capturedAt: bigint("capturedAt", { mode: "number" }).notNull(),
+    source: varchar("source", { length: 255 }).notNull(),
+    consentText: text("consentText").notNull(),
+    consentTextHash: varchar("consentTextHash", { length: 64 }).notNull(),
+    consentVersion: varchar("consentVersion", { length: 64 }).notNull(),
+    privacyPolicyUrl: text("privacyPolicyUrl").notNull(),
+    createdAt: bigint("createdAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+  },
+  table => [
+    uniqueIndex("contact_consent_evidence_source_unique").on(
+      table.userId,
+      table.sourceSubmissionId,
+      table.purpose,
+    ),
+    index("contact_consent_evidence_contact_idx").on(table.userId, table.contactId),
+  ],
+);
+export type ContactConsentEvidence = typeof contactConsentEvidence.$inferSelect;
+export type InsertContactConsentEvidence = typeof contactConsentEvidence.$inferInsert;
+
+/** Idempotency and audit ledger for source events that may create review outreach. */
+export const sourceAutomationEvents = pgTable(
+  "source_automation_events",
+  {
+    id: serial("id").primaryKey(),
+    publicId: varchar("publicId", { length: 48 }).notNull().unique(),
+    userId: integer("userId").notNull(),
+    sourceConnectionId: integer("sourceConnectionId").notNull(),
+    apiKeyId: integer("apiKeyId").notNull(),
+    sourceEventId: varchar("sourceEventId", { length: 191 }).notNull(),
+    requestHash: varchar("requestHash", { length: 64 }).notNull(),
+    eventType: varchar("eventType", { length: 32 }).notNull().default("review_request"),
+    contactId: integer("contactId"),
+    templateId: integer("templateId"),
+    platformId: integer("platformId"),
+    preferredLocale: varchar("preferredLocale", { length: 16 }).notNull().default("en"),
+    customerRequestId: integer("customerRequestId"),
+    status: varchar("status", { length: 24 }).notNull(),
+    errorCode: varchar("errorCode", { length: 64 }),
+    scheduledAt: bigint("scheduledAt", { mode: "number" }),
+    attemptCount: integer("attemptCount").notNull().default(0),
+    lastAttemptAt: bigint("lastAttemptAt", { mode: "number" }),
+    claimExpiresAt: bigint("claimExpiresAt", { mode: "number" }),
+    createdAt: bigint("createdAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+    completedAt: bigint("completedAt", { mode: "number" }),
+  },
+  table => [
+    uniqueIndex("source_automation_events_source_event_unique").on(
+      table.userId,
+      table.sourceConnectionId,
+      table.sourceEventId,
+    ),
+    index("source_automation_events_status_idx").on(table.userId, table.status),
+    index("source_automation_events_due_idx").on(table.status, table.scheduledAt),
+  ],
+);
+export type SourceAutomationEvent = typeof sourceAutomationEvents.$inferSelect;
+export type InsertSourceAutomationEvent = typeof sourceAutomationEvents.$inferInsert;
+
+/** Durable registration for the source-automation recurring job. */
+export const sourceAutomationSchedulers = pgTable("source_automation_schedulers", {
+  id: serial("id").primaryKey(),
+  scheduleKey: varchar("scheduleKey", { length: 32 })
+    .notNull()
+    .default("global")
+    .unique(),
+  scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).unique(),
+  cronExpression: varchar("cronExpression", { length: 64 })
+    .notNull()
+    .default("0 */5 * * * *"),
+  lastRunAt: bigint("lastRunAt", { mode: "number" }),
+  lastRunStatus: varchar("lastRunStatus", { length: 20 }),
+  lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+  createdAt: bigint("createdAt", { mode: "number" })
+    .notNull()
+    .$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" })
+    .notNull()
+    .$defaultFn(() => Date.now()),
+});
+export type SourceAutomationScheduler = typeof sourceAutomationSchedulers.$inferSelect;
+export type InsertSourceAutomationScheduler = typeof sourceAutomationSchedulers.$inferInsert;
 
 /**
  * Short-lived device-style pairing requests used by the WordPress connector.

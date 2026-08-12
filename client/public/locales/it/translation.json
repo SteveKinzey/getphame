@@ -3599,6 +3599,71 @@
           "4": "Usa un ID record sorgente immutabile per externalId e Idempotency-Key.",
           "5": "Invia un record consentito, poi aggiorna lo stato qui."
         }
+      },
+      "automation": {
+        "title": "Protezioni per l’automazione delle richieste di recensione",
+        "description": "Configura una destinazione e un modello approvati, convalida senza importare, completa una prova sicura nel provider e poi scegli quando attivare gli invii reali.",
+        "updated": "Le protezioni dell’automazione sono state aggiornate.",
+        "states": {
+          "live": "Invio attivo",
+          "dryRun": "Prova sicura",
+          "paused": "In pausa"
+        },
+        "scopeTitle": "È necessaria una chiave API per le richieste di recensione",
+        "scopeDescription": "Questa fonte è collegata a una chiave di sola importazione. Crea una chiave con le autorizzazioni contacts:write e review_requests:send, quindi crea una nuova connessione fonte con tale chiave.",
+        "mode": "Modalità del flusso",
+        "modes": {
+          "importOnly": "Solo importazione",
+          "reviewRequest": "Richiesta di recensione"
+        },
+        "locale": "Lingua del destinatario",
+        "template": "Modello approvato",
+        "defaultTemplate": "Modello predefinito approvato",
+        "default": "predefinito",
+        "platform": "Destinazione della recensione",
+        "defaultPlatform": "Destinazione predefinita verificata",
+        "delay": "Ritardo di invio",
+        "delays": {
+          "immediate": "Immediatamente",
+          "day": "24 ore",
+          "minutes": "{{count}} minuti"
+        },
+        "dryRunCompleted": "Prova del provider",
+        "notCompleted": "Non completata",
+        "lastSuccess": "Ultimo evento riuscito",
+        "lastFailure": "Ultimo errore",
+        "failureCode": "Ultimo codice di errore sicuro",
+        "none": "Nessuno",
+        "refresh": "Aggiorna stato configurazione",
+        "pause": "Metti in pausa le richieste automatiche",
+        "enableDryRun": "Attiva prova sicura",
+        "goLive": "Passa agli invii reali",
+        "returnDryRun": "Torna alla prova",
+        "preflightTitle": "Controllo preliminare in sola lettura",
+        "preflightDescription": "Controlla collegamento della fonte, soppressione, SMTP, quota, destinazione e modello approvato. Il controllo non importa contatti e non invia email.",
+        "testName": "Nome di prova autorizzato",
+        "testEmail": "Email di prova autorizzata",
+        "runPreflight": "Esegui controllo",
+        "preflightResult": "Risultato del controllo",
+        "preflightEmpty": "Esegui un controllo in sola lettura prima di attivare una prova del provider o gli invii reali.",
+        "ready": "La configurazione è pronta per una prova sicura del provider.",
+        "blocked": "Risolvi i controlli bloccati prima di provare questa fonte.",
+        "checks": {
+          "sourceBinding": "Collegamento tra fonte e chiave API",
+          "sendScope": "Autorizzazione per richieste di recensione",
+          "automationMode": "Modalità richiesta di recensione",
+          "suppression": "Soppressione del destinatario",
+          "delivery": "SMTP, quota, modello e destinazione",
+          "dryRun": "Prova del provider completata"
+        },
+        "checkStatuses": {
+          "ready": "Pronto",
+          "blocked": "Bloccato",
+          "required": "Obbligatorio"
+        },
+        "deliveryCode": "Codice di preparazione: {{code}}",
+        "retryTitle": "Regola di nuovo tentativo sicuro",
+        "retryDescription": "Riprova lo stesso evento con gli stessi sourceSubmissionId e Idempotency-Key. Non creare mai un nuovo ID per un tentativo. Get Phame riproduce gli esiti completati e pianifica tentativi limitati per gli errori recuperabili."
       }
     },
     "wordpressPairing": {

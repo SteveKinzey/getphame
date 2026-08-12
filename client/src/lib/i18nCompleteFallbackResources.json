@@ -1317,6 +1317,71 @@
             "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
             "5": "Send one permitted record, then refresh health here."
           }
+        },
+        "automation": {
+          "title": "Review-request automation safeguards",
+          "description": "Configure an approved destination and template, validate without importing, complete one safe provider dry run, then choose when to go live.",
+          "updated": "Automation safeguards updated.",
+          "states": {
+            "live": "Live delivery",
+            "dryRun": "Safe dry run",
+            "paused": "Paused"
+          },
+          "scopeTitle": "A review-request API key is required",
+          "scopeDescription": "This source is linked to an import-only key. Create a key with contacts:write and review_requests:send scopes, then create a new source connection with that key.",
+          "mode": "Workflow mode",
+          "modes": {
+            "importOnly": "Import only",
+            "reviewRequest": "Review request"
+          },
+          "locale": "Recipient language",
+          "template": "Approved template",
+          "defaultTemplate": "Approved default template",
+          "default": "default",
+          "platform": "Review destination",
+          "defaultPlatform": "Verified default destination",
+          "delay": "Send delay",
+          "delays": {
+            "immediate": "Immediately",
+            "day": "24 hours",
+            "minutes": "{{count}} minutes"
+          },
+          "dryRunCompleted": "Provider dry run",
+          "notCompleted": "Not completed",
+          "lastSuccess": "Last successful event",
+          "lastFailure": "Last failure",
+          "failureCode": "Latest safe error code",
+          "none": "None",
+          "refresh": "Refresh setup status",
+          "pause": "Pause automated requests",
+          "enableDryRun": "Enable safe dry run",
+          "goLive": "Move to live delivery",
+          "returnDryRun": "Return to dry run",
+          "preflightTitle": "Read-only preflight",
+          "preflightDescription": "Check source binding, suppression, SMTP, quota, destination, and approved template readiness. This test does not import a contact or send email.",
+          "testName": "Permitted test name",
+          "testEmail": "Permitted test email",
+          "runPreflight": "Run preflight",
+          "preflightResult": "Preflight result",
+          "preflightEmpty": "Run a read-only check before enabling a provider dry run or live delivery.",
+          "ready": "Configuration is ready for a safe provider dry run.",
+          "blocked": "Resolve the blocked checks before testing this source.",
+          "checks": {
+            "sourceBinding": "Source and API-key binding",
+            "sendScope": "Review-request permission",
+            "automationMode": "Review-request mode",
+            "suppression": "Recipient suppression",
+            "delivery": "SMTP, quota, template, and destination",
+            "dryRun": "Completed provider dry run"
+          },
+          "checkStatuses": {
+            "ready": "Ready",
+            "blocked": "Blocked",
+            "required": "Required"
+          },
+          "deliveryCode": "Readiness code: {{code}}",
+          "retryTitle": "Safe retry rule",
+          "retryDescription": "Retry the same event with the same sourceSubmissionId and Idempotency-Key. Never create a new ID for a retry. Get Phame replays completed outcomes and schedules bounded retries for recoverable delivery failures."
         }
       },
       "wordpressPairing": {
@@ -2921,6 +2986,71 @@
             "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
             "5": "Envíe un registro permitido y luego actualice el estado aquí."
           }
+        },
+        "automation": {
+          "title": "Protecciones para automatizar solicitudes de reseña",
+          "description": "Configura un destino y una plantilla aprobados, valida sin importar, completa una prueba segura en el proveedor y luego decide cuándo activar los envíos.",
+          "updated": "Se actualizaron las protecciones de automatización.",
+          "states": {
+            "live": "Envío activo",
+            "dryRun": "Prueba segura",
+            "paused": "En pausa"
+          },
+          "scopeTitle": "Se requiere una clave API para solicitudes de reseña",
+          "scopeDescription": "Esta fuente está vinculada a una clave solo para importación. Crea una clave con los permisos contacts:write y review_requests:send y, después, una nueva conexión de fuente con esa clave.",
+          "mode": "Modo del flujo",
+          "modes": {
+            "importOnly": "Solo importar",
+            "reviewRequest": "Solicitud de reseña"
+          },
+          "locale": "Idioma del destinatario",
+          "template": "Plantilla aprobada",
+          "defaultTemplate": "Plantilla predeterminada aprobada",
+          "default": "predeterminada",
+          "platform": "Destino de la reseña",
+          "defaultPlatform": "Destino predeterminado verificado",
+          "delay": "Retraso del envío",
+          "delays": {
+            "immediate": "Inmediatamente",
+            "day": "24 horas",
+            "minutes": "{{count}} minutos"
+          },
+          "dryRunCompleted": "Prueba del proveedor",
+          "notCompleted": "No completada",
+          "lastSuccess": "Último evento correcto",
+          "lastFailure": "Último fallo",
+          "failureCode": "Último código de error seguro",
+          "none": "Ninguno",
+          "refresh": "Actualizar estado de configuración",
+          "pause": "Pausar solicitudes automatizadas",
+          "enableDryRun": "Activar prueba segura",
+          "goLive": "Pasar a envíos reales",
+          "returnDryRun": "Volver a la prueba",
+          "preflightTitle": "Comprobación previa de solo lectura",
+          "preflightDescription": "Comprueba la vinculación de la fuente, la supresión, SMTP, la cuota, el destino y la plantilla aprobada. Esta prueba no importa contactos ni envía correos.",
+          "testName": "Nombre de prueba autorizado",
+          "testEmail": "Correo de prueba autorizado",
+          "runPreflight": "Ejecutar comprobación",
+          "preflightResult": "Resultado de la comprobación",
+          "preflightEmpty": "Ejecuta una comprobación de solo lectura antes de activar una prueba del proveedor o el envío real.",
+          "ready": "La configuración está lista para una prueba segura del proveedor.",
+          "blocked": "Resuelve las comprobaciones bloqueadas antes de probar esta fuente.",
+          "checks": {
+            "sourceBinding": "Vinculación de fuente y clave API",
+            "sendScope": "Permiso para solicitar reseñas",
+            "automationMode": "Modo de solicitud de reseña",
+            "suppression": "Supresión del destinatario",
+            "delivery": "SMTP, cuota, plantilla y destino",
+            "dryRun": "Prueba del proveedor completada"
+          },
+          "checkStatuses": {
+            "ready": "Lista",
+            "blocked": "Bloqueada",
+            "required": "Obligatoria"
+          },
+          "deliveryCode": "Código de preparación: {{code}}",
+          "retryTitle": "Regla de reintento seguro",
+          "retryDescription": "Reintenta el mismo evento con el mismo sourceSubmissionId e Idempotency-Key. Nunca crees un ID nuevo al reintentar. Get Phame reproduce los resultados completados y programa reintentos limitados para fallos recuperables."
         }
       },
       "title": "Integraciones para desarrolladores",
@@ -4675,6 +4805,71 @@
             "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
             "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
           }
+        },
+        "automation": {
+          "title": "Protections de l’automatisation des demandes d’avis",
+          "description": "Configurez une destination et un modèle approuvés, validez sans importer, effectuez un essai sécurisé chez le fournisseur, puis choisissez quand passer en production.",
+          "updated": "Les protections de l’automatisation ont été mises à jour.",
+          "states": {
+            "live": "Envoi en production",
+            "dryRun": "Essai sécurisé",
+            "paused": "En pause"
+          },
+          "scopeTitle": "Une clé API pour les demandes d’avis est requise",
+          "scopeDescription": "Cette source est liée à une clé d’importation uniquement. Créez une clé avec les autorisations contacts:write et review_requests:send, puis une nouvelle connexion source avec cette clé.",
+          "mode": "Mode du flux",
+          "modes": {
+            "importOnly": "Importer uniquement",
+            "reviewRequest": "Demande d’avis"
+          },
+          "locale": "Langue du destinataire",
+          "template": "Modèle approuvé",
+          "defaultTemplate": "Modèle par défaut approuvé",
+          "default": "par défaut",
+          "platform": "Destination de l’avis",
+          "defaultPlatform": "Destination par défaut vérifiée",
+          "delay": "Délai d’envoi",
+        "delays": {
+          "immediate": "Immédiatement",
+          "day": "24 heures",
+          "minutes": "{{count}} min"
+        },
+          "dryRunCompleted": "Essai du fournisseur",
+          "notCompleted": "Non effectué",
+          "lastSuccess": "Dernier événement réussi",
+          "lastFailure": "Dernier échec",
+          "failureCode": "Dernier code d’erreur sécurisé",
+          "none": "Aucun",
+          "refresh": "Actualiser l’état de configuration",
+          "pause": "Mettre en pause les demandes automatisées",
+          "enableDryRun": "Activer l’essai sécurisé",
+          "goLive": "Passer à l’envoi en production",
+          "returnDryRun": "Revenir à l’essai",
+          "preflightTitle": "Contrôle préalable en lecture seule",
+          "preflightDescription": "Vérifiez la liaison de la source, la suppression, SMTP, le quota, la destination et le modèle approuvé. Ce contrôle n’importe aucun contact et n’envoie aucun e-mail.",
+          "testName": "Nom de test autorisé",
+          "testEmail": "E-mail de test autorisé",
+          "runPreflight": "Lancer le contrôle",
+          "preflightResult": "Résultat du contrôle",
+          "preflightEmpty": "Lancez un contrôle en lecture seule avant d’activer un essai fournisseur ou l’envoi en production.",
+          "ready": "La configuration est prête pour un essai fournisseur sécurisé.",
+          "blocked": "Résolvez les contrôles bloqués avant de tester cette source.",
+          "checks": {
+            "sourceBinding": "Liaison de la source et de la clé API",
+            "sendScope": "Autorisation de demande d’avis",
+            "automationMode": "Mode de demande d’avis",
+            "suppression": "Suppression du destinataire",
+            "delivery": "SMTP, quota, modèle et destination",
+            "dryRun": "Essai fournisseur effectué"
+          },
+          "checkStatuses": {
+            "ready": "Prêt",
+            "blocked": "Bloqué",
+            "required": "Requis"
+          },
+          "deliveryCode": "Code de préparation : {{code}}",
+          "retryTitle": "Règle de nouvelle tentative sécurisée",
+          "retryDescription": "Relancez le même événement avec les mêmes sourceSubmissionId et Idempotency-Key. Ne créez jamais un nouvel ID pour une nouvelle tentative. Get Phame rejoue les résultats terminés et planifie des tentatives limitées pour les échecs récupérables."
         }
       },
       "keys": {
@@ -6405,6 +6600,71 @@
             "4": "Usa un ID record sorgente immutabile per externalId e Idempotency-Key.",
             "5": "Invia un record consentito, poi aggiorna lo stato qui."
           }
+        },
+        "automation": {
+          "title": "Protezioni per l’automazione delle richieste di recensione",
+          "description": "Configura una destinazione e un modello approvati, convalida senza importare, completa una prova sicura nel provider e poi scegli quando attivare gli invii reali.",
+          "updated": "Le protezioni dell’automazione sono state aggiornate.",
+          "states": {
+            "live": "Invio attivo",
+            "dryRun": "Prova sicura",
+            "paused": "In pausa"
+          },
+          "scopeTitle": "È necessaria una chiave API per le richieste di recensione",
+          "scopeDescription": "Questa fonte è collegata a una chiave di sola importazione. Crea una chiave con le autorizzazioni contacts:write e review_requests:send, quindi crea una nuova connessione fonte con tale chiave.",
+          "mode": "Modalità del flusso",
+          "modes": {
+            "importOnly": "Solo importazione",
+            "reviewRequest": "Richiesta di recensione"
+          },
+          "locale": "Lingua del destinatario",
+          "template": "Modello approvato",
+          "defaultTemplate": "Modello predefinito approvato",
+          "default": "predefinito",
+          "platform": "Destinazione della recensione",
+          "defaultPlatform": "Destinazione predefinita verificata",
+          "delay": "Ritardo di invio",
+          "delays": {
+            "immediate": "Immediatamente",
+            "day": "24 ore",
+            "minutes": "{{count}} minuti"
+          },
+          "dryRunCompleted": "Prova del provider",
+          "notCompleted": "Non completata",
+          "lastSuccess": "Ultimo evento riuscito",
+          "lastFailure": "Ultimo errore",
+          "failureCode": "Ultimo codice di errore sicuro",
+          "none": "Nessuno",
+          "refresh": "Aggiorna stato configurazione",
+          "pause": "Metti in pausa le richieste automatiche",
+          "enableDryRun": "Attiva prova sicura",
+          "goLive": "Passa agli invii reali",
+          "returnDryRun": "Torna alla prova",
+          "preflightTitle": "Controllo preliminare in sola lettura",
+          "preflightDescription": "Controlla collegamento della fonte, soppressione, SMTP, quota, destinazione e modello approvato. Il controllo non importa contatti e non invia email.",
+          "testName": "Nome di prova autorizzato",
+          "testEmail": "Email di prova autorizzata",
+          "runPreflight": "Esegui controllo",
+          "preflightResult": "Risultato del controllo",
+          "preflightEmpty": "Esegui un controllo in sola lettura prima di attivare una prova del provider o gli invii reali.",
+          "ready": "La configurazione è pronta per una prova sicura del provider.",
+          "blocked": "Risolvi i controlli bloccati prima di provare questa fonte.",
+          "checks": {
+            "sourceBinding": "Collegamento tra fonte e chiave API",
+            "sendScope": "Autorizzazione per richieste di recensione",
+            "automationMode": "Modalità richiesta di recensione",
+            "suppression": "Soppressione del destinatario",
+            "delivery": "SMTP, quota, modello e destinazione",
+            "dryRun": "Prova del provider completata"
+          },
+          "checkStatuses": {
+            "ready": "Pronto",
+            "blocked": "Bloccato",
+            "required": "Obbligatorio"
+          },
+          "deliveryCode": "Codice di preparazione: {{code}}",
+          "retryTitle": "Regola di nuovo tentativo sicuro",
+          "retryDescription": "Riprova lo stesso evento con gli stessi sourceSubmissionId e Idempotency-Key. Non creare mai un nuovo ID per un tentativo. Get Phame riproduce gli esiti completati e pianifica tentativi limitati per gli errori recuperabili."
         }
       },
       "wordpressPairing": {
@@ -8007,6 +8267,71 @@
             "4": "ใช้หมายเลขระเบียนแหล่งข้อมูลที่ไม่เปลี่ยนแปลงเพียงค่าเดียวสำหรับ externalId และ Idempotency-Key",
             "5": "ส่งระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
           }
+        },
+        "automation": {
+          "title": "มาตรการป้องกันสำหรับการส่งคำขอรีวิวอัตโนมัติ",
+          "description": "กำหนดปลายทางและเทมเพลตที่ได้รับอนุมัติ ตรวจสอบโดยไม่ต้องนำเข้าข้อมูล ทดสอบแบบปลอดภัยกับผู้ให้บริการหนึ่งครั้ง แล้วจึงเลือกว่าจะเริ่มใช้งานจริงเมื่อใด",
+          "updated": "อัปเดตมาตรการป้องกันระบบอัตโนมัติแล้ว",
+          "states": {
+            "live": "ส่งจริง",
+            "dryRun": "โหมดทดสอบปลอดภัย",
+            "paused": "หยุดชั่วคราว"
+          },
+          "scopeTitle": "ต้องใช้คีย์ API สำหรับคำขอรีวิว",
+          "scopeDescription": "แหล่งข้อมูลนี้เชื่อมกับคีย์ที่นำเข้าได้เท่านั้น โปรดสร้างคีย์ที่มีสิทธิ์ contacts:write และ review_requests:send แล้วสร้างการเชื่อมต่อแหล่งข้อมูลใหม่ด้วยคีย์นั้น",
+          "mode": "โหมดเวิร์กโฟลว์",
+          "modes": {
+            "importOnly": "นำเข้าเท่านั้น",
+            "reviewRequest": "คำขอรีวิว"
+          },
+          "locale": "ภาษาของผู้รับ",
+          "template": "เทมเพลตที่ได้รับอนุมัติ",
+          "defaultTemplate": "เทมเพลตเริ่มต้นที่ได้รับอนุมัติ",
+          "default": "ค่าเริ่มต้น",
+          "platform": "ปลายทางรีวิว",
+          "defaultPlatform": "ปลายทางเริ่มต้นที่ตรวจสอบแล้ว",
+          "delay": "หน่วงเวลาส่ง",
+          "delays": {
+            "immediate": "ทันที",
+            "day": "24 ชั่วโมง",
+            "minutes": "{{count}} นาที"
+          },
+          "dryRunCompleted": "การทดสอบกับผู้ให้บริการ",
+          "notCompleted": "ยังไม่เสร็จ",
+          "lastSuccess": "เหตุการณ์สำเร็จล่าสุด",
+          "lastFailure": "ความล้มเหลวล่าสุด",
+          "failureCode": "รหัสข้อผิดพลาดแบบปลอดภัยล่าสุด",
+          "none": "ไม่มี",
+          "refresh": "รีเฟรชสถานะการตั้งค่า",
+          "pause": "หยุดคำขออัตโนมัติ",
+          "enableDryRun": "เปิดโหมดทดสอบปลอดภัย",
+          "goLive": "เปลี่ยนเป็นการส่งจริง",
+          "returnDryRun": "กลับสู่โหมดทดสอบ",
+          "preflightTitle": "ตรวจสอบล่วงหน้าแบบอ่านอย่างเดียว",
+          "preflightDescription": "ตรวจสอบการผูกแหล่งข้อมูล การระงับผู้รับ SMTP โควตา ปลายทาง และเทมเพลตที่ได้รับอนุมัติ การทดสอบนี้จะไม่นำเข้าผู้ติดต่อหรือส่งอีเมล",
+          "testName": "ชื่อทดสอบที่ได้รับอนุญาต",
+          "testEmail": "อีเมลทดสอบที่ได้รับอนุญาต",
+          "runPreflight": "เรียกใช้การตรวจสอบ",
+          "preflightResult": "ผลการตรวจสอบ",
+          "preflightEmpty": "ตรวจสอบแบบอ่านอย่างเดียวก่อนเปิดการทดสอบกับผู้ให้บริการหรือการส่งจริง",
+          "ready": "การตั้งค่าพร้อมสำหรับการทดสอบกับผู้ให้บริการแบบปลอดภัย",
+          "blocked": "แก้ไขรายการที่ถูกบล็อกก่อนทดสอบแหล่งข้อมูลนี้",
+          "checks": {
+            "sourceBinding": "การผูกแหล่งข้อมูลกับคีย์ API",
+            "sendScope": "สิทธิ์ส่งคำขอรีวิว",
+            "automationMode": "โหมดคำขอรีวิว",
+            "suppression": "สถานะระงับผู้รับ",
+            "delivery": "SMTP โควตา เทมเพลต และปลายทาง",
+            "dryRun": "ทดสอบกับผู้ให้บริการแล้ว"
+          },
+          "checkStatuses": {
+            "ready": "พร้อม",
+            "blocked": "ถูกบล็อก",
+            "required": "จำเป็น"
+          },
+          "deliveryCode": "รหัสความพร้อม: {{code}}",
+          "retryTitle": "กฎการลองใหม่อย่างปลอดภัย",
+          "retryDescription": "ลองเหตุการณ์เดิมอีกครั้งโดยใช้ sourceSubmissionId และ Idempotency-Key เดิม ห้ามสร้าง ID ใหม่เมื่อลองซ้ำ Get Phame จะตอบผลลัพธ์เดิมสำหรับงานที่เสร็จแล้วและกำหนดการลองใหม่แบบจำกัดสำหรับข้อผิดพลาดที่กู้คืนได้"
         }
       },
       "wordpressPairing": {
@@ -9606,6 +9931,71 @@
             "4": "为 externalId 和 Idempotency-Key 使用一个不可变的来源记录 ID。",
             "5": "发送一条允许的记录，然后在此刷新健康状态。"
           }
+        },
+        "automation": {
+          "title": "评价请求自动化安全控制",
+          "description": "配置已批准的目标和模板，在不导入数据的情况下验证，完成一次安全的服务商试运行，然后再决定何时正式启用。",
+          "updated": "自动化安全控制已更新。",
+          "states": {
+            "live": "正式发送",
+            "dryRun": "安全试运行",
+            "paused": "已暂停"
+          },
+          "scopeTitle": "需要评价请求 API 密钥",
+          "scopeDescription": "此来源绑定的是仅导入密钥。请创建同时具有 contacts:write 和 review_requests:send 权限的密钥，然后使用该密钥新建来源连接。",
+          "mode": "工作流模式",
+          "modes": {
+            "importOnly": "仅导入",
+            "reviewRequest": "评价请求"
+          },
+          "locale": "收件人语言",
+          "template": "已批准模板",
+          "defaultTemplate": "已批准的默认模板",
+          "default": "默认",
+          "platform": "评价目标",
+          "defaultPlatform": "已验证的默认目标",
+          "delay": "发送延迟",
+          "delays": {
+            "immediate": "立即",
+            "day": "24 小时",
+            "minutes": "{{count}} 分钟"
+          },
+          "dryRunCompleted": "服务商试运行",
+          "notCompleted": "未完成",
+          "lastSuccess": "最近成功事件",
+          "lastFailure": "最近失败",
+          "failureCode": "最近安全错误代码",
+          "none": "无",
+          "refresh": "刷新设置状态",
+          "pause": "暂停自动评价请求",
+          "enableDryRun": "启用安全试运行",
+          "goLive": "切换到正式发送",
+          "returnDryRun": "返回试运行",
+          "preflightTitle": "只读预检",
+          "preflightDescription": "检查来源绑定、抑制状态、SMTP、配额、目标和已批准模板的就绪情况。此测试不会导入联系人或发送电子邮件。",
+          "testName": "获准的测试姓名",
+          "testEmail": "获准的测试邮箱",
+          "runPreflight": "运行预检",
+          "preflightResult": "预检结果",
+          "preflightEmpty": "在启用服务商试运行或正式发送之前，请先运行只读检查。",
+          "ready": "配置已准备好进行安全的服务商试运行。",
+          "blocked": "请先解决被阻止的检查项，再测试此来源。",
+          "checks": {
+            "sourceBinding": "来源与 API 密钥绑定",
+            "sendScope": "评价请求权限",
+            "automationMode": "评价请求模式",
+            "suppression": "收件人抑制状态",
+            "delivery": "SMTP、配额、模板和目标",
+            "dryRun": "已完成服务商试运行"
+          },
+          "checkStatuses": {
+            "ready": "就绪",
+            "blocked": "被阻止",
+            "required": "必需"
+          },
+          "deliveryCode": "就绪代码：{{code}}",
+          "retryTitle": "安全重试规则",
+          "retryDescription": "使用相同的 sourceSubmissionId 和 Idempotency-Key 重试同一事件。重试时切勿创建新 ID。Get Phame 会重放已完成结果，并对可恢复的发送失败安排有限次数的重试。"
         }
       },
       "wordpressPairing": {
@@ -11198,6 +11588,71 @@
             "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
             "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
           }
+        },
+        "automation": {
+          "title": "評論請求自動化安全控制",
+          "description": "設定已核准的目標與範本，在不匯入資料的情況下驗證，完成一次安全的服務商試跑，再決定何時正式啟用。",
+          "updated": "自動化安全控制已更新。",
+          "states": {
+            "live": "正式傳送",
+            "dryRun": "安全試跑",
+            "paused": "已暫停"
+          },
+          "scopeTitle": "需要評論請求 API 金鑰",
+          "scopeDescription": "此來源綁定的是僅匯入金鑰。請建立同時具備 contacts:write 與 review_requests:send 權限的金鑰，然後使用該金鑰建立新的來源連線。",
+          "mode": "工作流程模式",
+          "modes": {
+            "importOnly": "僅匯入",
+            "reviewRequest": "評論請求"
+          },
+          "locale": "收件者語言",
+          "template": "已核准範本",
+          "defaultTemplate": "已核准的預設範本",
+          "default": "預設",
+          "platform": "評論目標",
+          "defaultPlatform": "已驗證的預設目標",
+          "delay": "傳送延遲",
+          "delays": {
+            "immediate": "立即",
+            "day": "24 小時",
+            "minutes": "{{count}} 分鐘"
+          },
+          "dryRunCompleted": "服務商試跑",
+          "notCompleted": "尚未完成",
+          "lastSuccess": "最近成功事件",
+          "lastFailure": "最近失敗",
+          "failureCode": "最近安全錯誤代碼",
+          "none": "無",
+          "refresh": "重新整理設定狀態",
+          "pause": "暫停自動評論請求",
+          "enableDryRun": "啟用安全試跑",
+          "goLive": "切換為正式傳送",
+          "returnDryRun": "返回試跑",
+          "preflightTitle": "唯讀預檢",
+          "preflightDescription": "檢查來源綁定、抑制狀態、SMTP、配額、目標及已核准範本是否就緒。此測試不會匯入聯絡人或傳送電子郵件。",
+          "testName": "獲准的測試姓名",
+          "testEmail": "獲准的測試電子郵件",
+          "runPreflight": "執行預檢",
+          "preflightResult": "預檢結果",
+          "preflightEmpty": "啟用服務商試跑或正式傳送之前，請先執行唯讀檢查。",
+          "ready": "設定已準備好進行安全的服務商試跑。",
+          "blocked": "請先處理被封鎖的檢查項目，再測試此來源。",
+          "checks": {
+            "sourceBinding": "來源與 API 金鑰綁定",
+            "sendScope": "評論請求權限",
+            "automationMode": "評論請求模式",
+            "suppression": "收件者抑制狀態",
+            "delivery": "SMTP、配額、範本與目標",
+            "dryRun": "已完成服務商試跑"
+          },
+          "checkStatuses": {
+            "ready": "就緒",
+            "blocked": "已封鎖",
+            "required": "必需"
+          },
+          "deliveryCode": "就緒代碼：{{code}}",
+          "retryTitle": "安全重試規則",
+          "retryDescription": "使用相同的 sourceSubmissionId 與 Idempotency-Key 重試同一事件。重試時絕不可建立新 ID。Get Phame 會重播已完成的結果，並針對可恢復的傳送失敗安排有限次數的重試。"
         }
       },
       "title": "開發人員整合",
