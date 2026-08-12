@@ -208,6 +208,7 @@ import {
   releaseParityRecords,
   routeAuditRuns,
   emailPreviewRendererErrors,
+  auditRetentionPolicies,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -258,9 +259,16 @@ import {
   sql,
   gte,
   lte,
+  lt,
   ne,
   count,
 } from "drizzle-orm";
+import {
+  buildReleaseHistoryCsvExport,
+  RELEASE_HISTORY_EXPORT_COLUMN_KEYS,
+  RELEASE_HISTORY_EXPORT_LIMIT,
+  type ReleaseHistoryExportColumnKey,
+} from "./releaseParityExport";
 import {
   listSavedContacts,
   createSavedContact,
@@ -419,6 +427,69 @@ const routeAuditHistoryInput = z.object({
   page: z.number().int().min(1).default(1),
   pageSize: z.number().int().min(1).max(50).default(20),
 });
+
+const AUDIT_RETENTION_DEFAULT_DAYS = 180;
+const AUDIT_RETENTION_MIN_DAYS = 7;
+const AUDIT_RETENTION_MAX_DAYS = 3650;
+const auditRetentionInput = z.object({
+  routeAuditRetentionDays: z.number().int().min(AUDIT_RETENTION_MIN_DAYS).max(AUDIT_RETENTION_MAX_DAYS),
+  rendererErrorRetentionDays: z.number().int().min(AUDIT_RETENTION_MIN_DAYS).max(AUDIT_RETENTION_MAX_DAYS),
+});
+
+const releaseHistoryInput = z.object({
+  page: z.number().int().min(1).default(1),
+  pageSize: z.number().int().min(1).max(50).default(20),
+  status: z.enum(["all", "matched", "needs_review"]).default("all"),
+  sortBy: z.enum(["recordedAt", "checkpointId"]).default("recordedAt"),
+  sortDirection: z.enum(["asc", "desc"]).default("desc"),
+});
+
+const releaseHistoryExportInput = releaseHistoryInput
+  .omit({ page: true, pageSize: true })
+  .extend({
+    selectedColumns: z.array(z.enum(RELEASE_HISTORY_EXPORT_COLUMN_KEYS)).min(1).max(RELEASE_HISTORY_EXPORT_COLUMN_KEYS.length).optional(),
+  });
+
+type ReleaseHistoryFilters = Pick<
+  z.infer<typeof releaseHistoryInput>,
+  "status" | "sortBy" | "sortDirection"
+>;
+
+function releaseHistoryWhere(input: ReleaseHistoryFilters, snapshotToMs?: number) {
+  const conditions = [];
+  if (input.status === "matched") conditions.push(eq(releaseParityRecords.parityStatus, "matched"));
+  if (input.status === "needs_review") conditions.push(ne(releaseParityRecords.parityStatus, "matched"));
+  if (snapshotToMs !== undefined) conditions.push(lte(releaseParityRecords.recordedAt, snapshotToMs));
+  return conditions.length ? and(...conditions) : undefined;
+}
+
+function releaseHistoryOrder(input: ReleaseHistoryFilters) {
+  if (input.sortBy === "checkpointId") {
+    return input.sortDirection === "asc"
+      ? [asc(releaseParityRecords.checkpointId), asc(releaseParityRecords.id)]
+      : [desc(releaseParityRecords.checkpointId), desc(releaseParityRecords.id)];
+  }
+  return input.sortDirection === "asc"
+    ? [asc(releaseParityRecords.recordedAt), asc(releaseParityRecords.id)]
+    : [desc(releaseParityRecords.recordedAt), desc(releaseParityRecords.id)];
+}
+
+async function pruneAuditHistory(
+  db: Exclude<Awaited<ReturnType<typeof getDb>>, null>
+) {
+  const [policy] = await db
+    .select()
+    .from(auditRetentionPolicies)
+    .where(eq(auditRetentionPolicies.policyKey, "global"))
+    .limit(1);
+  const routeRetentionDays = policy?.routeAuditRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
+  const rendererRetentionDays = policy?.rendererErrorRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
+  const now = Date.now();
+  await Promise.all([
+    db.delete(routeAuditRuns).where(lt(routeAuditRuns.auditedAt, now - routeRetentionDays * 86_400_000)),
+    db.delete(emailPreviewRendererErrors).where(lt(emailPreviewRendererErrors.occurredAt, now - rendererRetentionDays * 86_400_000)),
+  ]);
+}
 
 function parseRouteAuditFindings(raw: string) {
   try {
@@ -4354,6 +4425,7 @@ export const appRouter = router({
           durationMs: result.durationMs,
           auditedAt: result.auditedAt,
         });
+        await pruneAuditHistory(db);
         return {
           id: Number((inserted as unknown as { insertId: number }).insertId),
           ...result,
@@ -4372,6 +4444,7 @@ export const appRouter = router({
           durationMs: auditedAt - startedAt,
           auditedAt,
         });
+        await pruneAuditHistory(db);
         return {
           id: Number((inserted as unknown as { insertId: number }).insertId),
           auditedRoutes: 0,
@@ -4446,6 +4519,7 @@ export const appRouter = router({
           ...input,
           occurredAt,
         });
+        await pruneAuditHistory(db);
         return {
           id: Number((inserted as unknown as { insertId: number }).insertId),
           occurredAt,
@@ -4492,6 +4566,113 @@ export const appRouter = router({
         .limit(1);
       return latest ?? null;
     }),
+
+    /** Bounded administrator-only release lineage with stable filtering and sorting. */
+    listReleaseParityRecords: adminProcedure
+      .input(releaseHistoryInput.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Release history storage is unavailable." });
+        const parsed = releaseHistoryInput.parse(input ?? {});
+        const where = releaseHistoryWhere(parsed);
+        const [totalRow] = await db.select({ value: count() }).from(releaseParityRecords).where(where);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / parsed.pageSize));
+        const page = Math.min(parsed.page, pageCount);
+        const rows = await db
+          .select()
+          .from(releaseParityRecords)
+          .where(where)
+          .orderBy(...releaseHistoryOrder(parsed))
+          .limit(parsed.pageSize)
+          .offset((page - 1) * parsed.pageSize);
+        return { rows, page, pageSize: parsed.pageSize, total, pageCount, filters: parsed };
+      }),
+
+    /** Prepare one sanitized, bounded release-history snapshot for preview, copy, and download. */
+    prepareReleaseParityExport: adminProcedure
+      .input(releaseHistoryExportInput.optional())
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Release history storage is unavailable." });
+        const parsed = releaseHistoryExportInput.parse(input ?? {});
+        const snapshotToMs = Date.now();
+        const where = releaseHistoryWhere(parsed, snapshotToMs);
+        const [totalRow] = await db.select({ value: count() }).from(releaseParityRecords).where(where);
+        const total = Number(totalRow?.value ?? 0);
+        const rows = await db
+          .select()
+          .from(releaseParityRecords)
+          .where(where)
+          .orderBy(...releaseHistoryOrder(parsed))
+          .limit(RELEASE_HISTORY_EXPORT_LIMIT);
+        return buildReleaseHistoryCsvExport({
+          rows,
+          total,
+          truncated: total > rows.length,
+          status: parsed.status,
+          sortBy: parsed.sortBy,
+          sortDirection: parsed.sortDirection,
+          selectedColumns: parsed.selectedColumns as ReleaseHistoryExportColumnKey[] | undefined,
+          snapshotToMs,
+        });
+      }),
+
+    /** Read global, administrator-only audit retention controls without exposing actor identifiers. */
+    getAuditRetentionPolicy: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Audit retention storage is unavailable." });
+      const [policy] = await db.select().from(auditRetentionPolicies).where(eq(auditRetentionPolicies.policyKey, "global")).limit(1);
+      return policy
+        ? { routeAuditRetentionDays: policy.routeAuditRetentionDays, rendererErrorRetentionDays: policy.rendererErrorRetentionDays, updatedAt: policy.updatedAt }
+        : { routeAuditRetentionDays: AUDIT_RETENTION_DEFAULT_DAYS, rendererErrorRetentionDays: AUDIT_RETENTION_DEFAULT_DAYS, updatedAt: null };
+    }),
+
+    /** Save retention windows and immediately purge only expired sanitized diagnostic records. */
+    updateAuditRetentionPolicy: adminProcedure
+      .input(auditRetentionInput)
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Audit retention storage is unavailable." });
+        const now = Date.now();
+        const [existing] = await db.select({ id: auditRetentionPolicies.id }).from(auditRetentionPolicies).where(eq(auditRetentionPolicies.policyKey, "global")).limit(1);
+        if (existing) {
+          await db.update(auditRetentionPolicies).set({ ...input, updatedByUserId: ctx.user.id, updatedAt: now }).where(eq(auditRetentionPolicies.id, existing.id));
+        } else {
+          await db.insert(auditRetentionPolicies).values({ policyKey: "global", ...input, updatedByUserId: ctx.user.id, updatedAt: now });
+        }
+        await pruneAuditHistory(db);
+        return { ...input, updatedAt: now };
+      }),
+
+    /** Summarize repeated sanitized renderer failures in a bounded observation window. */
+    rendererFailureTrend: adminProcedure
+      .input(z.object({ windowHours: z.number().int().min(24).max(720).default(168), threshold: z.number().int().min(2).max(20).default(3) }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Renderer diagnostics storage is unavailable." });
+        const windowHours = input?.windowHours ?? 168;
+        const threshold = input?.threshold ?? 3;
+        const windowStartedAt = Date.now() - windowHours * 3_600_000;
+        const rows = await db
+          .select({ templateKey: emailPreviewRendererErrors.templateKey, viewportMode: emailPreviewRendererErrors.viewportMode, darkMode: emailPreviewRendererErrors.darkMode, errorCode: emailPreviewRendererErrors.errorCode, occurredAt: emailPreviewRendererErrors.occurredAt })
+          .from(emailPreviewRendererErrors)
+          .where(gte(emailPreviewRendererErrors.occurredAt, windowStartedAt))
+          .orderBy(desc(emailPreviewRendererErrors.occurredAt), desc(emailPreviewRendererErrors.id))
+          .limit(250);
+        const grouped = new Map<string, { templateKey: string; viewportMode: string; darkMode: boolean; errorCode: string; count: number; latestOccurredAt: number }>();
+        for (const row of rows) {
+          const key = [row.templateKey, row.viewportMode, row.darkMode ? "dark" : "light", row.errorCode].join("|");
+          const current = grouped.get(key);
+          if (current) current.count += 1;
+          else grouped.set(key, { ...row, count: 1, latestOccurredAt: row.occurredAt });
+        }
+        const repeatSignals = Array.from(grouped.values())
+          .filter((signal) => signal.count >= threshold)
+          .sort((left, right) => right.count - left.count || right.latestOccurredAt - left.latestOccurredAt)
+          .slice(0, 5);
+        return { windowHours, threshold, windowStartedAt, totalSignals: rows.length, repeatSignals };
+      }),
 
     complimentaryAccess: adminProcedure
       .input(
