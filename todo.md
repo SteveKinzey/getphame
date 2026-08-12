@@ -2005,3 +2005,54 @@
 - [x] Verify all seven locale bundles and the offline fallback after release-operations updates
 - [x] Validate the reusable renderer-resilience workflow for this release
 - [x] Complete release validation, publish the managed checkpoint, and synchronize the exact tree to protected main
+
+## Operational audit, scheduled export, and alert acknowledgment (Aug 12, 2026)
+- [ ] Record and present administrator retention-policy changes in a sanitized audit trail
+- [ ] Add administrator-configured scheduled release-history exports using the platform periodic-job pattern
+- [ ] Add administrator acknowledgment for repeated renderer-failure alerts
+- [ ] Update and validate the reusable renderer-resilience workflow
+
+## Email template availability recovery (Aug 12, 2026)
+- [x] Investigate why the Send Request template selector shows only the default template
+- [x] Restore only verified missing saved templates without overwriting customized content
+- [x] Verify the template selector displays every available template and add regression coverage
+
+## Email template recovery assurance (Aug 12, 2026)
+- [x] Run regression coverage for selector, template resolution, and email sending flows
+- [x] Trace the email-template metadata migration ledger and explain the schema mismatch
+- [x] Create and verify a safeguarded data backup of restored email-template records
+
+## Migration ledger and template backup assurance (Aug 12, 2026)
+- [x] Validate migration journal and database ledger integrity for lineage collisions
+- [x] Inspect and verify every restored email-template backup record
+- [x] Run a non-mutating schema-alignment dry run for the template metadata repair
+- [x] Update and validate the reusable renderer-resilience workflow
+
+## Migration lineage reconciliation and skill exercise (Aug 12, 2026)
+- [x] Inspect Git status and classify duplicate/untracked migration artifacts against source and database history
+- [ ] Apply a history-preserving migration source reconciliation without altering the database migration ledger
+- [x] Exercise the reusable renderer-resilience workflow with a non-sensitive sample email-template payload
+- [x] Validate migration generation and update the reusable workflow guidance
+
+## Controlled Drizzle source rebaseline (Aug 12, 2026)
+- [ ] Preserve the legacy migration journal, SQL, and snapshot evidence outside the active generator path
+- [ ] Create and validate an isolated source metadata baseline from the live schema without changing the database ledger
+- [ ] Prove a future schema-generation run is additive-only before adopting the baseline
+- [ ] Apply the reviewed source rebaseline and validate application regression safety
+
+## A1 isolated schema-contract reconciliation (Aug 12, 2026)
+- [x] Create an isolated reconciliation branch and capture legacy migration evidence
+- [x] Map active Drizzle schema contracts against the live 99-table baseline
+- [ ] Implement only reviewed compatibility changes and generator metadata rebaseline
+- [ ] Verify additive-only generation and application regression safety before release recommendation
+
+## A1b application-first schema reconciliation (Aug 12, 2026)
+- [x] Add explicit schema evidence for live-only legacy tables without changing runtime behavior
+- [x] Prepare additive-only migration SQL for the four runtime-required live-missing tables
+- [x] Validate active application contracts against the reconciled schema evidence
+- [x] Verify migration safety and document release readiness
+
+## A1b source promotion and protected-main release (Aug 12, 2026)
+- [x] Promote the reviewed legacy schema evidence and additive migration artifacts into managed source
+- [x] Run focused and release validation with database-source parity checks
+- [x] Publish the approved managed checkpoint and synchronize its exact tree to protected main
