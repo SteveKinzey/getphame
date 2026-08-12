@@ -148,6 +148,7 @@ const AdminSecurityAuditReleaseVerificationPage = lazy(
   () => import("./pages/AdminSecurityAuditReleaseVerification")
 );
 const AdminEmailPreviewPage = lazy(() => import("./pages/AdminEmailPreview"));
+const AuthenticatedAdminEmailPreviewPage = () => <AdminEmailPreviewPage />;
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 
 /**
@@ -431,9 +432,11 @@ function AppShell() {
   if (!user) {
     if (path === "/admin/email-preview") {
       return (
-        <AuthRequiredRedirect
-          returnPath={`${window.location.pathname}${window.location.search}`}
-        />
+        <Suspense fallback={<PageLoader />}>
+          <PublicLayout>
+            <AdminEmailPreviewPage readOnly />
+          </PublicLayout>
+        </Suspense>
       );
     }
 
@@ -565,7 +568,7 @@ function AppShell() {
                     path="/admin/security-audit-release"
                     component={AdminSecurityAuditReleaseVerificationPage}
                   />
-                  <Route path="/admin/email-preview" component={AdminEmailPreviewPage} />
+                  <Route path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage} />
                   <Route path="/compliance" component={CompliancePage} />
                   <Route path="/reviews" component={ClientReviewsPage} />
                   <Route path="/ref/:code" component={ReferralLandingPage} />
