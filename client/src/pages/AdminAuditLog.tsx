@@ -7,14 +7,28 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  Copy,
+  Download,
+  FileSpreadsheet,
+  Filter,
   Loader2,
   MailWarning,
   RefreshCw,
+  Settings2,
   ShieldAlert,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const PAGE_SIZE = 20;
 
@@ -48,12 +62,44 @@ function Pager({
   );
 }
 
+function downloadCsv(csv: string, filename: string) {
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+async function copyTextWithFallback(value: string) {
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  document.body.removeChild(textarea);
+  if (!copied) throw new Error("clipboard_unavailable");
+}
+
 export default function AdminAuditLog() {
   const { t } = useTranslation("translation");
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
   const [routePage, setRoutePage] = useState(1);
   const [rendererPage, setRendererPage] = useState(1);
+  const [releasePage, setReleasePage] = useState(1);
+  const [releaseStatus, setReleaseStatus] = useState<"all" | "matched" | "needs_review">("all");
+  const [releaseSortBy, setReleaseSortBy] = useState<"recordedAt" | "checkpointId">("recordedAt");
+  const [releaseSortDirection, setReleaseSortDirection] = useState<"asc" | "desc">("desc");
+  const [releaseExport, setReleaseExport] = useState<any>(null);
+  const [releaseCopyStatus, setReleaseCopyStatus] = useState<"idle" | "copying" | "copied" | "error">("idle");
   const enabled = user?.role === "admin";
   const routeAudits = trpc.admin.listRouteAuditRuns.useQuery(
     { page: routePage, pageSize: PAGE_SIZE },
@@ -63,6 +109,14 @@ export default function AdminAuditLog() {
     { page: rendererPage, pageSize: PAGE_SIZE },
     { enabled }
   );
+  const releaseHistory = trpc.admin.listReleaseParityRecords.useQuery(
+    { page: releasePage, pageSize: PAGE_SIZE, status: releaseStatus, sortBy: releaseSortBy, sortDirection: releaseSortDirection },
+    { enabled }
+  );
+  const prepareReleaseExport = trpc.admin.prepareReleaseParityExport.useMutation({
+    onSuccess: (snapshot) => { setReleaseExport(snapshot); setReleaseCopyStatus("idle"); },
+    onError: (error) => toast.error(error.message || t("adminAuditLog.releaseExportFailed", { defaultValue: "Release-history export could not be prepared." })),
+  });
 
   useEffect(() => {
     if (!loading && user?.role !== "admin") navigate("/");
@@ -77,6 +131,7 @@ export default function AdminAuditLog() {
   const refresh = () => {
     void routeAudits.refetch();
     void rendererErrors.refetch();
+    void releaseHistory.refetch();
   };
 
   return (
@@ -89,14 +144,29 @@ export default function AdminAuditLog() {
             <h1 className="text-2xl rr-fw-black text-white sm:text-3xl">{t("adminAuditLog.title", { defaultValue: "Audit and renderer history" })}</h1>
             <p className="mt-1 max-w-3xl text-sm font-bold text-white/90">{t("adminAuditLog.description", { defaultValue: "Administrator-only operational history. Stored records contain sanitized audit signals, never customer content, email HTML, cookies, or browser logs." })}</p>
           </div>
-          <button type="button" onClick={refresh} disabled={routeAudits.isFetching || rendererErrors.isFetching} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-black rr-text-navy disabled:opacity-60">
-            {routeAudits.isFetching || rendererErrors.isFetching ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+          <button type="button" onClick={refresh} disabled={routeAudits.isFetching || rendererErrors.isFetching || releaseHistory.isFetching} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-black rr-text-navy disabled:opacity-60">
+            {routeAudits.isFetching || rendererErrors.isFetching || releaseHistory.isFetching ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
             {t("adminAuditLog.refresh", { defaultValue: "Refresh history" })}
           </button>
         </div>
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-5 px-4 pt-5 sm:px-5">
+        <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5" aria-labelledby="release-history-title">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><FileSpreadsheet size={19} /></span><div><h2 id="release-history-title" className="text-lg rr-fw-black rr-text-navy">{t("adminAuditLog.releaseTitle", { defaultValue: "Release history" })}</h2><p className="mt-1 text-sm font-bold rr-text-navy-muted">{t("adminAuditLog.releaseDescription", { defaultValue: "Sanitized release-lineage records with matching status, sorting, and a bounded export preview." })}</p></div></div>
+            <button type="button" onClick={() => navigate("/admin/audit-retention")} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border bg-white px-3 text-xs font-black rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}><Settings2 size={14} />{t("adminAuditLog.retention", { defaultValue: "Retention settings" })}</button>
+          </div>
+          <div className="mb-4 grid gap-3 rounded-xl p-3 rr-bg-surface sm:grid-cols-4">
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>{t("adminAuditLog.releaseStatus", { defaultValue: "Parity status" })}</span><select value={releaseStatus} onChange={(event) => { setReleaseStatus(event.target.value as typeof releaseStatus); setReleasePage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}><option value="all">{t("adminAuditLog.allStatuses", { defaultValue: "All statuses" })}</option><option value="matched">{t("adminAuditLog.matched", { defaultValue: "Matched" })}</option><option value="needs_review">{t("adminAuditLog.needsReview", { defaultValue: "Needs review" })}</option></select></label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>{t("adminAuditLog.releaseSort", { defaultValue: "Sort by" })}</span><select value={releaseSortBy} onChange={(event) => { setReleaseSortBy(event.target.value as typeof releaseSortBy); setReleasePage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}><option value="recordedAt">{t("adminAuditLog.releaseSortDate", { defaultValue: "Release time" })}</option><option value="checkpointId">{t("adminAuditLog.releaseSortCheckpoint", { defaultValue: "Checkpoint" })}</option></select></label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>{t("adminAuditLog.releaseDirection", { defaultValue: "Direction" })}</span><select value={releaseSortDirection} onChange={(event) => { setReleaseSortDirection(event.target.value as typeof releaseSortDirection); setReleasePage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}><option value="desc">{t("adminAuditLog.newestFirst", { defaultValue: "Newest first" })}</option><option value="asc">{t("adminAuditLog.oldestFirst", { defaultValue: "Oldest first" })}</option></select></label>
+            <button type="button" disabled={prepareReleaseExport.isPending || !releaseHistory.data?.total} onClick={() => prepareReleaseExport.mutate({ status: releaseStatus, sortBy: releaseSortBy, sortDirection: releaseSortDirection })} className="mt-auto inline-flex h-10 items-center justify-center gap-2 rounded-lg px-3 text-sm font-black rr-bg-navy text-white disabled:opacity-50">{prepareReleaseExport.isPending ? <Loader2 size={15} className="animate-spin" /> : <Filter size={15} />}{t("adminAuditLog.releaseExport", { defaultValue: "Preview export" })}</button>
+          </div>
+          {releaseHistory.error && <div role="alert" className="rounded-xl px-3 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>{t("adminAuditLog.releaseError", { defaultValue: "Release history could not be loaded." })} {releaseHistory.error.message}</div>}
+          {releaseHistory.isLoading ? <div className="flex min-h-32 items-center justify-center"><Loader2 size={22} className="animate-spin rr-text-navy-muted" /></div> : releaseHistory.data?.rows.length ? <div className="overflow-x-auto rounded-xl border" style={{ borderColor: "oklch(0.91 0.02 260)" }}><table className="w-full min-w-[680px] text-left text-sm"><thead className="rr-bg-surface text-xs font-black uppercase tracking-wide rr-text-navy-muted"><tr><th className="px-4 py-3">{t("adminAuditLog.time", { defaultValue: "Time" })}</th><th className="px-4 py-3">{t("adminAuditLog.checkpoint", { defaultValue: "Checkpoint" })}</th><th className="px-4 py-3">{t("adminAuditLog.mainCommit", { defaultValue: "Main commit" })}</th><th className="px-4 py-3">{t("adminAuditLog.parity", { defaultValue: "Parity" })}</th></tr></thead><tbody className="divide-y" style={{ borderColor: "oklch(0.92 0.02 260)" }}>{releaseHistory.data.rows.map((row) => <tr key={row.id}><td className="px-4 py-3 text-xs font-bold rr-text-navy">{formatTimestamp(row.recordedAt)}</td><td className="px-4 py-3 font-mono text-xs rr-text-navy">{row.checkpointId}</td><td className="px-4 py-3 font-mono text-xs rr-text-navy-mid">{row.protectedMainCommit.slice(0, 12)}</td><td className="px-4 py-3"><span className="rounded-full px-2.5 py-1 text-xs font-black" style={{ background: row.parityStatus === "matched" ? "oklch(0.94 0.05 145)" : "oklch(0.97 0.03 27)", color: row.parityStatus === "matched" ? "oklch(0.40 0.14 145)" : "oklch(0.46 0.12 27)" }}>{row.parityStatus === "matched" ? t("adminAuditLog.matched", { defaultValue: "Matched" }) : t("adminAuditLog.needsReview", { defaultValue: "Needs review" })}</span></td></tr>)}</tbody></table></div> : <p className="rounded-xl px-4 py-8 text-center text-sm font-bold rr-bg-surface rr-text-navy-muted">{t("adminAuditLog.releaseEmpty", { defaultValue: "No verified release records have been saved yet." })}</p>}
+          <Pager page={releaseHistory.data?.page ?? releasePage} pageCount={releaseHistory.data?.pageCount ?? 1} total={releaseHistory.data?.total ?? 0} onPageChange={setReleasePage} label={t("adminAuditLog.releasePagination", { defaultValue: "Release history pagination" })} />
+        </section>
         <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5" aria-labelledby="route-audit-history-title">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Activity size={19} /></span><div><h2 id="route-audit-history-title" className="text-lg rr-fw-black rr-text-navy">{t("adminAuditLog.routeTitle", { defaultValue: "Production route audits" })}</h2><p className="mt-1 text-sm font-bold rr-text-navy-muted">{t("adminAuditLog.routeDescription", { defaultValue: "Manual browser checks of sitemap-discovered public routes, newest first." })}</p></div></div>
@@ -120,6 +190,32 @@ export default function AdminAuditLog() {
           <Pager page={rendererErrors.data?.page ?? rendererPage} pageCount={rendererErrors.data?.pageCount ?? 1} total={rendererErrors.data?.total ?? 0} onPageChange={setRendererPage} label={t("adminAuditLog.rendererPagination", { defaultValue: "Renderer-error history pagination" })} />
         </section>
       </main>
+      <Dialog open={Boolean(releaseExport)} onOpenChange={(open) => {
+        if (!open) {
+          setReleaseExport(null);
+          setReleaseCopyStatus("idle");
+          prepareReleaseExport.reset();
+        }
+      }}>
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 rr-text-navy"><FileSpreadsheet size={18} className="rr-text-gold" />{t("adminAuditLog.releaseExportTitle", { defaultValue: "Preview release-history export" })}</DialogTitle>
+            <DialogDescription>{t("adminAuditLog.releaseExportDescription", { defaultValue: "Review the exact bounded, sanitized snapshot before copying or downloading it." })}</DialogDescription>
+          </DialogHeader>
+          {releaseExport && <div className="space-y-3">
+            <div className="rounded-xl rr-bg-surface p-3 text-xs font-bold rr-text-navy-muted">{t("adminAuditLog.releaseExportSummary", { defaultValue: "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched", previewed: releaseExport.preview.rowCount, exported: releaseExport.rowCount, matched: releaseExport.totalMatching })}</div>
+            <div className="max-h-80 overflow-auto rounded-xl border" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
+              <table className="w-max min-w-full text-left text-xs"><thead className="sticky top-0 rr-bg-navy text-white"><tr>{releaseExport.preview.columns.map((column: any) => <th key={column.key} className="px-3 py-2.5 font-black">{column.csvHeader}</th>)}</tr></thead><tbody className="divide-y">{releaseExport.preview.rows.map((row: any, index: number) => <tr key={`${row.checkpointId}-${index}`}>{releaseExport.preview.columns.map((column: any) => <td key={column.key} className="whitespace-nowrap px-3 py-2 font-bold rr-text-navy-muted">{row[column.key] || "—"}</td>)}</tr>)}</tbody></table>
+            </div>
+            {releaseExport.truncated && <p role="status" className="rounded-lg px-3 py-2 text-xs font-bold" style={{ background: "oklch(0.96 0.04 80)", color: "oklch(0.42 0.12 80)" }}>{t("adminAuditLog.releaseExportTruncated", { defaultValue: "The export cap includes {{exported}} of {{matched}} matching records.", exported: releaseExport.rowCount, matched: releaseExport.totalMatching })}</p>}
+          </div>}
+          <DialogFooter>
+            <button type="button" onClick={() => setReleaseExport(null)} className="min-h-10 rounded-lg border bg-white px-4 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}>{t("adminAuditLog.close", { defaultValue: "Close" })}</button>
+            <button type="button" disabled={!releaseExport || releaseCopyStatus === "copying"} onClick={async () => { try { setReleaseCopyStatus("copying"); await copyTextWithFallback(releaseExport.clipboardText); setReleaseCopyStatus("copied"); } catch { setReleaseCopyStatus("error"); } }} className="inline-flex min-h-10 items-center gap-2 rounded-lg border bg-white px-4 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}><Copy size={15} />{releaseCopyStatus === "copied" ? t("adminAuditLog.copied", { defaultValue: "Copied" }) : releaseCopyStatus === "error" ? t("adminAuditLog.copyFailed", { defaultValue: "Copy failed — retry" }) : t("adminAuditLog.copy", { defaultValue: "Copy CSV" })}</button>
+            <button type="button" disabled={!releaseExport} onClick={() => releaseExport && downloadCsv(releaseExport.csv, releaseExport.filename)} className="inline-flex min-h-10 items-center gap-2 rounded-lg px-4 text-sm font-black rr-bg-gold rr-text-navy"><Download size={15} />{t("adminAuditLog.download", { defaultValue: "Download CSV" })}</button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

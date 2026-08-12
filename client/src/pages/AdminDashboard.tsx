@@ -131,6 +131,33 @@ function ReleaseParityCard() {
   );
 }
 
+function RendererFailureTrendAlert() {
+  const { t } = useTranslation("translation");
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
+  const trend = trpc.admin.rendererFailureTrend.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 60_000,
+  });
+  const leading = trend.data?.repeatSignals[0];
+  if (!leading) return null;
+  return (
+    <section role="alert" className="rounded-2xl border px-4 py-4" style={{ borderColor: "oklch(0.76 0.12 27)", background: "oklch(0.98 0.025 27)" }} aria-labelledby="renderer-trend-alert-title">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-3">
+          <AlertTriangle size={20} className="mt-0.5 shrink-0" style={{ color: "oklch(0.48 0.17 27)" }} />
+          <div>
+            <h2 id="renderer-trend-alert-title" className="text-sm rr-fw-black rr-text-navy">{t("adminRendererTrend.title", { defaultValue: "Repeat email-preview renderer failures" })}</h2>
+            <p className="mt-1 text-sm font-bold rr-text-navy-muted">{t("adminRendererTrend.description", { defaultValue: "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.", count: leading.count, template: leading.templateKey, hours: trend.data?.windowHours ?? 168 })}</p>
+            <p className="mt-1 text-xs font-bold rr-text-navy-faint">{leading.viewportMode}{leading.darkMode ? " · dark" : ""} · {leading.errorCode}</p>
+          </div>
+        </div>
+        <button type="button" onClick={() => navigate("/admin/audit-log")} className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-white px-3 text-xs font-black rr-text-navy" style={{ border: "1px solid oklch(0.82 0.10 27)" }}>{t("adminRendererTrend.review", { defaultValue: "Review history" })}</button>
+      </div>
+    </section>
+  );
+}
+
 type RouteAuditDashboardResult = {
   id: number;
   auditedRoutes: number;
@@ -184,6 +211,9 @@ function RouteAuditControl() {
           </button>
           <button type="button" onClick={() => navigate("/admin/audit-log")} className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-black rr-text-navy" style={{ borderColor: "oklch(0.84 0.04 260)" }}>
             {t("adminRouteAudit.viewHistory", { defaultValue: "View history" })}
+          </button>
+          <button type="button" onClick={() => navigate("/admin/audit-retention")} className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-black rr-text-navy" style={{ borderColor: "oklch(0.84 0.04 260)" }}>
+            {t("adminAuditLog.retention", { defaultValue: "Retention settings" })}
           </button>
         </div>
       </div>
@@ -796,6 +826,7 @@ export default function AdminDashboard() {
         )}
 
         <RouteAuditControl />
+        <RendererFailureTrendAlert />
 
         {stats && (
           <>
