@@ -70,5 +70,28 @@ describe("admin email preview runtime contract", () => {
 
     expect(routerSource).toContain("${headerHtml}<tr><td class=\"email-body\"");
     expect(routerSource).not.toContain("<tr>${headerHtml}</tr><tr><td class=\"email-body\"");
+    expect(routerSource).not.toContain("<tr>${headerHtml}</tr><tr><td style=\"padding:40px;\"");
+  });
+
+  it("makes Magic Link previews safe to click without fabricating a live authentication token", () => {
+    const routerSource = readFileSync(
+      resolve(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
+    const sendTestSource = routerSource.slice(
+      routerSource.indexOf("sendTestEmail: adminProcedure"),
+      routerSource.indexOf("listLeads: adminProcedure")
+    );
+    const browserPreviewSource = routerSource.slice(
+      routerSource.indexOf("emailPreview: adminProcedure"),
+      routerSource.indexOf("  }),\n  }),", routerSource.indexOf("emailPreview: adminProcedure"))
+    );
+
+    expect(sendTestSource).toContain("https://getphame.app/login?from=test-email-preview");
+    expect(sendTestSource).toContain("Open Get Phame sign-in");
+    expect(sendTestSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
+    expect(browserPreviewSource).toContain("https://getphame.app/login?from=email-preview");
+    expect(browserPreviewSource).toContain("Open Get Phame sign-in");
+    expect(browserPreviewSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
   });
 });

@@ -5726,7 +5726,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input, ctx }) => {
-        const SAMPLE_LINK = "https://getphame.app/auth/verify?token=PREVIEW_TOKEN_SAMPLE";
+        const TEST_PREVIEW_LINK = "https://getphame.app/login?from=test-email-preview";
         const SAMPLE_NAME = (ctx.user.name ?? "").split(" ")[0] || "Alex";
         const TEMPLATE_LABELS: Record<string, string> = {
           "magic-link": "Magic Link (Sign-in)",
@@ -5738,7 +5738,7 @@ export const appRouter = router({
         };
         const headerHtml = renderGetPhameEmailHeader("Email Preview");
         const wrapHtml = (headTitle: string, bodyHtml: string) =>
-          `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${headTitle}</title></head><body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#eef0f4;padding:40px 0;"><tr><td align="center"><table width="560" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);max-width:560px;width:100%;"><tr>${headerHtml}</tr><tr><td style="padding:40px;">${bodyHtml}</td></tr><tr><td style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;"><p style="margin:0;font-size:12px;color:#999;">© ${new Date().getFullYear()} Get Phame. All rights reserved.</p></td></tr></table></td></tr></table></body></html>`;
+          `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${headTitle}</title></head><body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#eef0f4;padding:40px 0;"><tr><td align="center"><table width="560" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);max-width:560px;width:100%;">${headerHtml}<tr><td style="padding:40px;">${bodyHtml}</td></tr><tr><td style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;"><p style="margin:0;font-size:12px;color:#999;">© ${new Date().getFullYear()} Get Phame. All rights reserved.</p></td></tr></table></td></tr></table></body></html>`;
         const goldCta = (href: string, label: string) =>
           `<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:16px 40px;"><a href="${href}" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">${label}</a></td></tr></table>`;
         let html = "";
@@ -5749,7 +5749,7 @@ export const appRouter = router({
         };
         switch (input.template) {
           case "magic-link": {
-            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">Click the button below to sign in to your Get Phame account. This link expires in 15 minutes.</p>${goldCta(SAMPLE_LINK, "Sign in to Get Phame")}<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:24px 0 0;"><tr><td style="padding:14px 18px;"><p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:.8px;">Security notice</p><p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">Get Phame will never ask for your password by email. This link can only be used once.</p></td></tr></table>`;
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">This is a test preview. The button opens the standard Get Phame sign-in page and does not use a real magic link.</p>${goldCta(TEST_PREVIEW_LINK, "Open Get Phame sign-in")}<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:24px 0 0;"><tr><td style="padding:14px 18px;"><p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:.8px;">Security notice</p><p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">Live magic links are single-use and are delivered only when a sign-in is requested.</p></td></tr></table>`;
             html = wrapHtml("Your secure sign-in link", body);
             break;
           }
@@ -5847,7 +5847,7 @@ export const appRouter = router({
         })
       )
       .query(({ input }) => {
-        const SAMPLE_LINK = "https://getphame.app/auth/verify?token=PREVIEW_TOKEN_SAMPLE";
+        const SAMPLE_LINK = "https://getphame.app/login?from=email-preview";
         const SAMPLE_NAME = "Alex";
         const wrapEmail = (headTitle: string, bodyHtml: string, footerHtml: string) => {
           const headerHtml = renderGetPhameEmailHeader(headTitle);
@@ -5858,7 +5858,7 @@ export const appRouter = router({
         const footer = (extra = "") =>
           `<p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Get Phame · <a href="https://getphame.app" style="color:#888;text-decoration:none;">getphame.app</a>${extra}</p>`;
         if (input.template === "magic-link") {
-          const body = `<p style="margin:0 0 8px;font-size:18px;font-weight:700;color:#0F1B2D;">Ready to sign in?</p><p style="margin:0 0 28px;font-size:15px;color:#555;line-height:1.6;">Click the button below to securely sign in. This link is single-use and expires in <strong>15 minutes</strong>.</p><table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 28px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:18px 48px;mso-padding-alt:0;"><a href="${SAMPLE_LINK}" class="cta-btn" style="color:#0F1B2D;font-size:17px;font-weight:800;text-decoration:none;display:inline-block;">Sign In to GetPhame</a></td></tr></table><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:0 0 20px;"><tr><td style="padding:14px 18px;"><p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:.8px;">Security notice</p><p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">Get Phame will never ask for your password by email. This link can only be used once.</p></td></tr></table><p style="margin:0;font-size:11px;color:#bbb;line-height:1.6;word-break:break-all;">Button not working? Copy this link: <a href="${SAMPLE_LINK}" style="color:#C9A84C;">${SAMPLE_LINK}</a></p>`;
+          const body = `<p style="margin:0 0 8px;font-size:18px;font-weight:700;color:#0F1B2D;">Magic Link Preview</p><p style="margin:0 0 28px;font-size:15px;color:#555;line-height:1.6;">This preview opens the standard Get Phame sign-in page. Real magic links are generated only for a sign-in request and expire after 15 minutes.</p><table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 28px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:18px 48px;mso-padding-alt:0;"><a href="${SAMPLE_LINK}" class="cta-btn" style="color:#0F1B2D;font-size:17px;font-weight:800;text-decoration:none;display:inline-block;">Open Get Phame sign-in</a></td></tr></table><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:0 0 20px;"><tr><td style="padding:14px 18px;"><p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:.8px;">Security notice</p><p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">Live magic links are single-use and are delivered only when a sign-in is requested.</p></td></tr></table>`;
           return { html: wrapEmail("Your secure sign-in link", body, footer("<br/>You received this because a sign-in was requested for this email address.")) };
         }
         if (input.template === "welcome") {

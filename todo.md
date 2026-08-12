@@ -1857,3 +1857,8 @@
 - [x] Add an accessible loading skeleton while preview HTML is generated or rendered
 - [x] Add a rendered HTML-file export action with a safe filename
 - [x] Send an authorized test email and verify delivery and rendered output in the target inbox
+
+## Test Magic Link destination repair (Aug 12, 2026)
+- [x] Diagnose why the test Magic Link action reaches an error page (the preview used an intentionally invalid sample verification token)
+- [x] Replace the nonfunctional test link with a safe, valid destination and regression coverage
+- [ ] Confirm a new test message no longer routes the recipient to an error page
