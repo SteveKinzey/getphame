@@ -2611,3 +2611,18 @@ export const recoveryDrillEvidence = pgTable(
 export type RecoveryDrillEvidence = typeof recoveryDrillEvidence.$inferSelect;
 export type InsertRecoveryDrillEvidence =
   typeof recoveryDrillEvidence.$inferInsert;
+
+/** Redacted release lineage only; credentials, customer data, logs, and source diffs are prohibited. */
+export const releaseParityRecords = pgTable(
+  "release_parity_records",
+  {
+    id: serial("id").primaryKey(),
+    checkpointId: varchar("checkpoint_id", { length: 64 }).notNull(),
+    protectedMainCommit: varchar("protected_main_commit", { length: 64 }).notNull(),
+    protectedMainTree: varchar("protected_main_tree", { length: 64 }).notNull(),
+    managedTree: varchar("managed_tree", { length: 64 }).notNull(),
+    parityStatus: varchar("parity_status", { length: 16 }).notNull(),
+    recordedAt: bigint("recorded_at", { mode: "number" }).notNull(),
+  },
+  table => [index("release_parity_recorded_idx").on(table.recordedAt)]
+);

@@ -7,8 +7,8 @@ overrides:
   body-parser: "1.20.6"
   # Security: tar arbitrary file write fix (GHSA-r292-9mhp-454m)
   tar: ">=7.5.22"
-  # Security: PostCSS source map path traversal and local file disclosure fix (GHSA-r28c-9q8g-f849)
-  postcss: ">=8.5.18"
+  # Security: PostCSS source map path traversal and local file disclosure fix (GHSA-fxqj-rqcc-2cmp)
+  postcss: ">=8.5.23"
   # Security: picomatch ReDoS fix
   picomatch: ">=4.0.4"
   # Security: lodash code injection fix (lodash-es still pulled by dagre-d3-es via mermaid)
@@ -37,7 +37,10 @@ overrides:
   # Security: mdast-util-to-hast XSS fix
   mdast-util-to-hast: ">=13.2.1"
   # Existing overrides preserved
-  tailwindcss>nanoid: "3.3.7"
+  # Security: nanoid predictable-result fixes in Vite runtime and PostCSS dependency paths
+  nanoid: ">=5.1.16"
+  postcss>nanoid: ">=3.3.17"
+  tailwindcss>nanoid: ">=3.3.17"
   baseline-browser-mapping: "^2.10.20"
   rollup: "^4.52.5"
 

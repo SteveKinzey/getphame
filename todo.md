@@ -1867,8 +1867,8 @@
 ## Reliability and release quality follow-up (Aug 12, 2026)
 - [x] Fix the Dashboard nested-button error
 - [x] Add SetupProgressCard visual completion progress, dismissal, and step tooltips
-- [ ] Add dedicated router schema-contract CI coverage
-- [ ] Remediate the remaining moderate dependency advisory
-- [ ] Add protected-main versus live-checkpoint release parity visibility
-- [ ] Create reusable release-quality workflow skill
+- [x] Add dedicated router schema-contract CI coverage
+- [x] Remediate the remaining moderate dependency advisory
+- [x] Add protected-main versus live-checkpoint release parity visibility
+- [x] Create reusable release-quality workflow skill
 - [ ] Validate, checkpoint, and synchronize the completed release through GitHub

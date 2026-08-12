@@ -122,6 +122,23 @@ function ConsentHealthBanner() {
   );
 }
 
+function ReleaseParityCard() {
+  const { data, isLoading } = trpc.admin.releaseParity.useQuery();
+  const matched = data?.parityStatus === "matched" && data.protectedMainTree === data.managedTree;
+  return (
+    <section data-testid="release-parity-card" className="mb-4 rounded-2xl border p-4" style={{ borderColor: matched ? "oklch(0.76 0.12 145)" : "oklch(0.83 0.10 80)", background: matched ? "oklch(0.97 0.02 145)" : "oklch(0.98 0.02 80)" }}>
+      <div className="flex items-start gap-3">
+        <GitBranch size={20} className={matched ? "rr-text-green" : "rr-text-gold"} aria-hidden="true" />
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-black rr-text-navy">Release parity</p>
+          <p className="text-xs rr-text-navy-mid">{isLoading ? "Checking the latest release record…" : data ? matched ? "Main and live release match" : "Release record needs review" : "No verified release record yet"}</p>
+          {data && <div className="mt-2 grid gap-1 text-xs sm:grid-cols-2"><span className="font-mono rr-text-navy">Live: {data.checkpointId}</span><span className="font-mono rr-text-navy">Main: {data.protectedMainCommit.slice(0, 12)}</span></div>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 
 function LeadsSection() {
   const { data: leads, isLoading } = trpc.admin.listLeads.useQuery();
@@ -1663,6 +1680,7 @@ export default function AdminDashboard() {
 
             {/* ── Lead Capture List ─────────────────────────────────────────── */}
             <ConsentHealthBanner />
+            <ReleaseParityCard />
             <LeadsSection />
 
             <section
