@@ -200,6 +200,7 @@ import {
   adminUserLifecycleAuditLogs,
   quietHoursQueuedSends,
   pwaUpdateEventTotals,
+  releaseParityRecords,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -4293,6 +4294,17 @@ export const appRouter = router({
 
   /** Admin-only analytics and diagnostics */
   admin: router({
+    releaseParity: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) return null;
+      const [latest] = await db
+        .select()
+        .from(releaseParityRecords)
+        .orderBy(desc(releaseParityRecords.recordedAt))
+        .limit(1);
+      return latest ?? null;
+    }),
+
     complimentaryAccess: adminProcedure
       .input(
         z

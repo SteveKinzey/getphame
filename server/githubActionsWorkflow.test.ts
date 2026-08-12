@@ -24,4 +24,17 @@ describe("GitHub Actions quality gate", () => {
     expect(workflow).toContain("pnpm test");
     expect(workflow).toContain("pnpm build");
   });
+
+  it("runs an isolated no-cache TypeScript pass for router schema contracts", () => {
+    const workflow = readProjectFile("../.github/workflows/quality.yml");
+    const packageJson = JSON.parse(readProjectFile("../package.json")) as {
+      scripts?: Record<string, string>;
+    };
+
+    expect(workflow).toContain("Validate router schema contracts");
+    expect(workflow).toContain("pnpm check:router-contracts");
+    expect(packageJson.scripts?.["check:router-contracts"]).toBe(
+      "tsc --noEmit --incremental false"
+    );
+  });
 });
