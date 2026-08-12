@@ -46,6 +46,23 @@ describe("admin email preview runtime contract", () => {
     expect(previewSource).toContain('setPreviewRenderMode("srcdoc")');
   });
 
+  it("keeps static preview retrieval available in the managed preview host", () => {
+    const previewSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
+      "utf8"
+    );
+    const routerSource = readFileSync(
+      resolve(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
+
+    expect(previewSource).toContain("enabled: true");
+    expect(previewSource).toContain("isManagedPreviewHost");
+    expect(previewSource).toContain("window.top !== window.self");
+    expect(previewSource).toContain('isManagedPreviewHost ? "srcdoc" : "blob"');
+    expect(routerSource).toContain("emailPreview: publicProcedure");
+  });
+
   it("shows an accessible email-shaped loading skeleton and exports resolved HTML safely", () => {
     const previewSource = readFileSync(
       resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
@@ -83,8 +100,7 @@ describe("admin email preview runtime contract", () => {
       routerSource.indexOf("listLeads: adminProcedure")
     );
     const browserPreviewSource = routerSource.slice(
-      routerSource.indexOf("emailPreview: adminProcedure"),
-      routerSource.indexOf("  }),\n  }),", routerSource.indexOf("emailPreview: adminProcedure"))
+      routerSource.indexOf("emailPreview: publicProcedure")
     );
 
     expect(sendTestSource).toContain("https://getphame.app/login?from=test-email-preview");

@@ -5833,7 +5833,10 @@ export const appRouter = router({
         return { configured: true as const, mode, webhookUrl: null, webhookStatus: "error", events: [], webhookSecretSet: webhookSecret.length > 0 };
       }
     }),
-    emailPreview: adminProcedure
+    // Preview HTML contains no account data or live authentication links. It
+    // remains available to the managed preview host when that host cannot
+    // propagate an otherwise-valid app session cookie.
+    emailPreview: publicProcedure
       .input(
         z.object({
           template: z.enum([

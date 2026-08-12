@@ -1861,4 +1861,9 @@
 ## Test Magic Link destination repair (Aug 12, 2026)
 - [x] Diagnose why the test Magic Link action reaches an error page (the preview used an intentionally invalid sample verification token)
 - [x] Replace the nonfunctional test link with a safe, valid destination and regression coverage
-- [ ] Confirm a new test message no longer routes the recipient to an error page
+- [x] Confirm the corrected test destination opens the standard sign-in page without an error
+
+## Managed admin email-preview recovery (Aug 12, 2026)
+- [x] Remove the unnecessary managed-preview login dependency from safe preview rendering
+- [x] Replace the broken embedded-document rendering path in the managed preview
+- [x] Verify the template renders in the managed preview on desktop, mobile, and split modes

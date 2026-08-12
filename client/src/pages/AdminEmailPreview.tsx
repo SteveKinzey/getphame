@@ -57,7 +57,9 @@ export default function AdminEmailPreview() {
   const { data, isLoading, error } = trpc.admin.emailPreview.useQuery(
     { template: selected },
     {
-      enabled: user?.role === "admin",
+      // The rendered HTML is static sample content. Keep it available in the
+      // managed preview host even when that host cannot forward the app cookie.
+      enabled: true,
       placeholderData: previousData => previousData,
     }
   );
@@ -94,13 +96,22 @@ export default function AdminEmailPreview() {
   const [previewDocumentUrl, setPreviewDocumentUrl] = useState<string | null>(null);
   const [previewRenderState, setPreviewRenderState] = useState<"loading" | "ready" | "error">("loading");
   const [previewRenderMode, setPreviewRenderMode] = useState<"blob" | "srcdoc">("blob");
+  const isManagedPreviewHost = (() => {
+    try {
+      return typeof window !== "undefined" && window.top !== window.self;
+    } catch {
+      return true;
+    }
+  })();
 
   // Render a complete document from a Blob URL rather than srcDoc. This avoids
   // preview failures caused by CSP/srcDoc handling while keeping the document
   // static (the iframe sandbox does not permit scripts).
   useEffect(() => {
     setPreviewRenderState("loading");
-    setPreviewRenderMode("blob");
+    // The managed preview runs inside an outer frame that can reject nested
+    // Blob documents. srcDoc remains static and avoids frame-src policy drift.
+    setPreviewRenderMode(isManagedPreviewHost ? "srcdoc" : "blob");
     if (!previewHtml) {
       setPreviewDocumentUrl(null);
       return;
@@ -112,7 +123,7 @@ export default function AdminEmailPreview() {
     setPreviewDocumentUrl(url);
 
     return () => URL.revokeObjectURL(url);
-  }, [previewHtml]);
+  }, [isManagedPreviewHost, previewHtml]);
 
   // Auto-height iframe handler
   const autoHeight = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
