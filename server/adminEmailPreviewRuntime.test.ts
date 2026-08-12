@@ -149,4 +149,14 @@ describe("admin email preview runtime contract", () => {
     expect(browserPreviewSource).toContain("Open Get Phame sign-in");
     expect(browserPreviewSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
   });
+
+  it("uses the same shared renderer for browser previews and dispatched test emails", () => {
+    const routerSource = readFileSync(
+      resolve(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
+
+    expect(routerSource).toContain('from "./adminEmailPreviewTemplates"');
+    expect(routerSource.match(/buildAdminEmailPreviewTemplate\(/g)).toHaveLength(2);
+  });
 });

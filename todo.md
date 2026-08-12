@@ -1955,3 +1955,10 @@
 - [x] Correct inadequate body-text contrast in dark-mode email preview rendering
 - [x] Support validated `?template=` deep links for deterministic all-template verification
 - [x] Run full release validation and publish the verified dark-mode and deep-link enhancements
+
+## Welcome test-email inbox rendering discrepancy (Aug 12, 2026)
+- [x] Compare the generated Welcome preview, dispatched test-email source, and received inbox document (the test sender used an independent, divergent HTML generator)
+- [x] Repair the divergent outbound template path by routing it through the shared browser-preview renderer
+- [ ] Send and verify a corrected Welcome test email in the recipient inbox
+- [x] Consolidate preview and test-email templates behind one shared deterministic renderer
+- [x] Complete server type, focused contract, full-suite, dependency-audit, and production-build validation for the shared renderer
