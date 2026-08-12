@@ -1856,3 +1856,10 @@
 ## Hotfix: SetupProgressCard missing consent icon import (Aug 12, 2026)
 - [x] Import ShieldCheck in SetupProgressCard so the landing page renders
 - [x] Verify the landing page and focused test suite after the import fix
+
+## CI Repair: GitHub Quality Gate schema drift (Aug 12, 2026)
+- [x] Reconcile source automation fields with the tracked database schema
+- [x] Reconcile email template revision fields with the tracked database schema
+- [x] Add regression coverage for the repaired schema contracts
+- [x] Validate TypeScript, full tests, audit, production build, and GitHub Quality Gate
+- [x] Merge the validated PR #115 release candidate into protected main
