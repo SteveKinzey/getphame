@@ -1959,7 +1959,19 @@
 ## Welcome test-email inbox rendering discrepancy (Aug 12, 2026)
 - [x] Compare the generated Welcome preview, dispatched test-email source, and received inbox document (the test sender used an independent, divergent HTML generator)
 - [x] Repair the divergent outbound template path by routing it through the shared browser-preview renderer
-- [ ] Send and verify a corrected Welcome test email in the recipient inbox
+- [x] Send and verify a corrected Welcome test email in the recipient inbox (complete branded card displayed)
 - [x] Consolidate preview and test-email templates behind one shared deterministic renderer
 - [x] Complete server type, focused contract, full-suite, dependency-audit, and production-build validation for the shared renderer
 - [x] Prevent Gmail conversation trimming of repeated test previews by making each test-email subject distinct
+
+## Remaining email-template inbox and viewport verification (Aug 12, 2026)
+- [x] Send and inspect the remaining five template tests in the confirmed inbox
+- [x] Verify dark-mode rendering across all six preview templates
+- [x] Verify mobile preview rendering across all six preview templates
+- [x] Update and validate the reusable renderer-resilience skill with the final full-template verification workflow
+
+## Renderer resilience audit, handoff, and verification deck (Aug 12, 2026)
+- [x] Update and validate the reusable renderer-recovery skill with the final operational workflow
+- [x] Audit production routes for hydration or rendering errors (five public sitemap routes; no hydration or rendering failures)
+- [x] Export optimized code patches and deployment instructions for the email-preview renderer fix
+- [x] Create and present slides summarizing email verification and renderer resilience
