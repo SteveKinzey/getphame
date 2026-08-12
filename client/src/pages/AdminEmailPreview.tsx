@@ -30,7 +30,7 @@ const DEFAULT_VARS = {
 const PRESET_KEY = "getphame-email-preview-presets";
 type Preset = { name: string; vars: typeof DEFAULT_VARS };
 
-export default function AdminEmailPreview() {
+export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boolean }) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [selected, setSelected] = useState<TemplateKey>("magic-link");
@@ -330,7 +330,7 @@ export default function AdminEmailPreview() {
         >
           {t("adminEmailPreview.title", { defaultValue: "Email Template Preview" })}
         </h1>
-        <span className="ml-auto text-xs font-semibold text-white/40">Admin only</span>
+        {!readOnly && <span className="ml-auto text-xs font-semibold text-white/40">Admin only</span>}
       </div>
 
       {/* Controls */}
@@ -426,48 +426,52 @@ export default function AdminEmailPreview() {
           {t("adminEmailPreview.openTab", { defaultValue: "Open in tab" })}
         </button>
 
-        {/* Variables toggle */}
-        <button
-          type="button"
-          onClick={() => setShowVars(v => !v)}
-          className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition"
-          style={{ color: showVars ? "oklch(0.22 0.09 260)" : "#555" }}
-          aria-pressed={showVars}
-        >
-          <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-          {t("adminEmailPreview.variables", { defaultValue: "Variables" })}
-          {showVars ? <ChevronUp className="h-3 w-3" aria-hidden="true" /> : <ChevronDown className="h-3 w-3" aria-hidden="true" />}
-        </button>
+        {!readOnly && (
+          <>
+            {/* Variables are editable only in the administrative preview workspace. */}
+            <button
+              type="button"
+              onClick={() => setShowVars(v => !v)}
+              className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition"
+              style={{ color: showVars ? "oklch(0.22 0.09 260)" : "#555" }}
+              aria-pressed={showVars}
+            >
+              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+              {t("adminEmailPreview.variables", { defaultValue: "Variables" })}
+              {showVars ? <ChevronUp className="h-3 w-3" aria-hidden="true" /> : <ChevronDown className="h-3 w-3" aria-hidden="true" />}
+            </button>
 
-        {/* Custom email input + send button */}
-        <input
-          type="email"
-          value={testEmail}
-          onChange={e => setTestEmail(e.target.value)}
-          placeholder={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
-          className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 w-56"
-          style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
-          aria-label={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
-        />
-        <button
-          type="button"
-          disabled={sendTest.isPending || isLoading || !data?.html || !testEmail}
-          onClick={() => sendTest.mutate({ template: selected, to: testEmail })}
-          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm transition disabled:opacity-50"
-          style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
-        >
-          {sendTest.isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              {t("adminEmailPreview.sending", { defaultValue: "Sending…" })}
-            </>
-          ) : (
-            <>
-              <Send className="h-4 w-4" aria-hidden="true" />
-              {t("adminEmailPreview.sendTest", { defaultValue: "Send test email" })}
-            </>
-          )}
-        </button>
+            {/* Test sending stays protected by the admin procedure. */}
+            <input
+              type="email"
+              value={testEmail}
+              onChange={e => setTestEmail(e.target.value)}
+              placeholder={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
+              className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 w-56"
+              style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
+              aria-label={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
+            />
+            <button
+              type="button"
+              disabled={sendTest.isPending || isLoading || !data?.html || !testEmail}
+              onClick={() => sendTest.mutate({ template: selected, to: testEmail })}
+              className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm transition disabled:opacity-50"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+            >
+              {sendTest.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  {t("adminEmailPreview.sending", { defaultValue: "Sending…" })}
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" aria-hidden="true" />
+                  {t("adminEmailPreview.sendTest", { defaultValue: "Send test email" })}
+                </>
+              )}
+            </button>
+          </>
+        )}
 
         {isLoading && (
           <span className="text-xs text-gray-400 animate-pulse">
@@ -482,7 +486,7 @@ export default function AdminEmailPreview() {
       </div>
 
       {/* Variable injection panel */}
-      {showVars && (
+      {!readOnly && showVars && (
         <div className="mx-5 mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           {/* Panel header */}
           <div className="mb-3 flex items-center gap-2">
@@ -614,7 +618,7 @@ export default function AdminEmailPreview() {
         )}
         <p className="mt-3 text-center text-xs text-gray-400">
           {t("adminEmailPreview.note", { defaultValue: "Preview uses sample data. Actual emails are sent with real user names and secure links." })}
-          {testEmail && (
+          {!readOnly && testEmail && (
             <span className="ml-1">
               Test sends to <strong>{testEmail}</strong>.
             </span>

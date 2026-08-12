@@ -16,7 +16,7 @@ describe("admin email preview runtime contract", () => {
     expect(source).toContain("trpc.admin.sendTestEmail.useMutation");
   });
 
-  it("preserves an admin email-preview deep link through sign-in", () => {
+  it("provides a public read-only preview while keeping email delivery administrative", () => {
     const appSource = readFileSync(
       resolve(process.cwd(), "client/src/App.tsx"),
       "utf8"
@@ -26,10 +26,16 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
+    const unauthenticatedRoute = appSource.slice(
+      appSource.indexOf("if (!user)"),
+      appSource.indexOf("// ── Authenticated app shell")
+    );
+
     expect(authUrlSource).toContain("returnTo=");
-    expect(appSource).toContain('path === "/admin/email-preview"');
-    expect(appSource).toContain("authReturnPathStorageKey");
-    expect(appSource).toContain("sessionStorage.setItem");
+    expect(unauthenticatedRoute).toContain('path === "/admin/email-preview"');
+    expect(unauthenticatedRoute).toContain("<AdminEmailPreviewPage readOnly />");
+    expect(unauthenticatedRoute).not.toContain("<AuthRequiredRedirect");
+    expect(appSource).toContain('path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage}');
   });
 
   it("uses a Blob URL first and falls back to srcDoc only when a browser blocks that document", () => {
@@ -61,6 +67,22 @@ describe("admin email preview runtime contract", () => {
     expect(previewSource).toContain("window.top !== window.self");
     expect(previewSource).toContain('isManagedPreviewHost ? "srcdoc" : "blob"');
     expect(routerSource).toContain("emailPreview: publicProcedure");
+  });
+
+  it("hides preview editing and test-email delivery controls in the public read-only view", () => {
+    const previewSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/AdminEmailPreview.tsx"),
+      "utf8"
+    );
+    const routerSource = readFileSync(
+      resolve(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
+
+    expect(previewSource).toContain("{ readOnly = false }");
+    expect(previewSource).toContain("!readOnly && (");
+    expect(previewSource).toContain("!readOnly && showVars");
+    expect(routerSource).toContain("sendTestEmail: adminProcedure");
   });
 
   it("shows an accessible email-shaped loading skeleton and exports resolved HTML safely", () => {
