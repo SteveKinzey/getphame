@@ -1826,3 +1826,8 @@
 - [x] Create getphame-lead-consent-compliance skill
 - [x] Run full test suite and save checkpoint (17124cdc, 1022 tests pass)
 - [x] Open GitHub PR for checkpoint (PR #110)
+
+## Admin email-preview route repair (Aug 12, 2026)
+- [x] Diagnose the signed-in redirect or error page at /admin/email-preview
+- [x] Repair the active preview route, access guard, or API contract
+- [x] Add regression coverage and validate the signed-in admin preview flow

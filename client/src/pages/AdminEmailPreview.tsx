@@ -55,7 +55,10 @@ export default function AdminEmailPreview() {
 
   const { data, isLoading, error } = trpc.admin.emailPreview.useQuery(
     { template: selected },
-    { placeholderData: previousData => previousData }
+    {
+      enabled: user?.role === "admin",
+      placeholderData: previousData => previousData,
+    }
   );
 
   const sendTest = trpc.admin.sendTestEmail.useMutation({
