@@ -623,11 +623,12 @@ describe("Get Phame regression contracts", () => {
     expect(bottomNav).toContain("<LogOut");
   });
 
-  it("replaces authenticated magic-link onboarding URLs with the app home route", () => {
+  it("returns authenticated sign-ins to a safe preserved deep link or the app home", () => {
     const app = readProjectFile("../client/src/App.tsx");
 
-    expect(app).toContain('window.location.pathname !== "/onboarding"');
-    expect(app).toContain('navigate("/", { replace: true })');
+    expect(app).toContain("getSafeReturnPath(window.location.search)");
+    expect(app).toContain('navigate(returnPath, { replace: true })');
+    expect(app).toContain('path === "/admin/email-preview"');
   });
 
   it("uses first-party secure cookie policy behind the managed proxy", () => {
