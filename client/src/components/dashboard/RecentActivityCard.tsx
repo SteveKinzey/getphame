@@ -319,9 +319,18 @@ export default function RecentActivityCard({
             const isMarkingThis = markingId === req.id;
 
             return (
-              <button
+              <div
                 key={req.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelectRequest(req.id)}
+                onKeyDown={(event) => {
+                  if (event.target !== event.currentTarget) return;
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSelectRequest(req.id);
+                  }
+                }}
                 className="flex items-center gap-3 py-2.5 text-left rounded-lg px-2 -mx-2 transition-all duration-150 cursor-pointer group"
                 style={{
                   borderBottom:
@@ -330,22 +339,22 @@ export default function RecentActivityCard({
                       : "none",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background =
+                  (e.currentTarget as HTMLDivElement).style.background =
                     "oklch(0.975 0.008 260)";
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                  (e.currentTarget as HTMLDivElement).style.boxShadow =
                     "0 1px 4px oklch(0.22 0.09 260 / 0.06)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "";
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = "";
+                  (e.currentTarget as HTMLDivElement).style.background = "";
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = "";
                 }}
                 onMouseDown={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background =
+                  (e.currentTarget as HTMLDivElement).style.background =
                     "oklch(0.96 0.015 260)";
-                  (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.99)";
+                  (e.currentTarget as HTMLDivElement).style.transform = "scale(0.99)";
                 }}
                 onMouseUp={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.transform = "";
+                  (e.currentTarget as HTMLDivElement).style.transform = "";
                 }}
               >
                 {/* Avatar */}
@@ -479,7 +488,7 @@ export default function RecentActivityCard({
                     {formatRelative(req.sentAt)}
                   </p>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

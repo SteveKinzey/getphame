@@ -2,7 +2,7 @@
  * SavedContacts — manage repeat customers for re-sending review requests.
  * Supports individual send, bulk-select, and "Send to Selected" action.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "@/lib/trpc";
 import type { RouterOutputs } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";

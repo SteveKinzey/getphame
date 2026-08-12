@@ -503,7 +503,9 @@
     "freeAllowanceInitial": "แผนฟรี: คำขอเริ่มต้น 10 ครั้ง จากนั้น 5 ครั้ง ทุก 30 วันแบบหมุน",
     "freeAllowanceMonthly": "แผนฟรี: 5 คำขอ ทุก 30 วันแบบหมุน",
     "nextFreeRequest": "คำขอต่อไปพร้อมใช้งาน {{date}}",
-    "lifePlan": "แผนชีวิต"
+    "lifePlan": "แผนชีวิต",
+    "setupProgressPercentage": "เสร็จแล้ว {{percent}}%",
+    "setupProgressDismiss": "ซ่อนการตั้งค่าที่เสร็จแล้ว"
   },
   "notifications": {
     "followUpReminderScheduled": "กำหนดการแจ้งเตือนติดตามผลแล้ว!",

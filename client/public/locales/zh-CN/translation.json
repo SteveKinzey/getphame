@@ -513,7 +513,9 @@
     "freeAllowanceInitial": "免费方案：初始 10 次请求，之后每滚动 30 天可用 5 次。",
     "freeAllowanceMonthly": "免费方案：每滚动 30 天 5 次请求",
     "nextFreeRequest": "下一次可用请求：{{date}}",
-    "lifePlan": "生活计划"
+    "lifePlan": "生活计划",
+    "setupProgressPercentage": "已完成 {{percent}}%",
+    "setupProgressDismiss": "隐藏已完成的设置"
   },
   "notifications": {
     "followUpReminderScheduled": "已安排跟进提醒！",

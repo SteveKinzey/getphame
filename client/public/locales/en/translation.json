@@ -478,7 +478,9 @@
     "setupStepComplete": "Complete",
     "setupStepNumber": "Step {{step}}",
     "loadingAnalytics": "Loading analytics",
-    "lifePlan": "Life Plan"
+    "lifePlan": "Life Plan",
+    "setupProgressPercentage": "{{percent}}% complete",
+    "setupProgressDismiss": "Hide completed setup"
   },
   "activityTrend": {
     "title": "Activity Trend",

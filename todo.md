@@ -1863,3 +1863,12 @@
 - [x] Add regression coverage for the repaired schema contracts
 - [x] Validate TypeScript, full tests, audit, production build, and GitHub Quality Gate
 - [x] Merge the validated PR #115 release candidate into protected main
+
+## Reliability and release quality follow-up (Aug 12, 2026)
+- [x] Fix the Dashboard nested-button error
+- [x] Add SetupProgressCard visual completion progress, dismissal, and step tooltips
+- [ ] Add dedicated router schema-contract CI coverage
+- [ ] Remediate the remaining moderate dependency advisory
+- [ ] Add protected-main versus live-checkpoint release parity visibility
+- [ ] Create reusable release-quality workflow skill
+- [ ] Validate, checkpoint, and synchronize the completed release through GitHub

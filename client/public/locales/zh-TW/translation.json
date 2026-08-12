@@ -503,7 +503,9 @@
     "freeAllowanceInitial": "免費方案：初始 10 次請求，之後每個滾動 30 天可獲得 5 次",
     "freeAllowanceMonthly": "免費方案：每個滾動 30 天 5 次請求",
     "nextFreeRequest": "下一次可用請求：{{date}}",
-    "lifePlan": "人生規劃"
+    "lifePlan": "人生規劃",
+    "setupProgressPercentage": "已完成 {{percent}}%",
+    "setupProgressDismiss": "隱藏已完成的設定"
   },
   "notifications": {
     "followUpReminderScheduled": "已安排跟進提醒！",

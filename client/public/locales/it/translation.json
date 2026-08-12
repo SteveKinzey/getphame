@@ -609,7 +609,9 @@
     "reviewsPerMonth": "recensioni / mese",
     "ofMonthlyGoal": "dell'obiettivo mensile",
     "requestsByPlatform": "Richieste per piattaforma",
-    "lifePlan": "Piano di vita"
+    "lifePlan": "Piano di vita",
+    "setupProgressPercentage": "{{percent}}% completato",
+    "setupProgressDismiss": "Nascondi configurazione completata"
   },
   "sendRequest": {
     "pageTitle": "Invia Richiesta di Recensione",

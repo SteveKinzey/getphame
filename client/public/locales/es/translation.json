@@ -592,7 +592,9 @@
     "freeAllowanceInitial": "Plan gratuito: 10 solicitudes iniciales, luego 5 cada 30 días rodantes",
     "freeAllowanceMonthly": "Plan gratuito: 5 solicitudes cada 30 días rodantes",
     "nextFreeRequest": "Siguiente solicitud disponible {{date}}",
-    "lifePlan": "Plan de vida"
+    "lifePlan": "Plan de vida",
+    "setupProgressPercentage": "{{percent}} % completado",
+    "setupProgressDismiss": "Ocultar configuración completada"
   },
   "notifications": {
     "followUpReminderScheduled": "¡Recordatorio de seguimiento programado!",

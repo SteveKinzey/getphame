@@ -53,10 +53,7 @@ export default function AdminEmailPreview() {
     if (user?.email && !testEmail) setTestEmail(user.email);
   }, [user?.email]);
 
-  const { data, isLoading, error } = trpc.admin.emailPreview.useQuery(
-    { template: selected },
-    { keepPreviousData: true }
-  );
+  const { data, isLoading, error } = trpc.admin.emailPreview.useQuery({ template: selected });
 
   const sendTest = trpc.admin.sendTestEmail.useMutation({
     onSuccess: () =>

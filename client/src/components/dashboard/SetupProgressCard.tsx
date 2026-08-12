@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2, ShieldCheck } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2, ShieldCheck, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { claimOnboardingChecklistTelemetryEvent, type OnboardingChecklistTelemetryEvent } from "@/lib/onboardingChecklistTelemetry";
@@ -62,6 +62,11 @@ export default function SetupProgressCard({ status, userId, onNavigate }: SetupP
   ], [status?.smtpConnected, status?.hasPlatform, status?.hasContacts, status?.hasSentRequest, t]);
   const completedCount = steps.filter((step) => step.complete).length;
   const progress = (completedCount / steps.length) * 100;
+  const complete = completedCount === steps.length;
+  const dismissStorageKey = `getphame:setup-progress-dismissed:${userId ?? "anonymous"}`;
+  const [dismissed, setDismissed] = useState(() =>
+    typeof window !== "undefined" && window.localStorage.getItem(dismissStorageKey) === "true"
+  );
   const incompleteStepIds = steps.filter((step) => !step.complete).map((step) => step.id).join(",");
 
   const trackChecklistEvent = useCallback((event: OnboardingChecklistTelemetryEvent) => {
@@ -80,6 +85,8 @@ export default function SetupProgressCard({ status, userId, onNavigate }: SetupP
     }
   }, [completedCount, incompleteStepIds, trackChecklistEvent]);
 
+  if (complete && dismissed) return null;
+
   return (
     <section className="rr-card p-4" aria-labelledby="setup-progress-title">
       <div className="flex items-start justify-between gap-3">
@@ -88,9 +95,25 @@ export default function SetupProgressCard({ status, userId, onNavigate }: SetupP
           <h2 id="setup-progress-title" className="rr-h4 mt-1 rr-text-navy">{t("homePage.completeSetup")}</h2>
           <p className="rr-b2 mt-1 rr-text-navy-mid">{t("homePage.setupProgressDescription")}</p>
         </div>
-        <span className="shrink-0 rounded-full px-2.5 py-1 text-xs font-black rr-bg-gold rr-text-navy">
-          {t("homePage.setupProgressCount", { completed: completedCount, total: steps.length })}
-        </span>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="rounded-full px-2.5 py-1 text-xs font-black rr-bg-gold rr-text-navy">
+            {t("homePage.setupProgressPercentage", { percent: Math.round(progress) })}
+          </span>
+          {complete && (
+            <button
+              type="button"
+              onClick={() => {
+                window.localStorage.setItem(dismissStorageKey, "true");
+                setDismissed(true);
+              }}
+              className="inline-flex size-8 items-center justify-center rounded-lg rr-bg-surface rr-text-navy transition-colors hover:rr-bg-gold-pale focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={t("homePage.setupProgressDismiss")}
+              title={t("homePage.setupProgressDismiss")}
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-4" role="progressbar" aria-valuemin={0} aria-valuemax={steps.length} aria-valuenow={completedCount} aria-valuetext={t("homePage.setupProgressCount", { completed: completedCount, total: steps.length })}>
@@ -103,7 +126,11 @@ export default function SetupProgressCard({ status, userId, onNavigate }: SetupP
         {steps.map((step, index) => {
           const Icon = step.icon;
           return (
-            <li key={step.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+            <li
+              key={step.id}
+              className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+              title={step.complete ? t("homePage.setupStepComplete") : step.description}
+            >
               <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${step.complete ? "rr-bg-green-pale" : "rr-bg-surface"}`}>
                 {step.complete ? (
                   <CheckCircle2 size={19} className="rr-text-green" aria-label={t("homePage.setupStepComplete")} />

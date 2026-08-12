@@ -738,7 +738,9 @@
       "toGo": "to go",
       "allTime": "All Time",
       "completeSetup": "Complete your setup",
-      "emailConnected": "Email connected ({{email}})"
+      "emailConnected": "Email connected ({{email}})",
+      "setupProgressPercentage": "{{percent}}% complete",
+      "setupProgressDismiss": "Hide completed setup"
     },
     "tools": {
       "title": "API Keys"
@@ -2307,7 +2309,9 @@
       "toGo": "restantes",
       "allTime": "Todo el tiempo",
       "completeSetup": "Completa tu configuración",
-      "emailConnected": "Correo conectado ({{email}})"
+      "emailConnected": "Correo conectado ({{email}})",
+      "setupProgressPercentage": "{{percent}} % completado",
+      "setupProgressDismiss": "Ocultar configuración completada"
     },
     "tools": {
       "title": "Claves API"
@@ -4058,7 +4062,9 @@
       "toGo": "restant",
       "allTime": "Depuis le début",
       "completeSetup": "Terminez votre configuration",
-      "emailConnected": "E-mail connecté ({{email}})"
+      "emailConnected": "E-mail connecté ({{email}})",
+      "setupProgressPercentage": "{{percent}} % terminé",
+      "setupProgressDismiss": "Masquer la configuration terminée"
     },
     "tools": {
       "title": "Clés API",
@@ -5804,7 +5810,9 @@
       "toGo": "rimanenti",
       "allTime": "Dall'inizio",
       "completeSetup": "Completa la configurazione",
-      "emailConnected": "Email collegata ({{email}})"
+      "emailConnected": "Email collegata ({{email}})",
+      "setupProgressPercentage": "{{percent}}% completato",
+      "setupProgressDismiss": "Nascondi configurazione completata"
     },
     "tools": {
       "title": "Chiavi API"
@@ -7410,7 +7418,9 @@
       "toGo": "เหลือ",
       "allTime": "ตลอดเวลา",
       "completeSetup": "ดำเนินการตั้งค่าให้เสร็จ",
-      "emailConnected": "เชื่อมต่ออีเมล ({{email}})"
+      "emailConnected": "เชื่อมต่ออีเมล ({{email}})",
+      "setupProgressPercentage": "เสร็จแล้ว {{percent}}%",
+      "setupProgressDismiss": "ซ่อนการตั้งค่าที่เสร็จแล้ว"
     },
     "tools": {
       "title": "คีย์ API"
@@ -9012,7 +9022,9 @@
       "toGo": "剩余",
       "allTime": "所有时间",
       "completeSetup": "完成设置",
-      "emailConnected": "已连接邮箱（{{email}}）"
+      "emailConnected": "已连接邮箱（{{email}}）",
+      "setupProgressPercentage": "已完成 {{percent}}%",
+      "setupProgressDismiss": "隐藏已完成的设置"
     },
     "tools": {
       "title": "API 密钥"
@@ -10606,7 +10618,9 @@
       "toGo": "剩餘",
       "allTime": "所有時間",
       "completeSetup": "完成設定",
-      "emailConnected": "已連接電子郵件 ({{email}})"
+      "emailConnected": "已連接電子郵件 ({{email}})",
+      "setupProgressPercentage": "已完成 {{percent}}%",
+      "setupProgressDismiss": "隱藏已完成的設定"
     },
     "tools": {
       "title": "API 金鑰"
