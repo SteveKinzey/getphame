@@ -92,7 +92,6 @@ export default function AdminUsersPage() {
   const [smtpRecovery, setSmtpRecovery] = useState<{ userId: number; checkedAt: number } | null>(null);
   const auditPageSize = 25;
   const [page, setPage] = useState(1);
-  const [consentSort, setConsentSort] = useState<"none" | "asc" | "desc">("none");
   const pageSize = 25;
   const utils = trpc.useUtils();
 
@@ -397,26 +396,7 @@ export default function AdminUsersPage() {
           <div className="rounded-2xl bg-red-50 p-4 font-semibold text-red-700">{directory.error.message}</div>
         ) : (
           <div className="flex flex-col gap-3">
-            <div className="flex flex-wrap items-center gap-2 px-1">
-              <span className="text-xs font-bold rr-text-navy-mid">Sort by consent:</span>
-              {(["none", "desc", "asc"] as const).map((opt) => (
-                <button
-                  key={opt}
-                  onClick={() => setConsentSort(opt)}
-                  className={`rounded-full px-2.5 py-1 text-xs font-black transition ${consentSort === opt ? "rr-bg-navy text-white" : "bg-slate-100 rr-text-navy hover:bg-slate-200"}`}
-                >
-                  {opt === "none" ? "Default" : opt === "desc" ? "Highest ↓" : "Lowest ↑"}
-                </button>
-              ))}
-            </div>
-            {(consentSort === "none"
-              ? (directory.data?.users ?? [])
-              : [...(directory.data?.users ?? [])].sort((a, b) => {
-                  const pctA = (a as any).consentStats?.total > 0 ? ((a as any).consentStats.consented / (a as any).consentStats.total) * 100 : -1;
-                  const pctB = (b as any).consentStats?.total > 0 ? ((b as any).consentStats.consented / (b as any).consentStats.total) * 100 : -1;
-                  return consentSort === "desc" ? pctB - pctA : pctA - pctB;
-                })
-            ).map((account) => {
+            {directory.data?.users.map((account) => {
               const isSelf = account.id === user.id;
               const isBusy = busyUserId === account.id && (setRole.isPending || setLifeAccess.isPending || grantFlexibleAccess.isPending || suspendUser.isPending || restoreUser.isPending || sendUserEmail.isPending || retestUserSmtp.isPending || removeUserSmtp.isPending || deleteUser.isPending || combineAccounts.isPending);
               return (
@@ -455,28 +435,6 @@ export default function AdminUsersPage() {
                           </span>
                         )}
                         {account.smtpFromEmail && <span className="truncate text-xs font-semibold rr-text-navy-muted">{account.smtpFromEmail}</span>}
-                        {(account as any).consentStats && (account as any).consentStats.total > 0 && (() => {
-                          const cs = (account as any).consentStats as { consented: number; total: number };
-                          const pct = Math.round((cs.consented / cs.total) * 100);
-                          const isGood = pct >= 50;
-                          return (
-                            <span
-                              title={`${cs.consented} of ${cs.total} contacts have consented (${pct}%)`}
-                              className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-black ${isGood ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-900"}`}
-                            >
-                              <ShieldCheck size={12} />
-                              {pct}% consent
-                            </span>
-                          );
-                        })()}
-                        {(account as any).lastConsentRequestAt && (
-                          <span
-                            title={`Last consent request: ${new Date((account as any).lastConsentRequestAt).toLocaleString()}`}
-                            className="truncate text-xs rr-text-navy-muted"
-                          >
-                            Last request: {new Date((account as any).lastConsentRequestAt).toLocaleDateString()}
-                          </span>
-                        )}
                       </div>
                       {smtpRecovery?.userId === account.id && (
                         <p data-testid={`smtp-recovery-${account.id}`} className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-2.5 py-1.5 text-xs font-black text-emerald-800">
@@ -630,7 +588,7 @@ export default function AdminUsersPage() {
               );
             })}
 
-            {(directory.data?.users.length ?? 0) === 0 && (
+            {directory.data?.users.length === 0 && (
               <div className="rounded-2xl bg-white p-8 text-center font-semibold rr-text-navy-muted">{t("adminUsers.empty", { defaultValue: "No users match that search." })}</div>
             )}
           </div>

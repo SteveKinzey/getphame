@@ -1422,7 +1422,6 @@ export const appRouter = router({
           fromName: z.string().max(255).optional(),
           replyTo: z.string().email().optional().or(z.literal("")),
           consentLabelName: z.string().max(255).optional().or(z.literal("")),
-          consentCoverageGoal: z.number().int().min(1).max(100).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1439,7 +1438,6 @@ export const appRouter = router({
           fromName: input.fromName ?? existing?.fromName ?? null,
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
           consentLabelName: input.consentLabelName?.trim() || null,
-          ...(input.consentCoverageGoal !== undefined && { consentCoverageGoal: input.consentCoverageGoal }),
         });
         return getBusinessProfile(ctx.user.id);
       }),
@@ -2878,21 +2876,17 @@ export const appRouter = router({
             const bodyText = resolveVars(input.customBody || defaultBody);
             const bodyHtml = bodyText.split(/\n\n+/).map((p: string) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
             const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${contact.name},</p>${bodyHtml}<p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
-            await sendMailViaSmtp({
+            const result = await sendMailViaSmtp({
               userId: ctx.user.id,
               to: contact.email,
               subject,
               html,
             });
-            sent++;
+            if (result?.configured) sent++;
+            else failed++;
           } catch {
             failed++;
           }
-        }
-        // Record the last consent request timestamp on the user's profile
-        const db2 = await getDb();
-        if (db2) {
-          await db2.update(businessProfiles).set({ lastConsentRequestAt: Date.now() } as any).where(eq(businessProfiles.userId, ctx.user.id));
         }
         return { ok: true, sent, failed, total: targets.length };
       }),
@@ -2909,22 +2903,21 @@ export const appRouter = router({
         const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found." });
         const businessName = String((profile as any).consentLabelName || profile.businessName || "");
-        const toAddress = input.toEmail || ctx.user.email;
+        const toAddress = input.toEmail || ctx.user.email || "";
         if (!toAddress) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "A test email recipient is required." });
+          throw new TRPCError({ code: "BAD_REQUEST", message: "A test recipient email address is required." });
         }
-        const recipientName = ctx.user.name || "Test Contact";
         const defaultSubject = `[TEST] A note about your email preferences from ${businessName}`;
         const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${businessName}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
         const resolveVars = (tpl: string) => tpl
-          .replace(/\{\{name\}\}/g, recipientName)
+          .replace(/\{\{name\}\}/g, ctx.user.name || "Test Contact")
           .replace(/\{\{businessName\}\}/g, businessName)
           .replace(/\{\{email\}\}/g, toAddress)
           .replace(/\{\{currentDate\}\}/g, new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
         const subject = resolveVars(input.customSubject || defaultSubject);
         const bodyText = resolveVars(input.customBody || defaultBody);
         const bodyHtml = bodyText.split(/\n\n+/).map((p: string) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
-        const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${recipientName},</p>${bodyHtml}<p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="#" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
+        const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${ctx.user.name || "Test Contact"},</p>${bodyHtml}<p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="#" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
         const result = await sendMailViaSmtp({ userId: ctx.user.id, to: toAddress, subject, html });
         if (!result) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Test email could not be delivered. Check your SMTP settings." });
         return { ok: true, to: toAddress };
@@ -4687,7 +4680,6 @@ export const appRouter = router({
             smtpCredentialId: smtpCredentials.id,
             smtpVerified: smtpCredentials.verified,
             smtpFromEmail: smtpCredentials.user,
-            lastConsentRequestAt: businessProfiles.lastConsentRequestAt,
           })
           .from(users)
           .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
@@ -4697,23 +4689,6 @@ export const appRouter = router({
           .limit(input.pageSize)
           .offset((input.page - 1) * input.pageSize);
 
-        // Fetch consent stats per user in one query
-        const userIds = rows.map(r => r.id);
-        let consentMap: Record<number, { consented: number; total: number }> = {};
-        if (userIds.length > 0) {
-          const consentRows = await db
-            .select({
-              userId: savedContacts.userId,
-              consentBasis: savedContacts.consentBasis,
-            })
-            .from(savedContacts)
-            .where(inArray(savedContacts.userId, userIds));
-          for (const r of consentRows) {
-            if (!consentMap[r.userId]) consentMap[r.userId] = { consented: 0, total: 0 };
-            consentMap[r.userId].total++;
-            if (r.consentBasis === "explicit") consentMap[r.userId].consented++;
-          }
-        }
         return {
           users: rows.map(row => ({
             ...row,
@@ -4722,8 +4697,6 @@ export const appRouter = router({
             smtpConnected: row.smtpCredentialId !== null,
             smtpVerified: row.smtpVerified === 1,
             isSuspended: typeof row.suspendedUntil === "number" && row.suspendedUntil > Date.now(),
-            consentStats: consentMap[row.id] ?? { consented: 0, total: 0 },
-            lastConsentRequestAt: row.lastConsentRequestAt ?? null,
           })),
           page: input.page,
           pageSize: input.pageSize,

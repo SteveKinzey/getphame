@@ -37,10 +37,10 @@ overrides:
   # Security: mdast-util-to-hast XSS fix
   mdast-util-to-hast: ">=13.2.1"
   # Existing overrides preserved
-  # Security: nanoid predictable-result fixes in Vite runtime and PostCSS dependency paths
-  nanoid: ">=5.1.16"
-  postcss>nanoid: ">=3.3.17"
-  tailwindcss>nanoid: ">=3.3.17"
+  # Security: preserve patched Nanoid majors required by each dependent package.
+  tailwindcss>nanoid: "3.3.17"
+  vite-plugin-manus-runtime>nanoid: "5.1.16"
+  postcss>nanoid: "3.3.17"
   baseline-browser-mapping: "^2.10.20"
   rollup: "^4.52.5"
 

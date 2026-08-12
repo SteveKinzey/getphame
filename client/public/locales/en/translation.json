@@ -478,9 +478,7 @@
     "setupStepComplete": "Complete",
     "setupStepNumber": "Step {{step}}",
     "loadingAnalytics": "Loading analytics",
-    "lifePlan": "Life Plan",
-    "setupProgressPercentage": "{{percent}}% complete",
-    "setupProgressDismiss": "Hide completed setup"
+    "lifePlan": "Life Plan"
   },
   "activityTrend": {
     "title": "Activity Trend",
@@ -770,9 +768,7 @@
     "dailySendLimitSaved": "Daily send limit saved!",
     "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
     "consentLabelName": "Consent checkbox business name",
-    "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above.",
-    "consentCoverageGoal": "Consent coverage goal (%)",
-    "consentCoverageGoalDescription": "The consent coverage percentage at which the health warning banner disappears. Default is 50%."
+    "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
   },
   "reviewPlatforms": {
     "title": "Review Platforms",
@@ -3285,6 +3281,71 @@
           "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
           "5": "Send one permitted record, then refresh health here."
         }
+      },
+      "automation": {
+        "title": "Review-request automation safeguards",
+        "description": "Configure an approved destination and template, validate without importing, complete one safe provider dry run, then choose when to go live.",
+        "updated": "Automation safeguards updated.",
+        "states": {
+          "live": "Live delivery",
+          "dryRun": "Safe dry run",
+          "paused": "Paused"
+        },
+        "scopeTitle": "A review-request API key is required",
+        "scopeDescription": "This source is linked to an import-only key. Create a key with contacts:write and review_requests:send scopes, then create a new source connection with that key.",
+        "mode": "Workflow mode",
+        "modes": {
+          "importOnly": "Import only",
+          "reviewRequest": "Review request"
+        },
+        "locale": "Recipient language",
+        "template": "Approved template",
+        "defaultTemplate": "Approved default template",
+        "default": "default",
+        "platform": "Review destination",
+        "defaultPlatform": "Verified default destination",
+        "delay": "Send delay",
+        "delays": {
+          "immediate": "Immediately",
+          "day": "24 hours",
+          "minutes": "{{count}} minutes"
+        },
+        "dryRunCompleted": "Provider dry run",
+        "notCompleted": "Not completed",
+        "lastSuccess": "Last successful event",
+        "lastFailure": "Last failure",
+        "failureCode": "Latest safe error code",
+        "none": "None",
+        "refresh": "Refresh setup status",
+        "pause": "Pause automated requests",
+        "enableDryRun": "Enable safe dry run",
+        "goLive": "Move to live delivery",
+        "returnDryRun": "Return to dry run",
+        "preflightTitle": "Read-only preflight",
+        "preflightDescription": "Check source binding, suppression, SMTP, quota, destination, and approved template readiness. This test does not import a contact or send email.",
+        "testName": "Permitted test name",
+        "testEmail": "Permitted test email",
+        "runPreflight": "Run preflight",
+        "preflightResult": "Preflight result",
+        "preflightEmpty": "Run a read-only check before enabling a provider dry run or live delivery.",
+        "ready": "Configuration is ready for a safe provider dry run.",
+        "blocked": "Resolve the blocked checks before testing this source.",
+        "checks": {
+          "sourceBinding": "Source and API-key binding",
+          "sendScope": "Review-request permission",
+          "automationMode": "Review-request mode",
+          "suppression": "Recipient suppression",
+          "delivery": "SMTP, quota, template, and destination",
+          "dryRun": "Completed provider dry run"
+        },
+        "checkStatuses": {
+          "ready": "Ready",
+          "blocked": "Blocked",
+          "required": "Required"
+        },
+        "deliveryCode": "Readiness code: {{code}}",
+        "retryTitle": "Safe retry rule",
+        "retryDescription": "Retry the same event with the same sourceSubmissionId and Idempotency-Key. Never create a new ID for a retry. Get Phame replays completed outcomes and schedules bounded retries for recoverable delivery failures."
       }
     },
     "guides": {

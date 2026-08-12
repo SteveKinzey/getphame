@@ -592,9 +592,7 @@
     "freeAllowanceInitial": "Plan gratuito: 10 solicitudes iniciales, luego 5 cada 30 días rodantes",
     "freeAllowanceMonthly": "Plan gratuito: 5 solicitudes cada 30 días rodantes",
     "nextFreeRequest": "Siguiente solicitud disponible {{date}}",
-    "lifePlan": "Plan de vida",
-    "setupProgressPercentage": "{{percent}} % completado",
-    "setupProgressDismiss": "Ocultar configuración completada"
+    "lifePlan": "Plan de vida"
   },
   "notifications": {
     "followUpReminderScheduled": "¡Recordatorio de seguimiento programado!",
@@ -861,9 +859,7 @@
     "changeEmail": "Cambiar correo",
     "disconnectEmail": "Desconectar correo",
     "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
-    "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba.",
-    "consentCoverageGoal": "Meta de cobertura de consentimiento (%)",
-    "consentCoverageGoalDescription": "El porcentaje de cobertura de consentimiento en el que desaparece el banner de advertencia. El valor predeterminado es 50%."
+    "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
   },
   "reviewPlatforms": {
     "title": "Plataformas de reseñas",
@@ -3393,6 +3389,71 @@
           "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
           "5": "Envíe un registro permitido y luego actualice el estado aquí."
         }
+      },
+      "automation": {
+        "title": "Protecciones para automatizar solicitudes de reseña",
+        "description": "Configura un destino y una plantilla aprobados, valida sin importar, completa una prueba segura en el proveedor y luego decide cuándo activar los envíos.",
+        "updated": "Se actualizaron las protecciones de automatización.",
+        "states": {
+          "live": "Envío activo",
+          "dryRun": "Prueba segura",
+          "paused": "En pausa"
+        },
+        "scopeTitle": "Se requiere una clave API para solicitudes de reseña",
+        "scopeDescription": "Esta fuente está vinculada a una clave solo para importación. Crea una clave con los permisos contacts:write y review_requests:send y, después, una nueva conexión de fuente con esa clave.",
+        "mode": "Modo del flujo",
+        "modes": {
+          "importOnly": "Solo importar",
+          "reviewRequest": "Solicitud de reseña"
+        },
+        "locale": "Idioma del destinatario",
+        "template": "Plantilla aprobada",
+        "defaultTemplate": "Plantilla predeterminada aprobada",
+        "default": "predeterminada",
+        "platform": "Destino de la reseña",
+        "defaultPlatform": "Destino predeterminado verificado",
+        "delay": "Retraso del envío",
+        "delays": {
+          "immediate": "Inmediatamente",
+          "day": "24 horas",
+          "minutes": "{{count}} minutos"
+        },
+        "dryRunCompleted": "Prueba del proveedor",
+        "notCompleted": "No completada",
+        "lastSuccess": "Último evento correcto",
+        "lastFailure": "Último fallo",
+        "failureCode": "Último código de error seguro",
+        "none": "Ninguno",
+        "refresh": "Actualizar estado de configuración",
+        "pause": "Pausar solicitudes automatizadas",
+        "enableDryRun": "Activar prueba segura",
+        "goLive": "Pasar a envíos reales",
+        "returnDryRun": "Volver a la prueba",
+        "preflightTitle": "Comprobación previa de solo lectura",
+        "preflightDescription": "Comprueba la vinculación de la fuente, la supresión, SMTP, la cuota, el destino y la plantilla aprobada. Esta prueba no importa contactos ni envía correos.",
+        "testName": "Nombre de prueba autorizado",
+        "testEmail": "Correo de prueba autorizado",
+        "runPreflight": "Ejecutar comprobación",
+        "preflightResult": "Resultado de la comprobación",
+        "preflightEmpty": "Ejecuta una comprobación de solo lectura antes de activar una prueba del proveedor o el envío real.",
+        "ready": "La configuración está lista para una prueba segura del proveedor.",
+        "blocked": "Resuelve las comprobaciones bloqueadas antes de probar esta fuente.",
+        "checks": {
+          "sourceBinding": "Vinculación de fuente y clave API",
+          "sendScope": "Permiso para solicitar reseñas",
+          "automationMode": "Modo de solicitud de reseña",
+          "suppression": "Supresión del destinatario",
+          "delivery": "SMTP, cuota, plantilla y destino",
+          "dryRun": "Prueba del proveedor completada"
+        },
+        "checkStatuses": {
+          "ready": "Lista",
+          "blocked": "Bloqueada",
+          "required": "Obligatoria"
+        },
+        "deliveryCode": "Código de preparación: {{code}}",
+        "retryTitle": "Regla de reintento seguro",
+        "retryDescription": "Reintenta el mismo evento con el mismo sourceSubmissionId e Idempotency-Key. Nunca crees un ID nuevo al reintentar. Get Phame reproduce los resultados completados y programa reintentos limitados para fallos recuperables."
       }
     },
     "wordpressPairing": {

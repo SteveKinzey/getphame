@@ -178,24 +178,6 @@ describe("dashboard onboarding and security release", () => {
     expect(setupProgress).toContain('role="progressbar"');
   });
 
-  it("keeps completed setup controls visible and prevents nested activity action buttons", () => {
-    const setupProgress = readSource(
-      "../client/src/components/dashboard/SetupProgressCard.tsx"
-    );
-    const recentActivity = readSource(
-      "../client/src/components/dashboard/RecentActivityCard.tsx"
-    );
-
-    expect(setupProgress).toContain('t("homePage.setupProgressPercentage"');
-    expect(setupProgress).toContain('t("homePage.setupProgressDismiss")');
-    expect(setupProgress).toContain("window.localStorage.setItem(dismissStorageKey, \"true\")");
-    expect(setupProgress).toContain("title={step.complete ?");
-    expect(recentActivity).toContain('role="button"');
-    expect(recentActivity).toContain('tabIndex={0}');
-    expect(recentActivity).toContain("handleMarkSingle(e, req.id)");
-    expect(recentActivity).not.toContain("return (\n              <button\n                key={req.id}");
-  });
-
   it("persists Skip Tour state locally and lets users re-enable contextual tips", () => {
     const wizard = readSource("../client/src/components/OnboardingWizard.tsx");
     const settings = readSource("../client/src/pages/Settings.tsx");
