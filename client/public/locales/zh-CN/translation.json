@@ -914,7 +914,17 @@
     "testingCandidate": "正在测试您的邮件服务器…",
     "testBeforeSave": "保存前测试",
     "connectingAndVerifying": "正在连接并验证…",
-    "connectAndSave": "连接并保存"
+    "connectAndSave": "连接并保存",
+    "testEmailRecipient": "将测试邮件发送到",
+    "testEmailHint": "请使用您可控制的地址。系统会使用已保存的邮件服务器，不会保存新的收件人。",
+    "testEmailRecipientRequired": "请输入接收测试邮件的地址。",
+    "sendingTestEmail": "正在发送测试邮件…",
+    "sendTestEmail": "发送测试邮件",
+    "testEmailSent": "测试邮件已发送。请检查收件人收件箱。",
+    "disconnectConfirmTitle": "要断开此邮件服务器吗？",
+    "disconnectConfirmDescription": "此操作将永久删除已保存的邮件服务器凭据，并停止未来发送，直到您连接新的已验证服务器。",
+    "disconnecting": "正在断开连接…",
+    "disconnectConfirmAction": "断开并重置"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1721,6 +1731,16 @@
       "markAllShort": "全部标记",
       "markAllSuccess": "{{count}} 条已标记为审阅",
       "markReviewed": "标记为已审阅"
+    },
+    "mailHealth": {
+      "healthy": "邮件服务器运行正常",
+      "healthyDetail": "您已连接的邮件服务器已准备好发送消息。",
+      "attention": "邮件服务器需要处理",
+      "attentionDetail": "请在发送前于设置中重新测试或更新邮件服务器。",
+      "disconnected": "邮件服务器未连接",
+      "disconnectedDetail": "请先连接您自己的邮件服务器再发送消息。",
+      "bulkActive": "批量邮件服务器已启用",
+      "bulkActiveDetail": "您选择的批量邮件服务商已启用。"
     }
   },
   "pricing": {

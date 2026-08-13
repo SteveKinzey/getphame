@@ -14,6 +14,7 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 import ClientDetailSheet from "@/components/ClientDetailSheet";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 import RecentActivityCard from "@/components/dashboard/RecentActivityCard";
+import MailServerHealthBadge from "@/components/dashboard/MailServerHealthBadge";
 
 const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"));
 
@@ -34,6 +35,8 @@ export default function DashboardPage() {
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: emailPerf } = trpc.tracking.overallStats.useQuery();
+  const { data: smtpStatus } = trpc.smtp.status.useQuery();
+  const { data: bulkSenderStatus } = trpc.bulkSender.status.useQuery();
   const utils = trpc.useUtils();
 
   // Undo toast state for single-row mark in the activity feed
@@ -260,6 +263,7 @@ export default function DashboardPage() {
             );
           })}
         </div>
+        <MailServerHealthBadge smtp={smtpStatus} bulk={bulkSenderStatus} translate={t} />
       </div>
 
       <div className="px-4 py-4 lg:px-8 lg:py-6">
