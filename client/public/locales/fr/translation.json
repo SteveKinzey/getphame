@@ -1112,7 +1112,18 @@
       "notSelected": "Connecté, mais non sélectionné pour les demandes d’avis clients",
       "bulkActive": "Connecté, mais votre service d’envoi en volume est actif pour les demandes d’avis clients",
       "needsAttention": "Attention requise : mettez à jour vos informations SMTP et reconnectez-vous avant d’envoyer des demandes d’avis clients"
-    }
+    },
+    "connectionSavedMessage": "Votre serveur e-mail est connecté et prêt à envoyer des demandes aux clients.",
+    "gmailAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Gmail",
+    "workspaceAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Google Workspace",
+    "gmailAppPasswordTooltip": "Utilisez un mot de passe d’application de 16 caractères, pas votre mot de passe Gmail habituel. Activez d’abord la validation en deux étapes.",
+    "workspaceAppPasswordTooltip": "Votre administrateur Workspace doit autoriser les mots de passe d’application. Si cette option est indisponible, utilisez la méthode SMTP ou OAuth approuvée par votre organisation.",
+    "testPassedNotSaved": "Le test de connexion a réussi. Vos identifiants ne sont pas encore enregistrés.",
+    "testFailed": "Le test de connexion a échoué. Vérifiez les informations du serveur et réessayez.",
+    "testingCandidate": "Test de votre serveur e-mail…",
+    "testBeforeSave": "Tester avant d’enregistrer",
+    "connectingAndVerifying": "Connexion et vérification…",
+    "connectAndSave": "Connecter et enregistrer"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2820,7 +2831,9 @@
       "update": "Mettre à jour",
       "legacyPlatformNotice": "Une ancienne connexion de messagerie de la plateforme a été détectée, mais elle ne peut pas être utilisée pour les communications clients. Connectez un compte de fournisseur d’envoi en volume qui vous appartient.",
       "activeOutreach": "Actif pour les demandes d’avis clients",
-      "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients"
+      "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients",
+      "connectionSavedMessage": "Votre serveur d’envoi en masse est connecté et prêt à être utilisé.",
+      "connectingAndVerifying": "Connexion et vérification…"
     }
   },
   "login": {

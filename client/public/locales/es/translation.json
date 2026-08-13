@@ -1112,7 +1112,18 @@
       "notSelected": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
       "bulkActive": "Conectado, pero tu servicio de correo masivo está activo para solicitudes de reseñas de clientes",
       "needsAttention": "Necesita atención: actualiza tus datos SMTP y vuelve a conectar antes de enviar solicitudes de reseñas de clientes"
-    }
+    },
+    "connectionSavedMessage": "Tu servidor de correo está conectado y listo para enviar solicitudes a clientes.",
+    "gmailAppPasswordTooltipLabel": "Ayuda sobre la contraseña de aplicación de Gmail",
+    "workspaceAppPasswordTooltipLabel": "Ayuda sobre la contraseña de aplicación de Google Workspace",
+    "gmailAppPasswordTooltip": "Usa una contraseña de aplicación de 16 caracteres, no tu contraseña habitual de Gmail. Activa primero la verificación en dos pasos.",
+    "workspaceAppPasswordTooltip": "El administrador de Workspace debe permitir contraseñas de aplicación. Si esta opción no está disponible, usa el método SMTP u OAuth aprobado por tu organización.",
+    "testPassedNotSaved": "La prueba de conexión se completó. Tus credenciales todavía no se han guardado.",
+    "testFailed": "La prueba de conexión falló. Revisa los datos del servidor e inténtalo de nuevo.",
+    "testingCandidate": "Probando tu servidor de correo…",
+    "testBeforeSave": "Probar antes de guardar",
+    "connectingAndVerifying": "Conectando y verificando…",
+    "connectAndSave": "Conectar y guardar"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2820,7 +2831,9 @@
       "update": "Actualizar",
       "legacyPlatformNotice": "Se encontró una conexión de correo heredada de la plataforma, pero no puede usarse para comunicación con clientes. Conecta una cuenta propia de proveedor de correo masivo.",
       "activeOutreach": "Activo para solicitudes de reseñas de clientes",
-      "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes"
+      "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
+      "connectionSavedMessage": "Tu servidor de correo masivo está conectado y listo para usar.",
+      "connectingAndVerifying": "Conectando y verificando…"
     }
   },
   "login": {

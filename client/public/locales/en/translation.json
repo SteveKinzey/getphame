@@ -946,7 +946,18 @@
       "notSelected": "Connected, but not selected for customer review requests",
       "bulkActive": "Connected, but your bulk-mail service is active for customer review requests",
       "needsAttention": "Needs attention — update your SMTP details and reconnect before sending customer review requests"
-    }
+    },
+    "connectionSavedMessage": "Your email server is connected and ready for customer outreach.",
+    "gmailAppPasswordTooltipLabel": "Gmail App Password help",
+    "workspaceAppPasswordTooltipLabel": "Google Workspace App Password help",
+    "gmailAppPasswordTooltip": "Use a 16-character App Password, not your regular Gmail password. Turn on 2-Step Verification first.",
+    "workspaceAppPasswordTooltip": "Your Workspace administrator must allow App Passwords. If this option is unavailable, use your organisation’s approved SMTP or OAuth method.",
+    "testPassedNotSaved": "Connection test passed. Your credentials have not been saved yet.",
+    "testFailed": "Connection test failed. Review your server details and try again.",
+    "testingCandidate": "Testing your mail server…",
+    "testBeforeSave": "Test before saving",
+    "connectingAndVerifying": "Connecting and verifying…",
+    "connectAndSave": "Connect and save"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2872,7 +2883,9 @@
       "connectAndTest": "Connect and test",
       "legacyPlatformNotice": "A legacy platform mail connection was found, but it cannot be used for customer outreach. Connect a bulk-mail provider account that you own.",
       "activeOutreach": "Active for customer review requests",
-      "notActive": "Connected, but not selected for customer review requests"
+      "notActive": "Connected, but not selected for customer review requests",
+      "connectionSavedMessage": "Your bulk mail server is connected and ready to use.",
+      "connectingAndVerifying": "Connecting and verifying…"
     }
   },
   "complianceGuide": {

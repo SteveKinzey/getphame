@@ -932,7 +932,9 @@
       "update": "Aggiorna",
       "legacyPlatformNotice": "È stata trovata una connessione email di piattaforma precedente, ma non può essere usata per le comunicazioni con i clienti. Collega un account di provider di invio in blocco di tua proprietà.",
       "activeOutreach": "Attivo per le richieste di recensione dei clienti",
-      "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti"
+      "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
+      "connectionSavedMessage": "Il tuo server per invii in massa è connesso e pronto all’uso.",
+      "connectingAndVerifying": "Connessione e verifica…"
     }
   },
   "emailConnect": {
@@ -2154,7 +2156,18 @@
       "notSelected": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
       "bulkActive": "Connesso, ma il tuo servizio di invio in blocco è attivo per le richieste di recensione dei clienti",
       "needsAttention": "Richiede attenzione: aggiorna i dati SMTP e riconnettiti prima di inviare richieste di recensione ai clienti"
-    }
+    },
+    "connectionSavedMessage": "Il tuo server di posta è connesso e pronto per inviare richieste ai clienti.",
+    "gmailAppPasswordTooltipLabel": "Guida alla password per app Gmail",
+    "workspaceAppPasswordTooltipLabel": "Guida alla password per app Google Workspace",
+    "gmailAppPasswordTooltip": "Usa una password per app di 16 caratteri, non la normale password Gmail. Attiva prima la verifica in due passaggi.",
+    "workspaceAppPasswordTooltip": "L’amministratore Workspace deve consentire le password per app. Se questa opzione non è disponibile, usa il metodo SMTP o OAuth approvato dalla tua organizzazione.",
+    "testPassedNotSaved": "Il test di connessione è riuscito. Le credenziali non sono ancora state salvate.",
+    "testFailed": "Il test di connessione non è riuscito. Controlla i dettagli del server e riprova.",
+    "testingCandidate": "Verifica del server di posta…",
+    "testBeforeSave": "Testa prima di salvare",
+    "connectingAndVerifying": "Connessione e verifica…",
+    "connectAndSave": "Connetti e salva"
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",
