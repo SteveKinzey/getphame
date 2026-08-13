@@ -2025,9 +2025,9 @@
 - [x] Add sender-routing regression coverage and validate delivery behavior
 
 ## Sender-routing release verification and protected-main synchronization (Aug 12, 2026)
-- [ ] Review retention audit metadata and current manual migration status
-- [ ] Run focused email sending flows with the sender-domain guard
-- [ ] Publish the approved sender-routing checkpoint and synchronize its exact tree to protected main
+- [x] Review retention audit metadata and current manual migration status
+- [x] Run focused email sending flows with the sender-domain guard
+- [x] Publish the approved sender-routing checkpoint and synchronize its exact tree to protected main
 
 ## Email template availability recovery (Aug 12, 2026)
 - [x] Investigate why the Send Request template selector shows only the default template
