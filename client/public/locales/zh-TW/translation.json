@@ -915,7 +915,17 @@
     "testingCandidate": "正在測試您的郵件伺服器…",
     "testBeforeSave": "儲存前測試",
     "connectingAndVerifying": "正在連線並驗證…",
-    "connectAndSave": "連線並儲存"
+    "connectAndSave": "連線並儲存",
+    "testEmailRecipient": "將測試電子郵件寄送至",
+    "testEmailHint": "請使用您可控制的地址。系統會使用已儲存的郵件伺服器，不會儲存新的收件者。",
+    "testEmailRecipientRequired": "請輸入要接收測試電子郵件的地址。",
+    "sendingTestEmail": "正在傳送測試電子郵件…",
+    "sendTestEmail": "傳送測試電子郵件",
+    "testEmailSent": "測試電子郵件已傳送。請檢查收件者收件匣。",
+    "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
+    "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
+    "disconnecting": "正在中斷連線…",
+    "disconnectConfirmAction": "中斷並重設"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1797,6 +1807,16 @@
       "markAllShort": "全部標記",
       "markAllSuccess": "{{count}} 條已標記為審閱",
       "markReviewed": "標記為已審閱"
+    },
+    "mailHealth": {
+      "healthy": "郵件伺服器運作正常",
+      "healthyDetail": "您已連接的郵件伺服器已準備好傳送訊息。",
+      "attention": "郵件伺服器需要處理",
+      "attentionDetail": "請在傳送前於設定中重新測試或更新郵件伺服器。",
+      "disconnected": "郵件伺服器未連接",
+      "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
+      "bulkActive": "大量郵件伺服器已啟用",
+      "bulkActiveDetail": "您選取的大量郵件服務商已啟用。"
     }
   },
   "pricing": {

@@ -81,6 +81,7 @@ import {
   checkManualSearchEventRateLimit,
   checkOnboardingChecklistEventRateLimit,
   checkOnboardingFunnelInsightRateLimit,
+  checkSmtpTestEmailRateLimit,
 } from "./rateLimiter";
 import {
   AdaptiveSendLimitError,
@@ -357,6 +358,7 @@ import {
   detectSmtpSettings,
   getAppPasswordHint,
   sendWelcomeEmail,
+  sendSmtpTestEmail,
   updateSmtpFromName,
   runSmtpHealthChecks,
 } from "./smtp";
@@ -1471,6 +1473,21 @@ export const appRouter = router({
       }
       return { success: true };
     }),
+
+    /** Send one diagnostic email through the user's saved personal SMTP server. */
+    sendTestEmail: protectedProcedure
+      .input(z.object({ to: z.string().trim().email().max(320) }))
+      .mutation(async ({ ctx, input }) => {
+        checkSmtpTestEmailRateLimit(ctx.user.id);
+        const result = await sendSmtpTestEmail(ctx.user.id, input.to);
+        if (!result.ok) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: result.error ?? "The test email could not be sent. Please re-test your mail server.",
+          });
+        }
+        return { success: true as const, to: input.to };
+      }),
 
     /** Return rendered HTML preview of the review request email using real profile data */
     previewEmail: protectedProcedure.query(async ({ ctx }) => {

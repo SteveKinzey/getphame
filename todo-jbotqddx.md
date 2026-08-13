@@ -21,4 +21,9 @@
 - [x] Add localized Gmail and Workspace App Password setup tooltips beside the relevant credential inputs.
 - [x] Add an end-to-end behavioral test for the rendered Settings mail connection components, including test-before-save, loading, saved feedback, and Gmail or Workspace help.
 - [x] Directly reach and verify the final deep SMTP and bulk mail controls at the mobile breakpoint, then record the result with the existing desktop verification.
-- [ ] Save a corrected checkpoint and synchronize the exact post-gap-fix tree to GitHub main.
+- [x] Save a corrected checkpoint and synchronize the exact post-gap-fix tree to GitHub main.
+- [x] Update and validate the reusable tenant-owned mail connection skill with post-save verification, health visibility, and safe reset guidance.
+- [x] Add a saved-connection test-email flow that sends only to a user-specified address with safe loading, success, and error feedback.
+- [x] Add a dashboard mail-server health badge using tenant-scoped connection and verification status.
+- [x] Add a protected SMTP disconnect or reset flow that removes the user’s active outreach connection without exposing credentials.
+- [ ] Add focused tests, full validation, a release checkpoint, and exact GitHub main synchronization for the enhancements.

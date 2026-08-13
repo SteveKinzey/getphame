@@ -635,7 +635,17 @@
       "testingCandidate": "Testing your mail server…",
       "testBeforeSave": "Test before saving",
       "connectingAndVerifying": "Connecting and verifying…",
-      "connectAndSave": "Connect and save"
+      "connectAndSave": "Connect and save",
+      "testEmailRecipient": "Send a test email to",
+      "testEmailHint": "Use an address you control. This uses your saved mail server and does not save a new recipient.",
+      "testEmailRecipientRequired": "Enter the address that should receive the test email.",
+      "sendingTestEmail": "Sending test email…",
+      "sendTestEmail": "Send test email",
+      "testEmailSent": "Test email sent. Check the recipient inbox to confirm delivery.",
+      "disconnectConfirmTitle": "Disconnect this mail server?",
+      "disconnectConfirmDescription": "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server.",
+      "disconnecting": "Disconnecting…",
+      "disconnectConfirmAction": "Disconnect and reset"
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -1156,6 +1166,16 @@
         "markAllShort": "Mark all",
         "markAllSuccess": "{{count}} items marked as reviewed",
         "markReviewed": "Mark as reviewed"
+      },
+      "mailHealth": {
+        "healthy": "Mail server healthy",
+        "healthyDetail": "Your connected mail server is ready for outreach.",
+        "attention": "Mail server needs attention",
+        "attentionDetail": "Re-test or update your mail server in Settings before sending outreach.",
+        "disconnected": "Mail server not connected",
+        "disconnectedDetail": "Connect a user-owned mail server before sending outreach.",
+        "bulkActive": "Bulk mail server active",
+        "bulkActiveDetail": "Your selected bulk mail provider is active for outreach."
       }
     },
     "reminderRow": {
@@ -2429,7 +2449,17 @@
       "testingCandidate": "Probando tu servidor de correo…",
       "testBeforeSave": "Probar antes de guardar",
       "connectingAndVerifying": "Conectando y verificando…",
-      "connectAndSave": "Conectar y guardar"
+      "connectAndSave": "Conectar y guardar",
+      "testEmailRecipient": "Enviar un correo de prueba a",
+      "testEmailHint": "Usa una dirección que controles. Se usa tu servidor guardado y no se guarda un destinatario nuevo.",
+      "testEmailRecipientRequired": "Introduce la dirección que recibirá el correo de prueba.",
+      "sendingTestEmail": "Enviando correo de prueba…",
+      "sendTestEmail": "Enviar correo de prueba",
+      "testEmailSent": "Correo de prueba enviado. Revisa la bandeja del destinatario.",
+      "disconnectConfirmTitle": "¿Desconectar este servidor de correo?",
+      "disconnectConfirmDescription": "Esto elimina permanentemente las credenciales guardadas y detiene los envíos hasta que conectes un servidor verificado.",
+      "disconnecting": "Desconectando…",
+      "disconnectConfirmAction": "Desconectar y restablecer"
     },
     "comparisonTable": {
       "feature": "Función",
@@ -2964,6 +2994,16 @@
         "markAllShort": "Marcar todo",
         "markAllSuccess": "{{count}} elementos marcados como revisados",
         "markReviewed": "Marcar como revisado"
+      },
+      "mailHealth": {
+        "healthy": "Servidor de correo correcto",
+        "healthyDetail": "Tu servidor conectado está listo para los envíos.",
+        "attention": "El servidor de correo necesita atención",
+        "attentionDetail": "Vuelve a probarlo o actualízalo en Ajustes antes de enviar.",
+        "disconnected": "Servidor de correo no conectado",
+        "disconnectedDetail": "Conecta un servidor propio antes de enviar.",
+        "bulkActive": "Servidor de correo masivo activo",
+        "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos."
       }
     },
     "reminderRow": {
@@ -4406,7 +4446,17 @@
       "testingCandidate": "Test de votre serveur e-mail…",
       "testBeforeSave": "Tester avant d’enregistrer",
       "connectingAndVerifying": "Connexion et vérification…",
-      "connectAndSave": "Connecter et enregistrer"
+      "connectAndSave": "Connecter et enregistrer",
+      "testEmailRecipient": "Envoyer un e-mail de test à",
+      "testEmailHint": "Utilisez une adresse que vous contrôlez. Votre serveur enregistré est utilisé sans enregistrer de nouveau destinataire.",
+      "testEmailRecipientRequired": "Saisissez l’adresse qui doit recevoir l’e-mail de test.",
+      "sendingTestEmail": "Envoi de l’e-mail de test…",
+      "sendTestEmail": "Envoyer l’e-mail de test",
+      "testEmailSent": "E-mail de test envoyé. Vérifiez la boîte du destinataire.",
+      "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
+      "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
+      "disconnecting": "Déconnexion…",
+      "disconnectConfirmAction": "Déconnecter et réinitialiser"
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -4948,6 +4998,16 @@
         "markAllShort": "Tout marquer",
         "markAllSuccess": "{{count}} éléments marqués comme examinés",
         "markReviewed": "Marquer comme examiné"
+      },
+      "mailHealth": {
+        "healthy": "Serveur e-mail opérationnel",
+        "healthyDetail": "Votre serveur connecté est prêt pour les envois.",
+        "attention": "Le serveur e-mail nécessite une intervention",
+        "attentionDetail": "Testez-le à nouveau ou mettez-le à jour dans Paramètres avant d’envoyer.",
+        "disconnected": "Serveur e-mail non connecté",
+        "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
+        "bulkActive": "Serveur d’envoi en masse actif",
+        "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif."
       }
     },
     "reminderRow": {
@@ -6380,7 +6440,17 @@
       "testingCandidate": "Verifica del server di posta…",
       "testBeforeSave": "Testa prima di salvare",
       "connectingAndVerifying": "Connessione e verifica…",
-      "connectAndSave": "Connetti e salva"
+      "connectAndSave": "Connetti e salva",
+      "testEmailRecipient": "Invia un’e-mail di prova a",
+      "testEmailHint": "Usa un indirizzo che controlli. Verrà usato il server salvato senza salvare un nuovo destinatario.",
+      "testEmailRecipientRequired": "Inserisci l’indirizzo che deve ricevere l’e-mail di prova.",
+      "sendingTestEmail": "Invio dell’e-mail di prova…",
+      "sendTestEmail": "Invia e-mail di prova",
+      "testEmailSent": "E-mail di prova inviata. Controlla la casella del destinatario.",
+      "disconnectConfirmTitle": "Disconnettere questo server e-mail?",
+      "disconnectConfirmDescription": "Questa azione elimina definitivamente le credenziali salvate e interrompe gli invii finché non colleghi un server verificato.",
+      "disconnecting": "Disconnessione…",
+      "disconnectConfirmAction": "Disconnetti e reimposta"
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -6911,6 +6981,16 @@
         "markAllShort": "Segna tutto",
         "markAllSuccess": "{{count}} elementi contrassegnati come esaminati",
         "markReviewed": "Segna come esaminato"
+      },
+      "mailHealth": {
+        "healthy": "Server e-mail integro",
+        "healthyDetail": "Il server connesso è pronto per gli invii.",
+        "attention": "Il server e-mail richiede attenzione",
+        "attentionDetail": "Ripetere il test o aggiornarlo nelle Impostazioni prima di inviare.",
+        "disconnected": "Server e-mail non connesso",
+        "disconnectedDetail": "Collega un server di tua proprietà prima di inviare.",
+        "bulkActive": "Server di invio massivo attivo",
+        "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo."
       }
     },
     "reminderRow": {
@@ -8223,7 +8303,17 @@
       "testingCandidate": "กำลังทดสอบเซิร์ฟเวอร์อีเมลของคุณ…",
       "testBeforeSave": "ทดสอบก่อนบันทึก",
       "connectingAndVerifying": "กำลังเชื่อมต่อและตรวจสอบ…",
-      "connectAndSave": "เชื่อมต่อและบันทึก"
+      "connectAndSave": "เชื่อมต่อและบันทึก",
+      "testEmailRecipient": "ส่งอีเมลทดสอบไปที่",
+      "testEmailHint": "ใช้ที่อยู่อีเมลที่คุณควบคุม ระบบจะใช้เซิร์ฟเวอร์ที่บันทึกไว้และจะไม่บันทึกผู้รับใหม่",
+      "testEmailRecipientRequired": "กรอกที่อยู่อีเมลที่จะรับอีเมลทดสอบ",
+      "sendingTestEmail": "กำลังส่งอีเมลทดสอบ…",
+      "sendTestEmail": "ส่งอีเมลทดสอบ",
+      "testEmailSent": "ส่งอีเมลทดสอบแล้ว โปรดตรวจสอบกล่องจดหมายของผู้รับ",
+      "disconnectConfirmTitle": "ตัดการเชื่อมต่อเซิร์ฟเวอร์อีเมลนี้หรือไม่?",
+      "disconnectConfirmDescription": "การดำเนินการนี้จะลบข้อมูลรับรองที่บันทึกไว้ถาวรและหยุดการส่งจนกว่าคุณจะเชื่อมต่อเซิร์ฟเวอร์ที่ยืนยันแล้ว",
+      "disconnecting": "กำลังตัดการเชื่อมต่อ…",
+      "disconnectConfirmAction": "ตัดการเชื่อมต่อและรีเซ็ต"
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -8745,6 +8835,16 @@
         "markAllShort": "ทำเครื่องหมายทั้งหมด",
         "markAllSuccess": "{{count}} รายการถูกทำเครื่องหมายว่าตรวจสอบแล้ว",
         "markReviewed": "ทำเครื่องหมายว่าตรวจสอบแล้ว"
+      },
+      "mailHealth": {
+        "healthy": "เซิร์ฟเวอร์อีเมลพร้อมใช้งาน",
+        "healthyDetail": "เซิร์ฟเวอร์ที่เชื่อมต่อพร้อมสำหรับการส่งข้อความ",
+        "attention": "เซิร์ฟเวอร์อีเมลต้องการการดูแล",
+        "attentionDetail": "ทดสอบอีกครั้งหรืออัปเดตในการตั้งค่าก่อนส่งข้อความ",
+        "disconnected": "ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์อีเมล",
+        "disconnectedDetail": "เชื่อมต่อเซิร์ฟเวอร์ของคุณก่อนส่งข้อความ",
+        "bulkActive": "เซิร์ฟเวอร์ส่งอีเมลจำนวนมากทำงานอยู่",
+        "bulkActiveDetail": "ผู้ให้บริการส่งจำนวนมากที่เลือกกำลังทำงานอยู่"
       }
     },
     "reminderRow": {
@@ -10055,7 +10155,17 @@
       "testingCandidate": "正在测试您的邮件服务器…",
       "testBeforeSave": "保存前测试",
       "connectingAndVerifying": "正在连接并验证…",
-      "connectAndSave": "连接并保存"
+      "connectAndSave": "连接并保存",
+      "testEmailRecipient": "将测试邮件发送到",
+      "testEmailHint": "请使用您可控制的地址。系统会使用已保存的邮件服务器，不会保存新的收件人。",
+      "testEmailRecipientRequired": "请输入接收测试邮件的地址。",
+      "sendingTestEmail": "正在发送测试邮件…",
+      "sendTestEmail": "发送测试邮件",
+      "testEmailSent": "测试邮件已发送。请检查收件人收件箱。",
+      "disconnectConfirmTitle": "要断开此邮件服务器吗？",
+      "disconnectConfirmDescription": "此操作将永久删除已保存的邮件服务器凭据，并停止未来发送，直到您连接新的已验证服务器。",
+      "disconnecting": "正在断开连接…",
+      "disconnectConfirmAction": "断开并重置"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -10576,6 +10686,16 @@
         "markAllShort": "全部标记",
         "markAllSuccess": "{{count}} 条已标记为审阅",
         "markReviewed": "标记为已审阅"
+      },
+      "mailHealth": {
+        "healthy": "邮件服务器运行正常",
+        "healthyDetail": "您已连接的邮件服务器已准备好发送消息。",
+        "attention": "邮件服务器需要处理",
+        "attentionDetail": "请在发送前于设置中重新测试或更新邮件服务器。",
+        "disconnected": "邮件服务器未连接",
+        "disconnectedDetail": "请先连接您自己的邮件服务器再发送消息。",
+        "bulkActive": "批量邮件服务器已启用",
+        "bulkActiveDetail": "您选择的批量邮件服务商已启用。"
       }
     },
     "reminderRow": {
@@ -11879,7 +11999,17 @@
       "testingCandidate": "正在測試您的郵件伺服器…",
       "testBeforeSave": "儲存前測試",
       "connectingAndVerifying": "正在連線並驗證…",
-      "connectAndSave": "連線並儲存"
+      "connectAndSave": "連線並儲存",
+      "testEmailRecipient": "將測試電子郵件寄送至",
+      "testEmailHint": "請使用您可控制的地址。系統會使用已儲存的郵件伺服器，不會儲存新的收件者。",
+      "testEmailRecipientRequired": "請輸入要接收測試電子郵件的地址。",
+      "sendingTestEmail": "正在傳送測試電子郵件…",
+      "sendTestEmail": "傳送測試電子郵件",
+      "testEmailSent": "測試電子郵件已傳送。請檢查收件者收件匣。",
+      "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
+      "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
+      "disconnecting": "正在中斷連線…",
+      "disconnectConfirmAction": "中斷並重設"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -12400,6 +12530,16 @@
         "markAllShort": "全部標記",
         "markAllSuccess": "{{count}} 條已標記為審閱",
         "markReviewed": "標記為已審閱"
+      },
+      "mailHealth": {
+        "healthy": "郵件伺服器運作正常",
+        "healthyDetail": "您已連接的郵件伺服器已準備好傳送訊息。",
+        "attention": "郵件伺服器需要處理",
+        "attentionDetail": "請在傳送前於設定中重新測試或更新郵件伺服器。",
+        "disconnected": "郵件伺服器未連接",
+        "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
+        "bulkActive": "大量郵件伺服器已啟用",
+        "bulkActiveDetail": "您選取的大量郵件服務商已啟用。"
       }
     },
     "reminderRow": {

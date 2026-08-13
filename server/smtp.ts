@@ -474,6 +474,29 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
   }
 }
 
+/** Send one diagnostic message through a verified saved tenant SMTP connection. */
+export async function sendSmtpTestEmail(userId: number, to: string): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const creds = await getSmtpCredentials(userId);
+    if (!creds || creds.verified !== 1) {
+      return { ok: false, error: "Connect and verify your email server before sending a test email." };
+    }
+
+    const fromName = creds.fromName ?? creds.user;
+    await sendMailViaSmtp({
+      userId,
+      to,
+      subject: "Get Phame mail server test",
+      html: `<p>Hi,</p><p>This confirms that <strong>${fromName}</strong>'s mail server is connected to Get Phame and can send email.</p><p>You can now send individual, compliance-aware customer outreach from your own mail server.</p><p>— Get Phame</p>`,
+      text: `Hi,\n\nThis confirms that ${fromName}'s mail server is connected to Get Phame and can send email.\n\n— Get Phame`,
+      safetyMode: "system",
+    });
+    return { ok: true };
+  } catch (err: unknown) {
+    return { ok: false, error: describeSmtpConnectionError(err) };
+  }
+}
+
 /** Update only the fromName field on an existing SMTP credential row */
 export async function updateSmtpFromName(userId: number, fromName: string | null) {
   const db = await getDb();
