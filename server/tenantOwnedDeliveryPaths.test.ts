@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
@@ -54,10 +54,15 @@ function createDb(selectResults: unknown[], updateResults: unknown[] = []) {
 describe("tenant-owned queued and reminder delivery paths", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv("EMAIL_TRACKING_SECRET", "tenant-owned-delivery-test-secret-that-is-long-enough");
     mocks.getDefaultReviewPlatform.mockResolvedValue({ url: "https://reviews.example.test" });
     mocks.sendTenantOwnedReviewEmail.mockRejectedValue(
       new Error("No email account connected. Please connect your email in Settings."),
     );
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it("records a queued review request as failed instead of falling back when no tenant-owned channel is active", async () => {
