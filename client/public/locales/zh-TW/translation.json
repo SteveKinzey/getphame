@@ -904,7 +904,18 @@
       "notSelected": "已連線，但未被選用於客戶評價請求",
       "bulkActive": "已連線，但您的大量寄信服務已被選用於客戶評價請求",
       "needsAttention": "需要處理：請更新 SMTP 詳細資料並重新連線，然後再傳送客戶評價請求"
-    }
+    },
+    "connectionSavedMessage": "您的郵件伺服器已連線，可用於向客戶傳送請求。",
+    "gmailAppPasswordTooltipLabel": "Gmail 應用程式密碼說明",
+    "workspaceAppPasswordTooltipLabel": "Google Workspace 應用程式密碼說明",
+    "gmailAppPasswordTooltip": "請使用 16 位應用程式密碼，而不是一般 Gmail 密碼。請先開啟兩步驟驗證。",
+    "workspaceAppPasswordTooltip": "您的 Workspace 管理員必須允許使用應用程式密碼。如果此選項無法使用，請改用組織核准的 SMTP 或 OAuth 方法。",
+    "testPassedNotSaved": "連線測試通過。您的憑證尚未儲存。",
+    "testFailed": "連線測試失敗。請檢查伺服器資訊後再試一次。",
+    "testingCandidate": "正在測試您的郵件伺服器…",
+    "testBeforeSave": "儲存前測試",
+    "connectingAndVerifying": "正在連線並驗證…",
+    "connectAndSave": "連線並儲存"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2226,7 +2237,9 @@
       "update": "更新",
       "legacyPlatformNotice": "偵測到舊版平台郵件連線，但不能用於客戶外聯。請連接您自己擁有的大量寄信服務商帳戶。",
       "activeOutreach": "已啟用，可用於客戶評價請求",
-      "notActive": "已連線，但未被選用於客戶評價請求"
+      "notActive": "已連線，但未被選用於客戶評價請求",
+      "connectionSavedMessage": "您的大量寄信伺服器已連線，可立即使用。",
+      "connectingAndVerifying": "正在連線並驗證…"
     }
   },
   "login": {

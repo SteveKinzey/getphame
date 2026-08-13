@@ -903,7 +903,18 @@
       "notSelected": "已连接，但未被选用于客户评价请求",
       "bulkActive": "已连接，但你的批量邮件服务已被选用于客户评价请求",
       "needsAttention": "需要处理：请更新 SMTP 详细信息并重新连接，然后再发送客户评价请求"
-    }
+    },
+    "connectionSavedMessage": "您的邮件服务器已连接，可用于向客户发送请求。",
+    "gmailAppPasswordTooltipLabel": "Gmail 应用专用密码帮助",
+    "workspaceAppPasswordTooltipLabel": "Google Workspace 应用专用密码帮助",
+    "gmailAppPasswordTooltip": "请使用 16 位应用专用密码，而不是常规 Gmail 密码。请先开启两步验证。",
+    "workspaceAppPasswordTooltip": "您的 Workspace 管理员必须允许使用应用专用密码。如果此选项不可用，请使用组织批准的 SMTP 或 OAuth 方法。",
+    "testPassedNotSaved": "连接测试通过。您的凭据尚未保存。",
+    "testFailed": "连接测试失败。请检查服务器信息后重试。",
+    "testingCandidate": "正在测试您的邮件服务器…",
+    "testBeforeSave": "保存前测试",
+    "connectingAndVerifying": "正在连接并验证…",
+    "connectAndSave": "连接并保存"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2204,7 +2215,9 @@
       "update": "更新",
       "legacyPlatformNotice": "发现旧的平台邮件连接，但不能用于客户沟通。请连接您自己拥有的批量邮件服务商账户。",
       "activeOutreach": "已启用，可用于客户评价请求",
-      "notActive": "已连接，但未被选用于客户评价请求"
+      "notActive": "已连接，但未被选用于客户评价请求",
+      "connectionSavedMessage": "您的批量邮件服务器已连接，可立即使用。",
+      "connectingAndVerifying": "正在连接并验证…"
     }
   },
   "login": {
