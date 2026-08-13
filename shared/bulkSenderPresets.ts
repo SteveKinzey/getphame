@@ -1,5 +1,4 @@
 export const BULK_SENDER_PROVIDER_IDS = [
-  "sendgrid",
   "amazon_ses",
   "mailgun",
   "mailjet",
@@ -65,21 +64,6 @@ const AMAZON_SES_REGIONS = [
 ] as const;
 
 export const BULK_SENDER_PRESETS: Record<BulkSenderProvider, BulkSenderPreset> = {
-  sendgrid: {
-    label: "SendGrid",
-    description: "Twilio SendGrid SMTP relay",
-    docsUrl: "https://www.twilio.com/docs/sendgrid/for-developers/sending-email/integrating-with-the-smtp-api",
-    defaultHost: "smtp.sendgrid.net",
-    defaultPort: 587,
-    defaultSecurity: "starttls",
-    usernameMode: "fixed",
-    fixedUsername: "apikey",
-    usernameLabel: "SMTP username",
-    usernamePlaceholder: "apikey",
-    secretLabel: "API key",
-    secretPlaceholder: "SG.…",
-    secretHelp: "Use an API key with at least Mail permission.",
-  },
   amazon_ses: {
     label: "Amazon SES",
     description: "Region-specific Amazon SES SMTP relay",

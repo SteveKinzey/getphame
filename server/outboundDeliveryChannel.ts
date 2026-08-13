@@ -1,6 +1,10 @@
-import { and, eq } from "drizzle-orm";
-
-import { bulkSenderCredentials, businessProfiles, smtpCredentials } from "../drizzle/schema";
+import { and, eq, ne } from "drizzle-orm";
+import {
+  bulkSenderCredentials,
+  businessProfiles,
+  outboundMailPreferences,
+  smtpCredentials,
+} from "../drizzle/schema";
 import { BULK_SENDER_PRESETS, type BulkSenderProvider } from "../shared/bulkSenderPresets";
 import type { AdaptiveSendChannelDescriptor } from "../shared/adaptiveSendLimits";
 import { getDb } from "./db";
@@ -15,6 +19,48 @@ export type ResolvedOutboundDeliveryChannel = AdaptiveSendChannelDescriptor & {
   fromName: string;
   replyTo: string;
 };
+
+export type UserOwnedMailChannel = "personal" | "bulk";
+
+export async function selectOutboundDeliveryChannel(
+  userId: number,
+  selectedChannel: UserOwnedMailChannel,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const now = Date.now();
+  const [existing] = await db
+    .select({ id: outboundMailPreferences.id })
+    .from(outboundMailPreferences)
+    .where(eq(outboundMailPreferences.userId, userId))
+    .limit(1);
+  if (existing) {
+    await db
+      .update(outboundMailPreferences)
+      .set({ selectedChannel, updatedAt: now })
+      .where(eq(outboundMailPreferences.userId, userId));
+    return;
+  }
+  await db.insert(outboundMailPreferences).values({
+    userId,
+    selectedChannel,
+    updatedAt: now,
+  });
+}
+
+export async function clearOutboundDeliveryChannel(
+  userId: number,
+  selectedChannel: UserOwnedMailChannel,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db
+    .delete(outboundMailPreferences)
+    .where(and(
+      eq(outboundMailPreferences.userId, userId),
+      eq(outboundMailPreferences.selectedChannel, selectedChannel),
+    ));
+}
 
 function asTimestamp(value: Date | number | null | undefined): number {
   if (value instanceof Date) return value.getTime();
@@ -45,17 +91,19 @@ export async function resolveOutboundDeliveryChannel(userId: number): Promise<Re
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
 
-  const [[profile], [bulk], [personal]] = await Promise.all([
+  const [[profile], [preference], [bulk], [personal]] = await Promise.all([
     db.select({ tier: businessProfiles.tier }).from(businessProfiles).where(eq(businessProfiles.userId, userId)).limit(1),
+    db.select({ selectedChannel: outboundMailPreferences.selectedChannel }).from(outboundMailPreferences).where(eq(outboundMailPreferences.userId, userId)).limit(1),
     db.select().from(bulkSenderCredentials).where(and(
       eq(bulkSenderCredentials.userId, userId),
       eq(bulkSenderCredentials.connected, 1),
+      ne(bulkSenderCredentials.provider, "sendgrid"),
     )).limit(1),
     db.select().from(smtpCredentials).where(eq(smtpCredentials.userId, userId)).limit(1),
   ]);
 
   const tier = profile?.tier ?? "free";
-  if (
+  if (preference?.selectedChannel === "bulk" &&
     tier !== "free"
     && bulk
     && bulk.smtpHost
@@ -81,7 +129,7 @@ export async function resolveOutboundDeliveryChannel(userId: number): Promise<Re
     };
   }
 
-  if (!personal) return null;
+  if (preference?.selectedChannel !== "personal" || !personal) return null;
   const provider = classifyPersonalSmtpProvider(personal.host, personal.user);
   return {
     key: `personal:${personal.id}:${provider.id}`,

@@ -13,7 +13,7 @@ import {
   type GeocodingResult,
   type TimeZoneResult,
 } from "./_core/map";
-import { sendMailViaSmtp } from "./smtp";
+import { sendTenantOwnedReviewEmail } from "./tenantOwnedDelivery";
 
 export const QUIET_HOURS_DEFAULT_START_MINUTES = 20 * 60;
 export const QUIET_HOURS_DEFAULT_END_MINUTES = 8 * 60;
@@ -49,7 +49,7 @@ export type QuietHoursDeliveryInput = {
 export type QuietHoursDeliveryResult = {
   delivery: "sent" | "queued";
   scheduledAt: number | null;
-  sendLimitStatus: Awaited<ReturnType<typeof sendMailViaSmtp>>;
+  sendLimitStatus: Awaited<ReturnType<typeof sendTenantOwnedReviewEmail>>;
 };
 
 type QuietHoursWindow = {
@@ -233,7 +233,7 @@ async function markRequestDelivered(input: QuietHoursDeliveryInput) {
 }
 
 async function deliverImmediately(input: QuietHoursDeliveryInput) {
-  const sendLimitStatus = await sendMailViaSmtp({
+  const sendLimitStatus = await sendTenantOwnedReviewEmail({
     userId: input.userId,
     to: input.recipientEmail,
     subject: input.subject,

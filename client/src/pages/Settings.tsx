@@ -95,6 +95,10 @@ import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
 import ApplicationVersionDiagnosticsCard from "@/components/ApplicationVersionDiagnosticsCard";
 import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
+import {
+  SettingsBulkMailConnectionStatus,
+  SettingsPersonalMailConnectionStatus,
+} from "@/components/SettingsMailConnectionStatus";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -660,10 +664,10 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   const tier = profile?.tier ?? "free";
   const isPro = tier !== "free";
   const { data: status, refetch } = trpc.bulkSender.status.useQuery();
-  const [provider, setProvider] = useState<BulkSenderProvider>("sendgrid");
+  const [provider, setProvider] = useState<BulkSenderProvider>(BULK_SENDER_PROVIDER_IDS[0]);
   const [secret, setSecret] = useState("");
-  const [smtpUsername, setSmtpUsername] = useState("apikey");
-  const [smtpHost, setSmtpHost] = useState("smtp.sendgrid.net");
+  const [smtpUsername, setSmtpUsername] = useState("");
+  const [smtpHost, setSmtpHost] = useState("");
   const [smtpPort, setSmtpPort] = useState(587);
   const [smtpSecurity, setSmtpSecurity] = useState<BulkSenderSecurity>("starttls");
   const [providerRegion, setProviderRegion] = useState("");
@@ -699,7 +703,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   };
 
   const openUpdateForm = () => {
-    const nextProvider = isBulkSenderProvider(status?.provider) ? status.provider : "sendgrid";
+    const nextProvider = isBulkSenderProvider(status?.provider) ? status.provider : BULK_SENDER_PROVIDER_IDS[0];
     const nextPreset = getBulkSenderPreset(nextProvider);
     setProvider(nextProvider);
     setProviderRegion(status?.providerRegion ?? nextPreset.defaultRegion ?? "");
@@ -773,8 +777,13 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
         )}
       </div>
       <p className="text-xs mb-4 rr-text-navy-muted">
-        {t("settings.bulkSender.description", { defaultValue: "Connect a verified transactional SMTP relay for higher-volume sending. Credentials are tested without sending a message." })}
+        {t("settings.bulkSender.description", { defaultValue: "Connect your own verified transactional SMTP relay for higher-volume sending. Credentials are tested without sending a message." })}
       </p>
+      {status?.legacyPlatformConnection === true && (
+        <div className="mb-4 rounded-xl px-3 py-2.5 text-xs font-semibold rr-text-navy-mid" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
+          <SettingsBulkMailConnectionStatus status={status} translate={t} />
+        </div>
+      )}
 
       {!isPro ? (
         <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
@@ -804,6 +813,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               </p>
               <p className="text-sm font-semibold rr-text-navy-mid truncate">{status.fromEmail}</p>
               {status.smtpHost && <p className="mt-0.5 truncate text-xs rr-text-navy-muted">{status.smtpHost}:{status.smtpPort}</p>}
+              <SettingsBulkMailConnectionStatus status={status} translate={t} />
             </div>
           </div>
           {status.connectionMode === "legacy_api" && (
@@ -2419,6 +2429,7 @@ export default function SettingsPage() {
                     {smtpStatus.email}
                     {smtpStatus.fromName && ` · ${smtpStatus.fromName}`}
                   </p>
+                  <SettingsPersonalMailConnectionStatus status={smtpStatus} translate={t} />
                 </div>
                 {/* Test connection button */}
                 <button
@@ -2526,7 +2537,7 @@ export default function SettingsPage() {
               {(() => {
                 const emailDomain = smtpEmail.split('@')[1]?.toLowerCase() ?? '';
                 // Provider detection
-                const isGmail = emailDomain === 'gmail.com' || emailDomain === 'googlemail.com' || smtpHost === 'smtp.gmail.com';
+                const isGmail = emailDomain === 'gmail.com' || emailDomain === 'googlemail.com';
                 const isGoogleWorkspace = smtpHost === 'smtp.gmail.com' && !isGmail;
                 const isOutlook = ['outlook.com','hotmail.com','live.com'].includes(emailDomain) || smtpHost === 'smtp-mail.outlook.com';
                 const isYahoo = emailDomain === 'yahoo.com' || emailDomain === 'yahoo.co.uk' || emailDomain === 'ymail.com' || smtpHost === 'smtp.mail.yahoo.com';
@@ -2573,8 +2584,26 @@ export default function SettingsPage() {
                 const hasGuide = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud || isAol || isProtonMail || isFastmail;
                 const guideProvider = isGmail ? "gmail" : isGoogleWorkspace ? "workspace" : isOutlook ? "microsoft" : isYahoo ? "yahoo" : isZoho ? "zoho" : isIcloud ? "icloud" : isAol ? "aol" : isProtonMail ? "proton" : "fastmail";
                 const guideDefaults: Record<string, { title: string; steps: string[]; tip: string }> = {
-                  gmail: { title: "Gmail App Password — 4 steps", steps: ["Go to myaccount.google.com, then Security.", "Turn on 2-Step Verification if it is not already on.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Tip: use a dedicated reviews@gmail.com account to keep your main inbox separate." },
-                  workspace: { title: "Google Workspace App Password — 4 steps", steps: ["Ask your Workspace administrator to enable 2-Step Verification in admin.google.com.", "Sign in to myaccount.google.com with your work account, then open Security.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Your Workspace administrator may need to allow app passwords." },
+                  gmail: {
+                    title: t("smtp.gmailGuideTitle", { defaultValue: "Gmail App Password — 4 steps" }),
+                    steps: [
+                      t("smtp.gmailGuideStep1", { defaultValue: "Go to myaccount.google.com → Security" }),
+                      t("smtp.gmailGuideStep2", { defaultValue: "Turn on 2-Step Verification if not already on" }),
+                      t("smtp.gmailGuideStep3", { defaultValue: "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create" }),
+                      t("smtp.gmailGuideStep4", { defaultValue: "Copy the 16-character code and paste it here — remove all spaces" }),
+                    ],
+                    tip: t("smtp.gmailGuideTip", { defaultValue: "Google shows the code once. Create a new App Password after changing your Google password, and revoke it when you disconnect Get Phame." }),
+                  },
+                  workspace: {
+                    title: t("smtp.googleWorkspaceGuideTitle", { defaultValue: "Google Workspace App Password — 4 steps" }),
+                    steps: [
+                      t("smtp.googleWorkspaceGuideStep1", { defaultValue: "Sign in to myaccount.google.com with your work account → Security" }),
+                      t("smtp.googleWorkspaceGuideStep2", { defaultValue: "Turn on 2-Step Verification if it is available for your account" }),
+                      t("smtp.googleWorkspaceGuideStep3", { defaultValue: "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create" }),
+                      t("smtp.googleWorkspaceGuideStep4", { defaultValue: "Copy the 16-character code and paste it here — remove all spaces" }),
+                    ],
+                    tip: t("smtp.googleWorkspaceGuideTip", { defaultValue: "If App Passwords is unavailable, your organisation may restrict it, require security-key-only verification, or use Advanced Protection. Ask your Workspace administrator for the approved SMTP or OAuth connection method." }),
+                  },
                   microsoft: { title: "Microsoft App Password — 4 steps", steps: ["Go to account.microsoft.com, then Security.", "Open Advanced security options.", "Under App passwords, create a new app password.", "Copy and paste the generated password here."], tip: "Microsoft 365 work accounts may require your IT administrator to allow SMTP AUTH." },
                   yahoo: { title: "Yahoo App Password — 4 steps", steps: ["Go to account.yahoo.com, then Security.", "Choose Generate app password.", "Select Other app and name it Get Phame.", "Copy and paste the generated password here."], tip: "Use the generated app password, not your regular Yahoo password." },
                   zoho: { title: "Zoho Mail — Enable SMTP Access", steps: ["Sign in at mail.zoho.com.", "Open Settings, then Mail Accounts.", "Choose your email address and scroll to SMTP.", "Turn on Allow SMTP Access, then use your regular Zoho password here."], tip: "No app password is needed after SMTP access is enabled." },
@@ -2604,13 +2633,13 @@ export default function SettingsPage() {
 
                     {showGuide && hasGuide && activeGuide && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">{t(`smtp.providerGuides.${guideProvider}.title`, { defaultValue: activeGuide.title })}</p>
+                        <p className="font-black text-sm rr-text-gold">{activeGuide.title}</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: "decimal" }}>
                           {activeGuide.steps.map((step, index) => (
-                            <li key={index}>{t(`smtp.providerGuides.${guideProvider}.step${index + 1}`, { defaultValue: step })}</li>
+                            <li key={index}>{step}</li>
                           ))}
                         </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">{t(`smtp.providerGuides.${guideProvider}.tip`, { defaultValue: activeGuide.tip })}</p>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">{activeGuide.tip}</p>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">{t("common.gotIt", { defaultValue: "Got it ✓" })}</button>
                       </div>
                     )}
@@ -2636,7 +2665,7 @@ export default function SettingsPage() {
                     {/* Inline hint for known providers that need app passwords */}
                     {(isGmail || isGoogleWorkspace) && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        {t("smtp.inlineHints.google", { defaultValue: "Not your regular Gmail password — use an App Password. Tap How to get it above." })}
+                        {t("smtp.inlineHints.google", { defaultValue: "Not your regular account password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
                     {isIcloud && !smtpStatus?.connected && !showGuide && (

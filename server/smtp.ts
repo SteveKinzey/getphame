@@ -10,13 +10,18 @@
 
 import nodemailer from "nodemailer";
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from "crypto";
+import { lookup } from "node:dns/promises";
+import { isIP } from "node:net";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import { getDb } from "./db";
 import { smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
 import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
-import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
+import {
+  clearOutboundDeliveryChannel,
+  resolveOutboundDeliveryChannel,
+} from "./outboundDeliveryChannel";
 import { assertReviewOutreachAllowed } from "./signupRisk";
 import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 
@@ -113,7 +118,7 @@ export function getAppPasswordHint(email: string, host?: string): string | null 
   }
   // Google Workspace: custom domain using smtp.gmail.com as host
   if (host === "smtp.gmail.com" && domain && domain !== "gmail.com" && domain !== "googlemail.com") {
-    return "Google Workspace requires an App Password. Go to myaccount.google.com → Security → App Passwords and create one for \"Mail\".";
+    return "Google Workspace may permit an App Password. Turn on 2-Step Verification, then open myaccount.google.com/apppasswords. If the option is unavailable, ask your Workspace administrator for the approved SMTP or OAuth connection method.";
   }
   if (domain === "outlook.com" || domain === "hotmail.com" || domain === "live.com") {
     return "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.";
@@ -135,6 +140,7 @@ export function createTransporter(opts: {
   secure: boolean;
   user: string;
   pass: string;
+  servername?: string;
 }) {
   const allowInsecureTls = process.env.ALLOW_INSECURE_SMTP_TLS === "true";
   return nodemailer.createTransport({
@@ -142,8 +148,55 @@ export function createTransporter(opts: {
     port: opts.port,
     secure: opts.secure,
     auth: { user: opts.user, pass: opts.pass },
-    tls: { rejectUnauthorized: !allowInsecureTls },
+    tls: {
+      rejectUnauthorized: !allowInsecureTls,
+      servername: opts.servername,
+    },
   });
+}
+
+function isPrivateOrReservedIp(address: string): boolean {
+  const normalized = address.toLowerCase();
+  if (normalized === "::1" || normalized === "::" || normalized.startsWith("fe80:") || normalized.startsWith("fc") || normalized.startsWith("fd")) return true;
+  const mappedIpv4 = normalized.startsWith("::ffff:") ? normalized.slice(7) : normalized;
+  if (isIP(mappedIpv4) !== 4) return false;
+  const [a, b] = mappedIpv4.split(".").map(Number);
+  return a === 0 || a === 10 || a === 127 || (a === 100 && b >= 64 && b <= 127) || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || a >= 224;
+}
+
+export async function resolveSafeSmtpEndpoint(host: string): Promise<{ address: string; servername?: string }> {
+  const normalized = host.trim().toLowerCase().replace(/\.$/, "");
+  if (!normalized || normalized.includes("://") || /[\s/\\?#]/.test(normalized) || normalized === "localhost" || normalized.endsWith(".localhost") || normalized.endsWith(".local")) {
+    throw new Error("SMTP_HOST_INVALID");
+  }
+  const addresses = await lookup(normalized, { all: true, verbatim: true });
+  if (!addresses.length || addresses.some((entry) => isPrivateOrReservedIp(entry.address))) {
+    throw new Error("SMTP_HOST_PRIVATE");
+  }
+  return { address: addresses[0].address, servername: isIP(normalized) ? undefined : normalized };
+}
+
+function describeSmtpConnectionError(error: unknown): string {
+  const detail = error as NodeJS.ErrnoException & { responseCode?: number };
+  if (error instanceof Error && error.message === "SMTP_HOST_INVALID") return "Enter a public SMTP hostname supplied by your email provider.";
+  if (error instanceof Error && error.message === "SMTP_HOST_PRIVATE") return "Private, local, or reserved SMTP destinations are not allowed.";
+  if (detail.code === "EAUTH" || detail.responseCode === 535) return "Authentication failed. Check the provider username and app password or SMTP password.";
+  if (detail.code === "ETIMEDOUT" || detail.code === "ESOCKET") return "The SMTP service did not respond in time. Confirm the host, port, and security mode.";
+  if (detail.code === "ECONNREFUSED") return "The SMTP service refused the connection. Confirm the host, port, and security mode.";
+  if (detail.code === "ENOTFOUND" || detail.code === "EAI_AGAIN") return "The SMTP host could not be resolved. Confirm the provider settings and try again.";
+  if (error instanceof Error && /certificate|tls|ssl/i.test(error.message)) return "The SMTP service could not establish a trusted secure connection.";
+  return "Connection failed. Confirm the provider settings and try again.";
+}
+
+async function createSafeTransporter(opts: {
+  host: string;
+  port: number;
+  secure: boolean;
+  user: string;
+  pass: string;
+}) {
+  const endpoint = await resolveSafeSmtpEndpoint(opts.host);
+  return createTransporter({ ...opts, host: endpoint.address, servername: endpoint.servername });
 }
 
 // ── DB helpers ────────────────────────────────────────────────────────────────
@@ -208,6 +261,7 @@ export async function deleteSmtpCredentials(userId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, userId));
+  await clearOutboundDeliveryChannel(userId, "personal");
 }
 
 export async function markSmtpVerified(userId: number) {
@@ -248,7 +302,7 @@ export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSe
     assertCustomerOutreachSender(channel.fromEmail);
     const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);
     const pass = decryptPassword(channel.encryptedSecret);
-    const transporter = createTransporter({
+    const transporter = await createSafeTransporter({
       host: channel.host,
       port: channel.port,
       secure: channel.secure,
@@ -270,7 +324,7 @@ export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSe
   if (!creds) throw new Error("No email account connected. Please connect your email in Settings.");
 
   const pass = decryptPassword(creds.encryptedPass);
-  const transporter = createTransporter({
+  const transporter = await createSafeTransporter({
     host: creds.host,
     port: creds.port,
     secure: creds.secure === 1,
@@ -303,12 +357,11 @@ export async function testSmtpConnection(opts: {
   pass: string;
 }): Promise<{ ok: boolean; error?: string }> {
   try {
-    const transporter = createTransporter(opts);
+    const transporter = await createSafeTransporter(opts);
     await transporter.verify();
     return { ok: true };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    return { ok: false, error: message };
+    return { ok: false, error: describeSmtpConnectionError(err) };
   }
 }
 
