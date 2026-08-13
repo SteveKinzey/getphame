@@ -27,4 +27,12 @@
 - [x] Add a dashboard mail-server health badge using tenant-scoped connection and verification status.
 - [x] Add a protected SMTP disconnect or reset flow that removes the user’s active outreach connection without exposing credentials.
 - [x] Add behavioral coverage for saved SMTP test-email and protected disconnect/reset paths, and verify the new dashboard and Settings controls on mobile.
-- [ ] Save a corrected checkpoint and synchronize the exact post-validation tree to GitHub main.
+- [x] Save a corrected checkpoint and synchronize the exact post-validation tree to GitHub main.
+- [x] Update and validate the reusable tenant-owned mail connection skill with diagnostic history, detailed health status, and disconnect-confirmation guidance.
+- [x] Add tenant-scoped persisted test-email history with recipient privacy, outcome, timestamp, and bounded presentation in Settings.
+- [x] Add an accessible dashboard health-detail tooltip explaining each tenant mail connection state.
+- [x] Verify and enhance the SMTP disconnect confirmation modal so accidental credential removal requires an explicit user decision.
+- [x] Add focused tests and full validation for the diagnostic-history, health-detail, and disconnect-confirmation enhancements.
+- [ ] Save a release checkpoint and synchronize the exact diagnostic-history enhancement tree to GitHub main.
+- [x] Verify and correct visible dashboard placement of the mail-health badge after the detailed tooltip enhancement.
+- [x] Restore home dashboard test-fixture compatibility while preserving the tenant-scoped bulk mail-health state.

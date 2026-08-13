@@ -925,7 +925,13 @@
     "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
     "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
     "disconnecting": "正在中斷連線…",
-    "disconnectConfirmAction": "中斷並重設"
+    "disconnectConfirmAction": "中斷並重設",
+    "testEmailHistoryTitle": "測試郵件記錄",
+    "testEmailHistoryPrivacy": "收件者已遮蔽。僅顯示最近 12 次診斷嘗試。",
+    "testEmailHistoryEmpty": "尚未傳送診斷測試郵件。",
+    "testEmailHistorySent": "已傳送",
+    "testEmailHistoryFailed": "失敗",
+    "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1816,7 +1822,12 @@
       "disconnected": "郵件伺服器未連接",
       "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
       "bulkActive": "大量郵件伺服器已啟用",
-      "bulkActiveDetail": "您選取的大量郵件服務商已啟用。"
+      "bulkActiveDetail": "您選取的大量郵件服務商已啟用。",
+      "healthyTooltip": "已選取經過驗證的個人郵件伺服器，最新健康狀態無需處理。",
+      "attentionTooltip": "已儲存的連線需要處理。請重新測試或更新服務商設定後再傳送客戶外聯。",
+      "disconnectedTooltip": "未選取經過驗證的租戶郵件通道。在設定中連線前，客戶外聯將保持暫停。",
+      "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
+      "details": "郵件伺服器健康詳細資料"
     }
   },
   "pricing": {

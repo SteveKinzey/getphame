@@ -57,6 +57,10 @@ import {
 import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
+import {
+  listSmtpTestEmailAttempts,
+  recordSmtpTestEmailAttempt,
+} from "./smtpTestEmailHistory";
 import { selectOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import {
@@ -1480,6 +1484,16 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         checkSmtpTestEmailRateLimit(ctx.user.id);
         const result = await sendSmtpTestEmail(ctx.user.id, input.to);
+        try {
+          await recordSmtpTestEmailAttempt({
+            userId: ctx.user.id,
+            recipient: input.to,
+            ok: result.ok,
+            error: result.error,
+          });
+        } catch (historyError) {
+          console.warn("[smtp.sendTestEmail] Unable to save sanitized diagnostic history", historyError);
+        }
         if (!result.ok) {
           throw new TRPCError({
             code: "BAD_REQUEST",
@@ -1488,6 +1502,11 @@ export const appRouter = router({
         }
         return { success: true as const, to: input.to };
       }),
+
+    /** Return only the requesting tenant's newest privacy-minimized diagnostic attempts. */
+    testEmailHistory: protectedProcedure.query(async ({ ctx }) => {
+      return listSmtpTestEmailAttempts(ctx.user.id);
+    }),
 
     /** Return rendered HTML preview of the review request email using real profile data */
     previewEmail: protectedProcedure.query(async ({ ctx }) => {
