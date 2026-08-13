@@ -624,7 +624,18 @@
         "notSelected": "Connected, but not selected for customer review requests",
         "bulkActive": "Connected, but your bulk-mail service is active for customer review requests",
         "needsAttention": "Needs attention — update your SMTP details and reconnect before sending customer review requests"
-      }
+      },
+      "connectionSavedMessage": "Your email server is connected and ready for customer outreach.",
+      "gmailAppPasswordTooltipLabel": "Gmail App Password help",
+      "workspaceAppPasswordTooltipLabel": "Google Workspace App Password help",
+      "gmailAppPasswordTooltip": "Use a 16-character App Password, not your regular Gmail password. Turn on 2-Step Verification first.",
+      "workspaceAppPasswordTooltip": "Your Workspace administrator must allow App Passwords. If this option is unavailable, use your organisation’s approved SMTP or OAuth method.",
+      "testPassedNotSaved": "Connection test passed. Your credentials have not been saved yet.",
+      "testFailed": "Connection test failed. Review your server details and try again.",
+      "testingCandidate": "Testing your mail server…",
+      "testBeforeSave": "Test before saving",
+      "connectingAndVerifying": "Connecting and verifying…",
+      "connectAndSave": "Connect and save"
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -724,7 +735,9 @@
       "bulkSender": {
         "legacyPlatformNotice": "A legacy platform mail connection was found, but it cannot be used for customer outreach. Connect a bulk-mail provider account that you own.",
         "activeOutreach": "Active for customer review requests",
-        "notActive": "Connected, but not selected for customer review requests"
+        "notActive": "Connected, but not selected for customer review requests",
+        "connectionSavedMessage": "Your bulk mail server is connected and ready to use.",
+        "connectingAndVerifying": "Connecting and verifying…"
       }
     },
     "profile": {
@@ -2405,7 +2418,18 @@
         "notSelected": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
         "bulkActive": "Conectado, pero tu servicio de correo masivo está activo para solicitudes de reseñas de clientes",
         "needsAttention": "Necesita atención: actualiza tus datos SMTP y vuelve a conectar antes de enviar solicitudes de reseñas de clientes"
-      }
+      },
+      "connectionSavedMessage": "Tu servidor de correo está conectado y listo para enviar solicitudes a clientes.",
+      "gmailAppPasswordTooltipLabel": "Ayuda sobre la contraseña de aplicación de Gmail",
+      "workspaceAppPasswordTooltipLabel": "Ayuda sobre la contraseña de aplicación de Google Workspace",
+      "gmailAppPasswordTooltip": "Usa una contraseña de aplicación de 16 caracteres, no tu contraseña habitual de Gmail. Activa primero la verificación en dos pasos.",
+      "workspaceAppPasswordTooltip": "El administrador de Workspace debe permitir contraseñas de aplicación. Si esta opción no está disponible, usa el método SMTP u OAuth aprobado por tu organización.",
+      "testPassedNotSaved": "La prueba de conexión se completó. Tus credenciales todavía no se han guardado.",
+      "testFailed": "La prueba de conexión falló. Revisa los datos del servidor e inténtalo de nuevo.",
+      "testingCandidate": "Probando tu servidor de correo…",
+      "testBeforeSave": "Probar antes de guardar",
+      "connectingAndVerifying": "Conectando y verificando…",
+      "connectAndSave": "Conectar y guardar"
     },
     "comparisonTable": {
       "feature": "Función",
@@ -2507,7 +2531,9 @@
       "bulkSender": {
         "legacyPlatformNotice": "Se encontró una conexión de correo heredada de la plataforma, pero no puede usarse para comunicación con clientes. Conecta una cuenta propia de proveedor de correo masivo.",
         "activeOutreach": "Activo para solicitudes de reseñas de clientes",
-        "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes"
+        "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
+        "connectionSavedMessage": "Tu servidor de correo masivo está conectado y listo para usar.",
+        "connectingAndVerifying": "Conectando y verificando…"
       }
     },
     "profile": {
@@ -4369,7 +4395,18 @@
         "notSelected": "Connecté, mais non sélectionné pour les demandes d’avis clients",
         "bulkActive": "Connecté, mais votre service d’envoi en volume est actif pour les demandes d’avis clients",
         "needsAttention": "Attention requise : mettez à jour vos informations SMTP et reconnectez-vous avant d’envoyer des demandes d’avis clients"
-      }
+      },
+      "connectionSavedMessage": "Votre serveur e-mail est connecté et prêt à envoyer des demandes aux clients.",
+      "gmailAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Gmail",
+      "workspaceAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Google Workspace",
+      "gmailAppPasswordTooltip": "Utilisez un mot de passe d’application de 16 caractères, pas votre mot de passe Gmail habituel. Activez d’abord la validation en deux étapes.",
+      "workspaceAppPasswordTooltip": "Votre administrateur Workspace doit autoriser les mots de passe d’application. Si cette option est indisponible, utilisez la méthode SMTP ou OAuth approuvée par votre organisation.",
+      "testPassedNotSaved": "Le test de connexion a réussi. Vos identifiants ne sont pas encore enregistrés.",
+      "testFailed": "Le test de connexion a échoué. Vérifiez les informations du serveur et réessayez.",
+      "testingCandidate": "Test de votre serveur e-mail…",
+      "testBeforeSave": "Tester avant d’enregistrer",
+      "connectingAndVerifying": "Connexion et vérification…",
+      "connectAndSave": "Connecter et enregistrer"
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -4472,7 +4509,9 @@
       "bulkSender": {
         "legacyPlatformNotice": "Une ancienne connexion de messagerie de la plateforme a été détectée, mais elle ne peut pas être utilisée pour les communications clients. Connectez un compte de fournisseur d’envoi en volume qui vous appartient.",
         "activeOutreach": "Actif pour les demandes d’avis clients",
-        "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients"
+        "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients",
+        "connectionSavedMessage": "Votre serveur d’envoi en masse est connecté et prêt à être utilisé.",
+        "connectingAndVerifying": "Connexion et vérification…"
       }
     },
     "profile": {
@@ -6330,7 +6369,18 @@
         "notSelected": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
         "bulkActive": "Connesso, ma il tuo servizio di invio in blocco è attivo per le richieste di recensione dei clienti",
         "needsAttention": "Richiede attenzione: aggiorna i dati SMTP e riconnettiti prima di inviare richieste di recensione ai clienti"
-      }
+      },
+      "connectionSavedMessage": "Il tuo server di posta è connesso e pronto per inviare richieste ai clienti.",
+      "gmailAppPasswordTooltipLabel": "Guida alla password per app Gmail",
+      "workspaceAppPasswordTooltipLabel": "Guida alla password per app Google Workspace",
+      "gmailAppPasswordTooltip": "Usa una password per app di 16 caratteri, non la normale password Gmail. Attiva prima la verifica in due passaggi.",
+      "workspaceAppPasswordTooltip": "L’amministratore Workspace deve consentire le password per app. Se questa opzione non è disponibile, usa il metodo SMTP o OAuth approvato dalla tua organizzazione.",
+      "testPassedNotSaved": "Il test di connessione è riuscito. Le credenziali non sono ancora state salvate.",
+      "testFailed": "Il test di connessione non è riuscito. Controlla i dettagli del server e riprova.",
+      "testingCandidate": "Verifica del server di posta…",
+      "testBeforeSave": "Testa prima di salvare",
+      "connectingAndVerifying": "Connessione e verifica…",
+      "connectAndSave": "Connetti e salva"
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -6437,7 +6487,9 @@
       "bulkSender": {
         "legacyPlatformNotice": "È stata trovata una connessione email di piattaforma precedente, ma non può essere usata per le comunicazioni con i clienti. Collega un account di provider di invio in blocco di tua proprietà.",
         "activeOutreach": "Attivo per le richieste di recensione dei clienti",
-        "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti"
+        "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
+        "connectionSavedMessage": "Il tuo server per invii in massa è connesso e pronto all’uso.",
+        "connectingAndVerifying": "Connessione e verifica…"
       }
     },
     "profile": {
@@ -8160,7 +8212,18 @@
         "notSelected": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า",
         "bulkActive": "เชื่อมต่อแล้ว แต่บริการส่งอีเมลจำนวนมากของคุณใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
         "needsAttention": "ต้องดำเนินการ: อัปเดตรายละเอียด SMTP และเชื่อมต่อใหม่ก่อนส่งคำขอรีวิวจากลูกค้า"
-      }
+      },
+      "connectionSavedMessage": "เซิร์ฟเวอร์อีเมลของคุณเชื่อมต่อแล้วและพร้อมส่งคำขอถึงลูกค้า",
+      "gmailAppPasswordTooltipLabel": "วิธีใช้รหัสผ่านสำหรับแอป Gmail",
+      "workspaceAppPasswordTooltipLabel": "วิธีใช้รหัสผ่านสำหรับแอป Google Workspace",
+      "gmailAppPasswordTooltip": "ใช้รหัสผ่านสำหรับแอป 16 อักขระ ไม่ใช่รหัสผ่าน Gmail ปกติของคุณ และเปิดการยืนยันแบบ 2 ขั้นตอนก่อน",
+      "workspaceAppPasswordTooltip": "ผู้ดูแล Workspace ต้องอนุญาตรหัสผ่านสำหรับแอป หากไม่มีตัวเลือกนี้ ให้ใช้วิธี SMTP หรือ OAuth ที่องค์กรอนุมัติ",
+      "testPassedNotSaved": "ทดสอบการเชื่อมต่อสำเร็จ แต่ยังไม่ได้บันทึกข้อมูลเข้าสู่ระบบ",
+      "testFailed": "ทดสอบการเชื่อมต่อไม่สำเร็จ โปรดตรวจสอบรายละเอียดเซิร์ฟเวอร์แล้วลองอีกครั้ง",
+      "testingCandidate": "กำลังทดสอบเซิร์ฟเวอร์อีเมลของคุณ…",
+      "testBeforeSave": "ทดสอบก่อนบันทึก",
+      "connectingAndVerifying": "กำลังเชื่อมต่อและตรวจสอบ…",
+      "connectAndSave": "เชื่อมต่อและบันทึก"
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -8260,7 +8323,9 @@
       "bulkSender": {
         "legacyPlatformNotice": "พบการเชื่อมต่ออีเมลแพลตฟอร์มแบบเดิม แต่ไม่สามารถใช้สำหรับการติดต่อผู้รับได้ โปรดเชื่อมต่อบัญชีผู้ให้บริการส่งอีเมลจำนวนมากที่คุณเป็นเจ้าของ",
         "activeOutreach": "ใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
-        "notActive": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า"
+        "notActive": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า",
+        "connectionSavedMessage": "เซิร์ฟเวอร์อีเมลสำหรับส่งจำนวนมากของคุณเชื่อมต่อแล้วและพร้อมใช้งาน",
+        "connectingAndVerifying": "กำลังเชื่อมต่อและตรวจสอบ…"
       }
     },
     "profile": {
@@ -9979,7 +10044,18 @@
         "notSelected": "已连接，但未被选用于客户评价请求",
         "bulkActive": "已连接，但你的批量邮件服务已被选用于客户评价请求",
         "needsAttention": "需要处理：请更新 SMTP 详细信息并重新连接，然后再发送客户评价请求"
-      }
+      },
+      "connectionSavedMessage": "您的邮件服务器已连接，可用于向客户发送请求。",
+      "gmailAppPasswordTooltipLabel": "Gmail 应用专用密码帮助",
+      "workspaceAppPasswordTooltipLabel": "Google Workspace 应用专用密码帮助",
+      "gmailAppPasswordTooltip": "请使用 16 位应用专用密码，而不是常规 Gmail 密码。请先开启两步验证。",
+      "workspaceAppPasswordTooltip": "您的 Workspace 管理员必须允许使用应用专用密码。如果此选项不可用，请使用组织批准的 SMTP 或 OAuth 方法。",
+      "testPassedNotSaved": "连接测试通过。您的凭据尚未保存。",
+      "testFailed": "连接测试失败。请检查服务器信息后重试。",
+      "testingCandidate": "正在测试您的邮件服务器…",
+      "testBeforeSave": "保存前测试",
+      "connectingAndVerifying": "正在连接并验证…",
+      "connectAndSave": "连接并保存"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -10079,7 +10155,9 @@
       "bulkSender": {
         "legacyPlatformNotice": "发现旧的平台邮件连接，但不能用于客户沟通。请连接您自己拥有的批量邮件服务商账户。",
         "activeOutreach": "已启用，可用于客户评价请求",
-        "notActive": "已连接，但未被选用于客户评价请求"
+        "notActive": "已连接，但未被选用于客户评价请求",
+        "connectionSavedMessage": "您的批量邮件服务器已连接，可立即使用。",
+        "connectingAndVerifying": "正在连接并验证…"
       }
     },
     "profile": {
@@ -11790,7 +11868,18 @@
         "notSelected": "已連線，但未被選用於客戶評價請求",
         "bulkActive": "已連線，但您的大量寄信服務已被選用於客戶評價請求",
         "needsAttention": "需要處理：請更新 SMTP 詳細資料並重新連線，然後再傳送客戶評價請求"
-      }
+      },
+      "connectionSavedMessage": "您的郵件伺服器已連線，可用於向客戶傳送請求。",
+      "gmailAppPasswordTooltipLabel": "Gmail 應用程式密碼說明",
+      "workspaceAppPasswordTooltipLabel": "Google Workspace 應用程式密碼說明",
+      "gmailAppPasswordTooltip": "請使用 16 位應用程式密碼，而不是一般 Gmail 密碼。請先開啟兩步驟驗證。",
+      "workspaceAppPasswordTooltip": "您的 Workspace 管理員必須允許使用應用程式密碼。如果此選項無法使用，請改用組織核准的 SMTP 或 OAuth 方法。",
+      "testPassedNotSaved": "連線測試通過。您的憑證尚未儲存。",
+      "testFailed": "連線測試失敗。請檢查伺服器資訊後再試一次。",
+      "testingCandidate": "正在測試您的郵件伺服器…",
+      "testBeforeSave": "儲存前測試",
+      "connectingAndVerifying": "正在連線並驗證…",
+      "connectAndSave": "連線並儲存"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -11890,7 +11979,9 @@
       "bulkSender": {
         "legacyPlatformNotice": "偵測到舊版平台郵件連線，但不能用於客戶外聯。請連接您自己擁有的大量寄信服務商帳戶。",
         "activeOutreach": "已啟用，可用於客戶評價請求",
-        "notActive": "已連線，但未被選用於客戶評價請求"
+        "notActive": "已連線，但未被選用於客戶評價請求",
+        "connectionSavedMessage": "您的大量寄信伺服器已連線，可立即使用。",
+        "connectingAndVerifying": "正在連線並驗證…"
       }
     },
     "profile": {

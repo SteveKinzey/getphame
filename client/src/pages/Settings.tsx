@@ -675,6 +675,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   const [fromName, setFromName] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
+  const [connectionSavedNotice, setConnectionSavedNotice] = useState(false);
   const preset = getBulkSenderPreset(provider);
   const localizedPreset = provider === "mailjet" ? {
     ...preset,
@@ -715,6 +716,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
     setFromName(status?.fromName ?? "");
     setSecret("");
     setShowSecret(false);
+    setConnectionSavedNotice(false);
     setShowForm(true);
   };
 
@@ -723,6 +725,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
       toast.success(t("settings.bulkSender.connectedToast", { defaultValue: "Bulk Sender connected." }));
       setShowForm(false);
       setSecret("");
+      setConnectionSavedNotice(true);
       refetch();
     },
     onError: (err) => toast.error(err.message),
@@ -816,6 +819,11 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               <SettingsBulkMailConnectionStatus status={status} translate={t} />
             </div>
           </div>
+          {connectionSavedNotice && (
+            <div role="status" className="rounded-xl px-3 py-2.5 text-xs font-semibold" style={{ background: "oklch(0.96 0.04 145)", color: "oklch(0.34 0.12 145)" }}>
+              {t("settings.bulkSender.connectionSavedMessage", { defaultValue: "Your bulk mail server is connected and ready to use." })}
+            </div>
+          )}
           {status.connectionMode === "legacy_api" && (
             <div className="rounded-xl px-3 py-2 text-xs font-semibold rr-text-navy-mid" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
               {t("settings.bulkSender.legacyNotice", { defaultValue: "This existing connection uses the legacy API mode. Update it when convenient to use the guided SMTP preset." })}
@@ -1004,9 +1012,10 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               type="button"
               onClick={submitConnection}
               disabled={connectMutation.isPending || !canConnect}
+              aria-busy={connectMutation.isPending}
               className="min-h-11 flex-1 py-2.5 rounded-xl text-sm font-bold rr-bg-navy rr-text-gold disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {connectMutation.isPending ? <><Loader2 size={14} className="animate-spin inline mr-1" />{t("settings.bulkSender.connecting", { defaultValue: "Connecting…" })}</> : t("settings.bulkSender.connectAndTest", { defaultValue: "Connect and test" })}
+              {connectMutation.isPending ? <><Loader2 size={14} className="animate-spin inline mr-1" />{t("settings.bulkSender.connectingAndVerifying", { defaultValue: "Connecting and verifying…" })}</> : t("settings.bulkSender.connectAndTest", { defaultValue: "Connect and test" })}
             </button>
           </div>
         </div>
@@ -1597,6 +1606,7 @@ export default function SettingsPage() {
   const [showPasswordGuide, setShowPasswordGuide] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<{ ok: boolean; error?: string | null } | null>(null);
+  const [smtpConnectionSavedNotice, setSmtpConnectionSavedNotice] = useState(false);
 
   // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
   const { data: smtpDetect } = trpc.smtp.detect.useQuery(
@@ -1621,6 +1631,7 @@ export default function SettingsPage() {
       utils.smtp.status.invalidate();
       setShowSmtpForm(false);
       setSmtpPassword("");
+      setSmtpConnectionSavedNotice(true);
       track("smtp_connect");
       toast.success("Email account connected!");
     },
@@ -2430,6 +2441,11 @@ export default function SettingsPage() {
                     {smtpStatus.fromName && ` · ${smtpStatus.fromName}`}
                   </p>
                   <SettingsPersonalMailConnectionStatus status={smtpStatus} translate={t} />
+                  {smtpConnectionSavedNotice && (
+                    <p role="status" className="mt-2 rounded-lg px-3 py-2 text-xs font-semibold" style={{ background: "oklch(0.96 0.04 145)", color: "oklch(0.34 0.12 145)" }}>
+                      {t("smtp.connectionSavedMessage", { defaultValue: "Your email server is connected and ready for customer outreach." })}
+                    </p>
+                  )}
                 </div>
                 {/* Test connection button */}
                 <button
@@ -2448,7 +2464,7 @@ export default function SettingsPage() {
               {/* Action buttons */}
               <div className="flex gap-2 flex-wrap">
                 <button
-                  onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setShowSmtpForm(true); }}
+                  onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setSmtpConnectionSavedNotice(false); setShowSmtpForm(true); }}
                   className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap rr-bg-surface rr-text-navy-mid"
                 >
                   <Pencil size={13} />
@@ -2617,7 +2633,23 @@ export default function SettingsPage() {
                 return (
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-bold rr-text-navy-mid">{passwordLabel}</label>
+                      <div className="flex items-center gap-1">
+                        <label className="text-xs font-bold rr-text-navy-mid">{passwordLabel}</label>
+                        {(isGmail || isGoogleWorkspace) && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button type="button" className="inline-flex min-h-6 min-w-6 items-center justify-center rounded-full rr-text-navy-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" aria-label={isGmail ? t("smtp.gmailAppPasswordTooltipLabel", { defaultValue: "Gmail App Password help" }) : t("smtp.workspaceAppPasswordTooltipLabel", { defaultValue: "Google Workspace App Password help" })}>
+                                <Info size={14} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                              {isGmail
+                                ? t("smtp.gmailAppPasswordTooltip", { defaultValue: "Use a 16-character App Password, not your regular Gmail password. Turn on 2-Step Verification first." })
+                                : t("smtp.workspaceAppPasswordTooltip", { defaultValue: "Your Workspace administrator must allow App Passwords. If this option is unavailable, use your organisation’s approved SMTP or OAuth method." })}
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                      </div>
                       {hasGuide && (
                         <button
                           type="button"
@@ -3040,13 +3072,15 @@ export default function SettingsPage() {
               {/* Test result inline feedback */}
               {smtpTestResult && (
                 <div
+                  role="status"
+                  aria-live="polite"
                   className="flex items-start gap-2 px-3 py-2 rounded-xl text-xs"
                   style={{
                     background: smtpTestResult.ok ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.03 27)",
                     color: smtpTestResult.ok ? "oklch(0.40 0.12 145)" : "oklch(0.45 0.12 27)",
                   }}
                 >
-                  <span className="font-black shrink-0">{smtpTestResult.ok ? "✓ Connection OK" : "✗ Connection failed"}</span>
+                  <span className="font-black shrink-0">{smtpTestResult.ok ? t("smtp.testPassedNotSaved", { defaultValue: "Connection test passed. Your credentials have not been saved yet." }) : t("smtp.testFailed", { defaultValue: "Connection test failed. Review your server details and try again." })}</span>
                   {!smtpTestResult.ok && smtpTestResult.error && (
                     <span className="font-mono" style={{ wordBreak: "break-word" }}>— {smtpTestResult.error}</span>
                   )}
@@ -3070,11 +3104,12 @@ export default function SettingsPage() {
                     });
                   }}
                   disabled={testCredentials.isPending || connectSmtp.isPending}
+                  aria-busy={testCredentials.isPending}
                   className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-sm font-bold transition-transform active:scale-95"
                   style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.35 0.04 260)" }}
                 >
                   {testCredentials.isPending ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
-                  {t('smtp.testConnection')}
+                  {testCredentials.isPending ? t("smtp.testingCandidate", { defaultValue: "Testing your mail server…" }) : t("smtp.testBeforeSave", { defaultValue: "Test before saving" })}
                 </button>
                 <button
                   onClick={() => {
@@ -3095,11 +3130,12 @@ export default function SettingsPage() {
                       error: (err) => err?.message ?? "Connection failed",
                     });
                   }}
-                  disabled={connectSmtp.isPending}
+                  disabled={connectSmtp.isPending || testCredentials.isPending}
+                  aria-busy={connectSmtp.isPending}
                   className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
                 >
                   {connectSmtp.isPending ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
-                  Connect Email
+                  {connectSmtp.isPending ? t("smtp.connectingAndVerifying", { defaultValue: "Connecting and verifying…" }) : t("smtp.connectAndSave", { defaultValue: "Connect and save" })}
                 </button>
                 {showSmtpForm && (
                   <button
