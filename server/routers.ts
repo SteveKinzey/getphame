@@ -359,6 +359,7 @@ import {
   updateSmtpFromName,
   runSmtpHealthChecks,
 } from "./smtp";
+import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 
 import {
   encodeTrackingToken,
@@ -1280,8 +1281,11 @@ export const appRouter = router({
   smtp: router({
     /** Return connection status without exposing credentials */
     status: protectedProcedure.query(async ({ ctx }) => {
-      const creds = await getSmtpCredentials(ctx.user.id);
-      if (!creds)
+      const [creds, channel] = await Promise.all([
+        getSmtpCredentials(ctx.user.id),
+        resolveOutboundDeliveryChannel(ctx.user.id),
+      ]);
+      if (!channel)
         return {
           connected: false,
           email: null,
@@ -1294,13 +1298,13 @@ export const appRouter = router({
         };
       return {
         connected: true,
-        email: creds.user,
-        fromName: creds.fromName ?? null,
-        replyTo: creds.replyTo ?? null,
-        verified: creds.verified === 1,
-        lastHealthCheck: creds.lastHealthCheck ?? null,
-        lastHealthStatus: creds.lastHealthStatus ?? null,
-        lastHealthError: creds.lastHealthError ?? null,
+        email: channel.fromEmail,
+        fromName: channel.fromName,
+        replyTo: channel.replyTo,
+        verified: channel.type === "bulk" || creds?.verified === 1,
+        lastHealthCheck: creds?.lastHealthCheck ?? null,
+        lastHealthStatus: creds?.lastHealthStatus ?? null,
+        lastHealthError: creds?.lastHealthError ?? null,
       };
     }),
 

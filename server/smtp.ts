@@ -230,11 +230,22 @@ export interface SendMailOptions {
   safetyMode?: "review_request" | "system";
 }
 
+const GETPHAME_PLATFORM_SENDER_DOMAIN = "getphame.app";
+
+export function assertCustomerOutreachSender(fromEmail: string): void {
+  const normalized = fromEmail.trim().toLowerCase();
+  const domain = normalized.split("@")[1] ?? "";
+  if (domain === GETPHAME_PLATFORM_SENDER_DOMAIN || domain.endsWith(`.${GETPHAME_PLATFORM_SENDER_DOMAIN}`)) {
+    throw new Error("Customer review outreach must use the user's connected personal or business email address, not a Get Phame sender.");
+  }
+}
+
 export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSendStatus | null> {
   if (opts.safetyMode !== "system") {
     await assertReviewOutreachAllowed(opts.userId);
     const channel = await resolveOutboundDeliveryChannel(opts.userId);
     if (!channel) throw new Error("No email account connected. Please connect your email in Settings.");
+    assertCustomerOutreachSender(channel.fromEmail);
     const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);
     const pass = decryptPassword(channel.encryptedSecret);
     const transporter = createTransporter({
