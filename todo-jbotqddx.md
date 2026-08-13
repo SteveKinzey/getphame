@@ -9,6 +9,7 @@
 - [x] Add integrated Settings mail-card regression coverage for rendered mail-connection states; routing and authorization coverage are complete.
 - [x] Run full tests, TypeScript checks, production build, and mobile/desktop verification.
 - [ ] Save a validated release checkpoint and synchronize the exact release tree with GitHub main.
+- [x] Add behavioral coverage for the customer-request read path used by the home page and complete the schema repair.
 - [x] Fix the CI-only email-tracking-secret setup in reminder delivery regression tests, revalidate, and update the release pull request.
 - [x] Audit every `sendSystemEmail` call site and document the distinction between server-managed operational mail and administrator-triggered platform previews.
 - [x] Verify queued delivery and send-now reminder paths fail closed when a tenant-owned channel is absent or not selected.
