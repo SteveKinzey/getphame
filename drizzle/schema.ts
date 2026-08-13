@@ -79,6 +79,10 @@ export const bulkProviderEnum = pgEnum("bulk_provider", [
   "socketlabs",
   "custom_smtp",
 ]);
+export const outboundMailChannelEnum = pgEnum("outbound_mail_channel", [
+  "personal",
+  "bulk",
+]);
 export const mailgunRegionEnum = pgEnum("mailgun_region", ["us", "eu"]);
 export const authDiagnosticEventTypeEnum = pgEnum(
   "auth_diagnostic_event_type",
@@ -1225,6 +1229,19 @@ export const smtpCredentials = pgTable("smtp_credentials", {
 
 export type SmtpCredential = typeof smtpCredentials.$inferSelect;
 export type InsertSmtpCredential = typeof smtpCredentials.$inferInsert;
+
+/**
+ * The user-selected, tenant-owned delivery channel for review outreach. Platform
+ * mail infrastructure is deliberately not represented in this table.
+ */
+export const outboundMailPreferences = pgTable("outbound_mail_preferences", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().unique(),
+  selectedChannel: outboundMailChannelEnum("selected_channel").notNull(),
+  updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+});
+export type OutboundMailPreference = typeof outboundMailPreferences.$inferSelect;
+export type InsertOutboundMailPreference = typeof outboundMailPreferences.$inferInsert;
 
 /**
  * Durable snapshots of administrator-initiated SMTP removals. Identity fields

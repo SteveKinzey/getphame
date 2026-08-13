@@ -57,6 +57,7 @@ import {
 import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
+import { selectOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import {
   deliverReviewEmailOrQueue,
@@ -1285,7 +1286,7 @@ export const appRouter = router({
         getSmtpCredentials(ctx.user.id),
         resolveOutboundDeliveryChannel(ctx.user.id),
       ]);
-      if (!channel)
+      if (!creds)
         return {
           connected: false,
           email: null,
@@ -1295,16 +1296,20 @@ export const appRouter = router({
           lastHealthCheck: null,
           lastHealthStatus: null,
           lastHealthError: null,
+          selectedForOutreach: false,
+          activeDeliveryChannel: channel?.type ?? null,
         };
       return {
         connected: true,
-        email: channel.fromEmail,
-        fromName: channel.fromName,
-        replyTo: channel.replyTo,
-        verified: channel.type === "bulk" || creds?.verified === 1,
-        lastHealthCheck: creds?.lastHealthCheck ?? null,
-        lastHealthStatus: creds?.lastHealthStatus ?? null,
-        lastHealthError: creds?.lastHealthError ?? null,
+        email: creds.user,
+        fromName: creds.fromName,
+        replyTo: creds.replyTo,
+        verified: creds.verified === 1,
+        lastHealthCheck: creds.lastHealthCheck ?? null,
+        lastHealthStatus: creds.lastHealthStatus ?? null,
+        lastHealthError: creds.lastHealthError ?? null,
+        selectedForOutreach: channel?.type === "personal",
+        activeDeliveryChannel: channel?.type ?? null,
       };
     }),
 
@@ -1381,6 +1386,7 @@ export const appRouter = router({
           replyTo: input.replyTo || undefined,
         });
         await markSmtpVerified(ctx.user.id);
+        await selectOutboundDeliveryChannel(ctx.user.id, "personal");
 
         // Send welcome/confirmation email to the user's own address.
         // Fire-and-forget — don't let a welcome email failure block the connect response.

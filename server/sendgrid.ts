@@ -1,7 +1,10 @@
 /**
  * sendgrid.ts — System email relay via SendGrid API
  *
- * Used for all platform-generated emails (magic links, auth, reminders, health alerts).
+ * Used for platform-generated operational emails (magic links, auth, account,
+ * support, and administrator-controlled previews). It is server-managed only:
+ * customer outreach must never receive a SendGrid credential, select this relay,
+ * or call this helper through a user mail-connection procedure.
  * Falls back to the legacy SYSTEM_SMTP_* nodemailer path when SENDGRID_API_KEY is absent
  * so existing deployments continue to work without any config change.
  *
