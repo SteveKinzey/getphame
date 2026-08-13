@@ -724,6 +724,16 @@
     },
     "stats": {
       "consented": "Consenso dato"
+    },
+    "mailHealth": {
+      "healthy": "Server e-mail integro",
+      "healthyDetail": "Il server connesso è pronto per gli invii.",
+      "attention": "Il server e-mail richiede attenzione",
+      "attentionDetail": "Ripetere il test o aggiornarlo nelle Impostazioni prima di inviare.",
+      "disconnected": "Server e-mail non connesso",
+      "disconnectedDetail": "Collega un server di tua proprietà prima di inviare.",
+      "bulkActive": "Server di invio massivo attivo",
+      "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo."
     }
   },
   "settings": {
@@ -2167,7 +2177,17 @@
     "testingCandidate": "Verifica del server di posta…",
     "testBeforeSave": "Testa prima di salvare",
     "connectingAndVerifying": "Connessione e verifica…",
-    "connectAndSave": "Connetti e salva"
+    "connectAndSave": "Connetti e salva",
+    "testEmailRecipient": "Invia un’e-mail di prova a",
+    "testEmailHint": "Usa un indirizzo che controlli. Verrà usato il server salvato senza salvare un nuovo destinatario.",
+    "testEmailRecipientRequired": "Inserisci l’indirizzo che deve ricevere l’e-mail di prova.",
+    "sendingTestEmail": "Invio dell’e-mail di prova…",
+    "sendTestEmail": "Invia e-mail di prova",
+    "testEmailSent": "E-mail di prova inviata. Controlla la casella del destinatario.",
+    "disconnectConfirmTitle": "Disconnettere questo server e-mail?",
+    "disconnectConfirmDescription": "Questa azione elimina definitivamente le credenziali salvate e interrompe gli invii finché non colleghi un server verificato.",
+    "disconnecting": "Disconnessione…",
+    "disconnectConfirmAction": "Disconnetti e reimposta"
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",
