@@ -28,6 +28,7 @@ vi.mock("@/lib/trpc", () => ({
       setGoal: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
     },
     smtp: { status: { useQuery: () => query({ connected: true, lastHealthStatus: "pass" }) } },
+    bulkSender: { status: { useQuery: () => query({ connected: false, selectedForOutreach: false }) } },
     requests: { stats: { useQuery: () => query({ thisMonth: 0, total: 0, recent: [] }) } },
     onboarding: {
       status: {

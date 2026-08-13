@@ -59,6 +59,7 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
@@ -105,6 +106,7 @@ import {
   SmtpAppPasswordHelpTooltip,
   SmtpCandidateConnectionActions,
 } from "@/components/SmtpConnectionFeedback";
+import SmtpTestEmailHistory from "@/components/SmtpTestEmailHistory";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -1598,6 +1600,7 @@ export default function SettingsPage() {
 
   // ── SMTP email connection ──────────────────────────────────────────────────
   const { data: smtpStatus, isLoading: smtpLoading } = trpc.smtp.status.useQuery();
+  const { data: smtpTestEmailHistory, isLoading: smtpTestEmailHistoryLoading } = trpc.smtp.testEmailHistory.useQuery();
   const [smtpEmail, setSmtpEmail] = useState("");
   const [smtpPassword, setSmtpPassword] = useState("");
   const [smtpHost, setSmtpHost] = useState("");
@@ -1614,6 +1617,7 @@ export default function SettingsPage() {
   const [testEmailRecipient, setTestEmailRecipient] = useState("");
   const [testEmailSentNotice, setTestEmailSentNotice] = useState(false);
   const [disconnectConfirmOpen, setDisconnectConfirmOpen] = useState(false);
+  const [disconnectAcknowledged, setDisconnectAcknowledged] = useState(false);
 
   useEffect(() => {
     const focusSmtp = window.location.hash === "#smtp-settings" || new URLSearchParams(window.location.search).get("focus") === "smtp";
@@ -1654,7 +1658,9 @@ export default function SettingsPage() {
   const disconnectSmtp = trpc.smtp.disconnect.useMutation({
     onSuccess: () => {
       utils.smtp.status.invalidate();
+      utils.smtp.testEmailHistory.invalidate();
       setDisconnectConfirmOpen(false);
+      setDisconnectAcknowledged(false);
       setSmtpConnectionSavedNotice(false);
       setTestEmailSentNotice(false);
       setSmtpPassword("");
@@ -1702,9 +1708,13 @@ export default function SettingsPage() {
   const sendSmtpTestEmail = trpc.smtp.sendTestEmail.useMutation({
     onSuccess: ({ to }) => {
       setTestEmailSentNotice(true);
+      utils.smtp.testEmailHistory.invalidate();
       toast.success(`Test email sent to ${to}.`, { duration: 5000 });
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => {
+      utils.smtp.testEmailHistory.invalidate();
+      toast.error(err.message);
+    },
   });
 
   function handleSaveProfile() {
@@ -2540,6 +2550,8 @@ export default function SettingsPage() {
                 {testEmailSentNotice && <ConnectionSavedNotice message={t("smtp.testEmailSent", { defaultValue: "Test email sent. Check the recipient inbox to confirm delivery." })} />}
               </div>
 
+              <SmtpTestEmailHistory attempts={smtpTestEmailHistory} isLoading={smtpTestEmailHistoryLoading} translate={t} />
+
               {/* Inline From Name edit */}
               <InlineFromNameEdit
                 current={smtpStatus?.fromName ?? ""}
@@ -2560,15 +2572,19 @@ export default function SettingsPage() {
                   </span>
                 </p>
               )}
-              <AlertDialog open={disconnectConfirmOpen} onOpenChange={setDisconnectConfirmOpen}>
+              <AlertDialog open={disconnectConfirmOpen} onOpenChange={(open) => { setDisconnectConfirmOpen(open); if (!open) setDisconnectAcknowledged(false); }}>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>{t("smtp.disconnectConfirmTitle", { defaultValue: "Disconnect this mail server?" })}</AlertDialogTitle>
                     <AlertDialogDescription>{t("smtp.disconnectConfirmDescription", { defaultValue: "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server." })}</AlertDialogDescription>
+                    <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm rr-text-navy" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
+                      <Checkbox checked={disconnectAcknowledged} onCheckedChange={(checked) => setDisconnectAcknowledged(checked === true)} aria-label={t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })} />
+                      <span>{t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })}</span>
+                    </label>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel disabled={disconnectSmtp.isPending}>{t("common.cancel", { defaultValue: "Cancel" })}</AlertDialogCancel>
-                    <AlertDialogAction onClick={(event) => { event.preventDefault(); disconnectSmtp.mutate(); }} disabled={disconnectSmtp.isPending} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    <AlertDialogAction onClick={(event) => { event.preventDefault(); disconnectSmtp.mutate(); }} disabled={!disconnectAcknowledged || disconnectSmtp.isPending} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                       {disconnectSmtp.isPending ? t("smtp.disconnecting", { defaultValue: "Disconnecting…" }) : t("smtp.disconnectConfirmAction", { defaultValue: "Disconnect and reset" })}
                     </AlertDialogAction>
                   </AlertDialogFooter>

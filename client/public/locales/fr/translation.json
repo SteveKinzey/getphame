@@ -1133,7 +1133,13 @@
     "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
     "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
     "disconnecting": "Déconnexion…",
-    "disconnectConfirmAction": "Déconnecter et réinitialiser"
+    "disconnectConfirmAction": "Déconnecter et réinitialiser",
+    "testEmailHistoryTitle": "Historique des e-mails de test",
+    "testEmailHistoryPrivacy": "Les destinataires sont masqués. Seules vos 12 dernières tentatives sont affichées.",
+    "testEmailHistoryEmpty": "Aucun e-mail de diagnostic n’a encore été envoyé.",
+    "testEmailHistorySent": "Envoyé",
+    "testEmailHistoryFailed": "Échec",
+    "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2231,7 +2237,12 @@
       "disconnected": "Serveur e-mail non connecté",
       "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
       "bulkActive": "Serveur d’envoi en masse actif",
-      "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif."
+      "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif.",
+      "healthyTooltip": "Un serveur personnel vérifié est sélectionné et son dernier état ne nécessite aucune action.",
+      "attentionTooltip": "Votre connexion enregistrée nécessite une attention. Testez-la de nouveau ou mettez à jour les paramètres avant l’envoi.",
+      "disconnectedTooltip": "Aucun canal vérifié n’est sélectionné. Les demandes restent en pause jusqu’à la connexion dans les paramètres.",
+      "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
+      "details": "Détails de l’état du serveur de messagerie"
     }
   },
   "pricing": {
