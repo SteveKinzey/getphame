@@ -967,7 +967,13 @@
     "disconnectConfirmTitle": "Disconnect this mail server?",
     "disconnectConfirmDescription": "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server.",
     "disconnecting": "Disconnecting…",
-    "disconnectConfirmAction": "Disconnect and reset"
+    "disconnectConfirmAction": "Disconnect and reset",
+    "testEmailHistoryTitle": "Test email history",
+    "testEmailHistoryPrivacy": "Recipients are masked. Only your 12 newest diagnostic attempts are shown.",
+    "testEmailHistoryEmpty": "No diagnostic test emails have been sent yet.",
+    "testEmailHistorySent": "Sent",
+    "testEmailHistoryFailed": "Failed",
+    "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2071,7 +2077,12 @@
       "disconnected": "Mail server not connected",
       "disconnectedDetail": "Connect a user-owned mail server before sending outreach.",
       "bulkActive": "Bulk mail server active",
-      "bulkActiveDetail": "Your selected bulk mail provider is active for outreach."
+      "bulkActiveDetail": "Your selected bulk mail provider is active for outreach.",
+      "healthyTooltip": "A verified personal mail server is selected, and its latest health signal does not require action.",
+      "attentionTooltip": "Your saved connection needs attention. Re-test it or update the provider settings before sending customer outreach.",
+      "disconnectedTooltip": "No verified tenant-owned delivery channel is selected. Customer outreach stays paused until you connect one in Settings.",
+      "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
+      "details": "Mail server health details"
     }
   },
   "pricing": {

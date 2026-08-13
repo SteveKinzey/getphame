@@ -733,7 +733,12 @@
       "disconnected": "Server e-mail non connesso",
       "disconnectedDetail": "Collega un server di tua proprietà prima di inviare.",
       "bulkActive": "Server di invio massivo attivo",
-      "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo."
+      "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo.",
+      "healthyTooltip": "È selezionato un server personale verificato e il suo ultimo stato non richiede azioni.",
+      "attentionTooltip": "La connessione salvata richiede attenzione. Provala di nuovo o aggiorna le impostazioni prima dell’invio.",
+      "disconnectedTooltip": "Non è selezionato alcun canale verificato. Le richieste restano in pausa finché non ne colleghi uno nelle Impostazioni.",
+      "bulkActiveTooltip": "È selezionato un provider bulk verificato. Gestiscilo o sostituiscilo nelle Impostazioni.",
+      "details": "Dettagli stato server email"
     }
   },
   "settings": {
@@ -2187,7 +2192,13 @@
     "disconnectConfirmTitle": "Disconnettere questo server e-mail?",
     "disconnectConfirmDescription": "Questa azione elimina definitivamente le credenziali salvate e interrompe gli invii finché non colleghi un server verificato.",
     "disconnecting": "Disconnessione…",
-    "disconnectConfirmAction": "Disconnetti e reimposta"
+    "disconnectConfirmAction": "Disconnetti e reimposta",
+    "testEmailHistoryTitle": "Cronologia email di test",
+    "testEmailHistoryPrivacy": "I destinatari sono mascherati. Sono mostrati solo i 12 tentativi di diagnostica più recenti.",
+    "testEmailHistoryEmpty": "Non sono ancora state inviate email di diagnostica.",
+    "testEmailHistorySent": "Inviata",
+    "testEmailHistoryFailed": "Non riuscita",
+    "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email."
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",

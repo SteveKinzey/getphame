@@ -1133,7 +1133,13 @@
     "disconnectConfirmTitle": "¿Desconectar este servidor de correo?",
     "disconnectConfirmDescription": "Esto elimina permanentemente las credenciales guardadas y detiene los envíos hasta que conectes un servidor verificado.",
     "disconnecting": "Desconectando…",
-    "disconnectConfirmAction": "Desconectar y restablecer"
+    "disconnectConfirmAction": "Desconectar y restablecer",
+    "testEmailHistoryTitle": "Historial de correos de prueba",
+    "testEmailHistoryPrivacy": "Los destinatarios se ocultan. Solo se muestran tus 12 intentos de diagnóstico más recientes.",
+    "testEmailHistoryEmpty": "Aún no se han enviado correos de diagnóstico.",
+    "testEmailHistorySent": "Enviado",
+    "testEmailHistoryFailed": "Falló",
+    "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2231,7 +2237,12 @@
       "disconnected": "Servidor de correo no conectado",
       "disconnectedDetail": "Conecta un servidor propio antes de enviar.",
       "bulkActive": "Servidor de correo masivo activo",
-      "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos."
+      "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos.",
+      "healthyTooltip": "Hay un servidor de correo personal verificado seleccionado y su último estado no requiere acción.",
+      "attentionTooltip": "Tu conexión guardada necesita atención. Vuelve a probarla o actualiza la configuración antes de enviar solicitudes.",
+      "disconnectedTooltip": "No hay un canal de entrega verificado seleccionado. Las solicitudes están pausadas hasta que conectes uno en Configuración.",
+      "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
+      "details": "Detalles de salud del servidor de correo"
     }
   },
   "pricing": {

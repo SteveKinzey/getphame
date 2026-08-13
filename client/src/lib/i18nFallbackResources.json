@@ -495,7 +495,13 @@
       "disconnectConfirmTitle": "Disconnect this mail server?",
       "disconnectConfirmDescription": "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server.",
       "disconnecting": "Disconnecting…",
-      "disconnectConfirmAction": "Disconnect and reset"
+      "disconnectConfirmAction": "Disconnect and reset",
+      "testEmailHistoryTitle": "Test email history",
+      "testEmailHistoryPrivacy": "Recipients are masked. Only your 12 newest diagnostic attempts are shown.",
+      "testEmailHistoryEmpty": "No diagnostic test emails have been sent yet.",
+      "testEmailHistorySent": "Sent",
+      "testEmailHistoryFailed": "Failed",
+      "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials."
     },
     "comparisonTable": {
       "freeRequestAllowance": "10 first, then 5 / rolling 30 days",
@@ -731,7 +737,12 @@
         "disconnected": "Mail server not connected",
         "disconnectedDetail": "Connect a user-owned mail server before sending outreach.",
         "bulkActive": "Bulk mail server active",
-        "bulkActiveDetail": "Your selected bulk mail provider is active for outreach."
+        "bulkActiveDetail": "Your selected bulk mail provider is active for outreach.",
+        "healthyTooltip": "A verified personal mail server is selected, and its latest health signal does not require action.",
+        "attentionTooltip": "Your saved connection needs attention. Re-test it or update the provider settings before sending customer outreach.",
+        "disconnectedTooltip": "No verified tenant-owned delivery channel is selected. Customer outreach stays paused until you connect one in Settings.",
+        "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
+        "details": "Mail server health details"
       }
     }
   },
@@ -1231,7 +1242,13 @@
       "disconnectConfirmTitle": "¿Desconectar este servidor de correo?",
       "disconnectConfirmDescription": "Esto elimina permanentemente las credenciales guardadas y detiene los envíos hasta que conectes un servidor verificado.",
       "disconnecting": "Desconectando…",
-      "disconnectConfirmAction": "Desconectar y restablecer"
+      "disconnectConfirmAction": "Desconectar y restablecer",
+      "testEmailHistoryTitle": "Historial de correos de prueba",
+      "testEmailHistoryPrivacy": "Los destinatarios se ocultan. Solo se muestran tus 12 intentos de diagnóstico más recientes.",
+      "testEmailHistoryEmpty": "Aún no se han enviado correos de diagnóstico.",
+      "testEmailHistorySent": "Enviado",
+      "testEmailHistoryFailed": "Falló",
+      "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo."
     },
     "comparisonTable": {
       "freeRequestAllowance": "10 al inicio, luego 5 cada 30 días rodantes",
@@ -1467,7 +1484,12 @@
         "disconnected": "Servidor de correo no conectado",
         "disconnectedDetail": "Conecta un servidor propio antes de enviar.",
         "bulkActive": "Servidor de correo masivo activo",
-        "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos."
+        "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos.",
+        "healthyTooltip": "Hay un servidor de correo personal verificado seleccionado y su último estado no requiere acción.",
+        "attentionTooltip": "Tu conexión guardada necesita atención. Vuelve a probarla o actualiza la configuración antes de enviar solicitudes.",
+        "disconnectedTooltip": "No hay un canal de entrega verificado seleccionado. Las solicitudes están pausadas hasta que conectes uno en Configuración.",
+        "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
+        "details": "Detalles de salud del servidor de correo"
       }
     }
   },
@@ -1967,7 +1989,13 @@
       "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
       "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
       "disconnecting": "Déconnexion…",
-      "disconnectConfirmAction": "Déconnecter et réinitialiser"
+      "disconnectConfirmAction": "Déconnecter et réinitialiser",
+      "testEmailHistoryTitle": "Historique des e-mails de test",
+      "testEmailHistoryPrivacy": "Les destinataires sont masqués. Seules vos 12 dernières tentatives sont affichées.",
+      "testEmailHistoryEmpty": "Aucun e-mail de diagnostic n’a encore été envoyé.",
+      "testEmailHistorySent": "Envoyé",
+      "testEmailHistoryFailed": "Échec",
+      "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés."
     },
     "comparisonTable": {
       "freeRequestAllowance": "10 d'abord, puis 5 tous les 30 jours (période glissante)",
@@ -2203,7 +2231,12 @@
         "disconnected": "Serveur e-mail non connecté",
         "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
         "bulkActive": "Serveur d’envoi en masse actif",
-        "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif."
+        "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif.",
+        "healthyTooltip": "Un serveur personnel vérifié est sélectionné et son dernier état ne nécessite aucune action.",
+        "attentionTooltip": "Votre connexion enregistrée nécessite une attention. Testez-la de nouveau ou mettez à jour les paramètres avant l’envoi.",
+        "disconnectedTooltip": "Aucun canal vérifié n’est sélectionné. Les demandes restent en pause jusqu’à la connexion dans les paramètres.",
+        "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
+        "details": "Détails de l’état du serveur de messagerie"
       }
     }
   },
@@ -2703,7 +2736,13 @@
       "disconnectConfirmTitle": "Disconnettere questo server e-mail?",
       "disconnectConfirmDescription": "Questa azione elimina definitivamente le credenziali salvate e interrompe gli invii finché non colleghi un server verificato.",
       "disconnecting": "Disconnessione…",
-      "disconnectConfirmAction": "Disconnetti e reimposta"
+      "disconnectConfirmAction": "Disconnetti e reimposta",
+      "testEmailHistoryTitle": "Cronologia email di test",
+      "testEmailHistoryPrivacy": "I destinatari sono mascherati. Sono mostrati solo i 12 tentativi di diagnostica più recenti.",
+      "testEmailHistoryEmpty": "Non sono ancora state inviate email di diagnostica.",
+      "testEmailHistorySent": "Inviata",
+      "testEmailHistoryFailed": "Non riuscita",
+      "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email."
     },
     "comparisonTable": {
       "freeRequestAllowance": "10 iniziali, poi 5 ogni finestra mobile di 30 giorni",
@@ -2939,7 +2978,12 @@
         "disconnected": "Server e-mail non connesso",
         "disconnectedDetail": "Collega un server di tua proprietà prima di inviare.",
         "bulkActive": "Server di invio massivo attivo",
-        "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo."
+        "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo.",
+        "healthyTooltip": "È selezionato un server personale verificato e il suo ultimo stato non richiede azioni.",
+        "attentionTooltip": "La connessione salvata richiede attenzione. Provala di nuovo o aggiorna le impostazioni prima dell’invio.",
+        "disconnectedTooltip": "Non è selezionato alcun canale verificato. Le richieste restano in pausa finché non ne colleghi uno nelle Impostazioni.",
+        "bulkActiveTooltip": "È selezionato un provider bulk verificato. Gestiscilo o sostituiscilo nelle Impostazioni.",
+        "details": "Dettagli stato server email"
       }
     }
   },
@@ -3439,7 +3483,13 @@
       "disconnectConfirmTitle": "ตัดการเชื่อมต่อเซิร์ฟเวอร์อีเมลนี้หรือไม่?",
       "disconnectConfirmDescription": "การดำเนินการนี้จะลบข้อมูลรับรองที่บันทึกไว้ถาวรและหยุดการส่งจนกว่าคุณจะเชื่อมต่อเซิร์ฟเวอร์ที่ยืนยันแล้ว",
       "disconnecting": "กำลังตัดการเชื่อมต่อ…",
-      "disconnectConfirmAction": "ตัดการเชื่อมต่อและรีเซ็ต"
+      "disconnectConfirmAction": "ตัดการเชื่อมต่อและรีเซ็ต",
+      "testEmailHistoryTitle": "ประวัติอีเมลทดสอบ",
+      "testEmailHistoryPrivacy": "ผู้รับจะถูกปกปิด แสดงเฉพาะความพยายามวินิจฉัย 12 รายการล่าสุดของคุณ",
+      "testEmailHistoryEmpty": "ยังไม่มีการส่งอีเมลวินิจฉัย",
+      "testEmailHistorySent": "ส่งแล้ว",
+      "testEmailHistoryFailed": "ล้มเหลว",
+      "disconnectAcknowledgement": "ฉันเข้าใจว่าการดำเนินการนี้จะลบข้อมูลรับรองเซิร์ฟเวอร์อีเมลที่บันทึกไว้"
     },
     "comparisonTable": {
       "freeRequestAllowance": "10 ครั้งแรก แล้ว 5 ทุก ๆ 30 วันแบบหมุนเวียน",
@@ -3675,7 +3725,12 @@
         "disconnected": "ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์อีเมล",
         "disconnectedDetail": "เชื่อมต่อเซิร์ฟเวอร์ของคุณก่อนส่งข้อความ",
         "bulkActive": "เซิร์ฟเวอร์ส่งอีเมลจำนวนมากทำงานอยู่",
-        "bulkActiveDetail": "ผู้ให้บริการส่งจำนวนมากที่เลือกกำลังทำงานอยู่"
+        "bulkActiveDetail": "ผู้ให้บริการส่งจำนวนมากที่เลือกกำลังทำงานอยู่",
+        "healthyTooltip": "มีการเลือกเซิร์ฟเวอร์อีเมลส่วนตัวที่ยืนยันแล้ว และสถานะล่าสุดไม่ต้องดำเนินการ",
+        "attentionTooltip": "การเชื่อมต่อที่บันทึกไว้ต้องได้รับการตรวจสอบ ทดสอบใหม่หรืออัปเดตการตั้งค่าก่อนส่ง",
+        "disconnectedTooltip": "ยังไม่ได้เลือกช่องทางส่งที่ยืนยันแล้ว การส่งคำขอจะหยุดชั่วคราวจนกว่าจะเชื่อมต่อในตั้งค่า",
+        "bulkActiveTooltip": "มีการเลือกผู้ให้บริการส่งจำนวนมากที่ยืนยันแล้ว จัดการหรือเปลี่ยนได้ในตั้งค่า",
+        "details": "รายละเอียดสถานะเซิร์ฟเวอร์อีเมล"
       }
     }
   },
@@ -4175,7 +4230,13 @@
       "disconnectConfirmTitle": "要断开此邮件服务器吗？",
       "disconnectConfirmDescription": "此操作将永久删除已保存的邮件服务器凭据，并停止未来发送，直到您连接新的已验证服务器。",
       "disconnecting": "正在断开连接…",
-      "disconnectConfirmAction": "断开并重置"
+      "disconnectConfirmAction": "断开并重置",
+      "testEmailHistoryTitle": "测试邮件记录",
+      "testEmailHistoryPrivacy": "收件人已脱敏。仅显示最近 12 次诊断尝试。",
+      "testEmailHistoryEmpty": "尚未发送诊断测试邮件。",
+      "testEmailHistorySent": "已发送",
+      "testEmailHistoryFailed": "失败",
+      "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。"
     },
     "comparisonTable": {
       "freeRequestAllowance": "先 10 个，之后每滚动 30 天 5 个",
@@ -4411,7 +4472,12 @@
         "disconnected": "邮件服务器未连接",
         "disconnectedDetail": "请先连接您自己的邮件服务器再发送消息。",
         "bulkActive": "批量邮件服务器已启用",
-        "bulkActiveDetail": "您选择的批量邮件服务商已启用。"
+        "bulkActiveDetail": "您选择的批量邮件服务商已启用。",
+        "healthyTooltip": "已选择经过验证的个人邮件服务器，最新健康状态无需处理。",
+        "attentionTooltip": "保存的连接需要处理。请重新测试或更新服务商设置后再发送客户外联。",
+        "disconnectedTooltip": "未选择经过验证的租户邮件通道。在设置中连接前，客户外联将保持暂停。",
+        "bulkActiveTooltip": "已选择经过验证的租户批量邮件服务商。请在设置中管理或替换。",
+        "details": "邮件服务器健康详情"
       }
     }
   },
@@ -4911,7 +4977,13 @@
       "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
       "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
       "disconnecting": "正在中斷連線…",
-      "disconnectConfirmAction": "中斷並重設"
+      "disconnectConfirmAction": "中斷並重設",
+      "testEmailHistoryTitle": "測試郵件記錄",
+      "testEmailHistoryPrivacy": "收件者已遮蔽。僅顯示最近 12 次診斷嘗試。",
+      "testEmailHistoryEmpty": "尚未傳送診斷測試郵件。",
+      "testEmailHistorySent": "已傳送",
+      "testEmailHistoryFailed": "失敗",
+      "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。"
     },
     "comparisonTable": {
       "freeRequestAllowance": "前 10 次，之後每滾動 30 天 5 次",
@@ -5147,7 +5219,12 @@
         "disconnected": "郵件伺服器未連接",
         "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
         "bulkActive": "大量郵件伺服器已啟用",
-        "bulkActiveDetail": "您選取的大量郵件服務商已啟用。"
+        "bulkActiveDetail": "您選取的大量郵件服務商已啟用。",
+        "healthyTooltip": "已選取經過驗證的個人郵件伺服器，最新健康狀態無需處理。",
+        "attentionTooltip": "已儲存的連線需要處理。請重新測試或更新服務商設定後再傳送客戶外聯。",
+        "disconnectedTooltip": "未選取經過驗證的租戶郵件通道。在設定中連線前，客戶外聯將保持暫停。",
+        "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
+        "details": "郵件伺服器健康詳細資料"
       }
     }
   }

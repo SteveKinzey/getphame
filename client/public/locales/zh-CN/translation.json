@@ -924,7 +924,13 @@
     "disconnectConfirmTitle": "要断开此邮件服务器吗？",
     "disconnectConfirmDescription": "此操作将永久删除已保存的邮件服务器凭据，并停止未来发送，直到您连接新的已验证服务器。",
     "disconnecting": "正在断开连接…",
-    "disconnectConfirmAction": "断开并重置"
+    "disconnectConfirmAction": "断开并重置",
+    "testEmailHistoryTitle": "测试邮件记录",
+    "testEmailHistoryPrivacy": "收件人已脱敏。仅显示最近 12 次诊断尝试。",
+    "testEmailHistoryEmpty": "尚未发送诊断测试邮件。",
+    "testEmailHistorySent": "已发送",
+    "testEmailHistoryFailed": "失败",
+    "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1740,7 +1746,12 @@
       "disconnected": "邮件服务器未连接",
       "disconnectedDetail": "请先连接您自己的邮件服务器再发送消息。",
       "bulkActive": "批量邮件服务器已启用",
-      "bulkActiveDetail": "您选择的批量邮件服务商已启用。"
+      "bulkActiveDetail": "您选择的批量邮件服务商已启用。",
+      "healthyTooltip": "已选择经过验证的个人邮件服务器，最新健康状态无需处理。",
+      "attentionTooltip": "保存的连接需要处理。请重新测试或更新服务商设置后再发送客户外联。",
+      "disconnectedTooltip": "未选择经过验证的租户邮件通道。在设置中连接前，客户外联将保持暂停。",
+      "bulkActiveTooltip": "已选择经过验证的租户批量邮件服务商。请在设置中管理或替换。",
+      "details": "邮件服务器健康详情"
     }
   },
   "pricing": {
