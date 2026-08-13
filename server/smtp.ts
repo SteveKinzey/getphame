@@ -257,11 +257,16 @@ export async function saveSmtpCredentials(
   }
 }
 
-export async function deleteSmtpCredentials(userId: number) {
-  const db = await getDb();
+type SmtpCredentialDeleteDependencies = {
+  db?: { delete: (...args: any[]) => { where: (...args: any[]) => Promise<unknown> } };
+  clearPersonalDeliveryChannel?: (userId: number, channel: "personal") => Promise<void>;
+};
+
+export async function deleteSmtpCredentials(userId: number, dependencies: SmtpCredentialDeleteDependencies = {}) {
+  const db = dependencies.db ?? await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, userId));
-  await clearOutboundDeliveryChannel(userId, "personal");
+  await (dependencies.clearPersonalDeliveryChannel ?? clearOutboundDeliveryChannel)(userId, "personal");
 }
 
 export async function markSmtpVerified(userId: number) {
@@ -474,16 +479,21 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
   }
 }
 
+type SmtpTestEmailDependencies = {
+  getCredentials?: typeof getSmtpCredentials;
+  send?: typeof sendMailViaSmtp;
+};
+
 /** Send one diagnostic message through a verified saved tenant SMTP connection. */
-export async function sendSmtpTestEmail(userId: number, to: string): Promise<{ ok: boolean; error?: string }> {
+export async function sendSmtpTestEmail(userId: number, to: string, dependencies: SmtpTestEmailDependencies = {}): Promise<{ ok: boolean; error?: string }> {
   try {
-    const creds = await getSmtpCredentials(userId);
+    const creds = await (dependencies.getCredentials ?? getSmtpCredentials)(userId);
     if (!creds || creds.verified !== 1) {
       return { ok: false, error: "Connect and verify your email server before sending a test email." };
     }
 
     const fromName = creds.fromName ?? creds.user;
-    await sendMailViaSmtp({
+    await (dependencies.send ?? sendMailViaSmtp)({
       userId,
       to,
       subject: "Get Phame mail server test",

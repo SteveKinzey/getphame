@@ -19,7 +19,7 @@ describe("saved SMTP mail-management safeguards", () => {
 
   it("retains a confirmed disconnect path that deletes credentials and clears personal delivery selection", () => {
     expect(smtpSource).toContain("await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, userId))");
-    expect(smtpSource).toContain('await clearOutboundDeliveryChannel(userId, "personal")');
+    expect(smtpSource).toContain("clearPersonalDeliveryChannel ?? clearOutboundDeliveryChannel");
     expect(settingsSource).toContain("disconnectConfirmOpen");
     expect(settingsSource).toContain("Disconnect and reset");
   });

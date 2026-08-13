@@ -26,4 +26,5 @@
 - [x] Add a saved-connection test-email flow that sends only to a user-specified address with safe loading, success, and error feedback.
 - [x] Add a dashboard mail-server health badge using tenant-scoped connection and verification status.
 - [x] Add a protected SMTP disconnect or reset flow that removes the user’s active outreach connection without exposing credentials.
-- [ ] Add focused tests, full validation, a release checkpoint, and exact GitHub main synchronization for the enhancements.
+- [x] Add behavioral coverage for saved SMTP test-email and protected disconnect/reset paths, and verify the new dashboard and Settings controls on mobile.
+- [ ] Save a corrected checkpoint and synchronize the exact post-validation tree to GitHub main.
