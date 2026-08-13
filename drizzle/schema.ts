@@ -442,6 +442,86 @@ export type AuditRetentionPolicy = typeof auditRetentionPolicies.$inferSelect;
 export type InsertAuditRetentionPolicy =
   typeof auditRetentionPolicies.$inferInsert;
 
+/** Sanitized, administrator-only audit trail of global diagnostic retention policy changes. */
+export const auditRetentionPolicyChanges = pgTable(
+  "audit_retention_policy_changes",
+  {
+    id: serial("id").primaryKey(),
+    policyKey: varchar("policy_key", { length: 32 }).notNull(),
+    changedByUserId: integer("changed_by_user_id").notNull(),
+    previousRouteAuditRetentionDays: integer("previous_route_audit_retention_days").notNull(),
+    previousRendererErrorRetentionDays: integer("previous_renderer_error_retention_days").notNull(),
+    routeAuditRetentionDays: integer("route_audit_retention_days").notNull(),
+    rendererErrorRetentionDays: integer("renderer_error_retention_days").notNull(),
+    changedAt: bigint("changed_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("audit_retention_policy_changes_changed_idx").on(table.changedAt),
+    index("audit_retention_policy_changes_actor_idx").on(table.changedByUserId, table.changedAt),
+  ]
+);
+
+/** Global administrator-owned schedule for sanitized release-history export snapshots. */
+export const releaseHistoryExportSchedules = pgTable(
+  "release_history_export_schedules",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("schedule_key", { length: 32 }).notNull().default("global").unique(),
+    scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }).unique(),
+    cronExpression: varchar("cron_expression", { length: 64 }).notNull().default("0 0 9 * * 1"),
+    enabled: boolean("enabled").notNull().default(false),
+    statusFilter: varchar("status_filter", { length: 16 }).notNull().default("all"),
+    sortBy: varchar("sort_by", { length: 32 }).notNull().default("recordedAt"),
+    sortDirection: varchar("sort_direction", { length: 8 }).notNull().default("desc"),
+    selectedColumns: text("selected_columns").notNull(),
+    lastRunAt: bigint("last_run_at", { mode: "number" }),
+    lastRunStatus: varchar("last_run_status", { length: 20 }),
+    lastRunErrorCode: varchar("last_run_error_code", { length: 64 }),
+    lastRunRowCount: integer("last_run_row_count"),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  },
+  table => [index("release_history_export_schedule_task_idx").on(table.scheduleCronTaskUid)]
+);
+
+/** Bounded metadata for completed scheduled exports. CSV content and identities are never stored here. */
+export const releaseHistoryExportRuns = pgTable(
+  "release_history_export_runs",
+  {
+    id: serial("id").primaryKey(),
+    scheduleId: integer("schedule_id").notNull(),
+    scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }),
+    status: varchar("status", { length: 20 }).notNull(),
+    rowCount: integer("row_count").notNull().default(0),
+    truncated: boolean("truncated").notNull().default(false),
+    filename: varchar("filename", { length: 160 }),
+    csv: text("csv"),
+    generatedAt: bigint("generated_at", { mode: "number" }).notNull(),
+    errorCode: varchar("error_code", { length: 64 }),
+  },
+  table => [
+    index("release_history_export_runs_schedule_idx").on(table.scheduleId, table.generatedAt),
+    index("release_history_export_runs_generated_idx").on(table.generatedAt),
+  ]
+);
+
+/** Global acknowledgement of one sanitized repeat-renderer signature until newer evidence arrives. */
+export const rendererFailureAlertAcknowledgements = pgTable(
+  "renderer_failure_alert_acknowledgements",
+  {
+    id: serial("id").primaryKey(),
+    signature: varchar("signature", { length: 255 }).notNull().unique(),
+    templateKey: varchar("template_key", { length: 64 }).notNull(),
+    viewportMode: varchar("viewport_mode", { length: 16 }).notNull(),
+    darkMode: boolean("dark_mode").notNull().default(false),
+    errorCode: varchar("error_code", { length: 64 }).notNull(),
+    acknowledgedLatestOccurredAt: bigint("acknowledged_latest_occurred_at", { mode: "number" }).notNull(),
+    acknowledgedByUserId: integer("acknowledged_by_user_id").notNull(),
+    acknowledgedAt: bigint("acknowledged_at", { mode: "number" }).notNull(),
+  },
+  table => [index("renderer_failure_alert_acknowledged_idx").on(table.acknowledgedAt)]
+);
+
 /**
  * Privacy-minimized GitHub automation outcomes received through verified OIDC.
  * Raw tokens, workflow payloads, logs, diffs, and pull-request bodies are excluded.
