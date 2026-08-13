@@ -2018,6 +2018,17 @@
 - [x] Run focused email-flow and reusable workflow validation
 - [x] Publish the approved operations checkpoint and synchronize its exact tree to protected main
 
+## Customer outreach sender identity separation (Aug 12, 2026)
+- [x] Audit every customer review-request and follow-up email path for sender identity routing
+- [x] Require the connected user personal/business sender for customer outreach and prohibit Get Phame system senders on those paths
+- [x] Preserve Get Phame-domain sending only for administrator-to-user system communications
+- [x] Add sender-routing regression coverage and validate delivery behavior
+
+## Sender-routing release verification and protected-main synchronization (Aug 12, 2026)
+- [ ] Review retention audit metadata and current manual migration status
+- [ ] Run focused email sending flows with the sender-domain guard
+- [ ] Publish the approved sender-routing checkpoint and synchronize its exact tree to protected main
+
 ## Email template availability recovery (Aug 12, 2026)
 - [x] Investigate why the Send Request template selector shows only the default template
 - [x] Restore only verified missing saved templates without overwriting customized content
@@ -2062,3 +2073,8 @@
 - [x] Promote the reviewed legacy schema evidence and additive migration artifacts into managed source
 - [x] Run focused and release validation with database-source parity checks
 - [x] Publish the approved managed checkpoint and synchronize its exact tree to protected main
+
+## Sender-routing release verification and protected-main synchronization (Aug 13, 2026)
+- [x] Review retention audit metadata and current manual migration status
+- [x] Run focused email sending flows with the sender-domain guard
+- [x] Publish the approved sender-routing checkpoint and synchronize its exact tree to protected main
