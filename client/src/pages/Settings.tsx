@@ -1615,6 +1615,12 @@ export default function SettingsPage() {
   const [testEmailSentNotice, setTestEmailSentNotice] = useState(false);
   const [disconnectConfirmOpen, setDisconnectConfirmOpen] = useState(false);
 
+  useEffect(() => {
+    const focusSmtp = window.location.hash === "#smtp-settings" || new URLSearchParams(window.location.search).get("focus") === "smtp";
+    if (smtpLoading || !focusSmtp) return;
+    window.setTimeout(() => document.getElementById("smtp-settings")?.scrollIntoView({ block: "start" }), 0);
+  }, [smtpLoading]);
+
   // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
   const { data: smtpDetect } = trpc.smtp.detect.useQuery(
     { email: smtpEmail, host: smtpHost || undefined },
@@ -2417,7 +2423,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Email Connection (SMTP) ───────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div id="smtp-settings" className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
             <Mail size={18} className="rr-text-navy" />
             <h2
