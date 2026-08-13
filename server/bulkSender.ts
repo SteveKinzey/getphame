@@ -26,6 +26,11 @@ import {
 import { protectedProcedure, router } from "./_core/trpc";
 import { getDb } from "./db";
 import { decryptPassword, encryptPassword } from "./smtp";
+import {
+  clearOutboundDeliveryChannel,
+  resolveOutboundDeliveryChannel,
+  selectOutboundDeliveryChannel,
+} from "./outboundDeliveryChannel";
 
 type SmtpConnectionConfig = {
   host: string;
@@ -247,10 +252,26 @@ function buildSmtpConfig(
 
 export const bulkSenderRouter = router({
   status: protectedProcedure.query(async ({ ctx }) => {
-    const credentials = await getBulkSenderCreds(ctx.user.id);
-    if (!credentials) return { connected: false as const };
+    const [credentials, activeChannel] = await Promise.all([
+      getBulkSenderCreds(ctx.user.id),
+      resolveOutboundDeliveryChannel(ctx.user.id),
+    ]);
+    if (!credentials) return {
+      connected: false as const,
+      legacyPlatformConnection: false as const,
+      selectedForOutreach: false as const,
+    };
+    if (credentials.provider === "sendgrid") {
+      return {
+        connected: false as const,
+        legacyPlatformConnection: true as const,
+        selectedForOutreach: false as const,
+      };
+    }
     return {
       connected: credentials.connected === 1,
+      legacyPlatformConnection: false as const,
+      selectedForOutreach: activeChannel?.type === "bulk",
       provider: credentials.provider,
       fromEmail: credentials.fromEmail,
       fromName: credentials.fromName,
@@ -317,6 +338,8 @@ export const bulkSenderRouter = router({
         });
       }
 
+      await selectOutboundDeliveryChannel(ctx.user.id, "bulk");
+
       return { ok: true };
     }),
 
@@ -326,6 +349,7 @@ export const bulkSenderRouter = router({
     await db
       .delete(bulkSenderCredentials)
       .where(eq(bulkSenderCredentials.userId, ctx.user.id));
+    await clearOutboundDeliveryChannel(ctx.user.id, "bulk");
     return { ok: true };
   }),
 
@@ -344,7 +368,7 @@ export const bulkSenderRouter = router({
       });
     }
 
-    if (credentials.provider === "sendgrid" || credentials.provider === "mailgun" || credentials.provider === "postmark") {
+    if (credentials.provider === "mailgun" || credentials.provider === "postmark") {
       return testLegacyApiConnection(
         credentials.provider,
         secret,

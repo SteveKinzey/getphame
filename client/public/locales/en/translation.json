@@ -839,7 +839,7 @@
       "default": "Your email password"
     },
     "inlineHints": {
-      "google": "Not your regular Gmail password — use an App Password. Tap How to get it above.",
+      "google": "Not your regular account password — use an App Password. Tap How to get it above.",
       "icloud": "Use an App-Specific Password, not your Apple ID password. Tap How to get it above.",
       "zoho": "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above.",
       "aol": "Not your regular AOL password — use an App Password. Tap How to get it above.",
@@ -878,10 +878,10 @@
     "gmailGuideStep2": "Turn on 2-Step Verification if not already on",
     "gmailGuideStep3": "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create",
     "gmailGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
-    "gmailGuideTip": "Tip: use a dedicated reviews@gmail.com account to keep your main inbox separate.",
+    "gmailGuideTip": "Google shows the code once. Create a new App Password after changing your Google password, and revoke it when you disconnect Get Phame.",
     "googleWorkspaceGuideTitle": "Google Workspace App Password — 4 steps",
-    "googleWorkspaceGuideStep1": "Ask your Workspace admin to enable 2-Step Verification in admin.google.com",
-    "googleWorkspaceGuideStep2": "Sign in to myaccount.google.com with your work account → Security",
+    "googleWorkspaceGuideStep1": "Sign in to myaccount.google.com with your work account → Security",
+    "googleWorkspaceGuideStep2": "Turn on 2-Step Verification if it is available for your account",
     "googleWorkspaceGuideStep3": "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create",
     "googleWorkspaceGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
     "outlookGuideTitle": "Microsoft App Password — 4 steps",
@@ -939,7 +939,14 @@
     "disconnectError": "Could not disconnect account: {{message}}",
     "noEmailConnected": "No email connected",
     "emailNotConnectedTitle": "Email not connected",
-    "emailNotConnectedDesc": "Connect your email account in Settings. Works with Gmail, Outlook, Yahoo, or any business email."
+    "emailNotConnectedDesc": "Connect your email account in Settings. Works with Gmail, Outlook, Yahoo, or any business email.",
+    "googleWorkspaceGuideTip": "If App Passwords is unavailable, your organisation may restrict it, require security-key-only verification, or use Advanced Protection. Ask your Workspace administrator for the approved SMTP or OAuth connection method.",
+    "deliveryStatus": {
+      "active": "Active for customer review requests",
+      "notSelected": "Connected, but not selected for customer review requests",
+      "bulkActive": "Connected, but your bulk-mail service is active for customer review requests",
+      "needsAttention": "Needs attention — update your SMTP details and reconnect before sending customer review requests"
+    }
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2862,7 +2869,10 @@
       "fromName": "From name",
       "compliance": "Only send to people who have consented to receive this outreach. Get Phame preserves unsubscribe handling and compliance safeguards.",
       "connecting": "Connecting…",
-      "connectAndTest": "Connect and test"
+      "connectAndTest": "Connect and test",
+      "legacyPlatformNotice": "A legacy platform mail connection was found, but it cannot be used for customer outreach. Connect a bulk-mail provider account that you own.",
+      "activeOutreach": "Active for customer review requests",
+      "notActive": "Connected, but not selected for customer review requests"
     }
   },
   "complianceGuide": {
@@ -4350,19 +4360,128 @@
     "copyFailed": "Copying the rendered HTML was blocked by this browser."
   },
   "adminRouteAudit": {
-    "eyebrow": "Production assurance", "title": "Production route audit", "description": "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched.", "run": "Run route audit", "running": "Auditing routes…", "viewHistory": "View history", "runningDescription": "Launching a clean browser for the current public sitemap. This can take up to two minutes.", "unavailable": "Audit runner unavailable", "completedWithIssues": "Audit completed with issues", "completed": "Audit completed successfully", "failureCode": "Failure code", "summary": "{{routes}} routes audited · {{failures}} failures", "resultRoutes": "Audited routes", "issue": "Needs review", "rendered": "Rendered", "passed": "Production route audit passed.", "failed": "Production route audit found issues.", "runFailed": "The production route audit could not run."
+    "eyebrow": "Production assurance",
+    "title": "Production route audit",
+    "description": "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched.",
+    "run": "Run route audit",
+    "running": "Auditing routes…",
+    "viewHistory": "View history",
+    "runningDescription": "Launching a clean browser for the current public sitemap. This can take up to two minutes.",
+    "unavailable": "Audit runner unavailable",
+    "completedWithIssues": "Audit completed with issues",
+    "completed": "Audit completed successfully",
+    "failureCode": "Failure code",
+    "summary": "{{routes}} routes audited · {{failures}} failures",
+    "resultRoutes": "Audited routes",
+    "issue": "Needs review",
+    "rendered": "Rendered",
+    "passed": "Production route audit passed.",
+    "failed": "Production route audit found issues.",
+    "runFailed": "The production route audit could not run."
   },
   "adminAuditLog": {
-    "back": "Admin dashboard", "title": "Audit and renderer history", "description": "Administrator-only operational history. Stored records contain sanitized audit signals, never customer content, email HTML, cookies, or browser logs.", "refresh": "Refresh history", "routeTitle": "Production route audits", "routeDescription": "Manual browser checks of sitemap-discovered public routes, newest first.", "runAnother": "Run another audit →", "routeError": "Route-audit history could not be loaded.", "routes": "routes", "issuesFound": "{{count}} issues", "passed": "Passed", "routeEmpty": "No production route audits have been recorded yet.", "routePagination": "Route audit history pagination", "rendererTitle": "Email-preview renderer errors", "rendererDescription": "Sanitized signals captured only if an administrator preview cannot render verified content.", "rendererError": "Renderer-error history could not be loaded.", "rendererEmpty": "No renderer errors have been recorded.", "rendererPagination": "Renderer-error history pagination", "records": "records", "previous": "Previous", "next": "Next", "darkPreview": "dark", "releaseTitle": "Release history", "releaseDescription": "Sanitized release-lineage records with matching status, sorting, and a bounded export preview.", "retention": "Retention settings", "releaseStatus": "Parity status", "allStatuses": "All statuses", "matched": "Matched", "needsReview": "Needs review", "releaseSort": "Sort by", "releaseSortDate": "Release time", "releaseSortCheckpoint": "Checkpoint", "releaseDirection": "Direction", "newestFirst": "Newest first", "oldestFirst": "Oldest first", "releaseExport": "Preview export", "releaseExportFailed": "Release-history export could not be prepared.", "releaseError": "Release history could not be loaded.", "releaseEmpty": "No verified release records have been saved yet.", "releasePagination": "Release history pagination", "time": "Time", "checkpoint": "Checkpoint", "mainCommit": "Main commit", "parity": "Parity", "releaseExportTitle": "Preview release-history export", "releaseExportDescription": "Review the exact bounded, sanitized snapshot before copying or downloading it.", "releaseExportSummary": "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched", "releaseExportTruncated": "The export cap includes {{exported}} of {{matched}} matching records.", "close": "Close", "copied": "Copied", "copy": "Copy CSV", "copyFailed": "Copy failed — retry", "download": "Download CSV"
+    "back": "Admin dashboard",
+    "title": "Audit and renderer history",
+    "description": "Administrator-only operational history. Stored records contain sanitized audit signals, never customer content, email HTML, cookies, or browser logs.",
+    "refresh": "Refresh history",
+    "routeTitle": "Production route audits",
+    "routeDescription": "Manual browser checks of sitemap-discovered public routes, newest first.",
+    "runAnother": "Run another audit →",
+    "routeError": "Route-audit history could not be loaded.",
+    "routes": "routes",
+    "issuesFound": "{{count}} issues",
+    "passed": "Passed",
+    "routeEmpty": "No production route audits have been recorded yet.",
+    "routePagination": "Route audit history pagination",
+    "rendererTitle": "Email-preview renderer errors",
+    "rendererDescription": "Sanitized signals captured only if an administrator preview cannot render verified content.",
+    "rendererError": "Renderer-error history could not be loaded.",
+    "rendererEmpty": "No renderer errors have been recorded.",
+    "rendererPagination": "Renderer-error history pagination",
+    "records": "records",
+    "previous": "Previous",
+    "next": "Next",
+    "darkPreview": "dark",
+    "releaseTitle": "Release history",
+    "releaseDescription": "Sanitized release-lineage records with matching status, sorting, and a bounded export preview.",
+    "retention": "Retention settings",
+    "releaseStatus": "Parity status",
+    "allStatuses": "All statuses",
+    "matched": "Matched",
+    "needsReview": "Needs review",
+    "releaseSort": "Sort by",
+    "releaseSortDate": "Release time",
+    "releaseSortCheckpoint": "Checkpoint",
+    "releaseDirection": "Direction",
+    "newestFirst": "Newest first",
+    "oldestFirst": "Oldest first",
+    "releaseExport": "Preview export",
+    "releaseExportFailed": "Release-history export could not be prepared.",
+    "releaseError": "Release history could not be loaded.",
+    "releaseEmpty": "No verified release records have been saved yet.",
+    "releasePagination": "Release history pagination",
+    "time": "Time",
+    "checkpoint": "Checkpoint",
+    "mainCommit": "Main commit",
+    "parity": "Parity",
+    "releaseExportTitle": "Preview release-history export",
+    "releaseExportDescription": "Review the exact bounded, sanitized snapshot before copying or downloading it.",
+    "releaseExportSummary": "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched",
+    "releaseExportTruncated": "The export cap includes {{exported}} of {{matched}} matching records.",
+    "close": "Close",
+    "copied": "Copied",
+    "copy": "Copy CSV",
+    "copyFailed": "Copy failed — retry",
+    "download": "Download CSV"
   },
   "adminAuditRetention": {
-    "back": "Audit history", "title": "Audit retention controls", "description": "Choose how long sanitized production-route and renderer-error diagnostics remain available to administrators.", "controlsTitle": "Data lifecycle", "controlsDescription": "Changing a window immediately removes only records older than the new limit. Records remain sanitized and administrator-only.", "routeDays": "Route audit history", "routeDaysHelp": "Days to retain sanitized public-route audit outcomes.", "rendererDays": "Renderer-error history", "rendererDaysHelp": "Days to retain sanitized preview-renderer failure signals.", "days": "days", "invalid": "Choose a retention window from 7 to 3,650 days.", "save": "Save and apply retention", "saved": "Retention controls saved and expired diagnostic records were pruned.", "saveFailed": "Retention controls could not be saved.", "confirmTitle": "Apply retention limits?", "confirmDescription": "Expired sanitized diagnostics will be permanently removed now. This cannot be undone.", "confirmSummary": "Route audits: {{routeDays}} days · Renderer errors: {{rendererDays}} days", "cancel": "Cancel", "confirm": "Apply and prune"
+    "back": "Audit history",
+    "title": "Audit retention controls",
+    "description": "Choose how long sanitized production-route and renderer-error diagnostics remain available to administrators.",
+    "controlsTitle": "Data lifecycle",
+    "controlsDescription": "Changing a window immediately removes only records older than the new limit. Records remain sanitized and administrator-only.",
+    "routeDays": "Route audit history",
+    "routeDaysHelp": "Days to retain sanitized public-route audit outcomes.",
+    "rendererDays": "Renderer-error history",
+    "rendererDaysHelp": "Days to retain sanitized preview-renderer failure signals.",
+    "days": "days",
+    "invalid": "Choose a retention window from 7 to 3,650 days.",
+    "save": "Save and apply retention",
+    "saved": "Retention controls saved and expired diagnostic records were pruned.",
+    "saveFailed": "Retention controls could not be saved.",
+    "confirmTitle": "Apply retention limits?",
+    "confirmDescription": "Expired sanitized diagnostics will be permanently removed now. This cannot be undone.",
+    "confirmSummary": "Route audits: {{routeDays}} days · Renderer errors: {{rendererDays}} days",
+    "cancel": "Cancel",
+    "confirm": "Apply and prune"
   },
   "adminRendererTrend": {
-    "title": "Repeat email-preview renderer failures", "description": "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.", "review": "Review history"
+    "title": "Repeat email-preview renderer failures",
+    "description": "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.",
+    "review": "Review history"
+  },
+  "adminExportSchedule": {
+    "title": "Automated release-history report",
+    "description": "Create a bounded sanitized CSV snapshot on a UTC schedule. The latest report remains available to administrators in Audit history.",
+    "enabled": "Enable automated reports",
+    "cron": "UTC schedule",
+    "cronHelp": "Use six fields: seconds, minutes, hours, day, month, weekday. Default: Monday at 09:00 UTC.",
+    "save": "Save report schedule",
+    "saved": "Automated release-history reporting updated.",
+    "saveFailed": "Automated report settings could not be saved.",
+    "lastRun": "Last report: {{date}} · {{count}} rows",
+    "recentRuns": "Recent automated reports",
+    "ready": "Ready",
+    "failed": "Failed",
+    "rows": "rows"
+  },
+  "adminRetentionHistory": {
+    "title": "Recent retention changes",
+    "summary": "Route: {{fromRoute}} → {{toRoute}} days · Renderer: {{fromRenderer}} → {{toRenderer}} days"
+  },
+  "adminRendererAcknowledgement": {
+    "action": "Acknowledge",
+    "saved": "Renderer alert acknowledged until newer evidence is recorded.",
+    "failed": "The renderer alert could not be acknowledged."
   }
-,
-  "adminExportSchedule": {"title":"Automated release-history report","description":"Create a bounded sanitized CSV snapshot on a UTC schedule. The latest report remains available to administrators in Audit history.","enabled":"Enable automated reports","cron":"UTC schedule","cronHelp":"Use six fields: seconds, minutes, hours, day, month, weekday. Default: Monday at 09:00 UTC.","save":"Save report schedule","saved":"Automated release-history reporting updated.","saveFailed":"Automated report settings could not be saved.","lastRun":"Last report: {{date}} · {{count}} rows","recentRuns":"Recent automated reports","ready":"Ready","failed":"Failed","rows":"rows"},
-  "adminRetentionHistory": {"title":"Recent retention changes","summary":"Route: {{fromRoute}} → {{toRoute}} days · Renderer: {{fromRenderer}} → {{toRenderer}} days"},
-  "adminRendererAcknowledgement": {"action":"Acknowledge","saved":"Renderer alert acknowledged until newer evidence is recorded.","failed":"The renderer alert could not be acknowledged."}
 }

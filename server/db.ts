@@ -585,8 +585,12 @@ export async function createCustomerRequest(req: InsertCustomerRequest): Promise
   return Number((result as unknown as { insertId: number }).insertId);
 }
 
-export async function getCustomerRequests(userId: number, limit = 50) {
-  const db = await getDb();
+export async function getCustomerRequests(
+  userId: number,
+  limit = 50,
+  database?: Awaited<ReturnType<typeof getDb>>,
+) {
+  const db = database ?? await getDb();
   if (!db) return [];
   return db
     .select()

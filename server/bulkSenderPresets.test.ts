@@ -12,17 +12,20 @@ import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackR
 import { resolveSafeCustomSmtpHost } from "./bulkSender";
 
 const settingsSource = readFileSync(resolve(process.cwd(), "client/src/pages/Settings.tsx"), "utf8");
+const mailDeliveryNoticeSource = readFileSync(resolve(process.cwd(), "client/src/components/MailDeliveryStateNotice.tsx"), "utf8");
 const serverSource = readFileSync(resolve(process.cwd(), "server/bulkSender.ts"), "utf8");
 const schemaSource = readFileSync(resolve(process.cwd(), "drizzle/schema.ts"), "utf8");
+const deliveryRoutingSource = readFileSync(resolve(process.cwd(), "server/outboundDeliveryChannel.ts"), "utf8");
 const presetDocsSource = readFileSync(resolve(process.cwd(), "docs/bulk-sender-smtp-presets.md"), "utf8");
 const mailjetResearchSource = readFileSync(resolve(process.cwd(), "docs/mailjet-smtp-research.md"), "utf8");
 const supportedLocales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 
 describe("Bulk Sender provider presets", () => {
-  it("ships all 13 source-backed providers, including Mailjet", () => {
-    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(13);
+  it("ships only user-owned bulk providers, including Mailjet", () => {
+    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(12);
     expect(Object.keys(BULK_SENDER_PRESETS)).toEqual([...BULK_SENDER_PROVIDER_IDS]);
     expect(BULK_SENDER_PROVIDER_IDS).toContain("mailjet");
+    expect(BULK_SENDER_PROVIDER_IDS).not.toContain("sendgrid");
   });
 
   it("gives every provider safe credential guidance and an official HTTPS setup link", () => {
@@ -45,8 +48,7 @@ describe("Bulk Sender provider presets", () => {
     expect(resolveBulkSenderHost("sparkpost", "eu")).toBe("smtp.eu.sparkpostmail.com");
   });
 
-  it("applies fixed and token-as-username provider semantics without a second secret field", () => {
-    expect(resolveBulkSenderUsername("sendgrid", "ignored", "secret")).toBe("apikey");
+  it("applies supported fixed and token-as-username provider semantics without a second secret field", () => {
     expect(resolveBulkSenderUsername("sparkpost", "ignored", "secret")).toBe("SMTP_Injection");
     expect(resolveBulkSenderUsername("postmark", "ignored", "server-token")).toBe("server-token");
     expect(resolveBulkSenderUsername("amazon_ses", " ses-user ", "secret")).toBe("ses-user");
@@ -109,6 +111,15 @@ describe("Bulk Sender transport safeguards", () => {
     expect(schemaSource).toContain('varchar("smtpUsername"');
     expect(schemaSource).toContain('varchar("providerRegion"');
   });
+
+  it("requires an explicit user-owned channel and excludes legacy platform SendGrid from outreach resolution", () => {
+    expect(deliveryRoutingSource).toContain('preference?.selectedChannel === "bulk"');
+    expect(deliveryRoutingSource).toContain('preference?.selectedChannel !== "personal"');
+    expect(deliveryRoutingSource).toContain('ne(bulkSenderCredentials.provider, "sendgrid")');
+    expect(serverSource).toContain('legacyPlatformConnection: true as const');
+    expect(serverSource).toContain('selectedForOutreach: activeChannel?.type === "bulk"');
+    expect(serverSource).toContain('await selectOutboundDeliveryChannel(ctx.user.id, "bulk")');
+  });
 });
 
 describe("Bulk Sender Settings experience", () => {
@@ -119,6 +130,8 @@ describe("Bulk Sender Settings experience", () => {
     expect(settingsSource).toContain('id="bulk-sender-from-email"');
     expect(settingsSource).toContain("Connect and test");
     expect(settingsSource).toContain("Credentials are tested without sending a message");
+    expect(mailDeliveryNoticeSource).toContain("Active for customer review requests");
+    expect(mailDeliveryNoticeSource).toContain("Needs attention — update your SMTP details and reconnect");
   });
 
   it("shows a legacy-mode migration notice without exposing stored credentials", () => {

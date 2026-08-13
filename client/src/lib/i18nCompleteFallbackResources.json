@@ -595,7 +595,7 @@
         "zoho": "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above.",
         "aol": "Not your regular AOL password — use an App Password. Tap How to get it above.",
         "fastmail": "Not your regular Fastmail password — use an App Password. Tap How to get it above.",
-        "google": "Not your regular Gmail password — use an App Password. Tap How to get it above.",
+        "google": "Not your regular account password — use an App Password. Tap How to get it above.",
         "proton": "ProtonMail requires the Proton Bridge app — use its SMTP password, not your Proton login. Tap How to get it above.",
         "icloud": "Use an App-Specific Password, not your Apple ID password. Tap How to get it above."
       },
@@ -606,7 +606,25 @@
       "noEmailConnected": "No email connected",
       "notConnectedDescription": "No email connected. Enter your details below to start sending review requests.",
       "displayNameHelp": "Shown as the sender name in your customer's inbox.",
-      "emailAddressLabel": "Your Email Address *"
+      "emailAddressLabel": "Your Email Address *",
+      "gmailGuideTip": "Google shows the code once. Create a new App Password after changing your Google password, and revoke it when you disconnect Get Phame.",
+      "googleWorkspaceGuideStep1": "Sign in to myaccount.google.com with your work account → Security",
+      "googleWorkspaceGuideStep2": "Turn on 2-Step Verification if it is available for your account",
+      "googleWorkspaceGuideTip": "If App Passwords is unavailable, your organisation may restrict it, require security-key-only verification, or use Advanced Protection. Ask your Workspace administrator for the approved SMTP or OAuth connection method.",
+      "gmailGuideTitle": "Gmail App Password — 4 steps",
+      "gmailGuideStep1": "Go to myaccount.google.com → Security",
+      "gmailGuideStep2": "Turn on 2-Step Verification if not already on",
+      "gmailGuideStep3": "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create",
+      "gmailGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
+      "googleWorkspaceGuideTitle": "Google Workspace App Password — 4 steps",
+      "googleWorkspaceGuideStep3": "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create",
+      "googleWorkspaceGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
+      "deliveryStatus": {
+        "active": "Active for customer review requests",
+        "notSelected": "Connected, but not selected for customer review requests",
+        "bulkActive": "Connected, but your bulk-mail service is active for customer review requests",
+        "needsAttention": "Needs attention — update your SMTP details and reconnect before sending customer review requests"
+      }
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -702,6 +720,11 @@
         "uploadAvatar": "Upload photo",
         "avatarReadError": "We could not read that image. Try another file.",
         "emailHelp": "Your sign-in email is managed by your authentication provider."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "A legacy platform mail connection was found, but it cannot be used for customer outreach. Connect a bulk-mail provider account that you own.",
+        "activeOutreach": "Active for customer review requests",
+        "notActive": "Connected, but not selected for customer review requests"
       }
     },
     "profile": {
@@ -1605,13 +1628,106 @@
       "copyFailed": "Copying the rendered HTML was blocked by this browser."
     },
     "adminRouteAudit": {
-      "eyebrow": "Production assurance", "title": "Production route audit", "description": "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched.", "run": "Run route audit", "running": "Auditing routes…", "viewHistory": "View history", "runningDescription": "Launching a clean browser for the current public sitemap. This can take up to two minutes.", "unavailable": "Audit runner unavailable", "completedWithIssues": "Audit completed with issues", "completed": "Audit completed successfully", "failureCode": "Failure code", "summary": "{{routes}} routes audited · {{failures}} failures", "resultRoutes": "Audited routes", "issue": "Needs review", "rendered": "Rendered", "passed": "Production route audit passed.", "failed": "Production route audit found issues.", "runFailed": "The production route audit could not run."
+      "eyebrow": "Production assurance",
+      "title": "Production route audit",
+      "description": "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched.",
+      "run": "Run route audit",
+      "running": "Auditing routes…",
+      "viewHistory": "View history",
+      "runningDescription": "Launching a clean browser for the current public sitemap. This can take up to two minutes.",
+      "unavailable": "Audit runner unavailable",
+      "completedWithIssues": "Audit completed with issues",
+      "completed": "Audit completed successfully",
+      "failureCode": "Failure code",
+      "summary": "{{routes}} routes audited · {{failures}} failures",
+      "resultRoutes": "Audited routes",
+      "issue": "Needs review",
+      "rendered": "Rendered",
+      "passed": "Production route audit passed.",
+      "failed": "Production route audit found issues.",
+      "runFailed": "The production route audit could not run."
     },
     "adminAuditLog": {
-      "back": "Admin dashboard", "title": "Audit and renderer history", "description": "Administrator-only operational history. Stored records contain sanitized audit signals, never customer content, email HTML, cookies, or browser logs.", "refresh": "Refresh history", "routeTitle": "Production route audits", "routeDescription": "Manual browser checks of sitemap-discovered public routes, newest first.", "runAnother": "Run another audit →", "routeError": "Route-audit history could not be loaded.", "routes": "routes", "issuesFound": "{{count}} issues", "passed": "Passed", "routeEmpty": "No production route audits have been recorded yet.", "routePagination": "Route audit history pagination", "rendererTitle": "Email-preview renderer errors", "rendererDescription": "Sanitized signals captured only if an administrator preview cannot render verified content.", "rendererError": "Renderer-error history could not be loaded.", "rendererEmpty": "No renderer errors have been recorded.", "rendererPagination": "Renderer-error history pagination", "records": "records", "previous": "Previous", "next": "Next", "darkPreview": "dark", "releaseTitle": "Release history", "releaseDescription": "Sanitized release-lineage records with matching status, sorting, and a bounded export preview.", "retention": "Retention settings", "releaseStatus": "Parity status", "allStatuses": "All statuses", "matched": "Matched", "needsReview": "Needs review", "releaseSort": "Sort by", "releaseSortDate": "Release time", "releaseSortCheckpoint": "Checkpoint", "releaseDirection": "Direction", "newestFirst": "Newest first", "oldestFirst": "Oldest first", "releaseExport": "Preview export", "releaseExportFailed": "Release-history export could not be prepared.", "releaseError": "Release history could not be loaded.", "releaseEmpty": "No verified release records have been saved yet.", "releasePagination": "Release history pagination", "time": "Time", "checkpoint": "Checkpoint", "mainCommit": "Main commit", "parity": "Parity", "releaseExportTitle": "Preview release-history export", "releaseExportDescription": "Review the exact bounded, sanitized snapshot before copying or downloading it.", "releaseExportSummary": "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched", "releaseExportTruncated": "The export cap includes {{exported}} of {{matched}} matching records.", "close": "Close", "copied": "Copied", "copy": "Copy CSV", "copyFailed": "Copy failed — retry", "download": "Download CSV"
+      "back": "Admin dashboard",
+      "title": "Audit and renderer history",
+      "description": "Administrator-only operational history. Stored records contain sanitized audit signals, never customer content, email HTML, cookies, or browser logs.",
+      "refresh": "Refresh history",
+      "routeTitle": "Production route audits",
+      "routeDescription": "Manual browser checks of sitemap-discovered public routes, newest first.",
+      "runAnother": "Run another audit →",
+      "routeError": "Route-audit history could not be loaded.",
+      "routes": "routes",
+      "issuesFound": "{{count}} issues",
+      "passed": "Passed",
+      "routeEmpty": "No production route audits have been recorded yet.",
+      "routePagination": "Route audit history pagination",
+      "rendererTitle": "Email-preview renderer errors",
+      "rendererDescription": "Sanitized signals captured only if an administrator preview cannot render verified content.",
+      "rendererError": "Renderer-error history could not be loaded.",
+      "rendererEmpty": "No renderer errors have been recorded.",
+      "rendererPagination": "Renderer-error history pagination",
+      "records": "records",
+      "previous": "Previous",
+      "next": "Next",
+      "darkPreview": "dark",
+      "releaseTitle": "Release history",
+      "releaseDescription": "Sanitized release-lineage records with matching status, sorting, and a bounded export preview.",
+      "retention": "Retention settings",
+      "releaseStatus": "Parity status",
+      "allStatuses": "All statuses",
+      "matched": "Matched",
+      "needsReview": "Needs review",
+      "releaseSort": "Sort by",
+      "releaseSortDate": "Release time",
+      "releaseSortCheckpoint": "Checkpoint",
+      "releaseDirection": "Direction",
+      "newestFirst": "Newest first",
+      "oldestFirst": "Oldest first",
+      "releaseExport": "Preview export",
+      "releaseExportFailed": "Release-history export could not be prepared.",
+      "releaseError": "Release history could not be loaded.",
+      "releaseEmpty": "No verified release records have been saved yet.",
+      "releasePagination": "Release history pagination",
+      "time": "Time",
+      "checkpoint": "Checkpoint",
+      "mainCommit": "Main commit",
+      "parity": "Parity",
+      "releaseExportTitle": "Preview release-history export",
+      "releaseExportDescription": "Review the exact bounded, sanitized snapshot before copying or downloading it.",
+      "releaseExportSummary": "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched",
+      "releaseExportTruncated": "The export cap includes {{exported}} of {{matched}} matching records.",
+      "close": "Close",
+      "copied": "Copied",
+      "copy": "Copy CSV",
+      "copyFailed": "Copy failed — retry",
+      "download": "Download CSV"
     },
-    "adminAuditRetention": {"back": "Audit history", "title": "Audit retention controls", "description": "Choose how long sanitized production-route and renderer-error diagnostics remain available to administrators.", "controlsTitle": "Data lifecycle", "controlsDescription": "Changing a window immediately removes only records older than the new limit. Records remain sanitized and administrator-only.", "routeDays": "Route audit history", "routeDaysHelp": "Days to retain sanitized public-route audit outcomes.", "rendererDays": "Renderer-error history", "rendererDaysHelp": "Days to retain sanitized preview-renderer failure signals.", "days": "days", "invalid": "Choose a retention window from 7 to 3,650 days.", "save": "Save and apply retention", "saved": "Retention controls saved and expired diagnostic records were pruned.", "saveFailed": "Retention controls could not be saved.", "confirmTitle": "Apply retention limits?", "confirmDescription": "Expired sanitized diagnostics will be permanently removed now. This cannot be undone.", "confirmSummary": "Route audits: {{routeDays}} days · Renderer errors: {{rendererDays}} days", "cancel": "Cancel", "confirm": "Apply and prune"},
-    "adminRendererTrend": {"title": "Repeat email-preview renderer failures", "description": "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.", "review": "Review history"},
+    "adminAuditRetention": {
+      "back": "Audit history",
+      "title": "Audit retention controls",
+      "description": "Choose how long sanitized production-route and renderer-error diagnostics remain available to administrators.",
+      "controlsTitle": "Data lifecycle",
+      "controlsDescription": "Changing a window immediately removes only records older than the new limit. Records remain sanitized and administrator-only.",
+      "routeDays": "Route audit history",
+      "routeDaysHelp": "Days to retain sanitized public-route audit outcomes.",
+      "rendererDays": "Renderer-error history",
+      "rendererDaysHelp": "Days to retain sanitized preview-renderer failure signals.",
+      "days": "days",
+      "invalid": "Choose a retention window from 7 to 3,650 days.",
+      "save": "Save and apply retention",
+      "saved": "Retention controls saved and expired diagnostic records were pruned.",
+      "saveFailed": "Retention controls could not be saved.",
+      "confirmTitle": "Apply retention limits?",
+      "confirmDescription": "Expired sanitized diagnostics will be permanently removed now. This cannot be undone.",
+      "confirmSummary": "Route audits: {{routeDays}} days · Renderer errors: {{rendererDays}} days",
+      "cancel": "Cancel",
+      "confirm": "Apply and prune"
+    },
+    "adminRendererTrend": {
+      "title": "Repeat email-preview renderer failures",
+      "description": "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.",
+      "review": "Review history"
+    },
     "bulkSendDialog": {
       "consentCheck": "I confirm customers have consented to be contacted by my business via email and/or text"
     },
@@ -1643,7 +1759,6 @@
       "saved": "Renderer alert acknowledged until newer evidence is recorded.",
       "failed": "The renderer alert could not be acknowledged."
     }
-
   },
   "es": {
     "firstVisitWelcome": {
@@ -2246,7 +2361,7 @@
         "zoho": "Habilita primero el acceso SMTP en Zoho y luego usa tu contraseña habitual de Zoho. Toca How to get it arriba.",
         "aol": "No es tu contraseña habitual de AOL —usa una Contraseña de aplicación. Pulsa 'Cómo obtenerlo' arriba.",
         "fastmail": "No es tu contraseña habitual de Fastmail —usa una Contraseña de aplicación. Pulsa 'Cómo obtenerlo' arriba.",
-        "google": "No es tu contraseña habitual de Gmail —usa una Contraseña de aplicación. Pulsa 'Cómo obtenerlo' arriba.",
+        "google": "No uses la contraseña habitual de tu cuenta: usa una contraseña de aplicación. Toca «Cómo obtenerla» arriba.",
         "proton": "ProtonMail requiere la app Proton Bridge: usa su contraseña SMTP, no tu inicio de sesión de Proton. Toca Cómo obtenerla arriba.",
         "icloud": "Usa una contraseña específica de la app, no la contraseña de tu Apple ID. Toca 'Cómo obtenerla' arriba."
       },
@@ -2259,8 +2374,8 @@
       "displayNameHelp": "Mostrado como el nombre del remitente en la bandeja de entrada de tu cliente.",
       "emailAddressLabel": "Tu dirección de correo electrónico *",
       "testConnection": "Probar conexión",
-      "googleWorkspaceGuideStep2": "Inicia sesión en myaccount.google.com con tu cuenta de trabajo → Seguridad",
-      "googleWorkspaceGuideStep3": "Ve a myaccount.google.com/apppasswords → nómbralo Get Phame → haz clic en Crear",
+      "googleWorkspaceGuideStep2": "Activa la verificación en dos pasos si está disponible para tu cuenta",
+      "googleWorkspaceGuideStep3": "Ve a myaccount.google.com/apppasswords → nómbrala Get Phame → haz clic en Crear",
       "outlookGuideTip": "Microsoft 365 (cuentas de trabajo): comunícate con tu administrador de TI para permitir SMTP AUTH en tu buzón.",
       "zohoGuideTitle": "Zoho Mail — Habilitar acceso SMTP",
       "zohoGuideStep4": "Cambia Permitir acceso SMTP a ACTIVADO, luego usa tu contraseña habitual de Zoho aquí",
@@ -2274,7 +2389,23 @@
       "fastmailGuideStep3": "Nómbralo Get Phame, selecciona SMTP, luego haz clic en Generar contraseña",
       "iCloudGuideStep1": "Ve a appleid.apple.com e inicia sesión",
       "iCloudGuideStep3": "Haz clic en Generar una contraseña específica de la aplicación..., nómbrala Get Phame, haz clic en Crear",
-      "iCloudTip": "La autenticación de dos factores debe estar habilitada para tu ID de Apple."
+      "iCloudTip": "La autenticación de dos factores debe estar habilitada para tu ID de Apple.",
+      "gmailGuideTip": "Google muestra el código una sola vez. Crea una nueva contraseña de aplicación después de cambiar tu contraseña de Google y revócala al desconectar Get Phame.",
+      "googleWorkspaceGuideStep1": "Inicia sesión en myaccount.google.com con tu cuenta de trabajo → Seguridad",
+      "googleWorkspaceGuideTip": "Si las contraseñas de aplicación no están disponibles, tu organización puede restringirlas, exigir verificación solo con llave de seguridad o usar Protección avanzada. Pide a tu administrador de Workspace el método aprobado de SMTP u OAuth.",
+      "gmailGuideTitle": "Contraseña de aplicación de Gmail — 4 pasos",
+      "gmailGuideStep1": "Ve a myaccount.google.com → Seguridad",
+      "gmailGuideStep2": "Activa la verificación en dos pasos si aún no está activada",
+      "gmailGuideStep3": "Ve a myaccount.google.com/apppasswords → nómbrala Get Phame → haz clic en Crear",
+      "gmailGuideStep4": "Copia el código de 16 caracteres y pégalo aquí; elimina todos los espacios",
+      "googleWorkspaceGuideTitle": "Contraseña de aplicación de Google Workspace — 4 pasos",
+      "googleWorkspaceGuideStep4": "Copia el código de 16 caracteres y pégalo aquí; elimina todos los espacios",
+      "deliveryStatus": {
+        "active": "Activo para solicitudes de reseñas de clientes",
+        "notSelected": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
+        "bulkActive": "Conectado, pero tu servicio de correo masivo está activo para solicitudes de reseñas de clientes",
+        "needsAttention": "Necesita atención: actualiza tus datos SMTP y vuelve a conectar antes de enviar solicitudes de reseñas de clientes"
+      }
     },
     "comparisonTable": {
       "feature": "Función",
@@ -2372,6 +2503,11 @@
         "uploadAvatar": "Subir foto",
         "avatarReadError": "No pudimos leer esa imagen. Prueba otro archivo.",
         "emailHelp": "El correo con el que inicias sesión está gestionado por tu proveedor de autenticación."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "Se encontró una conexión de correo heredada de la plataforma, pero no puede usarse para comunicación con clientes. Conecta una cuenta propia de proveedor de correo masivo.",
+        "activeOutreach": "Activo para solicitudes de reseñas de clientes",
+        "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes"
       }
     },
     "profile": {
@@ -3457,13 +3593,106 @@
       "copyFailed": "Este navegador bloqueó la copia del HTML renderizado."
     },
     "adminRouteAudit": {
-      "eyebrow": "Garantía de producción", "title": "Auditoría de rutas de producción", "description": "Comprueba de forma segura las rutas públicas del mapa del sitio para detectar errores de renderizado en el navegador. No se usan cuentas, formularios ni datos de clientes.", "run": "Ejecutar auditoría de rutas", "running": "Auditando rutas…", "viewHistory": "Ver historial", "runningDescription": "Se está iniciando un navegador limpio para el mapa del sitio público actual. Puede tardar hasta dos minutos.", "unavailable": "El ejecutor de auditoría no está disponible", "completedWithIssues": "La auditoría terminó con incidencias", "completed": "Auditoría completada correctamente", "failureCode": "Código de error", "summary": "{{routes}} rutas auditadas · {{failures}} fallos", "resultRoutes": "Rutas auditadas", "issue": "Requiere revisión", "rendered": "Renderizada", "passed": "La auditoría de rutas de producción se aprobó.", "failed": "La auditoría de rutas de producción encontró incidencias.", "runFailed": "No se pudo ejecutar la auditoría de rutas de producción."
+      "eyebrow": "Garantía de producción",
+      "title": "Auditoría de rutas de producción",
+      "description": "Comprueba de forma segura las rutas públicas del mapa del sitio para detectar errores de renderizado en el navegador. No se usan cuentas, formularios ni datos de clientes.",
+      "run": "Ejecutar auditoría de rutas",
+      "running": "Auditando rutas…",
+      "viewHistory": "Ver historial",
+      "runningDescription": "Se está iniciando un navegador limpio para el mapa del sitio público actual. Puede tardar hasta dos minutos.",
+      "unavailable": "El ejecutor de auditoría no está disponible",
+      "completedWithIssues": "La auditoría terminó con incidencias",
+      "completed": "Auditoría completada correctamente",
+      "failureCode": "Código de error",
+      "summary": "{{routes}} rutas auditadas · {{failures}} fallos",
+      "resultRoutes": "Rutas auditadas",
+      "issue": "Requiere revisión",
+      "rendered": "Renderizada",
+      "passed": "La auditoría de rutas de producción se aprobó.",
+      "failed": "La auditoría de rutas de producción encontró incidencias.",
+      "runFailed": "No se pudo ejecutar la auditoría de rutas de producción."
     },
     "adminAuditLog": {
-      "back": "Panel de administración", "title": "Historial de auditorías y renderizador", "description": "Historial operativo solo para administradores. Los registros almacenados contienen señales de auditoría depuradas, nunca contenido de clientes, HTML de correo, cookies ni registros del navegador.", "refresh": "Actualizar historial", "routeTitle": "Auditorías de rutas de producción", "routeDescription": "Comprobaciones manuales del navegador de rutas públicas detectadas en el mapa del sitio, de más reciente a más antigua.", "runAnother": "Ejecutar otra auditoría →", "routeError": "No se pudo cargar el historial de auditorías de rutas.", "routes": "rutas", "issuesFound": "{{count}} incidencias", "passed": "Aprobada", "routeEmpty": "Aún no se han registrado auditorías de rutas de producción.", "routePagination": "Paginación del historial de auditorías de rutas", "rendererTitle": "Errores del renderizador de vista previa de correo", "rendererDescription": "Señales depuradas capturadas solo si una vista previa de administrador no puede renderizar contenido verificado.", "rendererError": "No se pudo cargar el historial de errores del renderizador.", "rendererEmpty": "No se han registrado errores del renderizador.", "rendererPagination": "Paginación del historial de errores del renderizador", "records": "registros", "previous": "Anterior", "next": "Siguiente", "darkPreview": "oscura", "releaseTitle": "Historial de versiones", "releaseDescription": "Registros saneados de versiones con estado de coincidencia y vista previa de exportación.", "retention": "Ajustes de retención", "releaseStatus": "Estado de paridad", "allStatuses": "Todos los estados", "matched": "Coincidente", "needsReview": "Requiere revisión", "releaseSort": "Ordenar por", "releaseSortDate": "Hora de la versión", "releaseSortCheckpoint": "Punto de control", "releaseDirection": "Dirección", "newestFirst": "Más recientes primero", "oldestFirst": "Más antiguas primero", "releaseExport": "Vista previa de exportación", "releaseExportFailed": "No se pudo preparar la exportación.", "releaseError": "No se pudo cargar el historial de versiones.", "releaseEmpty": "No hay registros de versiones verificadas.", "releasePagination": "Paginación del historial de versiones", "time": "Hora", "checkpoint": "Punto de control", "mainCommit": "Confirmación principal", "parity": "Paridad", "releaseExportTitle": "Vista previa de exportación", "releaseExportDescription": "Revise la instantánea saneada antes de copiarla o descargarla.", "releaseExportSummary": "Vista previa de {{previewed}} de {{exported}} filas · {{matched}} coincidentes", "releaseExportTruncated": "El límite incluye {{exported}} de {{matched}} registros.", "close": "Cerrar", "copied": "Copiado", "copy": "Copiar CSV", "copyFailed": "No se pudo copiar; vuelva a intentarlo", "download": "Descargar CSV"
+      "back": "Panel de administración",
+      "title": "Historial de auditorías y renderizador",
+      "description": "Historial operativo solo para administradores. Los registros almacenados contienen señales de auditoría depuradas, nunca contenido de clientes, HTML de correo, cookies ni registros del navegador.",
+      "refresh": "Actualizar historial",
+      "routeTitle": "Auditorías de rutas de producción",
+      "routeDescription": "Comprobaciones manuales del navegador de rutas públicas detectadas en el mapa del sitio, de más reciente a más antigua.",
+      "runAnother": "Ejecutar otra auditoría →",
+      "routeError": "No se pudo cargar el historial de auditorías de rutas.",
+      "routes": "rutas",
+      "issuesFound": "{{count}} incidencias",
+      "passed": "Aprobada",
+      "routeEmpty": "Aún no se han registrado auditorías de rutas de producción.",
+      "routePagination": "Paginación del historial de auditorías de rutas",
+      "rendererTitle": "Errores del renderizador de vista previa de correo",
+      "rendererDescription": "Señales depuradas capturadas solo si una vista previa de administrador no puede renderizar contenido verificado.",
+      "rendererError": "No se pudo cargar el historial de errores del renderizador.",
+      "rendererEmpty": "No se han registrado errores del renderizador.",
+      "rendererPagination": "Paginación del historial de errores del renderizador",
+      "records": "registros",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "darkPreview": "oscura",
+      "releaseTitle": "Historial de versiones",
+      "releaseDescription": "Registros saneados de versiones con estado de coincidencia y vista previa de exportación.",
+      "retention": "Ajustes de retención",
+      "releaseStatus": "Estado de paridad",
+      "allStatuses": "Todos los estados",
+      "matched": "Coincidente",
+      "needsReview": "Requiere revisión",
+      "releaseSort": "Ordenar por",
+      "releaseSortDate": "Hora de la versión",
+      "releaseSortCheckpoint": "Punto de control",
+      "releaseDirection": "Dirección",
+      "newestFirst": "Más recientes primero",
+      "oldestFirst": "Más antiguas primero",
+      "releaseExport": "Vista previa de exportación",
+      "releaseExportFailed": "No se pudo preparar la exportación.",
+      "releaseError": "No se pudo cargar el historial de versiones.",
+      "releaseEmpty": "No hay registros de versiones verificadas.",
+      "releasePagination": "Paginación del historial de versiones",
+      "time": "Hora",
+      "checkpoint": "Punto de control",
+      "mainCommit": "Confirmación principal",
+      "parity": "Paridad",
+      "releaseExportTitle": "Vista previa de exportación",
+      "releaseExportDescription": "Revise la instantánea saneada antes de copiarla o descargarla.",
+      "releaseExportSummary": "Vista previa de {{previewed}} de {{exported}} filas · {{matched}} coincidentes",
+      "releaseExportTruncated": "El límite incluye {{exported}} de {{matched}} registros.",
+      "close": "Cerrar",
+      "copied": "Copiado",
+      "copy": "Copiar CSV",
+      "copyFailed": "No se pudo copiar; vuelva a intentarlo",
+      "download": "Descargar CSV"
     },
-    "adminAuditRetention": {"back": "Historial de auditorías", "title": "Controles de retención", "description": "Elija cuánto tiempo se guardan los diagnósticos saneados.", "controlsTitle": "Ciclo de datos", "controlsDescription": "Solo se eliminan los registros anteriores al nuevo límite.", "routeDays": "Historial de rutas", "routeDaysHelp": "Días de resultados de auditorías de rutas.", "rendererDays": "Historial del renderizador", "rendererDaysHelp": "Días de señales del renderizador.", "days": "días", "invalid": "Elija de 7 a 3.650 días.", "save": "Guardar y aplicar", "saved": "Controles guardados y registros caducados eliminados.", "saveFailed": "No se pudieron guardar los controles.", "confirmTitle": "¿Aplicar límites?", "confirmDescription": "Los diagnósticos caducados se eliminarán permanentemente.", "confirmSummary": "Rutas: {{routeDays}} días · Renderizador: {{rendererDays}} días", "cancel": "Cancelar", "confirm": "Aplicar y depurar"},
-    "adminRendererTrend": {"title": "Fallos repetidos del renderizador", "description": "{{count}} fallos de {{template}} en {{hours}} horas. Revise el historial antes de publicar.", "review": "Revisar historial"},
+    "adminAuditRetention": {
+      "back": "Historial de auditorías",
+      "title": "Controles de retención",
+      "description": "Elija cuánto tiempo se guardan los diagnósticos saneados.",
+      "controlsTitle": "Ciclo de datos",
+      "controlsDescription": "Solo se eliminan los registros anteriores al nuevo límite.",
+      "routeDays": "Historial de rutas",
+      "routeDaysHelp": "Días de resultados de auditorías de rutas.",
+      "rendererDays": "Historial del renderizador",
+      "rendererDaysHelp": "Días de señales del renderizador.",
+      "days": "días",
+      "invalid": "Elija de 7 a 3.650 días.",
+      "save": "Guardar y aplicar",
+      "saved": "Controles guardados y registros caducados eliminados.",
+      "saveFailed": "No se pudieron guardar los controles.",
+      "confirmTitle": "¿Aplicar límites?",
+      "confirmDescription": "Los diagnósticos caducados se eliminarán permanentemente.",
+      "confirmSummary": "Rutas: {{routeDays}} días · Renderizador: {{rendererDays}} días",
+      "cancel": "Cancelar",
+      "confirm": "Aplicar y depurar"
+    },
+    "adminRendererTrend": {
+      "title": "Fallos repetidos del renderizador",
+      "description": "{{count}} fallos de {{template}} en {{hours}} horas. Revise el historial antes de publicar.",
+      "review": "Revisar historial"
+    },
     "contactsTools": {
       "addConsentLabel": "Confirmo que este cliente ha dado su consentimiento para ser contactado por {businessName} por correo electrónico y/o texto sobre su experiencia y compras",
       "addConsentRequired": "La confirmación de consentimiento es obligatoria para agregar un contacto"
@@ -3492,7 +3721,6 @@
       "saved": "La alerta del renderizador se confirmó hasta que se registre evidencia más reciente.",
       "failed": "No se pudo confirmar la alerta del renderizador."
     }
-
   },
   "fr": {
     "firstVisitWelcome": {
@@ -4095,7 +4323,7 @@
         "zoho": "Activez d'abord l'accès SMTP dans Zoho, puis utilisez votre mot de passe Zoho habituel. Appuyez sur « Comment l'obtenir » ci‑dessus.",
         "aol": "Ce n'est pas votre mot de passe AOL habituel — utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci‑dessus.",
         "fastmail": "Ce n'est pas votre mot de passe Fastmail habituel — utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci‑dessus.",
-        "google": "Ce n'est pas votre mot de passe Gmail habituel — utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci‑dessus.",
+        "google": "N’utilisez pas le mot de passe habituel de votre compte : utilisez un mot de passe d’application. Appuyez sur « Comment l’obtenir » ci-dessus.",
         "proton": "ProtonMail nécessite l'application Proton Bridge — utilisez son mot de passe SMTP, pas vos identifiants Proton. Appuyez sur 'Comment l'obtenir' ci‑dessus.",
         "icloud": "Utilisez un mot de passe spécifique à l'application, pas votre mot de passe Apple ID. Appuyez sur « Comment l'obtenir » ci‑dessus."
       },
@@ -4110,8 +4338,8 @@
       "description": "Connectez votre compte e‑mail pour envoyer des demandes d'avis depuis votre propre adresse. Nous chiffrons votre mot de passe et ne le partageons jamais.",
       "disconnectSuccess": "Compte e‑mail déconnecté.",
       "passwordPlaceholderGmail": "Mot de passe d'application à 16 caractères (sans espaces)",
-      "googleWorkspaceGuideStep2": "Connectez-vous à myaccount.google.com avec votre compte professionnel → Sécurité",
-      "googleWorkspaceGuideStep3": "Allez sur myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
+      "googleWorkspaceGuideStep2": "Activez la validation en deux étapes si elle est disponible pour votre compte",
+      "googleWorkspaceGuideStep3": "Accédez à myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
       "outlookGuideTip": "Microsoft 365 (comptes professionnels) : contactez votre administrateur informatique pour autoriser SMTP AUTH pour votre boîte aux lettres.",
       "zohoGuideTitle": "Zoho Mail — Activer l'accès SMTP",
       "zohoGuideStep4": "Basculez « Autoriser l'accès SMTP » sur Activé, puis utilisez ici votre mot de passe Zoho habituel",
@@ -4125,7 +4353,23 @@
       "fastmailGuideStep3": "Nommez-le Get Phame, sélectionnez SMTP, puis cliquez sur Générer le mot de passe",
       "iCloudGuideStep1": "Allez sur appleid.apple.com et connectez-vous",
       "iCloudGuideStep3": "Cliquez sur Générer un mot de passe pour application..., nommez-le Get Phame, cliquez sur Créer",
-      "iCloudTip": "L'authentification à deux facteurs doit être activée pour votre identifiant Apple."
+      "iCloudTip": "L'authentification à deux facteurs doit être activée pour votre identifiant Apple.",
+      "gmailGuideTip": "Google n’affiche le code qu’une seule fois. Créez un nouveau mot de passe d’application après avoir changé votre mot de passe Google et révoquez-le lorsque vous déconnectez Get Phame.",
+      "googleWorkspaceGuideStep1": "Connectez-vous à myaccount.google.com avec votre compte professionnel → Sécurité",
+      "googleWorkspaceGuideTip": "Si les mots de passe d’application ne sont pas disponibles, votre organisation peut les limiter, exiger une vérification uniquement par clé de sécurité ou utiliser la Protection Avancée. Demandez à votre administrateur Workspace la méthode SMTP ou OAuth approuvée.",
+      "gmailGuideTitle": "Mot de passe d’application Gmail — 4 étapes",
+      "gmailGuideStep1": "Accédez à myaccount.google.com → Sécurité",
+      "gmailGuideStep2": "Activez la validation en deux étapes si elle n’est pas déjà activée",
+      "gmailGuideStep3": "Accédez à myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
+      "gmailGuideStep4": "Copiez le code à 16 caractères et collez-le ici — supprimez tous les espaces",
+      "googleWorkspaceGuideTitle": "Mot de passe d’application Google Workspace — 4 étapes",
+      "googleWorkspaceGuideStep4": "Copiez le code à 16 caractères et collez-le ici — supprimez tous les espaces",
+      "deliveryStatus": {
+        "active": "Actif pour les demandes d’avis clients",
+        "notSelected": "Connecté, mais non sélectionné pour les demandes d’avis clients",
+        "bulkActive": "Connecté, mais votre service d’envoi en volume est actif pour les demandes d’avis clients",
+        "needsAttention": "Attention requise : mettez à jour vos informations SMTP et reconnectez-vous avant d’envoyer des demandes d’avis clients"
+      }
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -4224,6 +4468,11 @@
         "uploadAvatar": "Téléverser une photo",
         "avatarReadError": "Nous n'avons pas pu lire cette image. Essayez un autre fichier.",
         "emailHelp": "Votre adresse e-mail de connexion est gérée par votre fournisseur d'authentification."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "Une ancienne connexion de messagerie de la plateforme a été détectée, mais elle ne peut pas être utilisée pour les communications clients. Connectez un compte de fournisseur d’envoi en volume qui vous appartient.",
+        "activeOutreach": "Actif pour les demandes d’avis clients",
+        "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients"
       }
     },
     "profile": {
@@ -5327,13 +5576,106 @@
       "copyFailed": "La copie du HTML rendu a été bloquée par ce navigateur."
     },
     "adminRouteAudit": {
-      "eyebrow": "Assurance de production", "title": "Audit des routes de production", "description": "Vérifie en toute sécurité les routes publiques du plan de site pour détecter les erreurs de rendu du navigateur. Aucun compte, formulaire ni donnée client n’est utilisé.", "run": "Lancer l’audit des routes", "running": "Audit des routes…", "viewHistory": "Voir l’historique", "runningDescription": "Lancement d’un navigateur propre pour le plan de site public actuel. Cette opération peut prendre jusqu’à deux minutes.", "unavailable": "Exécuteur d’audit indisponible", "completedWithIssues": "Audit terminé avec des problèmes", "completed": "Audit terminé avec succès", "failureCode": "Code d’échec", "summary": "{{routes}} routes auditées · {{failures}} échecs", "resultRoutes": "Routes auditées", "issue": "À examiner", "rendered": "Rendue", "passed": "L’audit des routes de production a réussi.", "failed": "L’audit des routes de production a détecté des problèmes.", "runFailed": "L’audit des routes de production n’a pas pu être exécuté."
+      "eyebrow": "Assurance de production",
+      "title": "Audit des routes de production",
+      "description": "Vérifie en toute sécurité les routes publiques du plan de site pour détecter les erreurs de rendu du navigateur. Aucun compte, formulaire ni donnée client n’est utilisé.",
+      "run": "Lancer l’audit des routes",
+      "running": "Audit des routes…",
+      "viewHistory": "Voir l’historique",
+      "runningDescription": "Lancement d’un navigateur propre pour le plan de site public actuel. Cette opération peut prendre jusqu’à deux minutes.",
+      "unavailable": "Exécuteur d’audit indisponible",
+      "completedWithIssues": "Audit terminé avec des problèmes",
+      "completed": "Audit terminé avec succès",
+      "failureCode": "Code d’échec",
+      "summary": "{{routes}} routes auditées · {{failures}} échecs",
+      "resultRoutes": "Routes auditées",
+      "issue": "À examiner",
+      "rendered": "Rendue",
+      "passed": "L’audit des routes de production a réussi.",
+      "failed": "L’audit des routes de production a détecté des problèmes.",
+      "runFailed": "L’audit des routes de production n’a pas pu être exécuté."
     },
     "adminAuditLog": {
-      "back": "Tableau de bord administrateur", "title": "Historique des audits et du rendu", "description": "Historique opérationnel réservé aux administrateurs. Les enregistrements contiennent des signaux d’audit assainis, jamais du contenu client, du HTML d’e-mail, des cookies ou des journaux de navigateur.", "refresh": "Actualiser l’historique", "routeTitle": "Audits des routes de production", "routeDescription": "Vérifications manuelles du navigateur pour les routes publiques détectées dans le plan de site, de la plus récente à la plus ancienne.", "runAnother": "Lancer un autre audit →", "routeError": "L’historique des audits de routes n’a pas pu être chargé.", "routes": "pages", "issuesFound": "{{count}} problèmes", "passed": "Réussi", "routeEmpty": "Aucun audit de route de production n’a encore été enregistré.", "routePagination": "Pagination de l’historique des audits de routes", "rendererTitle": "Erreurs du moteur d’aperçu des e-mails", "rendererDescription": "Signaux assainis capturés uniquement si un aperçu administrateur ne peut pas rendre du contenu vérifié.", "rendererError": "L’historique des erreurs de rendu n’a pas pu être chargé.", "rendererEmpty": "Aucune erreur de rendu n’a été enregistrée.", "rendererPagination": "Pagination de l’historique des erreurs de rendu", "records": "enregistrements", "previous": "Précédent", "next": "Suivant", "darkPreview": "sombre", "releaseTitle": "Historique des versions", "releaseDescription": "Historique de versions assaini avec correspondance et aperçu d’export.", "retention": "Paramètres de conservation", "releaseStatus": "État de parité", "allStatuses": "Tous les états", "matched": "Correspondant", "needsReview": "À examiner", "releaseSort": "Trier par", "releaseSortDate": "Heure de version", "releaseSortCheckpoint": "Point de contrôle", "releaseDirection": "Ordre", "newestFirst": "Plus récent d’abord", "oldestFirst": "Plus ancien d’abord", "releaseExport": "Aperçu de l’export", "releaseExportFailed": "L’export n’a pas pu être préparé.", "releaseError": "L’historique des versions n’a pas pu être chargé.", "releaseEmpty": "Aucune version vérifiée.", "releasePagination": "Pagination de l’historique des versions", "time": "Heure", "checkpoint": "Point de contrôle", "mainCommit": "Commit principal", "parity": "Parité", "releaseExportTitle": "Aperçu de l’export", "releaseExportDescription": "Examinez l’instantané assaini avant de le copier ou de le télécharger.", "releaseExportSummary": "Aperçu de {{previewed}} sur {{exported}} lignes · {{matched}} correspondantes", "releaseExportTruncated": "La limite inclut {{exported}} sur {{matched}} enregistrements.", "close": "Fermer", "copied": "Copié", "copy": "Copier le CSV", "copyFailed": "Échec de la copie — réessayez", "download": "Télécharger le CSV"
+      "back": "Tableau de bord administrateur",
+      "title": "Historique des audits et du rendu",
+      "description": "Historique opérationnel réservé aux administrateurs. Les enregistrements contiennent des signaux d’audit assainis, jamais du contenu client, du HTML d’e-mail, des cookies ou des journaux de navigateur.",
+      "refresh": "Actualiser l’historique",
+      "routeTitle": "Audits des routes de production",
+      "routeDescription": "Vérifications manuelles du navigateur pour les routes publiques détectées dans le plan de site, de la plus récente à la plus ancienne.",
+      "runAnother": "Lancer un autre audit →",
+      "routeError": "L’historique des audits de routes n’a pas pu être chargé.",
+      "routes": "pages",
+      "issuesFound": "{{count}} problèmes",
+      "passed": "Réussi",
+      "routeEmpty": "Aucun audit de route de production n’a encore été enregistré.",
+      "routePagination": "Pagination de l’historique des audits de routes",
+      "rendererTitle": "Erreurs du moteur d’aperçu des e-mails",
+      "rendererDescription": "Signaux assainis capturés uniquement si un aperçu administrateur ne peut pas rendre du contenu vérifié.",
+      "rendererError": "L’historique des erreurs de rendu n’a pas pu être chargé.",
+      "rendererEmpty": "Aucune erreur de rendu n’a été enregistrée.",
+      "rendererPagination": "Pagination de l’historique des erreurs de rendu",
+      "records": "enregistrements",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "darkPreview": "sombre",
+      "releaseTitle": "Historique des versions",
+      "releaseDescription": "Historique de versions assaini avec correspondance et aperçu d’export.",
+      "retention": "Paramètres de conservation",
+      "releaseStatus": "État de parité",
+      "allStatuses": "Tous les états",
+      "matched": "Correspondant",
+      "needsReview": "À examiner",
+      "releaseSort": "Trier par",
+      "releaseSortDate": "Heure de version",
+      "releaseSortCheckpoint": "Point de contrôle",
+      "releaseDirection": "Ordre",
+      "newestFirst": "Plus récent d’abord",
+      "oldestFirst": "Plus ancien d’abord",
+      "releaseExport": "Aperçu de l’export",
+      "releaseExportFailed": "L’export n’a pas pu être préparé.",
+      "releaseError": "L’historique des versions n’a pas pu être chargé.",
+      "releaseEmpty": "Aucune version vérifiée.",
+      "releasePagination": "Pagination de l’historique des versions",
+      "time": "Heure",
+      "checkpoint": "Point de contrôle",
+      "mainCommit": "Commit principal",
+      "parity": "Parité",
+      "releaseExportTitle": "Aperçu de l’export",
+      "releaseExportDescription": "Examinez l’instantané assaini avant de le copier ou de le télécharger.",
+      "releaseExportSummary": "Aperçu de {{previewed}} sur {{exported}} lignes · {{matched}} correspondantes",
+      "releaseExportTruncated": "La limite inclut {{exported}} sur {{matched}} enregistrements.",
+      "close": "Fermer",
+      "copied": "Copié",
+      "copy": "Copier le CSV",
+      "copyFailed": "Échec de la copie — réessayez",
+      "download": "Télécharger le CSV"
     },
-    "adminAuditRetention": {"back": "Historique des audits", "title": "Contrôles de conservation", "description": "Choisissez la durée de conservation des diagnostics assainis.", "controlsTitle": "Cycle de vie des données", "controlsDescription": "Seuls les enregistrements antérieurs à la nouvelle limite sont supprimés.", "routeDays": "Historique des routes", "routeDaysHelp": "Jours de résultats d’audit de routes.", "rendererDays": "Historique du rendu", "rendererDaysHelp": "Jours de signaux du rendu.", "days": "jours", "invalid": "Choisissez de 7 à 3 650 jours.", "save": "Enregistrer et appliquer", "saved": "Contrôles enregistrés et diagnostics expirés purgés.", "saveFailed": "Les contrôles n’ont pas pu être enregistrés.", "confirmTitle": "Appliquer les limites ?", "confirmDescription": "Les diagnostics expirés seront supprimés définitivement.", "confirmSummary": "Routes : {{routeDays}} jours · Rendu : {{rendererDays}} jours", "cancel": "Annuler", "confirm": "Appliquer et purger"},
-    "adminRendererTrend": {"title": "Échecs répétés du rendu", "description": "{{count}} échecs de {{template}} en {{hours}} heures. Examinez l’historique avant la prochaine version.", "review": "Examiner l’historique"},
+    "adminAuditRetention": {
+      "back": "Historique des audits",
+      "title": "Contrôles de conservation",
+      "description": "Choisissez la durée de conservation des diagnostics assainis.",
+      "controlsTitle": "Cycle de vie des données",
+      "controlsDescription": "Seuls les enregistrements antérieurs à la nouvelle limite sont supprimés.",
+      "routeDays": "Historique des routes",
+      "routeDaysHelp": "Jours de résultats d’audit de routes.",
+      "rendererDays": "Historique du rendu",
+      "rendererDaysHelp": "Jours de signaux du rendu.",
+      "days": "jours",
+      "invalid": "Choisissez de 7 à 3 650 jours.",
+      "save": "Enregistrer et appliquer",
+      "saved": "Contrôles enregistrés et diagnostics expirés purgés.",
+      "saveFailed": "Les contrôles n’ont pas pu être enregistrés.",
+      "confirmTitle": "Appliquer les limites ?",
+      "confirmDescription": "Les diagnostics expirés seront supprimés définitivement.",
+      "confirmSummary": "Routes : {{routeDays}} jours · Rendu : {{rendererDays}} jours",
+      "cancel": "Annuler",
+      "confirm": "Appliquer et purger"
+    },
+    "adminRendererTrend": {
+      "title": "Échecs répétés du rendu",
+      "description": "{{count}} échecs de {{template}} en {{hours}} heures. Examinez l’historique avant la prochaine version.",
+      "review": "Examiner l’historique"
+    },
     "contactsTools": {
       "addConsentLabel": "Je confirme que ce client a consenti à être contacté par {businessName} par e-mail et/ou SMS concernant son expérience et ses achats",
       "addConsentRequired": "La confirmation du consentement est requise pour ajouter un contact"
@@ -5362,7 +5704,6 @@
       "saved": "L’alerte du moteur de rendu est reconnue jusqu’à ce qu’un élément plus récent soit enregistré.",
       "failed": "L’alerte du moteur de rendu n’a pas pu être reconnue."
     }
-
   },
   "it": {
     "firstVisitWelcome": {
@@ -5960,7 +6301,7 @@
         "zoho": "Abilita prima l'accesso SMTP in Zoho, poi usa la tua password normale di Zoho. Tocca 'Come ottenerla' sopra.",
         "aol": "Non la tua normale password AOL — usa una Password per l'app. Tocca Come ottenerlo sopra.",
         "fastmail": "Non la tua normale password Fastmail — usa una Password per l'app. Tocca Come ottenerlo sopra.",
-        "google": "Non la tua normale password Gmail — usa una Password per l'app. Tocca Come ottenerlo sopra.",
+        "google": "Non usare la normale password del tuo account: usa una password per le app. Tocca «Come ottenerla» qui sopra.",
         "proton": "ProtonMail richiede l'app Proton Bridge — usa la sua password SMTP, non le credenziali Proton. Tocca Come ottenerla sopra.",
         "icloud": "Usa una password specifica per l'app, non la password del tuo Apple ID. Tocca Come ottenerla sopra."
       },
@@ -5971,7 +6312,25 @@
       "noEmailConnected": "Nessuna email collegata",
       "notConnectedDescription": "Nessuna email collegata. Inserisci i tuoi dati qui sotto per iniziare a inviare richieste di recensione.",
       "displayNameHelp": "Visualizzato come nome del mittente nella casella di posta del tuo cliente.",
-      "emailAddressLabel": "Il tuo indirizzo email *"
+      "emailAddressLabel": "Il tuo indirizzo email *",
+      "gmailGuideTip": "Google mostra il codice una sola volta. Crea una nuova password per le app dopo aver cambiato la password Google e revocala quando disconnetti Get Phame.",
+      "googleWorkspaceGuideStep1": "Accedi a myaccount.google.com con il tuo account di lavoro → Sicurezza",
+      "googleWorkspaceGuideStep2": "Attiva la verifica in due passaggi se è disponibile per il tuo account",
+      "googleWorkspaceGuideTip": "Se le password per le app non sono disponibili, la tua organizzazione potrebbe limitarle, richiedere la verifica solo con chiave di sicurezza o usare la Protezione avanzata. Chiedi all’amministratore Workspace il metodo SMTP o OAuth approvato.",
+      "gmailGuideTitle": "Password per app Gmail — 4 passaggi",
+      "gmailGuideStep1": "Vai a myaccount.google.com → Sicurezza",
+      "gmailGuideStep2": "Attiva la verifica in due passaggi se non è già attiva",
+      "gmailGuideStep3": "Vai a myaccount.google.com/apppasswords → assegnale il nome Get Phame → fai clic su Crea",
+      "gmailGuideStep4": "Copia il codice di 16 caratteri e incollalo qui: rimuovi tutti gli spazi",
+      "googleWorkspaceGuideTitle": "Password per app Google Workspace — 4 passaggi",
+      "googleWorkspaceGuideStep3": "Vai a myaccount.google.com/apppasswords → assegnale il nome Get Phame → fai clic su Crea",
+      "googleWorkspaceGuideStep4": "Copia il codice di 16 caratteri e incollalo qui: rimuovi tutti gli spazi",
+      "deliveryStatus": {
+        "active": "Attivo per le richieste di recensione dei clienti",
+        "notSelected": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
+        "bulkActive": "Connesso, ma il tuo servizio di invio in blocco è attivo per le richieste di recensione dei clienti",
+        "needsAttention": "Richiede attenzione: aggiorna i dati SMTP e riconnettiti prima di inviare richieste di recensione ai clienti"
+      }
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -6074,6 +6433,11 @@
         "uploadAvatar": "Carica foto",
         "avatarReadError": "Non siamo riusciti a leggere quell'immagine. Prova un altro file.",
         "emailHelp": "La tua email di accesso è gestita dal tuo provider di autenticazione."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "È stata trovata una connessione email di piattaforma precedente, ma non può essere usata per le comunicazioni con i clienti. Collega un account di provider di invio in blocco di tua proprietà.",
+        "activeOutreach": "Attivo per le richieste di recensione dei clienti",
+        "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti"
       }
     },
     "profile": {
@@ -7039,13 +7403,106 @@
       "copyFailed": "La copia dell’HTML renderizzato è stata bloccata da questo browser."
     },
     "adminRouteAudit": {
-      "eyebrow": "Garanzia di produzione", "title": "Audit delle route di produzione", "description": "Controlla in modo sicuro le route pubbliche della sitemap per rilevare errori di rendering del browser. Non vengono coinvolti account, moduli o dati dei clienti.", "run": "Esegui audit delle route", "running": "Audit delle route in corso…", "viewHistory": "Visualizza cronologia", "runningDescription": "Avvio di un browser pulito per la sitemap pubblica corrente. L’operazione può richiedere fino a due minuti.", "unavailable": "Esecutore dell’audit non disponibile", "completedWithIssues": "Audit completato con problemi", "completed": "Audit completato correttamente", "failureCode": "Codice errore", "summary": "{{routes}} route controllate · {{failures}} errori", "resultRoutes": "Route controllate", "issue": "Da verificare", "rendered": "Renderizzata", "passed": "L’audit delle route di produzione è riuscito.", "failed": "L’audit delle route di produzione ha rilevato problemi.", "runFailed": "Non è stato possibile eseguire l’audit delle route di produzione."
+      "eyebrow": "Garanzia di produzione",
+      "title": "Audit delle route di produzione",
+      "description": "Controlla in modo sicuro le route pubbliche della sitemap per rilevare errori di rendering del browser. Non vengono coinvolti account, moduli o dati dei clienti.",
+      "run": "Esegui audit delle route",
+      "running": "Audit delle route in corso…",
+      "viewHistory": "Visualizza cronologia",
+      "runningDescription": "Avvio di un browser pulito per la sitemap pubblica corrente. L’operazione può richiedere fino a due minuti.",
+      "unavailable": "Esecutore dell’audit non disponibile",
+      "completedWithIssues": "Audit completato con problemi",
+      "completed": "Audit completato correttamente",
+      "failureCode": "Codice errore",
+      "summary": "{{routes}} route controllate · {{failures}} errori",
+      "resultRoutes": "Route controllate",
+      "issue": "Da verificare",
+      "rendered": "Renderizzata",
+      "passed": "L’audit delle route di produzione è riuscito.",
+      "failed": "L’audit delle route di produzione ha rilevato problemi.",
+      "runFailed": "Non è stato possibile eseguire l’audit delle route di produzione."
     },
     "adminAuditLog": {
-      "back": "Dashboard amministratore", "title": "Cronologia audit e rendering", "description": "Cronologia operativa riservata agli amministratori. I record memorizzati contengono segnali di audit sanitizzati, mai contenuti dei clienti, HTML e-mail, cookie o log del browser.", "refresh": "Aggiorna cronologia", "routeTitle": "Audit delle route di produzione", "routeDescription": "Controlli manuali del browser sulle route pubbliche individuate nella sitemap, dalla più recente alla meno recente.", "runAnother": "Esegui un altro audit →", "routeError": "Impossibile caricare la cronologia degli audit delle route.", "routes": "route", "issuesFound": "{{count}} problemi", "passed": "Superato", "routeEmpty": "Non è stato ancora registrato alcun audit delle route di produzione.", "routePagination": "Paginazione della cronologia degli audit delle route", "rendererTitle": "Errori del renderer di anteprima e-mail", "rendererDescription": "Segnali sanitizzati acquisiti solo se un’anteprima amministratore non riesce a renderizzare contenuto verificato.", "rendererError": "Impossibile caricare la cronologia degli errori del renderer.", "rendererEmpty": "Non sono stati registrati errori del renderer.", "rendererPagination": "Paginazione della cronologia degli errori del renderer", "records": "record", "previous": "Precedente", "next": "Successivo", "darkPreview": "scura", "releaseTitle": "Cronologia delle versioni", "releaseDescription": "Cronologia delle versioni sanitizzata con corrispondenza ed esportazione.", "retention": "Impostazioni di conservazione", "releaseStatus": "Stato di parità", "allStatuses": "Tutti gli stati", "matched": "Corrispondente", "needsReview": "Da verificare", "releaseSort": "Ordina per", "releaseSortDate": "Ora della versione", "releaseSortCheckpoint": "Checkpoint", "releaseDirection": "Direzione", "newestFirst": "Più recenti prima", "oldestFirst": "Meno recenti prima", "releaseExport": "Anteprima esportazione", "releaseExportFailed": "Impossibile preparare l’esportazione.", "releaseError": "Impossibile caricare la cronologia delle versioni.", "releaseEmpty": "Nessuna versione verificata.", "releasePagination": "Paginazione della cronologia delle versioni", "time": "Ora", "checkpoint": "Checkpoint", "mainCommit": "Commit principale", "parity": "Parità", "releaseExportTitle": "Anteprima esportazione", "releaseExportDescription": "Esamina l’istantanea sanitizzata prima di copiarla o scaricarla.", "releaseExportSummary": "Anteprima di {{previewed}} su {{exported}} righe · {{matched}} corrispondenti", "releaseExportTruncated": "Il limite include {{exported}} di {{matched}} record.", "close": "Chiudi", "copied": "Copiato", "copy": "Copia CSV", "copyFailed": "Copia non riuscita — riprova", "download": "Scarica CSV"
+      "back": "Dashboard amministratore",
+      "title": "Cronologia audit e rendering",
+      "description": "Cronologia operativa riservata agli amministratori. I record memorizzati contengono segnali di audit sanitizzati, mai contenuti dei clienti, HTML e-mail, cookie o log del browser.",
+      "refresh": "Aggiorna cronologia",
+      "routeTitle": "Audit delle route di produzione",
+      "routeDescription": "Controlli manuali del browser sulle route pubbliche individuate nella sitemap, dalla più recente alla meno recente.",
+      "runAnother": "Esegui un altro audit →",
+      "routeError": "Impossibile caricare la cronologia degli audit delle route.",
+      "routes": "route",
+      "issuesFound": "{{count}} problemi",
+      "passed": "Superato",
+      "routeEmpty": "Non è stato ancora registrato alcun audit delle route di produzione.",
+      "routePagination": "Paginazione della cronologia degli audit delle route",
+      "rendererTitle": "Errori del renderer di anteprima e-mail",
+      "rendererDescription": "Segnali sanitizzati acquisiti solo se un’anteprima amministratore non riesce a renderizzare contenuto verificato.",
+      "rendererError": "Impossibile caricare la cronologia degli errori del renderer.",
+      "rendererEmpty": "Non sono stati registrati errori del renderer.",
+      "rendererPagination": "Paginazione della cronologia degli errori del renderer",
+      "records": "record",
+      "previous": "Precedente",
+      "next": "Successivo",
+      "darkPreview": "scura",
+      "releaseTitle": "Cronologia delle versioni",
+      "releaseDescription": "Cronologia delle versioni sanitizzata con corrispondenza ed esportazione.",
+      "retention": "Impostazioni di conservazione",
+      "releaseStatus": "Stato di parità",
+      "allStatuses": "Tutti gli stati",
+      "matched": "Corrispondente",
+      "needsReview": "Da verificare",
+      "releaseSort": "Ordina per",
+      "releaseSortDate": "Ora della versione",
+      "releaseSortCheckpoint": "Checkpoint",
+      "releaseDirection": "Direzione",
+      "newestFirst": "Più recenti prima",
+      "oldestFirst": "Meno recenti prima",
+      "releaseExport": "Anteprima esportazione",
+      "releaseExportFailed": "Impossibile preparare l’esportazione.",
+      "releaseError": "Impossibile caricare la cronologia delle versioni.",
+      "releaseEmpty": "Nessuna versione verificata.",
+      "releasePagination": "Paginazione della cronologia delle versioni",
+      "time": "Ora",
+      "checkpoint": "Checkpoint",
+      "mainCommit": "Commit principale",
+      "parity": "Parità",
+      "releaseExportTitle": "Anteprima esportazione",
+      "releaseExportDescription": "Esamina l’istantanea sanitizzata prima di copiarla o scaricarla.",
+      "releaseExportSummary": "Anteprima di {{previewed}} su {{exported}} righe · {{matched}} corrispondenti",
+      "releaseExportTruncated": "Il limite include {{exported}} di {{matched}} record.",
+      "close": "Chiudi",
+      "copied": "Copiato",
+      "copy": "Copia CSV",
+      "copyFailed": "Copia non riuscita — riprova",
+      "download": "Scarica CSV"
     },
-    "adminAuditRetention": {"back": "Cronologia audit", "title": "Controlli di conservazione", "description": "Scegli per quanto tempo conservare i diagnostici sanitizzati.", "controlsTitle": "Ciclo di vita dati", "controlsDescription": "Vengono rimossi solo i record precedenti al nuovo limite.", "routeDays": "Cronologia route", "routeDaysHelp": "Giorni di audit delle route.", "rendererDays": "Cronologia renderer", "rendererDaysHelp": "Giorni di segnali renderer.", "days": "giorni", "invalid": "Scegli da 7 a 3.650 giorni.", "save": "Salva e applica", "saved": "Controlli salvati e diagnostici scaduti eliminati.", "saveFailed": "Impossibile salvare i controlli.", "confirmTitle": "Applicare i limiti?", "confirmDescription": "I diagnostici scaduti saranno rimossi definitivamente.", "confirmSummary": "Route: {{routeDays}} giorni · Renderer: {{rendererDays}} giorni", "cancel": "Annulla", "confirm": "Applica e elimina"},
-    "adminRendererTrend": {"title": "Errori ripetuti del renderer", "description": "{{count}} errori di {{template}} in {{hours}} ore. Esamina la cronologia prima della prossima versione.", "review": "Esamina cronologia"},
+    "adminAuditRetention": {
+      "back": "Cronologia audit",
+      "title": "Controlli di conservazione",
+      "description": "Scegli per quanto tempo conservare i diagnostici sanitizzati.",
+      "controlsTitle": "Ciclo di vita dati",
+      "controlsDescription": "Vengono rimossi solo i record precedenti al nuovo limite.",
+      "routeDays": "Cronologia route",
+      "routeDaysHelp": "Giorni di audit delle route.",
+      "rendererDays": "Cronologia renderer",
+      "rendererDaysHelp": "Giorni di segnali renderer.",
+      "days": "giorni",
+      "invalid": "Scegli da 7 a 3.650 giorni.",
+      "save": "Salva e applica",
+      "saved": "Controlli salvati e diagnostici scaduti eliminati.",
+      "saveFailed": "Impossibile salvare i controlli.",
+      "confirmTitle": "Applicare i limiti?",
+      "confirmDescription": "I diagnostici scaduti saranno rimossi definitivamente.",
+      "confirmSummary": "Route: {{routeDays}} giorni · Renderer: {{rendererDays}} giorni",
+      "cancel": "Annulla",
+      "confirm": "Applica e elimina"
+    },
+    "adminRendererTrend": {
+      "title": "Errori ripetuti del renderer",
+      "description": "{{count}} errori di {{template}} in {{hours}} ore. Esamina la cronologia prima della prossima versione.",
+      "review": "Esamina cronologia"
+    },
     "bulkSendDialog": {
       "consentCheck": "Confermo che i clienti hanno acconsentito a essere contattati dalla mia azienda via e-mail e/o SMS"
     },
@@ -7077,7 +7534,6 @@
       "saved": "L’avviso del renderer è stato confermato finché non verranno registrate evidenze più recenti.",
       "failed": "Non è stato possibile confermare l’avviso del renderer."
     }
-
   },
   "th": {
     "firstVisitWelcome": {
@@ -7675,7 +8131,7 @@
         "zoho": "เปิดการเข้าถึง SMTP ใน Zoho ก่อน แล้วใช้รหัสผ่าน Zoho ปกติของคุณ แตะ How to get it ด้านบน.",
         "aol": "ไม่ใช่รหัสผ่าน AOL ปกติ — ให้ใช้รหัสผ่านแอป แตะ 'วิธีรับ' ด้านบน.",
         "fastmail": "ไม่ใช่รหัสผ่าน Fastmail ปกติ — ให้ใช้รหัสผ่านแอป แตะ 'วิธีรับ' ด้านบน.",
-        "google": "ไม่ใช่รหัสผ่าน Gmail ปกติ — ให้ใช้รหัสผ่านแอป แตะ 'วิธีรับ' ด้านบน.",
+        "google": "อย่าใช้รหัสผ่านบัญชีตามปกติ ให้ใช้รหัสผ่านสำหรับแอปแทน แตะ «วิธีรับรหัสผ่าน» ด้านบน",
         "proton": "ProtonMail ต้องการแอป Proton Bridge — ให้ใช้รหัสผ่าน SMTP ของแอปนั้น ไม่ใช่รหัสเข้าสู่ระบบ Proton ของคุณ แตะ How to get it ด้านบน",
         "icloud": "ใช้รหัสผ่านเฉพาะแอป ไม่ใช่รหัสผ่าน Apple ID ของคุณ แตะ 'How to get it' ด้านบน."
       },
@@ -7686,7 +8142,25 @@
       "noEmailConnected": "ยังไม่ได้เชื่อมต่ออีเมล",
       "notConnectedDescription": "ยังไม่ได้เชื่อมต่ออีเมล กรอกข้อมูลด้านล่างเพื่อเริ่มส่งคำขอรีวิว",
       "displayNameHelp": "แสดงเป็นชื่อผู้ส่งในกล่องจดหมายของลูกค้าของคุณ.",
-      "emailAddressLabel": "ที่อยู่อีเมลของคุณ *"
+      "emailAddressLabel": "ที่อยู่อีเมลของคุณ *",
+      "gmailGuideTip": "Google จะแสดงรหัสเพียงครั้งเดียว สร้างรหัสผ่านสำหรับแอปใหม่หลังเปลี่ยนรหัสผ่าน Google และเพิกถอนเมื่อยกเลิกการเชื่อมต่อ Get Phame",
+      "googleWorkspaceGuideStep1": "ลงชื่อเข้าใช้ myaccount.google.com ด้วยบัญชีที่ทำงาน → ความปลอดภัย",
+      "googleWorkspaceGuideStep2": "เปิดการยืนยันแบบ 2 ขั้นตอนหากบัญชีของคุณใช้งานได้",
+      "googleWorkspaceGuideTip": "หากไม่มีรหัสผ่านสำหรับแอป องค์กรอาจจำกัดไว้ บังคับใช้การยืนยันด้วยคีย์ความปลอดภัยเท่านั้น หรือใช้การป้องกันขั้นสูง โปรดสอบถามผู้ดูแล Workspace เกี่ยวกับวิธี SMTP หรือ OAuth ที่ได้รับอนุมัติ",
+      "gmailGuideTitle": "รหัสผ่านสำหรับแอป Gmail — 4 ขั้นตอน",
+      "gmailGuideStep1": "ไปที่ myaccount.google.com → ความปลอดภัย",
+      "gmailGuideStep2": "เปิดการยืนยันแบบ 2 ขั้นตอนหากยังไม่ได้เปิด",
+      "gmailGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อ Get Phame → คลิกสร้าง",
+      "gmailGuideStep4": "คัดลอกรหัส 16 ตัวอักษรแล้ววางที่นี่ โดยลบช่องว่างทั้งหมด",
+      "googleWorkspaceGuideTitle": "รหัสผ่านสำหรับแอป Google Workspace — 4 ขั้นตอน",
+      "googleWorkspaceGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อ Get Phame → คลิกสร้าง",
+      "googleWorkspaceGuideStep4": "คัดลอกรหัส 16 ตัวอักษรแล้ววางที่นี่ โดยลบช่องว่างทั้งหมด",
+      "deliveryStatus": {
+        "active": "ใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
+        "notSelected": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า",
+        "bulkActive": "เชื่อมต่อแล้ว แต่บริการส่งอีเมลจำนวนมากของคุณใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
+        "needsAttention": "ต้องดำเนินการ: อัปเดตรายละเอียด SMTP และเชื่อมต่อใหม่ก่อนส่งคำขอรีวิวจากลูกค้า"
+      }
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -7782,6 +8256,11 @@
         "uploadAvatar": "อัปโหลดรูปภาพ",
         "avatarReadError": "เราไม่สามารถอ่านรูปภาพนั้นได้ กรุณาลองไฟล์อื่น.",
         "emailHelp": "อีเมลที่ใช้เข้าสู่ระบบของคุณถูกจัดการโดยผู้ให้บริการการยืนยันตัวตนของคุณ."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "พบการเชื่อมต่ออีเมลแพลตฟอร์มแบบเดิม แต่ไม่สามารถใช้สำหรับการติดต่อผู้รับได้ โปรดเชื่อมต่อบัญชีผู้ให้บริการส่งอีเมลจำนวนมากที่คุณเป็นเจ้าของ",
+        "activeOutreach": "ใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
+        "notActive": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า"
       }
     },
     "profile": {
@@ -8744,13 +9223,106 @@
       "copyFailed": "เบราว์เซอร์นี้บล็อกการคัดลอก HTML ที่เรนเดอร์แล้ว"
     },
     "adminRouteAudit": {
-      "eyebrow": "ความมั่นใจในการใช้งานจริง", "title": "ตรวจสอบเส้นทางการใช้งานจริง", "description": "ตรวจสอบเส้นทางสาธารณะในแผนผังเว็บไซต์อย่างปลอดภัยเพื่อหาข้อผิดพลาดในการเรนเดอร์ของเบราว์เซอร์ โดยไม่แตะต้องบัญชี แบบฟอร์ม หรือข้อมูลลูกค้า", "run": "เริ่มการตรวจสอบเส้นทาง", "running": "กำลังตรวจสอบเส้นทาง…", "viewHistory": "ดูประวัติ", "runningDescription": "กำลังเปิดเบราว์เซอร์ใหม่สำหรับแผนผังเว็บไซต์สาธารณะปัจจุบัน อาจใช้เวลาถึงสองนาที", "unavailable": "ตัวรันการตรวจสอบไม่พร้อมใช้งาน", "completedWithIssues": "ตรวจสอบเสร็จพร้อมประเด็นที่ต้องแก้ไข", "completed": "ตรวจสอบเสร็จเรียบร้อย", "failureCode": "รหัสข้อผิดพลาด", "summary": "ตรวจสอบ {{routes}} เส้นทาง · พบ {{failures}} ข้อผิดพลาด", "resultRoutes": "เส้นทางที่ตรวจสอบแล้ว", "issue": "ต้องตรวจสอบ", "rendered": "เรนเดอร์แล้ว", "passed": "การตรวจสอบเส้นทางการใช้งานจริงผ่านแล้ว", "failed": "การตรวจสอบเส้นทางการใช้งานจริงพบปัญหา", "runFailed": "ไม่สามารถเรียกใช้การตรวจสอบเส้นทางการใช้งานจริงได้"
+      "eyebrow": "ความมั่นใจในการใช้งานจริง",
+      "title": "ตรวจสอบเส้นทางการใช้งานจริง",
+      "description": "ตรวจสอบเส้นทางสาธารณะในแผนผังเว็บไซต์อย่างปลอดภัยเพื่อหาข้อผิดพลาดในการเรนเดอร์ของเบราว์เซอร์ โดยไม่แตะต้องบัญชี แบบฟอร์ม หรือข้อมูลลูกค้า",
+      "run": "เริ่มการตรวจสอบเส้นทาง",
+      "running": "กำลังตรวจสอบเส้นทาง…",
+      "viewHistory": "ดูประวัติ",
+      "runningDescription": "กำลังเปิดเบราว์เซอร์ใหม่สำหรับแผนผังเว็บไซต์สาธารณะปัจจุบัน อาจใช้เวลาถึงสองนาที",
+      "unavailable": "ตัวรันการตรวจสอบไม่พร้อมใช้งาน",
+      "completedWithIssues": "ตรวจสอบเสร็จพร้อมประเด็นที่ต้องแก้ไข",
+      "completed": "ตรวจสอบเสร็จเรียบร้อย",
+      "failureCode": "รหัสข้อผิดพลาด",
+      "summary": "ตรวจสอบ {{routes}} เส้นทาง · พบ {{failures}} ข้อผิดพลาด",
+      "resultRoutes": "เส้นทางที่ตรวจสอบแล้ว",
+      "issue": "ต้องตรวจสอบ",
+      "rendered": "เรนเดอร์แล้ว",
+      "passed": "การตรวจสอบเส้นทางการใช้งานจริงผ่านแล้ว",
+      "failed": "การตรวจสอบเส้นทางการใช้งานจริงพบปัญหา",
+      "runFailed": "ไม่สามารถเรียกใช้การตรวจสอบเส้นทางการใช้งานจริงได้"
     },
     "adminAuditLog": {
-      "back": "แดชบอร์ดผู้ดูแล", "title": "ประวัติการตรวจสอบและการเรนเดอร์", "description": "ประวัติการปฏิบัติงานสำหรับผู้ดูแลเท่านั้น บันทึกที่เก็บมีเฉพาะสัญญาณการตรวจสอบที่ผ่านการล้างข้อมูล ไม่เก็บเนื้อหาลูกค้า HTML อีเมล คุกกี้ หรือบันทึกเบราว์เซอร์", "refresh": "รีเฟรชประวัติ", "routeTitle": "การตรวจสอบเส้นทางการใช้งานจริง", "routeDescription": "การตรวจสอบเบราว์เซอร์ด้วยตนเองสำหรับเส้นทางสาธารณะที่พบในแผนผังเว็บไซต์ เรียงจากใหม่ไปเก่า", "runAnother": "เริ่มการตรวจสอบอีกครั้ง →", "routeError": "ไม่สามารถโหลดประวัติการตรวจสอบเส้นทางได้", "routes": "เส้นทาง", "issuesFound": "พบ {{count}} ปัญหา", "passed": "ผ่าน", "routeEmpty": "ยังไม่มีการบันทึกการตรวจสอบเส้นทางการใช้งานจริง", "routePagination": "การแบ่งหน้าประวัติการตรวจสอบเส้นทาง", "rendererTitle": "ข้อผิดพลาดของตัวเรนเดอร์ตัวอย่างอีเมล", "rendererDescription": "บันทึกสัญญาณที่ผ่านการล้างข้อมูลเฉพาะเมื่อการแสดงตัวอย่างของผู้ดูแลไม่สามารถเรนเดอร์เนื้อหาที่ตรวจสอบแล้วได้", "rendererError": "ไม่สามารถโหลดประวัติข้อผิดพลาดของตัวเรนเดอร์ได้", "rendererEmpty": "ยังไม่มีการบันทึกข้อผิดพลาดของตัวเรนเดอร์", "rendererPagination": "การแบ่งหน้าประวัติข้อผิดพลาดของตัวเรนเดอร์", "records": "รายการ", "previous": "ก่อนหน้า", "next": "ถัดไป", "darkPreview": "โหมดมืด", "releaseTitle": "ประวัติการเผยแพร่", "releaseDescription": "ประวัติการเผยแพร่ที่ล้างข้อมูลพร้อมสถานะและการส่งออก", "retention": "การตั้งค่าการเก็บรักษา", "releaseStatus": "สถานะความสอดคล้อง", "allStatuses": "ทุกสถานะ", "matched": "ตรงกัน", "needsReview": "ต้องตรวจสอบ", "releaseSort": "เรียงตาม", "releaseSortDate": "เวลาเผยแพร่", "releaseSortCheckpoint": "จุดตรวจ", "releaseDirection": "ทิศทาง", "newestFirst": "ใหม่ล่าสุดก่อน", "oldestFirst": "เก่าที่สุดก่อน", "releaseExport": "ดูตัวอย่างการส่งออก", "releaseExportFailed": "ไม่สามารถเตรียมการส่งออกได้", "releaseError": "ไม่สามารถโหลดประวัติการเผยแพร่ได้", "releaseEmpty": "ยังไม่มีรายการเผยแพร่ที่ยืนยันแล้ว", "releasePagination": "การแบ่งหน้าประวัติการเผยแพร่", "time": "เวลา", "checkpoint": "จุดตรวจ", "mainCommit": "คอมมิตหลัก", "parity": "ความสอดคล้อง", "releaseExportTitle": "ตัวอย่างการส่งออก", "releaseExportDescription": "ตรวจสอบสแนปช็อตที่ล้างข้อมูลก่อนคัดลอกหรือดาวน์โหลด", "releaseExportSummary": "แสดง {{previewed}} จาก {{exported}} แถว · ตรงกัน {{matched}}", "releaseExportTruncated": "ขีดจำกัดมี {{exported}} จาก {{matched}} ระเบียน", "close": "ปิด", "copied": "คัดลอกแล้ว", "copy": "คัดลอก CSV", "copyFailed": "คัดลอกไม่สำเร็จ", "download": "ดาวน์โหลด CSV"
+      "back": "แดชบอร์ดผู้ดูแล",
+      "title": "ประวัติการตรวจสอบและการเรนเดอร์",
+      "description": "ประวัติการปฏิบัติงานสำหรับผู้ดูแลเท่านั้น บันทึกที่เก็บมีเฉพาะสัญญาณการตรวจสอบที่ผ่านการล้างข้อมูล ไม่เก็บเนื้อหาลูกค้า HTML อีเมล คุกกี้ หรือบันทึกเบราว์เซอร์",
+      "refresh": "รีเฟรชประวัติ",
+      "routeTitle": "การตรวจสอบเส้นทางการใช้งานจริง",
+      "routeDescription": "การตรวจสอบเบราว์เซอร์ด้วยตนเองสำหรับเส้นทางสาธารณะที่พบในแผนผังเว็บไซต์ เรียงจากใหม่ไปเก่า",
+      "runAnother": "เริ่มการตรวจสอบอีกครั้ง →",
+      "routeError": "ไม่สามารถโหลดประวัติการตรวจสอบเส้นทางได้",
+      "routes": "เส้นทาง",
+      "issuesFound": "พบ {{count}} ปัญหา",
+      "passed": "ผ่าน",
+      "routeEmpty": "ยังไม่มีการบันทึกการตรวจสอบเส้นทางการใช้งานจริง",
+      "routePagination": "การแบ่งหน้าประวัติการตรวจสอบเส้นทาง",
+      "rendererTitle": "ข้อผิดพลาดของตัวเรนเดอร์ตัวอย่างอีเมล",
+      "rendererDescription": "บันทึกสัญญาณที่ผ่านการล้างข้อมูลเฉพาะเมื่อการแสดงตัวอย่างของผู้ดูแลไม่สามารถเรนเดอร์เนื้อหาที่ตรวจสอบแล้วได้",
+      "rendererError": "ไม่สามารถโหลดประวัติข้อผิดพลาดของตัวเรนเดอร์ได้",
+      "rendererEmpty": "ยังไม่มีการบันทึกข้อผิดพลาดของตัวเรนเดอร์",
+      "rendererPagination": "การแบ่งหน้าประวัติข้อผิดพลาดของตัวเรนเดอร์",
+      "records": "รายการ",
+      "previous": "ก่อนหน้า",
+      "next": "ถัดไป",
+      "darkPreview": "โหมดมืด",
+      "releaseTitle": "ประวัติการเผยแพร่",
+      "releaseDescription": "ประวัติการเผยแพร่ที่ล้างข้อมูลพร้อมสถานะและการส่งออก",
+      "retention": "การตั้งค่าการเก็บรักษา",
+      "releaseStatus": "สถานะความสอดคล้อง",
+      "allStatuses": "ทุกสถานะ",
+      "matched": "ตรงกัน",
+      "needsReview": "ต้องตรวจสอบ",
+      "releaseSort": "เรียงตาม",
+      "releaseSortDate": "เวลาเผยแพร่",
+      "releaseSortCheckpoint": "จุดตรวจ",
+      "releaseDirection": "ทิศทาง",
+      "newestFirst": "ใหม่ล่าสุดก่อน",
+      "oldestFirst": "เก่าที่สุดก่อน",
+      "releaseExport": "ดูตัวอย่างการส่งออก",
+      "releaseExportFailed": "ไม่สามารถเตรียมการส่งออกได้",
+      "releaseError": "ไม่สามารถโหลดประวัติการเผยแพร่ได้",
+      "releaseEmpty": "ยังไม่มีรายการเผยแพร่ที่ยืนยันแล้ว",
+      "releasePagination": "การแบ่งหน้าประวัติการเผยแพร่",
+      "time": "เวลา",
+      "checkpoint": "จุดตรวจ",
+      "mainCommit": "คอมมิตหลัก",
+      "parity": "ความสอดคล้อง",
+      "releaseExportTitle": "ตัวอย่างการส่งออก",
+      "releaseExportDescription": "ตรวจสอบสแนปช็อตที่ล้างข้อมูลก่อนคัดลอกหรือดาวน์โหลด",
+      "releaseExportSummary": "แสดง {{previewed}} จาก {{exported}} แถว · ตรงกัน {{matched}}",
+      "releaseExportTruncated": "ขีดจำกัดมี {{exported}} จาก {{matched}} ระเบียน",
+      "close": "ปิด",
+      "copied": "คัดลอกแล้ว",
+      "copy": "คัดลอก CSV",
+      "copyFailed": "คัดลอกไม่สำเร็จ",
+      "download": "ดาวน์โหลด CSV"
     },
-    "adminAuditRetention": {"back": "ประวัติการตรวจสอบ", "title": "การควบคุมการเก็บรักษา", "description": "เลือกระยะเวลาเก็บข้อมูลวินิจฉัยที่ล้างแล้ว", "controlsTitle": "วงจรชีวิตข้อมูล", "controlsDescription": "ลบเฉพาะระเบียนที่เก่ากว่าขีดจำกัดใหม่", "routeDays": "ประวัติเส้นทาง", "routeDaysHelp": "วันของผลการตรวจสอบเส้นทาง", "rendererDays": "ประวัติตัวเรนเดอร์", "rendererDaysHelp": "วันของสัญญาณตัวเรนเดอร์", "days": "วัน", "invalid": "เลือก 7 ถึง 3,650 วัน", "save": "บันทึกและใช้", "saved": "บันทึกการควบคุมและล้างข้อมูลที่หมดอายุแล้ว", "saveFailed": "ไม่สามารถบันทึกการควบคุมได้", "confirmTitle": "ใช้ขีดจำกัดหรือไม่", "confirmDescription": "ข้อมูลที่หมดอายุจะถูกลบถาวร", "confirmSummary": "เส้นทาง: {{routeDays}} วัน · ตัวเรนเดอร์: {{rendererDays}} วัน", "cancel": "ยกเลิก", "confirm": "ใช้และล้าง"},
-    "adminRendererTrend": {"title": "ข้อผิดพลาดตัวเรนเดอร์ซ้ำ", "description": "เกิดข้อผิดพลาด {{template}} {{count}} ครั้งใน {{hours}} ชั่วโมง โปรดตรวจสอบประวัติก่อนเผยแพร่", "review": "ตรวจสอบประวัติ"},
+    "adminAuditRetention": {
+      "back": "ประวัติการตรวจสอบ",
+      "title": "การควบคุมการเก็บรักษา",
+      "description": "เลือกระยะเวลาเก็บข้อมูลวินิจฉัยที่ล้างแล้ว",
+      "controlsTitle": "วงจรชีวิตข้อมูล",
+      "controlsDescription": "ลบเฉพาะระเบียนที่เก่ากว่าขีดจำกัดใหม่",
+      "routeDays": "ประวัติเส้นทาง",
+      "routeDaysHelp": "วันของผลการตรวจสอบเส้นทาง",
+      "rendererDays": "ประวัติตัวเรนเดอร์",
+      "rendererDaysHelp": "วันของสัญญาณตัวเรนเดอร์",
+      "days": "วัน",
+      "invalid": "เลือก 7 ถึง 3,650 วัน",
+      "save": "บันทึกและใช้",
+      "saved": "บันทึกการควบคุมและล้างข้อมูลที่หมดอายุแล้ว",
+      "saveFailed": "ไม่สามารถบันทึกการควบคุมได้",
+      "confirmTitle": "ใช้ขีดจำกัดหรือไม่",
+      "confirmDescription": "ข้อมูลที่หมดอายุจะถูกลบถาวร",
+      "confirmSummary": "เส้นทาง: {{routeDays}} วัน · ตัวเรนเดอร์: {{rendererDays}} วัน",
+      "cancel": "ยกเลิก",
+      "confirm": "ใช้และล้าง"
+    },
+    "adminRendererTrend": {
+      "title": "ข้อผิดพลาดตัวเรนเดอร์ซ้ำ",
+      "description": "เกิดข้อผิดพลาด {{template}} {{count}} ครั้งใน {{hours}} ชั่วโมง โปรดตรวจสอบประวัติก่อนเผยแพร่",
+      "review": "ตรวจสอบประวัติ"
+    },
     "bulkSendDialog": {
       "consentCheck": "ฉันยืนยันว่าลูกค้าได้ยินยอมให้ธุรกิจของฉันติดต่อทางอีเมลและ/หรือข้อความ"
     },
@@ -8782,7 +9354,6 @@
       "saved": "รับทราบการแจ้งเตือนตัวเรนเดอร์แล้วจนกว่าจะมีหลักฐานใหม่กว่า",
       "failed": "ไม่สามารถรับทราบการแจ้งเตือนตัวเรนเดอร์ได้"
     }
-
   },
   "zh-CN": {
     "firstVisitWelcome": {
@@ -9379,7 +9950,7 @@
         "zoho": "先在 Zoho 启用 SMTP 访问，然后使用您常用的 Zoho 密码。点击上方的“如何获取”。",
         "aol": "这不是您常用的 AOL 密码——请使用应用专用密码。点击上方的“如何获取”。",
         "fastmail": "这不是您常用的 Fastmail 密码——请使用应用专用密码。点击上方的“如何获取”。",
-        "google": "这不是您常用的 Gmail 密码——请使用应用专用密码。点击上方的“如何获取”。",
+        "google": "请不要使用常规账户密码，请使用应用专用密码。请点按上方的“如何获取”。",
         "proton": "ProtonMail 需要 Proton Bridge 应用 — 请使用 Bridge 的 SMTP 密码，而不是您的 Proton 登录密码。点击上方的“如何获取”。",
         "icloud": "请使用应用专用密码，而非 Apple ID 密码。点击上方“如何获取”。"
       },
@@ -9390,7 +9961,25 @@
       "noEmailConnected": "未连接电子邮件",
       "notConnectedDescription": "未连接电子邮件。请在下方输入信息以开始发送评价请求。",
       "displayNameHelp": "将显示为客户收件箱中的发件人名称。",
-      "emailAddressLabel": "您的电子邮件地址 *"
+      "emailAddressLabel": "您的电子邮件地址 *",
+      "gmailGuideTip": "Google 只会显示一次代码。更改 Google 密码后请创建新的应用专用密码，并在断开 Get Phame 时撤销该密码。",
+      "googleWorkspaceGuideStep1": "使用工作账号登录 myaccount.google.com → 安全性",
+      "googleWorkspaceGuideStep2": "如果你的账号可以使用，请开启两步验证",
+      "googleWorkspaceGuideTip": "如果没有应用专用密码选项，组织可能限制了该功能、要求仅使用安全密钥验证，或启用了高级保护。请向 Workspace 管理员询问获准的 SMTP 或 OAuth 连接方式。",
+      "gmailGuideTitle": "Gmail 应用专用密码 — 4 个步骤",
+      "gmailGuideStep1": "前往 myaccount.google.com → 安全性",
+      "gmailGuideStep2": "如果尚未开启，请开启两步验证",
+      "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 Get Phame → 点击创建",
+      "gmailGuideStep4": "复制 16 位代码并粘贴到此处，请移除所有空格",
+      "googleWorkspaceGuideTitle": "Google Workspace 应用专用密码 — 4 个步骤",
+      "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 Get Phame → 点击创建",
+      "googleWorkspaceGuideStep4": "复制 16 位代码并粘贴到此处，请移除所有空格",
+      "deliveryStatus": {
+        "active": "已启用，可用于客户评价请求",
+        "notSelected": "已连接，但未被选用于客户评价请求",
+        "bulkActive": "已连接，但你的批量邮件服务已被选用于客户评价请求",
+        "needsAttention": "需要处理：请更新 SMTP 详细信息并重新连接，然后再发送客户评价请求"
+      }
     },
     "comparisonTable": {
       "feature": "功能",
@@ -9486,6 +10075,11 @@
         "uploadAvatar": "上传照片",
         "avatarReadError": "无法读取该图片。请尝试其他文件。",
         "emailHelp": "您的登录邮箱由您的身份验证提供商管理。"
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "发现旧的平台邮件连接，但不能用于客户沟通。请连接您自己拥有的批量邮件服务商账户。",
+        "activeOutreach": "已启用，可用于客户评价请求",
+        "notActive": "已连接，但未被选用于客户评价请求"
       }
     },
     "profile": {
@@ -10439,13 +11033,106 @@
       "copyFailed": "此浏览器阻止了复制已渲染的 HTML。"
     },
     "adminRouteAudit": {
-      "eyebrow": "生产保障", "title": "生产路由审计", "description": "安全检查站点地图中的公开路由是否存在浏览器渲染错误。不会触及帐户、表单或客户数据。", "run": "运行路由审计", "running": "正在审计路由…", "viewHistory": "查看历史记录", "runningDescription": "正在为当前公开站点地图启动干净的浏览器。此过程最多可能需要两分钟。", "unavailable": "审计运行器不可用", "completedWithIssues": "审计完成，但发现问题", "completed": "审计已成功完成", "failureCode": "失败代码", "summary": "已审计 {{routes}} 个路由 · {{failures}} 个失败", "resultRoutes": "已审计路由", "issue": "需要检查", "rendered": "已渲染", "passed": "生产路由审计已通过。", "failed": "生产路由审计发现问题。", "runFailed": "无法运行生产路由审计。"
+      "eyebrow": "生产保障",
+      "title": "生产路由审计",
+      "description": "安全检查站点地图中的公开路由是否存在浏览器渲染错误。不会触及帐户、表单或客户数据。",
+      "run": "运行路由审计",
+      "running": "正在审计路由…",
+      "viewHistory": "查看历史记录",
+      "runningDescription": "正在为当前公开站点地图启动干净的浏览器。此过程最多可能需要两分钟。",
+      "unavailable": "审计运行器不可用",
+      "completedWithIssues": "审计完成，但发现问题",
+      "completed": "审计已成功完成",
+      "failureCode": "失败代码",
+      "summary": "已审计 {{routes}} 个路由 · {{failures}} 个失败",
+      "resultRoutes": "已审计路由",
+      "issue": "需要检查",
+      "rendered": "已渲染",
+      "passed": "生产路由审计已通过。",
+      "failed": "生产路由审计发现问题。",
+      "runFailed": "无法运行生产路由审计。"
     },
     "adminAuditLog": {
-      "back": "管理仪表板", "title": "审计和渲染历史记录", "description": "仅限管理员的运营历史记录。存储的记录仅包含已净化的审计信号，绝不包含客户内容、电子邮件 HTML、Cookie 或浏览器日志。", "refresh": "刷新历史记录", "routeTitle": "生产路由审计", "routeDescription": "对站点地图发现的公开路由进行手动浏览器检查，按最新优先排序。", "runAnother": "运行另一项审计 →", "routeError": "无法加载路由审计历史记录。", "routes": "个路由", "issuesFound": "{{count}} 个问题", "passed": "已通过", "routeEmpty": "尚未记录任何生产路由审计。", "routePagination": "路由审计历史记录分页", "rendererTitle": "电子邮件预览渲染器错误", "rendererDescription": "只有在管理员预览无法渲染已验证内容时，才会捕获已净化的信号。", "rendererError": "无法加载渲染器错误历史记录。", "rendererEmpty": "尚未记录渲染器错误。", "rendererPagination": "渲染器错误历史记录分页", "records": "条记录", "previous": "上一页", "next": "下一页", "darkPreview": "深色", "releaseTitle": "发布历史记录", "releaseDescription": "已净化发布历史记录，包含状态和导出。", "retention": "保留设置", "releaseStatus": "一致性状态", "allStatuses": "所有状态", "matched": "已匹配", "needsReview": "需要检查", "releaseSort": "排序方式", "releaseSortDate": "发布时间", "releaseSortCheckpoint": "检查点", "releaseDirection": "方向", "newestFirst": "最新优先", "oldestFirst": "最早优先", "releaseExport": "预览导出", "releaseExportFailed": "无法准备导出。", "releaseError": "无法加载发布历史记录。", "releaseEmpty": "没有已验证的发布记录。", "releasePagination": "发布历史记录分页", "time": "时间", "checkpoint": "检查点", "mainCommit": "主分支提交", "parity": "一致性", "releaseExportTitle": "预览导出", "releaseExportDescription": "请在复制或下载前查看已净化快照。", "releaseExportSummary": "预览 {{previewed}} / {{exported}} 行 · {{matched}} 条匹配", "releaseExportTruncated": "上限包含 {{exported}} / {{matched}} 条记录。", "close": "关闭", "copied": "已复制", "copy": "复制 CSV", "copyFailed": "复制失败", "download": "下载 CSV"
+      "back": "管理仪表板",
+      "title": "审计和渲染历史记录",
+      "description": "仅限管理员的运营历史记录。存储的记录仅包含已净化的审计信号，绝不包含客户内容、电子邮件 HTML、Cookie 或浏览器日志。",
+      "refresh": "刷新历史记录",
+      "routeTitle": "生产路由审计",
+      "routeDescription": "对站点地图发现的公开路由进行手动浏览器检查，按最新优先排序。",
+      "runAnother": "运行另一项审计 →",
+      "routeError": "无法加载路由审计历史记录。",
+      "routes": "个路由",
+      "issuesFound": "{{count}} 个问题",
+      "passed": "已通过",
+      "routeEmpty": "尚未记录任何生产路由审计。",
+      "routePagination": "路由审计历史记录分页",
+      "rendererTitle": "电子邮件预览渲染器错误",
+      "rendererDescription": "只有在管理员预览无法渲染已验证内容时，才会捕获已净化的信号。",
+      "rendererError": "无法加载渲染器错误历史记录。",
+      "rendererEmpty": "尚未记录渲染器错误。",
+      "rendererPagination": "渲染器错误历史记录分页",
+      "records": "条记录",
+      "previous": "上一页",
+      "next": "下一页",
+      "darkPreview": "深色",
+      "releaseTitle": "发布历史记录",
+      "releaseDescription": "已净化发布历史记录，包含状态和导出。",
+      "retention": "保留设置",
+      "releaseStatus": "一致性状态",
+      "allStatuses": "所有状态",
+      "matched": "已匹配",
+      "needsReview": "需要检查",
+      "releaseSort": "排序方式",
+      "releaseSortDate": "发布时间",
+      "releaseSortCheckpoint": "检查点",
+      "releaseDirection": "方向",
+      "newestFirst": "最新优先",
+      "oldestFirst": "最早优先",
+      "releaseExport": "预览导出",
+      "releaseExportFailed": "无法准备导出。",
+      "releaseError": "无法加载发布历史记录。",
+      "releaseEmpty": "没有已验证的发布记录。",
+      "releasePagination": "发布历史记录分页",
+      "time": "时间",
+      "checkpoint": "检查点",
+      "mainCommit": "主分支提交",
+      "parity": "一致性",
+      "releaseExportTitle": "预览导出",
+      "releaseExportDescription": "请在复制或下载前查看已净化快照。",
+      "releaseExportSummary": "预览 {{previewed}} / {{exported}} 行 · {{matched}} 条匹配",
+      "releaseExportTruncated": "上限包含 {{exported}} / {{matched}} 条记录。",
+      "close": "关闭",
+      "copied": "已复制",
+      "copy": "复制 CSV",
+      "copyFailed": "复制失败",
+      "download": "下载 CSV"
     },
-    "adminAuditRetention": {"back": "审计历史记录", "title": "保留控制", "description": "选择已净化诊断信息的保留时间。", "controlsTitle": "数据生命周期", "controlsDescription": "仅删除早于新限制的记录。", "routeDays": "路由历史记录", "routeDaysHelp": "路由审计结果的天数。", "rendererDays": "渲染器历史记录", "rendererDaysHelp": "渲染器信号的天数。", "days": "天", "invalid": "请选择 7 到 3,650 天。", "save": "保存并应用", "saved": "已保存控制并清除过期诊断记录。", "saveFailed": "无法保存控制。", "confirmTitle": "应用限制？", "confirmDescription": "过期诊断信息将被永久删除。", "confirmSummary": "路由：{{routeDays}} 天 · 渲染器：{{rendererDays}} 天", "cancel": "取消", "confirm": "应用并清除"},
-    "adminRendererTrend": {"title": "重复的渲染器失败", "description": "{{hours}} 小时内发生了 {{count}} 次 {{template}} 失败。请在发布前查看历史记录。", "review": "查看历史记录"},
+    "adminAuditRetention": {
+      "back": "审计历史记录",
+      "title": "保留控制",
+      "description": "选择已净化诊断信息的保留时间。",
+      "controlsTitle": "数据生命周期",
+      "controlsDescription": "仅删除早于新限制的记录。",
+      "routeDays": "路由历史记录",
+      "routeDaysHelp": "路由审计结果的天数。",
+      "rendererDays": "渲染器历史记录",
+      "rendererDaysHelp": "渲染器信号的天数。",
+      "days": "天",
+      "invalid": "请选择 7 到 3,650 天。",
+      "save": "保存并应用",
+      "saved": "已保存控制并清除过期诊断记录。",
+      "saveFailed": "无法保存控制。",
+      "confirmTitle": "应用限制？",
+      "confirmDescription": "过期诊断信息将被永久删除。",
+      "confirmSummary": "路由：{{routeDays}} 天 · 渲染器：{{rendererDays}} 天",
+      "cancel": "取消",
+      "confirm": "应用并清除"
+    },
+    "adminRendererTrend": {
+      "title": "重复的渲染器失败",
+      "description": "{{hours}} 小时内发生了 {{count}} 次 {{template}} 失败。请在发布前查看历史记录。",
+      "review": "查看历史记录"
+    },
     "bulkSendDialog": {
       "consentCheck": "我确认客户已同意我的企业通过电子邮件和/或短信与其联系"
     },
@@ -10477,7 +11164,6 @@
       "saved": "已确认渲染器警报，直到记录到更新的证据。",
       "failed": "无法确认渲染器警报。"
     }
-
   },
   "zh-TW": {
     "firstVisitWelcome": {
@@ -11075,7 +11761,7 @@
         "zoho": "請先在 Zoho 啟用 SMTP 存取，然後使用您常用的 Zoho 密碼。點選上方的「如何取得」。",
         "aol": "不是您一般的 AOL 密碼 — 請使用應用程式專用密碼。點選上方的「如何取得」。",
         "fastmail": "不是您一般的 Fastmail 密碼 — 請使用應用程式專用密碼。點選上方的「如何取得」。",
-        "google": "不是您一般的 Gmail 密碼 — 請使用應用程式專用密碼。點選上方的「如何取得」。",
+        "google": "請不要使用一般帳戶密碼，請改用應用程式密碼。請點按上方的「如何取得」。",
         "proton": "ProtonMail 需要 Proton Bridge 應用程式 — 使用該應用提供的 SMTP 密碼，而非你的 Proton 帳號密碼。點選上方的「How to get it」。",
         "icloud": "請使用 App-Specific Password，而非您的 Apple ID 密碼。點選上方「如何取得」。"
       },
@@ -11086,7 +11772,25 @@
       "noEmailConnected": "尚未連結電子郵件",
       "notConnectedDescription": "尚未連結電子郵件。請在下方輸入您的資料以開始發送評論邀請。",
       "displayNameHelp": "會顯示為顧客收件匣中的寄件者名稱。",
-      "emailAddressLabel": "您的電子郵件地址 *"
+      "emailAddressLabel": "您的電子郵件地址 *",
+      "gmailGuideTip": "Google 只會顯示一次代碼。變更 Google 密碼後請建立新的應用程式密碼，並在中斷 Get Phame 連線時撤銷該密碼。",
+      "googleWorkspaceGuideStep1": "使用工作帳戶登入 myaccount.google.com → 安全性",
+      "googleWorkspaceGuideStep2": "如果帳戶可使用，請開啟兩步驟驗證",
+      "googleWorkspaceGuideTip": "如果沒有應用程式密碼選項，組織可能限制該功能、要求僅使用安全金鑰驗證，或啟用了進階保護。請向 Workspace 管理員詢問已核准的 SMTP 或 OAuth 連線方式。",
+      "gmailGuideTitle": "Gmail 應用程式密碼 — 4 個步驟",
+      "gmailGuideStep1": "前往 myaccount.google.com → 安全性",
+      "gmailGuideStep2": "如果尚未開啟，請開啟兩步驟驗證",
+      "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 按一下建立",
+      "gmailGuideStep4": "複製 16 位代碼並貼到此處，請移除所有空格",
+      "googleWorkspaceGuideTitle": "Google Workspace 應用程式密碼 — 4 個步驟",
+      "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 按一下建立",
+      "googleWorkspaceGuideStep4": "複製 16 位代碼並貼到此處，請移除所有空格",
+      "deliveryStatus": {
+        "active": "已啟用，可用於客戶評價請求",
+        "notSelected": "已連線，但未被選用於客戶評價請求",
+        "bulkActive": "已連線，但您的大量寄信服務已被選用於客戶評價請求",
+        "needsAttention": "需要處理：請更新 SMTP 詳細資料並重新連線，然後再傳送客戶評價請求"
+      }
     },
     "comparisonTable": {
       "feature": "功能",
@@ -11182,6 +11886,11 @@
         "uploadAvatar": "上傳照片",
         "avatarReadError": "無法讀取該影像。請嘗試其他檔案。",
         "emailHelp": "您的登入電子郵件由身分驗證提供者管理。"
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "偵測到舊版平台郵件連線，但不能用於客戶外聯。請連接您自己擁有的大量寄信服務商帳戶。",
+        "activeOutreach": "已啟用，可用於客戶評價請求",
+        "notActive": "已連線，但未被選用於客戶評價請求"
       }
     },
     "profile": {
@@ -12149,13 +12858,106 @@
       "copyFailed": "此瀏覽器封鎖了複製已轉譯的 HTML。"
     },
     "adminRouteAudit": {
-      "eyebrow": "正式環境保障", "title": "正式環境路由稽核", "description": "安全檢查網站地圖中的公開路由是否有瀏覽器轉譯錯誤。不會接觸帳戶、表單或客戶資料。", "run": "執行路由稽核", "running": "正在稽核路由…", "viewHistory": "查看歷程", "runningDescription": "正在為目前公開網站地圖啟動乾淨的瀏覽器。此程序最多可能需要兩分鐘。", "unavailable": "稽核執行器無法使用", "completedWithIssues": "稽核完成，但發現問題", "completed": "稽核已成功完成", "failureCode": "失敗代碼", "summary": "已稽核 {{routes}} 個路由 · {{failures}} 個失敗", "resultRoutes": "已稽核路由", "issue": "需要檢查", "rendered": "已轉譯", "passed": "正式環境路由稽核已通過。", "failed": "正式環境路由稽核發現問題。", "runFailed": "無法執行正式環境路由稽核。"
+      "eyebrow": "正式環境保障",
+      "title": "正式環境路由稽核",
+      "description": "安全檢查網站地圖中的公開路由是否有瀏覽器轉譯錯誤。不會接觸帳戶、表單或客戶資料。",
+      "run": "執行路由稽核",
+      "running": "正在稽核路由…",
+      "viewHistory": "查看歷程",
+      "runningDescription": "正在為目前公開網站地圖啟動乾淨的瀏覽器。此程序最多可能需要兩分鐘。",
+      "unavailable": "稽核執行器無法使用",
+      "completedWithIssues": "稽核完成，但發現問題",
+      "completed": "稽核已成功完成",
+      "failureCode": "失敗代碼",
+      "summary": "已稽核 {{routes}} 個路由 · {{failures}} 個失敗",
+      "resultRoutes": "已稽核路由",
+      "issue": "需要檢查",
+      "rendered": "已轉譯",
+      "passed": "正式環境路由稽核已通過。",
+      "failed": "正式環境路由稽核發現問題。",
+      "runFailed": "無法執行正式環境路由稽核。"
     },
     "adminAuditLog": {
-      "back": "管理儀表板", "title": "稽核與轉譯歷程", "description": "僅限管理員的營運歷程。儲存的記錄只包含已淨化的稽核訊號，絕不包含客戶內容、電子郵件 HTML、Cookie 或瀏覽器日誌。", "refresh": "重新整理歷程", "routeTitle": "正式環境路由稽核", "routeDescription": "對網站地圖發現的公開路由進行手動瀏覽器檢查，依最新優先排序。", "runAnother": "執行另一項稽核 →", "routeError": "無法載入路由稽核歷程。", "routes": "個路由", "issuesFound": "{{count}} 個問題", "passed": "通過", "routeEmpty": "尚未記錄任何正式環境路由稽核。", "routePagination": "路由稽核歷程分頁", "rendererTitle": "電子郵件預覽轉譯器錯誤", "rendererDescription": "只有在管理員預覽無法轉譯已驗證內容時，才會擷取已淨化的訊號。", "rendererError": "無法載入轉譯器錯誤歷程。", "rendererEmpty": "尚未記錄轉譯器錯誤。", "rendererPagination": "轉譯器錯誤歷程分頁", "records": "筆記錄", "previous": "上一頁", "next": "下一頁", "darkPreview": "深色", "releaseTitle": "發布歷程", "releaseDescription": "已淨化發布歷程，包含狀態與匯出。", "retention": "保留設定", "releaseStatus": "一致性狀態", "allStatuses": "所有狀態", "matched": "相符", "needsReview": "需要檢查", "releaseSort": "排序依據", "releaseSortDate": "發布時間", "releaseSortCheckpoint": "檢查點", "releaseDirection": "方向", "newestFirst": "最新優先", "oldestFirst": "最舊優先", "releaseExport": "預覽匯出", "releaseExportFailed": "無法準備匯出。", "releaseError": "無法載入發布歷程。", "releaseEmpty": "沒有已驗證的發布記錄。", "releasePagination": "發布歷程分頁", "time": "時間", "checkpoint": "檢查點", "mainCommit": "主分支提交", "parity": "一致性", "releaseExportTitle": "預覽匯出", "releaseExportDescription": "請在複製或下載前檢閱已淨化快照。", "releaseExportSummary": "預覽 {{previewed}} / {{exported}} 列 · {{matched}} 筆相符", "releaseExportTruncated": "上限包含 {{exported}} / {{matched}} 筆記錄。", "close": "關閉", "copied": "已複製", "copy": "複製 CSV", "copyFailed": "複製失敗", "download": "下載 CSV"
+      "back": "管理儀表板",
+      "title": "稽核與轉譯歷程",
+      "description": "僅限管理員的營運歷程。儲存的記錄只包含已淨化的稽核訊號，絕不包含客戶內容、電子郵件 HTML、Cookie 或瀏覽器日誌。",
+      "refresh": "重新整理歷程",
+      "routeTitle": "正式環境路由稽核",
+      "routeDescription": "對網站地圖發現的公開路由進行手動瀏覽器檢查，依最新優先排序。",
+      "runAnother": "執行另一項稽核 →",
+      "routeError": "無法載入路由稽核歷程。",
+      "routes": "個路由",
+      "issuesFound": "{{count}} 個問題",
+      "passed": "通過",
+      "routeEmpty": "尚未記錄任何正式環境路由稽核。",
+      "routePagination": "路由稽核歷程分頁",
+      "rendererTitle": "電子郵件預覽轉譯器錯誤",
+      "rendererDescription": "只有在管理員預覽無法轉譯已驗證內容時，才會擷取已淨化的訊號。",
+      "rendererError": "無法載入轉譯器錯誤歷程。",
+      "rendererEmpty": "尚未記錄轉譯器錯誤。",
+      "rendererPagination": "轉譯器錯誤歷程分頁",
+      "records": "筆記錄",
+      "previous": "上一頁",
+      "next": "下一頁",
+      "darkPreview": "深色",
+      "releaseTitle": "發布歷程",
+      "releaseDescription": "已淨化發布歷程，包含狀態與匯出。",
+      "retention": "保留設定",
+      "releaseStatus": "一致性狀態",
+      "allStatuses": "所有狀態",
+      "matched": "相符",
+      "needsReview": "需要檢查",
+      "releaseSort": "排序依據",
+      "releaseSortDate": "發布時間",
+      "releaseSortCheckpoint": "檢查點",
+      "releaseDirection": "方向",
+      "newestFirst": "最新優先",
+      "oldestFirst": "最舊優先",
+      "releaseExport": "預覽匯出",
+      "releaseExportFailed": "無法準備匯出。",
+      "releaseError": "無法載入發布歷程。",
+      "releaseEmpty": "沒有已驗證的發布記錄。",
+      "releasePagination": "發布歷程分頁",
+      "time": "時間",
+      "checkpoint": "檢查點",
+      "mainCommit": "主分支提交",
+      "parity": "一致性",
+      "releaseExportTitle": "預覽匯出",
+      "releaseExportDescription": "請在複製或下載前檢閱已淨化快照。",
+      "releaseExportSummary": "預覽 {{previewed}} / {{exported}} 列 · {{matched}} 筆相符",
+      "releaseExportTruncated": "上限包含 {{exported}} / {{matched}} 筆記錄。",
+      "close": "關閉",
+      "copied": "已複製",
+      "copy": "複製 CSV",
+      "copyFailed": "複製失敗",
+      "download": "下載 CSV"
     },
-    "adminAuditRetention": {"back": "稽核歷程", "title": "保留控制", "description": "選擇已淨化診斷資訊的保留期間。", "controlsTitle": "資料生命週期", "controlsDescription": "只移除早於新限制的記錄。", "routeDays": "路由歷程", "routeDaysHelp": "路由稽核結果天數。", "rendererDays": "轉譯器歷程", "rendererDaysHelp": "轉譯器訊號天數。", "days": "天", "invalid": "請選擇 7 到 3,650 天。", "save": "儲存並套用", "saved": "已儲存控制並清除過期診斷記錄。", "saveFailed": "無法儲存控制。", "confirmTitle": "要套用限制嗎？", "confirmDescription": "過期診斷資訊將被永久移除。", "confirmSummary": "路由：{{routeDays}} 天 · 轉譯器：{{rendererDays}} 天", "cancel": "取消", "confirm": "套用並清除"},
-    "adminRendererTrend": {"title": "重複的轉譯器失敗", "description": "{{hours}} 小時內發生了 {{count}} 次 {{template}} 失敗。請在發布前檢閱歷程。", "review": "檢閱歷程"},
+    "adminAuditRetention": {
+      "back": "稽核歷程",
+      "title": "保留控制",
+      "description": "選擇已淨化診斷資訊的保留期間。",
+      "controlsTitle": "資料生命週期",
+      "controlsDescription": "只移除早於新限制的記錄。",
+      "routeDays": "路由歷程",
+      "routeDaysHelp": "路由稽核結果天數。",
+      "rendererDays": "轉譯器歷程",
+      "rendererDaysHelp": "轉譯器訊號天數。",
+      "days": "天",
+      "invalid": "請選擇 7 到 3,650 天。",
+      "save": "儲存並套用",
+      "saved": "已儲存控制並清除過期診斷記錄。",
+      "saveFailed": "無法儲存控制。",
+      "confirmTitle": "要套用限制嗎？",
+      "confirmDescription": "過期診斷資訊將被永久移除。",
+      "confirmSummary": "路由：{{routeDays}} 天 · 轉譯器：{{rendererDays}} 天",
+      "cancel": "取消",
+      "confirm": "套用並清除"
+    },
+    "adminRendererTrend": {
+      "title": "重複的轉譯器失敗",
+      "description": "{{hours}} 小時內發生了 {{count}} 次 {{template}} 失敗。請在發布前檢閱歷程。",
+      "review": "檢閱歷程"
+    },
     "bulkSendDialog": {
       "consentCheck": "我確認客戶已同意我的企業透過電子郵件和/或簡訊與其聯繫"
     },
@@ -12187,6 +12989,5 @@
       "saved": "已確認轉譯器警示，直到記錄到更新的證據。",
       "failed": "無法確認轉譯器警示。"
     }
-
   }
 }
