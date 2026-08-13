@@ -19,4 +19,6 @@
 - [x] Add a pre-save SMTP Test Connection action with safe loading, success, and error states.
 - [x] Add connection submission loading and success feedback for custom SMTP and bulk-provider credentials.
 - [x] Add localized Gmail and Workspace App Password setup tooltips beside the relevant credential inputs.
-- [ ] Add focused tests, full validation, release checkpoint, and GitHub main synchronization for these settings enhancements.
+- [x] Add an end-to-end behavioral test for the rendered Settings mail connection components, including test-before-save, loading, saved feedback, and Gmail or Workspace help.
+- [x] Directly reach and verify the final deep SMTP and bulk mail controls at the mobile breakpoint, then record the result with the existing desktop verification.
+- [ ] Save a corrected checkpoint and synchronize the exact post-gap-fix tree to GitHub main.

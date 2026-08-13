@@ -99,6 +99,11 @@ import {
   SettingsBulkMailConnectionStatus,
   SettingsPersonalMailConnectionStatus,
 } from "@/components/SettingsMailConnectionStatus";
+import {
+  ConnectionSavedNotice,
+  SmtpAppPasswordHelpTooltip,
+  SmtpCandidateConnectionActions,
+} from "@/components/SmtpConnectionFeedback";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -820,9 +825,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
             </div>
           </div>
           {connectionSavedNotice && (
-            <div role="status" className="rounded-xl px-3 py-2.5 text-xs font-semibold" style={{ background: "oklch(0.96 0.04 145)", color: "oklch(0.34 0.12 145)" }}>
-              {t("settings.bulkSender.connectionSavedMessage", { defaultValue: "Your bulk mail server is connected and ready to use." })}
-            </div>
+            <ConnectionSavedNotice message={t("settings.bulkSender.connectionSavedMessage", { defaultValue: "Your bulk mail server is connected and ready to use." })} />
           )}
           {status.connectionMode === "legacy_api" && (
             <div className="rounded-xl px-3 py-2 text-xs font-semibold rr-text-navy-mid" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
@@ -2442,9 +2445,7 @@ export default function SettingsPage() {
                   </p>
                   <SettingsPersonalMailConnectionStatus status={smtpStatus} translate={t} />
                   {smtpConnectionSavedNotice && (
-                    <p role="status" className="mt-2 rounded-lg px-3 py-2 text-xs font-semibold" style={{ background: "oklch(0.96 0.04 145)", color: "oklch(0.34 0.12 145)" }}>
-                      {t("smtp.connectionSavedMessage", { defaultValue: "Your email server is connected and ready for customer outreach." })}
-                    </p>
+                    <ConnectionSavedNotice message={t("smtp.connectionSavedMessage", { defaultValue: "Your email server is connected and ready for customer outreach." })} />
                   )}
                 </div>
                 {/* Test connection button */}
@@ -2636,18 +2637,7 @@ export default function SettingsPage() {
                       <div className="flex items-center gap-1">
                         <label className="text-xs font-bold rr-text-navy-mid">{passwordLabel}</label>
                         {(isGmail || isGoogleWorkspace) && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button type="button" className="inline-flex min-h-6 min-w-6 items-center justify-center rounded-full rr-text-navy-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" aria-label={isGmail ? t("smtp.gmailAppPasswordTooltipLabel", { defaultValue: "Gmail App Password help" }) : t("smtp.workspaceAppPasswordTooltipLabel", { defaultValue: "Google Workspace App Password help" })}>
-                                <Info size={14} />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
-                              {isGmail
-                                ? t("smtp.gmailAppPasswordTooltip", { defaultValue: "Use a 16-character App Password, not your regular Gmail password. Turn on 2-Step Verification first." })
-                                : t("smtp.workspaceAppPasswordTooltip", { defaultValue: "Your Workspace administrator must allow App Passwords. If this option is unavailable, use your organisation’s approved SMTP or OAuth method." })}
-                            </TooltipContent>
-                          </Tooltip>
+                          <SmtpAppPasswordHelpTooltip provider={isGmail ? "gmail" : "workspace"} translate={t} />
                         )}
                       </div>
                       {hasGuide && (
@@ -3069,83 +3059,27 @@ export default function SettingsPage() {
                 </div>
               </details>
 
-              {/* Test result inline feedback */}
-              {smtpTestResult && (
-                <div
-                  role="status"
-                  aria-live="polite"
-                  className="flex items-start gap-2 px-3 py-2 rounded-xl text-xs"
-                  style={{
-                    background: smtpTestResult.ok ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.03 27)",
-                    color: smtpTestResult.ok ? "oklch(0.40 0.12 145)" : "oklch(0.45 0.12 27)",
-                  }}
-                >
-                  <span className="font-black shrink-0">{smtpTestResult.ok ? t("smtp.testPassedNotSaved", { defaultValue: "Connection test passed. Your credentials have not been saved yet." }) : t("smtp.testFailed", { defaultValue: "Connection test failed. Review your server details and try again." })}</span>
-                  {!smtpTestResult.ok && smtpTestResult.error && (
-                    <span className="font-mono" style={{ wordBreak: "break-word" }}>— {smtpTestResult.error}</span>
-                  )}
-                </div>
-              )}
-              <div className="flex gap-2">
-                {/* Test Connection button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
-                    if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
-                    if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
-                    setSmtpTestResult(null);
-                    testCredentials.mutate({
-                      email: smtpEmail.trim(),
-                      password: smtpPassword,
-                      host: smtpHost.trim(),
-                      port: smtpPort,
-                      secure: smtpSecure,
-                    });
-                  }}
-                  disabled={testCredentials.isPending || connectSmtp.isPending}
-                  aria-busy={testCredentials.isPending}
-                  className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-sm font-bold transition-transform active:scale-95"
-                  style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.35 0.04 260)" }}
-                >
-                  {testCredentials.isPending ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
-                  {testCredentials.isPending ? t("smtp.testingCandidate", { defaultValue: "Testing your mail server…" }) : t("smtp.testBeforeSave", { defaultValue: "Test before saving" })}
-                </button>
-                <button
-                  onClick={() => {
-                    if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
-                    if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
-                    if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
-                    const promise = connectSmtp.mutateAsync({
-                      email: smtpEmail.trim(),
-                      password: smtpPassword,
-                      host: smtpHost.trim(),
-                      port: smtpPort,
-                      secure: smtpSecure,
-                      fromName: smtpFromName.trim() || undefined,
-                    });
-                    toast.promise(promise, {
-                      loading: "Testing connection...",
-                      success: "Email account connected!",
-                      error: (err) => err?.message ?? "Connection failed",
-                    });
-                  }}
-                  disabled={connectSmtp.isPending || testCredentials.isPending}
-                  aria-busy={connectSmtp.isPending}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-                >
-                  {connectSmtp.isPending ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
-                  {connectSmtp.isPending ? t("smtp.connectingAndVerifying", { defaultValue: "Connecting and verifying…" }) : t("smtp.connectAndSave", { defaultValue: "Connect and save" })}
-                </button>
-                {showSmtpForm && (
-                  <button
-                    onClick={() => setShowSmtpForm(false)}
-                    className="px-4 py-3 rounded-xl text-sm font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
-                  >
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
+              <SmtpCandidateConnectionActions
+                result={smtpTestResult}
+                testing={testCredentials.isPending}
+                connecting={connectSmtp.isPending}
+                translate={t}
+                onTest={() => {
+                  if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
+                  if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
+                  if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
+                  setSmtpTestResult(null);
+                  testCredentials.mutate({ email: smtpEmail.trim(), password: smtpPassword, host: smtpHost.trim(), port: smtpPort, secure: smtpSecure });
+                }}
+                onConnect={() => {
+                  if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
+                  if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
+                  if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
+                  const promise = connectSmtp.mutateAsync({ email: smtpEmail.trim(), password: smtpPassword, host: smtpHost.trim(), port: smtpPort, secure: smtpSecure, fromName: smtpFromName.trim() || undefined });
+                  toast.promise(promise, { loading: "Testing connection...", success: "Email account connected!", error: (err) => err?.message ?? "Connection failed" });
+                }}
+                onCancel={showSmtpForm ? () => setShowSmtpForm(false) : undefined}
+              />
             </div>
           )}
         </div>
