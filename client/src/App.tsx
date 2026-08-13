@@ -31,6 +31,11 @@ import {
   DashboardReadinessGate,
   useDashboardReadiness,
 } from "./components/ApiRecoveryExperience";
+import {
+  ConnectionSavedNotice,
+  SmtpAppPasswordHelpTooltip,
+  SmtpCandidateConnectionActions,
+} from "./components/SmtpConnectionFeedback";
 import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
@@ -601,6 +606,49 @@ function ApiRecoveryTestHarness() {
   );
 }
 
+function SmtpConnectionFeedbackTestHarness() {
+  const [testing, setTesting] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [testResult, setTestResult] = useState<{ ok: boolean } | null>(null);
+  const [smtpSaved, setSmtpSaved] = useState(false);
+  const translate = (_key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? _key;
+
+  return (
+    <div className="mx-auto max-w-xl space-y-5 p-6" data-testid="smtp-feedback-test-harness">
+      <div className="flex items-center gap-2">
+        <label className="text-sm font-bold">Gmail App Password</label>
+        <SmtpAppPasswordHelpTooltip provider="gmail" translate={translate} />
+      </div>
+      <div className="flex items-center gap-2">
+        <label className="text-sm font-bold">Google Workspace App Password</label>
+        <SmtpAppPasswordHelpTooltip provider="workspace" translate={translate} />
+      </div>
+      <SmtpCandidateConnectionActions
+        result={testResult}
+        testing={testing}
+        connecting={connecting}
+        translate={translate}
+        onTest={() => {
+          setTesting(true);
+          window.setTimeout(() => {
+            setTesting(false);
+            setTestResult({ ok: true });
+          }, 40);
+        }}
+        onConnect={() => {
+          setConnecting(true);
+          window.setTimeout(() => {
+            setConnecting(false);
+            setSmtpSaved(true);
+          }, 40);
+        }}
+      />
+      {smtpSaved && <div data-testid="smtp-saved-notice"><ConnectionSavedNotice message="Your email server is connected and ready for customer outreach." /></div>}
+      <div data-testid="bulk-saved-notice"><ConnectionSavedNotice message="Your bulk mail server is connected and ready to use." /></div>
+    </div>
+  );
+}
+
 function App() {
   if (
     import.meta.env.DEV &&
@@ -611,6 +659,16 @@ function App() {
         <TooltipProvider>
           <Toaster position="top-center" richColors />
           <ApiRecoveryTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/smtp-connection-feedback") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <SmtpConnectionFeedbackTestHarness />
         </TooltipProvider>
       </ThemeProvider>
     );
