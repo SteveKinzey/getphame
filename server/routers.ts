@@ -209,6 +209,9 @@ import {
   routeAuditRuns,
   emailPreviewRendererErrors,
   auditRetentionPolicies,
+  auditRetentionPolicyChanges,
+  releaseHistoryExportRuns,
+  rendererFailureAlertAcknowledgements,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -269,6 +272,10 @@ import {
   RELEASE_HISTORY_EXPORT_LIMIT,
   type ReleaseHistoryExportColumnKey,
 } from "./releaseParityExport";
+import {
+  getReleaseHistoryExportSchedule,
+  saveReleaseHistoryExportSchedule,
+} from "./releaseHistoryExportSchedule";
 import {
   listSavedContacts,
   createSavedContact,
@@ -449,6 +456,15 @@ const releaseHistoryExportInput = releaseHistoryInput
   .extend({
     selectedColumns: z.array(z.enum(RELEASE_HISTORY_EXPORT_COLUMN_KEYS)).min(1).max(RELEASE_HISTORY_EXPORT_COLUMN_KEYS.length).optional(),
   });
+
+const releaseHistoryScheduleInput = z.object({
+  enabled: z.boolean(),
+  cronExpression: z.string().trim().min(11).max(64),
+  statusFilter: z.enum(["all", "matched", "needs_review"]),
+  sortBy: z.enum(["recordedAt", "checkpointId"]),
+  sortDirection: z.enum(["asc", "desc"]),
+  selectedColumns: z.array(z.enum(RELEASE_HISTORY_EXPORT_COLUMN_KEYS)).min(1).max(RELEASE_HISTORY_EXPORT_COLUMN_KEYS.length),
+});
 
 type ReleaseHistoryFilters = Pick<
   z.infer<typeof releaseHistoryInput>,
@@ -4635,14 +4651,58 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Audit retention storage is unavailable." });
         const now = Date.now();
-        const [existing] = await db.select({ id: auditRetentionPolicies.id }).from(auditRetentionPolicies).where(eq(auditRetentionPolicies.policyKey, "global")).limit(1);
+        const [existing] = await db.select().from(auditRetentionPolicies).where(eq(auditRetentionPolicies.policyKey, "global")).limit(1);
+        const previousRouteAuditRetentionDays = existing?.routeAuditRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
+        const previousRendererErrorRetentionDays = existing?.rendererErrorRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
         if (existing) {
           await db.update(auditRetentionPolicies).set({ ...input, updatedByUserId: ctx.user.id, updatedAt: now }).where(eq(auditRetentionPolicies.id, existing.id));
         } else {
           await db.insert(auditRetentionPolicies).values({ policyKey: "global", ...input, updatedByUserId: ctx.user.id, updatedAt: now });
         }
+        await db.insert(auditRetentionPolicyChanges).values({
+          policyKey: "global",
+          changedByUserId: ctx.user.id,
+          previousRouteAuditRetentionDays,
+          previousRendererErrorRetentionDays,
+          routeAuditRetentionDays: input.routeAuditRetentionDays,
+          rendererErrorRetentionDays: input.rendererErrorRetentionDays,
+          changedAt: now,
+        });
         await pruneAuditHistory(db);
         return { ...input, updatedAt: now };
+      }),
+
+    /** Bounded administrator-only retention-policy setting changes; customer data and raw diagnostics are excluded. */
+    listAuditRetentionPolicyChanges: adminProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(50).default(20) }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Audit retention storage is unavailable." });
+        return db.select({
+          id: auditRetentionPolicyChanges.id,
+          previousRouteAuditRetentionDays: auditRetentionPolicyChanges.previousRouteAuditRetentionDays,
+          previousRendererErrorRetentionDays: auditRetentionPolicyChanges.previousRendererErrorRetentionDays,
+          routeAuditRetentionDays: auditRetentionPolicyChanges.routeAuditRetentionDays,
+          rendererErrorRetentionDays: auditRetentionPolicyChanges.rendererErrorRetentionDays,
+          changedAt: auditRetentionPolicyChanges.changedAt,
+        }).from(auditRetentionPolicyChanges).orderBy(desc(auditRetentionPolicyChanges.changedAt), desc(auditRetentionPolicyChanges.id)).limit(input?.limit ?? 20);
+      }),
+
+    getReleaseHistoryExportSchedule: adminProcedure.query(() => getReleaseHistoryExportSchedule()),
+
+    updateReleaseHistoryExportSchedule: adminProcedure
+      .input(releaseHistoryScheduleInput)
+      .mutation(async ({ input }) => saveReleaseHistoryExportSchedule(input)),
+
+    /** Return metadata plus bounded sanitized CSV snapshots from scheduled reports, never customer data. */
+    listReleaseHistoryExportRuns: adminProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(20).default(10) }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Release history storage is unavailable." });
+        return db.select().from(releaseHistoryExportRuns)
+          .orderBy(desc(releaseHistoryExportRuns.generatedAt), desc(releaseHistoryExportRuns.id))
+          .limit(input?.limit ?? 10);
       }),
 
     /** Summarize repeated sanitized renderer failures in a bounded observation window. */
@@ -4671,7 +4731,37 @@ export const appRouter = router({
           .filter((signal) => signal.count >= threshold)
           .sort((left, right) => right.count - left.count || right.latestOccurredAt - left.latestOccurredAt)
           .slice(0, 5);
-        return { windowHours, threshold, windowStartedAt, totalSignals: rows.length, repeatSignals };
+        const acknowledgements = await db.select().from(rendererFailureAlertAcknowledgements).limit(100);
+        const acknowledgedBySignature = new Map(acknowledgements.map(entry => [entry.signature, entry]));
+        const signals = repeatSignals.map(signal => {
+          const signature = [signal.templateKey, signal.viewportMode, signal.darkMode ? "dark" : "light", signal.errorCode].join("|");
+          const acknowledgement = acknowledgedBySignature.get(signature);
+          return { ...signal, signature, acknowledged: Boolean(acknowledgement && acknowledgement.acknowledgedLatestOccurredAt >= signal.latestOccurredAt), acknowledgedAt: acknowledgement?.acknowledgedAt ?? null };
+        });
+        return { windowHours, threshold, windowStartedAt, totalSignals: rows.length, repeatSignals: signals };
+      }),
+
+    /** Acknowledge one current repeat-renderer signature until newer matching evidence is recorded. */
+    acknowledgeRendererFailureAlert: adminProcedure
+      .input(z.object({
+        templateKey: z.enum(EMAIL_PREVIEW_TEMPLATE_KEYS),
+        viewportMode: z.enum(["desktop", "mobile", "split"]),
+        darkMode: z.boolean(),
+        errorCode: z.literal("render_content_unavailable"),
+        latestOccurredAt: z.number().int().positive(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Renderer diagnostics storage is unavailable." });
+        const [evidence] = await db.select({ occurredAt: emailPreviewRendererErrors.occurredAt }).from(emailPreviewRendererErrors)
+          .where(and(eq(emailPreviewRendererErrors.templateKey, input.templateKey), eq(emailPreviewRendererErrors.viewportMode, input.viewportMode), eq(emailPreviewRendererErrors.darkMode, input.darkMode), eq(emailPreviewRendererErrors.errorCode, input.errorCode), eq(emailPreviewRendererErrors.occurredAt, input.latestOccurredAt)))
+          .limit(1);
+        if (!evidence) throw new TRPCError({ code: "BAD_REQUEST", message: "The alert evidence is no longer current." });
+        const signature = [input.templateKey, input.viewportMode, input.darkMode ? "dark" : "light", input.errorCode].join("|");
+        const acknowledgedAt = Date.now();
+        await db.insert(rendererFailureAlertAcknowledgements).values({ signature, ...input, acknowledgedLatestOccurredAt: input.latestOccurredAt, acknowledgedByUserId: ctx.user.id, acknowledgedAt })
+          .onDuplicateKeyUpdate({ set: { acknowledgedLatestOccurredAt: input.latestOccurredAt, acknowledgedByUserId: ctx.user.id, acknowledgedAt } });
+        return { signature, acknowledgedAt };
       }),
 
     complimentaryAccess: adminProcedure

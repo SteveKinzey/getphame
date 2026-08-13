@@ -3919,4 +3919,8 @@
   },
   "adminAuditRetention": {"back": "稽核歷程", "title": "稽核保留控制", "description": "選擇已淨化的正式環境路由與轉譯器錯誤診斷資訊可供管理員查看的保留期間。", "controlsTitle": "資料生命週期", "controlsDescription": "變更期間會立即只移除早於新限制的記錄。記錄仍會保持淨化狀態且僅限管理員。", "routeDays": "路由稽核歷程", "routeDaysHelp": "保留已淨化公開路由稽核結果的天數。", "rendererDays": "轉譯器錯誤歷程", "rendererDaysHelp": "保留已淨化預覽轉譯器失敗訊號的天數。", "days": "天", "invalid": "請選擇 7 到 3,650 天的保留期間。", "save": "儲存並套用保留設定", "saved": "已儲存保留控制並清除過期診斷記錄。", "saveFailed": "無法儲存保留控制。", "confirmTitle": "要套用保留限制嗎？", "confirmDescription": "過期的已淨化診斷資訊現在將被永久移除，且無法復原。", "confirmSummary": "路由稽核：{{routeDays}} 天 · 轉譯器錯誤：{{rendererDays}} 天", "cancel": "取消", "confirm": "套用並清除"},
   "adminRendererTrend": {"title": "重複的電子郵件預覽轉譯器失敗", "description": "過去 {{hours}} 小時內發生了 {{count}} 次相符的 {{template}} 失敗。請在下次發布前檢閱已淨化歷程。", "review": "檢閱歷程"}
+,
+  "adminExportSchedule": {"title":"自動發佈歷程報告","description":"依 UTC 排程建立有界且已淨化的 CSV 快照。最新報告會保留在稽核歷程中供管理員查看。","enabled":"啟用自動報告","cron":"UTC 排程","cronHelp":"使用六個欄位：秒、分、時、日、月與星期。預設：週一 09:00 UTC。","save":"儲存報告排程","saved":"已更新自動發佈歷程報告。","saveFailed":"無法儲存自動報告設定。","lastRun":"上次報告：{{date}} · {{count}} 列","recentRuns":"最近的自動報告","ready":"已就緒","failed":"失敗","rows":"列"},
+  "adminRetentionHistory": {"title":"最近的保留期間變更","summary":"路由：{{fromRoute}} → {{toRoute}} 天 · 轉譯器：{{fromRenderer}} → {{toRenderer}} 天"},
+  "adminRendererAcknowledgement": {"action":"確認","saved":"已確認轉譯器警示，直到記錄到更新的證據。","failed":"無法確認轉譯器警示。"}
 }

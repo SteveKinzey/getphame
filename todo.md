@@ -2007,10 +2007,16 @@
 - [x] Complete release validation, publish the managed checkpoint, and synchronize the exact tree to protected main
 
 ## Operational audit, scheduled export, and alert acknowledgment (Aug 12, 2026)
-- [ ] Record and present administrator retention-policy changes in a sanitized audit trail
-- [ ] Add administrator-configured scheduled release-history exports using the platform periodic-job pattern
-- [ ] Add administrator acknowledgment for repeated renderer-failure alerts
-- [ ] Update and validate the reusable renderer-resilience workflow
+- [x] Record and present administrator retention-policy changes in a sanitized audit trail
+- [x] Add administrator-configured scheduled release-history exports using the platform periodic-job pattern
+- [x] Add administrator acknowledgment for repeated renderer-failure alerts
+- [x] Update and validate the reusable renderer-resilience workflow
+
+## Operations release verification and protected-main synchronization (Aug 12, 2026)
+- [x] Review the administrator retention audit trail and recent policy changes
+- [x] Verify the manual migration status for the operations controls
+- [x] Run focused email-flow and reusable workflow validation
+- [x] Publish the approved operations checkpoint and synchronize its exact tree to protected main
 
 ## Email template availability recovery (Aug 12, 2026)
 - [x] Investigate why the Send Request template selector shows only the default template
@@ -2030,21 +2036,21 @@
 
 ## Migration lineage reconciliation and skill exercise (Aug 12, 2026)
 - [x] Inspect Git status and classify duplicate/untracked migration artifacts against source and database history
-- [ ] Apply a history-preserving migration source reconciliation without altering the database migration ledger
+- [x] Apply a history-preserving migration source reconciliation without altering the database migration ledger — superseded by approved A1b application-first reconciliation
 - [x] Exercise the reusable renderer-resilience workflow with a non-sensitive sample email-template payload
 - [x] Validate migration generation and update the reusable workflow guidance
 
 ## Controlled Drizzle source rebaseline (Aug 12, 2026)
-- [ ] Preserve the legacy migration journal, SQL, and snapshot evidence outside the active generator path
-- [ ] Create and validate an isolated source metadata baseline from the live schema without changing the database ledger
-- [ ] Prove a future schema-generation run is additive-only before adopting the baseline
-- [ ] Apply the reviewed source rebaseline and validate application regression safety
+- [x] Preserve the legacy migration journal, SQL, and snapshot evidence outside the active generator path — superseded by A1b legacy evidence module
+- [x] Create and validate an isolated source metadata baseline from the live schema without changing the database ledger — completed as isolated evidence capture; not promoted because contracts diverged
+- [x] Prove a future schema-generation run is additive-only before adopting the baseline — stopped safely after incompatible contract diff
+- [x] Apply the reviewed source rebaseline and validate application regression safety — superseded by A1b application-first reconciliation
 
 ## A1 isolated schema-contract reconciliation (Aug 12, 2026)
 - [x] Create an isolated reconciliation branch and capture legacy migration evidence
 - [x] Map active Drizzle schema contracts against the live 99-table baseline
-- [ ] Implement only reviewed compatibility changes and generator metadata rebaseline
-- [ ] Verify additive-only generation and application regression safety before release recommendation
+- [x] Implement only reviewed compatibility changes and generator metadata rebaseline — superseded by the approved A1b manual additive path
+- [x] Verify additive-only generation and application regression safety before release recommendation — completed through the A1b focused and release validations
 
 ## A1b application-first schema reconciliation (Aug 12, 2026)
 - [x] Add explicit schema evidence for live-only legacy tables without changing runtime behavior

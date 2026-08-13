@@ -4412,4 +4412,8 @@
   "adminRendererTrend": {
     "title": "Fallos repetidos del renderizador de vista previa", "description": "Se produjeron {{count}} fallos coincidentes de {{template}} en las últimas {{hours}} horas. Revise el historial saneado antes de la próxima versión.", "review": "Revisar historial"
   }
+,
+  "adminExportSchedule": {"title":"Informe automatizado del historial de versiones","description":"Cree una instantánea CSV saneada y limitada con una programación UTC. El último informe permanece disponible para administradores en Historial de auditoría.","enabled":"Activar informes automáticos","cron":"Programación UTC","cronHelp":"Use seis campos: segundos, minutos, horas, día, mes y día de la semana. Predeterminado: lunes a las 09:00 UTC.","save":"Guardar programación del informe","saved":"Se actualizó el informe automatizado del historial de versiones.","saveFailed":"No se pudieron guardar los ajustes del informe automático.","lastRun":"Último informe: {{date}} · {{count}} filas","recentRuns":"Informes automáticos recientes","ready":"Listo","failed":"Falló","rows":"filas"},
+  "adminRetentionHistory": {"title":"Cambios recientes de retención","summary":"Rutas: {{fromRoute}} → {{toRoute}} días · Renderizador: {{fromRenderer}} → {{toRenderer}} días"},
+  "adminRendererAcknowledgement": {"action":"Confirmar","saved":"La alerta del renderizador se confirmó hasta que se registre evidencia más reciente.","failed":"No se pudo confirmar la alerta del renderizador."}
 }

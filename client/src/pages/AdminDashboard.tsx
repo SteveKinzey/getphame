@@ -139,7 +139,15 @@ function RendererFailureTrendAlert() {
     enabled: user?.role === "admin",
     refetchInterval: 60_000,
   });
-  const leading = trend.data?.repeatSignals[0];
+  const utils = trpc.useUtils();
+  const acknowledge = trpc.admin.acknowledgeRendererFailureAlert.useMutation({
+    onSuccess: () => {
+      void utils.admin.rendererFailureTrend.invalidate();
+      toast.success(t("adminRendererAcknowledgement.saved", { defaultValue: "Renderer alert acknowledged until newer evidence is recorded." }));
+    },
+    onError: (error) => toast.error(error.message || t("adminRendererAcknowledgement.failed", { defaultValue: "The renderer alert could not be acknowledged." })),
+  });
+  const leading = trend.data?.repeatSignals.find((signal) => !signal.acknowledged);
   if (!leading) return null;
   return (
     <section role="alert" className="rounded-2xl border px-4 py-4" style={{ borderColor: "oklch(0.76 0.12 27)", background: "oklch(0.98 0.025 27)" }} aria-labelledby="renderer-trend-alert-title">
@@ -152,7 +160,10 @@ function RendererFailureTrendAlert() {
             <p className="mt-1 text-xs font-bold rr-text-navy-faint">{leading.viewportMode}{leading.darkMode ? " · dark" : ""} · {leading.errorCode}</p>
           </div>
         </div>
-        <button type="button" onClick={() => navigate("/admin/audit-log")} className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-white px-3 text-xs font-black rr-text-navy" style={{ border: "1px solid oklch(0.82 0.10 27)" }}>{t("adminRendererTrend.review", { defaultValue: "Review history" })}</button>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <button type="button" onClick={() => navigate("/admin/audit-log")} className="inline-flex min-h-10 items-center justify-center rounded-lg bg-white px-3 text-xs font-black rr-text-navy" style={{ border: "1px solid oklch(0.82 0.10 27)" }}>{t("adminRendererTrend.review", { defaultValue: "Review history" })}</button>
+          <button type="button" disabled={acknowledge.isPending} onClick={() => acknowledge.mutate({ templateKey: leading.templateKey as "magic-link" | "welcome" | "upgrade-receipt-pro" | "upgrade-receipt-annual" | "upgrade-receipt-lifetime" | "account-deletion", viewportMode: leading.viewportMode as "desktop" | "mobile" | "split", darkMode: leading.darkMode, errorCode: "render_content_unavailable", latestOccurredAt: leading.latestOccurredAt })} className="inline-flex min-h-10 items-center justify-center rounded-lg rr-bg-navy px-3 text-xs font-black text-white disabled:opacity-60">{acknowledge.isPending ? <Loader2 size={14} className="animate-spin" /> : t("adminRendererAcknowledgement.action", { defaultValue: "Acknowledge" })}</button>
+        </div>
       </div>
     </section>
   );
