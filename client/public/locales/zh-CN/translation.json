@@ -3897,4 +3897,8 @@
   },
   "adminAuditRetention": {"back": "审计历史记录", "title": "审计保留控制", "description": "选择已净化的生产路由和渲染器错误诊断信息可供管理员查看的保留时间。", "controlsTitle": "数据生命周期", "controlsDescription": "更改时间窗口会立即仅删除早于新限制的记录。记录仍会保持净化状态且仅限管理员访问。", "routeDays": "路由审计历史记录", "routeDaysHelp": "保留已净化公开路由审计结果的天数。", "rendererDays": "渲染器错误历史记录", "rendererDaysHelp": "保留已净化预览渲染器失败信号的天数。", "days": "天", "invalid": "请选择 7 到 3,650 天的保留窗口。", "save": "保存并应用保留设置", "saved": "已保存保留控制并清除过期诊断记录。", "saveFailed": "无法保存保留控制。", "confirmTitle": "应用保留限制？", "confirmDescription": "过期的已净化诊断信息现在将被永久删除，且无法撤销。", "confirmSummary": "路由审计：{{routeDays}} 天 · 渲染器错误：{{rendererDays}} 天", "cancel": "取消", "confirm": "应用并清除"},
   "adminRendererTrend": {"title": "重复的电子邮件预览渲染器失败", "description": "过去 {{hours}} 小时内发生了 {{count}} 次匹配的 {{template}} 失败。请在下次发布前查看已净化历史记录。", "review": "查看历史记录"}
+,
+  "adminExportSchedule": {"title":"自动发布历史报告","description":"按 UTC 计划创建有边界且已净化的 CSV 快照。最新报告会保留在审计历史中供管理员查看。","enabled":"启用自动报告","cron":"UTC 计划","cronHelp":"使用六个字段：秒、分、时、日、月和星期。默认：周一 09:00 UTC。","save":"保存报告计划","saved":"已更新自动发布历史报告。","saveFailed":"无法保存自动报告设置。","lastRun":"上次报告：{{date}} · {{count}} 行","recentRuns":"最近的自动报告","ready":"已就绪","failed":"失败","rows":"行"},
+  "adminRetentionHistory": {"title":"最近的保留期更改","summary":"路由：{{fromRoute}} → {{toRoute}} 天 · 渲染器：{{fromRenderer}} → {{toRenderer}} 天"},
+  "adminRendererAcknowledgement": {"action":"确认","saved":"已确认渲染器警报，直到记录到更新的证据。","failed":"无法确认渲染器警报。"}
 }

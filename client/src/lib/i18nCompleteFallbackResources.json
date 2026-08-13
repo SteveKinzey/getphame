@@ -1618,7 +1618,32 @@
     "contactsTools": {
       "addConsentLabel": "I confirm this customer has consented to be contacted by {businessName} via email and/or text about their experience and purchases",
       "addConsentRequired": "Consent confirmation is required to add a contact"
+    },
+    "adminExportSchedule": {
+      "title": "Automated release-history report",
+      "description": "Create a bounded sanitized CSV snapshot on a UTC schedule. The latest report remains available to administrators in Audit history.",
+      "enabled": "Enable automated reports",
+      "cron": "UTC schedule",
+      "cronHelp": "Use six fields: seconds, minutes, hours, day, month, weekday. Default: Monday at 09:00 UTC.",
+      "save": "Save report schedule",
+      "saved": "Automated release-history reporting updated.",
+      "saveFailed": "Automated report settings could not be saved.",
+      "lastRun": "Last report: {{date}} · {{count}} rows",
+      "recentRuns": "Recent automated reports",
+      "ready": "Ready",
+      "failed": "Failed",
+      "rows": "rows"
+    },
+    "adminRetentionHistory": {
+      "title": "Recent retention changes",
+      "summary": "Route: {{fromRoute}} → {{toRoute}} days · Renderer: {{fromRenderer}} → {{toRenderer}} days"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Acknowledge",
+      "saved": "Renderer alert acknowledged until newer evidence is recorded.",
+      "failed": "The renderer alert could not be acknowledged."
     }
+
   },
   "es": {
     "firstVisitWelcome": {
@@ -3442,7 +3467,32 @@
     "contactsTools": {
       "addConsentLabel": "Confirmo que este cliente ha dado su consentimiento para ser contactado por {businessName} por correo electrónico y/o texto sobre su experiencia y compras",
       "addConsentRequired": "La confirmación de consentimiento es obligatoria para agregar un contacto"
+    },
+    "adminExportSchedule": {
+      "title": "Informe automatizado del historial de versiones",
+      "description": "Cree una instantánea CSV saneada y limitada con una programación UTC. El último informe permanece disponible para administradores en Historial de auditoría.",
+      "enabled": "Activar informes automáticos",
+      "cron": "Programación UTC",
+      "cronHelp": "Use seis campos: segundos, minutos, horas, día, mes y día de la semana. Predeterminado: lunes a las 09:00 UTC.",
+      "save": "Guardar programación del informe",
+      "saved": "Se actualizó el informe automatizado del historial de versiones.",
+      "saveFailed": "No se pudieron guardar los ajustes del informe automático.",
+      "lastRun": "Último informe: {{date}} · {{count}} filas",
+      "recentRuns": "Informes automáticos recientes",
+      "ready": "Listo",
+      "failed": "Falló",
+      "rows": "filas"
+    },
+    "adminRetentionHistory": {
+      "title": "Cambios recientes de retención",
+      "summary": "Rutas: {{fromRoute}} → {{toRoute}} días · Renderizador: {{fromRenderer}} → {{toRenderer}} días"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Confirmar",
+      "saved": "La alerta del renderizador se confirmó hasta que se registre evidencia más reciente.",
+      "failed": "No se pudo confirmar la alerta del renderizador."
     }
+
   },
   "fr": {
     "firstVisitWelcome": {
@@ -5287,7 +5337,32 @@
     "contactsTools": {
       "addConsentLabel": "Je confirme que ce client a consenti à être contacté par {businessName} par e-mail et/ou SMS concernant son expérience et ses achats",
       "addConsentRequired": "La confirmation du consentement est requise pour ajouter un contact"
+    },
+    "adminExportSchedule": {
+      "title": "Rapport automatisé de l’historique des versions",
+      "description": "Créez un instantané CSV limité et assaini selon une planification UTC. Le dernier rapport reste disponible dans l’historique d’audit.",
+      "enabled": "Activer les rapports automatisés",
+      "cron": "Planification UTC",
+      "cronHelp": "Utilisez six champs : secondes, minutes, heures, jour, mois et jour de la semaine. Par défaut : lundi à 09:00 UTC.",
+      "save": "Enregistrer la planification",
+      "saved": "Le rapport automatisé de l’historique des versions a été mis à jour.",
+      "saveFailed": "Les paramètres du rapport automatisé n’ont pas pu être enregistrés.",
+      "lastRun": "Dernier rapport : {{date}} · {{count}} lignes",
+      "recentRuns": "Rapports automatisés récents",
+      "ready": "Prêt",
+      "failed": "Échec",
+      "rows": "lignes"
+    },
+    "adminRetentionHistory": {
+      "title": "Modifications récentes de conservation",
+      "summary": "Routes : {{fromRoute}} → {{toRoute}} jours · Moteur de rendu : {{fromRenderer}} → {{toRenderer}} jours"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Accuser réception",
+      "saved": "L’alerte du moteur de rendu est reconnue jusqu’à ce qu’un élément plus récent soit enregistré.",
+      "failed": "L’alerte du moteur de rendu n’a pas pu être reconnue."
     }
+
   },
   "it": {
     "firstVisitWelcome": {
@@ -6977,7 +7052,32 @@
     "contactsTools": {
       "addConsentLabel": "Confermo che questo cliente ha acconsentito a essere contattato da {businessName} via e-mail e/o SMS riguardo alla sua esperienza e ai suoi acquisti",
       "addConsentRequired": "La conferma del consenso è obbligatoria per aggiungere un contatto"
+    },
+    "adminExportSchedule": {
+      "title": "Report automatico della cronologia rilasci",
+      "description": "Crea un’istantanea CSV limitata e sanificata con una pianificazione UTC. L’ultimo report rimane disponibile nella cronologia di audit.",
+      "enabled": "Abilita report automatici",
+      "cron": "Pianificazione UTC",
+      "cronHelp": "Usa sei campi: secondi, minuti, ore, giorno, mese e giorno della settimana. Predefinito: lunedì alle 09:00 UTC.",
+      "save": "Salva pianificazione report",
+      "saved": "Il report automatico della cronologia rilasci è stato aggiornato.",
+      "saveFailed": "Non è stato possibile salvare le impostazioni del report automatico.",
+      "lastRun": "Ultimo report: {{date}} · {{count}} righe",
+      "recentRuns": "Report automatici recenti",
+      "ready": "Pronto",
+      "failed": "Non riuscito",
+      "rows": "righe"
+    },
+    "adminRetentionHistory": {
+      "title": "Modifiche recenti alla conservazione",
+      "summary": "Percorsi: {{fromRoute}} → {{toRoute}} giorni · Renderer: {{fromRenderer}} → {{toRenderer}} giorni"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Conferma",
+      "saved": "L’avviso del renderer è stato confermato finché non verranno registrate evidenze più recenti.",
+      "failed": "Non è stato possibile confermare l’avviso del renderer."
     }
+
   },
   "th": {
     "firstVisitWelcome": {
@@ -8657,7 +8757,32 @@
     "contactsTools": {
       "addConsentLabel": "ฉันยืนยันว่าลูกค้ารายนี้ยินยอมให้ {businessName} ติดต่อทางอีเมลและ/หรือข้อความเกี่ยวกับประสบการณ์และการซื้อของพวกเขา",
       "addConsentRequired": "จำเป็นต้องยืนยันความยินยอมเพื่อเพิ่มผู้ติดต่อ"
+    },
+    "adminExportSchedule": {
+      "title": "รายงานประวัติการเผยแพร่อัตโนมัติ",
+      "description": "สร้างสแนปช็อต CSV ที่จำกัดและล้างข้อมูลตามกำหนดเวลา UTC รายงานล่าสุดจะพร้อมให้ผู้ดูแลระบบในประวัติการตรวจสอบ",
+      "enabled": "เปิดใช้รายงานอัตโนมัติ",
+      "cron": "กำหนดเวลา UTC",
+      "cronHelp": "ใช้หกช่อง: วินาที นาที ชั่วโมง วัน เดือน และวันในสัปดาห์ ค่าเริ่มต้น: วันจันทร์ 09:00 UTC",
+      "save": "บันทึกกำหนดเวลารายงาน",
+      "saved": "อัปเดตรายงานประวัติการเผยแพร่อัตโนมัติแล้ว",
+      "saveFailed": "ไม่สามารถบันทึกการตั้งค่ารายงานอัตโนมัติได้",
+      "lastRun": "รายงานล่าสุด: {{date}} · {{count}} แถว",
+      "recentRuns": "รายงานอัตโนมัติล่าสุด",
+      "ready": "พร้อม",
+      "failed": "ล้มเหลว",
+      "rows": "แถว"
+    },
+    "adminRetentionHistory": {
+      "title": "การเปลี่ยนแปลงการเก็บรักษาล่าสุด",
+      "summary": "เส้นทาง: {{fromRoute}} → {{toRoute}} วัน · ตัวเรนเดอร์: {{fromRenderer}} → {{toRenderer}} วัน"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "รับทราบ",
+      "saved": "รับทราบการแจ้งเตือนตัวเรนเดอร์แล้วจนกว่าจะมีหลักฐานใหม่กว่า",
+      "failed": "ไม่สามารถรับทราบการแจ้งเตือนตัวเรนเดอร์ได้"
     }
+
   },
   "zh-CN": {
     "firstVisitWelcome": {
@@ -10327,7 +10452,32 @@
     "contactsTools": {
       "addConsentLabel": "我确认此客户已同意{businessName}通过电子邮件和/或短信联系他们，了解其体验和购买情况",
       "addConsentRequired": "添加联系人需要确认同意"
+    },
+    "adminExportSchedule": {
+      "title": "自动发布历史报告",
+      "description": "按 UTC 计划创建有边界且已净化的 CSV 快照。最新报告会保留在审计历史中供管理员查看。",
+      "enabled": "启用自动报告",
+      "cron": "UTC 计划",
+      "cronHelp": "使用六个字段：秒、分、时、日、月和星期。默认：周一 09:00 UTC。",
+      "save": "保存报告计划",
+      "saved": "已更新自动发布历史报告。",
+      "saveFailed": "无法保存自动报告设置。",
+      "lastRun": "上次报告：{{date}} · {{count}} 行",
+      "recentRuns": "最近的自动报告",
+      "ready": "已就绪",
+      "failed": "失败",
+      "rows": "行"
+    },
+    "adminRetentionHistory": {
+      "title": "最近的保留期更改",
+      "summary": "路由：{{fromRoute}} → {{toRoute}} 天 · 渲染器：{{fromRenderer}} → {{toRenderer}} 天"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "确认",
+      "saved": "已确认渲染器警报，直到记录到更新的证据。",
+      "failed": "无法确认渲染器警报。"
     }
+
   },
   "zh-TW": {
     "firstVisitWelcome": {
@@ -12012,6 +12162,31 @@
     "contactsTools": {
       "addConsentLabel": "我確認此客戶已同意{businessName}透過電子郵件和/或簡訊聯繫他們，了解其體驗和購買情況",
       "addConsentRequired": "新增聯絡人需要確認同意"
+    },
+    "adminExportSchedule": {
+      "title": "自動發佈歷程報告",
+      "description": "依 UTC 排程建立有界且已淨化的 CSV 快照。最新報告會保留在稽核歷程中供管理員查看。",
+      "enabled": "啟用自動報告",
+      "cron": "UTC 排程",
+      "cronHelp": "使用六個欄位：秒、分、時、日、月與星期。預設：週一 09:00 UTC。",
+      "save": "儲存報告排程",
+      "saved": "已更新自動發佈歷程報告。",
+      "saveFailed": "無法儲存自動報告設定。",
+      "lastRun": "上次報告：{{date}} · {{count}} 列",
+      "recentRuns": "最近的自動報告",
+      "ready": "已就緒",
+      "failed": "失敗",
+      "rows": "列"
+    },
+    "adminRetentionHistory": {
+      "title": "最近的保留期間變更",
+      "summary": "路由：{{fromRoute}} → {{toRoute}} 天 · 轉譯器：{{fromRenderer}} → {{toRenderer}} 天"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "確認",
+      "saved": "已確認轉譯器警示，直到記錄到更新的證據。",
+      "failed": "無法確認轉譯器警示。"
     }
+
   }
 }

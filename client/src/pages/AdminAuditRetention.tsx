@@ -1,6 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { AlertTriangle, ArrowLeft, Loader2, Settings2, ShieldCheck } from "lucide-react";
+import { AlertTriangle, ArrowLeft, CalendarClock, Loader2, Settings2, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
@@ -27,6 +27,11 @@ export default function AdminAuditRetention() {
   const [routeDays, setRouteDays] = useState(180);
   const [rendererDays, setRendererDays] = useState(180);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const exportSchedule = trpc.admin.getReleaseHistoryExportSchedule.useQuery(undefined, { enabled });
+  const retentionChanges = trpc.admin.listAuditRetentionPolicyChanges.useQuery({ limit: 8 }, { enabled });
+  const exportRuns = trpc.admin.listReleaseHistoryExportRuns.useQuery({ limit: 5 }, { enabled });
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
+  const [scheduleCronExpression, setScheduleCronExpression] = useState("0 0 9 * * 1");
 
   useEffect(() => {
     if (policy.data) {
@@ -34,6 +39,13 @@ export default function AdminAuditRetention() {
       setRendererDays(policy.data.rendererErrorRetentionDays);
     }
   }, [policy.data]);
+
+  useEffect(() => {
+    if (exportSchedule.data) {
+      setScheduleEnabled(exportSchedule.data.enabled);
+      setScheduleCronExpression(exportSchedule.data.cronExpression);
+    }
+  }, [exportSchedule.data]);
 
   useEffect(() => {
     if (!loading && user?.role !== "admin") navigate("/");
@@ -53,6 +65,13 @@ export default function AdminAuditRetention() {
   });
 
   const invalid = routeDays < MIN_RETENTION_DAYS || routeDays > MAX_RETENTION_DAYS || rendererDays < MIN_RETENTION_DAYS || rendererDays > MAX_RETENTION_DAYS;
+  const updateSchedule = trpc.admin.updateReleaseHistoryExportSchedule.useMutation({
+    onSuccess: async () => {
+      await Promise.all([utils.admin.getReleaseHistoryExportSchedule.invalidate(), utils.admin.listReleaseHistoryExportRuns.invalidate()]);
+      toast.success(t("adminExportSchedule.saved", { defaultValue: "Automated release-history reporting updated." }));
+    },
+    onError: (error) => toast.error(error.message || t("adminExportSchedule.saveFailed", { defaultValue: "Automated report settings could not be saved." })),
+  });
 
   if (loading || !user) return <div className="flex min-h-screen items-center justify-center rr-bg-cream-warm"><Loader2 size={28} className="animate-spin rr-text-navy" /></div>;
   if (user.role !== "admin") return null;
@@ -77,6 +96,17 @@ export default function AdminAuditRetention() {
           {invalid && <p role="alert" className="mt-4 rounded-xl px-3 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>{t("adminAuditRetention.invalid", { defaultValue: "Choose a retention window from 7 to 3,650 days." })}</p>}
           <button type="button" disabled={policy.isLoading || invalid || updatePolicy.isPending} onClick={() => setConfirmOpen(true)} className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:cursor-not-allowed disabled:opacity-50"><Settings2 size={16} />{t("adminAuditRetention.save", { defaultValue: "Save and apply retention" })}</button>
         </section>
+
+        <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm sm:p-5" aria-labelledby="release-export-schedule-title">
+          <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><CalendarClock size={19} /></span><div><h2 id="release-export-schedule-title" className="text-lg rr-fw-black rr-text-navy">{t("adminExportSchedule.title", { defaultValue: "Automated release-history report" })}</h2><p className="mt-1 text-sm font-bold rr-text-navy-muted">{t("adminExportSchedule.description", { defaultValue: "Create a bounded sanitized CSV snapshot on a UTC schedule. The latest report remains available to administrators in Audit history." })}</p></div></div>
+          <label className="mt-5 flex items-center gap-3 rounded-xl border p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}><input type="checkbox" checked={scheduleEnabled} onChange={(event) => setScheduleEnabled(event.target.checked)} className="size-4 accent-[oklch(0.80_0.18_80)]" /><span className="text-sm font-black rr-text-navy">{t("adminExportSchedule.enabled", { defaultValue: "Enable automated reports" })}</span></label>
+          <label className="mt-4 flex flex-col gap-2"><span className="text-sm rr-fw-black rr-text-navy">{t("adminExportSchedule.cron", { defaultValue: "UTC schedule" })}</span><span className="text-xs font-bold rr-text-navy-muted">{t("adminExportSchedule.cronHelp", { defaultValue: "Use six fields: seconds, minutes, hours, day, month, weekday. Default: Monday at 09:00 UTC." })}</span><input value={scheduleCronExpression} onChange={(event) => setScheduleCronExpression(event.target.value)} disabled={!scheduleEnabled} className="h-11 max-w-md rounded-lg border bg-white px-3 font-mono text-sm font-bold rr-text-navy disabled:opacity-50" style={{ borderColor: "oklch(0.84 0.04 260)" }} /></label>
+          <button type="button" disabled={updateSchedule.isPending} onClick={() => updateSchedule.mutate({ enabled: scheduleEnabled, cronExpression: scheduleCronExpression, statusFilter: "all", sortBy: "recordedAt", sortDirection: "desc", selectedColumns: ["recordedAtUtc", "checkpointId", "protectedMainCommit", "protectedMainTree", "managedTree", "parityStatus"] })} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:opacity-50">{updateSchedule.isPending && <Loader2 size={15} className="animate-spin" />}{t("adminExportSchedule.save", { defaultValue: "Save report schedule" })}</button>
+          {exportSchedule.data?.lastRunAt && <p className="mt-3 text-xs font-bold rr-text-navy-muted">{t("adminExportSchedule.lastRun", { defaultValue: "Last report: {{date}} · {{count}} rows", date: new Date(exportSchedule.data.lastRunAt).toLocaleString(), count: exportSchedule.data.lastRunRowCount ?? 0 })}</p>}
+          {exportRuns.data?.length ? <ul className="mt-4 space-y-2" aria-label={t("adminExportSchedule.recentRuns", { defaultValue: "Recent automated reports" })}>{exportRuns.data.map((run) => <li key={run.id} className="flex items-center justify-between gap-3 rounded-lg rr-bg-surface px-3 py-2 text-xs font-bold rr-text-navy"><span>{new Date(run.generatedAt).toLocaleString()}</span><span>{run.status === "ok" ? t("adminExportSchedule.ready", { defaultValue: "Ready" }) : t("adminExportSchedule.failed", { defaultValue: "Failed" })} · {run.rowCount} {t("adminExportSchedule.rows", { defaultValue: "rows" })}</span></li>)}</ul> : null}
+        </section>
+
+        {retentionChanges.data?.length ? <section className="mt-5 rounded-2xl bg-white p-4 shadow-sm sm:p-5" aria-labelledby="retention-history-title"><h2 id="retention-history-title" className="text-lg rr-fw-black rr-text-navy">{t("adminRetentionHistory.title", { defaultValue: "Recent retention changes" })}</h2><ul className="mt-3 space-y-2">{retentionChanges.data.map((change) => <li key={change.id} className="rounded-lg rr-bg-surface px-3 py-2 text-xs font-bold rr-text-navy"><span>{new Date(change.changedAt).toLocaleString()}</span><span className="ml-2 rr-text-navy-muted">{t("adminRetentionHistory.summary", { defaultValue: "Route: {{fromRoute}} → {{toRoute}} days · Renderer: {{fromRenderer}} → {{toRenderer}} days", fromRoute: change.previousRouteAuditRetentionDays, toRoute: change.routeAuditRetentionDays, fromRenderer: change.previousRendererErrorRetentionDays, toRenderer: change.rendererErrorRetentionDays })}</span></li>)}</ul></section> : null}
       </main>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>

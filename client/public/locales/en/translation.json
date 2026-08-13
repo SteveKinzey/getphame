@@ -4361,4 +4361,8 @@
   "adminRendererTrend": {
     "title": "Repeat email-preview renderer failures", "description": "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.", "review": "Review history"
   }
+,
+  "adminExportSchedule": {"title":"Automated release-history report","description":"Create a bounded sanitized CSV snapshot on a UTC schedule. The latest report remains available to administrators in Audit history.","enabled":"Enable automated reports","cron":"UTC schedule","cronHelp":"Use six fields: seconds, minutes, hours, day, month, weekday. Default: Monday at 09:00 UTC.","save":"Save report schedule","saved":"Automated release-history reporting updated.","saveFailed":"Automated report settings could not be saved.","lastRun":"Last report: {{date}} · {{count}} rows","recentRuns":"Recent automated reports","ready":"Ready","failed":"Failed","rows":"rows"},
+  "adminRetentionHistory": {"title":"Recent retention changes","summary":"Route: {{fromRoute}} → {{toRoute}} days · Renderer: {{fromRenderer}} → {{toRenderer}} days"},
+  "adminRendererAcknowledgement": {"action":"Acknowledge","saved":"Renderer alert acknowledged until newer evidence is recorded.","failed":"The renderer alert could not be acknowledged."}
 }
