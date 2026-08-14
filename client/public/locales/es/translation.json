@@ -1139,7 +1139,9 @@
     "testEmailHistoryEmpty": "Aún no se han enviado correos de diagnóstico.",
     "testEmailHistorySent": "Enviado",
     "testEmailHistoryFailed": "Falló",
-    "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo."
+    "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo.",
+    "retryTestEmail": "Reintentar",
+    "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2242,7 +2244,8 @@
       "attentionTooltip": "Tu conexión guardada necesita atención. Vuelve a probarla o actualiza la configuración antes de enviar solicitudes.",
       "disconnectedTooltip": "No hay un canal de entrega verificado seleccionado. Las solicitudes están pausadas hasta que conectes uno en Configuración.",
       "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
-      "details": "Detalles de salud del servidor de correo"
+      "details": "Detalles de salud del servidor de correo",
+      "troubleshoot": "Solucionar problemas"
     }
   },
   "pricing": {

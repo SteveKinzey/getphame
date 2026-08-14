@@ -13,4 +13,10 @@ describe("MailServerHealthBadge detail tooltip", () => {
     expect(source).toContain("bulkActiveTooltip");
     expect(source).toContain("dashboard.mailHealth.details");
   });
+
+  it("offers a direct SMTP troubleshooting route only for a needs-attention connection", () => {
+    expect(source).toContain('health === "attention"');
+    expect(source).toContain("dashboard.mailHealth.troubleshoot");
+    expect(source).toContain("/settings?focus=smtp#smtp-settings");
+  });
 });

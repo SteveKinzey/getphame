@@ -7,3 +7,5 @@ The root authenticated dashboard was reviewed after relocating the health badge 
 The screenshot session displayed the standard language-detection dialog over the dashboard. The mail-health badge remained visibly rendered behind it, and the dialog did not indicate a dashboard rendering failure.
 
 The final mobile review showed the **Mail server healthy** badge directly beneath the root dashboard summary cards, including its help affordance. The full Settings capture included the SMTP management card in the authenticated page flow, with diagnostic history and the protected reset path retained in the mobile layout.
+
+The final recovery-controls review confirmed the root health badge remains visible on mobile and retains its detailed status affordance. The full mobile Settings capture retained the SMTP diagnostic-history and reset-management section in the authenticated layout after adding retry and automation-pause guidance. The needs-attention-only troubleshooting control is covered by focused component regression tests because the reviewed tenant state was healthy.

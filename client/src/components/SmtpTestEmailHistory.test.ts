@@ -17,4 +17,10 @@ describe("SmtpTestEmailHistory", () => {
     expect(source).not.toContain("host");
     expect(source).not.toContain("encrypted");
   });
+
+  it("offers a retry action for failed attempts without retaining a raw recipient", () => {
+    expect(source).toContain("onRetryFailedAttempt");
+    expect(source).toContain("smtp.retryTestEmail");
+    expect(source).not.toMatch(/attempt\.recipient(?!Masked)/);
+  });
 });

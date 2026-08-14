@@ -1139,7 +1139,9 @@
     "testEmailHistoryEmpty": "Aucun e-mail de diagnostic n’a encore été envoyé.",
     "testEmailHistorySent": "Envoyé",
     "testEmailHistoryFailed": "Échec",
-    "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés."
+    "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés.",
+    "retryTestEmail": "Réessayer",
+    "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2242,7 +2244,8 @@
       "attentionTooltip": "Votre connexion enregistrée nécessite une attention. Testez-la de nouveau ou mettez à jour les paramètres avant l’envoi.",
       "disconnectedTooltip": "Aucun canal vérifié n’est sélectionné. Les demandes restent en pause jusqu’à la connexion dans les paramètres.",
       "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
-      "details": "Détails de l’état du serveur de messagerie"
+      "details": "Détails de l’état du serveur de messagerie",
+      "troubleshoot": "Dépanner"
     }
   },
   "pricing": {
