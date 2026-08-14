@@ -57,4 +57,4 @@
 - [x] Add an actual Settings provider-switching behavior test that verifies credential guidance, sender verification, and documentation link changes together.
 - [x] Align provider preset regression assertions with the extracted rendered setup guide component.
 - [x] Complete server TypeScript validation for the current release tree, or document the external SIGTERM blocker with unchanged-server parity evidence.
-- [ ] Run focused tests, full validation, responsive verification, checkpoint release, and exact GitHub main synchronization for the provider-recovery enhancements.
+- [x] Complete focused provider tests, the full suite, client TypeScript, production build, responsive verification, checkpoint release, and exact GitHub main synchronization for the provider-recovery enhancements; document the external server TypeScript SIGTERM blocker rather than asserting that check passed.
