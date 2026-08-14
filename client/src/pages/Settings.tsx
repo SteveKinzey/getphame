@@ -108,6 +108,7 @@ import {
 } from "@/components/SmtpConnectionFeedback";
 import SmtpTestEmailHistory from "@/components/SmtpTestEmailHistory";
 import PausedAutomationQueue from "@/components/PausedAutomationQueue";
+import { BulkProviderDiscoveryControls } from "@/components/BulkProviderDiscoveryControls";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -668,11 +669,13 @@ function isBulkSenderProvider(value: string | null | undefined): value is BulkSe
   return Boolean(value && BULK_SENDER_PROVIDER_IDS.includes(value as BulkSenderProvider));
 }
 
-function BulkSenderSection({ profile }: { profile: ProfileData | null | undefined }) {
+function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: ProfileData | null | undefined; disableStatusQuery?: boolean }) {
   const { t } = useTranslation();
   const tier = profile?.tier ?? "free";
   const isPro = tier !== "free";
-  const { data: status, refetch } = trpc.bulkSender.status.useQuery();
+  const statusQuery = trpc.bulkSender.status.useQuery(undefined, { enabled: !disableStatusQuery });
+  const status = disableStatusQuery ? undefined : statusQuery.data;
+  const refetch = statusQuery.refetch;
   const [provider, setProvider] = useState<BulkSenderProvider>(BULK_SENDER_PROVIDER_IDS[0]);
   const [secret, setSecret] = useState("");
   const [smtpUsername, setSmtpUsername] = useState("");
@@ -859,25 +862,14 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
           </div>
         </div>
       ) : (
-        <div className="space-y-3">
+          <div className="space-y-3">
           <div>
             <label htmlFor="bulk-sender-provider" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.provider", { defaultValue: "Provider" })}</label>
-            <select
-              id="bulk-sender-provider"
-              value={provider}
-              onChange={(event) => applyProvider(event.target.value as BulkSenderProvider)}
-              className="min-h-11 w-full rounded-xl px-3 py-2 text-sm font-semibold outline-none rr-text-navy"
-              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-            >
-              {BULK_SENDER_PROVIDER_IDS.map((providerId) => (
-                <option key={providerId} value={providerId}>
-                  {providerId === "mailjet"
-                    ? t("settings.bulkSender.providers.mailjet.label", { defaultValue: "Mailjet" })
-                    : BULK_SENDER_PRESETS[providerId].label}
-                </option>
-              ))}
-            </select>
-            <p className="mt-1 text-xs rr-text-navy-muted">{localizedPreset.description}</p>
+            <BulkProviderDiscoveryControls
+              provider={provider}
+              onProviderChange={applyProvider}
+              translate={(key, options) => t(key, options) as string}
+            />
           </div>
 
           {preset.regions?.length ? (
@@ -1029,6 +1021,11 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
       )}
     </div>
   );
+}
+
+/** Development-only browser coverage fixture for the real Settings bulk-sender flow. */
+export function SettingsBulkSenderTestFixture() {
+  return <BulkSenderSection profile={{ tier: "pro" } as ProfileData} disableStatusQuery />;
 }
 
 function AccountProfileCard() {
