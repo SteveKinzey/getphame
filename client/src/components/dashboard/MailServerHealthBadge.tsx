@@ -76,7 +76,18 @@ export default function MailServerHealthBadge({
         </a>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="max-w-xs text-sm leading-relaxed">
-        {current.tooltip}
+        <div className="space-y-2">
+          <p>{current.tooltip}</p>
+          {health === "attention" ? (
+            <a
+              href="/settings?focus=smtp#smtp-settings"
+              data-testid="dashboard-mail-health-troubleshoot"
+              className="inline-flex min-h-8 items-center rounded-md px-2 text-xs font-bold text-white rr-bg-navy"
+            >
+              {translate("dashboard.mailHealth.troubleshoot", { defaultValue: "Troubleshoot" })}
+            </a>
+          ) : null}
+        </div>
       </TooltipContent>
     </Tooltip>
   );

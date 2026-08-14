@@ -33,6 +33,13 @@
 - [x] Add an accessible dashboard health-detail tooltip explaining each tenant mail connection state.
 - [x] Verify and enhance the SMTP disconnect confirmation modal so accidental credential removal requires an explicit user decision.
 - [x] Add focused tests and full validation for the diagnostic-history, health-detail, and disconnect-confirmation enhancements.
-- [ ] Save a release checkpoint and synchronize the exact diagnostic-history enhancement tree to GitHub main.
+- [x] Save a release checkpoint and synchronize the exact diagnostic-history enhancement tree to GitHub main.
 - [x] Verify and correct visible dashboard placement of the mail-health badge after the detailed tooltip enhancement.
 - [x] Restore home dashboard test-fixture compatibility while preserving the tenant-scoped bulk mail-health state.
+- [x] Update and validate the reusable tenant-owned mail connection skill with failed-diagnostic retry, troubleshooting navigation, and automation-pause guidance.
+- [x] Add a safe retry action for failed tenant SMTP diagnostic attempts without exposing stored recipient data.
+- [x] Add a needs-attention troubleshooting link from the root dashboard health-detail tooltip to the SMTP settings card.
+- [x] Add a clear automation-pause warning to the acknowledged SMTP disconnect confirmation flow.
+- [x] Add focused tests and full validation for the retry, troubleshooting, and automation-pause enhancements.
+- [ ] Save a release checkpoint and synchronize the exact retry-and-recovery enhancement tree to GitHub main.
+- [x] Correct the retry and disconnect-warning regression test runtime setup, then rerun validation.

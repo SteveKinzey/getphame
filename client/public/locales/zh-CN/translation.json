@@ -930,7 +930,9 @@
     "testEmailHistoryEmpty": "尚未发送诊断测试邮件。",
     "testEmailHistorySent": "已发送",
     "testEmailHistoryFailed": "失败",
-    "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。"
+    "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。",
+    "retryTestEmail": "重试",
+    "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1751,7 +1753,8 @@
       "attentionTooltip": "保存的连接需要处理。请重新测试或更新服务商设置后再发送客户外联。",
       "disconnectedTooltip": "未选择经过验证的租户邮件通道。在设置中连接前，客户外联将保持暂停。",
       "bulkActiveTooltip": "已选择经过验证的租户批量邮件服务商。请在设置中管理或替换。",
-      "details": "邮件服务器健康详情"
+      "details": "邮件服务器健康详情",
+      "troubleshoot": "排查问题"
     }
   },
   "pricing": {

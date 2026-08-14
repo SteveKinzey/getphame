@@ -1717,6 +1717,12 @@ export default function SettingsPage() {
     },
   });
 
+  const retryFailedSmtpTestEmail = () => {
+    setTestEmailSentNotice(false);
+    setTestEmailRecipient((current) => current || smtpStatus?.email || "");
+    window.setTimeout(() => document.getElementById("smtp-test-email-recipient")?.focus(), 0);
+  };
+
   function handleSaveProfile() {
     if (!businessName.trim()) { toast.error("Business name is required"); return; }
     if (!reviewLink.trim()) { toast.error("Google review link is required"); return; }
@@ -2550,7 +2556,7 @@ export default function SettingsPage() {
                 {testEmailSentNotice && <ConnectionSavedNotice message={t("smtp.testEmailSent", { defaultValue: "Test email sent. Check the recipient inbox to confirm delivery." })} />}
               </div>
 
-              <SmtpTestEmailHistory attempts={smtpTestEmailHistory} isLoading={smtpTestEmailHistoryLoading} translate={t} />
+              <SmtpTestEmailHistory attempts={smtpTestEmailHistory} isLoading={smtpTestEmailHistoryLoading} translate={t} onRetryFailedAttempt={retryFailedSmtpTestEmail} />
 
               {/* Inline From Name edit */}
               <InlineFromNameEdit
@@ -2577,6 +2583,9 @@ export default function SettingsPage() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>{t("smtp.disconnectConfirmTitle", { defaultValue: "Disconnect this mail server?" })}</AlertDialogTitle>
                     <AlertDialogDescription>{t("smtp.disconnectConfirmDescription", { defaultValue: "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server." })}</AlertDialogDescription>
+                    <p className="mt-3 rounded-lg border px-3 py-2 text-sm font-medium" style={{ borderColor: "oklch(0.88 0.08 27)", background: "oklch(0.97 0.02 27)", color: "oklch(0.42 0.12 27)" }}>
+                      {t("smtp.disconnectAutomationPauseWarning", { defaultValue: "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server." })}
+                    </p>
                     <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm rr-text-navy" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
                       <Checkbox checked={disconnectAcknowledged} onCheckedChange={(checked) => setDisconnectAcknowledged(checked === true)} aria-label={t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })} />
                       <span>{t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })}</span>

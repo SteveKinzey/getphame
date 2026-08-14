@@ -973,7 +973,9 @@
     "testEmailHistoryEmpty": "No diagnostic test emails have been sent yet.",
     "testEmailHistorySent": "Sent",
     "testEmailHistoryFailed": "Failed",
-    "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials."
+    "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials.",
+    "retryTestEmail": "Retry",
+    "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2082,7 +2084,8 @@
       "attentionTooltip": "Your saved connection needs attention. Re-test it or update the provider settings before sending customer outreach.",
       "disconnectedTooltip": "No verified tenant-owned delivery channel is selected. Customer outreach stays paused until you connect one in Settings.",
       "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
-      "details": "Mail server health details"
+      "details": "Mail server health details",
+      "troubleshoot": "Troubleshoot"
     }
   },
   "pricing": {

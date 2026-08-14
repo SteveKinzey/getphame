@@ -931,7 +931,9 @@
     "testEmailHistoryEmpty": "尚未傳送診斷測試郵件。",
     "testEmailHistorySent": "已傳送",
     "testEmailHistoryFailed": "失敗",
-    "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。"
+    "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。",
+    "retryTestEmail": "重試",
+    "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1827,7 +1829,8 @@
       "attentionTooltip": "已儲存的連線需要處理。請重新測試或更新服務商設定後再傳送客戶外聯。",
       "disconnectedTooltip": "未選取經過驗證的租戶郵件通道。在設定中連線前，客戶外聯將保持暫停。",
       "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
-      "details": "郵件伺服器健康詳細資料"
+      "details": "郵件伺服器健康詳細資料",
+      "troubleshoot": "疑難排解"
     }
   },
   "pricing": {
