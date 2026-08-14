@@ -58,6 +58,12 @@ import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
 import {
+  listSmtpTestEmailAttempts,
+  recordSmtpTestEmailAttempt,
+} from "./smtpTestEmailHistory";
+import { selectOutboundDeliveryChannel } from "./outboundDeliveryChannel";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
+import {
   deliverReviewEmailOrQueue,
   quietWindowDurationMinutes,
   QUIET_HOURS_MINIMUM_DURATION_MINUTES,
@@ -79,6 +85,7 @@ import {
   checkManualSearchEventRateLimit,
   checkOnboardingChecklistEventRateLimit,
   checkOnboardingFunnelInsightRateLimit,
+  checkSmtpTestEmailRateLimit,
 } from "./rateLimiter";
 import {
   AdaptiveSendLimitError,
@@ -96,6 +103,12 @@ import {
   getSubscriptionSnapshot,
 } from "./stripe";
 import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
+import { renderGetPhameEmailHeader } from "./platformEmailBrand";
+import {
+  ADMIN_EMAIL_PREVIEW_LABELS,
+  buildAdminEmailPreviewTemplate,
+} from "./adminEmailPreviewTemplates";
+import { RouteAuditError, runProductionRouteAudit } from "./routeAudit";
 import { sendSupportMessage } from "./supportEmail";
 import {
   checkSupportAttachmentRateLimit,
@@ -198,6 +211,13 @@ import {
   adminUserLifecycleAuditLogs,
   quietHoursQueuedSends,
   pwaUpdateEventTotals,
+  releaseParityRecords,
+  routeAuditRuns,
+  emailPreviewRendererErrors,
+  auditRetentionPolicies,
+  auditRetentionPolicyChanges,
+  releaseHistoryExportRuns,
+  rendererFailureAlertAcknowledgements,
 } from "../drizzle/schema";
 import {
   getOrCreateReferralCode,
@@ -248,9 +268,20 @@ import {
   sql,
   gte,
   lte,
+  lt,
   ne,
   count,
 } from "drizzle-orm";
+import {
+  buildReleaseHistoryCsvExport,
+  RELEASE_HISTORY_EXPORT_COLUMN_KEYS,
+  RELEASE_HISTORY_EXPORT_LIMIT,
+  type ReleaseHistoryExportColumnKey,
+} from "./releaseParityExport";
+import {
+  getReleaseHistoryExportSchedule,
+  saveReleaseHistoryExportSchedule,
+} from "./releaseHistoryExportSchedule";
 import {
   listSavedContacts,
   createSavedContact,
@@ -331,9 +362,11 @@ import {
   detectSmtpSettings,
   getAppPasswordHint,
   sendWelcomeEmail,
+  sendSmtpTestEmail,
   updateSmtpFromName,
   runSmtpHealthChecks,
 } from "./smtp";
+import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 
 import {
   encodeTrackingToken,
@@ -395,6 +428,103 @@ const validateSmtpAuditDateRange = (value: {
   value.dateFrom === undefined ||
   value.dateTo === undefined ||
   value.dateFrom <= value.dateTo;
+
+const EMAIL_PREVIEW_TEMPLATE_KEYS = [
+  "magic-link",
+  "welcome",
+  "upgrade-receipt-pro",
+  "upgrade-receipt-annual",
+  "upgrade-receipt-lifetime",
+  "account-deletion",
+] as const;
+
+const routeAuditHistoryInput = z.object({
+  page: z.number().int().min(1).default(1),
+  pageSize: z.number().int().min(1).max(50).default(20),
+});
+
+const AUDIT_RETENTION_DEFAULT_DAYS = 180;
+const AUDIT_RETENTION_MIN_DAYS = 7;
+const AUDIT_RETENTION_MAX_DAYS = 3650;
+const auditRetentionInput = z.object({
+  routeAuditRetentionDays: z.number().int().min(AUDIT_RETENTION_MIN_DAYS).max(AUDIT_RETENTION_MAX_DAYS),
+  rendererErrorRetentionDays: z.number().int().min(AUDIT_RETENTION_MIN_DAYS).max(AUDIT_RETENTION_MAX_DAYS),
+});
+
+const releaseHistoryInput = z.object({
+  page: z.number().int().min(1).default(1),
+  pageSize: z.number().int().min(1).max(50).default(20),
+  status: z.enum(["all", "matched", "needs_review"]).default("all"),
+  sortBy: z.enum(["recordedAt", "checkpointId"]).default("recordedAt"),
+  sortDirection: z.enum(["asc", "desc"]).default("desc"),
+});
+
+const releaseHistoryExportInput = releaseHistoryInput
+  .omit({ page: true, pageSize: true })
+  .extend({
+    selectedColumns: z.array(z.enum(RELEASE_HISTORY_EXPORT_COLUMN_KEYS)).min(1).max(RELEASE_HISTORY_EXPORT_COLUMN_KEYS.length).optional(),
+  });
+
+const releaseHistoryScheduleInput = z.object({
+  enabled: z.boolean(),
+  cronExpression: z.string().trim().min(11).max(64),
+  statusFilter: z.enum(["all", "matched", "needs_review"]),
+  sortBy: z.enum(["recordedAt", "checkpointId"]),
+  sortDirection: z.enum(["asc", "desc"]),
+  selectedColumns: z.array(z.enum(RELEASE_HISTORY_EXPORT_COLUMN_KEYS)).min(1).max(RELEASE_HISTORY_EXPORT_COLUMN_KEYS.length),
+});
+
+type ReleaseHistoryFilters = Pick<
+  z.infer<typeof releaseHistoryInput>,
+  "status" | "sortBy" | "sortDirection"
+>;
+
+function releaseHistoryWhere(input: ReleaseHistoryFilters, snapshotToMs?: number) {
+  const conditions = [];
+  if (input.status === "matched") conditions.push(eq(releaseParityRecords.parityStatus, "matched"));
+  if (input.status === "needs_review") conditions.push(ne(releaseParityRecords.parityStatus, "matched"));
+  if (snapshotToMs !== undefined) conditions.push(lte(releaseParityRecords.recordedAt, snapshotToMs));
+  return conditions.length ? and(...conditions) : undefined;
+}
+
+function releaseHistoryOrder(input: ReleaseHistoryFilters) {
+  if (input.sortBy === "checkpointId") {
+    return input.sortDirection === "asc"
+      ? [asc(releaseParityRecords.checkpointId), asc(releaseParityRecords.id)]
+      : [desc(releaseParityRecords.checkpointId), desc(releaseParityRecords.id)];
+  }
+  return input.sortDirection === "asc"
+    ? [asc(releaseParityRecords.recordedAt), asc(releaseParityRecords.id)]
+    : [desc(releaseParityRecords.recordedAt), desc(releaseParityRecords.id)];
+}
+
+async function pruneAuditHistory(
+  db: Exclude<Awaited<ReturnType<typeof getDb>>, null>
+) {
+  const [policy] = await db
+    .select()
+    .from(auditRetentionPolicies)
+    .where(eq(auditRetentionPolicies.policyKey, "global"))
+    .limit(1);
+  const routeRetentionDays = policy?.routeAuditRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
+  const rendererRetentionDays = policy?.rendererErrorRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
+  const now = Date.now();
+  await Promise.all([
+    db.delete(routeAuditRuns).where(lt(routeAuditRuns.auditedAt, now - routeRetentionDays * 86_400_000)),
+    db.delete(emailPreviewRendererErrors).where(lt(emailPreviewRendererErrors.occurredAt, now - rendererRetentionDays * 86_400_000)),
+  ]);
+}
+
+function parseRouteAuditFindings(raw: string) {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.slice(0, 25) : [];
+  } catch {
+    return [];
+  }
+}
+
+let routeAuditInFlight: Promise<Awaited<ReturnType<typeof runProductionRouteAudit>>> | null = null;
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
 
@@ -1158,7 +1288,10 @@ export const appRouter = router({
   smtp: router({
     /** Return connection status without exposing credentials */
     status: protectedProcedure.query(async ({ ctx }) => {
-      const creds = await getSmtpCredentials(ctx.user.id);
+      const [creds, channel] = await Promise.all([
+        getSmtpCredentials(ctx.user.id),
+        resolveOutboundDeliveryChannel(ctx.user.id),
+      ]);
       if (!creds)
         return {
           connected: false,
@@ -1169,16 +1302,20 @@ export const appRouter = router({
           lastHealthCheck: null,
           lastHealthStatus: null,
           lastHealthError: null,
+          selectedForOutreach: false,
+          activeDeliveryChannel: channel?.type ?? null,
         };
       return {
         connected: true,
         email: creds.user,
-        fromName: creds.fromName ?? null,
-        replyTo: creds.replyTo ?? null,
+        fromName: creds.fromName,
+        replyTo: creds.replyTo,
         verified: creds.verified === 1,
         lastHealthCheck: creds.lastHealthCheck ?? null,
         lastHealthStatus: creds.lastHealthStatus ?? null,
         lastHealthError: creds.lastHealthError ?? null,
+        selectedForOutreach: channel?.type === "personal",
+        activeDeliveryChannel: channel?.type ?? null,
       };
     }),
 
@@ -1255,6 +1392,7 @@ export const appRouter = router({
           replyTo: input.replyTo || undefined,
         });
         await markSmtpVerified(ctx.user.id);
+        await selectOutboundDeliveryChannel(ctx.user.id, "personal");
 
         // Send welcome/confirmation email to the user's own address.
         // Fire-and-forget — don't let a welcome email failure block the connect response.
@@ -1340,6 +1478,67 @@ export const appRouter = router({
       return { success: true };
     }),
 
+    /** Send one diagnostic email through the user's saved personal SMTP server. */
+    sendTestEmail: protectedProcedure
+      .input(z.object({ to: z.string().trim().email().max(320) }))
+      .mutation(async ({ ctx, input }) => {
+        checkSmtpTestEmailRateLimit(ctx.user.id);
+        const result = await sendSmtpTestEmail(ctx.user.id, input.to);
+        try {
+          await recordSmtpTestEmailAttempt({
+            userId: ctx.user.id,
+            recipient: input.to,
+            ok: result.ok,
+            error: result.error,
+          });
+        } catch (historyError) {
+          console.warn("[smtp.sendTestEmail] Unable to save sanitized diagnostic history", historyError);
+        }
+        if (!result.ok) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: result.error ?? "The test email could not be sent. Please re-test your mail server.",
+          });
+        }
+        return { success: true as const, to: input.to };
+      }),
+
+    /** Return only the requesting tenant's newest privacy-minimized diagnostic attempts. */
+    testEmailHistory: protectedProcedure.query(async ({ ctx }) => {
+      return listSmtpTestEmailAttempts(ctx.user.id);
+    }),
+
+    /** Return pending automated work only when this tenant has no usable outbound mail channel. */
+    pausedAutomationQueue: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const channel = await resolveOutboundDeliveryChannel(ctx.user.id);
+      if (channel) return { paused: false as const, total: 0, items: [] as Array<never> };
+
+      const [[quietCount], [reminderCount], quietRows, reminderRows] = await Promise.all([
+        db.select({ value: count() }).from(quietHoursQueuedSends).where(and(eq(quietHoursQueuedSends.userId, ctx.user.id), eq(quietHoursQueuedSends.status, "pending"))),
+        db.select({ value: count() }).from(followUpReminders).where(and(eq(followUpReminders.userId, ctx.user.id), eq(followUpReminders.status, "pending"))),
+        db.select({ id: quietHoursQueuedSends.id, scheduledAt: quietHoursQueuedSends.scheduledAt, customerName: customerRequests.customerName })
+          .from(quietHoursQueuedSends)
+          .leftJoin(customerRequests, eq(quietHoursQueuedSends.customerRequestId, customerRequests.id))
+          .where(and(eq(quietHoursQueuedSends.userId, ctx.user.id), eq(quietHoursQueuedSends.status, "pending")))
+          .orderBy(asc(quietHoursQueuedSends.scheduledAt))
+          .limit(12),
+        db.select({ id: followUpReminders.id, scheduledAt: followUpReminders.scheduledAt, customerName: followUpReminders.customerName })
+          .from(followUpReminders)
+          .where(and(eq(followUpReminders.userId, ctx.user.id), eq(followUpReminders.status, "pending")))
+          .orderBy(asc(followUpReminders.scheduledAt))
+          .limit(12),
+      ]);
+
+      const items = [
+        ...quietRows.map(row => ({ id: `quiet:${row.id}`, type: "review_request" as const, label: row.customerName || "Scheduled review request", scheduledAt: row.scheduledAt })),
+        ...reminderRows.map(row => ({ id: `reminder:${row.id}`, type: "follow_up" as const, label: row.customerName || "Scheduled follow-up", scheduledAt: row.scheduledAt })),
+      ].sort((a, b) => Number(a.scheduledAt) - Number(b.scheduledAt)).slice(0, 12);
+      const total = Number(quietCount?.value ?? 0) + Number(reminderCount?.value ?? 0);
+      return { paused: total > 0, total, items };
+    }),
+
     /** Return rendered HTML preview of the review request email using real profile data */
     previewEmail: protectedProcedure.query(async ({ ctx }) => {
       const { buildReviewRequestEmail } = await import("./emailTemplates");
@@ -1418,6 +1617,7 @@ export const appRouter = router({
           tier: z.enum(["free", "pro"]).optional(),
           fromName: z.string().max(255).optional(),
           replyTo: z.string().email().optional().or(z.literal("")),
+          consentLabelName: z.string().max(255).optional().or(z.literal("")),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1433,6 +1633,7 @@ export const appRouter = router({
           monthlyResetDate: existing?.monthlyResetDate ?? yearMonth,
           fromName: input.fromName ?? existing?.fromName ?? null,
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
+          consentLabelName: input.consentLabelName?.trim() || null,
         });
         return getBusinessProfile(ctx.user.id);
       }),
@@ -2330,10 +2531,17 @@ export const appRouter = router({
           email: z.string().email(),
           phone: z.string().optional(),
           notes: z.string().optional(),
+          consentGiven: z.boolean().optional(), // true = user confirmed consent checkbox
+          consentSource: z.string().max(255).optional(), // e.g. "manual_add_contact_form"
         })
       )
       .mutation(async ({ ctx, input }) => {
-        await createSavedContact(ctx.user.id, input);
+        await createSavedContact(ctx.user.id, {
+          ...input,
+          consentBasis: input.consentGiven ? "explicit_opt_in" : undefined,
+          consentCapturedAt: input.consentGiven ? Date.now() : undefined,
+          consentSource: input.consentGiven ? (input.consentSource ?? "manual_add_contact_form") : undefined,
+        });
         return { ok: true };
       }),
 
@@ -2812,7 +3020,12 @@ export const appRouter = router({
         if (decoded.contactType === "contact") {
           await db
             .update(savedContacts)
-            .set({ optedOut: 1, optedOutAt: Date.now() })
+            .set({
+              optedOut: 1,
+              optedOutAt: Date.now(),
+              // Record that consent was withdrawn via unsubscribe link
+              consentBasis: "opted_out",
+            })
             .where(eqU(savedContacts.id, decoded.id));
         } else {
           await db
@@ -2822,6 +3035,101 @@ export const appRouter = router({
         }
         return { ok: true, contactType: decoded.contactType };
       }),
+    /**
+     * Bulk consent request — sends a consent request email to selected contacts
+     * who have no explicit consent on file. Uses the user's SMTP credentials.
+     */
+    bulkConsentRequest: protectedProcedure
+      .input(
+        z.object({
+          contactIds: z.array(z.number().int()).min(1).max(200),
+          customSubject: z.string().max(200).optional(),
+          customBody: z.string().max(5000).optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile)
+          throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found." });
+        const allContacts = await listSavedContacts(ctx.user.id);
+        const contactMap = new Map(allContacts.map(c => [c.id, c]));
+        const targets = input.contactIds
+          .map(id => contactMap.get(id))
+          .filter(c => c && !c.optedOut && c.consentBasis !== "explicit_opt_in") as typeof allContacts;
+        if (targets.length === 0)
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No eligible contacts (all have consent or are opted out)." });
+        const businessName = String((profile as any).consentLabelName || profile.businessName || "");
+        const defaultSubject = `A note about your email preferences from ${businessName}`;
+        const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${businessName}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
+        let sent = 0;
+        let failed = 0;
+        for (const contact of targets) {
+          try {
+            const unsubUrl = buildUnsubUrl("contact", contact.id, ctx.user.id);
+            const resolveVars = (tpl: string) =>
+              tpl.replace(/\{\{name\}\}/g, contact.name).replace(/\{\{businessName\}\}/g, businessName ?? "");
+            const subject = resolveVars(input.customSubject || defaultSubject);
+            const bodyText = resolveVars(input.customBody || defaultBody);
+            const bodyHtml = bodyText.split(/\n\n+/).map((p: string) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+            const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${contact.name},</p>${bodyHtml}<p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
+            const result = await sendMailViaSmtp({
+              userId: ctx.user.id,
+              to: contact.email,
+              subject,
+              html,
+            });
+            if (result?.configured) sent++;
+            else failed++;
+          } catch {
+            failed++;
+          }
+        }
+        return { ok: true, sent, failed, total: targets.length };
+      }),
+    /**
+     * Send a single test consent email to the logged-in user's own address.
+     */
+    sendConsentTestEmail: protectedProcedure
+      .input(z.object({
+        customSubject: z.string().max(200).optional(),
+        customBody: z.string().max(5000).optional(),
+        toEmail: z.string().email().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found." });
+        const businessName = String((profile as any).consentLabelName || profile.businessName || "");
+        const toAddress = input.toEmail || ctx.user.email || "";
+        if (!toAddress) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "A test recipient email address is required." });
+        }
+        const defaultSubject = `[TEST] A note about your email preferences from ${businessName}`;
+        const defaultBody = `We value your privacy and want to make sure you are comfortable receiving emails from us about your experience and purchases with ${businessName}.\n\nBy continuing to receive our emails, you confirm that you consent to be contacted by ${businessName} via email about your experience and purchases.\n\nIf you prefer not to receive future emails, you can unsubscribe at any time.`;
+        const resolveVars = (tpl: string) => tpl
+          .replace(/\{\{name\}\}/g, ctx.user.name || "Test Contact")
+          .replace(/\{\{businessName\}\}/g, businessName)
+          .replace(/\{\{email\}\}/g, toAddress)
+          .replace(/\{\{currentDate\}\}/g, new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }));
+        const subject = resolveVars(input.customSubject || defaultSubject);
+        const bodyText = resolveVars(input.customBody || defaultBody);
+        const bodyHtml = bodyText.split(/\n\n+/).map((p: string) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+        const html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1a2e;"><h2 style="color:#1a1a2e;">A quick note from ${businessName}</h2><p>Hi ${ctx.user.name || "Test Contact"},</p>${bodyHtml}<p style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;text-align:center;">You received this email because you are a customer of ${businessName}. <a href="#" style="color:#9ca3af;">Unsubscribe</a></p></body></html>`;
+        const result = await sendMailViaSmtp({ userId: ctx.user.id, to: toAddress, subject, html });
+        if (!result) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Test email could not be delivered. Check your SMTP settings." });
+        return { ok: true, to: toAddress };
+      }),
+    /** Returns consent stats for the dashboard widget */
+    consentStats: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return { consented: 0, total: 0 };
+      const rows = await db
+        .select({ consentBasis: savedContacts.consentBasis })
+        .from(savedContacts)
+        .where(eq(savedContacts.userId, ctx.user.id));
+      const total = rows.length;
+      const consented = rows.filter((r) => r.consentBasis === "explicit").length;
+      return { consented, total };
+    }),
   }),
 
   templates: router({
@@ -3166,6 +3474,15 @@ export const appRouter = router({
           ctx.user.id,
           resolvedTemplate?.id ?? null
         );
+        // Inject unsubscribe URL into the email body if not already present
+        const unsubUrl = buildUnsubUrl("contact", newRequestId, ctx.user.id);
+        if (!htmlBody.includes("unsubscribe") && !htmlBody.includes("Unsubscribe")) {
+          // Append unsubscribe footer to email body
+          htmlBody = htmlBody.replace(
+            /<\/div>\s*$/,
+            `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#9ca3af;">You received this email because you are a customer of ${profile.businessName}. <a href="${unsubUrl}" style="color:#9ca3af;">Unsubscribe</a></div></div>`
+          );
+        }
         const baseUrl =
           (ctx.req.headers.origin as string | undefined) ??
           "https://getphame.app";
@@ -4069,6 +4386,7 @@ export const appRouter = router({
         allDone,
         dismissed,
         canAccessConnector,
+        consentAcknowledgedAt: profile?.consentAcknowledgedAt ?? null,
       };
     }),
 
@@ -4093,6 +4411,17 @@ export const appRouter = router({
           message: "Profile not found",
         });
       await upsertBusinessProfile({ ...profile, onboardingDismissed: 0 });
+      return { ok: true };
+    }),
+    /** Records when the user acknowledged the consent checkbox requirement. */
+    acknowledgeConsent: protectedProcedure.mutation(async ({ ctx }) => {
+      const profile = await getBusinessProfile(ctx.user.id);
+      if (!profile)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Profile not found",
+        });
+      await upsertBusinessProfile({ ...profile, consentAcknowledgedAt: Date.now() });
       return { ok: true };
     }),
   }),
@@ -4161,6 +4490,357 @@ export const appRouter = router({
 
   /** Admin-only analytics and diagnostics */
   admin: router({
+    /** Run a serialized, non-authenticated browser audit of sitemap public routes. */
+    triggerRouteAudit: adminProcedure.mutation(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Audit history storage is unavailable.",
+        });
+      }
+      if (routeAuditInFlight) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "A production route audit is already in progress.",
+        });
+      }
+
+      const startedAt = Date.now();
+      routeAuditInFlight = runProductionRouteAudit();
+      try {
+        const result = await routeAuditInFlight;
+        const [inserted] = await db.insert(routeAuditRuns).values({
+          triggeredByUserId: ctx.user.id,
+          routesAudited: result.auditedRoutes,
+          failureCount: result.failureCount,
+          findings: JSON.stringify(result.findings),
+          durationMs: result.durationMs,
+          auditedAt: result.auditedAt,
+        });
+        await pruneAuditHistory(db);
+        return {
+          id: Number((inserted as unknown as { insertId: number }).insertId),
+          ...result,
+          runnerErrorCode: null,
+        };
+      } catch (error) {
+        const runnerErrorCode =
+          error instanceof RouteAuditError ? error.code : "route_audit_failed";
+        const auditedAt = Date.now();
+        const [inserted] = await db.insert(routeAuditRuns).values({
+          triggeredByUserId: ctx.user.id,
+          routesAudited: 0,
+          failureCount: 1,
+          findings: "[]",
+          runnerErrorCode,
+          durationMs: auditedAt - startedAt,
+          auditedAt,
+        });
+        await pruneAuditHistory(db);
+        return {
+          id: Number((inserted as unknown as { insertId: number }).insertId),
+          auditedRoutes: 0,
+          failureCount: 1,
+          findings: [],
+          durationMs: auditedAt - startedAt,
+          auditedAt,
+          runnerErrorCode,
+        };
+      } finally {
+        routeAuditInFlight = null;
+      }
+    }),
+
+    /** Bounded newest-first history of sanitized production route audits. */
+    listRouteAuditRuns: adminProcedure
+      .input(routeAuditHistoryInput.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Audit history storage is unavailable.",
+          });
+        }
+        const parsed = routeAuditHistoryInput.parse(input ?? {});
+        const [totalRow] = await db
+          .select({ value: count() })
+          .from(routeAuditRuns);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / parsed.pageSize));
+        const page = Math.min(parsed.page, pageCount);
+        const rows = await db
+          .select()
+          .from(routeAuditRuns)
+          .orderBy(desc(routeAuditRuns.auditedAt), desc(routeAuditRuns.id))
+          .limit(parsed.pageSize)
+          .offset((page - 1) * parsed.pageSize);
+        return {
+          rows: rows.map(row => ({
+            ...row,
+            findings: parseRouteAuditFindings(row.findings),
+          })),
+          page,
+          pageSize: parsed.pageSize,
+          total,
+          pageCount,
+        };
+      }),
+
+    /** Record a sanitized renderer failure from the authenticated admin preview. */
+    recordEmailPreviewRendererError: adminProcedure
+      .input(
+        z.object({
+          templateKey: z.enum(EMAIL_PREVIEW_TEMPLATE_KEYS),
+          viewportMode: z.enum(["desktop", "mobile", "split"]),
+          darkMode: z.boolean(),
+          errorCode: z.literal("render_content_unavailable"),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Renderer diagnostics storage is unavailable.",
+          });
+        }
+        const occurredAt = Date.now();
+        const [inserted] = await db.insert(emailPreviewRendererErrors).values({
+          reportedByUserId: ctx.user.id,
+          ...input,
+          occurredAt,
+        });
+        await pruneAuditHistory(db);
+        return {
+          id: Number((inserted as unknown as { insertId: number }).insertId),
+          occurredAt,
+        };
+      }),
+
+    /** Bounded newest-first history of sanitized email-preview renderer errors. */
+    listEmailPreviewRendererErrors: adminProcedure
+      .input(routeAuditHistoryInput.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Renderer diagnostics storage is unavailable.",
+          });
+        }
+        const parsed = routeAuditHistoryInput.parse(input ?? {});
+        const [totalRow] = await db
+          .select({ value: count() })
+          .from(emailPreviewRendererErrors);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / parsed.pageSize));
+        const page = Math.min(parsed.page, pageCount);
+        const rows = await db
+          .select()
+          .from(emailPreviewRendererErrors)
+          .orderBy(
+            desc(emailPreviewRendererErrors.occurredAt),
+            desc(emailPreviewRendererErrors.id)
+          )
+          .limit(parsed.pageSize)
+          .offset((page - 1) * parsed.pageSize);
+        return { rows, page, pageSize: parsed.pageSize, total, pageCount };
+      }),
+
+    releaseParity: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) return null;
+      const [latest] = await db
+        .select()
+        .from(releaseParityRecords)
+        .orderBy(desc(releaseParityRecords.recordedAt))
+        .limit(1);
+      return latest ?? null;
+    }),
+
+    /** Bounded administrator-only release lineage with stable filtering and sorting. */
+    listReleaseParityRecords: adminProcedure
+      .input(releaseHistoryInput.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Release history storage is unavailable." });
+        const parsed = releaseHistoryInput.parse(input ?? {});
+        const where = releaseHistoryWhere(parsed);
+        const [totalRow] = await db.select({ value: count() }).from(releaseParityRecords).where(where);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / parsed.pageSize));
+        const page = Math.min(parsed.page, pageCount);
+        const rows = await db
+          .select()
+          .from(releaseParityRecords)
+          .where(where)
+          .orderBy(...releaseHistoryOrder(parsed))
+          .limit(parsed.pageSize)
+          .offset((page - 1) * parsed.pageSize);
+        return { rows, page, pageSize: parsed.pageSize, total, pageCount, filters: parsed };
+      }),
+
+    /** Prepare one sanitized, bounded release-history snapshot for preview, copy, and download. */
+    prepareReleaseParityExport: adminProcedure
+      .input(releaseHistoryExportInput.optional())
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Release history storage is unavailable." });
+        const parsed = releaseHistoryExportInput.parse(input ?? {});
+        const snapshotToMs = Date.now();
+        const where = releaseHistoryWhere(parsed, snapshotToMs);
+        const [totalRow] = await db.select({ value: count() }).from(releaseParityRecords).where(where);
+        const total = Number(totalRow?.value ?? 0);
+        const rows = await db
+          .select()
+          .from(releaseParityRecords)
+          .where(where)
+          .orderBy(...releaseHistoryOrder(parsed))
+          .limit(RELEASE_HISTORY_EXPORT_LIMIT);
+        return buildReleaseHistoryCsvExport({
+          rows,
+          total,
+          truncated: total > rows.length,
+          status: parsed.status,
+          sortBy: parsed.sortBy,
+          sortDirection: parsed.sortDirection,
+          selectedColumns: parsed.selectedColumns as ReleaseHistoryExportColumnKey[] | undefined,
+          snapshotToMs,
+        });
+      }),
+
+    /** Read global, administrator-only audit retention controls without exposing actor identifiers. */
+    getAuditRetentionPolicy: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Audit retention storage is unavailable." });
+      const [policy] = await db.select().from(auditRetentionPolicies).where(eq(auditRetentionPolicies.policyKey, "global")).limit(1);
+      return policy
+        ? { routeAuditRetentionDays: policy.routeAuditRetentionDays, rendererErrorRetentionDays: policy.rendererErrorRetentionDays, updatedAt: policy.updatedAt }
+        : { routeAuditRetentionDays: AUDIT_RETENTION_DEFAULT_DAYS, rendererErrorRetentionDays: AUDIT_RETENTION_DEFAULT_DAYS, updatedAt: null };
+    }),
+
+    /** Save retention windows and immediately purge only expired sanitized diagnostic records. */
+    updateAuditRetentionPolicy: adminProcedure
+      .input(auditRetentionInput)
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Audit retention storage is unavailable." });
+        const now = Date.now();
+        const [existing] = await db.select().from(auditRetentionPolicies).where(eq(auditRetentionPolicies.policyKey, "global")).limit(1);
+        const previousRouteAuditRetentionDays = existing?.routeAuditRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
+        const previousRendererErrorRetentionDays = existing?.rendererErrorRetentionDays ?? AUDIT_RETENTION_DEFAULT_DAYS;
+        if (existing) {
+          await db.update(auditRetentionPolicies).set({ ...input, updatedByUserId: ctx.user.id, updatedAt: now }).where(eq(auditRetentionPolicies.id, existing.id));
+        } else {
+          await db.insert(auditRetentionPolicies).values({ policyKey: "global", ...input, updatedByUserId: ctx.user.id, updatedAt: now });
+        }
+        await db.insert(auditRetentionPolicyChanges).values({
+          policyKey: "global",
+          changedByUserId: ctx.user.id,
+          previousRouteAuditRetentionDays,
+          previousRendererErrorRetentionDays,
+          routeAuditRetentionDays: input.routeAuditRetentionDays,
+          rendererErrorRetentionDays: input.rendererErrorRetentionDays,
+          changedAt: now,
+        });
+        await pruneAuditHistory(db);
+        return { ...input, updatedAt: now };
+      }),
+
+    /** Bounded administrator-only retention-policy setting changes; customer data and raw diagnostics are excluded. */
+    listAuditRetentionPolicyChanges: adminProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(50).default(20) }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Audit retention storage is unavailable." });
+        return db.select({
+          id: auditRetentionPolicyChanges.id,
+          previousRouteAuditRetentionDays: auditRetentionPolicyChanges.previousRouteAuditRetentionDays,
+          previousRendererErrorRetentionDays: auditRetentionPolicyChanges.previousRendererErrorRetentionDays,
+          routeAuditRetentionDays: auditRetentionPolicyChanges.routeAuditRetentionDays,
+          rendererErrorRetentionDays: auditRetentionPolicyChanges.rendererErrorRetentionDays,
+          changedAt: auditRetentionPolicyChanges.changedAt,
+        }).from(auditRetentionPolicyChanges).orderBy(desc(auditRetentionPolicyChanges.changedAt), desc(auditRetentionPolicyChanges.id)).limit(input?.limit ?? 20);
+      }),
+
+    getReleaseHistoryExportSchedule: adminProcedure.query(() => getReleaseHistoryExportSchedule()),
+
+    updateReleaseHistoryExportSchedule: adminProcedure
+      .input(releaseHistoryScheduleInput)
+      .mutation(async ({ input }) => saveReleaseHistoryExportSchedule(input)),
+
+    /** Return metadata plus bounded sanitized CSV snapshots from scheduled reports, never customer data. */
+    listReleaseHistoryExportRuns: adminProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(20).default(10) }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Release history storage is unavailable." });
+        return db.select().from(releaseHistoryExportRuns)
+          .orderBy(desc(releaseHistoryExportRuns.generatedAt), desc(releaseHistoryExportRuns.id))
+          .limit(input?.limit ?? 10);
+      }),
+
+    /** Summarize repeated sanitized renderer failures in a bounded observation window. */
+    rendererFailureTrend: adminProcedure
+      .input(z.object({ windowHours: z.number().int().min(24).max(720).default(168), threshold: z.number().int().min(2).max(20).default(3) }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Renderer diagnostics storage is unavailable." });
+        const windowHours = input?.windowHours ?? 168;
+        const threshold = input?.threshold ?? 3;
+        const windowStartedAt = Date.now() - windowHours * 3_600_000;
+        const rows = await db
+          .select({ templateKey: emailPreviewRendererErrors.templateKey, viewportMode: emailPreviewRendererErrors.viewportMode, darkMode: emailPreviewRendererErrors.darkMode, errorCode: emailPreviewRendererErrors.errorCode, occurredAt: emailPreviewRendererErrors.occurredAt })
+          .from(emailPreviewRendererErrors)
+          .where(gte(emailPreviewRendererErrors.occurredAt, windowStartedAt))
+          .orderBy(desc(emailPreviewRendererErrors.occurredAt), desc(emailPreviewRendererErrors.id))
+          .limit(250);
+        const grouped = new Map<string, { templateKey: string; viewportMode: string; darkMode: boolean; errorCode: string; count: number; latestOccurredAt: number }>();
+        for (const row of rows) {
+          const key = [row.templateKey, row.viewportMode, row.darkMode ? "dark" : "light", row.errorCode].join("|");
+          const current = grouped.get(key);
+          if (current) current.count += 1;
+          else grouped.set(key, { ...row, count: 1, latestOccurredAt: row.occurredAt });
+        }
+        const repeatSignals = Array.from(grouped.values())
+          .filter((signal) => signal.count >= threshold)
+          .sort((left, right) => right.count - left.count || right.latestOccurredAt - left.latestOccurredAt)
+          .slice(0, 5);
+        const acknowledgements = await db.select().from(rendererFailureAlertAcknowledgements).limit(100);
+        const acknowledgedBySignature = new Map(acknowledgements.map(entry => [entry.signature, entry]));
+        const signals = repeatSignals.map(signal => {
+          const signature = [signal.templateKey, signal.viewportMode, signal.darkMode ? "dark" : "light", signal.errorCode].join("|");
+          const acknowledgement = acknowledgedBySignature.get(signature);
+          return { ...signal, signature, acknowledged: Boolean(acknowledgement && acknowledgement.acknowledgedLatestOccurredAt >= signal.latestOccurredAt), acknowledgedAt: acknowledgement?.acknowledgedAt ?? null };
+        });
+        return { windowHours, threshold, windowStartedAt, totalSignals: rows.length, repeatSignals: signals };
+      }),
+
+    /** Acknowledge one current repeat-renderer signature until newer matching evidence is recorded. */
+    acknowledgeRendererFailureAlert: adminProcedure
+      .input(z.object({
+        templateKey: z.enum(EMAIL_PREVIEW_TEMPLATE_KEYS),
+        viewportMode: z.enum(["desktop", "mobile", "split"]),
+        darkMode: z.boolean(),
+        errorCode: z.literal("render_content_unavailable"),
+        latestOccurredAt: z.number().int().positive(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Renderer diagnostics storage is unavailable." });
+        const [evidence] = await db.select({ occurredAt: emailPreviewRendererErrors.occurredAt }).from(emailPreviewRendererErrors)
+          .where(and(eq(emailPreviewRendererErrors.templateKey, input.templateKey), eq(emailPreviewRendererErrors.viewportMode, input.viewportMode), eq(emailPreviewRendererErrors.darkMode, input.darkMode), eq(emailPreviewRendererErrors.errorCode, input.errorCode), eq(emailPreviewRendererErrors.occurredAt, input.latestOccurredAt)))
+          .limit(1);
+        if (!evidence) throw new TRPCError({ code: "BAD_REQUEST", message: "The alert evidence is no longer current." });
+        const signature = [input.templateKey, input.viewportMode, input.darkMode ? "dark" : "light", input.errorCode].join("|");
+        const acknowledgedAt = Date.now();
+        await db.insert(rendererFailureAlertAcknowledgements).values({ signature, ...input, acknowledgedLatestOccurredAt: input.latestOccurredAt, acknowledgedByUserId: ctx.user.id, acknowledgedAt })
+          .onDuplicateKeyUpdate({ set: { acknowledgedLatestOccurredAt: input.latestOccurredAt, acknowledgedByUserId: ctx.user.id, acknowledgedAt } });
+        return { signature, acknowledgedAt };
+      }),
+
     complimentaryAccess: adminProcedure
       .input(
         z
@@ -5567,6 +6247,195 @@ export const appRouter = router({
         promptpayConversionRate,
       };
     }),
+    sendTestEmail: adminProcedure
+      .input(
+        z.object({
+          template: z.enum([
+            "magic-link",
+            "welcome",
+            "upgrade-receipt-pro",
+            "upgrade-receipt-annual",
+            "upgrade-receipt-lifetime",
+            "account-deletion",
+          ]),
+          to: z.string().email(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const testMessageId = Date.now().toString(36);
+        const sharedHtml = buildAdminEmailPreviewTemplate({
+          template: input.template,
+          recipientName: (ctx.user.name ?? "").split(" ")[0] || "Alex",
+          magicLinkUrl: "https://getphame.app/login?from=test-email-preview",
+        });
+        await sendSystemEmail({
+          to: input.to,
+          subject: `[Test Preview ${testMessageId}] ${ADMIN_EMAIL_PREVIEW_LABELS[input.template] ?? input.template}`,
+          html: sharedHtml,
+          from: NOREPLY_FROM,
+        });
+        return { ok: true as const };
+
+        const TEST_PREVIEW_LINK = "https://getphame.app/login?from=test-email-preview";
+        const SAMPLE_NAME = (ctx.user.name ?? "").split(" ")[0] || "Alex";
+        const TEMPLATE_LABELS: Record<string, string> = {
+          "magic-link": "Magic Link (Sign-in)",
+          "welcome": "Welcome Email",
+          "upgrade-receipt-pro": "Upgrade Receipt — Pro Monthly",
+          "upgrade-receipt-annual": "Upgrade Receipt — Pro Annual",
+          "upgrade-receipt-lifetime": "Upgrade Receipt — Lifetime",
+          "account-deletion": "Account Deletion Confirmation",
+        };
+        const headerHtml = renderGetPhameEmailHeader("Email Preview");
+        const wrapHtml = (headTitle: string, bodyHtml: string) =>
+          `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>${headTitle}</title></head><body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#eef0f4;padding:40px 0;"><tr><td align="center"><table width="560" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);max-width:560px;width:100%;">${headerHtml}<tr><td style="padding:40px;">${bodyHtml}</td></tr><tr><td style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;"><p style="margin:0;font-size:12px;color:#999;">© ${new Date().getFullYear()} Get Phame. All rights reserved.</p></td></tr></table></td></tr></table></body></html>`;
+        const goldCta = (href: string, label: string) =>
+          `<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:16px 40px;"><a href="${href}" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">${label}</a></td></tr></table>`;
+        let html = "";
+        const tierMap: Record<string, { label: string; perks: string[] }> = {
+          "upgrade-receipt-pro": { label: "Pro Monthly", perks: ["Unlimited review requests", "Automated follow-up reminders", "Priority support"] },
+          "upgrade-receipt-annual": { label: "Pro Annual", perks: ["Everything in Pro Monthly", "2 months free vs monthly billing", "Priority support"] },
+          "upgrade-receipt-lifetime": { label: "Lifetime", perks: ["Everything in Pro Annual", "Never pay again — one-time fee", "Lifetime updates included"] },
+        };
+        switch (input.template) {
+          case "magic-link": {
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">This is a test preview. The button opens the standard Get Phame sign-in page and does not use a real magic link.</p>${goldCta(TEST_PREVIEW_LINK, "Open Get Phame sign-in")}<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:24px 0 0;"><tr><td style="padding:14px 18px;"><p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:.8px;">Security notice</p><p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">Live magic links are single-use and are delivered only when a sign-in is requested.</p></td></tr></table>`;
+            html = wrapHtml("Your secure sign-in link", body);
+            break;
+          }
+          case "welcome": {
+            const steps: [string, string][] = [["Connect your email account in Settings", "1"], ["Add your Google review link", "2"], ["Send your first review request — under 30 seconds", "3"]];
+            const stepsHtml = steps.map(([t, n]) => `<p style="margin:0 0 12px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">${n}</span>${t}</p>`).join("");
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Welcome to Get Phame! You're now set up to send personalised review request emails directly from your own email account.</p><p style="margin:0 0 16px;font-size:14px;font-weight:700;color:#0F1B2D;text-transform:uppercase;letter-spacing:.8px;">Get started in 3 steps</p><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;"><tr><td style="padding:20px 24px;">${stepsHtml}</td></tr></table>${goldCta("https://getphame.app", "Get Started →")}`;
+            html = wrapHtml("Welcome aboard", body);
+            break;
+          }
+          case "upgrade-receipt-pro":
+          case "upgrade-receipt-annual":
+          case "upgrade-receipt-lifetime": {
+            const { label, perks } = tierMap[input.template]!;
+            const perksHtml = perks.map(p => `<li style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:11px;border-radius:50%;width:20px;height:20px;text-align:center;line-height:20px;margin-right:8px;">✓</span>${p}</li>`).join("");
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">Your Get Phame account has been upgraded to <strong style="color:#0F1B2D;">${label}</strong>. Here's what you now have access to:</p><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;"><tr><td style="padding:20px 24px;"><ul style="margin:0;padding:0;list-style:none;">${perksHtml}</ul></td></tr></table>${goldCta("https://getphame.app/send", "Start Sending Reviews →")}`;
+            html = wrapHtml(`You're on ${label}!`, body);
+            break;
+          }
+          case "account-deletion": {
+            const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your Get Phame account and all associated data have been permanently deleted as requested.</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">If you change your mind, you're always welcome to create a new account at <a href="https://getphame.app" style="color:#C9A84C;">getphame.app</a>.</p>`;
+            html = wrapHtml("Your account has been deleted", body);
+            break;
+          }
+          default:
+            html = `<p style="font-family:sans-serif;padding:20px;">Template preview: ${input.template}</p>`;
+        }
+        await sendSystemEmail({
+          to: input.to,
+          subject: `[Test Preview] ${TEMPLATE_LABELS[input.template] ?? input.template}`,
+          html,
+          from: NOREPLY_FROM,
+        });
+        return { ok: true as const };
+      }),
+
+    listLeads: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) return [];
+      const rows = await db
+        .select()
+        .from(leads)
+        .orderBy(desc(leads.createdAt))
+        .limit(200);
+      return rows;
+    }),
+
+    stripeStatus: adminProcedure.query(async () => {
+      const stripeKey = process.env.STRIPE_SECRET_KEY ?? "";
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+      if (!stripeKey) return { configured: false as const, mode: null, webhookUrl: null, webhookStatus: null, events: [] };
+      const mode = stripeKey.startsWith("sk_live") ? "live" : "test";
+      // Fetch webhook endpoints from Stripe API
+      try {
+        const https = await import("https");
+        const webhookData = await new Promise<{ url: string; status: string; enabled_events: string[] }[]>((resolve, reject) => {
+          const req = https.get("https://api.stripe.com/v1/webhook_endpoints?limit=5", {
+            headers: { Authorization: "Bearer " + stripeKey },
+          }, (res) => {
+            let data = "";
+            res.on("data", (d: Buffer) => (data += d));
+            res.on("end", () => {
+              try {
+                const json = JSON.parse(data);
+                resolve(json.data ?? []);
+              } catch { reject(new Error("Parse error")); }
+            });
+          });
+          req.on("error", reject);
+        });
+        const wh = webhookData[0] ?? null;
+        return {
+          configured: true as const,
+          mode,
+          webhookUrl: wh?.url ?? null,
+          webhookStatus: wh?.status ?? null,
+          events: wh?.enabled_events ?? [],
+          webhookSecretSet: webhookSecret.length > 0,
+        };
+      } catch {
+        return { configured: true as const, mode, webhookUrl: null, webhookStatus: "error", events: [], webhookSecretSet: webhookSecret.length > 0 };
+      }
+    }),
+    // Preview HTML contains no account data or live authentication links. It
+    // remains available to the managed preview host when that host cannot
+    // propagate an otherwise-valid app session cookie.
+    emailPreview: publicProcedure
+      .input(
+        z.object({
+          template: z.enum([
+            "magic-link",
+            "welcome",
+            "upgrade-receipt-pro",
+            "upgrade-receipt-annual",
+            "upgrade-receipt-lifetime",
+            "account-deletion",
+          ]),
+        })
+      )
+      .query(({ input }) => {
+        return { html: buildAdminEmailPreviewTemplate({ template: input.template }) };
+
+        const SAMPLE_LINK = "https://getphame.app/login?from=email-preview";
+        const SAMPLE_NAME = "Alex";
+        const wrapEmail = (headTitle: string, bodyHtml: string, footerHtml: string) => {
+          const headerHtml = renderGetPhameEmailHeader(headTitle);
+          return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>${headTitle}</title><style>@media only screen and (max-width:600px){.email-wrapper{padding:16px 0!important}.email-card{border-radius:0!important;width:100%!important}.email-body{padding:28px 20px!important}.email-footer{padding:16px 20px!important}.cta-btn{padding:16px 24px!important;font-size:15px!important}}</style></head><body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"><table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-wrapper" style="background:#eef0f4;padding:40px 0;"><tr><td align="center"><table width="560" cellpadding="0" cellspacing="0" role="presentation" class="email-card" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.10);max-width:560px;width:100%;">${headerHtml}<tr><td class="email-body" style="padding:40px 40px 32px;">${bodyHtml}</td></tr><tr><td class="email-footer" style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;">${footerHtml}</td></tr></table></td></tr></table></body></html>`;
+        };
+        const goldCta = (href: string, label: string) =>
+          `<table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:16px 40px;mso-padding-alt:0;"><a href="${href}" class="cta-btn" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">${label}</a></td></tr></table>`;
+        const footer = (extra = "") =>
+          `<p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Get Phame · <a href="https://getphame.app" style="color:#888;text-decoration:none;">getphame.app</a>${extra}</p>`;
+        if (input.template === "magic-link") {
+          const body = `<p style="margin:0 0 8px;font-size:18px;font-weight:700;color:#0F1B2D;">Magic Link Preview</p><p style="margin:0 0 28px;font-size:15px;color:#555;line-height:1.6;">This preview opens the standard Get Phame sign-in page. Real magic links are generated only for a sign-in request and expire after 15 minutes.</p><table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 28px;"><tr><td style="background:#C9A84C;border-radius:12px;padding:18px 48px;mso-padding-alt:0;"><a href="${SAMPLE_LINK}" class="cta-btn" style="color:#0F1B2D;font-size:17px;font-weight:800;text-decoration:none;display:inline-block;">Open Get Phame sign-in</a></td></tr></table><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#fff8e6;border:1px solid #e8d08a;border-radius:10px;margin:0 0 20px;"><tr><td style="padding:14px 18px;"><p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#7a5c00;text-transform:uppercase;letter-spacing:.8px;">Security notice</p><p style="margin:0;font-size:13px;color:#6b5200;line-height:1.5;">Live magic links are single-use and are delivered only when a sign-in is requested.</p></td></tr></table>`;
+          return { html: wrapEmail("Your secure sign-in link", body, footer("<br/>You received this because a sign-in was requested for this email address.")) };
+        }
+        if (input.template === "welcome") {
+          const steps: [string, string][] = [["Connect your email account in Settings","1"],["Add your Google review link","2"],["Send your first review request — under 30 seconds","3"]];
+          const stepsHtml = steps.map(([t,n]) => `<p style="margin:0 0 12px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">${n}</span>${t}</p>`).join("");
+          const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Welcome to Get Phame! You're now set up to send personalised review request emails directly from your own email account.</p><p style="margin:0 0 16px;font-size:14px;font-weight:700;color:#0F1B2D;text-transform:uppercase;letter-spacing:.8px;">Get started in 3 steps</p><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;"><tr><td style="padding:20px 24px;">${stepsHtml}</td></tr></table>${goldCta("https://getphame.app","Get Started →")}`;
+          return { html: wrapEmail("Welcome aboard", body, footer("<br/><a href='https://getphame.app/settings' style='color:#888;text-decoration:none;'>Manage your settings</a>")) };
+        }
+        const tierMap: Record<string, { label: string; perks: string[] }> = {
+          "upgrade-receipt-pro": { label: "Pro Monthly", perks: ["Unlimited review requests","Automated follow-up reminders","Priority support"] },
+          "upgrade-receipt-annual": { label: "Pro Annual", perks: ["Everything in Pro Monthly","2 months free vs monthly billing","Priority support"] },
+          "upgrade-receipt-lifetime": { label: "Lifetime", perks: ["Everything in Pro Annual","Never pay again — one-time fee","Lifetime updates included"] },
+        };
+        if (input.template in tierMap) {
+          const { label, perks } = tierMap[input.template]!;
+          const perksHtml = perks.map(p => `<li style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:11px;border-radius:50%;width:20px;height:20px;text-align:center;line-height:20px;margin-right:8px;">✓</span>${p}</li>`).join("");
+          const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">Your Get Phame account has been upgraded to <strong style="color:#0F1B2D;">${label}</strong>. Here's what you now have access to:</p><table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;"><tr><td style="padding:20px 24px;"><ul style="margin:0;padding:0;list-style:none;">${perksHtml}</ul></td></tr></table>${goldCta("https://getphame.app/send","Start Sending Reviews →")}`;
+          return { html: wrapEmail(`You're on ${label}!`, body, footer("<br/>Questions? Reply to this email or visit <a href='https://getphame.app/settings' style='color:#888;text-decoration:none;'>your settings</a>.")) };
+        }
+        const body = `<p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;">Hi ${SAMPLE_NAME},</p><p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your Get Phame account and all associated data have been permanently deleted as requested.</p><p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">If you change your mind, you're always welcome to create a new account at <a href="https://getphame.app" style="color:#C9A84C;">getphame.app</a>.</p>`;
+        return { html: wrapEmail("Your account has been deleted", body, footer()) };
+      }),
   }),
 
   /** Admin: deferred referral reward management */
@@ -7668,12 +8537,59 @@ export const appRouter = router({
           );
         return { ok: true as const };
       }),
+    /** Admin-only email template preview — returns rendered HTML for in-browser review */
   }),
-
   /** Landing page lead capture — stores email and sends the free guide PDF */
   leadCapture: router({
+    /**
+     * Get email preferences for a lead by email (public, no auth).
+     * Used by the /preferences page to show current status.
+     */
+    getPreferences: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return null;
+        const { eq: eqP } = await import("drizzle-orm");
+        const rows = await db.select().from(leads).where(eqP(leads.email, input.email.toLowerCase())).limit(1);
+        if (!rows.length) return null;
+        const lead = rows[0];
+        return {
+          email: lead.email,
+          consentGiven: !!lead.consentGivenAt,
+          consentGivenAt: lead.consentGivenAt,
+          unsubscribed: !!lead.unsubscribedAt,
+          unsubscribedAt: lead.unsubscribedAt,
+        };
+      }),
+    /**
+     * Update email preferences for a lead (public, no auth).
+     * Allows unsubscribing or re-subscribing.
+     */
+    updatePreferences: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        unsubscribe: z.boolean(),
+        reason: z.string().max(100).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const { eq: eqP } = await import("drizzle-orm");
+        const normalizedEmail = input.email.toLowerCase();
+        const rows = await db.select().from(leads).where(eqP(leads.email, normalizedEmail)).limit(1);
+        if (!rows.length) throw new TRPCError({ code: "NOT_FOUND", message: "Email address not found." });
+        await db.update(leads).set({
+          unsubscribedAt: input.unsubscribe ? Date.now() : null,
+          unsubscribeReason: input.unsubscribe ? (input.reason ?? null) : null,
+        }).where(eqP(leads.email, normalizedEmail));
+        return { ok: true, unsubscribed: input.unsubscribe };
+      }),
     submit: publicProcedure
-      .input(z.object({ email: z.string().trim().toLowerCase().email() }))
+      .input(z.object({
+        email: z.string().trim().toLowerCase().email(),
+        consentGiven: z.boolean().optional(),
+      }))
       .mutation(async ({ input }) => {
         const db = await getDb();
         const now = Date.now();
@@ -7685,8 +8601,17 @@ export const appRouter = router({
             // Upsert without coupling guide access to app signup or duplicate rows.
             await db
               .insert(leads)
-              .values({ email: normalizedEmail, createdAt: now })
-              .onDuplicateKeyUpdate({ set: { email: normalizedEmail } });
+              .values({
+                email: normalizedEmail,
+                createdAt: now,
+                consentGivenAt: input.consentGiven ? now : undefined,
+              })
+              .onDuplicateKeyUpdate({
+                set: {
+                  email: normalizedEmail,
+                  ...(input.consentGiven ? { consentGivenAt: now } : {}),
+                },
+              });
             stored = true;
           } catch (error) {
             // A persistence outage must not block access to the promised guide.

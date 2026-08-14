@@ -38,6 +38,11 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm check
 
+      - name: Validate router schema contracts
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm check:router-contracts
+
       - name: Run tests
         run: pnpm test
 

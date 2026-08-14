@@ -6,9 +6,9 @@
  * Due reminders are processed by the managed hourly heartbeat endpoint.
  */
 import { getDb } from "./db";
-import { followUpReminders, businessProfiles, customerRequests } from "../drizzle/schema";
+import { followUpReminders, businessProfiles } from "../drizzle/schema";
 import { eq, and, lte } from "drizzle-orm";
-import { sendMailViaSmtp } from "./smtp";
+import { sendTenantOwnedReviewEmail } from "./tenantOwnedDelivery";
 import {
   isWithinQuietHours,
   nextAllowedDeliveryAt,
@@ -52,21 +52,6 @@ export async function scheduleFollowUp(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const [requestSnapshot] = await db
-    .select({
-      preferredLocale: customerRequests.preferredLocale,
-      templateRevisionId: customerRequests.templateRevisionId,
-      englishTemplateRevisionId: customerRequests.englishTemplateRevisionId,
-    })
-    .from(customerRequests)
-    .where(
-      and(
-        eq(customerRequests.userId, userId),
-        eq(customerRequests.id, customerRequestId),
-      ),
-    )
-    .limit(1);
-
   const [profile] = await db
     .select({
       followUpEnabled: businessProfiles.followUpEnabled,
@@ -93,9 +78,6 @@ export async function scheduleFollowUp(
     secondDelayDaysSnapshot: secondDelayDays,
     firstStageEnabledSnapshot: firstStageEnabled ? 1 : 0,
     secondStageEnabledSnapshot: secondStageEnabled ? 1 : 0,
-    preferredLocale: requestSnapshot?.preferredLocale ?? "en",
-    templateRevisionId: requestSnapshot?.templateRevisionId ?? null,
-    englishTemplateRevisionId: requestSnapshot?.englishTemplateRevisionId ?? null,
   };
 
   if (firstStageEnabled) {
@@ -313,7 +295,7 @@ export async function processDueReminders() {
         const showPoweredBy = !profile.tier || profile.tier === 'free';
         const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
 
-        await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
+        await sendTenantOwnedReviewEmail({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
 
         await db
           .update(followUpReminders)
@@ -380,7 +362,7 @@ export async function sendReminderNow(userId: number, reminderId: number) {
   const showPoweredBy = !profile.tier || profile.tier === 'free';
   const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
 
-  await sendMailViaSmtp({ userId, to: reminder.customerEmail, subject, html });
+  await sendTenantOwnedReviewEmail({ userId, to: reminder.customerEmail, subject, html });
   await db
     .update(followUpReminders)
     .set({ status: "sent", sentAt: Date.now() })

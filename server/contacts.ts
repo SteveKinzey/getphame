@@ -20,24 +20,22 @@ export async function listSavedContacts(userId: number) {
     .orderBy(desc(savedContacts.updatedAt));
 }
 
+/** Look up one saved contact for a tenant by normalized email address. */
 export async function findSavedContactByEmail(userId: number, email: string) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  const normalizedEmail = email.trim().toLowerCase();
   const [contact] = await db
-    .select({
-      id: savedContacts.id,
-      optedOut: savedContacts.optedOut,
-      preferredLocale: savedContacts.preferredLocale,
-    })
+    .select()
     .from(savedContacts)
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.email, email.trim().toLowerCase())))
+    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.email, normalizedEmail)))
     .limit(1);
   return contact ?? null;
 }
 
 export async function createSavedContact(
   userId: number,
-  data: { name: string; email: string; phone?: string; notes?: string }
+  data: { name: string; email: string; phone?: string; notes?: string; consentBasis?: string; consentCapturedAt?: number; consentSource?: string }
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -48,6 +46,9 @@ export async function createSavedContact(
     phone: data.phone ?? null,
     notes: data.notes ?? null,
     totalSent: 0,
+    consentBasis: data.consentBasis ?? null,
+    consentCapturedAt: data.consentCapturedAt ?? null,
+    consentSource: data.consentSource ?? null,
   });
 }
 
@@ -220,11 +221,11 @@ export async function upsertApiContact(
     consentTextHash?: string;
     consentVersion?: string;
     privacyPolicyUrl?: string;
-    sourceSubmissionId?: string;
     sourceFormId?: string;
+    sourceSubmissionId?: string;
     preferredLocale?: string;
   }
-): Promise<{ id: number; created: boolean; optedOut: boolean; preferredLocale: string | null }> {
+): Promise<{ id: number; created: boolean; optedOut: number }> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
@@ -254,17 +255,12 @@ export async function upsertApiContact(
         consentTextHash: data.consentTextHash ?? existing.consentTextHash,
         consentVersion: data.consentVersion ?? existing.consentVersion,
         privacyPolicyUrl: data.privacyPolicyUrl ?? existing.privacyPolicyUrl,
-        sourceSubmissionId: data.sourceSubmissionId ?? existing.sourceSubmissionId,
         sourceFormId: data.sourceFormId ?? existing.sourceFormId,
+        sourceSubmissionId: data.sourceSubmissionId ?? existing.sourceSubmissionId,
         preferredLocale: data.preferredLocale ?? existing.preferredLocale,
       })
       .where(eq(savedContacts.id, existing.id));
-    return {
-      id: existing.id,
-      created: false,
-      optedOut: Boolean(existing.optedOut),
-      preferredLocale: data.preferredLocale ?? existing.preferredLocale ?? null,
-    };
+    return { id: existing.id, created: false, optedOut: existing.optedOut };
   }
 
   const [result] = await db.insert(savedContacts).values({
@@ -287,14 +283,9 @@ export async function upsertApiContact(
     consentTextHash: data.consentTextHash ?? null,
     consentVersion: data.consentVersion ?? null,
     privacyPolicyUrl: data.privacyPolicyUrl ?? null,
-    sourceSubmissionId: data.sourceSubmissionId ?? null,
     sourceFormId: data.sourceFormId ?? null,
+    sourceSubmissionId: data.sourceSubmissionId ?? null,
     preferredLocale: data.preferredLocale ?? "en",
   }).$returningId();
-  return {
-    id: result.id,
-    created: true,
-    optedOut: false,
-    preferredLocale: data.preferredLocale ?? "en",
-  };
+  return { id: result.id, created: true, optedOut: 0 };
 }

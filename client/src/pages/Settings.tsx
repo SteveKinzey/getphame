@@ -59,7 +59,9 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -95,6 +97,18 @@ import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
 import ApplicationVersionDiagnosticsCard from "@/components/ApplicationVersionDiagnosticsCard";
 import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
+import {
+  SettingsBulkMailConnectionStatus,
+  SettingsPersonalMailConnectionStatus,
+} from "@/components/SettingsMailConnectionStatus";
+import {
+  ConnectionSavedNotice,
+  SmtpAppPasswordHelpTooltip,
+  SmtpCandidateConnectionActions,
+} from "@/components/SmtpConnectionFeedback";
+import SmtpTestEmailHistory from "@/components/SmtpTestEmailHistory";
+import PausedAutomationQueue from "@/components/PausedAutomationQueue";
+import { BulkProviderDiscoveryControls } from "@/components/BulkProviderDiscoveryControls";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -655,15 +669,17 @@ function isBulkSenderProvider(value: string | null | undefined): value is BulkSe
   return Boolean(value && BULK_SENDER_PROVIDER_IDS.includes(value as BulkSenderProvider));
 }
 
-function BulkSenderSection({ profile }: { profile: ProfileData | null | undefined }) {
+function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: ProfileData | null | undefined; disableStatusQuery?: boolean }) {
   const { t } = useTranslation();
   const tier = profile?.tier ?? "free";
   const isPro = tier !== "free";
-  const { data: status, refetch } = trpc.bulkSender.status.useQuery();
-  const [provider, setProvider] = useState<BulkSenderProvider>("sendgrid");
+  const statusQuery = trpc.bulkSender.status.useQuery(undefined, { enabled: !disableStatusQuery });
+  const status = disableStatusQuery ? undefined : statusQuery.data;
+  const refetch = statusQuery.refetch;
+  const [provider, setProvider] = useState<BulkSenderProvider>(BULK_SENDER_PROVIDER_IDS[0]);
   const [secret, setSecret] = useState("");
-  const [smtpUsername, setSmtpUsername] = useState("apikey");
-  const [smtpHost, setSmtpHost] = useState("smtp.sendgrid.net");
+  const [smtpUsername, setSmtpUsername] = useState("");
+  const [smtpHost, setSmtpHost] = useState("");
   const [smtpPort, setSmtpPort] = useState(587);
   const [smtpSecurity, setSmtpSecurity] = useState<BulkSenderSecurity>("starttls");
   const [providerRegion, setProviderRegion] = useState("");
@@ -671,6 +687,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   const [fromName, setFromName] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
+  const [connectionSavedNotice, setConnectionSavedNotice] = useState(false);
   const preset = getBulkSenderPreset(provider);
   const localizedPreset = provider === "mailjet" ? {
     ...preset,
@@ -699,7 +716,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   };
 
   const openUpdateForm = () => {
-    const nextProvider = isBulkSenderProvider(status?.provider) ? status.provider : "sendgrid";
+    const nextProvider = isBulkSenderProvider(status?.provider) ? status.provider : BULK_SENDER_PROVIDER_IDS[0];
     const nextPreset = getBulkSenderPreset(nextProvider);
     setProvider(nextProvider);
     setProviderRegion(status?.providerRegion ?? nextPreset.defaultRegion ?? "");
@@ -711,6 +728,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
     setFromName(status?.fromName ?? "");
     setSecret("");
     setShowSecret(false);
+    setConnectionSavedNotice(false);
     setShowForm(true);
   };
 
@@ -719,6 +737,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
       toast.success(t("settings.bulkSender.connectedToast", { defaultValue: "Bulk Sender connected." }));
       setShowForm(false);
       setSecret("");
+      setConnectionSavedNotice(true);
       refetch();
     },
     onError: (err) => toast.error(err.message),
@@ -773,8 +792,13 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
         )}
       </div>
       <p className="text-xs mb-4 rr-text-navy-muted">
-        {t("settings.bulkSender.description", { defaultValue: "Connect a verified transactional SMTP relay for higher-volume sending. Credentials are tested without sending a message." })}
+        {t("settings.bulkSender.description", { defaultValue: "Connect your own verified transactional SMTP relay for higher-volume sending. Credentials are tested without sending a message." })}
       </p>
+      {status?.legacyPlatformConnection === true && (
+        <div className="mb-4 rounded-xl px-3 py-2.5 text-xs font-semibold rr-text-navy-mid" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
+          <SettingsBulkMailConnectionStatus status={status} translate={t} />
+        </div>
+      )}
 
       {!isPro ? (
         <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
@@ -804,8 +828,12 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               </p>
               <p className="text-sm font-semibold rr-text-navy-mid truncate">{status.fromEmail}</p>
               {status.smtpHost && <p className="mt-0.5 truncate text-xs rr-text-navy-muted">{status.smtpHost}:{status.smtpPort}</p>}
+              <SettingsBulkMailConnectionStatus status={status} translate={t} />
             </div>
           </div>
+          {connectionSavedNotice && (
+            <ConnectionSavedNotice message={t("settings.bulkSender.connectionSavedMessage", { defaultValue: "Your bulk mail server is connected and ready to use." })} />
+          )}
           {status.connectionMode === "legacy_api" && (
             <div className="rounded-xl px-3 py-2 text-xs font-semibold rr-text-navy-mid" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
               {t("settings.bulkSender.legacyNotice", { defaultValue: "This existing connection uses the legacy API mode. Update it when convenient to use the guided SMTP preset." })}
@@ -834,25 +862,14 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
           </div>
         </div>
       ) : (
-        <div className="space-y-3">
+          <div className="space-y-3">
           <div>
             <label htmlFor="bulk-sender-provider" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.provider", { defaultValue: "Provider" })}</label>
-            <select
-              id="bulk-sender-provider"
-              value={provider}
-              onChange={(event) => applyProvider(event.target.value as BulkSenderProvider)}
-              className="min-h-11 w-full rounded-xl px-3 py-2 text-sm font-semibold outline-none rr-text-navy"
-              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-            >
-              {BULK_SENDER_PROVIDER_IDS.map((providerId) => (
-                <option key={providerId} value={providerId}>
-                  {providerId === "mailjet"
-                    ? t("settings.bulkSender.providers.mailjet.label", { defaultValue: "Mailjet" })
-                    : BULK_SENDER_PRESETS[providerId].label}
-                </option>
-              ))}
-            </select>
-            <p className="mt-1 text-xs rr-text-navy-muted">{localizedPreset.description}</p>
+            <BulkProviderDiscoveryControls
+              provider={provider}
+              onProviderChange={applyProvider}
+              translate={(key, options) => t(key, options) as string}
+            />
           </div>
 
           {preset.regions?.length ? (
@@ -994,15 +1011,21 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               type="button"
               onClick={submitConnection}
               disabled={connectMutation.isPending || !canConnect}
+              aria-busy={connectMutation.isPending}
               className="min-h-11 flex-1 py-2.5 rounded-xl text-sm font-bold rr-bg-navy rr-text-gold disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {connectMutation.isPending ? <><Loader2 size={14} className="animate-spin inline mr-1" />{t("settings.bulkSender.connecting", { defaultValue: "Connecting…" })}</> : t("settings.bulkSender.connectAndTest", { defaultValue: "Connect and test" })}
+              {connectMutation.isPending ? <><Loader2 size={14} className="animate-spin inline mr-1" />{t("settings.bulkSender.connectingAndVerifying", { defaultValue: "Connecting and verifying…" })}</> : t("settings.bulkSender.connectAndTest", { defaultValue: "Connect and test" })}
             </button>
           </div>
         </div>
       )}
     </div>
   );
+}
+
+/** Development-only browser coverage fixture for the real Settings bulk-sender flow. */
+export function SettingsBulkSenderTestFixture() {
+  return <BulkSenderSection profile={{ tier: "pro" } as ProfileData} disableStatusQuery />;
 }
 
 function AccountProfileCard() {
@@ -1242,6 +1265,7 @@ export default function SettingsPage() {
   const { data: adaptiveSendStatus } = trpc.contacts.getDailyStatus.useQuery();
   const [businessName, setBusinessName] = useState("");
   const [reviewLink, setPhame] = useState("");
+  const [consentLabelName, setConsentLabelName] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
   const [physicalAddress, setPhysicalAddress] = useState("");
@@ -1329,6 +1353,7 @@ export default function SettingsPage() {
     if (profile) {
       setBusinessName(profile.businessName);
       setPhame(profile.reviewLink);
+      setConsentLabelName(profile.consentLabelName ?? "");
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
       setPhysicalAddress(profile.physicalAddress ?? "");
@@ -1573,6 +1598,8 @@ export default function SettingsPage() {
 
   // ── SMTP email connection ──────────────────────────────────────────────────
   const { data: smtpStatus, isLoading: smtpLoading } = trpc.smtp.status.useQuery();
+  const { data: smtpTestEmailHistory, isLoading: smtpTestEmailHistoryLoading } = trpc.smtp.testEmailHistory.useQuery();
+  const { data: pausedAutomationQueue } = trpc.smtp.pausedAutomationQueue.useQuery();
   const [smtpEmail, setSmtpEmail] = useState("");
   const [smtpPassword, setSmtpPassword] = useState("");
   const [smtpHost, setSmtpHost] = useState("");
@@ -1585,6 +1612,17 @@ export default function SettingsPage() {
   const [showPasswordGuide, setShowPasswordGuide] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<{ ok: boolean; error?: string | null } | null>(null);
+  const [smtpConnectionSavedNotice, setSmtpConnectionSavedNotice] = useState(false);
+  const [testEmailRecipient, setTestEmailRecipient] = useState("");
+  const [testEmailSentNotice, setTestEmailSentNotice] = useState(false);
+  const [disconnectConfirmOpen, setDisconnectConfirmOpen] = useState(false);
+  const [disconnectAcknowledged, setDisconnectAcknowledged] = useState(false);
+
+  useEffect(() => {
+    const focusSmtp = window.location.hash === "#smtp-settings" || new URLSearchParams(window.location.search).get("focus") === "smtp";
+    if (smtpLoading || !focusSmtp) return;
+    window.setTimeout(() => document.getElementById("smtp-settings")?.scrollIntoView({ block: "start" }), 0);
+  }, [smtpLoading]);
 
   // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
   const { data: smtpDetect } = trpc.smtp.detect.useQuery(
@@ -1609,6 +1647,7 @@ export default function SettingsPage() {
       utils.smtp.status.invalidate();
       setShowSmtpForm(false);
       setSmtpPassword("");
+      setSmtpConnectionSavedNotice(true);
       track("smtp_connect");
       toast.success("Email account connected!");
     },
@@ -1618,7 +1657,15 @@ export default function SettingsPage() {
   const disconnectSmtp = trpc.smtp.disconnect.useMutation({
     onSuccess: () => {
       utils.smtp.status.invalidate();
-      toast.success("Email account disconnected.");
+      utils.smtp.testEmailHistory.invalidate();
+      utils.smtp.pausedAutomationQueue.invalidate();
+      setDisconnectConfirmOpen(false);
+      setDisconnectAcknowledged(false);
+      setSmtpConnectionSavedNotice(false);
+      setTestEmailSentNotice(false);
+      setSmtpPassword("");
+      setShowSmtpForm(true);
+      toast.success("Email account disconnected. Connect a new server to resume outreach.");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1658,6 +1705,24 @@ export default function SettingsPage() {
     onError: (err) => toast.error(err.message),
   });
 
+  const sendSmtpTestEmail = trpc.smtp.sendTestEmail.useMutation({
+    onSuccess: ({ to }) => {
+      setTestEmailSentNotice(true);
+      utils.smtp.testEmailHistory.invalidate();
+      toast.success(`Test email sent to ${to}.`, { duration: 5000 });
+    },
+    onError: (err) => {
+      utils.smtp.testEmailHistory.invalidate();
+      toast.error(err.message);
+    },
+  });
+
+  const retryFailedSmtpTestEmail = () => {
+    setTestEmailSentNotice(false);
+    setTestEmailRecipient((current) => current || smtpStatus?.email || "");
+    window.setTimeout(() => document.getElementById("smtp-test-email-recipient")?.focus(), 0);
+  };
+
   function handleSaveProfile() {
     if (!businessName.trim()) { toast.error("Business name is required"); return; }
     if (!reviewLink.trim()) { toast.error("Google review link is required"); return; }
@@ -1666,6 +1731,7 @@ export default function SettingsPage() {
       reviewLink: reviewLink.trim(),
       fromName: fromName.trim() || undefined,
       replyTo: replyTo.trim() || undefined,
+      consentLabelName: consentLabelName.trim() || undefined,
     });
   }
 
@@ -1679,7 +1745,8 @@ export default function SettingsPage() {
       businessName !== profile.businessName ||
       reviewLink !== profile.reviewLink ||
       fromName !== (profile.fromName ?? "") ||
-      replyTo !== (profile.replyTo ?? "")
+      replyTo !== (profile.replyTo ?? "") ||
+      consentLabelName !== (profile.consentLabelName ?? "")
     )
     : false;
   const quietHoursHasUnsavedChanges = profile
@@ -1879,6 +1946,21 @@ export default function SettingsPage() {
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.replyToEmailDescription')}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                      {t('profile.consentLabelName', { defaultValue: 'Consent checkbox business name' })} <span className="font-normal">({t("common.optional", { defaultValue: "optional" })})</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={consentLabelName}
+                      onChange={(e) => setConsentLabelName(e.target.value)}
+                      placeholder={businessName || "e.g. Maria's Hair Salon"}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    />
+                    <p className="text-xs mt-1 rr-text-navy-muted">
+                      {t('profile.consentLabelNameDescription', { defaultValue: 'The business name shown in the consent checkbox label on your forms. Defaults to your business name above.' })}
                     </p>
                   </div>
                 </div>
@@ -2357,7 +2439,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Email Connection (SMTP) ───────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div id="smtp-settings" className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
             <Mail size={18} className="rr-text-navy" />
             <h2
@@ -2400,6 +2482,10 @@ export default function SettingsPage() {
                     {smtpStatus.email}
                     {smtpStatus.fromName && ` · ${smtpStatus.fromName}`}
                   </p>
+                  <SettingsPersonalMailConnectionStatus status={smtpStatus} translate={t} />
+                  {smtpConnectionSavedNotice && (
+                    <ConnectionSavedNotice message={t("smtp.connectionSavedMessage", { defaultValue: "Your email server is connected and ready for customer outreach." })} />
+                  )}
                 </div>
                 {/* Test connection button */}
                 <button
@@ -2418,7 +2504,7 @@ export default function SettingsPage() {
               {/* Action buttons */}
               <div className="flex gap-2 flex-wrap">
                 <button
-                  onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setShowSmtpForm(true); }}
+                  onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setSmtpConnectionSavedNotice(false); setShowSmtpForm(true); }}
                   className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap rr-bg-surface rr-text-navy-mid"
                 >
                   <Pencil size={13} />
@@ -2442,15 +2528,35 @@ export default function SettingsPage() {
                   {t('smtp.resendVerification')}
                 </button>
                 <button
-                  onClick={() => disconnectSmtp.mutate()}
-                  disabled={disconnectSmtp.isPending}
+                  onClick={() => setDisconnectConfirmOpen(true)}
+                  disabled={disconnectSmtp.isPending || sendSmtpTestEmail.isPending}
                   className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
                   style={{ background: "oklch(0.97 0.02 27)", color: "oklch(0.50 0.18 27)" }}
                 >
                   {disconnectSmtp.isPending ? <Loader2 size={13} className="animate-spin" /> : <LogOut size={13} />}
-                  {t('smtp.disconnect')}
+                  {t('smtp.disconnect', { defaultValue: 'Disconnect / reset' })}
                 </button>
               </div>
+
+              <div className="rounded-xl border p-3" style={{ borderColor: "oklch(0.90 0.02 260)", background: "oklch(0.985 0.01 260)" }}>
+                <label className="block text-xs font-bold rr-text-navy-mid" htmlFor="smtp-test-email-recipient">
+                  {t("smtp.testEmailRecipient", { defaultValue: "Send a test email to" })}
+                </label>
+                <p className="mt-1 text-xs rr-text-navy-muted">{t("smtp.testEmailHint", { defaultValue: "Use an address you control. This uses your saved mail server and does not save a new recipient." })}</p>
+                <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                  <input id="smtp-test-email-recipient" type="email" value={testEmailRecipient} onChange={(event) => { setTestEmailRecipient(event.target.value); setTestEmailSentNotice(false); }} placeholder={smtpStatus.email ?? "you@example.com"} className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm" style={{ borderColor: "oklch(0.86 0.02 260)" }} />
+                  <button type="button" onClick={() => {
+                    if (!testEmailRecipient.trim()) { toast.error(t("smtp.testEmailRecipientRequired", { defaultValue: "Enter the address that should receive the test email." })); return; }
+                    sendSmtpTestEmail.mutate({ to: testEmailRecipient.trim() });
+                  }} disabled={sendSmtpTestEmail.isPending || disconnectSmtp.isPending} aria-busy={sendSmtpTestEmail.isPending} className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold rr-bg-navy text-white">
+                    {sendSmtpTestEmail.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                    {sendSmtpTestEmail.isPending ? t("smtp.sendingTestEmail", { defaultValue: "Sending test email…" }) : t("smtp.sendTestEmail", { defaultValue: "Send test email" })}
+                  </button>
+                </div>
+                {testEmailSentNotice && <ConnectionSavedNotice message={t("smtp.testEmailSent", { defaultValue: "Test email sent. Check the recipient inbox to confirm delivery." })} />}
+              </div>
+
+              <SmtpTestEmailHistory attempts={smtpTestEmailHistory} isLoading={smtpTestEmailHistoryLoading} translate={t} onRetryFailedAttempt={retryFailedSmtpTestEmail} />
 
               {/* Inline From Name edit */}
               <InlineFromNameEdit
@@ -2472,6 +2578,27 @@ export default function SettingsPage() {
                   </span>
                 </p>
               )}
+              <AlertDialog open={disconnectConfirmOpen} onOpenChange={(open) => { setDisconnectConfirmOpen(open); if (!open) setDisconnectAcknowledged(false); }}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t("smtp.disconnectConfirmTitle", { defaultValue: "Disconnect this mail server?" })}</AlertDialogTitle>
+                    <AlertDialogDescription>{t("smtp.disconnectConfirmDescription", { defaultValue: "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server." })}</AlertDialogDescription>
+                    <p className="mt-3 rounded-lg border px-3 py-2 text-sm font-medium" style={{ borderColor: "oklch(0.88 0.08 27)", background: "oklch(0.97 0.02 27)", color: "oklch(0.42 0.12 27)" }}>
+                      {t("smtp.disconnectAutomationPauseWarning", { defaultValue: "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server." })}
+                    </p>
+                    <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm rr-text-navy" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
+                      <Checkbox checked={disconnectAcknowledged} onCheckedChange={(checked) => setDisconnectAcknowledged(checked === true)} aria-label={t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })} />
+                      <span>{t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })}</span>
+                    </label>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel disabled={disconnectSmtp.isPending}>{t("common.cancel", { defaultValue: "Cancel" })}</AlertDialogCancel>
+                    <AlertDialogAction onClick={(event) => { event.preventDefault(); disconnectSmtp.mutate(); }} disabled={!disconnectAcknowledged || disconnectSmtp.isPending} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      {disconnectSmtp.isPending ? t("smtp.disconnecting", { defaultValue: "Disconnecting…" }) : t("smtp.disconnectConfirmAction", { defaultValue: "Disconnect and reset" })}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -2489,6 +2616,7 @@ export default function SettingsPage() {
                   </p>
                 </div>
               )}
+              <PausedAutomationQueue queue={pausedAutomationQueue} translate={t} />
 
               {/* Email field */}
               <div>
@@ -2507,7 +2635,7 @@ export default function SettingsPage() {
               {(() => {
                 const emailDomain = smtpEmail.split('@')[1]?.toLowerCase() ?? '';
                 // Provider detection
-                const isGmail = emailDomain === 'gmail.com' || emailDomain === 'googlemail.com' || smtpHost === 'smtp.gmail.com';
+                const isGmail = emailDomain === 'gmail.com' || emailDomain === 'googlemail.com';
                 const isGoogleWorkspace = smtpHost === 'smtp.gmail.com' && !isGmail;
                 const isOutlook = ['outlook.com','hotmail.com','live.com'].includes(emailDomain) || smtpHost === 'smtp-mail.outlook.com';
                 const isYahoo = emailDomain === 'yahoo.com' || emailDomain === 'yahoo.co.uk' || emailDomain === 'ymail.com' || smtpHost === 'smtp.mail.yahoo.com';
@@ -2554,8 +2682,26 @@ export default function SettingsPage() {
                 const hasGuide = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud || isAol || isProtonMail || isFastmail;
                 const guideProvider = isGmail ? "gmail" : isGoogleWorkspace ? "workspace" : isOutlook ? "microsoft" : isYahoo ? "yahoo" : isZoho ? "zoho" : isIcloud ? "icloud" : isAol ? "aol" : isProtonMail ? "proton" : "fastmail";
                 const guideDefaults: Record<string, { title: string; steps: string[]; tip: string }> = {
-                  gmail: { title: "Gmail App Password — 4 steps", steps: ["Go to myaccount.google.com, then Security.", "Turn on 2-Step Verification if it is not already on.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Tip: use a dedicated reviews@gmail.com account to keep your main inbox separate." },
-                  workspace: { title: "Google Workspace App Password — 4 steps", steps: ["Ask your Workspace administrator to enable 2-Step Verification in admin.google.com.", "Sign in to myaccount.google.com with your work account, then open Security.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Your Workspace administrator may need to allow app passwords." },
+                  gmail: {
+                    title: t("smtp.gmailGuideTitle", { defaultValue: "Gmail App Password — 4 steps" }),
+                    steps: [
+                      t("smtp.gmailGuideStep1", { defaultValue: "Go to myaccount.google.com → Security" }),
+                      t("smtp.gmailGuideStep2", { defaultValue: "Turn on 2-Step Verification if not already on" }),
+                      t("smtp.gmailGuideStep3", { defaultValue: "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create" }),
+                      t("smtp.gmailGuideStep4", { defaultValue: "Copy the 16-character code and paste it here — remove all spaces" }),
+                    ],
+                    tip: t("smtp.gmailGuideTip", { defaultValue: "Google shows the code once. Create a new App Password after changing your Google password, and revoke it when you disconnect Get Phame." }),
+                  },
+                  workspace: {
+                    title: t("smtp.googleWorkspaceGuideTitle", { defaultValue: "Google Workspace App Password — 4 steps" }),
+                    steps: [
+                      t("smtp.googleWorkspaceGuideStep1", { defaultValue: "Sign in to myaccount.google.com with your work account → Security" }),
+                      t("smtp.googleWorkspaceGuideStep2", { defaultValue: "Turn on 2-Step Verification if it is available for your account" }),
+                      t("smtp.googleWorkspaceGuideStep3", { defaultValue: "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create" }),
+                      t("smtp.googleWorkspaceGuideStep4", { defaultValue: "Copy the 16-character code and paste it here — remove all spaces" }),
+                    ],
+                    tip: t("smtp.googleWorkspaceGuideTip", { defaultValue: "If App Passwords is unavailable, your organisation may restrict it, require security-key-only verification, or use Advanced Protection. Ask your Workspace administrator for the approved SMTP or OAuth connection method." }),
+                  },
                   microsoft: { title: "Microsoft App Password — 4 steps", steps: ["Go to account.microsoft.com, then Security.", "Open Advanced security options.", "Under App passwords, create a new app password.", "Copy and paste the generated password here."], tip: "Microsoft 365 work accounts may require your IT administrator to allow SMTP AUTH." },
                   yahoo: { title: "Yahoo App Password — 4 steps", steps: ["Go to account.yahoo.com, then Security.", "Choose Generate app password.", "Select Other app and name it Get Phame.", "Copy and paste the generated password here."], tip: "Use the generated app password, not your regular Yahoo password." },
                   zoho: { title: "Zoho Mail — Enable SMTP Access", steps: ["Sign in at mail.zoho.com.", "Open Settings, then Mail Accounts.", "Choose your email address and scroll to SMTP.", "Turn on Allow SMTP Access, then use your regular Zoho password here."], tip: "No app password is needed after SMTP access is enabled." },
@@ -2569,7 +2715,12 @@ export default function SettingsPage() {
                 return (
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-bold rr-text-navy-mid">{passwordLabel}</label>
+                      <div className="flex items-center gap-1">
+                        <label className="text-xs font-bold rr-text-navy-mid">{passwordLabel}</label>
+                        {(isGmail || isGoogleWorkspace) && (
+                          <SmtpAppPasswordHelpTooltip provider={isGmail ? "gmail" : "workspace"} translate={t} />
+                        )}
+                      </div>
                       {hasGuide && (
                         <button
                           type="button"
@@ -2585,13 +2736,13 @@ export default function SettingsPage() {
 
                     {showGuide && hasGuide && activeGuide && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">{t(`smtp.providerGuides.${guideProvider}.title`, { defaultValue: activeGuide.title })}</p>
+                        <p className="font-black text-sm rr-text-gold">{activeGuide.title}</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: "decimal" }}>
                           {activeGuide.steps.map((step, index) => (
-                            <li key={index}>{t(`smtp.providerGuides.${guideProvider}.step${index + 1}`, { defaultValue: step })}</li>
+                            <li key={index}>{step}</li>
                           ))}
                         </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">{t(`smtp.providerGuides.${guideProvider}.tip`, { defaultValue: activeGuide.tip })}</p>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">{activeGuide.tip}</p>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">{t("common.gotIt", { defaultValue: "Got it ✓" })}</button>
                       </div>
                     )}
@@ -2617,7 +2768,7 @@ export default function SettingsPage() {
                     {/* Inline hint for known providers that need app passwords */}
                     {(isGmail || isGoogleWorkspace) && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        {t("smtp.inlineHints.google", { defaultValue: "Not your regular Gmail password — use an App Password. Tap How to get it above." })}
+                        {t("smtp.inlineHints.google", { defaultValue: "Not your regular account password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
                     {isIcloud && !smtpStatus?.connected && !showGuide && (
@@ -2989,79 +3140,27 @@ export default function SettingsPage() {
                 </div>
               </details>
 
-              {/* Test result inline feedback */}
-              {smtpTestResult && (
-                <div
-                  className="flex items-start gap-2 px-3 py-2 rounded-xl text-xs"
-                  style={{
-                    background: smtpTestResult.ok ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.03 27)",
-                    color: smtpTestResult.ok ? "oklch(0.40 0.12 145)" : "oklch(0.45 0.12 27)",
-                  }}
-                >
-                  <span className="font-black shrink-0">{smtpTestResult.ok ? "✓ Connection OK" : "✗ Connection failed"}</span>
-                  {!smtpTestResult.ok && smtpTestResult.error && (
-                    <span className="font-mono" style={{ wordBreak: "break-word" }}>— {smtpTestResult.error}</span>
-                  )}
-                </div>
-              )}
-              <div className="flex gap-2">
-                {/* Test Connection button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
-                    if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
-                    if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
-                    setSmtpTestResult(null);
-                    testCredentials.mutate({
-                      email: smtpEmail.trim(),
-                      password: smtpPassword,
-                      host: smtpHost.trim(),
-                      port: smtpPort,
-                      secure: smtpSecure,
-                    });
-                  }}
-                  disabled={testCredentials.isPending || connectSmtp.isPending}
-                  className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-sm font-bold transition-transform active:scale-95"
-                  style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.35 0.04 260)" }}
-                >
-                  {testCredentials.isPending ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
-                  {t('smtp.testConnection')}
-                </button>
-                <button
-                  onClick={() => {
-                    if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
-                    if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
-                    if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
-                    const promise = connectSmtp.mutateAsync({
-                      email: smtpEmail.trim(),
-                      password: smtpPassword,
-                      host: smtpHost.trim(),
-                      port: smtpPort,
-                      secure: smtpSecure,
-                      fromName: smtpFromName.trim() || undefined,
-                    });
-                    toast.promise(promise, {
-                      loading: "Testing connection...",
-                      success: "Email account connected!",
-                      error: (err) => err?.message ?? "Connection failed",
-                    });
-                  }}
-                  disabled={connectSmtp.isPending}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-                >
-                  {connectSmtp.isPending ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
-                  Connect Email
-                </button>
-                {showSmtpForm && (
-                  <button
-                    onClick={() => setShowSmtpForm(false)}
-                    className="px-4 py-3 rounded-xl text-sm font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
-                  >
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
+              <SmtpCandidateConnectionActions
+                result={smtpTestResult}
+                testing={testCredentials.isPending}
+                connecting={connectSmtp.isPending}
+                translate={t}
+                onTest={() => {
+                  if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
+                  if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
+                  if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
+                  setSmtpTestResult(null);
+                  testCredentials.mutate({ email: smtpEmail.trim(), password: smtpPassword, host: smtpHost.trim(), port: smtpPort, secure: smtpSecure });
+                }}
+                onConnect={() => {
+                  if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
+                  if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
+                  if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
+                  const promise = connectSmtp.mutateAsync({ email: smtpEmail.trim(), password: smtpPassword, host: smtpHost.trim(), port: smtpPort, secure: smtpSecure, fromName: smtpFromName.trim() || undefined });
+                  toast.promise(promise, { loading: "Testing connection...", success: "Email account connected!", error: (err) => err?.message ?? "Connection failed" });
+                }}
+                onCancel={showSmtpForm ? () => setShowSmtpForm(false) : undefined}
+              />
             </div>
           )}
         </div>

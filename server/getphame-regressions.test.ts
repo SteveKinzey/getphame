@@ -146,7 +146,7 @@ describe("Get Phame regression contracts", () => {
     const app = readProjectFile("../client/src/App.tsx");
 
     expect(html).toContain(
-      'content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover"'
+      'content="width=device-width, initial-scale=1.0, viewport-fit=cover"'
     );
     expect(html).toContain(
       '<meta name="apple-mobile-web-app-title" content="Get Phame"'
@@ -189,7 +189,7 @@ describe("Get Phame regression contracts", () => {
     ).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v31'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
     expect(serviceWorker).toContain("'/locales/en/landing.json'");
     expect(serviceWorker).toContain("'/locales/zh-TW/landing.json'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
@@ -623,11 +623,12 @@ describe("Get Phame regression contracts", () => {
     expect(bottomNav).toContain("<LogOut");
   });
 
-  it("replaces authenticated magic-link onboarding URLs with the app home route", () => {
+  it("returns authenticated sign-ins to a safe preserved deep link or the app home", () => {
     const app = readProjectFile("../client/src/App.tsx");
 
-    expect(app).toContain('window.location.pathname !== "/onboarding"');
-    expect(app).toContain('navigate("/", { replace: true })');
+    expect(app).toContain("getSafeReturnPath(window.location.search)");
+    expect(app).toContain('navigate(returnPath, { replace: true })');
+    expect(app).toContain('path === "/admin/email-preview"');
   });
 
   it("uses first-party secure cookie policy behind the managed proxy", () => {
@@ -836,7 +837,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame63");
+    expect(i18n).toContain("v=phame61");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

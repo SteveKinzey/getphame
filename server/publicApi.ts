@@ -69,11 +69,6 @@ const consentSchema = z.object({
   basis: z.enum(["customer_relationship", "explicit_opt_in", "other"]),
   capturedAt: z.string().datetime({ offset: true }).optional(),
   source: z.string().trim().min(1).max(255),
-  purpose: z.literal("review_outreach").optional(),
-  channel: z.literal("email").optional(),
-  text: z.string().trim().min(20).max(2_000).optional(),
-  version: z.string().trim().min(1).max(64).optional(),
-  privacyPolicyUrl: z.string().url().max(2_048).optional(),
 });
 
 const contactImportSchema = z.object({
@@ -83,9 +78,6 @@ const contactImportSchema = z.object({
   notes: z.string().trim().max(2_000).optional(),
   tags: z.array(z.string().trim().min(1).max(64)).max(20).optional(),
   externalId: z.string().trim().min(1).max(191).optional(),
-  sourceSubmissionId: z.string().trim().min(1).max(191).optional(),
-  sourceFormId: z.string().trim().min(1).max(191).optional(),
-  preferredLocale: outreachLocaleSchema.optional(),
   sourceApp: z.string().trim().min(1).max(64).regex(/^[a-z0-9][a-z0-9._-]*$/i).optional(),
   consent: consentSchema.optional(),
 }).passthrough();
@@ -126,17 +118,7 @@ export function normalizeContactImportPayload(input: unknown) {
   const record = input as Record<string, unknown>;
   if (record.consent && typeof record.consent === "object" && !Array.isArray(record.consent)) return record;
 
-  const hasFlatConsent = [
-    "consentConfirmed",
-    "consentBasis",
-    "consentCapturedAt",
-    "consentSource",
-    "consentPurpose",
-    "consentChannel",
-    "consentText",
-    "consentVersion",
-    "privacyPolicyUrl",
-  ]
+  const hasFlatConsent = ["consentConfirmed", "consentBasis", "consentCapturedAt", "consentSource"]
     .some((key) => record[key] !== undefined);
   if (!hasFlatConsent) return record;
 
@@ -147,11 +129,6 @@ export function normalizeContactImportPayload(input: unknown) {
       basis: record.consentBasis,
       capturedAt: record.consentCapturedAt,
       source: record.consentSource,
-      purpose: record.consentPurpose,
-      channel: record.consentChannel,
-      text: record.consentText,
-      version: record.consentVersion,
-      privacyPolicyUrl: record.privacyPolicyUrl,
     },
   };
 }
@@ -335,8 +312,7 @@ export function registerPublicApiRoutes(app: Router) {
     }
 
     const data = parsed.data;
-    const strongConsent = data.consent ? reviewOutreachConsentSchema.safeParse(data.consent) : null;
-    if (requireConsent && (!strongConsent?.success || !data.sourceSubmissionId)) {
+    if (requireConsent && !data.consent?.confirmed) {
       await logDeveloperApiImport({
         principal,
         sourceConnectionId,
@@ -346,13 +322,7 @@ export function registerPublicApiRoutes(app: Router) {
         email: data.email,
         errorCode: "CONSENT_REQUIRED",
       }).catch(() => undefined);
-      return sendApiError(
-        res,
-        422,
-        "CONSENT_REQUIRED",
-        "A stable sourceSubmissionId and complete review-outreach consent evidence are required.",
-        requestId,
-      );
+      return sendApiError(res, 422, "CONSENT_REQUIRED", "Affirmative consent attestation is required.", requestId);
     }
 
     const capturedAt = data.consent?.capturedAt ? Date.parse(data.consent.capturedAt) : Date.now();
@@ -376,9 +346,6 @@ export function registerPublicApiRoutes(app: Router) {
       notes: data.notes,
       tags: data.tags,
       externalId: data.externalId,
-      sourceSubmissionId: data.sourceSubmissionId,
-      sourceFormId: data.sourceFormId,
-      preferredLocale: data.preferredLocale,
       sourceApp: data.sourceApp ?? "generic-webhook",
       consent: data.consent ?? {
         confirmed: true as const,
@@ -399,7 +366,7 @@ export function registerPublicApiRoutes(app: Router) {
       sourceConnectionId,
     }))) return;
     const requestHash = hashDeveloperApiRequest(JSON.stringify({ sourcePublicId: sourceConnection?.publicId ?? null, normalized }));
-    const idempotencyKey = (req.header("Idempotency-Key")?.trim() || data.sourceSubmissionId || "").slice(0, 191);
+    const idempotencyKey = req.header("Idempotency-Key")?.trim().slice(0, 191) ?? "";
     let idempotencyHash: string | null = null;
     if (idempotencyKey) {
       const existing = await getDeveloperApiIdempotency({ principal, idempotencyKey, requestHash });
@@ -447,14 +414,6 @@ export function registerPublicApiRoutes(app: Router) {
         consentBasis: normalized.consent.basis,
         consentCapturedAt: normalized.consentCapturedAt,
         consentSource: normalized.consent.source,
-        consentPurpose: normalized.consent.purpose,
-        consentChannel: normalized.consent.channel,
-        consentTextHash: normalized.consent.text ? consentTextHash(normalized.consent.text) : undefined,
-        consentVersion: normalized.consent.version,
-        privacyPolicyUrl: normalized.consent.privacyPolicyUrl,
-        sourceSubmissionId: normalized.sourceSubmissionId,
-        sourceFormId: normalized.sourceFormId,
-        preferredLocale: normalized.preferredLocale,
       });
       const response = {
         success: true,
@@ -512,13 +471,7 @@ export function registerPublicApiRoutes(app: Router) {
   app.post("/api/v1/contacts", handleContactImport(true));
   app.post("/api/public/contacts", handleContactImport(false));
 
-  /**
-   * POST /api/v1/source-events
-   *
-   * One source-bound import-and-automation contract for Zapier, website forms,
-   * social lead forms, and the WordPress connector. Automation remains disabled
-   * until the account owner explicitly enables it on the bound source.
-   */
+  /** Source-bound automation endpoint for verified events from connected providers. */
   const handleSourceEventReviewRequest = async (req: Request, res: Response) => {
     const requestId = randomUUID();
     const auth = await authenticateApiRequest(req, "contacts:write");
@@ -555,7 +508,6 @@ export function registerPublicApiRoutes(app: Router) {
     if (sourceConnection.pausedAt) {
       return sendApiError(res, 409, "AUTOMATION_PAUSED", "Review-request automation is paused for this source.", requestId);
     }
-
     const parsed = sourceEventSchema.safeParse(normalizeContactImportPayload(req.body ?? {}));
     if (!parsed.success) {
       return sendApiError(res, 400, "INVALID_REQUEST", "The source event payload is invalid.", requestId);
@@ -583,7 +535,6 @@ export function registerPublicApiRoutes(app: Router) {
       consentBasis: normalized.consent.basis,
       sourceConnectionId: sourceConnection.id,
     }))) return;
-
     const requestHash = hashDeveloperApiRequest(JSON.stringify({ sourcePublicId, normalized }));
     const claim = await claimSourceAutomationEvent({
       userId: principal.userId,
@@ -610,7 +561,6 @@ export function registerPublicApiRoutes(app: Router) {
         requestId,
       });
     }
-
     try {
       const contact = await upsertApiContact(principal.userId, {
         name: normalized.name,
@@ -702,7 +652,6 @@ export function registerPublicApiRoutes(app: Router) {
         await recordDeveloperApiKeySuccessfulUse(principal);
         return res.status(202).json({ success: true, status: "scheduled", scheduledAt, contactId: contact.id, requestId });
       }
-
       const delivery = await deliverReviewRequest({
         userId: principal.userId,
         customerName: normalized.name,
@@ -727,17 +676,6 @@ export function registerPublicApiRoutes(app: Router) {
     } catch (error) {
       const message = error instanceof Error ? error.message : "Source automation failed.";
       const templateNotReady = message.includes("approved") && message.includes("template");
-      const consentConflict = message.includes("Consent evidence conflicts");
-      if (consentConflict) {
-        await completeSourceAutomationEvent({
-          userId: principal.userId,
-          eventId: claim.eventId,
-          sourceConnectionId: sourceConnection.id,
-          status: "failed",
-          errorCode: "CONSENT_EVIDENCE_CONFLICT",
-        }).catch(() => undefined);
-        return sendApiError(res, 409, "INVALID_REQUEST", message, requestId);
-      }
       const retryCode = error instanceof AdaptiveSendLimitError
         ? "RATE_LIMITED"
         : templateNotReady
@@ -767,107 +705,12 @@ export function registerPublicApiRoutes(app: Router) {
           requestId,
         });
       }
-      return sendApiError(
-        res,
-        templateNotReady ? 409 : 500,
-        templateNotReady ? "TEMPLATE_NOT_READY" : "INTERNAL_ERROR",
-        templateNotReady ? message : "The source event could not be completed. Please retry.",
-        requestId,
-      );
+      return sendApiError(res, templateNotReady ? 409 : 500, templateNotReady ? "TEMPLATE_NOT_READY" : "INTERNAL_ERROR", templateNotReady ? message : "The source event could not be completed. Please retry.", requestId);
     }
   };
 
   app.post("/api/v1/source-events", handleSourceEventReviewRequest);
   app.post("/api/v1/source-events/review-request", handleSourceEventReviewRequest);
-
-  const handleSourceEventValidation = async (req: Request, res: Response) => {
-    const requestId = randomUUID();
-    const auth = await authenticateApiRequest(req, "contacts:write");
-    if (auth.kind === "invalid" || auth.kind === "expired") {
-      return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
-    }
-    if (auth.kind === "inactive") {
-      return sendApiError(res, 401, "API_KEY_INACTIVE", "This API key expired after 12 months without successful use. Create a replacement in Developer Integrations.", requestId);
-    }
-    if (auth.kind === "suspended") {
-      res.setHeader("Retry-After", String(auth.retryAfterSeconds ?? 86_400));
-      return sendApiError(res, 429, "API_KEY_SUSPENDED", "This API key is temporarily suspended by abuse protection.", requestId);
-    }
-    if (auth.kind !== "ok" || !developerApiKeyHasScope(auth.principal, "review_requests:send")) {
-      return sendApiError(res, 403, "INSUFFICIENT_SCOPE", "This API key requires contacts:write and review_requests:send scopes.", requestId);
-    }
-    const principal = auth.principal;
-    const sourcePublicId = req.header("X-Get-Phame-Source")?.trim().slice(0, 48) ?? "";
-    if (!sourcePublicId) {
-      return sendApiError(res, 400, "INVALID_REQUEST", "X-Get-Phame-Source is required for source events.", requestId);
-    }
-    const sourceConnection = await resolveSourceConnectionForPrincipal({
-      publicId: sourcePublicId,
-      userId: principal.userId,
-      apiKeyId: principal.apiKeyId,
-    });
-    if (!sourceConnection) {
-      return sendApiError(res, 403, "SOURCE_CONNECTION_FORBIDDEN", "This source identifier is not authorized for the supplied API key.", requestId);
-    }
-    if (!(await applyApiRateLimit(principal, res, requestId, sourceConnection.id))) return;
-    if (!sourceConnection.automationEnabled || sourceConnection.automationMode !== "review_request") {
-      return sendApiError(res, 409, "AUTOMATION_DISABLED", "Review-request automation is not enabled for this source.", requestId);
-    }
-    if (sourceConnection.pausedAt) {
-      return sendApiError(res, 409, "AUTOMATION_PAUSED", "Review-request automation is paused for this source.", requestId);
-    }
-
-    const parsed = sourceEventSchema.safeParse(normalizeContactImportPayload(req.body ?? {}));
-    if (!parsed.success) {
-      return sendApiError(res, 400, "INVALID_REQUEST", "The source event payload is invalid.", requestId);
-    }
-    const data = parsed.data;
-    const capturedAt = Date.parse(data.consent.capturedAt);
-    if (!Number.isFinite(capturedAt) || capturedAt > Date.now() + 5 * 60_000) {
-      return sendApiError(res, 400, "INVALID_REQUEST", "consent.capturedAt must be a valid timestamp that is not in the future.", requestId);
-    }
-    const locale = data.preferredLocale ?? outreachLocaleSchema.parse(sourceConnection.preferredLocale ?? "en");
-    const existingContact = await findSavedContactByEmail(principal.userId, data.email);
-    if (existingContact?.optedOut) {
-      return sendApiError(res, 409, "CONTACT_SUPPRESSED", "This contact has opted out and cannot receive review requests.", requestId);
-    }
-    try {
-      const validation = await validateReviewRequestDelivery({
-        userId: principal.userId,
-        customerName: data.name,
-        customerEmail: data.email,
-        preferredLocale: locale,
-        templateId: sourceConnection.templateId,
-        platformId: sourceConnection.platformId,
-        sourceConnectionId: sourceConnection.id,
-        sourceEventId: data.sourceSubmissionId,
-        contactId: existingContact?.id ?? null,
-      });
-      await recordDeveloperApiKeySuccessfulUse(principal);
-      return res.json({
-        success: true,
-        requestId,
-        sourceId: sourcePublicId,
-        dryRun: Boolean(sourceConnection.dryRun),
-        sendDelayMinutes: sourceConnection.sendDelayMinutes ?? 0,
-        ...validation,
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "The source event is not eligible for delivery.";
-      const templateNotReady = message.includes("approved") && message.includes("template");
-      const rateLimited = message.includes("limit") || message.includes("quota");
-      return sendApiError(
-        res,
-        templateNotReady ? 409 : rateLimited ? 429 : 400,
-        templateNotReady ? "TEMPLATE_NOT_READY" : rateLimited ? "RATE_LIMITED" : "INVALID_REQUEST",
-        message,
-        requestId,
-      );
-    }
-  };
-
-  app.post("/api/v1/source-events/validate", handleSourceEventValidation);
-  app.post("/api/v1/source-events/review-request/validate", handleSourceEventValidation);
 
   /**
    * POST /api/public/send

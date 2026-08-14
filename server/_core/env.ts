@@ -15,4 +15,6 @@ export const ENV = {
   appleTeamId: process.env.APPLE_TEAM_ID ?? "",
   appleKeyId: process.env.APPLE_KEY_ID ?? "",
   applePrivateKey: process.env.APPLE_PRIVATE_KEY ?? "",
+  // SendGrid — system relay for magic links, auth emails, reminders, health alerts
+  sendgridApiKey: process.env.SENDGRID_API_KEY ?? "",
 };

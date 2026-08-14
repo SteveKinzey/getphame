@@ -724,7 +724,9 @@
     "saveProfile": "儲存資料",
     "successToast": "商家資料已儲存！",
     "dailySendLimitSaved": "每日傳送限制已儲存！",
-    "addBusinessNameAndLink": "請先在設定中新增您的商家名稱和 Google 評價連結。"
+    "addBusinessNameAndLink": "請先在設定中新增您的商家名稱和 Google 評價連結。",
+    "consentLabelName": "同意核取方塊中的企業名稱",
+    "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。"
   },
   "reviewPlatforms": {
     "title": "評論平臺",
@@ -795,7 +797,7 @@
       "default": "您的郵箱密碼"
     },
     "inlineHints": {
-      "google": "請勿使用一般 Gmail 密碼，請使用應用程式密碼。點選上方的「如何獲取」。",
+      "google": "請不要使用一般帳戶密碼，請改用應用程式密碼。請點按上方的「如何取得」。",
       "icloud": "請使用 App 專用密碼，而非 Apple ID 密碼。點選上方的「如何獲取」。",
       "zoho": "請先在 Zoho 啟用 SMTP 存取，再使用一般 Zoho 密碼。點選上方的「如何獲取」。",
       "aol": "請勿使用一般 AOL 密碼，請使用應用程式密碼。點選上方的「如何獲取」。",
@@ -829,17 +831,17 @@
     "passwordPlaceholderDefault": "您的郵件密碼",
     "howToGetIt": "如何獲取",
     "gotIt": "知道了 ✓",
-    "gmailGuideTitle": "Gmail 應用密碼 — 4 步",
-    "gmailGuideStep1": "前往 myaccount.google.com → 安全",
-    "gmailGuideStep2": "如果尚未開啟，請開啟兩步驗證",
-    "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 點選建立",
-    "gmailGuideStep4": "複製 16 位程式碼並貼上到此處 — 刪除所有空格",
-    "gmailGuideTip": "提示：使用專用的 reviews@gmail.com 賬戶，以使您的主收件箱保持獨立。",
-    "googleWorkspaceGuideTitle": "Google Workspace 應用密碼 — 4 步",
-    "googleWorkspaceGuideStep1": "請您的 Workspace 管理員在 admin.google.com 中啟用兩步驗證",
-    "googleWorkspaceGuideStep2": "使用您的工作賬戶登入 myaccount.google.com → 安全",
-    "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 點選建立",
-    "googleWorkspaceGuideStep4": "複製 16 位程式碼並貼上到此處 — 刪除所有空格",
+    "gmailGuideTitle": "Gmail 應用程式密碼 — 4 個步驟",
+    "gmailGuideStep1": "前往 myaccount.google.com → 安全性",
+    "gmailGuideStep2": "如果尚未開啟，請開啟兩步驟驗證",
+    "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 按一下建立",
+    "gmailGuideStep4": "複製 16 位代碼並貼到此處，請移除所有空格",
+    "gmailGuideTip": "Google 只會顯示一次代碼。變更 Google 密碼後請建立新的應用程式密碼，並在中斷 Get Phame 連線時撤銷該密碼。",
+    "googleWorkspaceGuideTitle": "Google Workspace 應用程式密碼 — 4 個步驟",
+    "googleWorkspaceGuideStep1": "使用工作帳戶登入 myaccount.google.com → 安全性",
+    "googleWorkspaceGuideStep2": "如果帳戶可使用，請開啟兩步驟驗證",
+    "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 按一下建立",
+    "googleWorkspaceGuideStep4": "複製 16 位代碼並貼到此處，請移除所有空格",
     "outlookGuideTitle": "Microsoft 應用密碼 — 4 步",
     "outlookGuideStep1": "前往 account.microsoft.com → 安全",
     "outlookGuideStep2": "點選高階安全選項",
@@ -895,7 +897,45 @@
     "disconnectError": "無法斷開賬戶：{{message}}",
     "noEmailConnected": "未連線郵箱",
     "emailNotConnectedTitle": "未連線郵箱",
-    "emailNotConnectedDesc": "請在設定中連線您的郵箱賬戶。支援 Gmail、Outlook、Yahoo 或任何商務郵箱。"
+    "emailNotConnectedDesc": "請在設定中連線您的郵箱賬戶。支援 Gmail、Outlook、Yahoo 或任何商務郵箱。",
+    "googleWorkspaceGuideTip": "如果沒有應用程式密碼選項，組織可能限制該功能、要求僅使用安全金鑰驗證，或啟用了進階保護。請向 Workspace 管理員詢問已核准的 SMTP 或 OAuth 連線方式。",
+    "deliveryStatus": {
+      "active": "已啟用，可用於客戶評價請求",
+      "notSelected": "已連線，但未被選用於客戶評價請求",
+      "bulkActive": "已連線，但您的大量寄信服務已被選用於客戶評價請求",
+      "needsAttention": "需要處理：請更新 SMTP 詳細資料並重新連線，然後再傳送客戶評價請求"
+    },
+    "connectionSavedMessage": "您的郵件伺服器已連線，可用於向客戶傳送請求。",
+    "gmailAppPasswordTooltipLabel": "Gmail 應用程式密碼說明",
+    "workspaceAppPasswordTooltipLabel": "Google Workspace 應用程式密碼說明",
+    "gmailAppPasswordTooltip": "請使用 16 位應用程式密碼，而不是一般 Gmail 密碼。請先開啟兩步驟驗證。",
+    "workspaceAppPasswordTooltip": "您的 Workspace 管理員必須允許使用應用程式密碼。如果此選項無法使用，請改用組織核准的 SMTP 或 OAuth 方法。",
+    "testPassedNotSaved": "連線測試通過。您的憑證尚未儲存。",
+    "testFailed": "連線測試失敗。請檢查伺服器資訊後再試一次。",
+    "testingCandidate": "正在測試您的郵件伺服器…",
+    "testBeforeSave": "儲存前測試",
+    "connectingAndVerifying": "正在連線並驗證…",
+    "connectAndSave": "連線並儲存",
+    "testEmailRecipient": "將測試電子郵件寄送至",
+    "testEmailHint": "請使用您可控制的地址。系統會使用已儲存的郵件伺服器，不會儲存新的收件者。",
+    "testEmailRecipientRequired": "請輸入要接收測試電子郵件的地址。",
+    "sendingTestEmail": "正在傳送測試電子郵件…",
+    "sendTestEmail": "傳送測試電子郵件",
+    "testEmailSent": "測試電子郵件已傳送。請檢查收件者收件匣。",
+    "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
+    "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
+    "disconnecting": "正在中斷連線…",
+    "disconnectConfirmAction": "中斷並重設",
+    "testEmailHistoryTitle": "測試郵件記錄",
+    "testEmailHistoryPrivacy": "收件者已遮蔽。僅顯示最近 12 次診斷嘗試。",
+    "testEmailHistoryEmpty": "尚未傳送診斷測試郵件。",
+    "testEmailHistorySent": "已傳送",
+    "testEmailHistoryFailed": "失敗",
+    "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。",
+    "retryTestEmail": "重試",
+    "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
+    "connectionTestPassed": "郵件伺服器連線已驗證。",
+    "connectionTestFailed": "郵件伺服器仍需處理。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1028,7 +1068,9 @@
         "created": "建立時間",
         "page": "第 {{current}} 頁，共 {{total}} 頁"
       }
-    }
+    },
+    "addConsentLabel": "我確認此客戶已同意{businessName}透過電子郵件和/或簡訊聯繫他們，了解其體驗和購買情況",
+    "addConsentRequired": "新增聯絡人需要確認同意"
   },
   "pageHeader": {
     "title": "已儲存的聯絡人",
@@ -1114,7 +1156,8 @@
     "allCustomersCheck": "我正在向所有客戶傳送，而不是根據滿意度進行篩選",
     "cancel": "取消",
     "sending": "傳送中…",
-    "sendButton": "傳送 {{count}} 個請求"
+    "sendButton": "傳送 {{count}} 個請求",
+    "consentCheck": "我確認客戶已同意我的企業透過電子郵件和/或簡訊與其聯繫"
   },
   "wooSyncHistory": {
     "title": "WooCommerce 同步歷史",
@@ -1437,7 +1480,8 @@
     "signedInAs": "登入身分",
     "dashboard": "控制台",
     "darkMode": "深色模式",
-    "lightMode": "淺色模式"
+    "lightMode": "淺色模式",
+    "avatarAlt": "您的個人頭像"
   },
   "account": {
     "administrator": "管理員",
@@ -1713,7 +1757,8 @@
     "stats": {
       "thisMonth": "本月",
       "allTime": "所有時間",
-      "last7Days": "過去7天"
+      "last7Days": "過去7天",
+      "consented": "已同意"
     },
     "weeklyBreakdown": {
       "title": "過去7天",
@@ -1772,6 +1817,22 @@
       "markAllShort": "全部標記",
       "markAllSuccess": "{{count}} 條已標記為審閱",
       "markReviewed": "標記為已審閱"
+    },
+    "mailHealth": {
+      "healthy": "郵件伺服器運作正常",
+      "healthyDetail": "您已連接的郵件伺服器已準備好傳送訊息。",
+      "attention": "郵件伺服器需要處理",
+      "attentionDetail": "請在傳送前於設定中重新測試或更新郵件伺服器。",
+      "disconnected": "郵件伺服器未連接",
+      "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
+      "bulkActive": "大量郵件伺服器已啟用",
+      "bulkActiveDetail": "您選取的大量郵件服務商已啟用。",
+      "healthyTooltip": "已選取經過驗證的個人郵件伺服器，最新健康狀態無需處理。",
+      "attentionTooltip": "已儲存的連線需要處理。請重新測試或更新服務商設定後再傳送客戶外聯。",
+      "disconnectedTooltip": "未選取經過驗證的租戶郵件通道。在設定中連線前，客戶外聯將保持暫停。",
+      "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
+      "details": "郵件伺服器健康詳細資料",
+      "troubleshoot": "疑難排解"
     }
   },
   "pricing": {
@@ -1807,7 +1868,12 @@
   "onboarding": {
     "googleBtn": "使用 Google 繼續",
     "appleBtn": "使用 Apple 繼續",
-    "finePrint": "免費開始 — 包含10次評價請求，無需信用卡。"
+    "finePrint": "免費開始 — 包含10次評價請求，無需信用卡。",
+    "consentStepTitle": "在您的表單中新增同意核取方塊",
+    "consentStepDesc": "在收集聯絡人或發送評價請求之前，您的表單必須包含同意核取方塊。這是CAN-SPAM、TCPA和GDPR的要求。",
+    "consentStepAction": "下載同意指南（PDF）",
+    "consentStepAck": "我已經（或將會）在我的客戶表單中新增同意核取方塊",
+    "consentStepAckRequired": "請確認您將在繼續之前新增同意核取方塊"
   },
   "bulkBar": {
     "sendTo": "傳送給 {{count}} 位聯絡人"
@@ -2204,7 +2270,12 @@
       "smtpPort": "連接埠",
       "testConnection": "測試連線",
       "testFailed": "連線測試失敗。",
-      "update": "更新"
+      "update": "更新",
+      "legacyPlatformNotice": "偵測到舊版平台郵件連線，但不能用於客戶外聯。請連接您自己擁有的大量寄信服務商帳戶。",
+      "activeOutreach": "已啟用，可用於客戶評價請求",
+      "notActive": "已連線，但未被選用於客戶評價請求",
+      "connectionSavedMessage": "您的大量寄信伺服器已連線，可立即使用。",
+      "connectingAndVerifying": "正在連線並驗證…"
     }
   },
   "login": {
@@ -2555,14 +2626,14 @@
   "developerIntegrations": {
     "sources": {
       "title": "連接資料來源",
-      "description": "選擇獲准客戶事件的起點。Get Phame 會先驗證特定用途同意、抑制狀態、傳送就緒情況與冪等性，才允許自動評論請求正式啟用。",
-      "badge": "先驗證 · 後啟用",
+      "description": "選擇客戶記錄的來源。Get Phame 會提供安全且僅用於匯入的操作步驟，適用於可信任的伺服器端自動化流程。",
+      "badge": "僅匯入聯絡人",
       "workflowTitle": "資料來源連接流程",
       "steps": {
-        "choose": "選擇來源",
-        "key": "建立來源金鑰",
-        "map": "對應欄位與同意證據",
-        "test": "預檢與安全試跑"
+        "choose": "選擇資料來源",
+        "key": "建立匯入金鑰",
+        "map": "對應欄位與同意資訊",
+        "test": "傳送一筆已獲同意的測試記錄"
       },
       "choose": "選擇資料來源",
       "recipeCopied": "已複製安全設定步驟。",
@@ -2574,8 +2645,7 @@
         "secret": "只將 Get Phame API 金鑰保存在伺服器端受保護的密鑰欄位中。切勿將金鑰放入表單、URL、網頁原始碼或瀏覽器指令碼。",
         "consent": "只匯入現有客戶或已明確同意的聯絡人。選填的同意核取方塊預設必須保持未勾選。",
         "idempotency": "每次重試都重用同一個服務商事件 ID，避免同一次提交產生重複操作。",
-        "importOnly": "此流程只會匯入或更新聯絡人，絕不會自動傳送評論請求。",
-        "activation": "從安全試跑模式開始。只有獲授權人員完成預檢、驗證一個服務商事件並明確啟用來源後，正式評論請求才會開啟。"
+        "importOnly": "此流程只會匯入或更新聯絡人，絕不會自動傳送評論請求。"
       },
       "providers": {
         "jotform": {
@@ -2600,7 +2670,7 @@
           "idempotency": "每次重試都使用來源系統中不可變的提交、記錄、訂單或事件 ID。"
         }
       },
-      "recipeTitle": "安全評論事件範本",
+      "recipeTitle": "安全對應範例",
       "recipeDescription": "設定時使用預留位置。只在自動化服務受保護的密鑰欄位中貼上真實金鑰。",
       "copyRecipe": "複製範例",
       "apiField": "API 欄位",
@@ -2608,39 +2678,16 @@
       "fields": {
         "name": "客戶姓名欄位",
         "email": "客戶電子郵件欄位",
-        "externalId": "不可變的服務商事件或記錄 ID",
+        "externalId": "服務商中不可變的事件或記錄 ID",
         "sourceApp": "上方顯示的固定服務商識別碼",
-        "consentConfirmed": "僅在明確授權後設為 true",
+        "consentConfirmed": "僅在明確獲准後才設為 true 的布林值",
         "consentBasis": "customer_relationship、explicit_opt_in 或 other",
-        "consentSource": "簡要說明授權的取得位置",
-        "eventType": "固定值：review_request",
-        "phone": "選填客戶電話欄位",
-        "sourceFormId": "穩定的服務商表單識別碼",
-        "sourceSubmissionId": "不可變的提交或潛在客戶識別碼",
-        "preferredLocale": "支援的語言代碼：en、es、fr、it、th、zh-CN 或 zh-TW",
-        "consentPurpose": "固定值：review_outreach",
-        "consentChannel": "固定值：email",
-        "consentCapturedAt": "含時區的 ISO 8601 提交時間",
-        "consentText": "向該人員顯示的評論溝通核取方塊原文",
-        "consentVersion": "由企業管理的不可變文案版本",
-        "privacyPolicyUrl": "核取方塊旁顯示的 HTTPS 隱私政策網址"
+        "consentSource": "簡短說明同意資訊的收集位置"
       },
       "nextTitle": "準備連接了嗎？",
-      "nextDescription": "建立同時具備 contacts:write 與 review_requests:send 權限的來源金鑰，將其綁定到受管理來源，再完成預檢與一次安全試跑。",
-      "createKey": "建立來源金鑰",
-      "viewImports": "管理來源",
-      "consentCopyTitle": "評論溝通核取方塊——複製並調整",
-      "consentCopyInstructions": "此核取方塊預設不得勾選。可將其作為加入自動評論溝通的條件，但不得作為無關購買、報價或服務的條件。請由合格法律顧問審核最終文字與流程。",
-      "reviewConsentCopy": "我同意 {{business_name}} 就我最近的購買或服務體驗向我傳送電子郵件，包括一次評論請求及最多兩次提醒。我可以隨時取消訂閱。同意並非購買條件。請參閱隱私政策。",
-      "marketingConsentTitle": "獨立的選填行銷許可",
-      "marketingConsentCopy": "我願意偶爾接收 {{business_name}} 的行銷電子郵件與優惠。我可以隨時取消訂閱。同意並非購買條件。請參閱隱私政策。",
-      "channelBoundary": "不得將任一電子郵件核取方塊視為簡訊、自動電話或其他用途的許可。缺少有效評論溝通證據的提交必須標示為不合格，且不得自動傳送。",
-      "testTitle": "安全地測試、重試與撤銷",
-      "testImport": "使用一名獲准收件者執行唯讀驗證端點。在不匯入或傳送的情況下確認來源綁定、抑制狀態、SMTP、配額、範本與目標。",
-      "testReplay": "啟用安全試跑，提交一個真實服務商事件，再使用相同 Idempotency-Key 重播。應回傳相同結果，而非建立重複工作。",
-      "testFailure": "同意衝突與驗證錯誤應視為終止錯誤。只重試可恢復故障，遵守 Retry-After，並始終重用相同事件 ID。",
-      "testActivate": "在獲授權人員從試跑切換為正式傳送前，確認已核准範本、收件者語言、目標、提醒與延遲。",
-      "testRevoke": "若要停止來源，請在 Get Phame 與服務商中暫停它，撤銷或輪替金鑰，並保留遮罩後的稽核記錄。"
+      "nextDescription": "建立 contacts:write 金鑰，傳送一筆已獲同意的測試記錄，然後在「最近 API 匯入」中確認遮罩後的結果。",
+      "createKey": "建立匯入金鑰",
+      "viewImports": "檢視匯入記錄"
     },
     "back": "返回設定",
     "confirm": {
@@ -2819,8 +2866,8 @@
         "make": "Make 客戶匯入",
         "custom": "自訂客戶匯入"
       },
-      "apiKey": "來源 API 金鑰",
-      "noKeys": "沒有有效的來源金鑰",
+      "apiKey": "匯入 API 金鑰",
+      "noKeys": "沒有啟用的匯入金鑰",
       "expected": "預期活動",
       "intervals": {
         "15": "每 15 分鐘",
@@ -2865,8 +2912,8 @@
       "pause": "暫停監控",
       "resume": "恢復監控",
       "archive": "封存",
-      "template": "自動化事件範本",
-      "templateDescription": "將此評論請求事件原樣複製到自動化工具受保護的 HTTP 或 Webhook 動作中。",
+      "template": "引導範本",
+      "templateDescription": "將此完整請求複製到自動化的受保護 HTTP 或 webhook 動作中。",
       "copyRecipe": "複製範本",
       "recipeCopied": "連線範本已複製。",
       "secretReminder": "請僅在提供者的受保護祕密欄位中使用原始 API 金鑰。來源 ID 可安全複製，但僅能搭配其對應金鑰使用。",
@@ -2890,23 +2937,23 @@
           "2": "新增 Webhooks by Zapier，並選擇 Custom Request。",
           "3": "將 Method 設為 POST，並貼上 Get Phame 的端點。",
           "4": "如下方所示，精確加入受保護的標頭。",
-          "5": "對應 sourceSubmissionId、preferredLocale 以及完整的巢狀同意證據物件。",
-          "6": "執行唯讀預檢，啟用安全試跑，傳送一個獲准事件，再決定是否正式啟用。"
+          "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的供應者 ID。",
+          "6": "以一筆允許的記錄測試此動作，然後在此更新健康狀態。"
         },
         "make": {
           "1": "選擇會產生符合條件客戶記錄的觸發模組。",
           "2": "新增 HTTP 模組並選擇 Make a request。",
           "3": "將 Method 設為 POST、Body type 設為 Raw，並將 Content type 設為 application/json。",
           "4": "如下方所示，精確加入受保護的標頭。",
-          "5": "對應 sourceSubmissionId、preferredLocale 以及完整的巢狀同意證據物件。",
-          "6": "執行唯讀預檢，啟用安全試跑，傳送一個獲准事件，再決定是否正式啟用。"
+          "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的 bundle ID。",
+          "6": "以一筆允許的記錄執行一次情境，然後在此更新健康狀態。"
         },
         "custom": {
           "1": "使用支援 POST 與受保護標頭的可信伺服器端工作流程。",
           "2": "將 API 金鑰儲存在工作流程的祕密存放處，切勿放在瀏覽器程式碼或 URL 中。",
           "3": "將 JSON 與下方標頭一起送至 Get Phame 端點。",
-          "4": "讓 sourceSubmissionId 與 Idempotency-Key 使用同一個不可變的來源記錄 ID。",
-          "5": "執行唯讀預檢，啟用安全試跑，傳送一個獲准事件，再決定是否正式啟用。"
+          "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
+          "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
         }
       },
       "automation": {
@@ -3026,7 +3073,12 @@
       "providerAcceptedMessage": "您的電子郵件供應商已接受該指南以進行投遞。",
       "sharePrompt": "分享免費的評論邀請指南。",
       "tryAgain": "重新傳送電子郵件",
-      "description": "取得免費指南，規劃清楚且合規的評論邀請，並接收產品更新與實用的口碑管理建議。"
+      "description": "取得免費指南，規劃清楚且合規的評論邀請，並接收產品更新與實用的口碑管理建議。",
+      "consentCheckLabel": "我同意 Get Phame (getphame.app) 透過電子郵件向我發送產品更新和使用技巧。我可以隨時取消訂閱。",
+      "consentRequired": "請勾選核取方塊以繼續。",
+      "thankYouHeading": "一切就緒！",
+      "thankYouMessage": "您的指南正在發送至 {{email}}。如未收到，請檢查垃圾郵件資料夾。",
+      "thankYouDownload": "郵件發送不可用。請直接在下方下載您的指南。"
     },
     "purpose": {
       "description": "Get Phame 幫助在地商家使用其已連接的電子郵件帳號寄送個人化的評論邀請郵件。適用於商家老闆、攝影師、咖啡館與餐廳、到府服務團隊、診所與沙龍、代理商，以及想要更簡單方式向真實顧客徵求回饋的 WooCommerce 商店。",
@@ -3888,5 +3940,169 @@
     "reloadTab": "重新載入此分頁",
     "applyingTitle": "正在套用更新",
     "applyingDescription": "GET PHAME 正在準備最新版本。此分頁即將重新整理。"
+  },
+  "adminEmailPreview": {
+    "title": "電子郵件樣板預覽",
+    "selectTemplate": "選擇樣板",
+    "loading": "正在載入預覽…",
+    "error": "載入預覽失敗。",
+    "noPreview": "暫無預覽。",
+    "note": "預覽使用範例資料，實際郵件將以真實用戶名稱和安全連結發送。",
+    "sendTest": "發送測試郵件",
+    "sending": "發送中…",
+    "testSent": "測試郵件已發送！",
+    "testFailed": "測試郵件發送失敗。",
+    "darkMode": "深色模式",
+    "copyHtml": "複製 HTML",
+    "copied": "已複製！",
+    "emailPlaceholder": "傳送至…",
+    "openTab": "在新標簽頁開啟",
+    "variables": "變數",
+    "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符",
+    "resetVars": "重置",
+    "split": "分屏",
+    "savePreset": "儲存",
+    "presetNamePlaceholder": "預設名稱…",
+    "previewReady": "預覽已就緒",
+    "previewFallback": "無法在內嵌框架中呈現此預覽。",
+    "previewLoading": "正在產生電子郵件預覽…",
+    "exportHtml": "匯出 HTML",
+    "exported": "已下載！",
+    "copyFailed": "此瀏覽器封鎖了複製已轉譯的 HTML。"
+  },
+  "adminRouteAudit": {
+    "eyebrow": "正式環境保障",
+    "title": "正式環境路由稽核",
+    "description": "安全檢查網站地圖中的公開路由是否有瀏覽器轉譯錯誤。不會接觸帳戶、表單或客戶資料。",
+    "run": "執行路由稽核",
+    "running": "正在稽核路由…",
+    "viewHistory": "查看歷程",
+    "runningDescription": "正在為目前公開網站地圖啟動乾淨的瀏覽器。此程序最多可能需要兩分鐘。",
+    "unavailable": "稽核執行器無法使用",
+    "completedWithIssues": "稽核完成，但發現問題",
+    "completed": "稽核已成功完成",
+    "failureCode": "失敗代碼",
+    "summary": "已稽核 {{routes}} 個路由 · {{failures}} 個失敗",
+    "resultRoutes": "已稽核路由",
+    "issue": "需要檢查",
+    "rendered": "已轉譯",
+    "passed": "正式環境路由稽核已通過。",
+    "failed": "正式環境路由稽核發現問題。",
+    "runFailed": "無法執行正式環境路由稽核。"
+  },
+  "adminAuditLog": {
+    "back": "管理儀表板",
+    "title": "稽核與轉譯歷程",
+    "description": "僅限管理員的營運歷程。儲存的記錄只包含已淨化的稽核訊號，絕不包含客戶內容、電子郵件 HTML、Cookie 或瀏覽器日誌。",
+    "refresh": "重新整理歷程",
+    "routeTitle": "正式環境路由稽核",
+    "routeDescription": "對網站地圖發現的公開路由進行手動瀏覽器檢查，依最新優先排序。",
+    "runAnother": "執行另一項稽核 →",
+    "routeError": "無法載入路由稽核歷程。",
+    "routes": "個路由",
+    "issuesFound": "{{count}} 個問題",
+    "passed": "通過",
+    "routeEmpty": "尚未記錄任何正式環境路由稽核。",
+    "routePagination": "路由稽核歷程分頁",
+    "rendererTitle": "電子郵件預覽轉譯器錯誤",
+    "rendererDescription": "只有在管理員預覽無法轉譯已驗證內容時，才會擷取已淨化的訊號。",
+    "rendererError": "無法載入轉譯器錯誤歷程。",
+    "rendererEmpty": "尚未記錄轉譯器錯誤。",
+    "rendererPagination": "轉譯器錯誤歷程分頁",
+    "records": "筆記錄",
+    "previous": "上一頁",
+    "next": "下一頁",
+    "darkPreview": "深色",
+    "releaseTitle": "發布歷程",
+    "releaseDescription": "已淨化的發布沿革記錄，提供一致性狀態、排序與有界匯出預覽。",
+    "retention": "保留設定",
+    "releaseStatus": "一致性狀態",
+    "allStatuses": "所有狀態",
+    "matched": "相符",
+    "needsReview": "需要檢查",
+    "releaseSort": "排序依據",
+    "releaseSortDate": "發布時間",
+    "releaseSortCheckpoint": "檢查點",
+    "releaseDirection": "方向",
+    "newestFirst": "最新優先",
+    "oldestFirst": "最舊優先",
+    "releaseExport": "預覽匯出",
+    "releaseExportFailed": "無法準備發布歷程匯出。",
+    "releaseError": "無法載入發布歷程。",
+    "releaseEmpty": "尚未儲存任何已驗證的發布記錄。",
+    "releasePagination": "發布歷程分頁",
+    "time": "時間",
+    "checkpoint": "檢查點",
+    "mainCommit": "主分支提交",
+    "parity": "一致性",
+    "releaseExportTitle": "預覽發布歷程匯出",
+    "releaseExportDescription": "請在複製或下載前檢閱完全一致、已淨化且有界的快照。",
+    "releaseExportSummary": "預覽 {{previewed}} / {{exported}} 匯出列 · {{matched}} 筆相符",
+    "releaseExportTruncated": "匯出上限包含 {{exported}} / {{matched}} 筆相符記錄。",
+    "close": "關閉",
+    "copied": "已複製",
+    "copy": "複製 CSV",
+    "copyFailed": "複製失敗，請重試",
+    "download": "下載 CSV"
+  },
+  "adminAuditRetention": {
+    "back": "稽核歷程",
+    "title": "稽核保留控制",
+    "description": "選擇已淨化的正式環境路由與轉譯器錯誤診斷資訊可供管理員查看的保留期間。",
+    "controlsTitle": "資料生命週期",
+    "controlsDescription": "變更期間會立即只移除早於新限制的記錄。記錄仍會保持淨化狀態且僅限管理員。",
+    "routeDays": "路由稽核歷程",
+    "routeDaysHelp": "保留已淨化公開路由稽核結果的天數。",
+    "rendererDays": "轉譯器錯誤歷程",
+    "rendererDaysHelp": "保留已淨化預覽轉譯器失敗訊號的天數。",
+    "days": "天",
+    "invalid": "請選擇 7 到 3,650 天的保留期間。",
+    "save": "儲存並套用保留設定",
+    "saved": "已儲存保留控制並清除過期診斷記錄。",
+    "saveFailed": "無法儲存保留控制。",
+    "confirmTitle": "要套用保留限制嗎？",
+    "confirmDescription": "過期的已淨化診斷資訊現在將被永久移除，且無法復原。",
+    "confirmSummary": "路由稽核：{{routeDays}} 天 · 轉譯器錯誤：{{rendererDays}} 天",
+    "cancel": "取消",
+    "confirm": "套用並清除"
+  },
+  "adminRendererTrend": {
+    "title": "重複的電子郵件預覽轉譯器失敗",
+    "description": "過去 {{hours}} 小時內發生了 {{count}} 次相符的 {{template}} 失敗。請在下次發布前檢閱已淨化歷程。",
+    "review": "檢閱歷程"
+  },
+  "adminExportSchedule": {
+    "title": "自動發佈歷程報告",
+    "description": "依 UTC 排程建立有界且已淨化的 CSV 快照。最新報告會保留在稽核歷程中供管理員查看。",
+    "enabled": "啟用自動報告",
+    "cron": "UTC 排程",
+    "cronHelp": "使用六個欄位：秒、分、時、日、月與星期。預設：週一 09:00 UTC。",
+    "save": "儲存報告排程",
+    "saved": "已更新自動發佈歷程報告。",
+    "saveFailed": "無法儲存自動報告設定。",
+    "lastRun": "上次報告：{{date}} · {{count}} 列",
+    "recentRuns": "最近的自動報告",
+    "ready": "已就緒",
+    "failed": "失敗",
+    "rows": "列"
+  },
+  "adminRetentionHistory": {
+    "title": "最近的保留期間變更",
+    "summary": "路由：{{fromRoute}} → {{toRoute}} 天 · 轉譯器：{{fromRenderer}} → {{toRenderer}} 天"
+  },
+  "adminRendererAcknowledgement": {
+    "action": "確認",
+    "saved": "已確認轉譯器警示，直到記錄到更新的證據。",
+    "failed": "無法確認轉譯器警示。"
+  },
+  "automationPaused": {
+    "bannerTitle": "自動評論請求已暫停",
+    "bannerDescription": "有 {{count}} 個待處理的自動請求，等待您重新連線已驗證的郵件伺服器。",
+    "viewQueue": "查看已暫停請求",
+    "queueTitle": "已暫停的自動請求",
+    "queueDescription": "這些請求會保持待處理狀態，直到您連線並選取已驗證的郵件伺服器。",
+    "reviewRequest": "評論請求",
+    "followUp": "跟進",
+    "morePending": "另有 {{count}} 個請求待處理。"
   }
 }

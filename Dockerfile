@@ -21,7 +21,10 @@ RUN corepack pnpm run build
 # ─── Stage 2: Production ─────────────────────────────────────────────────────
 FROM node:22-slim AS runner
 
-RUN npm install -g corepack@latest && corepack enable
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    chromium fonts-noto-cjk \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g corepack@latest && corepack enable
 
 WORKDIR /app
 
@@ -38,6 +41,7 @@ RUN corepack pnpm install --frozen-lockfile --prod
 # The app listens on PORT (default 3000)
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV ROUTE_AUDIT_CHROMIUM_PATH=/usr/bin/chromium
 EXPOSE 3000
 
 CMD ["node", "dist/index.js"]

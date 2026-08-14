@@ -24,12 +24,13 @@ describe("production Turnstile Content Security Policy", () => {
     );
   });
 
-  it("allows the official challenge origin without broadening either directive", () => {
+  it("allows the official challenge and static preview document origins without broadening either directive", () => {
     const source = read("server/_core/index.ts");
     const frameSrc = directive(source, "frameSrc");
     const scriptSrc = directive(source, "scriptSrc");
 
     expect(frameSrc).toContain('"https://challenges.cloudflare.com"');
+    expect(frameSrc).toContain('"blob:"');
     expect(scriptSrc).toContain('"https://challenges.cloudflare.com"');
     expect(frameSrc).not.toContain('"https:"');
     expect(scriptSrc).not.toContain('"https:"');

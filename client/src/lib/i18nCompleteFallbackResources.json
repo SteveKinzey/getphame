@@ -487,7 +487,13 @@
         "addressConfirmation": "We sent it to {{email}}. Confirm the spelling and check spam if it does not arrive. Provider acceptance does not guarantee inbox placement.",
         "emailConfirmationHint": "We’ll show the address again before you leave so you can catch a typo.",
         "providerAcceptedMessage": "Your email provider accepted the guide for delivery.",
-        "downloadReadyMessage": "Your guide is ready to download."
+        "downloadReadyMessage": "Your guide is ready to download.",
+        "consentGuideLink": "Download Consent Compliance Guide (PDF)",
+        "consentCheckLabel": "I agree that Get Phame (getphame.app) may contact me by email with product updates and tips. I can unsubscribe at any time.",
+        "consentRequired": "Please check the box to continue.",
+        "thankYouHeading": "You're all set!",
+        "thankYouMessage": "Your guide is on its way to {{email}}. Check spam if it doesn't arrive.",
+        "thankYouDownload": "Email delivery wasn't available. Download your guide directly below."
       },
       "feature3": {
         "title": "Every platform. Your choice.",
@@ -589,7 +595,7 @@
         "zoho": "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above.",
         "aol": "Not your regular AOL password — use an App Password. Tap How to get it above.",
         "fastmail": "Not your regular Fastmail password — use an App Password. Tap How to get it above.",
-        "google": "Not your regular Gmail password — use an App Password. Tap How to get it above.",
+        "google": "Not your regular account password — use an App Password. Tap How to get it above.",
         "proton": "ProtonMail requires the Proton Bridge app — use its SMTP password, not your Proton login. Tap How to get it above.",
         "icloud": "Use an App-Specific Password, not your Apple ID password. Tap How to get it above."
       },
@@ -600,7 +606,56 @@
       "noEmailConnected": "No email connected",
       "notConnectedDescription": "No email connected. Enter your details below to start sending review requests.",
       "displayNameHelp": "Shown as the sender name in your customer's inbox.",
-      "emailAddressLabel": "Your Email Address *"
+      "emailAddressLabel": "Your Email Address *",
+      "gmailGuideTip": "Google shows the code once. Create a new App Password after changing your Google password, and revoke it when you disconnect Get Phame.",
+      "googleWorkspaceGuideStep1": "Sign in to myaccount.google.com with your work account → Security",
+      "googleWorkspaceGuideStep2": "Turn on 2-Step Verification if it is available for your account",
+      "googleWorkspaceGuideTip": "If App Passwords is unavailable, your organisation may restrict it, require security-key-only verification, or use Advanced Protection. Ask your Workspace administrator for the approved SMTP or OAuth connection method.",
+      "gmailGuideTitle": "Gmail App Password — 4 steps",
+      "gmailGuideStep1": "Go to myaccount.google.com → Security",
+      "gmailGuideStep2": "Turn on 2-Step Verification if not already on",
+      "gmailGuideStep3": "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create",
+      "gmailGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
+      "googleWorkspaceGuideTitle": "Google Workspace App Password — 4 steps",
+      "googleWorkspaceGuideStep3": "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create",
+      "googleWorkspaceGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
+      "deliveryStatus": {
+        "active": "Active for customer review requests",
+        "notSelected": "Connected, but not selected for customer review requests",
+        "bulkActive": "Connected, but your bulk-mail service is active for customer review requests",
+        "needsAttention": "Needs attention — update your SMTP details and reconnect before sending customer review requests"
+      },
+      "connectionSavedMessage": "Your email server is connected and ready for customer outreach.",
+      "gmailAppPasswordTooltipLabel": "Gmail App Password help",
+      "workspaceAppPasswordTooltipLabel": "Google Workspace App Password help",
+      "gmailAppPasswordTooltip": "Use a 16-character App Password, not your regular Gmail password. Turn on 2-Step Verification first.",
+      "workspaceAppPasswordTooltip": "Your Workspace administrator must allow App Passwords. If this option is unavailable, use your organisation’s approved SMTP or OAuth method.",
+      "testPassedNotSaved": "Connection test passed. Your credentials have not been saved yet.",
+      "testFailed": "Connection test failed. Review your server details and try again.",
+      "testingCandidate": "Testing your mail server…",
+      "testBeforeSave": "Test before saving",
+      "connectingAndVerifying": "Connecting and verifying…",
+      "connectAndSave": "Connect and save",
+      "testEmailRecipient": "Send a test email to",
+      "testEmailHint": "Use an address you control. This uses your saved mail server and does not save a new recipient.",
+      "testEmailRecipientRequired": "Enter the address that should receive the test email.",
+      "sendingTestEmail": "Sending test email…",
+      "sendTestEmail": "Send test email",
+      "testEmailSent": "Test email sent. Check the recipient inbox to confirm delivery.",
+      "disconnectConfirmTitle": "Disconnect this mail server?",
+      "disconnectConfirmDescription": "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server.",
+      "disconnecting": "Disconnecting…",
+      "disconnectConfirmAction": "Disconnect and reset",
+      "testEmailHistoryTitle": "Test email history",
+      "testEmailHistoryPrivacy": "Recipients are masked. Only your 12 newest diagnostic attempts are shown.",
+      "testEmailHistoryEmpty": "No diagnostic test emails have been sent yet.",
+      "testEmailHistorySent": "Sent",
+      "testEmailHistoryFailed": "Failed",
+      "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials.",
+      "retryTestEmail": "Retry",
+      "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
+      "connectionTestPassed": "Mail server connection verified.",
+      "connectionTestFailed": "Mail server still needs attention."
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -670,7 +725,8 @@
       "dashboard": "Dashboard",
       "lightMode": "Light mode",
       "open": "Open account menu",
-      "signedInAs": "Signed in as"
+      "signedInAs": "Signed in as",
+      "avatarAlt": "Your profile photo"
     },
     "tabs": {
       "account": "Account & Profile",
@@ -695,11 +751,20 @@
         "uploadAvatar": "Upload photo",
         "avatarReadError": "We could not read that image. Try another file.",
         "emailHelp": "Your sign-in email is managed by your authentication provider."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "A legacy platform mail connection was found, but it cannot be used for customer outreach. Connect a bulk-mail provider account that you own.",
+        "activeOutreach": "Active for customer review requests",
+        "notActive": "Connected, but not selected for customer review requests",
+        "connectionSavedMessage": "Your bulk mail server is connected and ready to use.",
+        "connectingAndVerifying": "Connecting and verifying…"
       }
     },
     "profile": {
       "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
-      "emailSenderSettings": "Email Sender Settings"
+      "emailSenderSettings": "Email Sender Settings",
+      "consentLabelName": "Consent checkbox business name",
+      "consentLabelNameDescription": "The business name shown in the consent checkbox label on your forms. Defaults to your business name above."
     },
     "homePage": {
       "annualPro": "Annual Pro",
@@ -1064,7 +1129,8 @@
       "stats": {
         "thisMonth": "This Month",
         "allTime": "All Time",
-        "last7Days": "Last 7 Days"
+        "last7Days": "Last 7 Days",
+        "consented": "Consented"
       },
       "emailPerformance": {
         "title": "Email Performance",
@@ -1110,6 +1176,22 @@
         "markAllShort": "Mark all",
         "markAllSuccess": "{{count}} items marked as reviewed",
         "markReviewed": "Mark as reviewed"
+      },
+      "mailHealth": {
+        "healthy": "Mail server healthy",
+        "healthyDetail": "Your connected mail server is ready for outreach.",
+        "attention": "Mail server needs attention",
+        "attentionDetail": "Re-test or update your mail server in Settings before sending outreach.",
+        "disconnected": "Mail server not connected",
+        "disconnectedDetail": "Connect a user-owned mail server before sending outreach.",
+        "bulkActive": "Bulk mail server active",
+        "bulkActiveDetail": "Your selected bulk mail provider is active for outreach.",
+        "healthyTooltip": "A verified personal mail server is selected, and its latest health signal does not require action.",
+        "attentionTooltip": "Your saved connection needs attention. Re-test it or update the provider settings before sending customer outreach.",
+        "disconnectedTooltip": "No verified tenant-owned delivery channel is selected. Customer outreach stays paused until you connect one in Settings.",
+        "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
+        "details": "Mail server health details",
+        "troubleshoot": "Troubleshoot"
       }
     },
     "reminderRow": {
@@ -1127,7 +1209,12 @@
     "onboarding": {
       "googleBtn": "Continue with Google",
       "appleBtn": "Continue with Apple",
-      "finePrint": "Start free — 10 review requests included. No credit card required."
+      "finePrint": "Start free — 10 review requests included. No credit card required.",
+      "consentStepTitle": "Add a consent checkbox to your forms",
+      "consentStepDesc": "Before collecting contacts or sending review requests, your forms must include a consent checkbox. This is required by CAN-SPAM, TCPA, and GDPR.",
+      "consentStepAction": "Download Consent Guide (PDF)",
+      "consentStepAck": "I have added (or will add) a consent checkbox to my customer-facing forms",
+      "consentStepAckRequired": "Please confirm you will add the consent checkbox before continuing"
     },
     "toastMessages": {
       "followUpReminderSent": "Follow-up reminder sent!",
@@ -1213,8 +1300,8 @@
           "make": "Make customer import",
           "custom": "Custom customer import"
         },
-        "apiKey": "Source API key",
-        "noKeys": "No active source key",
+        "apiKey": "Import API key",
+        "noKeys": "No active import key",
         "expected": "Expected activity",
         "intervals": {
           "15": "Every 15 minutes",
@@ -1259,8 +1346,8 @@
         "pause": "Pause monitoring",
         "resume": "Resume monitoring",
         "archive": "Archive",
-        "template": "automation event template",
-        "templateDescription": "Copy this exact review-request event into the automation’s protected HTTP or webhook action.",
+        "template": "guided template",
+        "templateDescription": "Copy this exact request into the automation's protected HTTP or webhook action.",
         "copyRecipe": "Copy recipe",
         "recipeCopied": "Connection recipe copied.",
         "secretReminder": "Use the raw API key only inside the provider's protected secret field. The source ID is safe to copy but works only with its linked key.",
@@ -1284,23 +1371,23 @@
             "2": "Add Webhooks by Zapier and select Custom Request.",
             "3": "Set Method to POST and paste the Get Phame endpoint.",
             "4": "Add the protected headers exactly as shown below.",
-            "5": "Map sourceSubmissionId, preferredLocale, and the complete nested consent evidence object.",
-            "6": "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live."
+            "5": "Map the JSON fields, using one stable provider ID for externalId and Idempotency-Key.",
+            "6": "Test the action with one permitted record, then refresh health here."
           },
           "make": {
             "1": "Choose the trigger module that produces an eligible customer record.",
             "2": "Add HTTP and select Make a request.",
             "3": "Set Method to POST, Body type to Raw, and Content type to application/json.",
             "4": "Add the protected headers exactly as shown below.",
-            "5": "Map sourceSubmissionId, preferredLocale, and the complete nested consent evidence object.",
-            "6": "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live."
+            "5": "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
+            "6": "Run the scenario once with one permitted record, then refresh health here."
           },
           "custom": {
             "1": "Use a trusted server-side workflow that supports POST and protected headers.",
             "2": "Store the API key in the workflow secret store, never in browser code or a URL.",
             "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
-            "4": "Use one immutable source record ID for sourceSubmissionId and Idempotency-Key.",
-            "5": "Run the read-only preflight, enable safe dry run, send one permitted event, then choose whether to go live."
+            "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
+            "5": "Send one permitted record, then refresh health here."
           }
         },
         "automation": {
@@ -1394,55 +1481,6 @@
         "failurePrivacy": "No credentials were created or exposed. Start again from your WordPress dashboard.",
         "expiredPrivacy": "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials.",
         "privacy": "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."
-      },
-      "sources": {
-        "description": "Choose where an approved customer event starts. Get Phame validates purpose-specific consent, suppression, delivery readiness, and idempotency before any automated review request can go live.",
-        "badge": "Validate first · activate later",
-        "steps": {
-          "choose": "Choose a source",
-          "key": "Create a source key",
-          "map": "Map fields and consent",
-          "test": "Preflight and dry run"
-        },
-        "rules": {
-          "activation": "Start in safe dry-run mode. Live review outreach stays off until an authorized user completes preflight, verifies one provider event, and explicitly activates that source."
-        },
-        "recipeTitle": "Safe review-event recipe",
-        "fields": {
-          "eventType": "Fixed value: review_request",
-          "name": "Customer name field",
-          "email": "Customer email field",
-          "phone": "Optional customer phone field",
-          "externalId": "Immutable provider event or record ID",
-          "sourceApp": "Fixed provider identifier shown above",
-          "sourceFormId": "Stable provider form identifier",
-          "sourceSubmissionId": "Immutable provider submission or lead identifier",
-          "preferredLocale": "Explicit supported language tag: en, es, fr, it, th, zh-CN, or zh-TW",
-          "consentConfirmed": "Boolean true only after affirmative permission",
-          "consentBasis": "customer_relationship, explicit_opt_in, or other",
-          "consentPurpose": "Fixed value: review_outreach",
-          "consentChannel": "Fixed value: email",
-          "consentCapturedAt": "ISO 8601 timestamp with timezone from the source submission",
-          "consentSource": "Short description of where permission was captured",
-          "consentText": "Exact review-outreach checkbox wording shown to the person",
-          "consentVersion": "Immutable business-managed wording version",
-          "privacyPolicyUrl": "HTTPS privacy-policy URL shown beside the checkbox"
-        },
-        "consentCopyTitle": "Review-outreach checkbox — copy and customize",
-        "consentCopyInstructions": "Start this checkbox unchecked. You may require it for enrollment in automated review outreach, but not as a condition of an unrelated purchase, quote, or service. Have qualified counsel approve your final wording and workflow.",
-        "reviewConsentCopy": "I agree that {{business_name}} may email me about my recent purchase or service experience, including one review request and up to two follow-up reminders. I can unsubscribe at any time. Consent is not a condition of purchase. See the Privacy Policy.",
-        "marketingConsentTitle": "Separate optional marketing permission",
-        "marketingConsentCopy": "I would like to receive occasional marketing emails and offers from {{business_name}}. I can unsubscribe at any time. Consent is not a condition of purchase. See the Privacy Policy.",
-        "channelBoundary": "Do not treat either email checkbox as permission for SMS, automated calls, or another purpose. Import submissions without valid review-outreach evidence as ineligible and do not send automatically.",
-        "testTitle": "Test, retry, and revoke safely",
-        "testImport": "Run the read-only validation endpoint with one permitted recipient. Confirm source binding, suppression, SMTP, quota, template, and destination checks without importing or sending.",
-        "testReplay": "Enable safe dry run, submit one real provider event, then replay it with the same Idempotency-Key. Expect the same outcome, not duplicate work.",
-        "testFailure": "Treat consent conflicts and validation errors as terminal. Retry only recoverable responses, honor Retry-After, and always reuse the same event ID.",
-        "testActivate": "Verify the exact approved template, recipient language, destination, reminders, and delay before an authorized user switches from dry run to live delivery.",
-        "testRevoke": "To stop a source, pause it in Get Phame and in the provider, revoke or rotate its key, and preserve the redacted audit history.",
-        "nextDescription": "Create a source key with contacts:write and review_requests:send, bind it to a managed source, then complete preflight and one safe dry run.",
-        "createKey": "Create source key",
-        "viewImports": "Manage sources"
       }
     },
     "manual": {
@@ -1608,6 +1646,177 @@
     "activityTrend": {
       "csvDownloaded": "Activity Trend CSV downloaded.",
       "pngDownloaded": "Activity Trend PNG downloaded."
+    },
+    "adminEmailPreview": {
+      "title": "Email Template Preview",
+      "selectTemplate": "Select template",
+      "loading": "Loading preview…",
+      "error": "Failed to load preview.",
+      "noPreview": "No preview available.",
+      "note": "Preview uses sample data. Actual emails are sent with real user names and secure links.",
+      "sendTest": "Send test email",
+      "sending": "Sending…",
+      "testSent": "Test email sent!",
+      "testFailed": "Failed to send test email.",
+      "darkMode": "Dark mode",
+      "copyHtml": "Copy HTML",
+      "copied": "Copied!",
+      "emailPlaceholder": "Send to…",
+      "openTab": "Open in tab",
+      "variables": "Variables",
+      "variablesNote": "Substitute [name], [company], [plan], [email] placeholders in the template",
+      "resetVars": "Reset",
+      "split": "Split",
+      "savePreset": "Save",
+      "presetNamePlaceholder": "Preset name…",
+      "previewReady": "Preview ready",
+      "previewFallback": "This preview could not render in the embedded frame.",
+      "previewLoading": "Generating email preview…",
+      "exportHtml": "Export HTML",
+      "exported": "Downloaded!",
+      "copyFailed": "Copying the rendered HTML was blocked by this browser."
+    },
+    "adminRouteAudit": {
+      "eyebrow": "Production assurance",
+      "title": "Production route audit",
+      "description": "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched.",
+      "run": "Run route audit",
+      "running": "Auditing routes…",
+      "viewHistory": "View history",
+      "runningDescription": "Launching a clean browser for the current public sitemap. This can take up to two minutes.",
+      "unavailable": "Audit runner unavailable",
+      "completedWithIssues": "Audit completed with issues",
+      "completed": "Audit completed successfully",
+      "failureCode": "Failure code",
+      "summary": "{{routes}} routes audited · {{failures}} failures",
+      "resultRoutes": "Audited routes",
+      "issue": "Needs review",
+      "rendered": "Rendered",
+      "passed": "Production route audit passed.",
+      "failed": "Production route audit found issues.",
+      "runFailed": "The production route audit could not run."
+    },
+    "adminAuditLog": {
+      "back": "Admin dashboard",
+      "title": "Audit and renderer history",
+      "description": "Administrator-only operational history. Stored records contain sanitized audit signals, never customer content, email HTML, cookies, or browser logs.",
+      "refresh": "Refresh history",
+      "routeTitle": "Production route audits",
+      "routeDescription": "Manual browser checks of sitemap-discovered public routes, newest first.",
+      "runAnother": "Run another audit →",
+      "routeError": "Route-audit history could not be loaded.",
+      "routes": "routes",
+      "issuesFound": "{{count}} issues",
+      "passed": "Passed",
+      "routeEmpty": "No production route audits have been recorded yet.",
+      "routePagination": "Route audit history pagination",
+      "rendererTitle": "Email-preview renderer errors",
+      "rendererDescription": "Sanitized signals captured only if an administrator preview cannot render verified content.",
+      "rendererError": "Renderer-error history could not be loaded.",
+      "rendererEmpty": "No renderer errors have been recorded.",
+      "rendererPagination": "Renderer-error history pagination",
+      "records": "records",
+      "previous": "Previous",
+      "next": "Next",
+      "darkPreview": "dark",
+      "releaseTitle": "Release history",
+      "releaseDescription": "Sanitized release-lineage records with matching status, sorting, and a bounded export preview.",
+      "retention": "Retention settings",
+      "releaseStatus": "Parity status",
+      "allStatuses": "All statuses",
+      "matched": "Matched",
+      "needsReview": "Needs review",
+      "releaseSort": "Sort by",
+      "releaseSortDate": "Release time",
+      "releaseSortCheckpoint": "Checkpoint",
+      "releaseDirection": "Direction",
+      "newestFirst": "Newest first",
+      "oldestFirst": "Oldest first",
+      "releaseExport": "Preview export",
+      "releaseExportFailed": "Release-history export could not be prepared.",
+      "releaseError": "Release history could not be loaded.",
+      "releaseEmpty": "No verified release records have been saved yet.",
+      "releasePagination": "Release history pagination",
+      "time": "Time",
+      "checkpoint": "Checkpoint",
+      "mainCommit": "Main commit",
+      "parity": "Parity",
+      "releaseExportTitle": "Preview release-history export",
+      "releaseExportDescription": "Review the exact bounded, sanitized snapshot before copying or downloading it.",
+      "releaseExportSummary": "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched",
+      "releaseExportTruncated": "The export cap includes {{exported}} of {{matched}} matching records.",
+      "close": "Close",
+      "copied": "Copied",
+      "copy": "Copy CSV",
+      "copyFailed": "Copy failed — retry",
+      "download": "Download CSV"
+    },
+    "adminAuditRetention": {
+      "back": "Audit history",
+      "title": "Audit retention controls",
+      "description": "Choose how long sanitized production-route and renderer-error diagnostics remain available to administrators.",
+      "controlsTitle": "Data lifecycle",
+      "controlsDescription": "Changing a window immediately removes only records older than the new limit. Records remain sanitized and administrator-only.",
+      "routeDays": "Route audit history",
+      "routeDaysHelp": "Days to retain sanitized public-route audit outcomes.",
+      "rendererDays": "Renderer-error history",
+      "rendererDaysHelp": "Days to retain sanitized preview-renderer failure signals.",
+      "days": "days",
+      "invalid": "Choose a retention window from 7 to 3,650 days.",
+      "save": "Save and apply retention",
+      "saved": "Retention controls saved and expired diagnostic records were pruned.",
+      "saveFailed": "Retention controls could not be saved.",
+      "confirmTitle": "Apply retention limits?",
+      "confirmDescription": "Expired sanitized diagnostics will be permanently removed now. This cannot be undone.",
+      "confirmSummary": "Route audits: {{routeDays}} days · Renderer errors: {{rendererDays}} days",
+      "cancel": "Cancel",
+      "confirm": "Apply and prune"
+    },
+    "adminRendererTrend": {
+      "title": "Repeat email-preview renderer failures",
+      "description": "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.",
+      "review": "Review history"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "I confirm customers have consented to be contacted by my business via email and/or text"
+    },
+    "contactsTools": {
+      "addConsentLabel": "I confirm this customer has consented to be contacted by {businessName} via email and/or text about their experience and purchases",
+      "addConsentRequired": "Consent confirmation is required to add a contact"
+    },
+    "adminExportSchedule": {
+      "title": "Automated release-history report",
+      "description": "Create a bounded sanitized CSV snapshot on a UTC schedule. The latest report remains available to administrators in Audit history.",
+      "enabled": "Enable automated reports",
+      "cron": "UTC schedule",
+      "cronHelp": "Use six fields: seconds, minutes, hours, day, month, weekday. Default: Monday at 09:00 UTC.",
+      "save": "Save report schedule",
+      "saved": "Automated release-history reporting updated.",
+      "saveFailed": "Automated report settings could not be saved.",
+      "lastRun": "Last report: {{date}} · {{count}} rows",
+      "recentRuns": "Recent automated reports",
+      "ready": "Ready",
+      "failed": "Failed",
+      "rows": "rows"
+    },
+    "adminRetentionHistory": {
+      "title": "Recent retention changes",
+      "summary": "Route: {{fromRoute}} → {{toRoute}} days · Renderer: {{fromRenderer}} → {{toRenderer}} days"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Acknowledge",
+      "saved": "Renderer alert acknowledged until newer evidence is recorded.",
+      "failed": "The renderer alert could not be acknowledged."
+    },
+    "automationPaused": {
+      "bannerTitle": "Automated review requests are paused",
+      "bannerDescription": "{{count}} pending automated request(s) are waiting for you to reconnect a verified mail server.",
+      "viewQueue": "View paused requests",
+      "queueTitle": "Paused automated requests",
+      "queueDescription": "These requests will stay pending until you connect and select a verified mail server.",
+      "reviewRequest": "Review request",
+      "followUp": "Follow-up",
+      "morePending": "{{count}} more request(s) are pending."
     }
   },
   "es": {
@@ -2103,7 +2312,13 @@
         "addressConfirmation": "Lo enviamos a {{email}}. Confirma la ortografía y revisa spam si no llega. La aceptación por parte del proveedor no garantiza la entrega en la bandeja de entrada.",
         "emailConfirmationHint": "Mostraremos la dirección de nuevo antes de que te vayas para que puedas corregir un error tipográfico.",
         "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía de entrega.",
-        "downloadReadyMessage": "Tu guía está lista para descargar."
+        "downloadReadyMessage": "Tu guía está lista para descargar.",
+        "consentGuideLink": "Descargar Guía de Cumplimiento de Consentimiento (PDF)",
+        "consentCheckLabel": "Acepto que Get Phame (getphame.app) pueda contactarme por correo electrónico con actualizaciones y consejos del producto. Puedo darme de baja en cualquier momento.",
+        "consentRequired": "Por favor, marque la casilla para continuar.",
+        "thankYouHeading": "¡Todo listo!",
+        "thankYouMessage": "Tu guía está en camino a {{email}}. Revisa el spam si no llega.",
+        "thankYouDownload": "El envío por correo no estuvo disponible. Descarga tu guía directamente abajo."
       },
       "feature3": {
         "title": "Todas las plataformas. Tú eliges.",
@@ -2205,7 +2420,7 @@
         "zoho": "Habilita primero el acceso SMTP en Zoho y luego usa tu contraseña habitual de Zoho. Toca How to get it arriba.",
         "aol": "No es tu contraseña habitual de AOL —usa una Contraseña de aplicación. Pulsa 'Cómo obtenerlo' arriba.",
         "fastmail": "No es tu contraseña habitual de Fastmail —usa una Contraseña de aplicación. Pulsa 'Cómo obtenerlo' arriba.",
-        "google": "No es tu contraseña habitual de Gmail —usa una Contraseña de aplicación. Pulsa 'Cómo obtenerlo' arriba.",
+        "google": "No uses la contraseña habitual de tu cuenta: usa una contraseña de aplicación. Toca «Cómo obtenerla» arriba.",
         "proton": "ProtonMail requiere la app Proton Bridge: usa su contraseña SMTP, no tu inicio de sesión de Proton. Toca Cómo obtenerla arriba.",
         "icloud": "Usa una contraseña específica de la app, no la contraseña de tu Apple ID. Toca 'Cómo obtenerla' arriba."
       },
@@ -2218,8 +2433,8 @@
       "displayNameHelp": "Mostrado como el nombre del remitente en la bandeja de entrada de tu cliente.",
       "emailAddressLabel": "Tu dirección de correo electrónico *",
       "testConnection": "Probar conexión",
-      "googleWorkspaceGuideStep2": "Inicia sesión en myaccount.google.com con tu cuenta de trabajo → Seguridad",
-      "googleWorkspaceGuideStep3": "Ve a myaccount.google.com/apppasswords → nómbralo Get Phame → haz clic en Crear",
+      "googleWorkspaceGuideStep2": "Activa la verificación en dos pasos si está disponible para tu cuenta",
+      "googleWorkspaceGuideStep3": "Ve a myaccount.google.com/apppasswords → nómbrala Get Phame → haz clic en Crear",
       "outlookGuideTip": "Microsoft 365 (cuentas de trabajo): comunícate con tu administrador de TI para permitir SMTP AUTH en tu buzón.",
       "zohoGuideTitle": "Zoho Mail — Habilitar acceso SMTP",
       "zohoGuideStep4": "Cambia Permitir acceso SMTP a ACTIVADO, luego usa tu contraseña habitual de Zoho aquí",
@@ -2233,7 +2448,54 @@
       "fastmailGuideStep3": "Nómbralo Get Phame, selecciona SMTP, luego haz clic en Generar contraseña",
       "iCloudGuideStep1": "Ve a appleid.apple.com e inicia sesión",
       "iCloudGuideStep3": "Haz clic en Generar una contraseña específica de la aplicación..., nómbrala Get Phame, haz clic en Crear",
-      "iCloudTip": "La autenticación de dos factores debe estar habilitada para tu ID de Apple."
+      "iCloudTip": "La autenticación de dos factores debe estar habilitada para tu ID de Apple.",
+      "gmailGuideTip": "Google muestra el código una sola vez. Crea una nueva contraseña de aplicación después de cambiar tu contraseña de Google y revócala al desconectar Get Phame.",
+      "googleWorkspaceGuideStep1": "Inicia sesión en myaccount.google.com con tu cuenta de trabajo → Seguridad",
+      "googleWorkspaceGuideTip": "Si las contraseñas de aplicación no están disponibles, tu organización puede restringirlas, exigir verificación solo con llave de seguridad o usar Protección avanzada. Pide a tu administrador de Workspace el método aprobado de SMTP u OAuth.",
+      "gmailGuideTitle": "Contraseña de aplicación de Gmail — 4 pasos",
+      "gmailGuideStep1": "Ve a myaccount.google.com → Seguridad",
+      "gmailGuideStep2": "Activa la verificación en dos pasos si aún no está activada",
+      "gmailGuideStep3": "Ve a myaccount.google.com/apppasswords → nómbrala Get Phame → haz clic en Crear",
+      "gmailGuideStep4": "Copia el código de 16 caracteres y pégalo aquí; elimina todos los espacios",
+      "googleWorkspaceGuideTitle": "Contraseña de aplicación de Google Workspace — 4 pasos",
+      "googleWorkspaceGuideStep4": "Copia el código de 16 caracteres y pégalo aquí; elimina todos los espacios",
+      "deliveryStatus": {
+        "active": "Activo para solicitudes de reseñas de clientes",
+        "notSelected": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
+        "bulkActive": "Conectado, pero tu servicio de correo masivo está activo para solicitudes de reseñas de clientes",
+        "needsAttention": "Necesita atención: actualiza tus datos SMTP y vuelve a conectar antes de enviar solicitudes de reseñas de clientes"
+      },
+      "connectionSavedMessage": "Tu servidor de correo está conectado y listo para enviar solicitudes a clientes.",
+      "gmailAppPasswordTooltipLabel": "Ayuda sobre la contraseña de aplicación de Gmail",
+      "workspaceAppPasswordTooltipLabel": "Ayuda sobre la contraseña de aplicación de Google Workspace",
+      "gmailAppPasswordTooltip": "Usa una contraseña de aplicación de 16 caracteres, no tu contraseña habitual de Gmail. Activa primero la verificación en dos pasos.",
+      "workspaceAppPasswordTooltip": "El administrador de Workspace debe permitir contraseñas de aplicación. Si esta opción no está disponible, usa el método SMTP u OAuth aprobado por tu organización.",
+      "testPassedNotSaved": "La prueba de conexión se completó. Tus credenciales todavía no se han guardado.",
+      "testFailed": "La prueba de conexión falló. Revisa los datos del servidor e inténtalo de nuevo.",
+      "testingCandidate": "Probando tu servidor de correo…",
+      "testBeforeSave": "Probar antes de guardar",
+      "connectingAndVerifying": "Conectando y verificando…",
+      "connectAndSave": "Conectar y guardar",
+      "testEmailRecipient": "Enviar un correo de prueba a",
+      "testEmailHint": "Usa una dirección que controles. Se usa tu servidor guardado y no se guarda un destinatario nuevo.",
+      "testEmailRecipientRequired": "Introduce la dirección que recibirá el correo de prueba.",
+      "sendingTestEmail": "Enviando correo de prueba…",
+      "sendTestEmail": "Enviar correo de prueba",
+      "testEmailSent": "Correo de prueba enviado. Revisa la bandeja del destinatario.",
+      "disconnectConfirmTitle": "¿Desconectar este servidor de correo?",
+      "disconnectConfirmDescription": "Esto elimina permanentemente las credenciales guardadas y detiene los envíos hasta que conectes un servidor verificado.",
+      "disconnecting": "Desconectando…",
+      "disconnectConfirmAction": "Desconectar y restablecer",
+      "testEmailHistoryTitle": "Historial de correos de prueba",
+      "testEmailHistoryPrivacy": "Los destinatarios se ocultan. Solo se muestran tus 12 intentos de diagnóstico más recientes.",
+      "testEmailHistoryEmpty": "Aún no se han enviado correos de diagnóstico.",
+      "testEmailHistorySent": "Enviado",
+      "testEmailHistoryFailed": "Falló",
+      "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo.",
+      "retryTestEmail": "Reintentar",
+      "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado.",
+      "connectionTestPassed": "Se verificó la conexión del servidor de correo.",
+      "connectionTestFailed": "El servidor de correo aún necesita atención."
     },
     "comparisonTable": {
       "feature": "Función",
@@ -2305,7 +2567,8 @@
       "dashboard": "Panel de control",
       "lightMode": "Modo claro",
       "open": "Abrir menú de cuenta",
-      "signedInAs": "Conectado como"
+      "signedInAs": "Conectado como",
+      "avatarAlt": "Tu foto de perfil"
     },
     "tabs": {
       "account": "Cuenta y perfil",
@@ -2330,12 +2593,21 @@
         "uploadAvatar": "Subir foto",
         "avatarReadError": "No pudimos leer esa imagen. Prueba otro archivo.",
         "emailHelp": "El correo con el que inicias sesión está gestionado por tu proveedor de autenticación."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "Se encontró una conexión de correo heredada de la plataforma, pero no puede usarse para comunicación con clientes. Conecta una cuenta propia de proveedor de correo masivo.",
+        "activeOutreach": "Activo para solicitudes de reseñas de clientes",
+        "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
+        "connectionSavedMessage": "Tu servidor de correo masivo está conectado y listo para usar.",
+        "connectingAndVerifying": "Conectando y verificando…"
       }
     },
     "profile": {
       "addBusinessNameAndLink": "Añade primero el nombre de tu negocio y el enlace de reseñas de Google en Configuración.",
       "emailSenderSettings": "Configuración del remitente de correo",
-      "reviewLink": "Enlace principal de reseñas de Google"
+      "reviewLink": "Enlace principal de reseñas de Google",
+      "consentLabelName": "Nombre de empresa en la casilla de consentimiento",
+      "consentLabelNameDescription": "El nombre de empresa que aparece en la etiqueta de la casilla de consentimiento en sus formularios. Por defecto usa el nombre de empresa indicado arriba."
     },
     "homePage": {
       "annualPro": "Pro anual",
@@ -2711,7 +2983,8 @@
       "stats": {
         "thisMonth": "Este mes",
         "allTime": "Todo el tiempo",
-        "last7Days": "Últimos 7 días"
+        "last7Days": "Últimos 7 días",
+        "consented": "Con consentimiento"
       },
       "emailPerformance": {
         "title": "Rendimiento del correo",
@@ -2757,6 +3030,22 @@
         "markAllShort": "Marcar todo",
         "markAllSuccess": "{{count}} elementos marcados como revisados",
         "markReviewed": "Marcar como revisado"
+      },
+      "mailHealth": {
+        "healthy": "Servidor de correo correcto",
+        "healthyDetail": "Tu servidor conectado está listo para los envíos.",
+        "attention": "El servidor de correo necesita atención",
+        "attentionDetail": "Vuelve a probarlo o actualízalo en Ajustes antes de enviar.",
+        "disconnected": "Servidor de correo no conectado",
+        "disconnectedDetail": "Conecta un servidor propio antes de enviar.",
+        "bulkActive": "Servidor de correo masivo activo",
+        "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos.",
+        "healthyTooltip": "Hay un servidor de correo personal verificado seleccionado y su último estado no requiere acción.",
+        "attentionTooltip": "Tu conexión guardada necesita atención. Vuelve a probarla o actualiza la configuración antes de enviar solicitudes.",
+        "disconnectedTooltip": "No hay un canal de entrega verificado seleccionado. Las solicitudes están pausadas hasta que conectes uno en Configuración.",
+        "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
+        "details": "Detalles de salud del servidor de correo",
+        "troubleshoot": "Solucionar problemas"
       }
     },
     "reminderRow": {
@@ -2774,7 +3063,12 @@
     "onboarding": {
       "googleBtn": "Continuar con Google",
       "appleBtn": "Continuar con Apple",
-      "finePrint": "Empieza gratis: incluye 10 solicitudes de reseña. No se requiere tarjeta de crédito."
+      "finePrint": "Empieza gratis: incluye 10 solicitudes de reseña. No se requiere tarjeta de crédito.",
+      "consentStepTitle": "Agrega una casilla de consentimiento a tus formularios",
+      "consentStepDesc": "Antes de recopilar contactos o enviar solicitudes de reseñas, tus formularios deben incluir una casilla de consentimiento. Esto es requerido por CAN-SPAM, TCPA y GDPR.",
+      "consentStepAction": "Descargar Guía de Consentimiento (PDF)",
+      "consentStepAck": "He agregado (o agregaré) una casilla de consentimiento a mis formularios de clientes",
+      "consentStepAckRequired": "Por favor confirma que agregarás la casilla de consentimiento antes de continuar"
     },
     "toastMessages": {
       "followUpReminderSent": "¡Recordatorio de seguimiento enviado!",
@@ -2886,8 +3180,8 @@
           "make": "Importación de clientes de Make",
           "custom": "Importación de clientes personalizada"
         },
-        "apiKey": "Clave API de la fuente",
-        "noKeys": "No hay una clave activa para la fuente",
+        "apiKey": "Clave API de importación",
+        "noKeys": "No hay clave de importación activa",
         "expected": "Actividad esperada",
         "intervals": {
           "15": "Cada 15 minutos",
@@ -2932,8 +3226,8 @@
         "pause": "Pausar supervisión",
         "resume": "Reanudar supervisión",
         "archive": "Archivar",
-        "template": "plantilla de evento automatizado",
-        "templateDescription": "Copia este evento exacto de solicitud de reseña en la acción HTTP o webhook protegida de la automatización.",
+        "template": "plantilla guiada",
+        "templateDescription": "Copie esta solicitud exactamente en la acción HTTP o webhook protegida de la automatización.",
         "copyRecipe": "Copiar receta",
         "recipeCopied": "Receta de conexión copiada.",
         "secretReminder": "Use la clave API sin procesar solo dentro del campo secreto protegido del proveedor. El ID de origen es seguro de copiar pero solo funciona con su clave vinculada.",
@@ -2957,23 +3251,23 @@
             "2": "Agregue Webhooks by Zapier y seleccione Custom Request.",
             "3": "Establezca Method en POST y pegue el endpoint de Get Phame.",
             "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
-            "5": "Mapea sourceSubmissionId, preferredLocale y el objeto anidado completo de evidencia de consentimiento.",
-            "6": "Ejecuta la comprobación de solo lectura, activa la prueba segura, envía un evento autorizado y decide si pasar a producción."
+            "5": "Asigne los campos JSON, usando un ID de proveedor estable para externalId y Idempotency-Key.",
+            "6": "Pruebe la acción con un registro permitido, luego actualice el estado aquí."
           },
           "make": {
             "1": "Elija el módulo de trigger que genere un registro de cliente elegible.",
             "2": "Agregue HTTP y seleccione Make a request.",
             "3": "Establezca Method en POST, Body type en Raw y Content type en application/json.",
             "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
-            "5": "Mapea sourceSubmissionId, preferredLocale y el objeto anidado completo de evidencia de consentimiento.",
-            "6": "Ejecuta la comprobación de solo lectura, activa la prueba segura, envía un evento autorizado y decide si pasar a producción."
+            "5": "Asigne los campos JSON, usando un ID de bundle estable para externalId y Idempotency-Key.",
+            "6": "Ejecute el escenario una vez con un registro permitido, luego actualice el estado aquí."
           },
           "custom": {
             "1": "Use un flujo de trabajo del lado del servidor de confianza que admita POST y encabezados protegidos.",
             "2": "Almacene la clave API en el almacén secreto del flujo de trabajo, nunca en código del navegador ni en una URL.",
             "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
-            "4": "Usa un ID de registro inmutable para sourceSubmissionId e Idempotency-Key.",
-            "5": "Ejecuta la comprobación de solo lectura, activa la prueba segura, envía un evento autorizado y decide si pasar a producción."
+            "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
+            "5": "Envíe un registro permitido y luego actualice el estado aquí."
           }
         },
         "automation": {
@@ -3068,55 +3362,6 @@
         "failurePrivacy": "No se crearon ni expusieron credenciales. Comienza de nuevo desde tu panel de WordPress.",
         "expiredPrivacy": "Inicia una nueva conexión en WordPress. Get Phame nunca recibe tus credenciales de administrador de WordPress.",
         "privacy": "Esta solicitud expira en 15 minutos. Get Phame nunca recibe tus credenciales de administrador de WordPress."
-      },
-      "sources": {
-        "description": "Elige dónde comienza un evento de cliente autorizado. Get Phame valida el consentimiento para esta finalidad, la supresión, la preparación de entrega y la idempotencia antes de activar solicitudes automáticas de reseña.",
-        "badge": "Validar primero · activar después",
-        "steps": {
-          "choose": "Elige una fuente",
-          "key": "Crea una clave de fuente",
-          "map": "Mapea campos y consentimiento",
-          "test": "Comprobación y prueba segura"
-        },
-        "rules": {
-          "activation": "Empieza en modo de prueba segura. Los envíos reales permanecen desactivados hasta que una persona autorizada complete la comprobación, verifique un evento del proveedor y active expresamente la fuente."
-        },
-        "recipeTitle": "Receta segura del evento de reseña",
-        "fields": {
-          "eventType": "Valor fijo: review_request",
-          "name": "Campo de nombre del cliente",
-          "email": "Campo de correo del cliente",
-          "phone": "Campo opcional de teléfono del cliente",
-          "externalId": "ID inmutable del evento o registro del proveedor",
-          "sourceApp": "Identificador fijo del proveedor mostrado arriba",
-          "sourceFormId": "Identificador estable del formulario del proveedor",
-          "sourceSubmissionId": "Identificador inmutable del envío o lead",
-          "preferredLocale": "Código de idioma compatible: en, es, fr, it, th, zh-CN o zh-TW",
-          "consentConfirmed": "true solo después de un permiso afirmativo",
-          "consentBasis": "customer_relationship, explicit_opt_in u other",
-          "consentPurpose": "Valor fijo: review_outreach",
-          "consentChannel": "Valor fijo: email",
-          "consentCapturedAt": "Fecha y hora ISO 8601 con zona horaria",
-          "consentSource": "Descripción breve de dónde se obtuvo el permiso",
-          "consentText": "Texto exacto de la casilla de permiso mostrado a la persona",
-          "consentVersion": "Versión inmutable del texto administrada por la empresa",
-          "privacyPolicyUrl": "URL HTTPS de la política de privacidad mostrada junto a la casilla"
-        },
-        "consentCopyTitle": "Casilla para solicitar reseñas — copia y adapta",
-        "consentCopyInstructions": "Empieza con esta casilla sin marcar. Puedes exigirla para inscribirse en comunicaciones automatizadas de reseñas, pero no como condición de una compra, presupuesto o servicio no relacionado. Solicita a un profesional jurídico cualificado que apruebe el texto y el flujo finales.",
-        "reviewConsentCopy": "Acepto que {{business_name}} me envíe correos sobre mi compra o experiencia de servicio reciente, incluida una solicitud de reseña y hasta dos recordatorios. Puedo cancelar la suscripción en cualquier momento. El consentimiento no es condición de compra. Consulta la Política de privacidad.",
-        "marketingConsentTitle": "Permiso de marketing opcional separado",
-        "marketingConsentCopy": "Deseo recibir ocasionalmente correos de marketing y ofertas de {{business_name}}. Puedo cancelar la suscripción en cualquier momento. El consentimiento no es condición de compra. Consulta la Política de privacidad.",
-        "channelBoundary": "No interpretes ninguna casilla de correo como permiso para SMS, llamadas automatizadas u otra finalidad. Considera no aptos los envíos sin evidencia válida para solicitar reseñas y no los envíes automáticamente.",
-        "testTitle": "Prueba, reintenta y revoca con seguridad",
-        "testImport": "Ejecuta el endpoint de validación de solo lectura con un destinatario autorizado. Comprueba la fuente, la supresión, SMTP, la cuota, la plantilla y el destino sin importar ni enviar.",
-        "testReplay": "Activa la prueba segura, envía un evento real del proveedor y repítelo con la misma Idempotency-Key. Debe devolver el mismo resultado, no crear trabajo duplicado.",
-        "testFailure": "Considera terminales los conflictos de consentimiento y errores de validación. Reintenta solo fallos recuperables, respeta Retry-After y reutiliza siempre el mismo ID.",
-        "testActivate": "Verifica la plantilla aprobada, el idioma, el destino, los recordatorios y el retraso antes de pasar de prueba segura a envío real.",
-        "testRevoke": "Para detener una fuente, páusala en Get Phame y en el proveedor, revoca o rota su clave y conserva el historial de auditoría redactado.",
-        "nextDescription": "Crea una clave con contacts:write y review_requests:send, vincúlala a una fuente administrada y completa la comprobación y una prueba segura.",
-        "createKey": "Crear clave de fuente",
-        "viewImports": "Administrar fuentes"
       }
     },
     "manual": {
@@ -3255,7 +3500,8 @@
       "dailyLimitStatus": "{{sent}} enviados hoy · {{remaining}} restantes del límite diario de {{limit}}",
       "sendButton": "Enviar {{count}} solicitudes",
       "yelpWarning": "Nota de Yelp: Tu ficha de Yelp aparecerá como una sugerencia de búsqueda en lugar de un enlace directo. Yelp desaconseja la solicitud directa.",
-      "defaultPlatformWithName": "{{platformName}} (predeterminado)"
+      "defaultPlatformWithName": "{{platformName}} (predeterminado)",
+      "consentCheck": "Confirmo que los clientes han dado su consentimiento para ser contactados por mi empresa por correo electrónico y/o texto"
     },
     "callToAction": {
       "appleSignInButton": "Continuar con Apple",
@@ -3424,6 +3670,174 @@
     "activityTrend": {
       "csvDownloaded": "Se descargó el CSV de Tendencia de actividad.",
       "pngDownloaded": "Se descargó el PNG de Tendencia de actividad."
+    },
+    "adminEmailPreview": {
+      "title": "Vista previa de plantillas de correo",
+      "selectTemplate": "Seleccionar plantilla",
+      "loading": "Cargando vista previa…",
+      "error": "Error al cargar la vista previa.",
+      "noPreview": "No hay vista previa disponible.",
+      "note": "La vista previa usa datos de muestra. Los correos reales se envían con nombres y enlaces seguros.",
+      "sendTest": "Enviar correo de prueba",
+      "sending": "Enviando…",
+      "testSent": "¡Correo de prueba enviado!",
+      "testFailed": "Error al enviar el correo de prueba.",
+      "darkMode": "Modo oscuro",
+      "copyHtml": "Copiar HTML",
+      "copied": "¡Copiado!",
+      "emailPlaceholder": "Enviar a…",
+      "openTab": "Abrir en pestaña",
+      "variables": "Variables",
+      "variablesNote": "Sustituye los marcadores [name], [company], [plan], [email] en la plantilla",
+      "resetVars": "Reset",
+      "split": "Split",
+      "savePreset": "Guardar",
+      "presetNamePlaceholder": "Nombre del perfil…",
+      "previewReady": "Vista previa lista",
+      "previewFallback": "No se pudo mostrar esta vista previa en el marco integrado.",
+      "previewLoading": "Generando vista previa del correo…",
+      "exportHtml": "Exportar HTML",
+      "exported": "¡Descargado!",
+      "copyFailed": "Este navegador bloqueó la copia del HTML renderizado."
+    },
+    "adminRouteAudit": {
+      "eyebrow": "Garantía de producción",
+      "title": "Auditoría de rutas de producción",
+      "description": "Comprueba de forma segura las rutas públicas del mapa del sitio para detectar errores de renderizado en el navegador. No se usan cuentas, formularios ni datos de clientes.",
+      "run": "Ejecutar auditoría de rutas",
+      "running": "Auditando rutas…",
+      "viewHistory": "Ver historial",
+      "runningDescription": "Se está iniciando un navegador limpio para el mapa del sitio público actual. Puede tardar hasta dos minutos.",
+      "unavailable": "El ejecutor de auditoría no está disponible",
+      "completedWithIssues": "La auditoría terminó con incidencias",
+      "completed": "Auditoría completada correctamente",
+      "failureCode": "Código de error",
+      "summary": "{{routes}} rutas auditadas · {{failures}} fallos",
+      "resultRoutes": "Rutas auditadas",
+      "issue": "Requiere revisión",
+      "rendered": "Renderizada",
+      "passed": "La auditoría de rutas de producción se aprobó.",
+      "failed": "La auditoría de rutas de producción encontró incidencias.",
+      "runFailed": "No se pudo ejecutar la auditoría de rutas de producción."
+    },
+    "adminAuditLog": {
+      "back": "Panel de administración",
+      "title": "Historial de auditorías y renderizador",
+      "description": "Historial operativo solo para administradores. Los registros almacenados contienen señales de auditoría depuradas, nunca contenido de clientes, HTML de correo, cookies ni registros del navegador.",
+      "refresh": "Actualizar historial",
+      "routeTitle": "Auditorías de rutas de producción",
+      "routeDescription": "Comprobaciones manuales del navegador de rutas públicas detectadas en el mapa del sitio, de más reciente a más antigua.",
+      "runAnother": "Ejecutar otra auditoría →",
+      "routeError": "No se pudo cargar el historial de auditorías de rutas.",
+      "routes": "rutas",
+      "issuesFound": "{{count}} incidencias",
+      "passed": "Aprobada",
+      "routeEmpty": "Aún no se han registrado auditorías de rutas de producción.",
+      "routePagination": "Paginación del historial de auditorías de rutas",
+      "rendererTitle": "Errores del renderizador de vista previa de correo",
+      "rendererDescription": "Señales depuradas capturadas solo si una vista previa de administrador no puede renderizar contenido verificado.",
+      "rendererError": "No se pudo cargar el historial de errores del renderizador.",
+      "rendererEmpty": "No se han registrado errores del renderizador.",
+      "rendererPagination": "Paginación del historial de errores del renderizador",
+      "records": "registros",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "darkPreview": "oscura",
+      "releaseTitle": "Historial de versiones",
+      "releaseDescription": "Registros saneados de versiones con estado de coincidencia y vista previa de exportación.",
+      "retention": "Ajustes de retención",
+      "releaseStatus": "Estado de paridad",
+      "allStatuses": "Todos los estados",
+      "matched": "Coincidente",
+      "needsReview": "Requiere revisión",
+      "releaseSort": "Ordenar por",
+      "releaseSortDate": "Hora de la versión",
+      "releaseSortCheckpoint": "Punto de control",
+      "releaseDirection": "Dirección",
+      "newestFirst": "Más recientes primero",
+      "oldestFirst": "Más antiguas primero",
+      "releaseExport": "Vista previa de exportación",
+      "releaseExportFailed": "No se pudo preparar la exportación.",
+      "releaseError": "No se pudo cargar el historial de versiones.",
+      "releaseEmpty": "No hay registros de versiones verificadas.",
+      "releasePagination": "Paginación del historial de versiones",
+      "time": "Hora",
+      "checkpoint": "Punto de control",
+      "mainCommit": "Confirmación principal",
+      "parity": "Paridad",
+      "releaseExportTitle": "Vista previa de exportación",
+      "releaseExportDescription": "Revise la instantánea saneada antes de copiarla o descargarla.",
+      "releaseExportSummary": "Vista previa de {{previewed}} de {{exported}} filas · {{matched}} coincidentes",
+      "releaseExportTruncated": "El límite incluye {{exported}} de {{matched}} registros.",
+      "close": "Cerrar",
+      "copied": "Copiado",
+      "copy": "Copiar CSV",
+      "copyFailed": "No se pudo copiar; vuelva a intentarlo",
+      "download": "Descargar CSV"
+    },
+    "adminAuditRetention": {
+      "back": "Historial de auditorías",
+      "title": "Controles de retención",
+      "description": "Elija cuánto tiempo se guardan los diagnósticos saneados.",
+      "controlsTitle": "Ciclo de datos",
+      "controlsDescription": "Solo se eliminan los registros anteriores al nuevo límite.",
+      "routeDays": "Historial de rutas",
+      "routeDaysHelp": "Días de resultados de auditorías de rutas.",
+      "rendererDays": "Historial del renderizador",
+      "rendererDaysHelp": "Días de señales del renderizador.",
+      "days": "días",
+      "invalid": "Elija de 7 a 3.650 días.",
+      "save": "Guardar y aplicar",
+      "saved": "Controles guardados y registros caducados eliminados.",
+      "saveFailed": "No se pudieron guardar los controles.",
+      "confirmTitle": "¿Aplicar límites?",
+      "confirmDescription": "Los diagnósticos caducados se eliminarán permanentemente.",
+      "confirmSummary": "Rutas: {{routeDays}} días · Renderizador: {{rendererDays}} días",
+      "cancel": "Cancelar",
+      "confirm": "Aplicar y depurar"
+    },
+    "adminRendererTrend": {
+      "title": "Fallos repetidos del renderizador",
+      "description": "{{count}} fallos de {{template}} en {{hours}} horas. Revise el historial antes de publicar.",
+      "review": "Revisar historial"
+    },
+    "contactsTools": {
+      "addConsentLabel": "Confirmo que este cliente ha dado su consentimiento para ser contactado por {businessName} por correo electrónico y/o texto sobre su experiencia y compras",
+      "addConsentRequired": "La confirmación de consentimiento es obligatoria para agregar un contacto"
+    },
+    "adminExportSchedule": {
+      "title": "Informe automatizado del historial de versiones",
+      "description": "Cree una instantánea CSV saneada y limitada con una programación UTC. El último informe permanece disponible para administradores en Historial de auditoría.",
+      "enabled": "Activar informes automáticos",
+      "cron": "Programación UTC",
+      "cronHelp": "Use seis campos: segundos, minutos, horas, día, mes y día de la semana. Predeterminado: lunes a las 09:00 UTC.",
+      "save": "Guardar programación del informe",
+      "saved": "Se actualizó el informe automatizado del historial de versiones.",
+      "saveFailed": "No se pudieron guardar los ajustes del informe automático.",
+      "lastRun": "Último informe: {{date}} · {{count}} filas",
+      "recentRuns": "Informes automáticos recientes",
+      "ready": "Listo",
+      "failed": "Falló",
+      "rows": "filas"
+    },
+    "adminRetentionHistory": {
+      "title": "Cambios recientes de retención",
+      "summary": "Rutas: {{fromRoute}} → {{toRoute}} días · Renderizador: {{fromRenderer}} → {{toRenderer}} días"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Confirmar",
+      "saved": "La alerta del renderizador se confirmó hasta que se registre evidencia más reciente.",
+      "failed": "No se pudo confirmar la alerta del renderizador."
+    },
+    "automationPaused": {
+      "bannerTitle": "Las solicitudes de reseñas automáticas están en pausa",
+      "bannerDescription": "{{count}} solicitud(es) automática(s) pendiente(s) esperan que vuelva a conectar un servidor de correo verificado.",
+      "viewQueue": "Ver solicitudes pausadas",
+      "queueTitle": "Solicitudes automáticas pausadas",
+      "queueDescription": "Estas solicitudes seguirán pendientes hasta que conecte y seleccione un servidor de correo verificado.",
+      "reviewRequest": "Solicitud de reseña",
+      "followUp": "Seguimiento",
+      "morePending": "Hay {{count}} solicitud(es) más pendiente(s)."
     }
   },
   "fr": {
@@ -3919,7 +4333,13 @@
         "addressConfirmation": "Nous l'avons envoyé à {{email}}. Vérifiez l'orthographe et consultez le courrier indésirable si vous ne le recevez pas. L'acceptation par le fournisseur ne garantit pas la livraison en boîte de réception.",
         "emailConfirmationHint": "Nous afficherons l'adresse à nouveau avant votre départ afin que vous puissiez corriger une faute de frappe.",
         "providerAcceptedMessage": "Votre fournisseur de messagerie a accepté le guide pour la livraison.",
-        "downloadReadyMessage": "Votre guide est prêt à être téléchargé."
+        "downloadReadyMessage": "Votre guide est prêt à être téléchargé.",
+        "consentGuideLink": "Télécharger le Guide de Conformité au Consentement (PDF)",
+        "consentCheckLabel": "J'accepte que Get Phame (getphame.app) me contacte par e-mail avec des mises à jour et des conseils sur le produit. Je peux me désabonner à tout moment.",
+        "consentRequired": "Veuillez cocher la case pour continuer.",
+        "thankYouHeading": "C'est tout bon !",
+        "thankYouMessage": "Votre guide est en route vers {{email}}. Vérifiez les spams s'il n'arrive pas.",
+        "thankYouDownload": "L'envoi par e-mail n'était pas disponible. Téléchargez votre guide directement ci-dessous."
       },
       "feature3": {
         "title": "Toutes les plateformes. À vous de choisir.",
@@ -4021,7 +4441,7 @@
         "zoho": "Activez d'abord l'accès SMTP dans Zoho, puis utilisez votre mot de passe Zoho habituel. Appuyez sur « Comment l'obtenir » ci‑dessus.",
         "aol": "Ce n'est pas votre mot de passe AOL habituel — utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci‑dessus.",
         "fastmail": "Ce n'est pas votre mot de passe Fastmail habituel — utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci‑dessus.",
-        "google": "Ce n'est pas votre mot de passe Gmail habituel — utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci‑dessus.",
+        "google": "N’utilisez pas le mot de passe habituel de votre compte : utilisez un mot de passe d’application. Appuyez sur « Comment l’obtenir » ci-dessus.",
         "proton": "ProtonMail nécessite l'application Proton Bridge — utilisez son mot de passe SMTP, pas vos identifiants Proton. Appuyez sur 'Comment l'obtenir' ci‑dessus.",
         "icloud": "Utilisez un mot de passe spécifique à l'application, pas votre mot de passe Apple ID. Appuyez sur « Comment l'obtenir » ci‑dessus."
       },
@@ -4036,8 +4456,8 @@
       "description": "Connectez votre compte e‑mail pour envoyer des demandes d'avis depuis votre propre adresse. Nous chiffrons votre mot de passe et ne le partageons jamais.",
       "disconnectSuccess": "Compte e‑mail déconnecté.",
       "passwordPlaceholderGmail": "Mot de passe d'application à 16 caractères (sans espaces)",
-      "googleWorkspaceGuideStep2": "Connectez-vous à myaccount.google.com avec votre compte professionnel → Sécurité",
-      "googleWorkspaceGuideStep3": "Allez sur myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
+      "googleWorkspaceGuideStep2": "Activez la validation en deux étapes si elle est disponible pour votre compte",
+      "googleWorkspaceGuideStep3": "Accédez à myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
       "outlookGuideTip": "Microsoft 365 (comptes professionnels) : contactez votre administrateur informatique pour autoriser SMTP AUTH pour votre boîte aux lettres.",
       "zohoGuideTitle": "Zoho Mail — Activer l'accès SMTP",
       "zohoGuideStep4": "Basculez « Autoriser l'accès SMTP » sur Activé, puis utilisez ici votre mot de passe Zoho habituel",
@@ -4051,7 +4471,54 @@
       "fastmailGuideStep3": "Nommez-le Get Phame, sélectionnez SMTP, puis cliquez sur Générer le mot de passe",
       "iCloudGuideStep1": "Allez sur appleid.apple.com et connectez-vous",
       "iCloudGuideStep3": "Cliquez sur Générer un mot de passe pour application..., nommez-le Get Phame, cliquez sur Créer",
-      "iCloudTip": "L'authentification à deux facteurs doit être activée pour votre identifiant Apple."
+      "iCloudTip": "L'authentification à deux facteurs doit être activée pour votre identifiant Apple.",
+      "gmailGuideTip": "Google n’affiche le code qu’une seule fois. Créez un nouveau mot de passe d’application après avoir changé votre mot de passe Google et révoquez-le lorsque vous déconnectez Get Phame.",
+      "googleWorkspaceGuideStep1": "Connectez-vous à myaccount.google.com avec votre compte professionnel → Sécurité",
+      "googleWorkspaceGuideTip": "Si les mots de passe d’application ne sont pas disponibles, votre organisation peut les limiter, exiger une vérification uniquement par clé de sécurité ou utiliser la Protection Avancée. Demandez à votre administrateur Workspace la méthode SMTP ou OAuth approuvée.",
+      "gmailGuideTitle": "Mot de passe d’application Gmail — 4 étapes",
+      "gmailGuideStep1": "Accédez à myaccount.google.com → Sécurité",
+      "gmailGuideStep2": "Activez la validation en deux étapes si elle n’est pas déjà activée",
+      "gmailGuideStep3": "Accédez à myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
+      "gmailGuideStep4": "Copiez le code à 16 caractères et collez-le ici — supprimez tous les espaces",
+      "googleWorkspaceGuideTitle": "Mot de passe d’application Google Workspace — 4 étapes",
+      "googleWorkspaceGuideStep4": "Copiez le code à 16 caractères et collez-le ici — supprimez tous les espaces",
+      "deliveryStatus": {
+        "active": "Actif pour les demandes d’avis clients",
+        "notSelected": "Connecté, mais non sélectionné pour les demandes d’avis clients",
+        "bulkActive": "Connecté, mais votre service d’envoi en volume est actif pour les demandes d’avis clients",
+        "needsAttention": "Attention requise : mettez à jour vos informations SMTP et reconnectez-vous avant d’envoyer des demandes d’avis clients"
+      },
+      "connectionSavedMessage": "Votre serveur e-mail est connecté et prêt à envoyer des demandes aux clients.",
+      "gmailAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Gmail",
+      "workspaceAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Google Workspace",
+      "gmailAppPasswordTooltip": "Utilisez un mot de passe d’application de 16 caractères, pas votre mot de passe Gmail habituel. Activez d’abord la validation en deux étapes.",
+      "workspaceAppPasswordTooltip": "Votre administrateur Workspace doit autoriser les mots de passe d’application. Si cette option est indisponible, utilisez la méthode SMTP ou OAuth approuvée par votre organisation.",
+      "testPassedNotSaved": "Le test de connexion a réussi. Vos identifiants ne sont pas encore enregistrés.",
+      "testFailed": "Le test de connexion a échoué. Vérifiez les informations du serveur et réessayez.",
+      "testingCandidate": "Test de votre serveur e-mail…",
+      "testBeforeSave": "Tester avant d’enregistrer",
+      "connectingAndVerifying": "Connexion et vérification…",
+      "connectAndSave": "Connecter et enregistrer",
+      "testEmailRecipient": "Envoyer un e-mail de test à",
+      "testEmailHint": "Utilisez une adresse que vous contrôlez. Votre serveur enregistré est utilisé sans enregistrer de nouveau destinataire.",
+      "testEmailRecipientRequired": "Saisissez l’adresse qui doit recevoir l’e-mail de test.",
+      "sendingTestEmail": "Envoi de l’e-mail de test…",
+      "sendTestEmail": "Envoyer l’e-mail de test",
+      "testEmailSent": "E-mail de test envoyé. Vérifiez la boîte du destinataire.",
+      "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
+      "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
+      "disconnecting": "Déconnexion…",
+      "disconnectConfirmAction": "Déconnecter et réinitialiser",
+      "testEmailHistoryTitle": "Historique des e-mails de test",
+      "testEmailHistoryPrivacy": "Les destinataires sont masqués. Seules vos 12 dernières tentatives sont affichées.",
+      "testEmailHistoryEmpty": "Aucun e-mail de diagnostic n’a encore été envoyé.",
+      "testEmailHistorySent": "Envoyé",
+      "testEmailHistoryFailed": "Échec",
+      "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés.",
+      "retryTestEmail": "Réessayer",
+      "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
+      "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
+      "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -4124,7 +4591,8 @@
       "dashboard": "Tableau de bord",
       "lightMode": "Mode clair",
       "open": "Ouvrir le menu du compte",
-      "signedInAs": "Connecté en tant que"
+      "signedInAs": "Connecté en tant que",
+      "avatarAlt": "Votre photo de profil"
     },
     "tabs": {
       "account": "Compte et profil",
@@ -4149,13 +4617,22 @@
         "uploadAvatar": "Téléverser une photo",
         "avatarReadError": "Nous n'avons pas pu lire cette image. Essayez un autre fichier.",
         "emailHelp": "Votre adresse e-mail de connexion est gérée par votre fournisseur d'authentification."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "Une ancienne connexion de messagerie de la plateforme a été détectée, mais elle ne peut pas être utilisée pour les communications clients. Connectez un compte de fournisseur d’envoi en volume qui vous appartient.",
+        "activeOutreach": "Actif pour les demandes d’avis clients",
+        "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients",
+        "connectionSavedMessage": "Votre serveur d’envoi en masse est connecté et prêt à être utilisé.",
+        "connectingAndVerifying": "Connexion et vérification…"
       }
     },
     "profile": {
       "addBusinessNameAndLink": "Ajoutez d'abord le nom de votre entreprise et le lien d'avis Google dans les Paramètres.",
       "emailSenderSettings": "Paramètres de l'expéditeur e‑mail",
       "reviewLink": "Lien principal d'avis Google",
-      "saveProfile": "Enregistrer le profil"
+      "saveProfile": "Enregistrer le profil",
+      "consentLabelName": "Nom de l'entreprise dans la case de consentement",
+      "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
     },
     "homePage": {
       "annualPro": "Pro annuel",
@@ -4532,7 +5009,8 @@
       "stats": {
         "thisMonth": "Ce mois-ci",
         "allTime": "Depuis le début",
-        "last7Days": "7 derniers jours"
+        "last7Days": "7 derniers jours",
+        "consented": "Consentis"
       },
       "emailPerformance": {
         "title": "Performances des e‑mails",
@@ -4582,6 +5060,22 @@
         "markAllShort": "Tout marquer",
         "markAllSuccess": "{{count}} éléments marqués comme examinés",
         "markReviewed": "Marquer comme examiné"
+      },
+      "mailHealth": {
+        "healthy": "Serveur e-mail opérationnel",
+        "healthyDetail": "Votre serveur connecté est prêt pour les envois.",
+        "attention": "Le serveur e-mail nécessite une intervention",
+        "attentionDetail": "Testez-le à nouveau ou mettez-le à jour dans Paramètres avant d’envoyer.",
+        "disconnected": "Serveur e-mail non connecté",
+        "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
+        "bulkActive": "Serveur d’envoi en masse actif",
+        "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif.",
+        "healthyTooltip": "Un serveur personnel vérifié est sélectionné et son dernier état ne nécessite aucune action.",
+        "attentionTooltip": "Votre connexion enregistrée nécessite une attention. Testez-la de nouveau ou mettez à jour les paramètres avant l’envoi.",
+        "disconnectedTooltip": "Aucun canal vérifié n’est sélectionné. Les demandes restent en pause jusqu’à la connexion dans les paramètres.",
+        "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
+        "details": "Détails de l’état du serveur de messagerie",
+        "troubleshoot": "Dépanner"
       }
     },
     "reminderRow": {
@@ -4599,7 +5093,12 @@
     "onboarding": {
       "googleBtn": "Continuer avec Google",
       "appleBtn": "Continuer avec Apple",
-      "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Aucune carte de crédit requise."
+      "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Aucune carte de crédit requise.",
+      "consentStepTitle": "Ajoutez une case de consentement à vos formulaires",
+      "consentStepDesc": "Avant de collecter des contacts ou d'envoyer des demandes d'avis, vos formulaires doivent inclure une case de consentement. Ceci est requis par CAN-SPAM, TCPA et RGPD.",
+      "consentStepAction": "Télécharger le Guide de Consentement (PDF)",
+      "consentStepAck": "J'ai ajouté (ou j'ajouterai) une case de consentement à mes formulaires clients",
+      "consentStepAckRequired": "Veuillez confirmer que vous ajouterez la case de consentement avant de continuer"
     },
     "toastMessages": {
       "followUpReminderSent": "Rappel de relance envoyé !",
@@ -4711,8 +5210,8 @@
           "make": "Importation client Make",
           "custom": "Importation client personnalisée"
         },
-        "apiKey": "Clé API de la source",
-        "noKeys": "Aucune clé source active",
+        "apiKey": "Clé API d'importation",
+        "noKeys": "Aucune clé d'importation active",
         "expected": "Activité attendue",
         "intervals": {
           "15": "Toutes les 15 minutes",
@@ -4757,8 +5256,8 @@
         "pause": "Mettre la surveillance en pause",
         "resume": "Reprendre la surveillance",
         "archive": "Archiver",
-        "template": "modèle d’événement automatisé",
-        "templateDescription": "Copiez exactement cet événement de demande d’avis dans l’action HTTP ou webhook protégée de l’automatisation.",
+        "template": "modèle guidé",
+        "templateDescription": "Copiez cette requête exacte dans l'action HTTP ou webhook protégée de votre automatisation.",
         "copyRecipe": "Copier la recette",
         "recipeCopied": "Recette de connexion copiée.",
         "secretReminder": "N'utilisez la clé API brute que dans le champ secret protégé du fournisseur. L'ID de source peut être copié en toute sécurité mais ne fonctionne qu'avec la clé qui lui est liée.",
@@ -4782,23 +5281,23 @@
             "2": "Ajoutez Webhooks by Zapier et sélectionnez Custom Request.",
             "3": "Définissez la méthode sur POST et collez le point de terminaison Get Phame.",
             "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
-            "5": "Mappez sourceSubmissionId, preferredLocale et l’objet imbriqué complet de preuve de consentement.",
-            "6": "Lancez le contrôle en lecture seule, activez l’essai sécurisé, envoyez un événement autorisé, puis décidez du passage en production."
+            "5": "Mappez les champs JSON en utilisant un identifiant fournisseur stable pour externalId et Idempotency-Key.",
+            "6": "Testez l'action avec un enregistrement autorisé, puis actualisez l'état ici."
           },
           "make": {
             "1": "Choisissez le module déclencheur qui produit un enregistrement client éligible.",
             "2": "Ajoutez HTTP et sélectionnez Make a request.",
             "3": "Définissez Method sur POST, Body type sur Raw et Content type sur application/json.",
             "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
-            "5": "Mappez sourceSubmissionId, preferredLocale et l’objet imbriqué complet de preuve de consentement.",
-            "6": "Lancez le contrôle en lecture seule, activez l’essai sécurisé, envoyez un événement autorisé, puis décidez du passage en production."
+            "5": "Mappez les champs JSON en utilisant un identifiant de bundle stable pour externalId et Idempotency-Key.",
+            "6": "Exécutez le scénario une fois avec un enregistrement autorisé, puis actualisez l'état ici."
           },
           "custom": {
             "1": "Utilisez un flux de travail côté serveur de confiance qui prend en charge POST et les en-têtes protégés.",
             "2": "Stockez la clé API dans le magasin de secrets du workflow, jamais dans du code côté navigateur ni dans une URL.",
             "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
-            "4": "Utilisez un ID de source immuable pour sourceSubmissionId et Idempotency-Key.",
-            "5": "Lancez le contrôle en lecture seule, activez l’essai sécurisé, envoyez un événement autorisé, puis décidez du passage en production."
+            "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
+            "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
           }
         },
         "automation": {
@@ -4827,7 +5326,7 @@
           "delays": {
             "immediate": "Immédiatement",
             "day": "24 heures",
-            "minutes": "{{count}} minutes"
+            "minutes": "{{count}} min"
           },
           "dryRunCompleted": "Essai du fournisseur",
           "notCompleted": "Non effectué",
@@ -4895,55 +5394,6 @@
         "failurePrivacy": "Aucun identifiant n'a été créé ni exposé. Recommencez depuis votre tableau de bord WordPress.",
         "expiredPrivacy": "Démarrez une nouvelle connexion dans WordPress. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress.",
         "privacy": "Cette demande expire dans 15 minutes. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress."
-      },
-      "sources": {
-        "description": "Choisissez où commence un événement client autorisé. Get Phame vérifie le consentement spécifique, la suppression, l’état de livraison et l’idempotence avant toute activation d’une demande d’avis automatisée.",
-        "badge": "Valider d’abord · activer ensuite",
-        "steps": {
-          "choose": "Choisir une source",
-          "key": "Créer une clé source",
-          "map": "Mapper les champs et le consentement",
-          "test": "Contrôle et essai sécurisé"
-        },
-        "rules": {
-          "activation": "Commencez en mode essai sécurisé. L’envoi réel reste désactivé jusqu’à ce qu’une personne autorisée termine le contrôle, vérifie un événement fournisseur et active explicitement la source."
-        },
-        "recipeTitle": "Recette sécurisée d’événement d’avis",
-        "fields": {
-          "eventType": "Valeur fixe : review_request",
-          "name": "Champ du nom du client",
-          "email": "Champ de l’e-mail du client",
-          "phone": "Champ facultatif du téléphone du client",
-          "externalId": "ID immuable de l’événement ou de l’enregistrement fournisseur",
-          "sourceApp": "Identifiant fournisseur fixe affiché ci-dessus",
-          "sourceFormId": "Identifiant stable du formulaire fournisseur",
-          "sourceSubmissionId": "Identifiant immuable de la soumission ou du prospect",
-          "preferredLocale": "Code de langue pris en charge : en, es, fr, it, th, zh-CN ou zh-TW",
-          "consentConfirmed": "true uniquement après une autorisation affirmative",
-          "consentBasis": "customer_relationship, explicit_opt_in ou other",
-          "consentPurpose": "Valeur fixe : review_outreach",
-          "consentChannel": "Valeur fixe : email",
-          "consentCapturedAt": "Horodatage ISO 8601 avec fuseau horaire",
-          "consentSource": "Courte description du lieu de recueil de l’autorisation",
-          "consentText": "Libellé exact de la case d’autorisation présenté à la personne",
-          "consentVersion": "Version immuable du libellé gérée par l’entreprise",
-          "privacyPolicyUrl": "URL HTTPS de la politique de confidentialité affichée près de la case"
-        },
-        "consentCopyTitle": "Case de demande d’avis — copier et adapter",
-        "consentCopyInstructions": "Laissez cette case décochée au départ. Vous pouvez l’exiger pour l’inscription aux demandes d’avis automatisées, mais pas comme condition d’un achat, devis ou service sans rapport. Faites approuver votre texte et votre flux définitifs par un conseil juridique qualifié.",
-        "reviewConsentCopy": "J’accepte que {{business_name}} m’envoie des e-mails au sujet de mon achat ou de mon expérience de service récente, dont une demande d’avis et jusqu’à deux rappels. Je peux me désabonner à tout moment. Le consentement n’est pas une condition d’achat. Consultez la Politique de confidentialité.",
-        "marketingConsentTitle": "Autorisation marketing facultative distincte",
-        "marketingConsentCopy": "Je souhaite recevoir occasionnellement des e-mails marketing et des offres de {{business_name}}. Je peux me désabonner à tout moment. Le consentement n’est pas une condition d’achat. Consultez la Politique de confidentialité.",
-        "channelBoundary": "Ne considérez aucune case e-mail comme une autorisation pour les SMS, appels automatisés ou une autre finalité. Rendez inéligibles les soumissions sans preuve valable pour la demande d’avis et ne les envoyez pas automatiquement.",
-        "testTitle": "Tester, relancer et révoquer en toute sécurité",
-        "testImport": "Lancez le point de terminaison de validation en lecture seule avec un destinataire autorisé. Vérifiez la source, la suppression, SMTP, le quota, le modèle et la destination sans importer ni envoyer.",
-        "testReplay": "Activez l’essai sécurisé, soumettez un événement fournisseur réel, puis rejouez-le avec la même Idempotency-Key. Le même résultat doit être renvoyé sans travail en double.",
-        "testFailure": "Traitez les conflits de consentement et les erreurs de validation comme définitifs. Ne relancez que les échecs récupérables, respectez Retry-After et réutilisez toujours le même ID.",
-        "testActivate": "Vérifiez le modèle approuvé, la langue, la destination, les rappels et le délai avant de passer de l’essai à l’envoi réel.",
-        "testRevoke": "Pour arrêter une source, mettez-la en pause dans Get Phame et chez le fournisseur, révoquez ou renouvelez sa clé, et conservez l’historique d’audit expurgé.",
-        "nextDescription": "Créez une clé avec contacts:write et review_requests:send, liez-la à une source gérée, puis terminez le contrôle et un essai sécurisé.",
-        "createKey": "Créer une clé source",
-        "viewImports": "Gérer les sources"
       }
     },
     "manual": {
@@ -5084,7 +5534,8 @@
       "sendButton": "Envoyer {{count}} demandes",
       "yelpWarning": "Remarque Yelp : votre fiche Yelp apparaîtra comme suggestion de recherche plutôt que comme lien direct. Yelp déconseille la sollicitation directe.",
       "complianceChecklistTitle": "Liste de contrôle de conformité",
-      "defaultPlatformWithName": "{{platformName}} (par défaut)"
+      "defaultPlatformWithName": "{{platformName}} (par défaut)",
+      "consentCheck": "Je confirme que les clients ont consenti à être contactés par mon entreprise par e-mail et/ou SMS"
     },
     "defaultTemplate": {
       "body": [
@@ -5261,6 +5712,174 @@
     "activityTrend": {
       "csvDownloaded": "Le CSV de tendance d’activité a été téléchargé.",
       "pngDownloaded": "Le PNG de tendance d’activité a été téléchargé."
+    },
+    "adminEmailPreview": {
+      "title": "Aperçu des modèles d’e-mail",
+      "selectTemplate": "Sélectionner un modèle",
+      "loading": "Chargement de l’aperçu…",
+      "error": "Échec du chargement de l’aperçu.",
+      "noPreview": "Aucun aperçu disponible.",
+      "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés.",
+      "sendTest": "Envoyer un e-mail test",
+      "sending": "Envoi en cours…",
+      "testSent": "E-mail test envoyé !",
+      "testFailed": "Échec de l’envoi du test.",
+      "darkMode": "Mode sombre",
+      "copyHtml": "Copier le HTML",
+      "copied": "Copié !",
+      "emailPlaceholder": "Envoyer à…",
+      "openTab": "Ouvrir dans un onglet",
+      "variables": "Variables",
+      "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle",
+      "resetVars": "Réinitialiser",
+      "split": "Split",
+      "savePreset": "Enregistrer",
+      "presetNamePlaceholder": "Nom du profil…",
+      "previewReady": "Aperçu prêt",
+      "previewFallback": "Cet aperçu n’a pas pu s’afficher dans le cadre intégré.",
+      "previewLoading": "Génération de l’aperçu de l’e-mail…",
+      "exportHtml": "Exporter le code HTML",
+      "exported": "Téléchargé !",
+      "copyFailed": "La copie du HTML rendu a été bloquée par ce navigateur."
+    },
+    "adminRouteAudit": {
+      "eyebrow": "Assurance de production",
+      "title": "Audit des routes de production",
+      "description": "Vérifie en toute sécurité les routes publiques du plan de site pour détecter les erreurs de rendu du navigateur. Aucun compte, formulaire ni donnée client n’est utilisé.",
+      "run": "Lancer l’audit des routes",
+      "running": "Audit des routes…",
+      "viewHistory": "Voir l’historique",
+      "runningDescription": "Lancement d’un navigateur propre pour le plan de site public actuel. Cette opération peut prendre jusqu’à deux minutes.",
+      "unavailable": "Exécuteur d’audit indisponible",
+      "completedWithIssues": "Audit terminé avec des problèmes",
+      "completed": "Audit terminé avec succès",
+      "failureCode": "Code d’échec",
+      "summary": "{{routes}} routes auditées · {{failures}} échecs",
+      "resultRoutes": "Routes auditées",
+      "issue": "À examiner",
+      "rendered": "Rendue",
+      "passed": "L’audit des routes de production a réussi.",
+      "failed": "L’audit des routes de production a détecté des problèmes.",
+      "runFailed": "L’audit des routes de production n’a pas pu être exécuté."
+    },
+    "adminAuditLog": {
+      "back": "Tableau de bord administrateur",
+      "title": "Historique des audits et du rendu",
+      "description": "Historique opérationnel réservé aux administrateurs. Les enregistrements contiennent des signaux d’audit assainis, jamais du contenu client, du HTML d’e-mail, des cookies ou des journaux de navigateur.",
+      "refresh": "Actualiser l’historique",
+      "routeTitle": "Audits des routes de production",
+      "routeDescription": "Vérifications manuelles du navigateur pour les routes publiques détectées dans le plan de site, de la plus récente à la plus ancienne.",
+      "runAnother": "Lancer un autre audit →",
+      "routeError": "L’historique des audits de routes n’a pas pu être chargé.",
+      "routes": "pages",
+      "issuesFound": "{{count}} problèmes",
+      "passed": "Réussi",
+      "routeEmpty": "Aucun audit de route de production n’a encore été enregistré.",
+      "routePagination": "Pagination de l’historique des audits de routes",
+      "rendererTitle": "Erreurs du moteur d’aperçu des e-mails",
+      "rendererDescription": "Signaux assainis capturés uniquement si un aperçu administrateur ne peut pas rendre du contenu vérifié.",
+      "rendererError": "L’historique des erreurs de rendu n’a pas pu être chargé.",
+      "rendererEmpty": "Aucune erreur de rendu n’a été enregistrée.",
+      "rendererPagination": "Pagination de l’historique des erreurs de rendu",
+      "records": "enregistrements",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "darkPreview": "sombre",
+      "releaseTitle": "Historique des versions",
+      "releaseDescription": "Historique de versions assaini avec correspondance et aperçu d’export.",
+      "retention": "Paramètres de conservation",
+      "releaseStatus": "État de parité",
+      "allStatuses": "Tous les états",
+      "matched": "Correspondant",
+      "needsReview": "À examiner",
+      "releaseSort": "Trier par",
+      "releaseSortDate": "Heure de version",
+      "releaseSortCheckpoint": "Point de contrôle",
+      "releaseDirection": "Ordre",
+      "newestFirst": "Plus récent d’abord",
+      "oldestFirst": "Plus ancien d’abord",
+      "releaseExport": "Aperçu de l’export",
+      "releaseExportFailed": "L’export n’a pas pu être préparé.",
+      "releaseError": "L’historique des versions n’a pas pu être chargé.",
+      "releaseEmpty": "Aucune version vérifiée.",
+      "releasePagination": "Pagination de l’historique des versions",
+      "time": "Heure",
+      "checkpoint": "Point de contrôle",
+      "mainCommit": "Commit principal",
+      "parity": "Parité",
+      "releaseExportTitle": "Aperçu de l’export",
+      "releaseExportDescription": "Examinez l’instantané assaini avant de le copier ou de le télécharger.",
+      "releaseExportSummary": "Aperçu de {{previewed}} sur {{exported}} lignes · {{matched}} correspondantes",
+      "releaseExportTruncated": "La limite inclut {{exported}} sur {{matched}} enregistrements.",
+      "close": "Fermer",
+      "copied": "Copié",
+      "copy": "Copier le CSV",
+      "copyFailed": "Échec de la copie — réessayez",
+      "download": "Télécharger le CSV"
+    },
+    "adminAuditRetention": {
+      "back": "Historique des audits",
+      "title": "Contrôles de conservation",
+      "description": "Choisissez la durée de conservation des diagnostics assainis.",
+      "controlsTitle": "Cycle de vie des données",
+      "controlsDescription": "Seuls les enregistrements antérieurs à la nouvelle limite sont supprimés.",
+      "routeDays": "Historique des routes",
+      "routeDaysHelp": "Jours de résultats d’audit de routes.",
+      "rendererDays": "Historique du rendu",
+      "rendererDaysHelp": "Jours de signaux du rendu.",
+      "days": "jours",
+      "invalid": "Choisissez de 7 à 3 650 jours.",
+      "save": "Enregistrer et appliquer",
+      "saved": "Contrôles enregistrés et diagnostics expirés purgés.",
+      "saveFailed": "Les contrôles n’ont pas pu être enregistrés.",
+      "confirmTitle": "Appliquer les limites ?",
+      "confirmDescription": "Les diagnostics expirés seront supprimés définitivement.",
+      "confirmSummary": "Routes : {{routeDays}} jours · Rendu : {{rendererDays}} jours",
+      "cancel": "Annuler",
+      "confirm": "Appliquer et purger"
+    },
+    "adminRendererTrend": {
+      "title": "Échecs répétés du rendu",
+      "description": "{{count}} échecs de {{template}} en {{hours}} heures. Examinez l’historique avant la prochaine version.",
+      "review": "Examiner l’historique"
+    },
+    "contactsTools": {
+      "addConsentLabel": "Je confirme que ce client a consenti à être contacté par {businessName} par e-mail et/ou SMS concernant son expérience et ses achats",
+      "addConsentRequired": "La confirmation du consentement est requise pour ajouter un contact"
+    },
+    "adminExportSchedule": {
+      "title": "Rapport automatisé de l’historique des versions",
+      "description": "Créez un instantané CSV limité et assaini selon une planification UTC. Le dernier rapport reste disponible dans l’historique d’audit.",
+      "enabled": "Activer les rapports automatisés",
+      "cron": "Planification UTC",
+      "cronHelp": "Utilisez six champs : secondes, minutes, heures, jour, mois et jour de la semaine. Par défaut : lundi à 09:00 UTC.",
+      "save": "Enregistrer la planification",
+      "saved": "Le rapport automatisé de l’historique des versions a été mis à jour.",
+      "saveFailed": "Les paramètres du rapport automatisé n’ont pas pu être enregistrés.",
+      "lastRun": "Dernier rapport : {{date}} · {{count}} lignes",
+      "recentRuns": "Rapports automatisés récents",
+      "ready": "Prêt",
+      "failed": "Échec",
+      "rows": "lignes"
+    },
+    "adminRetentionHistory": {
+      "title": "Modifications récentes de conservation",
+      "summary": "Routes : {{fromRoute}} → {{toRoute}} jours · Moteur de rendu : {{fromRenderer}} → {{toRenderer}} jours"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Accuser réception",
+      "saved": "L’alerte du moteur de rendu est reconnue jusqu’à ce qu’un élément plus récent soit enregistré.",
+      "failed": "L’alerte du moteur de rendu n’a pas pu être reconnue."
+    },
+    "automationPaused": {
+      "bannerTitle": "Les demandes d’avis automatiques sont en pause",
+      "bannerDescription": "{{count}} demande(s) automatique(s) en attente attendent la reconnexion d’un serveur de messagerie vérifié.",
+      "viewQueue": "Voir les demandes en pause",
+      "queueTitle": "Demandes automatiques en pause",
+      "queueDescription": "Ces demandes resteront en attente jusqu’à ce que vous connectiez et sélectionniez un serveur vérifié.",
+      "reviewRequest": "Demande d’avis",
+      "followUp": "Relance",
+      "morePending": "{{count}} demande(s) supplémentaire(s) sont en attente."
     }
   },
   "it": {
@@ -5751,7 +6370,13 @@
         "addressConfirmation": "L'abbiamo inviato a {{email}}. Controlla l'ortografia e la cartella spam se non arriva. L'accettazione da parte del provider non garantisce la consegna nella posta in arrivo.",
         "emailConfirmationHint": "Mostreremo di nuovo l'indirizzo prima che tu esca così puoi correggere eventuali errori di battitura.",
         "providerAcceptedMessage": "Il tuo provider email ha accettato la guida per la consegna.",
-        "downloadReadyMessage": "La tua guida è pronta per il download."
+        "downloadReadyMessage": "La tua guida è pronta per il download.",
+        "consentGuideLink": "Scarica la Guida alla Conformità del Consenso (PDF)",
+        "consentCheckLabel": "Accetto che Get Phame (getphame.app) mi contatti via e-mail con aggiornamenti e suggerimenti sul prodotto. Posso annullare l'iscrizione in qualsiasi momento.",
+        "consentRequired": "Si prega di spuntare la casella per continuare.",
+        "thankYouHeading": "Tutto pronto!",
+        "thankYouMessage": "La tua guida è in arrivo a {{email}}. Controlla lo spam se non arriva.",
+        "thankYouDownload": "L'invio via e-mail non era disponibile. Scarica la tua guida direttamente qui sotto."
       },
       "feature3": {
         "title": "Ogni piattaforma. La tua scelta.",
@@ -5853,7 +6478,7 @@
         "zoho": "Abilita prima l'accesso SMTP in Zoho, poi usa la tua password normale di Zoho. Tocca 'Come ottenerla' sopra.",
         "aol": "Non la tua normale password AOL — usa una Password per l'app. Tocca Come ottenerlo sopra.",
         "fastmail": "Non la tua normale password Fastmail — usa una Password per l'app. Tocca Come ottenerlo sopra.",
-        "google": "Non la tua normale password Gmail — usa una Password per l'app. Tocca Come ottenerlo sopra.",
+        "google": "Non usare la normale password del tuo account: usa una password per le app. Tocca «Come ottenerla» qui sopra.",
         "proton": "ProtonMail richiede l'app Proton Bridge — usa la sua password SMTP, non le credenziali Proton. Tocca Come ottenerla sopra.",
         "icloud": "Usa una password specifica per l'app, non la password del tuo Apple ID. Tocca Come ottenerla sopra."
       },
@@ -5864,7 +6489,56 @@
       "noEmailConnected": "Nessuna email collegata",
       "notConnectedDescription": "Nessuna email collegata. Inserisci i tuoi dati qui sotto per iniziare a inviare richieste di recensione.",
       "displayNameHelp": "Visualizzato come nome del mittente nella casella di posta del tuo cliente.",
-      "emailAddressLabel": "Il tuo indirizzo email *"
+      "emailAddressLabel": "Il tuo indirizzo email *",
+      "gmailGuideTip": "Google mostra il codice una sola volta. Crea una nuova password per le app dopo aver cambiato la password Google e revocala quando disconnetti Get Phame.",
+      "googleWorkspaceGuideStep1": "Accedi a myaccount.google.com con il tuo account di lavoro → Sicurezza",
+      "googleWorkspaceGuideStep2": "Attiva la verifica in due passaggi se è disponibile per il tuo account",
+      "googleWorkspaceGuideTip": "Se le password per le app non sono disponibili, la tua organizzazione potrebbe limitarle, richiedere la verifica solo con chiave di sicurezza o usare la Protezione avanzata. Chiedi all’amministratore Workspace il metodo SMTP o OAuth approvato.",
+      "gmailGuideTitle": "Password per app Gmail — 4 passaggi",
+      "gmailGuideStep1": "Vai a myaccount.google.com → Sicurezza",
+      "gmailGuideStep2": "Attiva la verifica in due passaggi se non è già attiva",
+      "gmailGuideStep3": "Vai a myaccount.google.com/apppasswords → assegnale il nome Get Phame → fai clic su Crea",
+      "gmailGuideStep4": "Copia il codice di 16 caratteri e incollalo qui: rimuovi tutti gli spazi",
+      "googleWorkspaceGuideTitle": "Password per app Google Workspace — 4 passaggi",
+      "googleWorkspaceGuideStep3": "Vai a myaccount.google.com/apppasswords → assegnale il nome Get Phame → fai clic su Crea",
+      "googleWorkspaceGuideStep4": "Copia il codice di 16 caratteri e incollalo qui: rimuovi tutti gli spazi",
+      "deliveryStatus": {
+        "active": "Attivo per le richieste di recensione dei clienti",
+        "notSelected": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
+        "bulkActive": "Connesso, ma il tuo servizio di invio in blocco è attivo per le richieste di recensione dei clienti",
+        "needsAttention": "Richiede attenzione: aggiorna i dati SMTP e riconnettiti prima di inviare richieste di recensione ai clienti"
+      },
+      "connectionSavedMessage": "Il tuo server di posta è connesso e pronto per inviare richieste ai clienti.",
+      "gmailAppPasswordTooltipLabel": "Guida alla password per app Gmail",
+      "workspaceAppPasswordTooltipLabel": "Guida alla password per app Google Workspace",
+      "gmailAppPasswordTooltip": "Usa una password per app di 16 caratteri, non la normale password Gmail. Attiva prima la verifica in due passaggi.",
+      "workspaceAppPasswordTooltip": "L’amministratore Workspace deve consentire le password per app. Se questa opzione non è disponibile, usa il metodo SMTP o OAuth approvato dalla tua organizzazione.",
+      "testPassedNotSaved": "Il test di connessione è riuscito. Le credenziali non sono ancora state salvate.",
+      "testFailed": "Il test di connessione non è riuscito. Controlla i dettagli del server e riprova.",
+      "testingCandidate": "Verifica del server di posta…",
+      "testBeforeSave": "Testa prima di salvare",
+      "connectingAndVerifying": "Connessione e verifica…",
+      "connectAndSave": "Connetti e salva",
+      "testEmailRecipient": "Invia un’e-mail di prova a",
+      "testEmailHint": "Usa un indirizzo che controlli. Verrà usato il server salvato senza salvare un nuovo destinatario.",
+      "testEmailRecipientRequired": "Inserisci l’indirizzo che deve ricevere l’e-mail di prova.",
+      "sendingTestEmail": "Invio dell’e-mail di prova…",
+      "sendTestEmail": "Invia e-mail di prova",
+      "testEmailSent": "E-mail di prova inviata. Controlla la casella del destinatario.",
+      "disconnectConfirmTitle": "Disconnettere questo server e-mail?",
+      "disconnectConfirmDescription": "Questa azione elimina definitivamente le credenziali salvate e interrompe gli invii finché non colleghi un server verificato.",
+      "disconnecting": "Disconnessione…",
+      "disconnectConfirmAction": "Disconnetti e reimposta",
+      "testEmailHistoryTitle": "Cronologia email di test",
+      "testEmailHistoryPrivacy": "I destinatari sono mascherati. Sono mostrati solo i 12 tentativi di diagnostica più recenti.",
+      "testEmailHistoryEmpty": "Non sono ancora state inviate email di diagnostica.",
+      "testEmailHistorySent": "Inviata",
+      "testEmailHistoryFailed": "Non riuscita",
+      "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email.",
+      "retryTestEmail": "Riprova",
+      "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato.",
+      "connectionTestPassed": "La connessione al server di posta è stata verificata.",
+      "connectionTestFailed": "Il server di posta richiede ancora attenzione."
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -5941,7 +6615,8 @@
       "dashboard": "Dashboard",
       "lightMode": "Modalità chiara",
       "open": "Apri il menu dell'account",
-      "signedInAs": "Connesso come"
+      "signedInAs": "Connesso come",
+      "avatarAlt": "La tua foto del profilo"
     },
     "tabs": {
       "account": "Account e profilo",
@@ -5966,11 +6641,20 @@
         "uploadAvatar": "Carica foto",
         "avatarReadError": "Non siamo riusciti a leggere quell'immagine. Prova un altro file.",
         "emailHelp": "La tua email di accesso è gestita dal tuo provider di autenticazione."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "È stata trovata una connessione email di piattaforma precedente, ma non può essere usata per le comunicazioni con i clienti. Collega un account di provider di invio in blocco di tua proprietà.",
+        "activeOutreach": "Attivo per le richieste di recensione dei clienti",
+        "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
+        "connectionSavedMessage": "Il tuo server per invii in massa è connesso e pronto all’uso.",
+        "connectingAndVerifying": "Connessione e verifica…"
       }
     },
     "profile": {
       "addBusinessNameAndLink": "Aggiungi prima il nome della tua attività e il link alle recensioni Google nelle Impostazioni.",
-      "emailSenderSettings": "Impostazioni mittente email"
+      "emailSenderSettings": "Impostazioni mittente email",
+      "consentLabelName": "Nome azienda nella casella di consenso",
+      "consentLabelNameDescription": "Il nome dell'azienda mostrato nell'etichetta della casella di consenso nei tuoi moduli. Per impostazione predefinita usa il nome dell'azienda sopra."
     },
     "homePage": {
       "annualPro": "Pro annuale",
@@ -6338,7 +7022,8 @@
       "stats": {
         "thisMonth": "Questo mese",
         "allTime": "Dall'inizio",
-        "last7Days": "Ultimi 7 giorni"
+        "last7Days": "Ultimi 7 giorni",
+        "consented": "Consenso dato"
       },
       "emailPerformance": {
         "title": "Prestazioni email",
@@ -6384,6 +7069,22 @@
         "markAllShort": "Segna tutto",
         "markAllSuccess": "{{count}} elementi contrassegnati come esaminati",
         "markReviewed": "Segna come esaminato"
+      },
+      "mailHealth": {
+        "healthy": "Server e-mail integro",
+        "healthyDetail": "Il server connesso è pronto per gli invii.",
+        "attention": "Il server e-mail richiede attenzione",
+        "attentionDetail": "Ripetere il test o aggiornarlo nelle Impostazioni prima di inviare.",
+        "disconnected": "Server e-mail non connesso",
+        "disconnectedDetail": "Collega un server di tua proprietà prima di inviare.",
+        "bulkActive": "Server di invio massivo attivo",
+        "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo.",
+        "healthyTooltip": "È selezionato un server personale verificato e il suo ultimo stato non richiede azioni.",
+        "attentionTooltip": "La connessione salvata richiede attenzione. Provala di nuovo o aggiorna le impostazioni prima dell’invio.",
+        "disconnectedTooltip": "Non è selezionato alcun canale verificato. Le richieste restano in pausa finché non ne colleghi uno nelle Impostazioni.",
+        "bulkActiveTooltip": "È selezionato un provider bulk verificato. Gestiscilo o sostituiscilo nelle Impostazioni.",
+        "details": "Dettagli stato server email",
+        "troubleshoot": "Risolvi problemi"
       }
     },
     "reminderRow": {
@@ -6401,7 +7102,12 @@
     "onboarding": {
       "googleBtn": "Continua con Google",
       "appleBtn": "Continua con Apple",
-      "finePrint": "Inizia gratis — incluse 10 richieste di recensione. Non è richiesta la carta di credito."
+      "finePrint": "Inizia gratis — incluse 10 richieste di recensione. Non è richiesta la carta di credito.",
+      "consentStepTitle": "Aggiungi una casella di consenso ai tuoi moduli",
+      "consentStepDesc": "Prima di raccogliere contatti o inviare richieste di recensioni, i tuoi moduli devono includere una casella di consenso. Questo è richiesto da CAN-SPAM, TCPA e GDPR.",
+      "consentStepAction": "Scarica la Guida al Consenso (PDF)",
+      "consentStepAck": "Ho aggiunto (o aggiungerò) una casella di consenso ai miei moduli clienti",
+      "consentStepAckRequired": "Conferma che aggiungerai la casella di consenso prima di continuare"
     },
     "toastMessages": {
       "followUpReminderSent": "Promemoria di follow-up inviato!",
@@ -6512,8 +7218,8 @@
           "make": "Importazione clienti Make",
           "custom": "Importazione clienti personalizzata"
         },
-        "apiKey": "Chiave API della fonte",
-        "noKeys": "Nessuna chiave fonte attiva",
+        "apiKey": "Chiave API di importazione",
+        "noKeys": "Nessuna chiave di importazione attiva",
         "expected": "Attività prevista",
         "intervals": {
           "15": "Ogni 15 minuti",
@@ -6558,8 +7264,8 @@
         "pause": "Sospendi monitoraggio",
         "resume": "Riprendi monitoraggio",
         "archive": "Archivia",
-        "template": "modello evento di automazione",
-        "templateDescription": "Copia esattamente questo evento di richiesta di recensione nell’azione HTTP o webhook protetta dell’automazione.",
+        "template": "modello guidato",
+        "templateDescription": "Copia esattamente questa richiesta nell'azione HTTP o webhook protetta dell'automazione.",
         "copyRecipe": "Copia ricetta",
         "recipeCopied": "Ricetta della connessione copiata.",
         "secretReminder": "Usa la chiave API in chiaro solo nel campo segreto protetto del provider. L'ID sorgente è sicuro da copiare ma funziona solo con la chiave a cui è collegato.",
@@ -6583,23 +7289,23 @@
             "2": "Aggiungi Webhooks by Zapier e seleziona Custom Request.",
             "3": "Imposta Method su POST e incolla l'endpoint Get Phame.",
             "4": "Aggiungi gli header protetti esattamente come mostrato sotto.",
-            "5": "Mappa sourceSubmissionId, preferredLocale e l’oggetto annidato completo delle prove di consenso.",
-            "6": "Esegui il controllo in sola lettura, attiva la prova sicura, invia un evento autorizzato e decidi se passare in produzione."
+            "5": "Mappa i campi JSON, usando un ID provider stabile per externalId e Idempotency-Key.",
+            "6": "Testa l'azione con un record consentito, poi aggiorna lo stato qui."
           },
           "make": {
             "1": "Scegli il modulo trigger che produce un record cliente idoneo.",
             "2": "Aggiungi HTTP e seleziona Make a request.",
             "3": "Imposta Method su POST, Body type su Raw e Content type su application/json.",
             "4": "Aggiungi gli header protetti esattamente come mostrato sotto.",
-            "5": "Mappa sourceSubmissionId, preferredLocale e l’oggetto annidato completo delle prove di consenso.",
-            "6": "Esegui il controllo in sola lettura, attiva la prova sicura, invia un evento autorizzato e decidi se passare in produzione."
+            "5": "Mappa i campi JSON, usando un ID bundle stabile per externalId e Idempotency-Key.",
+            "6": "Esegui lo scenario una volta con un record consentito, poi aggiorna lo stato qui."
           },
           "custom": {
             "1": "Usa un workflow server-side affidabile che supporti POST e header protetti.",
             "2": "Salva la chiave API nello store dei segreti del workflow, mai nel codice del browser o in un URL.",
             "3": "Invia JSON all'endpoint Get Phame con gli header mostrati sotto.",
-            "4": "Usa un ID immutabile della fonte per sourceSubmissionId e Idempotency-Key.",
-            "5": "Esegui il controllo in sola lettura, attiva la prova sicura, invia un evento autorizzato e decidi se passare in produzione."
+            "4": "Usa un ID record sorgente immutabile per externalId e Idempotency-Key.",
+            "5": "Invia un record consentito, poi aggiorna lo stato qui."
           }
         },
         "automation": {
@@ -6693,55 +7399,6 @@
         "failurePrivacy": "Non sono state create né esposte credenziali. Ricomincia dalla dashboard di WordPress.",
         "expiredPrivacy": "Avvia una nuova connessione in WordPress. Get Phame non riceve mai le credenziali amministrative di WordPress.",
         "privacy": "Questa richiesta scade tra 15 minuti. Get Phame non riceve mai le credenziali amministrative di WordPress."
-      },
-      "sources": {
-        "description": "Scegli dove inizia un evento cliente autorizzato. Get Phame verifica consenso specifico, soppressione, preparazione della consegna e idempotenza prima di attivare qualsiasi richiesta automatica di recensione.",
-        "badge": "Prima convalida · poi attiva",
-        "steps": {
-          "choose": "Scegli una fonte",
-          "key": "Crea una chiave fonte",
-          "map": "Mappa campi e consenso",
-          "test": "Controllo e prova sicura"
-        },
-        "rules": {
-          "activation": "Inizia in modalità prova sicura. L’invio reale resta disattivato finché una persona autorizzata non completa il controllo, verifica un evento del provider e attiva esplicitamente la fonte."
-        },
-        "recipeTitle": "Ricetta sicura dell’evento recensione",
-        "fields": {
-          "eventType": "Valore fisso: review_request",
-          "name": "Campo nome del cliente",
-          "email": "Campo email del cliente",
-          "phone": "Campo telefono facoltativo del cliente",
-          "externalId": "ID immutabile dell’evento o del record del provider",
-          "sourceApp": "Identificatore fisso del provider mostrato sopra",
-          "sourceFormId": "Identificatore stabile del modulo del provider",
-          "sourceSubmissionId": "Identificatore immutabile dell’invio o del lead",
-          "preferredLocale": "Codice lingua supportato: en, es, fr, it, th, zh-CN o zh-TW",
-          "consentConfirmed": "true solo dopo un consenso affermativo",
-          "consentBasis": "customer_relationship, explicit_opt_in o other",
-          "consentPurpose": "Valore fisso: review_outreach",
-          "consentChannel": "Valore fisso: email",
-          "consentCapturedAt": "Data e ora ISO 8601 con fuso orario",
-          "consentSource": "Breve descrizione di dove è stato raccolto il consenso",
-          "consentText": "Testo esatto della casella di consenso mostrato alla persona",
-          "consentVersion": "Versione immutabile del testo gestita dall’azienda",
-          "privacyPolicyUrl": "URL HTTPS dell’informativa privacy mostrata accanto alla casella"
-        },
-        "consentCopyTitle": "Casella per richieste di recensione — copia e adatta",
-        "consentCopyInstructions": "Lascia inizialmente questa casella deselezionata. Puoi richiederla per aderire alle richieste automatiche di recensione, ma non come condizione di acquisti, preventivi o servizi non correlati. Fai approvare testo e flusso finali da un consulente legale qualificato.",
-        "reviewConsentCopy": "Accetto che {{business_name}} mi invii email sul mio recente acquisto o servizio, inclusa una richiesta di recensione e fino a due promemoria. Posso annullare l’iscrizione in qualsiasi momento. Il consenso non è una condizione di acquisto. Consulta l’Informativa sulla privacy.",
-        "marketingConsentTitle": "Consenso marketing facoltativo separato",
-        "marketingConsentCopy": "Desidero ricevere occasionalmente email di marketing e offerte da {{business_name}}. Posso annullare l’iscrizione in qualsiasi momento. Il consenso non è una condizione di acquisto. Consulta l’Informativa sulla privacy.",
-        "channelBoundary": "Non considerare le caselle email come consenso per SMS, chiamate automatizzate o altri scopi. Rendi non idonei gli invii privi di prove valide per le richieste di recensione e non inviarli automaticamente.",
-        "testTitle": "Prova, ritenta e revoca in sicurezza",
-        "testImport": "Esegui l’endpoint di convalida in sola lettura con un destinatario autorizzato. Verifica fonte, soppressione, SMTP, quota, modello e destinazione senza importare o inviare.",
-        "testReplay": "Attiva la prova sicura, invia un evento reale del provider e ripetilo con la stessa Idempotency-Key. Deve tornare lo stesso esito senza lavoro duplicato.",
-        "testFailure": "Tratta conflitti di consenso ed errori di convalida come definitivi. Ritenta solo errori recuperabili, rispetta Retry-After e riutilizza sempre lo stesso ID.",
-        "testActivate": "Verifica modello approvato, lingua, destinazione, promemoria e ritardo prima di passare dalla prova all’invio reale.",
-        "testRevoke": "Per fermare una fonte, mettila in pausa in Get Phame e nel provider, revoca o ruota la chiave e conserva la cronologia di audit oscurata.",
-        "nextDescription": "Crea una chiave con contacts:write e review_requests:send, collegala a una fonte gestita e completa il controllo e una prova sicura.",
-        "createKey": "Crea chiave fonte",
-        "viewImports": "Gestisci fonti"
       }
     },
     "manual": {
@@ -6941,6 +7598,177 @@
     "activityTrend": {
       "csvDownloaded": "CSV dell’andamento attività scaricato.",
       "pngDownloaded": "PNG dell’andamento attività scaricato."
+    },
+    "adminEmailPreview": {
+      "title": "Anteprima modelli e-mail",
+      "selectTemplate": "Seleziona modello",
+      "loading": "Caricamento anteprima…",
+      "error": "Impossibile caricare l’anteprima.",
+      "noPreview": "Nessuna anteprima disponibile.",
+      "note": "L’anteprima usa dati di esempio. Le email reali vengono inviate con nomi utente reali e link sicuri.",
+      "sendTest": "Invia email di prova",
+      "sending": "Invio in corso…",
+      "testSent": "Email di prova inviata!",
+      "testFailed": "Invio dell’email di prova fallito.",
+      "darkMode": "Modalità scura",
+      "copyHtml": "Copia HTML",
+      "copied": "Copiato!",
+      "emailPlaceholder": "Invia a…",
+      "openTab": "Apri in una nuova scheda",
+      "variables": "Variabili",
+      "variablesNote": "Sostituisce i segnaposto [name], [company], [plan], [email] nel modello",
+      "resetVars": "Ripristina",
+      "split": "Dividi",
+      "savePreset": "Salva",
+      "presetNamePlaceholder": "Nome del profilo…",
+      "previewReady": "Anteprima pronta",
+      "previewFallback": "Impossibile visualizzare questa anteprima nel riquadro incorporato.",
+      "previewLoading": "Generazione dell'anteprima dell'email…",
+      "exportHtml": "Esporta HTML",
+      "exported": "Scaricato!",
+      "copyFailed": "La copia dell’HTML renderizzato è stata bloccata da questo browser."
+    },
+    "adminRouteAudit": {
+      "eyebrow": "Garanzia di produzione",
+      "title": "Audit delle route di produzione",
+      "description": "Controlla in modo sicuro le route pubbliche della sitemap per rilevare errori di rendering del browser. Non vengono coinvolti account, moduli o dati dei clienti.",
+      "run": "Esegui audit delle route",
+      "running": "Audit delle route in corso…",
+      "viewHistory": "Visualizza cronologia",
+      "runningDescription": "Avvio di un browser pulito per la sitemap pubblica corrente. L’operazione può richiedere fino a due minuti.",
+      "unavailable": "Esecutore dell’audit non disponibile",
+      "completedWithIssues": "Audit completato con problemi",
+      "completed": "Audit completato correttamente",
+      "failureCode": "Codice errore",
+      "summary": "{{routes}} route controllate · {{failures}} errori",
+      "resultRoutes": "Route controllate",
+      "issue": "Da verificare",
+      "rendered": "Renderizzata",
+      "passed": "L’audit delle route di produzione è riuscito.",
+      "failed": "L’audit delle route di produzione ha rilevato problemi.",
+      "runFailed": "Non è stato possibile eseguire l’audit delle route di produzione."
+    },
+    "adminAuditLog": {
+      "back": "Dashboard amministratore",
+      "title": "Cronologia audit e rendering",
+      "description": "Cronologia operativa riservata agli amministratori. I record memorizzati contengono segnali di audit sanitizzati, mai contenuti dei clienti, HTML e-mail, cookie o log del browser.",
+      "refresh": "Aggiorna cronologia",
+      "routeTitle": "Audit delle route di produzione",
+      "routeDescription": "Controlli manuali del browser sulle route pubbliche individuate nella sitemap, dalla più recente alla meno recente.",
+      "runAnother": "Esegui un altro audit →",
+      "routeError": "Impossibile caricare la cronologia degli audit delle route.",
+      "routes": "route",
+      "issuesFound": "{{count}} problemi",
+      "passed": "Superato",
+      "routeEmpty": "Non è stato ancora registrato alcun audit delle route di produzione.",
+      "routePagination": "Paginazione della cronologia degli audit delle route",
+      "rendererTitle": "Errori del renderer di anteprima e-mail",
+      "rendererDescription": "Segnali sanitizzati acquisiti solo se un’anteprima amministratore non riesce a renderizzare contenuto verificato.",
+      "rendererError": "Impossibile caricare la cronologia degli errori del renderer.",
+      "rendererEmpty": "Non sono stati registrati errori del renderer.",
+      "rendererPagination": "Paginazione della cronologia degli errori del renderer",
+      "records": "record",
+      "previous": "Precedente",
+      "next": "Successivo",
+      "darkPreview": "scura",
+      "releaseTitle": "Cronologia delle versioni",
+      "releaseDescription": "Cronologia delle versioni sanitizzata con corrispondenza ed esportazione.",
+      "retention": "Impostazioni di conservazione",
+      "releaseStatus": "Stato di parità",
+      "allStatuses": "Tutti gli stati",
+      "matched": "Corrispondente",
+      "needsReview": "Da verificare",
+      "releaseSort": "Ordina per",
+      "releaseSortDate": "Ora della versione",
+      "releaseSortCheckpoint": "Checkpoint",
+      "releaseDirection": "Direzione",
+      "newestFirst": "Più recenti prima",
+      "oldestFirst": "Meno recenti prima",
+      "releaseExport": "Anteprima esportazione",
+      "releaseExportFailed": "Impossibile preparare l’esportazione.",
+      "releaseError": "Impossibile caricare la cronologia delle versioni.",
+      "releaseEmpty": "Nessuna versione verificata.",
+      "releasePagination": "Paginazione della cronologia delle versioni",
+      "time": "Ora",
+      "checkpoint": "Checkpoint",
+      "mainCommit": "Commit principale",
+      "parity": "Parità",
+      "releaseExportTitle": "Anteprima esportazione",
+      "releaseExportDescription": "Esamina l’istantanea sanitizzata prima di copiarla o scaricarla.",
+      "releaseExportSummary": "Anteprima di {{previewed}} su {{exported}} righe · {{matched}} corrispondenti",
+      "releaseExportTruncated": "Il limite include {{exported}} di {{matched}} record.",
+      "close": "Chiudi",
+      "copied": "Copiato",
+      "copy": "Copia CSV",
+      "copyFailed": "Copia non riuscita — riprova",
+      "download": "Scarica CSV"
+    },
+    "adminAuditRetention": {
+      "back": "Cronologia audit",
+      "title": "Controlli di conservazione",
+      "description": "Scegli per quanto tempo conservare i diagnostici sanitizzati.",
+      "controlsTitle": "Ciclo di vita dati",
+      "controlsDescription": "Vengono rimossi solo i record precedenti al nuovo limite.",
+      "routeDays": "Cronologia route",
+      "routeDaysHelp": "Giorni di audit delle route.",
+      "rendererDays": "Cronologia renderer",
+      "rendererDaysHelp": "Giorni di segnali renderer.",
+      "days": "giorni",
+      "invalid": "Scegli da 7 a 3.650 giorni.",
+      "save": "Salva e applica",
+      "saved": "Controlli salvati e diagnostici scaduti eliminati.",
+      "saveFailed": "Impossibile salvare i controlli.",
+      "confirmTitle": "Applicare i limiti?",
+      "confirmDescription": "I diagnostici scaduti saranno rimossi definitivamente.",
+      "confirmSummary": "Route: {{routeDays}} giorni · Renderer: {{rendererDays}} giorni",
+      "cancel": "Annulla",
+      "confirm": "Applica e elimina"
+    },
+    "adminRendererTrend": {
+      "title": "Errori ripetuti del renderer",
+      "description": "{{count}} errori di {{template}} in {{hours}} ore. Esamina la cronologia prima della prossima versione.",
+      "review": "Esamina cronologia"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "Confermo che i clienti hanno acconsentito a essere contattati dalla mia azienda via e-mail e/o SMS"
+    },
+    "contactsTools": {
+      "addConsentLabel": "Confermo che questo cliente ha acconsentito a essere contattato da {businessName} via e-mail e/o SMS riguardo alla sua esperienza e ai suoi acquisti",
+      "addConsentRequired": "La conferma del consenso è obbligatoria per aggiungere un contatto"
+    },
+    "adminExportSchedule": {
+      "title": "Report automatico della cronologia rilasci",
+      "description": "Crea un’istantanea CSV limitata e sanificata con una pianificazione UTC. L’ultimo report rimane disponibile nella cronologia di audit.",
+      "enabled": "Abilita report automatici",
+      "cron": "Pianificazione UTC",
+      "cronHelp": "Usa sei campi: secondi, minuti, ore, giorno, mese e giorno della settimana. Predefinito: lunedì alle 09:00 UTC.",
+      "save": "Salva pianificazione report",
+      "saved": "Il report automatico della cronologia rilasci è stato aggiornato.",
+      "saveFailed": "Non è stato possibile salvare le impostazioni del report automatico.",
+      "lastRun": "Ultimo report: {{date}} · {{count}} righe",
+      "recentRuns": "Report automatici recenti",
+      "ready": "Pronto",
+      "failed": "Non riuscito",
+      "rows": "righe"
+    },
+    "adminRetentionHistory": {
+      "title": "Modifiche recenti alla conservazione",
+      "summary": "Percorsi: {{fromRoute}} → {{toRoute}} giorni · Renderer: {{fromRenderer}} → {{toRenderer}} giorni"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "Conferma",
+      "saved": "L’avviso del renderer è stato confermato finché non verranno registrate evidenze più recenti.",
+      "failed": "Non è stato possibile confermare l’avviso del renderer."
+    },
+    "automationPaused": {
+      "bannerTitle": "Le richieste di recensione automatiche sono in pausa",
+      "bannerDescription": "{{count}} richiesta/e automatica/he in attesa aspettano la riconnessione di un server di posta verificato.",
+      "viewQueue": "Visualizza richieste in pausa",
+      "queueTitle": "Richieste automatiche in pausa",
+      "queueDescription": "Queste richieste resteranno in attesa finché non colleghi e selezioni un server di posta verificato.",
+      "reviewRequest": "Richiesta di recensione",
+      "followUp": "Promemoria",
+      "morePending": "Altre {{count}} richieste sono in attesa."
     }
   },
   "th": {
@@ -7431,7 +8259,13 @@
         "addressConfirmation": "เราได้ส่งไปที่ {{email}} ตรวจสอบการสะกดและโฟลเดอร์สแปมหากยังไม่ได้รับ การยอมรับจากผู้ให้บริการไม่รับประกันว่าจะแสดงในกล่องจดหมาย.",
         "emailConfirmationHint": "เราจะแสดงที่อยู่อีกครั้งก่อนที่คุณจะออกเพื่อให้คุณตรวจสอบการสะกดผิด.",
         "providerAcceptedMessage": "ผู้ให้บริการอีเมลของคุณยอมรับคำแนะนำสำหรับการจัดส่งแล้ว.",
-        "downloadReadyMessage": "คำแนะนำของคุณพร้อมให้ดาวน์โหลดแล้ว."
+        "downloadReadyMessage": "คำแนะนำของคุณพร้อมให้ดาวน์โหลดแล้ว.",
+        "consentGuideLink": "ดาวน์โหลดคู่มือการปฏิบัติตามกฎระเบียบความยินยอม (PDF)",
+        "consentCheckLabel": "ฉันยินยอมให้ Get Phame (getphame.app) ติดต่อฉันทางอีเมลเกี่ยวกับการอัปเดตและเคล็ดลับของผลิตภัณฑ์ ฉันสามารถยกเลิกการสมัครได้ตลอดเวลา",
+        "consentRequired": "กรุณาทำเครื่องหมายในช่องเพื่อดำเนินการต่อ",
+        "thankYouHeading": "เรียบร้อยแล้ว!",
+        "thankYouMessage": "คู่มือของคุณกำลังส่งไปที่ {{email}} ตรวจสอบโฟลเดอร์สแปมหากไม่ได้รับ",
+        "thankYouDownload": "ไม่สามารถส่งอีเมลได้ ดาวน์โหลดคู่มือของคุณโดยตรงด้านล่าง"
       },
       "feature3": {
         "title": "ทุกแพลตฟอร์ม ทางเลือกเป็นของคุณ.",
@@ -7533,7 +8367,7 @@
         "zoho": "เปิดการเข้าถึง SMTP ใน Zoho ก่อน แล้วใช้รหัสผ่าน Zoho ปกติของคุณ แตะ How to get it ด้านบน.",
         "aol": "ไม่ใช่รหัสผ่าน AOL ปกติ — ให้ใช้รหัสผ่านแอป แตะ 'วิธีรับ' ด้านบน.",
         "fastmail": "ไม่ใช่รหัสผ่าน Fastmail ปกติ — ให้ใช้รหัสผ่านแอป แตะ 'วิธีรับ' ด้านบน.",
-        "google": "ไม่ใช่รหัสผ่าน Gmail ปกติ — ให้ใช้รหัสผ่านแอป แตะ 'วิธีรับ' ด้านบน.",
+        "google": "อย่าใช้รหัสผ่านบัญชีตามปกติ ให้ใช้รหัสผ่านสำหรับแอปแทน แตะ «วิธีรับรหัสผ่าน» ด้านบน",
         "proton": "ProtonMail ต้องการแอป Proton Bridge — ให้ใช้รหัสผ่าน SMTP ของแอปนั้น ไม่ใช่รหัสเข้าสู่ระบบ Proton ของคุณ แตะ How to get it ด้านบน",
         "icloud": "ใช้รหัสผ่านเฉพาะแอป ไม่ใช่รหัสผ่าน Apple ID ของคุณ แตะ 'How to get it' ด้านบน."
       },
@@ -7544,7 +8378,56 @@
       "noEmailConnected": "ยังไม่ได้เชื่อมต่ออีเมล",
       "notConnectedDescription": "ยังไม่ได้เชื่อมต่ออีเมล กรอกข้อมูลด้านล่างเพื่อเริ่มส่งคำขอรีวิว",
       "displayNameHelp": "แสดงเป็นชื่อผู้ส่งในกล่องจดหมายของลูกค้าของคุณ.",
-      "emailAddressLabel": "ที่อยู่อีเมลของคุณ *"
+      "emailAddressLabel": "ที่อยู่อีเมลของคุณ *",
+      "gmailGuideTip": "Google จะแสดงรหัสเพียงครั้งเดียว สร้างรหัสผ่านสำหรับแอปใหม่หลังเปลี่ยนรหัสผ่าน Google และเพิกถอนเมื่อยกเลิกการเชื่อมต่อ Get Phame",
+      "googleWorkspaceGuideStep1": "ลงชื่อเข้าใช้ myaccount.google.com ด้วยบัญชีที่ทำงาน → ความปลอดภัย",
+      "googleWorkspaceGuideStep2": "เปิดการยืนยันแบบ 2 ขั้นตอนหากบัญชีของคุณใช้งานได้",
+      "googleWorkspaceGuideTip": "หากไม่มีรหัสผ่านสำหรับแอป องค์กรอาจจำกัดไว้ บังคับใช้การยืนยันด้วยคีย์ความปลอดภัยเท่านั้น หรือใช้การป้องกันขั้นสูง โปรดสอบถามผู้ดูแล Workspace เกี่ยวกับวิธี SMTP หรือ OAuth ที่ได้รับอนุมัติ",
+      "gmailGuideTitle": "รหัสผ่านสำหรับแอป Gmail — 4 ขั้นตอน",
+      "gmailGuideStep1": "ไปที่ myaccount.google.com → ความปลอดภัย",
+      "gmailGuideStep2": "เปิดการยืนยันแบบ 2 ขั้นตอนหากยังไม่ได้เปิด",
+      "gmailGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อ Get Phame → คลิกสร้าง",
+      "gmailGuideStep4": "คัดลอกรหัส 16 ตัวอักษรแล้ววางที่นี่ โดยลบช่องว่างทั้งหมด",
+      "googleWorkspaceGuideTitle": "รหัสผ่านสำหรับแอป Google Workspace — 4 ขั้นตอน",
+      "googleWorkspaceGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อ Get Phame → คลิกสร้าง",
+      "googleWorkspaceGuideStep4": "คัดลอกรหัส 16 ตัวอักษรแล้ววางที่นี่ โดยลบช่องว่างทั้งหมด",
+      "deliveryStatus": {
+        "active": "ใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
+        "notSelected": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า",
+        "bulkActive": "เชื่อมต่อแล้ว แต่บริการส่งอีเมลจำนวนมากของคุณใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
+        "needsAttention": "ต้องดำเนินการ: อัปเดตรายละเอียด SMTP และเชื่อมต่อใหม่ก่อนส่งคำขอรีวิวจากลูกค้า"
+      },
+      "connectionSavedMessage": "เซิร์ฟเวอร์อีเมลของคุณเชื่อมต่อแล้วและพร้อมส่งคำขอถึงลูกค้า",
+      "gmailAppPasswordTooltipLabel": "วิธีใช้รหัสผ่านสำหรับแอป Gmail",
+      "workspaceAppPasswordTooltipLabel": "วิธีใช้รหัสผ่านสำหรับแอป Google Workspace",
+      "gmailAppPasswordTooltip": "ใช้รหัสผ่านสำหรับแอป 16 อักขระ ไม่ใช่รหัสผ่าน Gmail ปกติของคุณ และเปิดการยืนยันแบบ 2 ขั้นตอนก่อน",
+      "workspaceAppPasswordTooltip": "ผู้ดูแล Workspace ต้องอนุญาตรหัสผ่านสำหรับแอป หากไม่มีตัวเลือกนี้ ให้ใช้วิธี SMTP หรือ OAuth ที่องค์กรอนุมัติ",
+      "testPassedNotSaved": "ทดสอบการเชื่อมต่อสำเร็จ แต่ยังไม่ได้บันทึกข้อมูลเข้าสู่ระบบ",
+      "testFailed": "ทดสอบการเชื่อมต่อไม่สำเร็จ โปรดตรวจสอบรายละเอียดเซิร์ฟเวอร์แล้วลองอีกครั้ง",
+      "testingCandidate": "กำลังทดสอบเซิร์ฟเวอร์อีเมลของคุณ…",
+      "testBeforeSave": "ทดสอบก่อนบันทึก",
+      "connectingAndVerifying": "กำลังเชื่อมต่อและตรวจสอบ…",
+      "connectAndSave": "เชื่อมต่อและบันทึก",
+      "testEmailRecipient": "ส่งอีเมลทดสอบไปที่",
+      "testEmailHint": "ใช้ที่อยู่อีเมลที่คุณควบคุม ระบบจะใช้เซิร์ฟเวอร์ที่บันทึกไว้และจะไม่บันทึกผู้รับใหม่",
+      "testEmailRecipientRequired": "กรอกที่อยู่อีเมลที่จะรับอีเมลทดสอบ",
+      "sendingTestEmail": "กำลังส่งอีเมลทดสอบ…",
+      "sendTestEmail": "ส่งอีเมลทดสอบ",
+      "testEmailSent": "ส่งอีเมลทดสอบแล้ว โปรดตรวจสอบกล่องจดหมายของผู้รับ",
+      "disconnectConfirmTitle": "ตัดการเชื่อมต่อเซิร์ฟเวอร์อีเมลนี้หรือไม่?",
+      "disconnectConfirmDescription": "การดำเนินการนี้จะลบข้อมูลรับรองที่บันทึกไว้ถาวรและหยุดการส่งจนกว่าคุณจะเชื่อมต่อเซิร์ฟเวอร์ที่ยืนยันแล้ว",
+      "disconnecting": "กำลังตัดการเชื่อมต่อ…",
+      "disconnectConfirmAction": "ตัดการเชื่อมต่อและรีเซ็ต",
+      "testEmailHistoryTitle": "ประวัติอีเมลทดสอบ",
+      "testEmailHistoryPrivacy": "ผู้รับจะถูกปกปิด แสดงเฉพาะความพยายามวินิจฉัย 12 รายการล่าสุดของคุณ",
+      "testEmailHistoryEmpty": "ยังไม่มีการส่งอีเมลวินิจฉัย",
+      "testEmailHistorySent": "ส่งแล้ว",
+      "testEmailHistoryFailed": "ล้มเหลว",
+      "disconnectAcknowledgement": "ฉันเข้าใจว่าการดำเนินการนี้จะลบข้อมูลรับรองเซิร์ฟเวอร์อีเมลที่บันทึกไว้",
+      "retryTestEmail": "ลองอีกครั้ง",
+      "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่",
+      "connectionTestPassed": "ยืนยันการเชื่อมต่อเซิร์ฟเวอร์อีเมลแล้ว",
+      "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ"
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -7614,7 +8497,8 @@
       "dashboard": "แดชบอร์ด",
       "lightMode": "โหมดสว่าง",
       "open": "เปิดเมนูบัญชี",
-      "signedInAs": "เข้าสู่ระบบเป็น"
+      "signedInAs": "เข้าสู่ระบบเป็น",
+      "avatarAlt": "รูปโปรไฟล์ของคุณ"
     },
     "tabs": {
       "account": "บัญชีและโปรไฟล์",
@@ -7639,11 +8523,20 @@
         "uploadAvatar": "อัปโหลดรูปภาพ",
         "avatarReadError": "เราไม่สามารถอ่านรูปภาพนั้นได้ กรุณาลองไฟล์อื่น.",
         "emailHelp": "อีเมลที่ใช้เข้าสู่ระบบของคุณถูกจัดการโดยผู้ให้บริการการยืนยันตัวตนของคุณ."
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "พบการเชื่อมต่ออีเมลแพลตฟอร์มแบบเดิม แต่ไม่สามารถใช้สำหรับการติดต่อผู้รับได้ โปรดเชื่อมต่อบัญชีผู้ให้บริการส่งอีเมลจำนวนมากที่คุณเป็นเจ้าของ",
+        "activeOutreach": "ใช้งานอยู่สำหรับคำขอรีวิวจากลูกค้า",
+        "notActive": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า",
+        "connectionSavedMessage": "เซิร์ฟเวอร์อีเมลสำหรับส่งจำนวนมากของคุณเชื่อมต่อแล้วและพร้อมใช้งาน",
+        "connectingAndVerifying": "กำลังเชื่อมต่อและตรวจสอบ…"
       }
     },
     "profile": {
       "addBusinessNameAndLink": "เพิ่มชื่อธุรกิจและลิงก์รีวิว Google ในการตั้งค่าก่อน",
-      "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล"
+      "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล",
+      "consentLabelName": "ชื่อธุรกิจในช่องทำเครื่องหมายความยินยอม",
+      "consentLabelNameDescription": "ชื่อธุรกิจที่แสดงในป้ายกำกับช่องทำเครื่องหมายความยินยอมในแบบฟอร์มของคุณ ค่าเริ่มต้นคือชื่อธุรกิจด้านบน"
     },
     "homePage": {
       "annualPro": "Pro รายปี",
@@ -8009,7 +8902,8 @@
       "stats": {
         "thisMonth": "เดือนนี้",
         "allTime": "ตลอดเวลา",
-        "last7Days": "7 วันที่ผ่านมา"
+        "last7Days": "7 วันที่ผ่านมา",
+        "consented": "ยินยอมแล้ว"
       },
       "emailPerformance": {
         "title": "ประสิทธิภาพอีเมล",
@@ -8055,6 +8949,22 @@
         "markAllShort": "ทำเครื่องหมายทั้งหมด",
         "markAllSuccess": "{{count}} รายการถูกทำเครื่องหมายว่าตรวจสอบแล้ว",
         "markReviewed": "ทำเครื่องหมายว่าตรวจสอบแล้ว"
+      },
+      "mailHealth": {
+        "healthy": "เซิร์ฟเวอร์อีเมลพร้อมใช้งาน",
+        "healthyDetail": "เซิร์ฟเวอร์ที่เชื่อมต่อพร้อมสำหรับการส่งข้อความ",
+        "attention": "เซิร์ฟเวอร์อีเมลต้องการการดูแล",
+        "attentionDetail": "ทดสอบอีกครั้งหรืออัปเดตในการตั้งค่าก่อนส่งข้อความ",
+        "disconnected": "ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์อีเมล",
+        "disconnectedDetail": "เชื่อมต่อเซิร์ฟเวอร์ของคุณก่อนส่งข้อความ",
+        "bulkActive": "เซิร์ฟเวอร์ส่งอีเมลจำนวนมากทำงานอยู่",
+        "bulkActiveDetail": "ผู้ให้บริการส่งจำนวนมากที่เลือกกำลังทำงานอยู่",
+        "healthyTooltip": "มีการเลือกเซิร์ฟเวอร์อีเมลส่วนตัวที่ยืนยันแล้ว และสถานะล่าสุดไม่ต้องดำเนินการ",
+        "attentionTooltip": "การเชื่อมต่อที่บันทึกไว้ต้องได้รับการตรวจสอบ ทดสอบใหม่หรืออัปเดตการตั้งค่าก่อนส่ง",
+        "disconnectedTooltip": "ยังไม่ได้เลือกช่องทางส่งที่ยืนยันแล้ว การส่งคำขอจะหยุดชั่วคราวจนกว่าจะเชื่อมต่อในตั้งค่า",
+        "bulkActiveTooltip": "มีการเลือกผู้ให้บริการส่งจำนวนมากที่ยืนยันแล้ว จัดการหรือเปลี่ยนได้ในตั้งค่า",
+        "details": "รายละเอียดสถานะเซิร์ฟเวอร์อีเมล",
+        "troubleshoot": "แก้ไขปัญหา"
       }
     },
     "reminderRow": {
@@ -8072,7 +8982,12 @@
     "onboarding": {
       "googleBtn": "ดำเนินการต่อด้วย Google",
       "appleBtn": "ดำเนินการต่อด้วย Apple",
-      "finePrint": "เริ่มทดลองใช้ฟรี — รวมคำขอรีวิว 10 ครั้ง ไม่ต้องใช้บัตรเครดิต"
+      "finePrint": "เริ่มทดลองใช้ฟรี — รวมคำขอรีวิว 10 ครั้ง ไม่ต้องใช้บัตรเครดิต",
+      "consentStepTitle": "เพิ่มช่องทำเครื่องหมายความยินยอมในแบบฟอร์มของคุณ",
+      "consentStepDesc": "ก่อนเก็บรวบรวมผู้ติดต่อหรือส่งคำขอรีวิว แบบฟอร์มของคุณต้องมีช่องทำเครื่องหมายความยินยอม ซึ่งเป็นข้อกำหนดของ CAN-SPAM, TCPA และ GDPR",
+      "consentStepAction": "ดาวน์โหลดคู่มือความยินยอม (PDF)",
+      "consentStepAck": "ฉันได้เพิ่ม (หรือจะเพิ่ม) ช่องทำเครื่องหมายความยินยอมในแบบฟอร์มลูกค้าของฉัน",
+      "consentStepAckRequired": "กรุณายืนยันว่าคุณจะเพิ่มช่องทำเครื่องหมายความยินยอมก่อนดำเนินการต่อ"
     },
     "toastMessages": {
       "followUpReminderSent": "ส่งการเตือนติดตามแล้ว!",
@@ -8183,8 +9098,8 @@
           "make": "การนำเข้าลูกค้า Make",
           "custom": "การนำเข้าลูกค้าแบบกำหนดเอง"
         },
-        "apiKey": "คีย์ API ของแหล่งข้อมูล",
-        "noKeys": "ไม่มีคีย์แหล่งข้อมูลที่ใช้งานอยู่",
+        "apiKey": "คีย์ API สำหรับการนำเข้า",
+        "noKeys": "ยังไม่มีคีย์นำเข้าที่ใช้งานอยู่",
         "expected": "กิจกรรมที่คาดหวัง",
         "intervals": {
           "15": "ทุก 15 นาที",
@@ -8229,8 +9144,8 @@
         "pause": "หยุดการตรวจสอบชั่วคราว",
         "resume": "กลับมาตรวจสอบ",
         "archive": "เก็บถาวร",
-        "template": "เทมเพลตเหตุการณ์อัตโนมัติ",
-        "templateDescription": "คัดลอกเหตุการณ์คำขอรีวิวนี้ไปยังการทำงาน HTTP หรือ webhook ที่มีการป้องกันของระบบอัตโนมัติ",
+        "template": "เทมเพลตแนะนำ",
+        "templateDescription": "คัดลอกคำขอนี้แบบเป๊ะไปใส่ในการกระทำ HTTP หรือ webhook ที่มีการป้องกันของระบบอัตโนมัติ",
         "copyRecipe": "คัดลอกตัวอย่าง",
         "recipeCopied": "คัดลอกตัวอย่างการเชื่อมต่อแล้ว",
         "secretReminder": "ใช้คีย์ API ดิบเฉพาะในฟิลด์ความลับที่ป้องกันของผู้ให้บริการเท่านั้น source ID สามารถคัดลอกได้อย่างปลอดภัย แต่ใช้งานได้เฉพาะกับคีย์ที่เชื่อมอยู่เท่านั้น",
@@ -8254,23 +9169,23 @@
             "2": "เพิ่ม Webhooks by Zapier แล้วเลือก Custom Request",
             "3": "ตั้ง Method เป็น POST และวาง endpoint ของ Get Phame",
             "4": "เพิ่ม headers ที่มีการป้องกันตามที่แสดงด้านล่างอย่างเคร่งครัด",
-            "5": "แมป sourceSubmissionId, preferredLocale และออบเจ็กต์หลักฐานความยินยอมแบบซ้อนที่ครบถ้วน",
-            "6": "เรียกใช้การตรวจสอบแบบอ่านอย่างเดียว เปิดโหมดทดสอบปลอดภัย ส่งหนึ่งเหตุการณ์ที่ได้รับอนุญาต แล้วจึงเลือกว่าจะเริ่มใช้งานจริงหรือไม่"
+            "5": "แมปฟิลด์ JSON โดยใช้ provider ID ที่คงที่หนึ่งค่า สำหรับ externalId และ Idempotency-Key",
+            "6": "ทดสอบ action ด้วยระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
           },
           "make": {
             "1": "เลือก trigger module ที่สร้างระเบียนลูกค้าที่มีสิทธิ์",
             "2": "เพิ่ม HTTP แล้วเลือก Make a request",
             "3": "ตั้ง Method เป็น POST, Body type เป็น Raw และ Content type เป็น application/json",
             "4": "เพิ่ม headers ที่มีการป้องกันตามที่แสดงด้านล่างอย่างเคร่งครัด",
-            "5": "แมป sourceSubmissionId, preferredLocale และออบเจ็กต์หลักฐานความยินยอมแบบซ้อนที่ครบถ้วน",
-            "6": "เรียกใช้การตรวจสอบแบบอ่านอย่างเดียว เปิดโหมดทดสอบปลอดภัย ส่งหนึ่งเหตุการณ์ที่ได้รับอนุญาต แล้วจึงเลือกว่าจะเริ่มใช้งานจริงหรือไม่"
+            "5": "แมปฟิลด์ JSON โดยใช้ bundle ID ที่คงที่หนึ่งค่า สำหรับ externalId และ Idempotency-Key",
+            "6": "รัน scenario ครั้งเดียวด้วยระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
           },
           "custom": {
             "1": "ใช้ workflow ฝั่งเซิร์ฟเวอร์ที่เชื่อถือได้ที่รองรับ POST และ headers ที่ป้องกัน",
             "2": "เก็บคีย์ API ในที่เก็บความลับของ workflow ห้ามเก็บในโค้ดเบราว์เซอร์หรือ URL",
             "3": "ส่ง JSON ไปยัง endpoint ของ Get Phame พร้อม headers ที่แสดงด้านล่าง",
-            "4": "ใช้ ID ระเบียนต้นทางที่เปลี่ยนแปลงไม่ได้สำหรับ sourceSubmissionId และ Idempotency-Key",
-            "5": "เรียกใช้การตรวจสอบแบบอ่านอย่างเดียว เปิดโหมดทดสอบปลอดภัย ส่งหนึ่งเหตุการณ์ที่ได้รับอนุญาต แล้วจึงเลือกว่าจะเริ่มใช้งานจริงหรือไม่"
+            "4": "ใช้หมายเลขระเบียนแหล่งข้อมูลที่ไม่เปลี่ยนแปลงเพียงค่าเดียวสำหรับ externalId และ Idempotency-Key",
+            "5": "ส่งระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
           }
         },
         "automation": {
@@ -8364,55 +9279,6 @@
         "failurePrivacy": "ไม่มีข้อมูลประจำตัวใดถูกสร้างหรือเปิดเผย เริ่มใหม่จากแดชบอร์ด WordPress ของคุณ",
         "expiredPrivacy": "เริ่มการเชื่อมต่อใหม่ใน WordPress. Get Phame จะไม่รับข้อมูลประจำตัวผู้ดูแลระบบของ WordPress ของคุณ",
         "privacy": "คำขอนี้หมดอายุภายใน 15 นาที. Get Phame จะไม่รับข้อมูลประจำตัวผู้ดูแลระบบของ WordPress ของคุณ"
-      },
-      "sources": {
-        "description": "เลือกจุดเริ่มต้นของเหตุการณ์ลูกค้าที่ได้รับอนุญาต Get Phame จะตรวจสอบความยินยอมเฉพาะวัตถุประสงค์ สถานะระงับ ความพร้อมในการส่ง และ idempotency ก่อนเปิดคำขอรีวิวอัตโนมัติจริง",
-        "badge": "ตรวจสอบก่อน · เปิดใช้ภายหลัง",
-        "steps": {
-          "choose": "เลือกแหล่งข้อมูล",
-          "key": "สร้างคีย์แหล่งข้อมูล",
-          "map": "แมปฟิลด์และความยินยอม",
-          "test": "ตรวจสอบและทดสอบอย่างปลอดภัย"
-        },
-        "rules": {
-          "activation": "เริ่มในโหมดทดสอบปลอดภัย การส่งจริงจะยังปิดอยู่จนกว่าผู้มีสิทธิ์จะตรวจสอบล่วงหน้า ยืนยันเหตุการณ์จากผู้ให้บริการหนึ่งรายการ และเปิดใช้แหล่งข้อมูลอย่างชัดเจน"
-        },
-        "recipeTitle": "สูตรเหตุการณ์รีวิวแบบปลอดภัย",
-        "fields": {
-          "eventType": "ค่าคงที่: review_request",
-          "name": "ฟิลด์ชื่อลูกค้า",
-          "email": "ฟิลด์อีเมลลูกค้า",
-          "phone": "ฟิลด์โทรศัพท์ลูกค้า (ไม่บังคับ)",
-          "externalId": "ID เหตุการณ์หรือระเบียนจากผู้ให้บริการที่เปลี่ยนแปลงไม่ได้",
-          "sourceApp": "ตัวระบุผู้ให้บริการแบบคงที่ที่แสดงด้านบน",
-          "sourceFormId": "ตัวระบุแบบฟอร์มของผู้ให้บริการที่คงที่",
-          "sourceSubmissionId": "ตัวระบุการส่งหรือ lead ที่เปลี่ยนแปลงไม่ได้",
-          "preferredLocale": "รหัสภาษาที่รองรับ: en, es, fr, it, th, zh-CN หรือ zh-TW",
-          "consentConfirmed": "เป็น true เมื่อได้รับอนุญาตอย่างชัดเจนเท่านั้น",
-          "consentBasis": "customer_relationship, explicit_opt_in หรือ other",
-          "consentPurpose": "ค่าคงที่: review_outreach",
-          "consentChannel": "ค่าคงที่: email",
-          "consentCapturedAt": "เวลา ISO 8601 พร้อมเขตเวลาจากการส่งข้อมูล",
-          "consentSource": "คำอธิบายสั้น ๆ ว่าเก็บความยินยอมจากที่ใด",
-          "consentText": "ข้อความช่องทำเครื่องหมายขออนุญาตที่แสดงต่อบุคคลนั้นจริง",
-          "consentVersion": "เวอร์ชันข้อความที่ธุรกิจกำหนดและไม่เปลี่ยนแปลง",
-          "privacyPolicyUrl": "URL HTTPS ของนโยบายความเป็นส่วนตัวที่แสดงข้างช่องทำเครื่องหมาย"
-        },
-        "consentCopyTitle": "ช่องยินยอมรับคำขอรีวิว — คัดลอกและปรับใช้",
-        "consentCopyInstructions": "เริ่มต้นโดยไม่ทำเครื่องหมายช่องนี้ คุณอาจกำหนดให้ยินยอมเพื่อเข้าร่วมการส่งคำขอรีวิวอัตโนมัติได้ แต่ห้ามเป็นเงื่อนไขของการซื้อ ใบเสนอราคา หรือบริการที่ไม่เกี่ยวข้อง ควรให้ที่ปรึกษากฎหมายที่มีคุณสมบัติตรวจข้อความและขั้นตอนสุดท้าย",
-        "reviewConsentCopy": "ฉันยินยอมให้ {{business_name}} ส่งอีเมลเกี่ยวกับการซื้อหรือประสบการณ์บริการล่าสุดของฉัน รวมถึงคำขอรีวิวหนึ่งครั้งและการแจ้งเตือนไม่เกินสองครั้ง ฉันยกเลิกการรับได้ทุกเมื่อ ความยินยอมไม่ใช่เงื่อนไขในการซื้อ โปรดดูนโยบายความเป็นส่วนตัว",
-        "marketingConsentTitle": "ความยินยอมด้านการตลาดแบบเลือกได้แยกต่างหาก",
-        "marketingConsentCopy": "ฉันต้องการรับอีเมลการตลาดและข้อเสนอจาก {{business_name}} เป็นครั้งคราว ฉันยกเลิกการรับได้ทุกเมื่อ ความยินยอมไม่ใช่เงื่อนไขในการซื้อ โปรดดูนโยบายความเป็นส่วนตัว",
-        "channelBoundary": "อย่าถือว่าช่องยินยอมทางอีเมลเป็นสิทธิ์สำหรับ SMS การโทรอัตโนมัติ หรือวัตถุประสงค์อื่น การส่งข้อมูลที่ไม่มีหลักฐานยินยอมรับคำขอรีวิวที่ถูกต้องต้องถือว่าไม่เข้าเกณฑ์และห้ามส่งอัตโนมัติ",
-        "testTitle": "ทดสอบ ลองใหม่ และเพิกถอนอย่างปลอดภัย",
-        "testImport": "เรียกใช้ปลายทางตรวจสอบแบบอ่านอย่างเดียวกับผู้รับที่ได้รับอนุญาต ตรวจสอบการผูกแหล่งข้อมูล การระงับ SMTP โควตา เทมเพลต และปลายทางโดยไม่นำเข้าหรือส่ง",
-        "testReplay": "เปิดโหมดทดสอบปลอดภัย ส่งเหตุการณ์จริงหนึ่งรายการ แล้วส่งซ้ำด้วย Idempotency-Key เดิม ต้องได้ผลลัพธ์เดิมโดยไม่สร้างงานซ้ำ",
-        "testFailure": "ถือว่าความขัดแย้งด้านความยินยอมและข้อผิดพลาดการตรวจสอบเป็นข้อผิดพลาดถาวร ลองใหม่เฉพาะข้อผิดพลาดที่กู้คืนได้ ปฏิบัติตาม Retry-After และใช้ ID เดิมเสมอ",
-        "testActivate": "ตรวจสอบเทมเพลต ภาษา ปลายทาง การแจ้งเตือน และเวลาหน่วงที่อนุมัติแล้ว ก่อนเปลี่ยนจากการทดสอบเป็นการส่งจริง",
-        "testRevoke": "หากต้องการหยุดแหล่งข้อมูล ให้พักใน Get Phame และผู้ให้บริการ เพิกถอนหรือหมุนเวียนคีย์ และเก็บประวัติการตรวจสอบแบบปกปิดข้อมูล",
-        "nextDescription": "สร้างคีย์ที่มี contacts:write และ review_requests:send ผูกกับแหล่งข้อมูลที่จัดการ แล้วดำเนินการตรวจสอบและทดสอบปลอดภัยหนึ่งครั้ง",
-        "createKey": "สร้างคีย์แหล่งข้อมูล",
-        "viewImports": "จัดการแหล่งข้อมูล"
       }
     },
     "manual": {
@@ -8611,6 +9477,177 @@
     "activityTrend": {
       "csvDownloaded": "ดาวน์โหลด CSV แนวโน้มกิจกรรมแล้ว",
       "pngDownloaded": "ดาวน์โหลด PNG แนวโน้มกิจกรรมแล้ว"
+    },
+    "adminEmailPreview": {
+      "title": "ตัวอย่างแม่แบบอีเมล",
+      "selectTemplate": "เลือกแม่แบบ",
+      "loading": "กำลังโหลดตัวอย่าง…",
+      "error": "ไม่สามารถโหลดตัวอย่างได้",
+      "noPreview": "ไม่มีตัวอย่าง",
+      "note": "ตัวอย่างใช้ข้อมูลตัวอย่าง อีเมลจริงจะส่งด้วยชื่อผู้ใช้จริงและลิงก์ที่ปลอดภัย",
+      "sendTest": "ส่งอีเมลทดสอบ",
+      "sending": "กำลังส่ง…",
+      "testSent": "ส่งอีเมลทดสอบแล้ว!",
+      "testFailed": "ส่งอีเมลทดสอบไม่สำเร็จ",
+      "darkMode": "โหมดมืด",
+      "copyHtml": "คัดลอก HTML",
+      "copied": "คัดลอกแล้ว!",
+      "emailPlaceholder": "ส่งถึง…",
+      "openTab": "เปิดในแท็บใหม่",
+      "variables": "ตัวแปร",
+      "variablesNote": "แทนที่ตัวแทน [name], [company], [plan], [email] ในเทมเพลต",
+      "resetVars": "รีเซ็ต",
+      "split": "แบ่งหน้าจอ",
+      "savePreset": "บันทึก",
+      "presetNamePlaceholder": "ชื่อโปรไฟล์…",
+      "previewReady": "ตัวอย่างพร้อมแล้ว",
+      "previewFallback": "ไม่สามารถแสดงตัวอย่างนี้ในกรอบที่ฝังอยู่ได้",
+      "previewLoading": "กำลังสร้างตัวอย่างอีเมล…",
+      "exportHtml": "ส่งออก HTML",
+      "exported": "ดาวน์โหลดแล้ว!",
+      "copyFailed": "เบราว์เซอร์นี้บล็อกการคัดลอก HTML ที่เรนเดอร์แล้ว"
+    },
+    "adminRouteAudit": {
+      "eyebrow": "ความมั่นใจในการใช้งานจริง",
+      "title": "ตรวจสอบเส้นทางการใช้งานจริง",
+      "description": "ตรวจสอบเส้นทางสาธารณะในแผนผังเว็บไซต์อย่างปลอดภัยเพื่อหาข้อผิดพลาดในการเรนเดอร์ของเบราว์เซอร์ โดยไม่แตะต้องบัญชี แบบฟอร์ม หรือข้อมูลลูกค้า",
+      "run": "เริ่มการตรวจสอบเส้นทาง",
+      "running": "กำลังตรวจสอบเส้นทาง…",
+      "viewHistory": "ดูประวัติ",
+      "runningDescription": "กำลังเปิดเบราว์เซอร์ใหม่สำหรับแผนผังเว็บไซต์สาธารณะปัจจุบัน อาจใช้เวลาถึงสองนาที",
+      "unavailable": "ตัวรันการตรวจสอบไม่พร้อมใช้งาน",
+      "completedWithIssues": "ตรวจสอบเสร็จพร้อมประเด็นที่ต้องแก้ไข",
+      "completed": "ตรวจสอบเสร็จเรียบร้อย",
+      "failureCode": "รหัสข้อผิดพลาด",
+      "summary": "ตรวจสอบ {{routes}} เส้นทาง · พบ {{failures}} ข้อผิดพลาด",
+      "resultRoutes": "เส้นทางที่ตรวจสอบแล้ว",
+      "issue": "ต้องตรวจสอบ",
+      "rendered": "เรนเดอร์แล้ว",
+      "passed": "การตรวจสอบเส้นทางการใช้งานจริงผ่านแล้ว",
+      "failed": "การตรวจสอบเส้นทางการใช้งานจริงพบปัญหา",
+      "runFailed": "ไม่สามารถเรียกใช้การตรวจสอบเส้นทางการใช้งานจริงได้"
+    },
+    "adminAuditLog": {
+      "back": "แดชบอร์ดผู้ดูแล",
+      "title": "ประวัติการตรวจสอบและการเรนเดอร์",
+      "description": "ประวัติการปฏิบัติงานสำหรับผู้ดูแลเท่านั้น บันทึกที่เก็บมีเฉพาะสัญญาณการตรวจสอบที่ผ่านการล้างข้อมูล ไม่เก็บเนื้อหาลูกค้า HTML อีเมล คุกกี้ หรือบันทึกเบราว์เซอร์",
+      "refresh": "รีเฟรชประวัติ",
+      "routeTitle": "การตรวจสอบเส้นทางการใช้งานจริง",
+      "routeDescription": "การตรวจสอบเบราว์เซอร์ด้วยตนเองสำหรับเส้นทางสาธารณะที่พบในแผนผังเว็บไซต์ เรียงจากใหม่ไปเก่า",
+      "runAnother": "เริ่มการตรวจสอบอีกครั้ง →",
+      "routeError": "ไม่สามารถโหลดประวัติการตรวจสอบเส้นทางได้",
+      "routes": "เส้นทาง",
+      "issuesFound": "พบ {{count}} ปัญหา",
+      "passed": "ผ่าน",
+      "routeEmpty": "ยังไม่มีการบันทึกการตรวจสอบเส้นทางการใช้งานจริง",
+      "routePagination": "การแบ่งหน้าประวัติการตรวจสอบเส้นทาง",
+      "rendererTitle": "ข้อผิดพลาดของตัวเรนเดอร์ตัวอย่างอีเมล",
+      "rendererDescription": "บันทึกสัญญาณที่ผ่านการล้างข้อมูลเฉพาะเมื่อการแสดงตัวอย่างของผู้ดูแลไม่สามารถเรนเดอร์เนื้อหาที่ตรวจสอบแล้วได้",
+      "rendererError": "ไม่สามารถโหลดประวัติข้อผิดพลาดของตัวเรนเดอร์ได้",
+      "rendererEmpty": "ยังไม่มีการบันทึกข้อผิดพลาดของตัวเรนเดอร์",
+      "rendererPagination": "การแบ่งหน้าประวัติข้อผิดพลาดของตัวเรนเดอร์",
+      "records": "รายการ",
+      "previous": "ก่อนหน้า",
+      "next": "ถัดไป",
+      "darkPreview": "โหมดมืด",
+      "releaseTitle": "ประวัติการเผยแพร่",
+      "releaseDescription": "ประวัติการเผยแพร่ที่ล้างข้อมูลพร้อมสถานะและการส่งออก",
+      "retention": "การตั้งค่าการเก็บรักษา",
+      "releaseStatus": "สถานะความสอดคล้อง",
+      "allStatuses": "ทุกสถานะ",
+      "matched": "ตรงกัน",
+      "needsReview": "ต้องตรวจสอบ",
+      "releaseSort": "เรียงตาม",
+      "releaseSortDate": "เวลาเผยแพร่",
+      "releaseSortCheckpoint": "จุดตรวจ",
+      "releaseDirection": "ทิศทาง",
+      "newestFirst": "ใหม่ล่าสุดก่อน",
+      "oldestFirst": "เก่าที่สุดก่อน",
+      "releaseExport": "ดูตัวอย่างการส่งออก",
+      "releaseExportFailed": "ไม่สามารถเตรียมการส่งออกได้",
+      "releaseError": "ไม่สามารถโหลดประวัติการเผยแพร่ได้",
+      "releaseEmpty": "ยังไม่มีรายการเผยแพร่ที่ยืนยันแล้ว",
+      "releasePagination": "การแบ่งหน้าประวัติการเผยแพร่",
+      "time": "เวลา",
+      "checkpoint": "จุดตรวจ",
+      "mainCommit": "คอมมิตหลัก",
+      "parity": "ความสอดคล้อง",
+      "releaseExportTitle": "ตัวอย่างการส่งออก",
+      "releaseExportDescription": "ตรวจสอบสแนปช็อตที่ล้างข้อมูลก่อนคัดลอกหรือดาวน์โหลด",
+      "releaseExportSummary": "แสดง {{previewed}} จาก {{exported}} แถว · ตรงกัน {{matched}}",
+      "releaseExportTruncated": "ขีดจำกัดมี {{exported}} จาก {{matched}} ระเบียน",
+      "close": "ปิด",
+      "copied": "คัดลอกแล้ว",
+      "copy": "คัดลอก CSV",
+      "copyFailed": "คัดลอกไม่สำเร็จ",
+      "download": "ดาวน์โหลด CSV"
+    },
+    "adminAuditRetention": {
+      "back": "ประวัติการตรวจสอบ",
+      "title": "การควบคุมการเก็บรักษา",
+      "description": "เลือกระยะเวลาเก็บข้อมูลวินิจฉัยที่ล้างแล้ว",
+      "controlsTitle": "วงจรชีวิตข้อมูล",
+      "controlsDescription": "ลบเฉพาะระเบียนที่เก่ากว่าขีดจำกัดใหม่",
+      "routeDays": "ประวัติเส้นทาง",
+      "routeDaysHelp": "วันของผลการตรวจสอบเส้นทาง",
+      "rendererDays": "ประวัติตัวเรนเดอร์",
+      "rendererDaysHelp": "วันของสัญญาณตัวเรนเดอร์",
+      "days": "วัน",
+      "invalid": "เลือก 7 ถึง 3,650 วัน",
+      "save": "บันทึกและใช้",
+      "saved": "บันทึกการควบคุมและล้างข้อมูลที่หมดอายุแล้ว",
+      "saveFailed": "ไม่สามารถบันทึกการควบคุมได้",
+      "confirmTitle": "ใช้ขีดจำกัดหรือไม่",
+      "confirmDescription": "ข้อมูลที่หมดอายุจะถูกลบถาวร",
+      "confirmSummary": "เส้นทาง: {{routeDays}} วัน · ตัวเรนเดอร์: {{rendererDays}} วัน",
+      "cancel": "ยกเลิก",
+      "confirm": "ใช้และล้าง"
+    },
+    "adminRendererTrend": {
+      "title": "ข้อผิดพลาดตัวเรนเดอร์ซ้ำ",
+      "description": "เกิดข้อผิดพลาด {{template}} {{count}} ครั้งใน {{hours}} ชั่วโมง โปรดตรวจสอบประวัติก่อนเผยแพร่",
+      "review": "ตรวจสอบประวัติ"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "ฉันยืนยันว่าลูกค้าได้ยินยอมให้ธุรกิจของฉันติดต่อทางอีเมลและ/หรือข้อความ"
+    },
+    "contactsTools": {
+      "addConsentLabel": "ฉันยืนยันว่าลูกค้ารายนี้ยินยอมให้ {businessName} ติดต่อทางอีเมลและ/หรือข้อความเกี่ยวกับประสบการณ์และการซื้อของพวกเขา",
+      "addConsentRequired": "จำเป็นต้องยืนยันความยินยอมเพื่อเพิ่มผู้ติดต่อ"
+    },
+    "adminExportSchedule": {
+      "title": "รายงานประวัติการเผยแพร่อัตโนมัติ",
+      "description": "สร้างสแนปช็อต CSV ที่จำกัดและล้างข้อมูลตามกำหนดเวลา UTC รายงานล่าสุดจะพร้อมให้ผู้ดูแลระบบในประวัติการตรวจสอบ",
+      "enabled": "เปิดใช้รายงานอัตโนมัติ",
+      "cron": "กำหนดเวลา UTC",
+      "cronHelp": "ใช้หกช่อง: วินาที นาที ชั่วโมง วัน เดือน และวันในสัปดาห์ ค่าเริ่มต้น: วันจันทร์ 09:00 UTC",
+      "save": "บันทึกกำหนดเวลารายงาน",
+      "saved": "อัปเดตรายงานประวัติการเผยแพร่อัตโนมัติแล้ว",
+      "saveFailed": "ไม่สามารถบันทึกการตั้งค่ารายงานอัตโนมัติได้",
+      "lastRun": "รายงานล่าสุด: {{date}} · {{count}} แถว",
+      "recentRuns": "รายงานอัตโนมัติล่าสุด",
+      "ready": "พร้อม",
+      "failed": "ล้มเหลว",
+      "rows": "แถว"
+    },
+    "adminRetentionHistory": {
+      "title": "การเปลี่ยนแปลงการเก็บรักษาล่าสุด",
+      "summary": "เส้นทาง: {{fromRoute}} → {{toRoute}} วัน · ตัวเรนเดอร์: {{fromRenderer}} → {{toRenderer}} วัน"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "รับทราบ",
+      "saved": "รับทราบการแจ้งเตือนตัวเรนเดอร์แล้วจนกว่าจะมีหลักฐานใหม่กว่า",
+      "failed": "ไม่สามารถรับทราบการแจ้งเตือนตัวเรนเดอร์ได้"
+    },
+    "automationPaused": {
+      "bannerTitle": "คำขอรีวิวอัตโนมัติถูกพักไว้",
+      "bannerDescription": "คำขออัตโนมัติที่รอดำเนินการ {{count}} รายการกำลังรอให้คุณเชื่อมต่อเซิร์ฟเวอร์อีเมลที่ยืนยันแล้วอีกครั้ง",
+      "viewQueue": "ดูคำขอที่พักไว้",
+      "queueTitle": "คำขออัตโนมัติที่พักไว้",
+      "queueDescription": "คำขอเหล่านี้จะยังรอดำเนินการจนกว่าคุณจะเชื่อมต่อและเลือกเซิร์ฟเวอร์อีเมลที่ยืนยันแล้ว",
+      "reviewRequest": "คำขอรีวิว",
+      "followUp": "ติดตามผล",
+      "morePending": "มีคำขอเพิ่มเติม {{count}} รายการที่รอดำเนินการ"
     }
   },
   "zh-CN": {
@@ -9100,7 +10137,13 @@
         "addressConfirmation": "我们已发送至 {{email}}。请确认拼写并在未收到时检查垃圾邮箱。服务商接受并不保证邮件会被放入收件箱。",
         "emailConfirmationHint": "在您离开前我们会再次显示该地址，方便您检查是否有拼写错误。",
         "providerAcceptedMessage": "您的邮箱提供商已接受该投递指南。",
-        "downloadReadyMessage": "您的指南已可下载。"
+        "downloadReadyMessage": "您的指南已可下载。",
+        "consentGuideLink": "下载同意合规指南（PDF）",
+        "consentCheckLabel": "我同意 Get Phame (getphame.app) 通过电子邮件向我发送产品更新和使用技巧。我可以随时取消订阅。",
+        "consentRequired": "请勾选复选框以继续。",
+        "thankYouHeading": "一切就绪！",
+        "thankYouMessage": "您的指南正在发送至 {{email}}。如未收到，请检查垃圾邮件文件夹。",
+        "thankYouDownload": "邮件发送不可用。请直接在下方下载您的指南。"
       },
       "feature3": {
         "title": "支持所有平台，由您选择。",
@@ -9202,7 +10245,7 @@
         "zoho": "先在 Zoho 启用 SMTP 访问，然后使用您常用的 Zoho 密码。点击上方的“如何获取”。",
         "aol": "这不是您常用的 AOL 密码——请使用应用专用密码。点击上方的“如何获取”。",
         "fastmail": "这不是您常用的 Fastmail 密码——请使用应用专用密码。点击上方的“如何获取”。",
-        "google": "这不是您常用的 Gmail 密码——请使用应用专用密码。点击上方的“如何获取”。",
+        "google": "请不要使用常规账户密码，请使用应用专用密码。请点按上方的“如何获取”。",
         "proton": "ProtonMail 需要 Proton Bridge 应用 — 请使用 Bridge 的 SMTP 密码，而不是您的 Proton 登录密码。点击上方的“如何获取”。",
         "icloud": "请使用应用专用密码，而非 Apple ID 密码。点击上方“如何获取”。"
       },
@@ -9213,7 +10256,56 @@
       "noEmailConnected": "未连接电子邮件",
       "notConnectedDescription": "未连接电子邮件。请在下方输入信息以开始发送评价请求。",
       "displayNameHelp": "将显示为客户收件箱中的发件人名称。",
-      "emailAddressLabel": "您的电子邮件地址 *"
+      "emailAddressLabel": "您的电子邮件地址 *",
+      "gmailGuideTip": "Google 只会显示一次代码。更改 Google 密码后请创建新的应用专用密码，并在断开 Get Phame 时撤销该密码。",
+      "googleWorkspaceGuideStep1": "使用工作账号登录 myaccount.google.com → 安全性",
+      "googleWorkspaceGuideStep2": "如果你的账号可以使用，请开启两步验证",
+      "googleWorkspaceGuideTip": "如果没有应用专用密码选项，组织可能限制了该功能、要求仅使用安全密钥验证，或启用了高级保护。请向 Workspace 管理员询问获准的 SMTP 或 OAuth 连接方式。",
+      "gmailGuideTitle": "Gmail 应用专用密码 — 4 个步骤",
+      "gmailGuideStep1": "前往 myaccount.google.com → 安全性",
+      "gmailGuideStep2": "如果尚未开启，请开启两步验证",
+      "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 Get Phame → 点击创建",
+      "gmailGuideStep4": "复制 16 位代码并粘贴到此处，请移除所有空格",
+      "googleWorkspaceGuideTitle": "Google Workspace 应用专用密码 — 4 个步骤",
+      "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 Get Phame → 点击创建",
+      "googleWorkspaceGuideStep4": "复制 16 位代码并粘贴到此处，请移除所有空格",
+      "deliveryStatus": {
+        "active": "已启用，可用于客户评价请求",
+        "notSelected": "已连接，但未被选用于客户评价请求",
+        "bulkActive": "已连接，但你的批量邮件服务已被选用于客户评价请求",
+        "needsAttention": "需要处理：请更新 SMTP 详细信息并重新连接，然后再发送客户评价请求"
+      },
+      "connectionSavedMessage": "您的邮件服务器已连接，可用于向客户发送请求。",
+      "gmailAppPasswordTooltipLabel": "Gmail 应用专用密码帮助",
+      "workspaceAppPasswordTooltipLabel": "Google Workspace 应用专用密码帮助",
+      "gmailAppPasswordTooltip": "请使用 16 位应用专用密码，而不是常规 Gmail 密码。请先开启两步验证。",
+      "workspaceAppPasswordTooltip": "您的 Workspace 管理员必须允许使用应用专用密码。如果此选项不可用，请使用组织批准的 SMTP 或 OAuth 方法。",
+      "testPassedNotSaved": "连接测试通过。您的凭据尚未保存。",
+      "testFailed": "连接测试失败。请检查服务器信息后重试。",
+      "testingCandidate": "正在测试您的邮件服务器…",
+      "testBeforeSave": "保存前测试",
+      "connectingAndVerifying": "正在连接并验证…",
+      "connectAndSave": "连接并保存",
+      "testEmailRecipient": "将测试邮件发送到",
+      "testEmailHint": "请使用您可控制的地址。系统会使用已保存的邮件服务器，不会保存新的收件人。",
+      "testEmailRecipientRequired": "请输入接收测试邮件的地址。",
+      "sendingTestEmail": "正在发送测试邮件…",
+      "sendTestEmail": "发送测试邮件",
+      "testEmailSent": "测试邮件已发送。请检查收件人收件箱。",
+      "disconnectConfirmTitle": "要断开此邮件服务器吗？",
+      "disconnectConfirmDescription": "此操作将永久删除已保存的邮件服务器凭据，并停止未来发送，直到您连接新的已验证服务器。",
+      "disconnecting": "正在断开连接…",
+      "disconnectConfirmAction": "断开并重置",
+      "testEmailHistoryTitle": "测试邮件记录",
+      "testEmailHistoryPrivacy": "收件人已脱敏。仅显示最近 12 次诊断尝试。",
+      "testEmailHistoryEmpty": "尚未发送诊断测试邮件。",
+      "testEmailHistorySent": "已发送",
+      "testEmailHistoryFailed": "失败",
+      "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。",
+      "retryTestEmail": "重试",
+      "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。",
+      "connectionTestPassed": "邮件服务器连接已验证。",
+      "connectionTestFailed": "邮件服务器仍需处理。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -9283,7 +10375,8 @@
       "dashboard": "仪表板",
       "lightMode": "浅色模式",
       "open": "打开账户菜单",
-      "signedInAs": "已登录为"
+      "signedInAs": "已登录为",
+      "avatarAlt": "您的个人头像"
     },
     "tabs": {
       "account": "账户与个人资料",
@@ -9308,11 +10401,20 @@
         "uploadAvatar": "上传照片",
         "avatarReadError": "无法读取该图片。请尝试其他文件。",
         "emailHelp": "您的登录邮箱由您的身份验证提供商管理。"
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "发现旧的平台邮件连接，但不能用于客户沟通。请连接您自己拥有的批量邮件服务商账户。",
+        "activeOutreach": "已启用，可用于客户评价请求",
+        "notActive": "已连接，但未被选用于客户评价请求",
+        "connectionSavedMessage": "您的批量邮件服务器已连接，可立即使用。",
+        "connectingAndVerifying": "正在连接并验证…"
       }
     },
     "profile": {
       "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。",
-      "emailSenderSettings": "发件人设置"
+      "emailSenderSettings": "发件人设置",
+      "consentLabelName": "同意复选框中的企业名称",
+      "consentLabelNameDescription": "在表单同意复选框标签中显示的企业名称。默认使用上方的企业名称。"
     },
     "homePage": {
       "annualPro": "年度专业版",
@@ -9677,7 +10779,8 @@
       "stats": {
         "thisMonth": "本月",
         "allTime": "所有时间",
-        "last7Days": "最近7天"
+        "last7Days": "最近7天",
+        "consented": "已同意"
       },
       "emailPerformance": {
         "title": "邮件表现",
@@ -9723,6 +10826,22 @@
         "markAllShort": "全部标记",
         "markAllSuccess": "{{count}} 条已标记为审阅",
         "markReviewed": "标记为已审阅"
+      },
+      "mailHealth": {
+        "healthy": "邮件服务器运行正常",
+        "healthyDetail": "您已连接的邮件服务器已准备好发送消息。",
+        "attention": "邮件服务器需要处理",
+        "attentionDetail": "请在发送前于设置中重新测试或更新邮件服务器。",
+        "disconnected": "邮件服务器未连接",
+        "disconnectedDetail": "请先连接您自己的邮件服务器再发送消息。",
+        "bulkActive": "批量邮件服务器已启用",
+        "bulkActiveDetail": "您选择的批量邮件服务商已启用。",
+        "healthyTooltip": "已选择经过验证的个人邮件服务器，最新健康状态无需处理。",
+        "attentionTooltip": "保存的连接需要处理。请重新测试或更新服务商设置后再发送客户外联。",
+        "disconnectedTooltip": "未选择经过验证的租户邮件通道。在设置中连接前，客户外联将保持暂停。",
+        "bulkActiveTooltip": "已选择经过验证的租户批量邮件服务商。请在设置中管理或替换。",
+        "details": "邮件服务器健康详情",
+        "troubleshoot": "排查问题"
       }
     },
     "reminderRow": {
@@ -9740,7 +10859,12 @@
     "onboarding": {
       "googleBtn": "使用 Google 继续",
       "appleBtn": "使用 Apple 继续",
-      "finePrint": "免费开始 — 含10次评价请求。无需信用卡。"
+      "finePrint": "免费开始 — 含10次评价请求。无需信用卡。",
+      "consentStepTitle": "在您的表单中添加同意复选框",
+      "consentStepDesc": "在收集联系人或发送评价请求之前，您的表单必须包含同意复选框。这是CAN-SPAM、TCPA和GDPR的要求。",
+      "consentStepAction": "下载同意指南（PDF）",
+      "consentStepAck": "我已经（或将会）在我的客户表单中添加同意复选框",
+      "consentStepAckRequired": "请确认您将在继续之前添加同意复选框"
     },
     "toastMessages": {
       "followUpReminderSent": "跟进提醒已发送！",
@@ -9851,8 +10975,8 @@
           "make": "Make 客户导入",
           "custom": "自定义客户导入"
         },
-        "apiKey": "来源 API 密钥",
-        "noKeys": "没有有效的来源密钥",
+        "apiKey": "导入 API 密钥",
+        "noKeys": "没有有效的导入密钥",
         "expected": "预期活动",
         "intervals": {
           "15": "每15分钟",
@@ -9897,8 +11021,8 @@
         "pause": "暂停监控",
         "resume": "恢复监控",
         "archive": "归档",
-        "template": "自动化事件模板",
-        "templateDescription": "将此评价请求事件原样复制到自动化工具受保护的 HTTP 或 Webhook 操作中。",
+        "template": "引导模板",
+        "templateDescription": "将此完整请求复制到自动化中的受保护 HTTP 或 webhook 操作。",
         "copyRecipe": "复制请求示例",
         "recipeCopied": "连接请求示例已复制。",
         "secretReminder": "仅在提供商的受保护密钥字段中使用原始 API 密钥。来源 ID 可安全复制，但只能与其关联的密钥一起使用。",
@@ -9922,23 +11046,23 @@
             "2": "添加 Webhooks by Zapier，并选择 Custom Request。",
             "3": "将 Method 设置为 POST，并粘贴 Get Phame 端点。",
             "4": "按下方所示准确添加受保护的请求头。",
-            "5": "映射 sourceSubmissionId、preferredLocale 以及完整的嵌套同意证据对象。",
-            "6": "运行只读预检，启用安全试运行，发送一个获准事件，然后决定是否正式启用。"
+            "5": "映射 JSON 字段，使用一个稳定的提供者 ID 作为 externalId 和 Idempotency-Key。",
+            "6": "使用一条允许的记录测试操作，然后在此刷新健康状态。"
           },
           "make": {
             "1": "选择会生成合格客户记录的触发模块。",
             "2": "添加 HTTP 模块并选择 Make a request。",
             "3": "将 Method 设置为 POST，Body type 设置为 Raw，Content type 设置为 application/json。",
             "4": "按下方所示准确添加受保护的请求头。",
-            "5": "映射 sourceSubmissionId、preferredLocale 以及完整的嵌套同意证据对象。",
-            "6": "运行只读预检，启用安全试运行，发送一个获准事件，然后决定是否正式启用。"
+            "5": "映射 JSON 字段，使用一个稳定的 bundle ID 作为 externalId 和 Idempotency-Key。",
+            "6": "运行场景一次，使用一条允许的记录，然后在此刷新健康状态。"
           },
           "custom": {
             "1": "使用支持 POST 和受保护请求头的可信服务器端工作流。",
             "2": "将 API 密钥存储在工作流的密钥存储中，切勿放在浏览器代码或 URL 中。",
             "3": "将 JSON 和下方所示的请求头一起发送到 Get Phame 端点。",
-            "4": "为 sourceSubmissionId 和 Idempotency-Key 使用同一个不可变的来源记录 ID。",
-            "5": "运行只读预检，启用安全试运行，发送一个获准事件，然后决定是否正式启用。"
+            "4": "为 externalId 和 Idempotency-Key 使用一个不可变的来源记录 ID。",
+            "5": "发送一条允许的记录，然后在此刷新健康状态。"
           }
         },
         "automation": {
@@ -10032,55 +11156,6 @@
         "failurePrivacy": "未创建或泄露任何凭据。请从 WordPress 仪表板重新开始。",
         "expiredPrivacy": "请在 WordPress 中发起新的连接。Get Phame 不会接收您的 WordPress 管理员凭据。",
         "privacy": "此请求将在 15 分钟后过期。Get Phame 不会接收您的 WordPress 管理员凭据。"
-      },
-      "sources": {
-        "description": "选择获准客户事件的起点。Get Phame 会先验证特定用途同意、抑制状态、发送就绪情况和幂等性，然后才允许自动评价请求正式启用。",
-        "badge": "先验证 · 后启用",
-        "steps": {
-          "choose": "选择来源",
-          "key": "创建来源密钥",
-          "map": "映射字段和同意证据",
-          "test": "预检和安全试运行"
-        },
-        "rules": {
-          "activation": "从安全试运行模式开始。只有获授权人员完成预检、验证一个服务商事件并明确启用来源后，正式评价请求才会开启。"
-        },
-        "recipeTitle": "安全评价事件模板",
-        "fields": {
-          "eventType": "固定值：review_request",
-          "name": "客户姓名字段",
-          "email": "客户邮箱字段",
-          "phone": "可选客户电话字段",
-          "externalId": "不可变的服务商事件或记录 ID",
-          "sourceApp": "上方显示的固定服务商标识",
-          "sourceFormId": "稳定的服务商表单标识",
-          "sourceSubmissionId": "不可变的提交或潜在客户标识",
-          "preferredLocale": "受支持的语言代码：en、es、fr、it、th、zh-CN 或 zh-TW",
-          "consentConfirmed": "仅在明确授权后设为 true",
-          "consentBasis": "customer_relationship、explicit_opt_in 或 other",
-          "consentPurpose": "固定值：review_outreach",
-          "consentChannel": "固定值：email",
-          "consentCapturedAt": "带时区的 ISO 8601 提交时间",
-          "consentSource": "简要说明授权的获取位置",
-          "consentText": "向该人员显示的评价沟通复选框原文",
-          "consentVersion": "由企业管理的不可变文案版本",
-          "privacyPolicyUrl": "复选框旁显示的 HTTPS 隐私政策网址"
-        },
-        "consentCopyTitle": "评价沟通复选框——复制并调整",
-        "consentCopyInstructions": "此复选框默认不得勾选。可将其作为加入自动评价沟通的条件，但不得作为无关购买、报价或服务的条件。请由合格法律顾问审核最终文案和流程。",
-        "reviewConsentCopy": "我同意 {{business_name}} 就我最近的购买或服务体验向我发送电子邮件，包括一次评价请求和最多两次提醒。我可以随时取消订阅。同意并非购买条件。请参阅隐私政策。",
-        "marketingConsentTitle": "单独的可选营销许可",
-        "marketingConsentCopy": "我愿意偶尔接收 {{business_name}} 的营销电子邮件和优惠。我可以随时取消订阅。同意并非购买条件。请参阅隐私政策。",
-        "channelBoundary": "不得将任一电子邮件复选框视为对短信、自动电话或其他用途的许可。缺少有效评价沟通证据的提交必须标记为不合格，且不得自动发送。",
-        "testTitle": "安全地测试、重试和撤销",
-        "testImport": "使用一名获准收件人运行只读验证端点。在不导入或发送的情况下确认来源绑定、抑制状态、SMTP、配额、模板和目标。",
-        "testReplay": "启用安全试运行，提交一个真实服务商事件，再使用相同 Idempotency-Key 重放。应返回相同结果，而不是创建重复工作。",
-        "testFailure": "同意冲突和验证错误应视为终止错误。仅重试可恢复故障，遵守 Retry-After，并始终复用相同事件 ID。",
-        "testActivate": "在获授权人员从试运行切换为正式发送之前，确认已批准模板、收件人语言、目标、提醒和延迟。",
-        "testRevoke": "若要停止来源，请在 Get Phame 和服务商中暂停它，撤销或轮换密钥，并保留脱敏审计历史。",
-        "nextDescription": "创建同时具有 contacts:write 和 review_requests:send 权限的来源密钥，将其绑定到托管来源，然后完成预检和一次安全试运行。",
-        "createKey": "创建来源密钥",
-        "viewImports": "管理来源"
       }
     },
     "manual": {
@@ -10271,6 +11346,177 @@
     "activityTrend": {
       "csvDownloaded": "活动趋势 CSV 已下载。",
       "pngDownloaded": "活动趋势 PNG 已下载。"
+    },
+    "adminEmailPreview": {
+      "title": "电子邮件模板预览",
+      "selectTemplate": "选择模板",
+      "loading": "正在加载预览…",
+      "error": "加载预览失败。",
+      "noPreview": "暂无预览。",
+      "note": "预览使用示例数据，实际邮件将使用真实用户名和安全链接发送。",
+      "sendTest": "发送测试邮件",
+      "sending": "发送中…",
+      "testSent": "测试邮件已发送！",
+      "testFailed": "测试邮件发送失败。",
+      "darkMode": "深色模式",
+      "copyHtml": "复制 HTML",
+      "copied": "已复制！",
+      "emailPlaceholder": "发送至…",
+      "openTab": "在新标签页打开",
+      "variables": "变量",
+      "variablesNote": "替换模板中的 [name]、[company]、[plan]、[email] 占位符",
+      "resetVars": "重置",
+      "split": "分屏",
+      "savePreset": "保存",
+      "presetNamePlaceholder": "预设名称…",
+      "previewReady": "预览已就绪",
+      "previewFallback": "无法在嵌入式框架中呈现此预览。",
+      "previewLoading": "正在生成邮件预览…",
+      "exportHtml": "导出 HTML",
+      "exported": "已下载！",
+      "copyFailed": "此浏览器阻止了复制已渲染的 HTML。"
+    },
+    "adminRouteAudit": {
+      "eyebrow": "生产保障",
+      "title": "生产路由审计",
+      "description": "安全检查站点地图中的公开路由是否存在浏览器渲染错误。不会触及帐户、表单或客户数据。",
+      "run": "运行路由审计",
+      "running": "正在审计路由…",
+      "viewHistory": "查看历史记录",
+      "runningDescription": "正在为当前公开站点地图启动干净的浏览器。此过程最多可能需要两分钟。",
+      "unavailable": "审计运行器不可用",
+      "completedWithIssues": "审计完成，但发现问题",
+      "completed": "审计已成功完成",
+      "failureCode": "失败代码",
+      "summary": "已审计 {{routes}} 个路由 · {{failures}} 个失败",
+      "resultRoutes": "已审计路由",
+      "issue": "需要检查",
+      "rendered": "已渲染",
+      "passed": "生产路由审计已通过。",
+      "failed": "生产路由审计发现问题。",
+      "runFailed": "无法运行生产路由审计。"
+    },
+    "adminAuditLog": {
+      "back": "管理仪表板",
+      "title": "审计和渲染历史记录",
+      "description": "仅限管理员的运营历史记录。存储的记录仅包含已净化的审计信号，绝不包含客户内容、电子邮件 HTML、Cookie 或浏览器日志。",
+      "refresh": "刷新历史记录",
+      "routeTitle": "生产路由审计",
+      "routeDescription": "对站点地图发现的公开路由进行手动浏览器检查，按最新优先排序。",
+      "runAnother": "运行另一项审计 →",
+      "routeError": "无法加载路由审计历史记录。",
+      "routes": "个路由",
+      "issuesFound": "{{count}} 个问题",
+      "passed": "已通过",
+      "routeEmpty": "尚未记录任何生产路由审计。",
+      "routePagination": "路由审计历史记录分页",
+      "rendererTitle": "电子邮件预览渲染器错误",
+      "rendererDescription": "只有在管理员预览无法渲染已验证内容时，才会捕获已净化的信号。",
+      "rendererError": "无法加载渲染器错误历史记录。",
+      "rendererEmpty": "尚未记录渲染器错误。",
+      "rendererPagination": "渲染器错误历史记录分页",
+      "records": "条记录",
+      "previous": "上一页",
+      "next": "下一页",
+      "darkPreview": "深色",
+      "releaseTitle": "发布历史记录",
+      "releaseDescription": "已净化发布历史记录，包含状态和导出。",
+      "retention": "保留设置",
+      "releaseStatus": "一致性状态",
+      "allStatuses": "所有状态",
+      "matched": "已匹配",
+      "needsReview": "需要检查",
+      "releaseSort": "排序方式",
+      "releaseSortDate": "发布时间",
+      "releaseSortCheckpoint": "检查点",
+      "releaseDirection": "方向",
+      "newestFirst": "最新优先",
+      "oldestFirst": "最早优先",
+      "releaseExport": "预览导出",
+      "releaseExportFailed": "无法准备导出。",
+      "releaseError": "无法加载发布历史记录。",
+      "releaseEmpty": "没有已验证的发布记录。",
+      "releasePagination": "发布历史记录分页",
+      "time": "时间",
+      "checkpoint": "检查点",
+      "mainCommit": "主分支提交",
+      "parity": "一致性",
+      "releaseExportTitle": "预览导出",
+      "releaseExportDescription": "请在复制或下载前查看已净化快照。",
+      "releaseExportSummary": "预览 {{previewed}} / {{exported}} 行 · {{matched}} 条匹配",
+      "releaseExportTruncated": "上限包含 {{exported}} / {{matched}} 条记录。",
+      "close": "关闭",
+      "copied": "已复制",
+      "copy": "复制 CSV",
+      "copyFailed": "复制失败",
+      "download": "下载 CSV"
+    },
+    "adminAuditRetention": {
+      "back": "审计历史记录",
+      "title": "保留控制",
+      "description": "选择已净化诊断信息的保留时间。",
+      "controlsTitle": "数据生命周期",
+      "controlsDescription": "仅删除早于新限制的记录。",
+      "routeDays": "路由历史记录",
+      "routeDaysHelp": "路由审计结果的天数。",
+      "rendererDays": "渲染器历史记录",
+      "rendererDaysHelp": "渲染器信号的天数。",
+      "days": "天",
+      "invalid": "请选择 7 到 3,650 天。",
+      "save": "保存并应用",
+      "saved": "已保存控制并清除过期诊断记录。",
+      "saveFailed": "无法保存控制。",
+      "confirmTitle": "应用限制？",
+      "confirmDescription": "过期诊断信息将被永久删除。",
+      "confirmSummary": "路由：{{routeDays}} 天 · 渲染器：{{rendererDays}} 天",
+      "cancel": "取消",
+      "confirm": "应用并清除"
+    },
+    "adminRendererTrend": {
+      "title": "重复的渲染器失败",
+      "description": "{{hours}} 小时内发生了 {{count}} 次 {{template}} 失败。请在发布前查看历史记录。",
+      "review": "查看历史记录"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "我确认客户已同意我的企业通过电子邮件和/或短信与其联系"
+    },
+    "contactsTools": {
+      "addConsentLabel": "我确认此客户已同意{businessName}通过电子邮件和/或短信联系他们，了解其体验和购买情况",
+      "addConsentRequired": "添加联系人需要确认同意"
+    },
+    "adminExportSchedule": {
+      "title": "自动发布历史报告",
+      "description": "按 UTC 计划创建有边界且已净化的 CSV 快照。最新报告会保留在审计历史中供管理员查看。",
+      "enabled": "启用自动报告",
+      "cron": "UTC 计划",
+      "cronHelp": "使用六个字段：秒、分、时、日、月和星期。默认：周一 09:00 UTC。",
+      "save": "保存报告计划",
+      "saved": "已更新自动发布历史报告。",
+      "saveFailed": "无法保存自动报告设置。",
+      "lastRun": "上次报告：{{date}} · {{count}} 行",
+      "recentRuns": "最近的自动报告",
+      "ready": "已就绪",
+      "failed": "失败",
+      "rows": "行"
+    },
+    "adminRetentionHistory": {
+      "title": "最近的保留期更改",
+      "summary": "路由：{{fromRoute}} → {{toRoute}} 天 · 渲染器：{{fromRenderer}} → {{toRenderer}} 天"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "确认",
+      "saved": "已确认渲染器警报，直到记录到更新的证据。",
+      "failed": "无法确认渲染器警报。"
+    },
+    "automationPaused": {
+      "bannerTitle": "自动评价请求已暂停",
+      "bannerDescription": "有 {{count}} 个待处理的自动请求，等待您重新连接已验证的邮件服务器。",
+      "viewQueue": "查看已暂停请求",
+      "queueTitle": "已暂停的自动请求",
+      "queueDescription": "这些请求会保持待处理状态，直到您连接并选择已验证的邮件服务器。",
+      "reviewRequest": "评价请求",
+      "followUp": "跟进",
+      "morePending": "另有 {{count}} 个请求待处理。"
     }
   },
   "zh-TW": {
@@ -10761,7 +12007,13 @@
         "addressConfirmation": "我們已傳送到 {{email}}。請確認拼寫並檢查垃圾郵件匣。供應商接收並不保證會進入收件匣。",
         "emailConfirmationHint": "在您離開前我們會再顯示該地址，讓您能發現並修正錯字。",
         "providerAcceptedMessage": "您的電子郵件供應商已接受送達指引。",
-        "downloadReadyMessage": "您的指南已可下載。"
+        "downloadReadyMessage": "您的指南已可下載。",
+        "consentGuideLink": "下載同意合規指南（PDF）",
+        "consentCheckLabel": "我同意 Get Phame (getphame.app) 透過電子郵件向我發送產品更新和使用技巧。我可以隨時取消訂閱。",
+        "consentRequired": "請勾選核取方塊以繼續。",
+        "thankYouHeading": "一切就緒！",
+        "thankYouMessage": "您的指南正在發送至 {{email}}。如未收到，請檢查垃圾郵件資料夾。",
+        "thankYouDownload": "郵件發送不可用。請直接在下方下載您的指南。"
       },
       "feature3": {
         "title": "所有平台，由您選擇。",
@@ -10863,7 +12115,7 @@
         "zoho": "請先在 Zoho 啟用 SMTP 存取，然後使用您常用的 Zoho 密碼。點選上方的「如何取得」。",
         "aol": "不是您一般的 AOL 密碼 — 請使用應用程式專用密碼。點選上方的「如何取得」。",
         "fastmail": "不是您一般的 Fastmail 密碼 — 請使用應用程式專用密碼。點選上方的「如何取得」。",
-        "google": "不是您一般的 Gmail 密碼 — 請使用應用程式專用密碼。點選上方的「如何取得」。",
+        "google": "請不要使用一般帳戶密碼，請改用應用程式密碼。請點按上方的「如何取得」。",
         "proton": "ProtonMail 需要 Proton Bridge 應用程式 — 使用該應用提供的 SMTP 密碼，而非你的 Proton 帳號密碼。點選上方的「How to get it」。",
         "icloud": "請使用 App-Specific Password，而非您的 Apple ID 密碼。點選上方「如何取得」。"
       },
@@ -10874,7 +12126,56 @@
       "noEmailConnected": "尚未連結電子郵件",
       "notConnectedDescription": "尚未連結電子郵件。請在下方輸入您的資料以開始發送評論邀請。",
       "displayNameHelp": "會顯示為顧客收件匣中的寄件者名稱。",
-      "emailAddressLabel": "您的電子郵件地址 *"
+      "emailAddressLabel": "您的電子郵件地址 *",
+      "gmailGuideTip": "Google 只會顯示一次代碼。變更 Google 密碼後請建立新的應用程式密碼，並在中斷 Get Phame 連線時撤銷該密碼。",
+      "googleWorkspaceGuideStep1": "使用工作帳戶登入 myaccount.google.com → 安全性",
+      "googleWorkspaceGuideStep2": "如果帳戶可使用，請開啟兩步驟驗證",
+      "googleWorkspaceGuideTip": "如果沒有應用程式密碼選項，組織可能限制該功能、要求僅使用安全金鑰驗證，或啟用了進階保護。請向 Workspace 管理員詢問已核准的 SMTP 或 OAuth 連線方式。",
+      "gmailGuideTitle": "Gmail 應用程式密碼 — 4 個步驟",
+      "gmailGuideStep1": "前往 myaccount.google.com → 安全性",
+      "gmailGuideStep2": "如果尚未開啟，請開啟兩步驟驗證",
+      "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 按一下建立",
+      "gmailGuideStep4": "複製 16 位代碼並貼到此處，請移除所有空格",
+      "googleWorkspaceGuideTitle": "Google Workspace 應用程式密碼 — 4 個步驟",
+      "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名為 Get Phame → 按一下建立",
+      "googleWorkspaceGuideStep4": "複製 16 位代碼並貼到此處，請移除所有空格",
+      "deliveryStatus": {
+        "active": "已啟用，可用於客戶評價請求",
+        "notSelected": "已連線，但未被選用於客戶評價請求",
+        "bulkActive": "已連線，但您的大量寄信服務已被選用於客戶評價請求",
+        "needsAttention": "需要處理：請更新 SMTP 詳細資料並重新連線，然後再傳送客戶評價請求"
+      },
+      "connectionSavedMessage": "您的郵件伺服器已連線，可用於向客戶傳送請求。",
+      "gmailAppPasswordTooltipLabel": "Gmail 應用程式密碼說明",
+      "workspaceAppPasswordTooltipLabel": "Google Workspace 應用程式密碼說明",
+      "gmailAppPasswordTooltip": "請使用 16 位應用程式密碼，而不是一般 Gmail 密碼。請先開啟兩步驟驗證。",
+      "workspaceAppPasswordTooltip": "您的 Workspace 管理員必須允許使用應用程式密碼。如果此選項無法使用，請改用組織核准的 SMTP 或 OAuth 方法。",
+      "testPassedNotSaved": "連線測試通過。您的憑證尚未儲存。",
+      "testFailed": "連線測試失敗。請檢查伺服器資訊後再試一次。",
+      "testingCandidate": "正在測試您的郵件伺服器…",
+      "testBeforeSave": "儲存前測試",
+      "connectingAndVerifying": "正在連線並驗證…",
+      "connectAndSave": "連線並儲存",
+      "testEmailRecipient": "將測試電子郵件寄送至",
+      "testEmailHint": "請使用您可控制的地址。系統會使用已儲存的郵件伺服器，不會儲存新的收件者。",
+      "testEmailRecipientRequired": "請輸入要接收測試電子郵件的地址。",
+      "sendingTestEmail": "正在傳送測試電子郵件…",
+      "sendTestEmail": "傳送測試電子郵件",
+      "testEmailSent": "測試電子郵件已傳送。請檢查收件者收件匣。",
+      "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
+      "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
+      "disconnecting": "正在中斷連線…",
+      "disconnectConfirmAction": "中斷並重設",
+      "testEmailHistoryTitle": "測試郵件記錄",
+      "testEmailHistoryPrivacy": "收件者已遮蔽。僅顯示最近 12 次診斷嘗試。",
+      "testEmailHistoryEmpty": "尚未傳送診斷測試郵件。",
+      "testEmailHistorySent": "已傳送",
+      "testEmailHistoryFailed": "失敗",
+      "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。",
+      "retryTestEmail": "重試",
+      "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
+      "connectionTestPassed": "郵件伺服器連線已驗證。",
+      "connectionTestFailed": "郵件伺服器仍需處理。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -10944,7 +12245,8 @@
       "dashboard": "儀表板",
       "lightMode": "淺色模式",
       "open": "開啟帳戶選單",
-      "signedInAs": "已登入為"
+      "signedInAs": "已登入為",
+      "avatarAlt": "您的個人頭像"
     },
     "tabs": {
       "account": "帳戶與個人檔案",
@@ -10969,11 +12271,20 @@
         "uploadAvatar": "上傳照片",
         "avatarReadError": "無法讀取該影像。請嘗試其他檔案。",
         "emailHelp": "您的登入電子郵件由身分驗證提供者管理。"
+      },
+      "bulkSender": {
+        "legacyPlatformNotice": "偵測到舊版平台郵件連線，但不能用於客戶外聯。請連接您自己擁有的大量寄信服務商帳戶。",
+        "activeOutreach": "已啟用，可用於客戶評價請求",
+        "notActive": "已連線，但未被選用於客戶評價請求",
+        "connectionSavedMessage": "您的大量寄信伺服器已連線，可立即使用。",
+        "connectingAndVerifying": "正在連線並驗證…"
       }
     },
     "profile": {
       "addBusinessNameAndLink": "請先在設定中新增您的商家名稱與 Google 評論連結。",
-      "emailSenderSettings": "電子郵件寄件者設定"
+      "emailSenderSettings": "電子郵件寄件者設定",
+      "consentLabelName": "同意核取方塊中的企業名稱",
+      "consentLabelNameDescription": "在表單同意核取方塊標籤中顯示的企業名稱。預設使用上方的企業名稱。"
     },
     "homePage": {
       "annualPro": "年度 Pro",
@@ -11338,7 +12649,8 @@
       "stats": {
         "thisMonth": "本月",
         "allTime": "所有時間",
-        "last7Days": "過去 7 天"
+        "last7Days": "過去 7 天",
+        "consented": "已同意"
       },
       "emailPerformance": {
         "title": "電子郵件成效",
@@ -11384,6 +12696,22 @@
         "markAllShort": "全部標記",
         "markAllSuccess": "{{count}} 條已標記為審閱",
         "markReviewed": "標記為已審閱"
+      },
+      "mailHealth": {
+        "healthy": "郵件伺服器運作正常",
+        "healthyDetail": "您已連接的郵件伺服器已準備好傳送訊息。",
+        "attention": "郵件伺服器需要處理",
+        "attentionDetail": "請在傳送前於設定中重新測試或更新郵件伺服器。",
+        "disconnected": "郵件伺服器未連接",
+        "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
+        "bulkActive": "大量郵件伺服器已啟用",
+        "bulkActiveDetail": "您選取的大量郵件服務商已啟用。",
+        "healthyTooltip": "已選取經過驗證的個人郵件伺服器，最新健康狀態無需處理。",
+        "attentionTooltip": "已儲存的連線需要處理。請重新測試或更新服務商設定後再傳送客戶外聯。",
+        "disconnectedTooltip": "未選取經過驗證的租戶郵件通道。在設定中連線前，客戶外聯將保持暫停。",
+        "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
+        "details": "郵件伺服器健康詳細資料",
+        "troubleshoot": "疑難排解"
       }
     },
     "reminderRow": {
@@ -11401,7 +12729,12 @@
     "onboarding": {
       "googleBtn": "以 Google 繼續",
       "appleBtn": "以 Apple 繼續",
-      "finePrint": "立即開始免費試用 — 含 10 次評論請求。免信用卡。"
+      "finePrint": "立即開始免費試用 — 含 10 次評論請求。免信用卡。",
+      "consentStepTitle": "在您的表單中新增同意核取方塊",
+      "consentStepDesc": "在收集聯絡人或發送評價請求之前，您的表單必須包含同意核取方塊。這是CAN-SPAM、TCPA和GDPR的要求。",
+      "consentStepAction": "下載同意指南（PDF）",
+      "consentStepAck": "我已經（或將會）在我的客戶表單中新增同意核取方塊",
+      "consentStepAckRequired": "請確認您將在繼續之前新增同意核取方塊"
     },
     "toastMessages": {
       "followUpReminderSent": "追蹤提醒已發送！",
@@ -11512,8 +12845,8 @@
           "make": "Make 客戶匯入",
           "custom": "自訂客戶匯入"
         },
-        "apiKey": "來源 API 金鑰",
-        "noKeys": "沒有有效的來源金鑰",
+        "apiKey": "匯入 API 金鑰",
+        "noKeys": "沒有啟用的匯入金鑰",
         "expected": "預期活動",
         "intervals": {
           "15": "每 15 分鐘",
@@ -11558,8 +12891,8 @@
         "pause": "暫停監控",
         "resume": "恢復監控",
         "archive": "封存",
-        "template": "自動化事件範本",
-        "templateDescription": "將此評論請求事件原樣複製到自動化工具受保護的 HTTP 或 Webhook 動作中。",
+        "template": "引導範本",
+        "templateDescription": "將此完整請求複製到自動化的受保護 HTTP 或 webhook 動作中。",
         "copyRecipe": "複製範本",
         "recipeCopied": "連線範本已複製。",
         "secretReminder": "請僅在提供者的受保護祕密欄位中使用原始 API 金鑰。來源 ID 可安全複製，但僅能搭配其對應金鑰使用。",
@@ -11583,23 +12916,23 @@
             "2": "新增 Webhooks by Zapier，並選擇 Custom Request。",
             "3": "將 Method 設為 POST，並貼上 Get Phame 的端點。",
             "4": "如下方所示，精確加入受保護的標頭。",
-            "5": "對應 sourceSubmissionId、preferredLocale 以及完整的巢狀同意證據物件。",
-            "6": "執行唯讀預檢，啟用安全試跑，傳送一個獲准事件，再決定是否正式啟用。"
+            "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的供應者 ID。",
+            "6": "以一筆允許的記錄測試此動作，然後在此更新健康狀態。"
           },
           "make": {
             "1": "選擇會產生符合條件客戶記錄的觸發模組。",
             "2": "新增 HTTP 模組並選擇 Make a request。",
             "3": "將 Method 設為 POST、Body type 設為 Raw，並將 Content type 設為 application/json。",
             "4": "如下方所示，精確加入受保護的標頭。",
-            "5": "對應 sourceSubmissionId、preferredLocale 以及完整的巢狀同意證據物件。",
-            "6": "執行唯讀預檢，啟用安全試跑，傳送一個獲准事件，再決定是否正式啟用。"
+            "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的 bundle ID。",
+            "6": "以一筆允許的記錄執行一次情境，然後在此更新健康狀態。"
           },
           "custom": {
             "1": "使用支援 POST 與受保護標頭的可信伺服器端工作流程。",
             "2": "將 API 金鑰儲存在工作流程的祕密存放處，切勿放在瀏覽器程式碼或 URL 中。",
             "3": "將 JSON 與下方標頭一起送至 Get Phame 端點。",
-            "4": "讓 sourceSubmissionId 與 Idempotency-Key 使用同一個不可變的來源記錄 ID。",
-            "5": "執行唯讀預檢，啟用安全試跑，傳送一個獲准事件，再決定是否正式啟用。"
+            "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
+            "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
           }
         },
         "automation": {
@@ -11694,55 +13027,6 @@
         "failurePrivacy": "未建立或洩露任何憑證。請從 WordPress 儀表板重新開始。",
         "expiredPrivacy": "請在 WordPress 中重新建立連線。Get Phame 不會接收您的 WordPress 管理員憑證。",
         "privacy": "此請求將於 15 分鐘後到期。Get Phame 不會接收您的 WordPress 管理員憑證。"
-      },
-      "sources": {
-        "description": "選擇獲准客戶事件的起點。Get Phame 會先驗證特定用途同意、抑制狀態、傳送就緒情況與冪等性，才允許自動評論請求正式啟用。",
-        "badge": "先驗證 · 後啟用",
-        "steps": {
-          "choose": "選擇來源",
-          "key": "建立來源金鑰",
-          "map": "對應欄位與同意證據",
-          "test": "預檢與安全試跑"
-        },
-        "rules": {
-          "activation": "從安全試跑模式開始。只有獲授權人員完成預檢、驗證一個服務商事件並明確啟用來源後，正式評論請求才會開啟。"
-        },
-        "recipeTitle": "安全評論事件範本",
-        "fields": {
-          "eventType": "固定值：review_request",
-          "name": "客戶姓名欄位",
-          "email": "客戶電子郵件欄位",
-          "phone": "選填客戶電話欄位",
-          "externalId": "不可變的服務商事件或記錄 ID",
-          "sourceApp": "上方顯示的固定服務商識別碼",
-          "sourceFormId": "穩定的服務商表單識別碼",
-          "sourceSubmissionId": "不可變的提交或潛在客戶識別碼",
-          "preferredLocale": "支援的語言代碼：en、es、fr、it、th、zh-CN 或 zh-TW",
-          "consentConfirmed": "僅在明確授權後設為 true",
-          "consentBasis": "customer_relationship、explicit_opt_in 或 other",
-          "consentPurpose": "固定值：review_outreach",
-          "consentChannel": "固定值：email",
-          "consentCapturedAt": "含時區的 ISO 8601 提交時間",
-          "consentSource": "簡要說明授權的取得位置",
-          "consentText": "向該人員顯示的評論溝通核取方塊原文",
-          "consentVersion": "由企業管理的不可變文案版本",
-          "privacyPolicyUrl": "核取方塊旁顯示的 HTTPS 隱私政策網址"
-        },
-        "consentCopyTitle": "評論溝通核取方塊——複製並調整",
-        "consentCopyInstructions": "此核取方塊預設不得勾選。可將其作為加入自動評論溝通的條件，但不得作為無關購買、報價或服務的條件。請由合格法律顧問審核最終文字與流程。",
-        "reviewConsentCopy": "我同意 {{business_name}} 就我最近的購買或服務體驗向我傳送電子郵件，包括一次評論請求及最多兩次提醒。我可以隨時取消訂閱。同意並非購買條件。請參閱隱私政策。",
-        "marketingConsentTitle": "獨立的選填行銷許可",
-        "marketingConsentCopy": "我願意偶爾接收 {{business_name}} 的行銷電子郵件與優惠。我可以隨時取消訂閱。同意並非購買條件。請參閱隱私政策。",
-        "channelBoundary": "不得將任一電子郵件核取方塊視為簡訊、自動電話或其他用途的許可。缺少有效評論溝通證據的提交必須標示為不合格，且不得自動傳送。",
-        "testTitle": "安全地測試、重試與撤銷",
-        "testImport": "使用一名獲准收件者執行唯讀驗證端點。在不匯入或傳送的情況下確認來源綁定、抑制狀態、SMTP、配額、範本與目標。",
-        "testReplay": "啟用安全試跑，提交一個真實服務商事件，再使用相同 Idempotency-Key 重播。應回傳相同結果，而非建立重複工作。",
-        "testFailure": "同意衝突與驗證錯誤應視為終止錯誤。只重試可恢復故障，遵守 Retry-After，並始終重用相同事件 ID。",
-        "testActivate": "在獲授權人員從試跑切換為正式傳送前，確認已核准範本、收件者語言、目標、提醒與延遲。",
-        "testRevoke": "若要停止來源，請在 Get Phame 與服務商中暫停它，撤銷或輪替金鑰，並保留遮罩後的稽核記錄。",
-        "nextDescription": "建立同時具備 contacts:write 與 review_requests:send 權限的來源金鑰，將其綁定到受管理來源，再完成預檢與一次安全試跑。",
-        "createKey": "建立來源金鑰",
-        "viewImports": "管理來源"
       }
     },
     "manual": {
@@ -11946,6 +13230,177 @@
     "activityTrend": {
       "csvDownloaded": "活動趨勢 CSV 已下載。",
       "pngDownloaded": "活動趨勢 PNG 已下載。"
+    },
+    "adminEmailPreview": {
+      "title": "電子郵件樣板預覽",
+      "selectTemplate": "選擇樣板",
+      "loading": "正在載入預覽…",
+      "error": "載入預覽失敗。",
+      "noPreview": "暫無預覽。",
+      "note": "預覽使用範例資料，實際郵件將以真實用戶名稱和安全連結發送。",
+      "sendTest": "發送測試郵件",
+      "sending": "發送中…",
+      "testSent": "測試郵件已發送！",
+      "testFailed": "測試郵件發送失敗。",
+      "darkMode": "深色模式",
+      "copyHtml": "複製 HTML",
+      "copied": "已複製！",
+      "emailPlaceholder": "傳送至…",
+      "openTab": "在新標簽頁開啟",
+      "variables": "變數",
+      "variablesNote": "替換樣板中的 [name]、[company]、[plan]、[email] 佔位符",
+      "resetVars": "重置",
+      "split": "分屏",
+      "savePreset": "儲存",
+      "presetNamePlaceholder": "預設名稱…",
+      "previewReady": "預覽已就緒",
+      "previewFallback": "無法在內嵌框架中呈現此預覽。",
+      "previewLoading": "正在產生電子郵件預覽…",
+      "exportHtml": "匯出 HTML",
+      "exported": "已下載！",
+      "copyFailed": "此瀏覽器封鎖了複製已轉譯的 HTML。"
+    },
+    "adminRouteAudit": {
+      "eyebrow": "正式環境保障",
+      "title": "正式環境路由稽核",
+      "description": "安全檢查網站地圖中的公開路由是否有瀏覽器轉譯錯誤。不會接觸帳戶、表單或客戶資料。",
+      "run": "執行路由稽核",
+      "running": "正在稽核路由…",
+      "viewHistory": "查看歷程",
+      "runningDescription": "正在為目前公開網站地圖啟動乾淨的瀏覽器。此程序最多可能需要兩分鐘。",
+      "unavailable": "稽核執行器無法使用",
+      "completedWithIssues": "稽核完成，但發現問題",
+      "completed": "稽核已成功完成",
+      "failureCode": "失敗代碼",
+      "summary": "已稽核 {{routes}} 個路由 · {{failures}} 個失敗",
+      "resultRoutes": "已稽核路由",
+      "issue": "需要檢查",
+      "rendered": "已轉譯",
+      "passed": "正式環境路由稽核已通過。",
+      "failed": "正式環境路由稽核發現問題。",
+      "runFailed": "無法執行正式環境路由稽核。"
+    },
+    "adminAuditLog": {
+      "back": "管理儀表板",
+      "title": "稽核與轉譯歷程",
+      "description": "僅限管理員的營運歷程。儲存的記錄只包含已淨化的稽核訊號，絕不包含客戶內容、電子郵件 HTML、Cookie 或瀏覽器日誌。",
+      "refresh": "重新整理歷程",
+      "routeTitle": "正式環境路由稽核",
+      "routeDescription": "對網站地圖發現的公開路由進行手動瀏覽器檢查，依最新優先排序。",
+      "runAnother": "執行另一項稽核 →",
+      "routeError": "無法載入路由稽核歷程。",
+      "routes": "個路由",
+      "issuesFound": "{{count}} 個問題",
+      "passed": "通過",
+      "routeEmpty": "尚未記錄任何正式環境路由稽核。",
+      "routePagination": "路由稽核歷程分頁",
+      "rendererTitle": "電子郵件預覽轉譯器錯誤",
+      "rendererDescription": "只有在管理員預覽無法轉譯已驗證內容時，才會擷取已淨化的訊號。",
+      "rendererError": "無法載入轉譯器錯誤歷程。",
+      "rendererEmpty": "尚未記錄轉譯器錯誤。",
+      "rendererPagination": "轉譯器錯誤歷程分頁",
+      "records": "筆記錄",
+      "previous": "上一頁",
+      "next": "下一頁",
+      "darkPreview": "深色",
+      "releaseTitle": "發布歷程",
+      "releaseDescription": "已淨化發布歷程，包含狀態與匯出。",
+      "retention": "保留設定",
+      "releaseStatus": "一致性狀態",
+      "allStatuses": "所有狀態",
+      "matched": "相符",
+      "needsReview": "需要檢查",
+      "releaseSort": "排序依據",
+      "releaseSortDate": "發布時間",
+      "releaseSortCheckpoint": "檢查點",
+      "releaseDirection": "方向",
+      "newestFirst": "最新優先",
+      "oldestFirst": "最舊優先",
+      "releaseExport": "預覽匯出",
+      "releaseExportFailed": "無法準備匯出。",
+      "releaseError": "無法載入發布歷程。",
+      "releaseEmpty": "沒有已驗證的發布記錄。",
+      "releasePagination": "發布歷程分頁",
+      "time": "時間",
+      "checkpoint": "檢查點",
+      "mainCommit": "主分支提交",
+      "parity": "一致性",
+      "releaseExportTitle": "預覽匯出",
+      "releaseExportDescription": "請在複製或下載前檢閱已淨化快照。",
+      "releaseExportSummary": "預覽 {{previewed}} / {{exported}} 列 · {{matched}} 筆相符",
+      "releaseExportTruncated": "上限包含 {{exported}} / {{matched}} 筆記錄。",
+      "close": "關閉",
+      "copied": "已複製",
+      "copy": "複製 CSV",
+      "copyFailed": "複製失敗",
+      "download": "下載 CSV"
+    },
+    "adminAuditRetention": {
+      "back": "稽核歷程",
+      "title": "保留控制",
+      "description": "選擇已淨化診斷資訊的保留期間。",
+      "controlsTitle": "資料生命週期",
+      "controlsDescription": "只移除早於新限制的記錄。",
+      "routeDays": "路由歷程",
+      "routeDaysHelp": "路由稽核結果天數。",
+      "rendererDays": "轉譯器歷程",
+      "rendererDaysHelp": "轉譯器訊號天數。",
+      "days": "天",
+      "invalid": "請選擇 7 到 3,650 天。",
+      "save": "儲存並套用",
+      "saved": "已儲存控制並清除過期診斷記錄。",
+      "saveFailed": "無法儲存控制。",
+      "confirmTitle": "要套用限制嗎？",
+      "confirmDescription": "過期診斷資訊將被永久移除。",
+      "confirmSummary": "路由：{{routeDays}} 天 · 轉譯器：{{rendererDays}} 天",
+      "cancel": "取消",
+      "confirm": "套用並清除"
+    },
+    "adminRendererTrend": {
+      "title": "重複的轉譯器失敗",
+      "description": "{{hours}} 小時內發生了 {{count}} 次 {{template}} 失敗。請在發布前檢閱歷程。",
+      "review": "檢閱歷程"
+    },
+    "bulkSendDialog": {
+      "consentCheck": "我確認客戶已同意我的企業透過電子郵件和/或簡訊與其聯繫"
+    },
+    "contactsTools": {
+      "addConsentLabel": "我確認此客戶已同意{businessName}透過電子郵件和/或簡訊聯繫他們，了解其體驗和購買情況",
+      "addConsentRequired": "新增聯絡人需要確認同意"
+    },
+    "adminExportSchedule": {
+      "title": "自動發佈歷程報告",
+      "description": "依 UTC 排程建立有界且已淨化的 CSV 快照。最新報告會保留在稽核歷程中供管理員查看。",
+      "enabled": "啟用自動報告",
+      "cron": "UTC 排程",
+      "cronHelp": "使用六個欄位：秒、分、時、日、月與星期。預設：週一 09:00 UTC。",
+      "save": "儲存報告排程",
+      "saved": "已更新自動發佈歷程報告。",
+      "saveFailed": "無法儲存自動報告設定。",
+      "lastRun": "上次報告：{{date}} · {{count}} 列",
+      "recentRuns": "最近的自動報告",
+      "ready": "已就緒",
+      "failed": "失敗",
+      "rows": "列"
+    },
+    "adminRetentionHistory": {
+      "title": "最近的保留期間變更",
+      "summary": "路由：{{fromRoute}} → {{toRoute}} 天 · 轉譯器：{{fromRenderer}} → {{toRenderer}} 天"
+    },
+    "adminRendererAcknowledgement": {
+      "action": "確認",
+      "saved": "已確認轉譯器警示，直到記錄到更新的證據。",
+      "failed": "無法確認轉譯器警示。"
+    },
+    "automationPaused": {
+      "bannerTitle": "自動評論請求已暫停",
+      "bannerDescription": "有 {{count}} 個待處理的自動請求，等待您重新連線已驗證的郵件伺服器。",
+      "viewQueue": "查看已暫停請求",
+      "queueTitle": "已暫停的自動請求",
+      "queueDescription": "這些請求會保持待處理狀態，直到您連線並選取已驗證的郵件伺服器。",
+      "reviewRequest": "評論請求",
+      "followUp": "跟進",
+      "morePending": "另有 {{count}} 個請求待處理。"
     }
   }
 }

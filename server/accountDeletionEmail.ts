@@ -5,26 +5,8 @@
  *
  * If system SMTP is not configured the function returns { sent: false } — non-fatal.
  */
-import nodemailer from "nodemailer";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
-
-interface SystemSmtpConfig {
-  host: string;
-  port: number;
-  user: string;
-  pass: string;
-  fromEmail: string;
-}
-
-function getSystemSmtpConfig(): SystemSmtpConfig | null {
-  const host = process.env.SYSTEM_SMTP_HOST;
-  const port = process.env.SYSTEM_SMTP_PORT;
-  const user = process.env.SYSTEM_SMTP_USER;
-  const pass = process.env.SYSTEM_SMTP_PASS;
-  const fromEmail = process.env.SYSTEM_FROM_EMAIL;
-  if (!host || !user || !pass || !fromEmail) return null;
-  return { host, port: parseInt(port ?? "587", 10), user, pass, fromEmail };
-}
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 
 function buildDeletionEmailHtml(name: string): string {
   const firstName = name?.split(" ")[0] ?? "there";
@@ -96,26 +78,13 @@ export async function sendAccountDeletionEmail(
   toEmail: string,
   name: string
 ): Promise<{ sent: boolean; error?: string }> {
-  const config = getSystemSmtpConfig();
-  if (!config) {
-    console.warn("[AccountDeletion] System SMTP not configured. Deletion confirmation not sent.");
-    return { sent: false, error: "System SMTP not configured" };
-  }
-
-  const transporter = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.port === 465,
-    auth: { user: config.user, pass: config.pass },
-  });
-
   try {
-    await transporter.sendMail({
-      from: `"GetPhame" <${config.fromEmail}>`,
+    await sendSystemEmail({
       to: toEmail,
       subject: "Your GetPhame account has been deleted",
       html: buildDeletionEmailHtml(name),
       text: `Hi ${name?.split(" ")[0] ?? "there"},\n\nYour GetPhame account and all associated data has been permanently deleted as requested.\n\nIf you have questions, contact support@getphame.app.\n\nGetPhame`,
+      from: NOREPLY_FROM,
     });
     return { sent: true };
   } catch (err: unknown) {

@@ -1,6 +1,10 @@
-import { and, eq } from "drizzle-orm";
-
-import { bulkSenderCredentials, businessProfiles, smtpCredentials } from "../drizzle/schema";
+import { and, eq, ne } from "drizzle-orm";
+import {
+  bulkSenderCredentials,
+  businessProfiles,
+  outboundMailPreferences,
+  smtpCredentials,
+} from "../drizzle/schema";
 import { BULK_SENDER_PRESETS, type BulkSenderProvider } from "../shared/bulkSenderPresets";
 import type { AdaptiveSendChannelDescriptor } from "../shared/adaptiveSendLimits";
 import { getDb } from "./db";
@@ -15,6 +19,48 @@ export type ResolvedOutboundDeliveryChannel = AdaptiveSendChannelDescriptor & {
   fromName: string;
   replyTo: string;
 };
+
+export type UserOwnedMailChannel = "personal" | "bulk";
+
+export async function selectOutboundDeliveryChannel(
+  userId: number,
+  selectedChannel: UserOwnedMailChannel,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const now = Date.now();
+  const [existing] = await db
+    .select({ id: outboundMailPreferences.id })
+    .from(outboundMailPreferences)
+    .where(eq(outboundMailPreferences.userId, userId))
+    .limit(1);
+  if (existing) {
+    await db
+      .update(outboundMailPreferences)
+      .set({ selectedChannel, updatedAt: now })
+      .where(eq(outboundMailPreferences.userId, userId));
+    return;
+  }
+  await db.insert(outboundMailPreferences).values({
+    userId,
+    selectedChannel,
+    updatedAt: now,
+  });
+}
+
+export async function clearOutboundDeliveryChannel(
+  userId: number,
+  selectedChannel: UserOwnedMailChannel,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db
+    .delete(outboundMailPreferences)
+    .where(and(
+      eq(outboundMailPreferences.userId, userId),
+      eq(outboundMailPreferences.selectedChannel, selectedChannel),
+    ));
+}
 
 function asTimestamp(value: Date | number | null | undefined): number {
   if (value instanceof Date) return value.getTime();
@@ -45,8 +91,9 @@ export async function resolveOutboundDeliveryChannel(userId: number): Promise<Re
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
 
-  const [[profile], [bulk], [personal]] = await Promise.all([
+  const [[profile], [preference], [bulk], [personal]] = await Promise.all([
     db.select({ tier: businessProfiles.tier }).from(businessProfiles).where(eq(businessProfiles.userId, userId)).limit(1),
+    db.select({ selectedChannel: outboundMailPreferences.selectedChannel }).from(outboundMailPreferences).where(eq(outboundMailPreferences.userId, userId)).limit(1),
     db.select().from(bulkSenderCredentials).where(and(
       eq(bulkSenderCredentials.userId, userId),
       eq(bulkSenderCredentials.connected, 1),
@@ -55,33 +102,36 @@ export async function resolveOutboundDeliveryChannel(userId: number): Promise<Re
   ]);
 
   const tier = profile?.tier ?? "free";
-  if (
+  const userOwnedBulk = bulk && !(bulk.provider === "sendgrid" && !(bulk.smtpHost && bulk.smtpPort && bulk.smtpUsername))
+    ? bulk
+    : null;
+  if (preference?.selectedChannel === "bulk" &&
     tier !== "free"
-    && bulk
-    && bulk.smtpHost
-    && bulk.smtpPort
-    && bulk.smtpUsername
+    && userOwnedBulk
+    && userOwnedBulk.smtpHost
+    && userOwnedBulk.smtpPort
+    && userOwnedBulk.smtpUsername
   ) {
-    const provider = bulk.provider as BulkSenderProvider;
+    const provider = userOwnedBulk.provider as BulkSenderProvider;
     return {
-      key: `bulk:${bulk.id}:${provider}`,
+      key: `bulk:${userOwnedBulk.id}:${provider}`,
       type: "bulk",
       providerId: provider,
       providerLabel: BULK_SENDER_PRESETS[provider]?.label ?? provider,
-      connectedAt: asTimestamp(bulk.createdAt),
+      connectedAt: asTimestamp(userOwnedBulk.createdAt),
       tier,
-      host: bulk.smtpHost,
-      port: bulk.smtpPort,
-      secure: bulk.smtpSecure === 1,
-      username: bulk.smtpUsername,
-      encryptedSecret: bulk.apiKey,
-      fromEmail: bulk.fromEmail,
-      fromName: bulk.fromName ?? bulk.fromEmail,
-      replyTo: bulk.fromEmail,
+      host: userOwnedBulk.smtpHost,
+      port: userOwnedBulk.smtpPort,
+      secure: userOwnedBulk.smtpSecure === 1,
+      username: userOwnedBulk.smtpUsername,
+      encryptedSecret: userOwnedBulk.apiKey,
+      fromEmail: userOwnedBulk.fromEmail,
+      fromName: userOwnedBulk.fromName ?? userOwnedBulk.fromEmail,
+      replyTo: userOwnedBulk.fromEmail,
     };
   }
 
-  if (!personal) return null;
+  if (preference?.selectedChannel !== "personal" || !personal) return null;
   const provider = classifyPersonalSmtpProvider(personal.host, personal.user);
   return {
     key: `personal:${personal.id}:${provider.id}`,

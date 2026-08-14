@@ -1576,7 +1576,7 @@
 - [x] Replace DEMO_GIF manuscdn session URL in LandingPage.tsx with fresh CDN URL
 
 ## Landing Page Desktop Restoration (Jul 7, 2026)
-- [x] Copy all 17 legacy-deployment landing components into Manus project
+- [x] Copy all 17 Fly.io landing components into Manus project
 - [x] Wire component-based LandingPage.tsx (Navbar, Hero, TrustBar, VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Testimonials, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer)
 - [x] Add Plus Jakarta Sans font to index.html
 - [x] Fix container max-width for desktop (480px → 1280px)
@@ -1668,32 +1668,413 @@
 - [x] Create getphame-mark-reviewed-row reusable skill (single-item mark + undo + touch)
 - [x] Add 4-second undo toast after single-item mark-as-reviewed
 - [x] Add touch-device fallback: permanently visible checkmark on devices without hover
-- [ ] Merge PR #91 into main
-- [ ] Close PR #90 as superseded
+- [x] Merge PR #91 into main (already merged in previous session — confirmed closed)
+- [x] Close PR #90 as superseded (already closed — confirmed closed)
 
-## Session — Integration Automation, AI Templates, Regional Platforms, and Manuals (Aug 2 2026)
-- [x] Audit existing Get Phame API keys, source ingestion, consent evidence, WooCommerce connector contract, template storage, platform settings, localization, and manuals
-- [x] Write the approved cross-repository architecture, consent contract, data model, migration plan, rollout gates, and rollback boundaries
-- [x] Add copy-ready website and social-lead consent guidance with an unchecked required checkbox, purpose-specific evidence fields, Zapier mapping, test procedure, retry guidance, and revocation handling
-- [x] Add a source-bound, idempotent automation endpoint that uses existing API scopes, eligibility, quiet-hours, suppression, audit, and abuse controls
-- [ ] Extend business profiles with bounded business description, business category, verified ISO country/region, preferred outreach locale, and onboarding template state
-- [ ] Add a centralized review-platform catalog with editable country/category-aware recommendations, explanatory evidence labels, custom regional destinations, and Yelp instruction-only handling
-- [ ] Add explicit recipient-language selection and persist language on contacts, requests, reminders, and immutable delivery evidence without inferring language from identity or IP address
-- [ ] Replace mutable-only templates with tenant-scoped template families and immutable revisions containing an English canonical counterpart, locale, version, provenance, approval, and safe AI-generation metadata
-- [ ] Generate structured business-specific template drafts during onboarding with strict input/output validation, shortcode allowlists, deterministic fallbacks, preview, regeneration, skip, and explicit approval before activation
-- [ ] Extend review-request composition, sending, reminders, completion, preview, and template management to use approved template revisions and friendly localized wording
-- [ ] Extend the WordPress/WooCommerce connector with explicit opt-in automatic review requests, dry run, eligibility, stable order idempotency, delay, template/language controls, pause/kill switches, failures, and safe retry behavior
-- [ ] Expand role-exclusive user and administrator manuals across all supported locales with detailed API/Zapier, consent, WooCommerce automation, AI templates, English counterparts, regional platforms, language selection, troubleshooting, rollback, and audit guidance
-- [ ] Add accessible screenshot metadata and verified redacted screenshots only where they materially improve complex manual workflows; keep PDF export behavior synchronized
-- [ ] Run focused tests, full suites, localization parity, TypeScript checks, production builds, WordPress/PHP validation, package validation, responsive verification, and security guardian gates
-- [ ] Synchronize validated changes through history-preserving protected GitHub release branches and verify exact remote-main parity without force-pushing
+## Session — Undo Pattern Skill, Bulk Undo, ActivityFeed Undo, useTouchDevice (Aug 2 2026)
+- [x] Create getphame-undo-toast-pattern reusable skill
+- [x] Create useTouchDevice hook at client/src/hooks/useTouchDevice.ts
+- [x] Refactor RecentActivityCard to use useTouchDevice hook
+- [x] Extend undo toast to Mark All bulk action in RecentActivityCard (with count)
+- [x] Apply undo toast + touch fallback to activity feed rows (Dashboard.tsx ActivityFeed)
+- [x] Sync to GitHub via PR
 
-## Session — Source Automation Setup and Health UX (Aug 2 2026)
-- [x] Upgrade managed-source recipes from import-only examples to the canonical source-event automation endpoint with nested consent evidence and explicit locale mapping
-- [x] Add keyboard-accessible per-source automation controls for enablement, dry run, bounded send delay, recipient locale, approved template, verified platform, pause, and resume
-- [x] Add a read-only preflight test action that reports source binding, suppression, SMTP, quota, platform, template, and bilingual approval readiness without importing or sending
-- [x] Show source health, recent failures, safe retry guidance, last successful event, and kill-switch state without exposing recipient or credential data
-- [x] Localize all new developer-integration and source-automation UI copy across en, es, fr, it, th, zh-CN, and zh-TW; update the offline fallback and locale cache version
-- [x] Add focused component and router tests for automation controls, preflight behavior, localization coverage, responsive layout, and accessibility states
-- [x] Pass the focused suites, full 1,045-test Vitest gate, TypeScript validation, production audit, client/server builds, whitespace validation, and added-line credential scan for the exact release tree
-- [x] Merge protected-main PR #93 after required checks and verify remote main tree parity with validated commit 24a2e9f00eea8ce901d9bf513d9cc0f777bb2e13
+## Session — Build Fix, www Redirect, Alt Tags (Aug 9 2026)
+- [x] Fix deployment build failure: update pnpm-workspace.yaml overrides to nanoid 6.0.1, dompurify >=3.4.13, mermaid >=11.16.1, brace-expansion >=5.0.9 — audit now passes clean
+- [x] Ensure www.getphame.app redirects to getphame.app — 301 redirect already in server/_core/index.ts, confirmed working
+- [x] Add missing alt tags: BottomNav profile photo gets descriptive alt when avatarUrl set; aria-hidden on decorative logo images in FirstVisitWelcome, PWAInstallPrompt, PremiumUpgradeModal; remove unused HERO_IMG; add profileMenu.avatarAlt to all 7 locales + fallback bundle
+
+## Session — Audit/A11y Skill, PR Merge, Lazy Load, Canonical (Aug 9 2026)
+- [x] Create getphame-audit-a11y-fix reusable skill
+- [x] Merge PR #98 into main (squash-merged, 659d4c7f)
+- [x] Close PR #91 as superseded (already closed)
+- [x] Close PR #97 as superseded (already closed)
+- [x] Add loading="lazy" to ProductShowcase tab images (already present at line 243)
+- [x] Add loading="lazy" to VideoDemo thumbnail (already present at line 678)
+- [x] Insert canonical link tag in landing page head (already in index.html line 12 + SEOHead canonical prop)
+
+## Session — SEO/Perf Skill, Hero fetchpriority, Robots Meta, Toast Animation (Aug 9 2026)
+- [x] Create getphame-seo-perf-optimization reusable skill
+- [x] Add fetchpriority="high" to hero phone mockup image (Hero.tsx line 218)
+- [x] Add robots meta tag to client/index.html (index, follow)
+- [x] Add fade-in animation to undo toast notifications (toast-in keyframe + animate-toast-in class on all 3 toasts)
+- [x] Run Lighthouse audit on landing page: Perf 40, A11y 96, Best Practices 73, SEO 100
+
+## Session — PWA Perf/A11y Skill, Viewport Fix, Preload, Code-Split (Aug 9 2026)
+- [x] Create getphame-pwa-perf-a11y reusable skill
+- [x] Remove maximum-scale=1 from viewport meta tag in index.html (a11y fix)
+- [x] Add preload link for hero background image (phame-hero-bg.webp) in index.html
+- [x] Implement React.lazy() code-splitting for landing page: VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer
+- [x] Integrate SendGrid as system email relay: server/sendgrid.ts helper, wired into auth-email.ts (magic links), smtp.ts (welcome email), accountDeletionEmail.ts, adminPlatformEmail.ts. SENDGRID_API_KEY secret needed.
+
+## Session — SendGrid Skill, PR, Resend Button, Email Templates
+- [x] Create getphame-sendgrid-system-relay reusable skill
+- [x] Open GitHub PR for checkpoint a82dfe62 → PR #99 at https://github.com/SteveKinzey/getphame/pull/99
+- [x] Add Resend Magic Link button with 60-second cooldown to login page (already fully implemented in MagicLinkForm.tsx — verified)
+- [x] Create responsive HTML email templates: magic link (security notice, fallback URL, mobile CSS) + welcome (gold numbered steps, gold CTA, mobile CSS)
+
+## Session — Email Templates Skill, PR #99 Merge, Receipt Email, Preview Route
+- [x] Create getphame-email-templates reusable skill
+- [x] Squash-merge PR #99 into protected main (merged, branch deleted)
+- [x] Upgrade upgrade receipt email template to responsive gold style (gold CTA, perks box, mobile CSS)
+- [x] Create in-app admin email preview route (/admin/email-preview) — 6 templates, desktop/mobile toggle, iframe preview, adminEmailPreview i18n keys in all 7 locales
+
+## Session — Email Preview Skill, PR #100, Test Send Button, Dark Mode Toggle
+- [x] Create getphame-email-preview reusable skill (architecture, template registry, add-template guide, send test email pattern, dark mode toggle, i18n keys, critical constraints)
+- [x] Open GitHub PR #100 for checkpoint dd8c5be2 (email preview, receipt gold style, SendGrid dual-sender, React.lazy, viewport a11y, hero fetchPriority)
+- [x] Add Send Test Email button to AdminEmailPreview — gold CTA, fires admin.sendTestEmail mutation to user.email, spinner + toast feedback
+- [x] Add dark mode toggle to AdminEmailPreview — Moon/Sun icon button, injects dark background style into iframe srcDoc
+- [x] Add sendTest/sending/testSent/testFailed/darkMode i18n keys to all 7 locales with native translations + fallback bundle
+
+## Session — Admin Email Preview Workflow Skill, PR #100 Merge, All Templates
+- [x] Create getphame-admin-email-preview-workflow reusable skill (architecture, template registry, add-template checklist, UI controls table, i18n keys, critical constraints)
+- [x] Squash-merge PR #100 into protected main (squash-merged, branch deleted)
+- [x] Extend sendTestEmail switch to cover all 6 email templates (welcome, upgrade-receipt-pro/annual/lifetime, account-deletion) — all produce full gold HTML matching emailPreview output
+
+## Session — Email Preview Enhancements Skill, PR, Copy HTML, Custom Email Input
+- [x] Create getphame-email-preview-enhancements reusable skill (Copy HTML, custom email input, success toast patterns)
+- [x] Open GitHub PR for checkpoint 9663419c — PR #101 at github.com/SteveKinzey/getphame/pull/101
+- [x] Add Copy HTML button to AdminEmailPreview page (clipboard API + textarea fallback, 1.5s Copied! label swap)
+- [x] Add custom email input field to AdminEmailPreview page (replaces hard-coded user.email, pre-seeded from auth)
+- [x] Success toast shows recipient address: "Test email sent! → user@example.com" via sonner onSuccess
+
+## Session — Email Preview Tab/Spinner/DataPanel Skill, PR #101 Merge
+- [x] Update getphame-email-preview-enhancements skill with Preview in New Tab, loading spinner, and data injection panel patterns
+- [x] Squash-merge PR #101 into main (merged 2026-08-10T07:03:20Z)
+- [x] Add Preview in New Tab button (Blob URL, revokeObjectURL after 10s, noopener)
+- [x] Loading spinner confirmed on send button (sendTest.isPending + Loader2 animate-spin)
+- [x] Add dynamic data injection panel ([name]/[company]/[plan]/[email] substitution, collapsible, grid layout)
+- [x] Fix nativeLocalizationQuality: adminEmailPreview.variables is cross_language_equivalent in es/fr — added to exceptions, updated counts (totalCandidates=588, totalExceptions=239)
+
+## Session — Email Preview Advanced Skill, PR bbbb7814, Reset/Split/Presets
+- [x] Create getphame-email-preview-advanced skill (reset vars, split-screen, save preset patterns)
+- [x] Open GitHub PR for checkpoint bbbb7814 (PR #102)
+- [x] Add Reset Variables button (RotateCcw icon, restores DEFAULT_VARS in one click)
+- [x] Add split-screen view (Desktop 800px + Mobile 390px side-by-side, overflow-x-auto)
+- [x] Add Save Preset feature (localStorage, named chips with load/delete, Enter-to-save)
+- [x] Fix nativeLocalizationQuality: resetVars/split are cross_language_equivalent in es; split in fr — totalCandidates=591, totalExceptions=242
+
+## Session — Stripe Webhook Check, Status Indicator, PR 32c1194f
+- [x] Verified Stripe webhook — was pointing to dead sandbox tunnel; updated to https://getphame.app/api/stripe/webhook
+- [x] Add Stripe status indicator to admin dashboard (mode/webhook status/secret/events, color-coded card)
+- [x] Open GitHub PR for checkpoint 32c1194f (PR #103)
+
+## Session — Consent Compliance, Onboarding Step, Unsubscribe Fix
+- [x] Add consentBasis/consentCapturedAt/consentSource to contacts.create procedure and createSavedContact db function
+- [x] Add consent checkbox to Add Contact dialog (required, blocks save)
+- [x] Add consent acknowledgment checkbox to Send Request compliance checklist (4th item)
+- [x] Add consent implementation as first onboarding step with downloadable PDF guide
+- [x] Fix requests.send to always inject unsubscribeUrl footer when not already present
+- [x] Regenerate consent PDF with social media forms section (Facebook, Instagram, LinkedIn, TikTok, Pinterest)
+- [x] Add PDF download link to landing page LeadCapture section
+- [x] Add consentAcknowledgedAt column to business_profiles DB table
+- [x] Add onboarding.acknowledgeConsent tRPC procedure
+- [x] All 7 locales and fallback bundle updated with new consent keys
+- [x] nativeLocalizationQuality totalCandidates remains 591
+- [x] All 1022 tests pass
+- [x] Save checkpoint (e699c660)
+- [x] Open GitHub PR for checkpoint (PR #104)
+
+## Session — Consent Badges, Settings, Unsubscribe Handler, Skill
+- [x] Create getphame-consent-compliance reusable skill
+- [x] Add consent badge (ShieldCheck/ShieldOff) to contacts list in SavedContacts.tsx
+- [x] Add consentLabelName field to business_profiles schema and DB
+- [x] Add consentLabelName setting to Settings page (Email Sender Settings section)
+- [x] Update profile.upsert procedure to accept consentLabelName
+- [x] Update SavedContacts consent label to use consentLabelName when set
+- [x] Enhance unsubscribe handler to set consentBasis = "opted_out" on unsubscribe
+- [x] All 1022 tests pass, nativeLocalizationQuality totalCandidates remains 591
+- [x] Save checkpoint (5e676038)
+- [x] Open GitHub PR for checkpoint (PR #105)
+
+## Session — Consent Filter, Tooltip, Bulk Consent Email, Skill
+- [x] Add consent status filter dropdown to contacts list (All / Consent / No consent / Opted out)
+- [x] Add date/time tooltip to consent badge (shows consentCapturedAt formatted date)
+- [x] Implement bulk consent request email for legacy contacts (no consent on file)
+- [x] Create reusable skill for consent badge/filter/bulk-consent workflow (getphame-consent-badge-filter)
+- [x] Run full test suite and save checkpoint (b6e64483, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #106)
+
+## Session — Consent Template Editor, Activity Log, Confirm Modal, Skill
+- [x] Add confirmation modal before bulk consent request send
+- [x] Add consent email template editor (subject + body customization with variable preview)
+- [x] Implement consent activity log in contact history drawer
+- [x] Create reusable skill for consent template editor workflow (getphame-consent-template-editor)
+- [x] Run full test suite and save checkpoint (96626f42, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #107)
+
+## Session — Live Preview, Variable Tags, Toast, Skill
+- [x] Add live preview pane to consent template editor modal
+- [x] Add clickable variable tags ({{name}}, {{businessName}}) below editor
+- [x] Add success toast after bulk consent send completes (replaced result dialog)
+- [x] Create reusable skill for live-preview template editor pattern (getphame-consent-preview-editor)
+- [x] Run full test suite and save checkpoint (7214aa79, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #108)
+
+## Session — Send Test Email, Preview Toggle, Variable Tags, Skill
+- [x] Add desktop/mobile preview toggle to live preview pane
+- [x] Add {{email}} and {{currentDate}} variable tags
+- [x] Add Send Test Email button to template editor modal
+- [x] Update getphame-consent-preview-editor skill with new patterns
+- [x] Run full test suite and save checkpoint (fa2513dd, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #109)
+
+## Session — Success Animation, Admin Lead Badge, Preferences Page, Skill
+- [x] Add smooth success animation and thank-you state to LeadCapture form
+- [x] Add consent badge to admin lead list (LeadsSection in AdminDashboard)
+- [x] Build public email preferences page (/preferences)
+- [x] Create getphame-lead-consent-compliance skill
+- [x] Run full test suite and save checkpoint (17124cdc, 1022 tests pass)
+- [x] Open GitHub PR for checkpoint (PR #110)
+
+## Admin email-preview route repair (Aug 12, 2026)
+- [x] Diagnose the signed-in redirect or error page at /admin/email-preview
+- [x] Repair the active preview route, access guard, or API contract
+- [x] Add regression coverage and validate the signed-in admin preview flow
+
+## Admin email-preview iframe renderer repair (Aug 12, 2026)
+- [x] Diagnose the blank or broken preview document in the iframe
+- [x] Repair generated HTML or iframe rendering configuration
+- [x] Add a preview-render regression test and validate all six email templates
+
+## Email-preview renderer resilience (Aug 12, 2026)
+- [x] Add an iframe render-error fallback with an Open in tab action
+- [x] Add visual preview-ready feedback after email HTML loads
+- [x] Add browser coverage for every preview template and viewport
+- [x] Create reusable email-preview renderer resilience skill
+
+## TypeScript validation timeout remediation (Aug 12, 2026)
+- [x] Diagnose and eliminate the standalone TypeScript validation timeout without weakening type-safety coverage
+- [x] Run TypeScript, focused tests, full suite, audit, and production build on the remediated tree
+
+## Persistent admin email-preview iframe failure (Aug 12, 2026)
+- [x] Diagnose the blank embedded email document seen after a manual refresh (production frame CSP blocked `blob:` URLs)
+- [x] Replace the failing render path with a browser-compatible preview and visible recovery path
+- [x] Verify primary Blob rendering and browser fallback coverage for all templates and desktop, mobile, and split viewports
+
+## Preview recovery skill and export enhancements (Aug 12, 2026)
+- [x] Create and validate a reusable email-preview recovery and delivery-validation skill
+- [x] Add an accessible loading skeleton while preview HTML is generated or rendered
+- [x] Add a rendered HTML-file export action with a safe filename
+- [x] Send an authorized test email and verify delivery and rendered output in the target inbox
+
+## Test Magic Link destination repair (Aug 12, 2026)
+- [x] Diagnose why the test Magic Link action reaches an error page (the preview used an intentionally invalid sample verification token)
+- [x] Replace the nonfunctional test link with a safe, valid destination and regression coverage
+- [x] Confirm the corrected test destination opens the standard sign-in page without an error
+
+## Managed admin email-preview recovery (Aug 12, 2026)
+- [x] Remove the unnecessary managed-preview login dependency from safe preview rendering
+- [x] Replace the broken embedded-document rendering path in the managed preview
+- [x] Verify the template renders in the managed preview on desktop, mobile, and split modes
+
+## Managed preview WebSocket recovery (Aug 12, 2026)
+- [x] Restore the Vite WebSocket connection for `/admin/email-preview?from_webdev=1`
+- [x] Verify the restarted development preview is reachable without console connection errors
+
+## Get Phame GitHub workflow notification remediation (Aug 12, 2026)
+- [x] Inventory active failed workflow runs and map them to the triggering commits or pull requests
+- [x] Diagnose and repair actionable protected-main or current-release workflow failures (no unresolved current failure remains)
+- [x] Re-run or verify required checks and close or classify obsolete failure notifications
+- [x] Mark notifications associated with obsolete branches, superseded commits, or merged fixes as resolved
+
+## Public email preview and repository health audit (Aug 12, 2026)
+- [x] Triage remaining Get Phame notifications for open pull requests and security alerts (PRs #95 and #102 remain open for separate review; Dependabot has zero open alerts)
+- [x] Add a public read-only email preview path without exposing test-send or administrative controls
+- [x] Run a complete current repository health check across source, tests, build, dependency, and CI status
+- [x] Repair the public preview component type so the authenticated route remains compatible with Wouter
+
+## Security-report repository notification cleanup (Aug 12, 2026)
+- [x] Inventory current security-report administration notifications and their repository state
+- [x] Classify obsolete versus actionable security-report notifications (two failed checks were on inactive branches; no open pull requests remain)
+- [x] Mark obsolete notifications done and preserve any current security follow-up
+
+## Cross-repository security and delivery audit (Aug 12, 2026)
+- [x] Audit dependency vulnerability exposure for getphame-security-report-admin
+- [x] Inspect current and recent CI/CD workflow status for getphame-security-report-admin
+- [x] Review and prioritize open issues in getphame and getphame-security-report-admin
+
+## Security-report dependency remediation and release validation (Aug 12, 2026)
+- [x] Upgrade the vulnerable direct and transitive dependency chain in getphame-security-report-admin
+- [x] Run complete local audit, type-check, test, and production build validation
+- [x] Open and monitor the protected-main dependency-remediation pull request (PR #16; Quality Gate passed)
+- [x] Inspect the security-report hosting deployment status (no GitHub deployment record, homepage URL, or deployment workflow is configured; hosting state is not observable from this repository)
+- [x] Resolve new Vite peer incompatibilities by retaining the minimum patched Vite 7 line and a compatible React plugin; an existing third-party Builder plugin peer warning remains
+
+## Security-report merge and cross-repository security review (Aug 12, 2026)
+- [x] Merge the passed security-report dependency-remediation PR and prove protected-main parity
+- [x] Inventory open issues and pull requests across related Get Phame repositories
+- [x] Run a deep security scan of the main Get Phame repository and report evidence-led findings
+- [x] Document the security-report hosting-test prerequisite: no target was provided, so no external deployment can be tested safely
+
+## Get Phame open pull-request review and optimized validation (Aug 12, 2026)
+- [x] Review PR #95 and PR #102 for unique scope, merge readiness, checks, and overlap with protected main
+- [x] Run memory-optimized client and server TypeScript validation on current Get Phame main
+- [x] Run a memory-optimized production build on current Get Phame main
+
+## PR 95 rebase, PR 102 retirement, and integration validation (Aug 12, 2026)
+- [x] Rebase PR #95 onto current protected main and resolve conflicts without losing its unique agent-discovery work
+- [x] Close PR #102 as superseded and delete its release branch
+- [x] Run end-to-end integration and complete regression validation for the rebased Get Phame application (clean CI Quality Gate passed)
+- [x] Repair the existing Playwright welcome-dialog setup so it no longer blocks video walkthrough scenarios
+- [x] Replace stale marketing-copy assertions in walkthrough end-to-end tests with the stable accessible video trigger contract
+- [x] Add a stable test identifier for the localized walkthrough trigger and use it in all walkthrough scenarios
+- [x] Pin the interface locale to English in walkthrough setup while continuing to simulate browser caption-language preferences independently
+- [x] Use the existing menu-selection helper for each caption-setting action so closed Radix menus do not cause long browser retries
+
+## PR 95 replacement review branch (Aug 12, 2026)
+- [x] Create a replacement review branch from the safely rebased agent-discovery candidate
+- [x] Add only the Playwright first-visit-dialog test setup required by walkthrough scenarios
+- [x] Run focused walkthrough coverage successfully in clean CI after the local browser resource constraint
+- [x] Run memory-optimized client/server TypeScript checks
+- [x] Open the replacement pull request after local validation passes
+
+## Conservative CI-first replacement release (Aug 12, 2026)
+- [x] Push the replacement branch without modifying protected main or production
+- [x] Use clean CI to validate the focused browser scenarios and investigate only reproducible failures (Quality Gate and API Recovery Browser Check passed on PR #121)
+- [x] Complete full release checks before a protected-main merge
+- [x] Mark PR #121 ready and squash-merge it into protected main after the user-approved release decision
+- [x] Prove the resulting protected-main tree matches the validated replacement release
+- [x] Verify the deployed application after propagation: catalog, OpenAPI, documentation, authentication guidance, and crawler signal are live on getphame.app
+
+## Managed agent-discovery release port (Aug 12, 2026)
+- [x] Port the verified protected-main agent-discovery server routes and safe browser discovery bridge into the managed Get Phame source
+- [x] Validate the managed public discovery routes before publication (focused contracts, split TypeScript checks, 1,070-test suite, audit, and production build passed)
+
+## Email-preview false-ready frame repair (Aug 12, 2026)
+- [x] Diagnose why the embedded email document remains blank after the frame reports ready (the managed host rejected the nested document; the first renderer replacement also exposed stale iframe key references)
+- [x] Implement a content-verified renderer that cannot report ready for a blank document
+- [x] Verify rendered email HTML is visible in the managed preview across desktop, mobile, and split modes
+- [x] Resolve the client TypeScript iteration compatibility error in the sanitized renderer
+
+## Email preview verification and reusable recovery skill (Aug 12, 2026)
+- [x] Update and validate the renderer-resilience skill with the Shadow DOM content-verification pattern
+- [x] Verify all six email templates and dark mode in the repaired preview
+- [x] Inspect the exported Welcome template HTML structure
+- [x] Send an authorized Welcome test email and verify inbox delivery and rendering
+- [x] Correct inadequate body-text contrast in dark-mode email preview rendering
+- [x] Support validated `?template=` deep links for deterministic all-template verification
+- [x] Run full release validation and publish the verified dark-mode and deep-link enhancements
+
+## Welcome test-email inbox rendering discrepancy (Aug 12, 2026)
+- [x] Compare the generated Welcome preview, dispatched test-email source, and received inbox document (the test sender used an independent, divergent HTML generator)
+- [x] Repair the divergent outbound template path by routing it through the shared browser-preview renderer
+- [x] Send and verify a corrected Welcome test email in the recipient inbox (complete branded card displayed)
+- [x] Consolidate preview and test-email templates behind one shared deterministic renderer
+- [x] Complete server type, focused contract, full-suite, dependency-audit, and production-build validation for the shared renderer
+- [x] Prevent Gmail conversation trimming of repeated test previews by making each test-email subject distinct
+
+## Remaining email-template inbox and viewport verification (Aug 12, 2026)
+- [x] Send and inspect the remaining five template tests in the confirmed inbox
+- [x] Verify dark-mode rendering across all six preview templates
+- [x] Verify mobile preview rendering across all six preview templates
+- [x] Update and validate the reusable renderer-resilience skill with the final full-template verification workflow
+
+## Renderer resilience audit, handoff, and verification deck (Aug 12, 2026)
+- [x] Update and validate the reusable renderer-recovery skill with the final operational workflow
+- [x] Audit production routes for hydration or rendering errors (five public sitemap routes; no hydration or rendering failures)
+- [x] Export optimized code patches and deployment instructions for the email-preview renderer fix
+- [x] Slide deck intentionally omitted at the user's request
+
+## Production route audit review hardening (Aug 12, 2026)
+- [x] Fail the audit when its route list is absent or empty
+- [x] Keep route-audit findings machine-readable when evaluation fails
+- [x] Clear retry-attempt diagnostics so transient failures do not contaminate successful route results
+
+## Admin production audit and renderer history (Aug 12, 2026)
+- [x] Add an administrator-only control to trigger the production route audit and display results
+- [x] Persist renderer-error and route-audit history for a dedicated administrator page
+- [x] Verify the rendered-template Copy HTML action is accessible and reliable
+- [x] Update and validate the reusable renderer-recovery skill for the new admin workflow
+
+## Release audit, localization coverage, and protected-main synchronization (Aug 12, 2026)
+- [x] Run the remaining public-route audit and review durable renderer-error history
+- [x] Review the sanitized audit-log schema and offline localization coverage across all seven locales
+- [x] Update and validate the reusable renderer-resilience skill with the release workflow
+- [x] Complete release checks and prepare the release checklist
+- [x] Save and publish the approved managed checkpoint, then synchronize its exact tree to protected main through a pull request
+
+## Release history, retention, and renderer trend operations (Aug 12, 2026)
+- [x] Add a filtered and sortable administrator release-history view
+- [x] Add administrator-only audit-retention controls in settings
+- [x] Add a main-dashboard alert for repeat renderer failures
+- [x] Update and validate the reusable release-history workflow skill
+
+## Release operations verification and protected-main synchronization (Aug 12, 2026)
+- [x] Run the complete current public-route audit and inspect sanitized renderer-error history
+- [x] Verify all seven locale bundles and the offline fallback after release-operations updates
+- [x] Validate the reusable renderer-resilience workflow for this release
+- [x] Complete release validation, publish the managed checkpoint, and synchronize the exact tree to protected main
+
+## Operational audit, scheduled export, and alert acknowledgment (Aug 12, 2026)
+- [x] Record and present administrator retention-policy changes in a sanitized audit trail
+- [x] Add administrator-configured scheduled release-history exports using the platform periodic-job pattern
+- [x] Add administrator acknowledgment for repeated renderer-failure alerts
+- [x] Update and validate the reusable renderer-resilience workflow
+
+## Operations release verification and protected-main synchronization (Aug 12, 2026)
+- [x] Review the administrator retention audit trail and recent policy changes
+- [x] Verify the manual migration status for the operations controls
+- [x] Run focused email-flow and reusable workflow validation
+- [x] Publish the approved operations checkpoint and synchronize its exact tree to protected main
+
+## Customer outreach sender identity separation (Aug 12, 2026)
+- [x] Audit every customer review-request and follow-up email path for sender identity routing
+- [x] Require the connected user personal/business sender for customer outreach and prohibit Get Phame system senders on those paths
+- [x] Preserve Get Phame-domain sending only for administrator-to-user system communications
+- [x] Add sender-routing regression coverage and validate delivery behavior
+
+## Sender-routing release verification and protected-main synchronization (Aug 12, 2026)
+- [x] Review retention audit metadata and current manual migration status
+- [x] Run focused email sending flows with the sender-domain guard
+- [x] Publish the approved sender-routing checkpoint and synchronize its exact tree to protected main
+
+## Email template availability recovery (Aug 12, 2026)
+- [x] Investigate why the Send Request template selector shows only the default template
+- [x] Restore only verified missing saved templates without overwriting customized content
+- [x] Verify the template selector displays every available template and add regression coverage
+
+## Email template recovery assurance (Aug 12, 2026)
+- [x] Run regression coverage for selector, template resolution, and email sending flows
+- [x] Trace the email-template metadata migration ledger and explain the schema mismatch
+- [x] Create and verify a safeguarded data backup of restored email-template records
+
+## Migration ledger and template backup assurance (Aug 12, 2026)
+- [x] Validate migration journal and database ledger integrity for lineage collisions
+- [x] Inspect and verify every restored email-template backup record
+- [x] Run a non-mutating schema-alignment dry run for the template metadata repair
+- [x] Update and validate the reusable renderer-resilience workflow
+
+## Migration lineage reconciliation and skill exercise (Aug 12, 2026)
+- [x] Inspect Git status and classify duplicate/untracked migration artifacts against source and database history
+- [x] Apply a history-preserving migration source reconciliation without altering the database migration ledger — superseded by approved A1b application-first reconciliation
+- [x] Exercise the reusable renderer-resilience workflow with a non-sensitive sample email-template payload
+- [x] Validate migration generation and update the reusable workflow guidance
+
+## Controlled Drizzle source rebaseline (Aug 12, 2026)
+- [x] Preserve the legacy migration journal, SQL, and snapshot evidence outside the active generator path — superseded by A1b legacy evidence module
+- [x] Create and validate an isolated source metadata baseline from the live schema without changing the database ledger — completed as isolated evidence capture; not promoted because contracts diverged
+- [x] Prove a future schema-generation run is additive-only before adopting the baseline — stopped safely after incompatible contract diff
+- [x] Apply the reviewed source rebaseline and validate application regression safety — superseded by A1b application-first reconciliation
+
+## A1 isolated schema-contract reconciliation (Aug 12, 2026)
+- [x] Create an isolated reconciliation branch and capture legacy migration evidence
+- [x] Map active Drizzle schema contracts against the live 99-table baseline
+- [x] Implement only reviewed compatibility changes and generator metadata rebaseline — superseded by the approved A1b manual additive path
+- [x] Verify additive-only generation and application regression safety before release recommendation — completed through the A1b focused and release validations
+
+## A1b application-first schema reconciliation (Aug 12, 2026)
+- [x] Add explicit schema evidence for live-only legacy tables without changing runtime behavior
+- [x] Prepare additive-only migration SQL for the four runtime-required live-missing tables
+- [x] Validate active application contracts against the reconciled schema evidence
+- [x] Verify migration safety and document release readiness
+
+## A1b source promotion and protected-main release (Aug 12, 2026)
+- [x] Promote the reviewed legacy schema evidence and additive migration artifacts into managed source
+- [x] Run focused and release validation with database-source parity checks
+- [x] Publish the approved managed checkpoint and synchronize its exact tree to protected main
+
+## Sender-routing release verification and protected-main synchronization (Aug 13, 2026)
+- [x] Review retention audit metadata and current manual migration status
+- [x] Run focused email sending flows with the sender-domain guard
+- [x] Publish the approved sender-routing checkpoint and synchronize its exact tree to protected main

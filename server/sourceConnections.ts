@@ -62,13 +62,6 @@ export async function createSourceConnection(params: {
   label: string;
   expectedIntervalMinutes: number;
   monitoringEnabled: boolean;
-  automationEnabled?: boolean;
-  automationMode?: SourceAutomationMode;
-  dryRun?: boolean;
-  sendDelayMinutes?: number;
-  templateId?: number | null;
-  platformId?: number | null;
-  preferredLocale?: string;
   now?: number;
 }) {
   const db = await getDb();
@@ -89,13 +82,6 @@ export async function createSourceConnection(params: {
     expectedIntervalMinutes: params.expectedIntervalMinutes,
     monitoringEnabled: params.monitoringEnabled,
     status: params.monitoringEnabled ? "setup" : "paused",
-    automationEnabled: params.automationEnabled ?? false,
-    automationMode: params.automationMode ?? "import_only",
-    dryRun: params.dryRun ?? true,
-    sendDelayMinutes: params.sendDelayMinutes ?? 0,
-    templateId: params.templateId ?? null,
-    platformId: params.platformId ?? null,
-    preferredLocale: params.preferredLocale ?? "en",
     nextEvaluationAt: params.monitoringEnabled ? now : null,
     createdAt: now,
     updatedAt: now,
@@ -145,49 +131,21 @@ export async function updateSourceConnection(params: {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   const now = params.now ?? Date.now();
-  const configurationChanged = (
-    (params.automationMode !== undefined && params.automationMode !== existing.automationMode)
-    || (params.sendDelayMinutes !== undefined && params.sendDelayMinutes !== existing.sendDelayMinutes)
+  const deliveryConfigChanged = (
+    (params.preferredLocale !== undefined && params.preferredLocale !== existing.preferredLocale)
     || (params.templateId !== undefined && params.templateId !== existing.templateId)
     || (params.platformId !== undefined && params.platformId !== existing.platformId)
-    || (params.preferredLocale !== undefined && params.preferredLocale !== existing.preferredLocale)
+    || (params.sendDelayMinutes !== undefined && params.sendDelayMinutes !== existing.sendDelayMinutes)
   );
-  const set: Partial<typeof sourceConnections.$inferInsert> = { updatedAt: now };
-  if (params.label !== undefined) set.label = params.label.slice(0, 100);
-  if (params.expectedIntervalMinutes !== undefined) set.expectedIntervalMinutes = params.expectedIntervalMinutes;
-  if (params.automationMode !== undefined) set.automationMode = params.automationMode;
-  if (params.dryRun !== undefined) {
-    const nextMode = params.automationMode ?? existing.automationMode;
-    if (!params.dryRun && (nextMode !== "review_request" || !existing.dryRunCompletedAt || configurationChanged)) {
-      throw new Error("Complete one successful source dry run before enabling live review requests.");
-    }
-    set.dryRun = params.dryRun;
-  }
-  if (params.sendDelayMinutes !== undefined) set.sendDelayMinutes = params.sendDelayMinutes;
-  if (params.templateId !== undefined) set.templateId = params.templateId;
-  if (params.platformId !== undefined) set.platformId = params.platformId;
-  if (params.preferredLocale !== undefined) set.preferredLocale = params.preferredLocale;
-  if (params.pauseReason !== undefined) set.pauseReason = params.pauseReason?.slice(0, 255) ?? null;
-  if (configurationChanged) {
-    set.dryRun = true;
-    set.dryRunCompletedAt = null;
-  }
-  if (params.automationEnabled !== undefined) {
-    const nextMode = params.automationMode ?? existing.automationMode;
-    const nextDryRun = params.dryRun ?? existing.dryRun;
-    if (params.automationEnabled && nextMode !== "review_request") {
-      throw new Error("Automatic outreach requires review_request mode.");
-    }
-    if (params.automationEnabled && !nextDryRun && (!existing.dryRunCompletedAt || configurationChanged)) {
-      throw new Error("Complete one successful source dry run before enabling live review requests.");
-    }
-    set.automationEnabled = params.automationEnabled;
-    set.pausedAt = params.automationEnabled ? null : now;
-    if (params.automationEnabled) set.pauseReason = null;
-  }
   if (params.automationMode === "import_only" && existing.automationEnabled && params.automationEnabled !== false) {
     throw new Error("Pause review-request automation before switching this source to import-only mode.");
   }
+  if (params.dryRun === false && (!existing.dryRunCompletedAt || deliveryConfigChanged)) {
+    throw new Error("Complete one successful source dry run before enabling live review requests.");
+  }
+  const set: Partial<typeof sourceConnections.$inferInsert> = { updatedAt: now };
+  if (params.label !== undefined) set.label = params.label.slice(0, 100);
+  if (params.expectedIntervalMinutes !== undefined) set.expectedIntervalMinutes = params.expectedIntervalMinutes;
   if (params.monitoringEnabled !== undefined) {
     set.monitoringEnabled = params.monitoringEnabled;
     set.status = params.monitoringEnabled
@@ -198,6 +156,37 @@ export async function updateSourceConnection(params: {
       set.failureAlertOpen = false;
       set.consecutiveFailures = 0;
     }
+  }
+  if (params.automationMode !== undefined) {
+    set.automationMode = params.automationMode;
+    if (params.automationMode === "import_only") {
+      set.automationEnabled = false;
+      set.dryRun = true;
+      set.pausedAt = now;
+      set.pauseReason = params.pauseReason?.slice(0, 255) ?? "Switched to import-only mode";
+    }
+  }
+  if (params.automationEnabled !== undefined) {
+    set.automationEnabled = params.automationEnabled;
+    if (params.automationEnabled) {
+      set.pausedAt = null;
+      set.pauseReason = null;
+    } else {
+      set.pausedAt = now;
+      set.pauseReason = params.pauseReason?.slice(0, 255) ?? "Paused by account owner";
+    }
+  }
+  if (params.dryRun !== undefined) set.dryRun = params.dryRun;
+  if (params.sendDelayMinutes !== undefined) set.sendDelayMinutes = params.sendDelayMinutes;
+  if (params.templateId !== undefined) set.templateId = params.templateId;
+  if (params.platformId !== undefined) set.platformId = params.platformId;
+  if (params.preferredLocale !== undefined) set.preferredLocale = params.preferredLocale;
+  if (deliveryConfigChanged) {
+    set.dryRun = true;
+    set.dryRunCompletedAt = null;
+  }
+  if (params.pauseReason !== undefined && params.automationEnabled === undefined && params.automationMode === undefined) {
+    set.pauseReason = params.pauseReason?.slice(0, 255) ?? null;
   }
   await db.update(sourceConnections).set(set).where(and(
     eq(sourceConnections.id, params.id),
@@ -214,9 +203,6 @@ export async function archiveSourceConnection(userId: number, id: number, now = 
     archivedAt: now,
     updatedAt: now,
     monitoringEnabled: false,
-    automationEnabled: false,
-    pausedAt: now,
-    pauseReason: "source_archived",
     status: "paused",
     nextEvaluationAt: null,
     failureAlertOpen: false,

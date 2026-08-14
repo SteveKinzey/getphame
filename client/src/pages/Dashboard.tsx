@@ -3,17 +3,18 @@
 
 import { useTranslation } from 'react-i18next';
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw } from "lucide-react";
+import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
-import { lazy, useMemo, useState } from "react";
+import { lazy, useMemo, useRef, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import LanguageFlyout from "@/components/LanguageFlyout";
 import ClientDetailSheet from "@/components/ClientDetailSheet";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 import RecentActivityCard from "@/components/dashboard/RecentActivityCard";
+import MailServerHealthBadge from "@/components/dashboard/MailServerHealthBadge";
 
 const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"));
 
@@ -30,14 +31,39 @@ export default function DashboardPage() {
   const [, navigate] = useLocation();
   const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
   const { data: stats, isLoading } = trpc.requests.stats.useQuery();
+  const { data: consentStats } = trpc.contacts.consentStats.useQuery();
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: emailPerf } = trpc.tracking.overallStats.useQuery();
+  const { data: smtpStatus } = trpc.smtp.status.useQuery();
+  const { data: bulkSenderStatus } = trpc.bulkSender.status.useQuery();
   const utils = trpc.useUtils();
 
-  // Single-row toggle
+  // Undo toast state for single-row mark in the activity feed
+  const [feedUndoId, setFeedUndoId] = useState<number | null>(null);
+  const feedUndoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (feedUndoTimerRef.current) clearTimeout(feedUndoTimerRef.current); }, []);
+
+  const startFeedUndoTimer = (cb: () => void, ms = 4000) => {
+    if (feedUndoTimerRef.current) clearTimeout(feedUndoTimerRef.current);
+    feedUndoTimerRef.current = setTimeout(cb, ms);
+  };
+
+  // Single-row mark mutation — with undo toast when marking as reviewed
   const markRespondedMutation = trpc.requests.markResponded.useMutation({
-    onSuccess: () => utils.requests.list.invalidate(),
+    onSuccess: (_data, vars) => {
+      utils.requests.list.invalidate();
+      if (vars.responded) {
+        setFeedUndoId(vars.id);
+        startFeedUndoTimer(() => setFeedUndoId(null));
+      }
+    },
+  });
+
+  // Undo mutation for single-row feed mark — separate instance
+  const feedUndoMutation = trpc.requests.markResponded.useMutation({
+    onSuccess: () => { utils.requests.list.invalidate(); setFeedUndoId(null); },
+    onError: () => setFeedUndoId(null),
   });
 
   // Bulk selection state
@@ -208,32 +234,36 @@ export default function DashboardPage() {
         </h1>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: t('dashboard.stats.thisMonth'), value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
             { label: t('dashboard.stats.allTime'), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             { label: t('dashboard.stats.last7Days'), value: velocity?.last7 ?? 0, icon: <Star size={14} /> },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid"
-            >
-              <div
-                className="flex items-center justify-center gap-1 mb-1 rr-text-gold"
-              >
-                {s.icon}
-              </div>
-              <div className="text-2xl font-black text-white">
-                {isLoading ? (
-                  <div className="h-7 w-10 mx-auto rounded-md animate-pulse" style={{ background: "oklch(1 0 0 / 0.15)" }} />
-                ) : s.value}
-              </div>
-              <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
-                {s.label}
-              </div>
-            </div>
-          ))}
+            { label: t('dashboard.stats.consented', 'Consented'), value: consentStats?.consented ?? 0, icon: <ShieldCheck size={14} />, subtitle: consentStats ? `of ${consentStats.total}` : undefined, href: '/contacts?consent=consented' },
+          ].map((s) => {
+            const inner = (
+              <>
+                <div className="flex items-center justify-center gap-1 mb-1 rr-text-gold">{s.icon}</div>
+                <div className="text-2xl font-black text-white">
+                  {isLoading ? <div className="h-7 w-10 mx-auto rounded-md animate-pulse" style={{ background: "oklch(1 0 0 / 0.15)" }} /> : s.value}
+                </div>
+                <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{s.label}</div>
+                {(s as any).subtitle && (
+                  <div className="text-xs mt-0.5" style={{ color: "var(--text-on-dark-secondary)", opacity: 0.7 }}>{(s as any).subtitle}</div>
+                )}
+              </>
+            );
+            return (s as any).href ? (
+              <a key={s.label} href={(s as any).href} title="View consented contacts"
+                className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid block hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none">
+                {inner}
+              </a>
+            ) : (
+              <div key={s.label} className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid">{inner}</div>
+            );
+          })}
         </div>
+        <MailServerHealthBadge smtp={smtpStatus} bulk={bulkSenderStatus} translate={t} />
       </div>
 
       <div className="px-4 py-4 lg:px-8 lg:py-6">
@@ -303,6 +333,31 @@ export default function DashboardPage() {
         <div id="activity-feed" className="bg-white rounded-2xl p-4 shadow-sm">
           {/* Header row */}
           <div className="flex items-center justify-between mb-3">
+@@ {/* Search + status filter */}
+          {/* Feed undo toast — 4-second window, shown after marking a row as reviewed */}
+          {feedUndoId !== null && (
+            <div
+              className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
+              style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
+            >
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} />
+                {t("dashboard.activityFeed.markAsReviewed", { defaultValue: "Marked as reviewed" })}
+              </span>
+              <button
+                onClick={() => {
+                  if (feedUndoTimerRef.current) clearTimeout(feedUndoTimerRef.current);
+                  const id = feedUndoId;
+                  setFeedUndoId(null);
+                  feedUndoMutation.mutate({ id, responded: false });
+                }}
+                className="text-xs font-black underline underline-offset-2 shrink-0"
+                style={{ color: "oklch(0.25 0.10 145)" }}
+              >
+                {t("common.undo", { defaultValue: "Undo" })}
+              </button>
+            </div>
+          )}
             <h3
               className="text-sm font-black rr-text-navy"
             >

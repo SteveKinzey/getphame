@@ -8,7 +8,7 @@
  */
 
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
-import { createTransporter } from "./smtp";
+import { sendSystemEmail, HELLO_FROM } from "./sendgrid";
 
 export const GUIDE_PDF_URL = "https://assets.getphame.app/getphame-30-day-review-playbook.pdf";
 
@@ -17,34 +17,6 @@ export interface LeadGuideDeliveryResult {
   providerMessageId?: string;
   responseCode?: number;
   error?: string;
-}
-
-interface SystemSmtpConfig {
-  host: string;
-  port: number;
-  user: string;
-  pass: string;
-  fromEmail: string;
-}
-
-function getSystemSmtpConfig(): SystemSmtpConfig | null {
-  const host = process.env.SYSTEM_SMTP_HOST;
-  const port = process.env.SYSTEM_SMTP_PORT;
-  const user = process.env.SYSTEM_SMTP_USER;
-  const pass = process.env.SYSTEM_SMTP_PASS;
-  const fromEmail = process.env.SYSTEM_FROM_EMAIL;
-
-  if (!host || !user || !pass || !fromEmail) {
-    return null;
-  }
-
-  return {
-    host,
-    port: parseInt(port ?? "587", 10),
-    user,
-    pass,
-    fromEmail,
-  };
 }
 
 function buildGuideEmailHtml(): string {
@@ -145,47 +117,27 @@ No spam — we respect your inbox.`;
  * system SMTP is not configured or the send fails.
  */
 export async function sendLeadGuideEmail(toEmail: string): Promise<LeadGuideDeliveryResult> {
-  const config = getSystemSmtpConfig();
-  if (!config) {
-    console.warn("[LeadGuide] System SMTP not configured (SYSTEM_SMTP_HOST/USER/PASS/FROM_EMAIL). Lead stored but guide email not sent.");
-    return { sent: false, error: "System SMTP not configured" };
-  }
-
   try {
-    const transporter = createTransporter({
-      host: config.host,
-      port: config.port,
-      secure: config.port === 465,
-      user: config.user,
-      pass: config.pass,
-    });
-
-    const result = await transporter.sendMail({
-      from: `"Phame" <${config.fromEmail}>`,
+    await sendSystemEmail({
       to: toEmail,
+      from: HELLO_FROM,
       subject: "Your Free Guide: How to 3× Your Google Reviews in 30 Days",
       html: buildGuideEmailHtml(),
       text: buildGuideEmailText(),
     });
-
-    const acceptedCount = Array.isArray(result.accepted) ? result.accepted.length : 0;
-    const rejectedCount = Array.isArray(result.rejected) ? result.rejected.length : 0;
-    const sent = acceptedCount > 0;
-    const responseCodeMatch = typeof result.response === "string" ? result.response.match(/^(\d{3})/) : null;
-    const responseCode = responseCodeMatch ? Number(responseCodeMatch[1]) : undefined;
+    const sent = true;
+    const responseCode = 202;
 
     console.info("[LeadGuide] Provider response", {
       accepted: sent,
-      acceptedCount,
-      rejectedCount,
-      providerMessageId: result.messageId || undefined,
+      providerMessageId: undefined,
       responseCode,
     });
 
     if (!sent) {
       return {
         sent: false,
-        providerMessageId: result.messageId || undefined,
+        providerMessageId: undefined,
         responseCode,
         error: "Email provider did not accept the recipient",
       };
@@ -193,7 +145,7 @@ export async function sendLeadGuideEmail(toEmail: string): Promise<LeadGuideDeli
 
     return {
       sent: true,
-      providerMessageId: result.messageId || undefined,
+      providerMessageId: undefined,
       responseCode,
     };
   } catch (err: unknown) {

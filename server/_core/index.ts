@@ -54,11 +54,7 @@ import {
   DISPOSABLE_DOMAIN_CALLBACK_PATH,
   reconcileDisposableDomainHeartbeat,
 } from "../disposableDomainHeartbeat";
-import { sourceAutomationHeartbeatHandler } from "../sourceAutomationProcessor";
-import {
-  SOURCE_AUTOMATION_CALLBACK_PATH,
-  reconcileSourceAutomationHeartbeat,
-} from "../sourceAutomationHeartbeat";
+import { releaseHistoryExportScheduleHandler } from "../releaseHistoryExportScheduleRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
@@ -460,6 +456,8 @@ async function startServer() {
                 ],
                 // Allow YouTube embeds and the official Turnstile challenge frame.
                 frameSrc: [
+                  // Admin email previews render local, static HTML through a revocable Blob URL.
+                  "blob:",
                   "https://www.youtube.com",
                   "https://youtube.com",
                   "https://challenges.cloudflare.com",
@@ -542,7 +540,7 @@ async function startServer() {
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
   app.post(SOURCE_HEALTH_CALLBACK_PATH, sourceHealthHandler);
   app.post(DISPOSABLE_DOMAIN_CALLBACK_PATH, disposableDomainHandler);
-  app.post(SOURCE_AUTOMATION_CALLBACK_PATH, sourceAutomationHeartbeatHandler);
+  app.post("/api/scheduled/release-history-export", releaseHistoryExportScheduleHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
   app.post("/api/scheduled/process-quiet-hours", quietHoursHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
@@ -734,13 +732,6 @@ async function startServer() {
         )
         .catch(() =>
           console.error("[DisposableDomains] Heartbeat reconciliation failed.")
-        );
-      void reconcileSourceAutomationHeartbeat()
-        .then(result =>
-          console.log(`[SourceAutomation] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[SourceAutomation] Heartbeat reconciliation failed.")
         );
     }
     startSmtpWeeklyDigestScheduler();

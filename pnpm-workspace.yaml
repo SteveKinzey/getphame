@@ -7,8 +7,8 @@ overrides:
   body-parser: "1.20.6"
   # Security: tar arbitrary file write fix (GHSA-r292-9mhp-454m)
   tar: ">=7.5.22"
-  # Security: PostCSS source map path traversal and local file disclosure fix (GHSA-r28c-9q8g-f849)
-  postcss: ">=8.5.18"
+  # Security: PostCSS source map path traversal and local file disclosure fix (GHSA-fxqj-rqcc-2cmp)
+  postcss: ">=8.5.23"
   # Security: picomatch ReDoS fix
   picomatch: ">=4.0.4"
   # Security: lodash code injection fix (lodash-es still pulled by dagre-d3-es via mermaid)
@@ -20,9 +20,15 @@ overrides:
   fast-xml-parser: ">=5.7.0"
   # Security: form-data CRLF injection fix
   form-data: ">=4.0.6"
+<<<<<<< HEAD
   # Security: DOMPurify IN_PLACE hook-detachment XSS fix (GHSA-55q2-fjhq-7xh7)
   dompurify: ">=3.4.13"
   # Security: Mermaid XY chart and parser fixes (requires 11.16.1 or newer)
+=======
+  # Security: dompurify XSS fix (mermaid pulls an older advisory-affected release)
+  dompurify: ">=3.4.13"
+  # Security: mermaid XSS fix (streamdown pulls 11.12.x, needs >=11.15.0)
+>>>>>>> origin/main
   mermaid: ">=11.16.1"
   # Security: esbuild dev server request smuggling fix
   esbuild: ">=0.28.1"
@@ -32,12 +38,19 @@ overrides:
   uuid: ">=11.1.1"
   # Security: qs prototype pollution fix
   qs: ">=6.15.2"
+<<<<<<< HEAD
   # Security: brace-expansion unbounded intermediate-array DoS fix (GHSA-rgw5-rvv9-x895)
+=======
+  # Security: brace-expansion unbounded-length DoS fix (GHSA-mh99-v99m-4gvg)
+>>>>>>> origin/main
   brace-expansion: ">=5.0.9"
   # Security: mdast-util-to-hast XSS fix
   mdast-util-to-hast: ">=13.2.1"
   # Existing overrides preserved
-  tailwindcss>nanoid: "3.3.7"
+  # Security: preserve patched Nanoid majors required by each dependent package.
+  tailwindcss>nanoid: "3.3.17"
+  vite-plugin-manus-runtime>nanoid: "5.1.16"
+  postcss>nanoid: "3.3.17"
   baseline-browser-mapping: "^2.10.20"
   rollup: "^4.52.5"
 

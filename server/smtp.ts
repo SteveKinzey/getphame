@@ -10,14 +10,20 @@
 
 import nodemailer from "nodemailer";
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from "crypto";
+import { lookup } from "node:dns/promises";
+import { isIP } from "node:net";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import { getDb } from "./db";
 import { smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
 import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
-import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
+import {
+  clearOutboundDeliveryChannel,
+  resolveOutboundDeliveryChannel,
+} from "./outboundDeliveryChannel";
 import { assertReviewOutreachAllowed } from "./signupRisk";
+import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -112,7 +118,7 @@ export function getAppPasswordHint(email: string, host?: string): string | null 
   }
   // Google Workspace: custom domain using smtp.gmail.com as host
   if (host === "smtp.gmail.com" && domain && domain !== "gmail.com" && domain !== "googlemail.com") {
-    return "Google Workspace requires an App Password. Go to myaccount.google.com → Security → App Passwords and create one for \"Mail\".";
+    return "Google Workspace may permit an App Password. Turn on 2-Step Verification, then open myaccount.google.com/apppasswords. If the option is unavailable, ask your Workspace administrator for the approved SMTP or OAuth connection method.";
   }
   if (domain === "outlook.com" || domain === "hotmail.com" || domain === "live.com") {
     return "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.";
@@ -134,6 +140,7 @@ export function createTransporter(opts: {
   secure: boolean;
   user: string;
   pass: string;
+  servername?: string;
 }) {
   const allowInsecureTls = process.env.ALLOW_INSECURE_SMTP_TLS === "true";
   return nodemailer.createTransport({
@@ -141,8 +148,55 @@ export function createTransporter(opts: {
     port: opts.port,
     secure: opts.secure,
     auth: { user: opts.user, pass: opts.pass },
-    tls: { rejectUnauthorized: !allowInsecureTls },
+    tls: {
+      rejectUnauthorized: !allowInsecureTls,
+      servername: opts.servername,
+    },
   });
+}
+
+function isPrivateOrReservedIp(address: string): boolean {
+  const normalized = address.toLowerCase();
+  if (normalized === "::1" || normalized === "::" || normalized.startsWith("fe80:") || normalized.startsWith("fc") || normalized.startsWith("fd")) return true;
+  const mappedIpv4 = normalized.startsWith("::ffff:") ? normalized.slice(7) : normalized;
+  if (isIP(mappedIpv4) !== 4) return false;
+  const [a, b] = mappedIpv4.split(".").map(Number);
+  return a === 0 || a === 10 || a === 127 || (a === 100 && b >= 64 && b <= 127) || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || a >= 224;
+}
+
+export async function resolveSafeSmtpEndpoint(host: string): Promise<{ address: string; servername?: string }> {
+  const normalized = host.trim().toLowerCase().replace(/\.$/, "");
+  if (!normalized || normalized.includes("://") || /[\s/\\?#]/.test(normalized) || normalized === "localhost" || normalized.endsWith(".localhost") || normalized.endsWith(".local")) {
+    throw new Error("SMTP_HOST_INVALID");
+  }
+  const addresses = await lookup(normalized, { all: true, verbatim: true });
+  if (!addresses.length || addresses.some((entry) => isPrivateOrReservedIp(entry.address))) {
+    throw new Error("SMTP_HOST_PRIVATE");
+  }
+  return { address: addresses[0].address, servername: isIP(normalized) ? undefined : normalized };
+}
+
+function describeSmtpConnectionError(error: unknown): string {
+  const detail = error as NodeJS.ErrnoException & { responseCode?: number };
+  if (error instanceof Error && error.message === "SMTP_HOST_INVALID") return "Enter a public SMTP hostname supplied by your email provider.";
+  if (error instanceof Error && error.message === "SMTP_HOST_PRIVATE") return "Private, local, or reserved SMTP destinations are not allowed.";
+  if (detail.code === "EAUTH" || detail.responseCode === 535) return "Authentication failed. Check the provider username and app password or SMTP password.";
+  if (detail.code === "ETIMEDOUT" || detail.code === "ESOCKET") return "The SMTP service did not respond in time. Confirm the host, port, and security mode.";
+  if (detail.code === "ECONNREFUSED") return "The SMTP service refused the connection. Confirm the host, port, and security mode.";
+  if (detail.code === "ENOTFOUND" || detail.code === "EAI_AGAIN") return "The SMTP host could not be resolved. Confirm the provider settings and try again.";
+  if (error instanceof Error && /certificate|tls|ssl/i.test(error.message)) return "The SMTP service could not establish a trusted secure connection.";
+  return "Connection failed. Confirm the provider settings and try again.";
+}
+
+async function createSafeTransporter(opts: {
+  host: string;
+  port: number;
+  secure: boolean;
+  user: string;
+  pass: string;
+}) {
+  const endpoint = await resolveSafeSmtpEndpoint(opts.host);
+  return createTransporter({ ...opts, host: endpoint.address, servername: endpoint.servername });
 }
 
 // ── DB helpers ────────────────────────────────────────────────────────────────
@@ -203,10 +257,16 @@ export async function saveSmtpCredentials(
   }
 }
 
-export async function deleteSmtpCredentials(userId: number) {
-  const db = await getDb();
+type SmtpCredentialDeleteDependencies = {
+  db?: { delete: (...args: any[]) => { where: (...args: any[]) => Promise<unknown> } };
+  clearPersonalDeliveryChannel?: (userId: number, channel: "personal") => Promise<void>;
+};
+
+export async function deleteSmtpCredentials(userId: number, dependencies: SmtpCredentialDeleteDependencies = {}) {
+  const db = dependencies.db ?? await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, userId));
+  await (dependencies.clearPersonalDeliveryChannel ?? clearOutboundDeliveryChannel)(userId, "personal");
 }
 
 export async function markSmtpVerified(userId: number) {
@@ -229,14 +289,25 @@ export interface SendMailOptions {
   safetyMode?: "review_request" | "system";
 }
 
+const GETPHAME_PLATFORM_SENDER_DOMAIN = "getphame.app";
+
+export function assertCustomerOutreachSender(fromEmail: string): void {
+  const normalized = fromEmail.trim().toLowerCase();
+  const domain = normalized.split("@")[1] ?? "";
+  if (domain === GETPHAME_PLATFORM_SENDER_DOMAIN || domain.endsWith(`.${GETPHAME_PLATFORM_SENDER_DOMAIN}`)) {
+    throw new Error("Customer review outreach must use the user's connected personal or business email address, not a Get Phame sender.");
+  }
+}
+
 export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSendStatus | null> {
   if (opts.safetyMode !== "system") {
     await assertReviewOutreachAllowed(opts.userId);
     const channel = await resolveOutboundDeliveryChannel(opts.userId);
     if (!channel) throw new Error("No email account connected. Please connect your email in Settings.");
+    assertCustomerOutreachSender(channel.fromEmail);
     const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);
     const pass = decryptPassword(channel.encryptedSecret);
-    const transporter = createTransporter({
+    const transporter = await createSafeTransporter({
       host: channel.host,
       port: channel.port,
       secure: channel.secure,
@@ -258,7 +329,7 @@ export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSe
   if (!creds) throw new Error("No email account connected. Please connect your email in Settings.");
 
   const pass = decryptPassword(creds.encryptedPass);
-  const transporter = createTransporter({
+  const transporter = await createSafeTransporter({
     host: creds.host,
     port: creds.port,
     secure: creds.secure === 1,
@@ -291,12 +362,11 @@ export async function testSmtpConnection(opts: {
   pass: string;
 }): Promise<{ ok: boolean; error?: string }> {
   try {
-    const transporter = createTransporter(opts);
+    const transporter = await createSafeTransporter(opts);
     await transporter.verify();
     return { ok: true };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    return { ok: false, error: message };
+    return { ok: false, error: describeSmtpConnectionError(err) };
   }
 }
 
@@ -406,6 +476,34 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     return { ok: false, error: message };
+  }
+}
+
+type SmtpTestEmailDependencies = {
+  getCredentials?: typeof getSmtpCredentials;
+  send?: typeof sendMailViaSmtp;
+};
+
+/** Send one diagnostic message through a verified saved tenant SMTP connection. */
+export async function sendSmtpTestEmail(userId: number, to: string, dependencies: SmtpTestEmailDependencies = {}): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const creds = await (dependencies.getCredentials ?? getSmtpCredentials)(userId);
+    if (!creds || creds.verified !== 1) {
+      return { ok: false, error: "Connect and verify your email server before sending a test email." };
+    }
+
+    const fromName = creds.fromName ?? creds.user;
+    await (dependencies.send ?? sendMailViaSmtp)({
+      userId,
+      to,
+      subject: "Get Phame mail server test",
+      html: `<p>Hi,</p><p>This confirms that <strong>${fromName}</strong>'s mail server is connected to Get Phame and can send email.</p><p>You can now send individual, compliance-aware customer outreach from your own mail server.</p><p>— Get Phame</p>`,
+      text: `Hi,\n\nThis confirms that ${fromName}'s mail server is connected to Get Phame and can send email.\n\n— Get Phame`,
+      safetyMode: "system",
+    });
+    return { ok: true };
+  } catch (err: unknown) {
+    return { ok: false, error: describeSmtpConnectionError(err) };
   }
 }
 
@@ -539,17 +637,6 @@ export async function sendUserWelcomeEmail(opts: {
   toEmail: string;
   toName: string | null;
 }): Promise<void> {
-  const host = process.env.SYSTEM_SMTP_HOST;
-  const user = process.env.SYSTEM_SMTP_USER;
-  const pass = process.env.SYSTEM_SMTP_PASS;
-  const fromEmail = process.env.SYSTEM_FROM_EMAIL;
-  const port = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "587", 10);
-  if (!host || !user || !pass || !fromEmail || !Number.isFinite(port)) {
-    console.warn("[PlatformEmail] Welcome email skipped because managed SMTP is not configured");
-    return;
-  }
-
-  const fromName = "Get Phame";
   const displayName = opts.toName || "there";
 
   const html = `<!DOCTYPE html>
@@ -558,43 +645,63 @@ export async function sendUserWelcomeEmail(opts: {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to Get Phame!</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-wrapper { padding: 16px 0 !important; }
+      .email-card { border-radius: 0 !important; width: 100% !important; }
+      .email-body { padding: 28px 20px !important; }
+      .email-header { padding: 22px 20px !important; }
+      .email-footer { padding: 16px 20px !important; }
+      .steps-box { padding: 16px !important; }
+      .cta-btn { padding: 16px 24px !important; font-size: 15px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+<body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-wrapper" style="background:#eef0f4;padding:40px 0;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+        <table width="560" cellpadding="0" cellspacing="0" role="presentation" class="email-card" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);max-width:560px;width:100%;">
           ${renderGetPhameEmailHeader("Welcome aboard")}
           <tr>
-            <td style="padding:36px 40px;">
-              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
+            <td class="email-body" style="padding:36px 40px 32px;">
+              <p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;line-height:1.4;">Hi ${displayName},</p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Thanks for joining Get Phame! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
+                Welcome to Get Phame! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
               </p>
-              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">
-                Here's how to get started in 3 steps:
+              <p style="margin:0 0 16px;font-size:14px;font-weight:700;color:#0F1B2D;text-transform:uppercase;letter-spacing:0.8px;">
+                Get started in 3 steps
               </p>
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9ff;border:1px solid #e0e4f0;border-radius:12px;margin:0 0 24px;">
-                <tr><td style="padding:20px 24px;">
-                  <p style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><strong>1.</strong> Connect your email account in Settings</p>
-                  <p style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><strong>2.</strong> Add your Google (or Yelp, TripAdvisor, etc.) review link</p>
-                  <p style="margin:0;font-size:14px;color:#1a2744;line-height:1.6;"><strong>3.</strong> Send your first review request — takes under 30 seconds</p>
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;">
+                <tr><td class="steps-box" style="padding:20px 24px;">
+                  <p style="margin:0 0 12px;font-size:14px;color:#1a2744;line-height:1.6;">
+                    <span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">1</span>
+                    Connect your email account in <strong>Settings</strong>
+                  </p>
+                  <p style="margin:0 0 12px;font-size:14px;color:#1a2744;line-height:1.6;">
+                    <span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">2</span>
+                    Add your Google (or Yelp, TripAdvisor, etc.) review link
+                  </p>
+                  <p style="margin:0;font-size:14px;color:#1a2744;line-height:1.6;">
+                    <span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:12px;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;margin-right:8px;">3</span>
+                    Send your first review request — takes under 30 seconds
+                  </p>
                 </td></tr>
               </table>
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+              <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;">
                 <tr>
-                  <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://getphame.app" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Get Started →</a>
+                  <td style="background:#C9A84C;border-radius:12px;padding:16px 40px;text-align:center;mso-padding-alt:0;">
+                    <a href="https://getphame.app" class="cta-btn" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">Get Started →</a>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+            <td class="email-footer" style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
                 You received this because you signed up for Get Phame.<br/>
-                <a href="https://getphame.app/settings" style="color:#1a2744;">Manage your settings</a>
+                <a href="https://getphame.app/settings" style="color:#888;text-decoration:none;">Manage your settings</a>
               </p>
             </td>
           </tr>
@@ -605,15 +712,12 @@ export async function sendUserWelcomeEmail(opts: {
 </body>
 </html>`;
 
-  const text = `Hi ${displayName},\n\nWelcome to Get Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://getphame.app\n\n— ${fromName}`;
+  const text = `Hi ${displayName},\n\nWelcome to Get Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://getphame.app\n\n— Get Phame`;
 
-  const transporter = createTransporter({ host, port, secure: port === 465, user, pass });
-  const from = `"${fromName}" <${fromEmail}>`;
-  await transporter.sendMail({
-    from,
-    replyTo: fromEmail,
+  await sendSystemEmail({
     to: opts.toEmail,
     subject: "Welcome to Get Phame! 🚀",
+    from: NOREPLY_FROM,
     html,
     text,
   });
@@ -649,43 +753,57 @@ export async function sendUpgradeReceiptEmail(opts: {
   };
   const perks = tierPerks[opts.tier] ?? [];
 
-  const perksHtml = perks.map(p => `<li style="margin:0 0 8px;font-size:14px;color:#333;line-height:1.6;">✅ ${p}</li>`).join("");
-
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>You're now on Get Phame ${tierLabel}!</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .email-wrapper { padding: 16px 0 !important; }
+      .email-card { border-radius: 0 !important; width: 100% !important; }
+      .email-body { padding: 28px 20px !important; }
+      .email-footer { padding: 16px 20px !important; }
+      .perks-box { padding: 16px !important; }
+      .cta-btn { padding: 16px 24px !important; font-size: 15px !important; }
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+<body style="margin:0;padding:0;background:#eef0f4;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-wrapper" style="background:#eef0f4;padding:40px 0;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+        <table width="560" cellpadding="0" cellspacing="0" role="presentation" class="email-card" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);max-width:560px;width:100%;">
           ${renderGetPhameEmailHeader(`You're on ${tierLabel}!`)}
           <tr>
-            <td style="padding:36px 40px;">
-              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Your Get Phame account has been upgraded to <strong>${tierLabel}</strong>. Here's what you now have access to:
+            <td class="email-body" style="padding:36px 40px 32px;">
+              <p style="margin:0 0 16px;font-size:17px;font-weight:700;color:#0F1B2D;line-height:1.4;">Hi ${displayName},</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">
+                Your Get Phame account has been upgraded to <strong style="color:#0F1B2D;">${tierLabel}</strong>.
+                Here's what you now have access to:
               </p>
-              <ul style="margin:0 0 24px;padding:0 0 0 4px;list-style:none;">
-                ${perksHtml}
-              </ul>
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f4f6ff;border:1px solid #dde3f5;border-radius:12px;margin:0 0 28px;">
+                <tr><td class="perks-box" style="padding:20px 24px;">
+                  <ul style="margin:0;padding:0;list-style:none;">
+                    ${perks.map(p => `<li style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><span style="display:inline-block;background:#C9A84C;color:#0F1B2D;font-weight:800;font-size:11px;border-radius:50%;width:20px;height:20px;text-align:center;line-height:20px;margin-right:8px;">✓</span>${p}</li>`).join("")}
+                  </ul>
+                </td></tr>
+              </table>
+              <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 8px;">
                 <tr>
-                  <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://getphame.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Start Sending Reviews →</a>
+                  <td style="background:#C9A84C;border-radius:12px;padding:16px 40px;text-align:center;mso-padding-alt:0;">
+                    <a href="https://getphame.app/send" class="cta-btn" style="color:#0F1B2D;font-size:16px;font-weight:800;text-decoration:none;display:inline-block;">Start Sending Reviews →</a>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+            <td class="email-footer" style="background:#f8f9fb;padding:20px 40px;text-align:center;border-top:1px solid #e8ecf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                Questions? Reply to this email or visit <a href="https://getphame.app/settings" style="color:#1a2744;">your settings</a>.
+                Questions? Reply to this email or visit <a href="https://getphame.app/settings" style="color:#888;text-decoration:none;">your settings</a>.<br/>
+                Get Phame · <a href="https://getphame.app" style="color:#888;text-decoration:none;">getphame.app</a>
               </p>
             </td>
           </tr>

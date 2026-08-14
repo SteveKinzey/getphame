@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
-import SettingsPage from "./pages/Settings";
+import SettingsPage, { SettingsBulkSenderTestFixture } from "./pages/Settings";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
   useOnboardingGuide,
@@ -31,9 +31,15 @@ import {
   DashboardReadinessGate,
   useDashboardReadiness,
 } from "./components/ApiRecoveryExperience";
+import {
+  ConnectionSavedNotice,
+  SmtpAppPasswordHelpTooltip,
+  SmtpCandidateConnectionActions,
+} from "./components/SmtpConnectionFeedback";
 import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
+import { getLoginUrl } from "./const";
 import { useHapticEvents } from "./hooks/useHapticEvents";
 import { useTranslation } from "react-i18next";
 import AutoTextLocalizer from "./components/AutoTextLocalizer";
@@ -54,6 +60,7 @@ import {
 const onboardingDismissedUserIds = new Set<string>();
 const onboardingDismissalKey = (userId: string) =>
   `getphame:onboarding-dismissed:${userId}`;
+const authReturnPathStorageKey = "getphame:auth-return-path";
 
 function wasOnboardingDismissed(userId: string | null) {
   if (!userId) return false;
@@ -92,6 +99,7 @@ const DataUsagePage = lazy(() => import("./pages/DataUsage"));
 const ChangelogPage = lazy(() => import("./pages/Changelog"));
 const SecurityPolicyPage = lazy(() => import("./pages/SecurityPolicy"));
 const UnsubscribePage = lazy(() => import("./pages/Unsubscribe"));
+const EmailPreferencesPage = lazy(() => import("./pages/EmailPreferences"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccess"));
 const ChurnSurveyPage = lazy(() => import("./pages/ChurnSurvey"));
 const LoginPage = lazy(() => import("./pages/Login"));
@@ -145,6 +153,10 @@ const AdminSecurityAuditsPage = lazy(
 const AdminSecurityAuditReleaseVerificationPage = lazy(
   () => import("./pages/AdminSecurityAuditReleaseVerification")
 );
+const AdminEmailPreviewPage = lazy(() => import("./pages/AdminEmailPreview"));
+const AdminAuditLogPage = lazy(() => import("./pages/AdminAuditLog"));
+const AdminAuditRetentionPage = lazy(() => import("./pages/AdminAuditRetention"));
+const AuthenticatedAdminEmailPreviewPage = () => <AdminEmailPreviewPage />;
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 
 /**
@@ -167,6 +179,28 @@ function PageTransition({ children }: { children: React.ReactNode }) {
       {children}
     </div>
   );
+}
+
+function AuthRequiredRedirect({ returnPath }: { returnPath: string }) {
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(authReturnPathStorageKey, returnPath);
+    } catch {
+      // The query parameter remains a safe fallback when session storage is blocked.
+    }
+    window.location.replace(getLoginUrl(returnPath));
+  }, [returnPath]);
+
+  return <PageLoader />;
+}
+
+function getSafeReturnPath(search: string) {
+  const returnTo = new URLSearchParams(search).get("returnTo");
+  if (!returnTo || !returnTo.startsWith("/") || returnTo.startsWith("//")) {
+    return null;
+  }
+
+  return returnTo;
 }
 
 function AppShell() {
@@ -235,8 +269,23 @@ function AppShell() {
   }, [loading, t, user]);
 
   useEffect(() => {
-    if (loading || !user || window.location.pathname !== "/onboarding") return;
-    navigate("/", { replace: true });
+    if (loading || !user) return;
+
+    let rememberedReturnPath: string | null = null;
+    try {
+      rememberedReturnPath = window.sessionStorage.getItem(authReturnPathStorageKey);
+      window.sessionStorage.removeItem(authReturnPathStorageKey);
+    } catch {
+      // The query-string return path remains available when storage is blocked.
+    }
+
+    const returnPath =
+      getSafeReturnPath(window.location.search) ??
+      (rememberedReturnPath && getSafeReturnPath(`?returnTo=${encodeURIComponent(rememberedReturnPath)}`));
+
+    if (returnPath && returnPath !== `${window.location.pathname}${window.location.search}`) {
+      navigate(returnPath, { replace: true });
+    }
   }, [loading, navigate, user]);
 
   useEffect(() => {
@@ -335,6 +384,12 @@ function AppShell() {
         </PublicLayout>
       </Suspense>
     );
+  if (path === "/preferences")
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <EmailPreferencesPage />
+      </Suspense>
+    );
   if (path === "/unsubscribe")
     return (
       <Suspense fallback={<PageLoader />}>
@@ -383,6 +438,16 @@ function AppShell() {
     );
 
   if (!user) {
+    if (path === "/admin/email-preview") {
+      return (
+        <Suspense fallback={<PageLoader />}>
+          <PublicLayout>
+            <AdminEmailPreviewPage readOnly />
+          </PublicLayout>
+        </Suspense>
+      );
+    }
+
     if (path === "/onboarding")
       return (
         <Suspense fallback={<PageLoader />}>
@@ -511,6 +576,9 @@ function AppShell() {
                     path="/admin/security-audit-release"
                     component={AdminSecurityAuditReleaseVerificationPage}
                   />
+                  <Route path="/admin/audit-log" component={AdminAuditLogPage} />
+                  <Route path="/admin/audit-retention" component={AdminAuditRetentionPage} />
+                  <Route path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage} />
                   <Route path="/compliance" component={CompliancePage} />
                   <Route path="/reviews" component={ClientReviewsPage} />
                   <Route path="/ref/:code" component={ReferralLandingPage} />
@@ -538,6 +606,57 @@ function ApiRecoveryTestHarness() {
   );
 }
 
+function SmtpConnectionFeedbackTestHarness() {
+  const [testing, setTesting] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [testResult, setTestResult] = useState<{ ok: boolean } | null>(null);
+  const [smtpSaved, setSmtpSaved] = useState(false);
+  const translate = (_key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? _key;
+
+  return (
+    <div className="mx-auto max-w-xl space-y-5 p-6" data-testid="smtp-feedback-test-harness">
+      <div className="flex items-center gap-2">
+        <label className="text-sm font-bold">Gmail App Password</label>
+        <SmtpAppPasswordHelpTooltip provider="gmail" translate={translate} />
+      </div>
+      <div className="flex items-center gap-2">
+        <label className="text-sm font-bold">Google Workspace App Password</label>
+        <SmtpAppPasswordHelpTooltip provider="workspace" translate={translate} />
+      </div>
+      <SmtpCandidateConnectionActions
+        result={testResult}
+        testing={testing}
+        connecting={connecting}
+        translate={translate}
+        onTest={() => {
+          setTesting(true);
+          window.setTimeout(() => {
+            setTesting(false);
+            setTestResult({ ok: true });
+          }, 40);
+        }}
+        onConnect={() => {
+          setConnecting(true);
+          window.setTimeout(() => {
+            setConnecting(false);
+            setSmtpSaved(true);
+          }, 40);
+        }}
+      />
+      {smtpSaved && <div data-testid="smtp-saved-notice"><ConnectionSavedNotice message="Your email server is connected and ready for customer outreach." /></div>}
+      <div data-testid="bulk-saved-notice"><ConnectionSavedNotice message="Your bulk mail server is connected and ready to use." /></div>
+    </div>
+  );
+}
+
+function ProviderDiscoveryTestHarness() {
+  return (
+    <main className="min-h-screen bg-white p-6">
+      <SettingsBulkSenderTestFixture />
+    </main>
+  );
+}
+
 function App() {
   if (
     import.meta.env.DEV &&
@@ -548,6 +667,26 @@ function App() {
         <TooltipProvider>
           <Toaster position="top-center" richColors />
           <ApiRecoveryTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/smtp-connection-feedback") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <SmtpConnectionFeedbackTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/provider-discovery") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <ProviderDiscoveryTestHarness />
         </TooltipProvider>
       </ThemeProvider>
     );

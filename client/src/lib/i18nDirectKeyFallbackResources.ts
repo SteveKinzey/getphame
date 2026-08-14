@@ -311,4 +311,237 @@ directKeyFallbackResources.it.bulkSendDialog = {
   noIncentivesCheck: "Non vengono offerti incentivi o sconti",
   allCustomersCheck: "Invio la richiesta a tutti i clienti, senza filtrarli in base alla soddisfazione",
 };
+const mailManagementFallbacks: Record<string, ResourceRecord> = {
+  "en": {
+    "smtp": {
+      "testEmailRecipient": "Send a test email to",
+      "testEmailHint": "Use an address you control. This uses your saved mail server and does not save a new recipient.",
+      "testEmailRecipientRequired": "Enter the address that should receive the test email.",
+      "sendingTestEmail": "Sending test email…",
+      "sendTestEmail": "Send test email",
+      "testEmailSent": "Test email sent. Check the recipient inbox to confirm delivery.",
+      "disconnectConfirmTitle": "Disconnect this mail server?",
+      "disconnectConfirmDescription": "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server.",
+      "disconnecting": "Disconnecting…",
+      "disconnectConfirmAction": "Disconnect and reset",
+      "retryTestEmail": "Retry",
+      "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server."
+    },
+    "dashboard": {
+      "mailHealth": {
+        "healthy": "Mail server healthy",
+        "healthyDetail": "Your connected mail server is ready for outreach.",
+        "attention": "Mail server needs attention",
+        "attentionDetail": "Re-test or update your mail server in Settings before sending outreach.",
+        "disconnected": "Mail server not connected",
+        "disconnectedDetail": "Connect a user-owned mail server before sending outreach.",
+        "bulkActive": "Bulk mail server active",
+        "bulkActiveDetail": "Your selected bulk mail provider is active for outreach.",
+        "troubleshoot": "Troubleshoot"
+      }
+    }
+  },
+  "es": {
+    "smtp": {
+      "testEmailRecipient": "Enviar un correo de prueba a",
+      "testEmailHint": "Usa una dirección que controles. Se usa tu servidor guardado y no se guarda un destinatario nuevo.",
+      "testEmailRecipientRequired": "Introduce la dirección que recibirá el correo de prueba.",
+      "sendingTestEmail": "Enviando correo de prueba…",
+      "sendTestEmail": "Enviar correo de prueba",
+      "testEmailSent": "Correo de prueba enviado. Revisa la bandeja del destinatario.",
+      "disconnectConfirmTitle": "¿Desconectar este servidor de correo?",
+      "disconnectConfirmDescription": "Esto elimina permanentemente las credenciales guardadas y detiene los envíos hasta que conectes un servidor verificado.",
+      "disconnecting": "Desconectando…",
+      "disconnectConfirmAction": "Desconectar y restablecer",
+      "retryTestEmail": "Reintentar",
+      "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado."
+    },
+    "dashboard": {
+      "mailHealth": {
+        "healthy": "Servidor de correo correcto",
+        "healthyDetail": "Tu servidor conectado está listo para los envíos.",
+        "attention": "El servidor de correo necesita atención",
+        "attentionDetail": "Vuelve a probarlo o actualízalo en Ajustes antes de enviar.",
+        "disconnected": "Servidor de correo no conectado",
+        "disconnectedDetail": "Conecta un servidor propio antes de enviar.",
+        "bulkActive": "Servidor de correo masivo activo",
+        "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos.",
+        "troubleshoot": "Solucionar problemas"
+      }
+    }
+  },
+  "fr": {
+    "smtp": {
+      "testEmailRecipient": "Envoyer un e-mail de test à",
+      "testEmailHint": "Utilisez une adresse que vous contrôlez. Votre serveur enregistré est utilisé sans enregistrer de nouveau destinataire.",
+      "testEmailRecipientRequired": "Saisissez l’adresse qui doit recevoir l’e-mail de test.",
+      "sendingTestEmail": "Envoi de l’e-mail de test…",
+      "sendTestEmail": "Envoyer l’e-mail de test",
+      "testEmailSent": "E-mail de test envoyé. Vérifiez la boîte du destinataire.",
+      "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
+      "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
+      "disconnecting": "Déconnexion…",
+      "disconnectConfirmAction": "Déconnecter et réinitialiser",
+      "retryTestEmail": "Réessayer",
+      "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié."
+    },
+    "dashboard": {
+      "mailHealth": {
+        "healthy": "Serveur e-mail opérationnel",
+        "healthyDetail": "Votre serveur connecté est prêt pour les envois.",
+        "attention": "Le serveur e-mail nécessite une intervention",
+        "attentionDetail": "Testez-le à nouveau ou mettez-le à jour dans Paramètres avant d’envoyer.",
+        "disconnected": "Serveur e-mail non connecté",
+        "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
+        "bulkActive": "Serveur d’envoi en masse actif",
+        "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif.",
+        "troubleshoot": "Dépanner"
+      }
+    }
+  },
+  "it": {
+    "smtp": {
+      "testEmailRecipient": "Invia un’e-mail di prova a",
+      "testEmailHint": "Usa un indirizzo che controlli. Verrà usato il server salvato senza salvare un nuovo destinatario.",
+      "testEmailRecipientRequired": "Inserisci l’indirizzo che deve ricevere l’e-mail di prova.",
+      "sendingTestEmail": "Invio dell’e-mail di prova…",
+      "sendTestEmail": "Invia e-mail di prova",
+      "testEmailSent": "E-mail di prova inviata. Controlla la casella del destinatario.",
+      "disconnectConfirmTitle": "Disconnettere questo server e-mail?",
+      "disconnectConfirmDescription": "Questa azione elimina definitivamente le credenziali salvate e interrompe gli invii finché non colleghi un server verificato.",
+      "disconnecting": "Disconnessione…",
+      "disconnectConfirmAction": "Disconnetti e reimposta",
+      "retryTestEmail": "Riprova",
+      "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato."
+    },
+    "dashboard": {
+      "mailHealth": {
+        "healthy": "Server e-mail integro",
+        "healthyDetail": "Il server connesso è pronto per gli invii.",
+        "attention": "Il server e-mail richiede attenzione",
+        "attentionDetail": "Ripetere il test o aggiornarlo nelle Impostazioni prima di inviare.",
+        "disconnected": "Server e-mail non connesso",
+        "disconnectedDetail": "Collega un server di tua proprietà prima di inviare.",
+        "bulkActive": "Server di invio massivo attivo",
+        "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo.",
+        "troubleshoot": "Risolvi problemi"
+      }
+    }
+  },
+  "th": {
+    "smtp": {
+      "testEmailRecipient": "ส่งอีเมลทดสอบไปที่",
+      "testEmailHint": "ใช้ที่อยู่อีเมลที่คุณควบคุม ระบบจะใช้เซิร์ฟเวอร์ที่บันทึกไว้และจะไม่บันทึกผู้รับใหม่",
+      "testEmailRecipientRequired": "กรอกที่อยู่อีเมลที่จะรับอีเมลทดสอบ",
+      "sendingTestEmail": "กำลังส่งอีเมลทดสอบ…",
+      "sendTestEmail": "ส่งอีเมลทดสอบ",
+      "testEmailSent": "ส่งอีเมลทดสอบแล้ว โปรดตรวจสอบกล่องจดหมายของผู้รับ",
+      "disconnectConfirmTitle": "ตัดการเชื่อมต่อเซิร์ฟเวอร์อีเมลนี้หรือไม่?",
+      "disconnectConfirmDescription": "การดำเนินการนี้จะลบข้อมูลรับรองที่บันทึกไว้ถาวรและหยุดการส่งจนกว่าคุณจะเชื่อมต่อเซิร์ฟเวอร์ที่ยืนยันแล้ว",
+      "disconnecting": "กำลังตัดการเชื่อมต่อ…",
+      "disconnectConfirmAction": "ตัดการเชื่อมต่อและรีเซ็ต",
+      "retryTestEmail": "ลองอีกครั้ง",
+      "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่"
+    },
+    "dashboard": {
+      "mailHealth": {
+        "healthy": "เซิร์ฟเวอร์อีเมลพร้อมใช้งาน",
+        "healthyDetail": "เซิร์ฟเวอร์ที่เชื่อมต่อพร้อมสำหรับการส่งข้อความ",
+        "attention": "เซิร์ฟเวอร์อีเมลต้องการการดูแล",
+        "attentionDetail": "ทดสอบอีกครั้งหรืออัปเดตในการตั้งค่าก่อนส่งข้อความ",
+        "disconnected": "ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์อีเมล",
+        "disconnectedDetail": "เชื่อมต่อเซิร์ฟเวอร์ของคุณก่อนส่งข้อความ",
+        "bulkActive": "เซิร์ฟเวอร์ส่งอีเมลจำนวนมากทำงานอยู่",
+        "bulkActiveDetail": "ผู้ให้บริการส่งจำนวนมากที่เลือกกำลังทำงานอยู่",
+        "troubleshoot": "แก้ไขปัญหา"
+      }
+    }
+  },
+  "zh-CN": {
+    "smtp": {
+      "testEmailRecipient": "将测试邮件发送到",
+      "testEmailHint": "请使用您可控制的地址。系统会使用已保存的邮件服务器，不会保存新的收件人。",
+      "testEmailRecipientRequired": "请输入接收测试邮件的地址。",
+      "sendingTestEmail": "正在发送测试邮件…",
+      "sendTestEmail": "发送测试邮件",
+      "testEmailSent": "测试邮件已发送。请检查收件人收件箱。",
+      "disconnectConfirmTitle": "要断开此邮件服务器吗？",
+      "disconnectConfirmDescription": "此操作将永久删除已保存的邮件服务器凭据，并停止未来发送，直到您连接新的已验证服务器。",
+      "disconnecting": "正在断开连接…",
+      "disconnectConfirmAction": "断开并重置",
+      "retryTestEmail": "重试",
+      "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。"
+    },
+    "dashboard": {
+      "mailHealth": {
+        "healthy": "邮件服务器运行正常",
+        "healthyDetail": "您已连接的邮件服务器已准备好发送消息。",
+        "attention": "邮件服务器需要处理",
+        "attentionDetail": "请在发送前于设置中重新测试或更新邮件服务器。",
+        "disconnected": "邮件服务器未连接",
+        "disconnectedDetail": "请先连接您自己的邮件服务器再发送消息。",
+        "bulkActive": "批量邮件服务器已启用",
+        "bulkActiveDetail": "您选择的批量邮件服务商已启用。",
+        "troubleshoot": "排查问题"
+      }
+    }
+  },
+  "zh-TW": {
+    "smtp": {
+      "testEmailRecipient": "將測試電子郵件寄送至",
+      "testEmailHint": "請使用您可控制的地址。系統會使用已儲存的郵件伺服器，不會儲存新的收件者。",
+      "testEmailRecipientRequired": "請輸入要接收測試電子郵件的地址。",
+      "sendingTestEmail": "正在傳送測試電子郵件…",
+      "sendTestEmail": "傳送測試電子郵件",
+      "testEmailSent": "測試電子郵件已傳送。請檢查收件者收件匣。",
+      "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
+      "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
+      "disconnecting": "正在中斷連線…",
+      "disconnectConfirmAction": "中斷並重設",
+      "retryTestEmail": "重試",
+      "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。"
+    },
+    "dashboard": {
+      "mailHealth": {
+        "healthy": "郵件伺服器運作正常",
+        "healthyDetail": "您已連接的郵件伺服器已準備好傳送訊息。",
+        "attention": "郵件伺服器需要處理",
+        "attentionDetail": "請在傳送前於設定中重新測試或更新郵件伺服器。",
+        "disconnected": "郵件伺服器未連接",
+        "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
+        "bulkActive": "大量郵件伺服器已啟用",
+        "bulkActiveDetail": "您選取的大量郵件服務商已啟用。",
+        "troubleshoot": "疑難排解"
+      }
+    }
+  }
+};
+const pausedAutomationFallbacks: Record<string, ResourceRecord> = {
+  en: { automationPaused: { bannerTitle: "Automated review requests are paused", bannerDescription: "{{count}} pending automated request(s) are waiting for you to reconnect a verified mail server.", viewQueue: "View paused requests", queueTitle: "Paused automated requests", queueDescription: "These requests will stay pending until you connect and select a verified mail server.", reviewRequest: "Review request", followUp: "Follow-up", morePending: "{{count}} more request(s) are pending." } },
+  es: { automationPaused: { bannerTitle: "Las solicitudes de reseñas automáticas están en pausa", bannerDescription: "{{count}} solicitud(es) automática(s) pendiente(s) esperan que vuelva a conectar un servidor de correo verificado.", viewQueue: "Ver solicitudes pausadas", queueTitle: "Solicitudes automáticas pausadas", queueDescription: "Estas solicitudes seguirán pendientes hasta que conecte y seleccione un servidor de correo verificado.", reviewRequest: "Solicitud de reseña", followUp: "Seguimiento", morePending: "Hay {{count}} solicitud(es) más pendiente(s)." } },
+  fr: { automationPaused: { bannerTitle: "Les demandes d’avis automatiques sont en pause", bannerDescription: "{{count}} demande(s) automatique(s) en attente attendent la reconnexion d’un serveur de messagerie vérifié.", viewQueue: "Voir les demandes en pause", queueTitle: "Demandes automatiques en pause", queueDescription: "Ces demandes resteront en attente jusqu’à ce que vous connectiez et sélectionniez un serveur vérifié.", reviewRequest: "Demande d’avis", followUp: "Relance", morePending: "{{count}} demande(s) supplémentaire(s) sont en attente." } },
+  it: { automationPaused: { bannerTitle: "Le richieste di recensione automatiche sono in pausa", bannerDescription: "{{count}} richiesta/e automatica/he in attesa aspettano la riconnessione di un server di posta verificato.", viewQueue: "Visualizza richieste in pausa", queueTitle: "Richieste automatiche in pausa", queueDescription: "Queste richieste resteranno in attesa finché non colleghi e selezioni un server di posta verificato.", reviewRequest: "Richiesta di recensione", followUp: "Promemoria", morePending: "Altre {{count}} richieste sono in attesa." } },
+  th: { automationPaused: { bannerTitle: "คำขอรีวิวอัตโนมัติถูกพักไว้", bannerDescription: "คำขออัตโนมัติที่รอดำเนินการ {{count}} รายการกำลังรอให้คุณเชื่อมต่อเซิร์ฟเวอร์อีเมลที่ยืนยันแล้วอีกครั้ง", viewQueue: "ดูคำขอที่พักไว้", queueTitle: "คำขออัตโนมัติที่พักไว้", queueDescription: "คำขอเหล่านี้จะยังรอดำเนินการจนกว่าคุณจะเชื่อมต่อและเลือกเซิร์ฟเวอร์อีเมลที่ยืนยันแล้ว", reviewRequest: "คำขอรีวิว", followUp: "ติดตามผล", morePending: "มีคำขอเพิ่มเติม {{count}} รายการที่รอดำเนินการ" } },
+  "zh-CN": { automationPaused: { bannerTitle: "自动评价请求已暂停", bannerDescription: "有 {{count}} 个待处理的自动请求，等待您重新连接已验证的邮件服务器。", viewQueue: "查看已暂停请求", queueTitle: "已暂停的自动请求", queueDescription: "这些请求会保持待处理状态，直到您连接并选择已验证的邮件服务器。", reviewRequest: "评价请求", followUp: "跟进", morePending: "另有 {{count}} 个请求待处理。" } },
+  "zh-TW": { automationPaused: { bannerTitle: "自動評論請求已暫停", bannerDescription: "有 {{count}} 個待處理的自動請求，等待您重新連線已驗證的郵件伺服器。", viewQueue: "查看已暫停請求", queueTitle: "已暫停的自動請求", queueDescription: "這些請求會保持待處理狀態，直到您連線並選取已驗證的郵件伺服器。", reviewRequest: "評論請求", followUp: "跟進", morePending: "另有 {{count}} 個請求待處理。" } },
+};
+const dashboardRecheckFallbacks: Record<string, ResourceRecord> = {
+  en: { connectionTestPassed: "Mail server connection verified.", connectionTestFailed: "Mail server still needs attention." },
+  es: { connectionTestPassed: "Se verificó la conexión del servidor de correo.", connectionTestFailed: "El servidor de correo aún necesita atención." },
+  fr: { connectionTestPassed: "La connexion au serveur de messagerie est vérifiée.", connectionTestFailed: "Le serveur de messagerie nécessite encore votre attention." },
+  it: { connectionTestPassed: "La connessione al server di posta è stata verificata.", connectionTestFailed: "Il server di posta richiede ancora attenzione." },
+  th: { connectionTestPassed: "ยืนยันการเชื่อมต่อเซิร์ฟเวอร์อีเมลแล้ว", connectionTestFailed: "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ" },
+  "zh-CN": { connectionTestPassed: "邮件服务器连接已验证。", connectionTestFailed: "邮件服务器仍需处理。" },
+  "zh-TW": { connectionTestPassed: "郵件伺服器連線已驗證。", connectionTestFailed: "郵件伺服器仍需處理。" },
+};
+for (const [locale, values] of Object.entries(mailManagementFallbacks)) {
+  const resource = directKeyFallbackResources[locale] ?? {};
+  directKeyFallbackResources[locale] = {
+    ...resource,
+    smtp: { ...(resource.smtp as ResourceRecord ?? {}), ...(values.smtp as ResourceRecord ?? {}), ...(dashboardRecheckFallbacks[locale] ?? {}) },
+    dashboard: { ...(resource.dashboard as ResourceRecord ?? {}), ...(values.dashboard as ResourceRecord ?? {}) },
+    automationPaused: { ...(resource.automationPaused as ResourceRecord ?? {}), ...(pausedAutomationFallbacks[locale]?.automationPaused as ResourceRecord ?? {}) },
+  };
+}
+
 export default directKeyFallbackResources;

@@ -857,7 +857,9 @@
     "emailNotConnected": "E-mail non connecté",
     "connectEmail": "Connecter l'e-mail",
     "changeEmail": "Changer d'e-mail",
-    "disconnectEmail": "Déconnecter l'e-mail"
+    "disconnectEmail": "Déconnecter l'e-mail",
+    "consentLabelName": "Nom de l'entreprise dans la case de consentement",
+    "consentLabelNameDescription": "Le nom de l'entreprise affiché dans l'étiquette de la case de consentement sur vos formulaires. Par défaut, utilise le nom de l'entreprise ci-dessus."
   },
   "reviewPlatforms": {
     "title": "Plateformes d'avis",
@@ -946,7 +948,7 @@
       "default": "Votre mot de passe e-mail"
     },
     "inlineHints": {
-      "google": "N'utilisez pas votre mot de passe Gmail habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "google": "N’utilisez pas le mot de passe habituel de votre compte : utilisez un mot de passe d’application. Appuyez sur « Comment l’obtenir » ci-dessus.",
       "icloud": "Utilisez un mot de passe spécifique à l'app, pas votre mot de passe Apple ID. Appuyez sur « Comment l'obtenir » ci-dessus.",
       "zoho": "Activez d'abord l'accès SMTP dans Zoho, puis utilisez votre mot de passe Zoho habituel. Appuyez sur « Comment l'obtenir » ci-dessus.",
       "aol": "N'utilisez pas votre mot de passe AOL habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
@@ -980,16 +982,16 @@
     "passwordPlaceholderDefault": "Votre mot de passe e-mail",
     "howToGetIt": "Comment l'obtenir",
     "gotIt": "Compris ✓",
-    "gmailGuideTitle": "Gmail App Mot de passe — 4 steps",
-    "gmailGuideStep1": "Allez sur myaccount.google.com → Sécurité",
-    "gmailGuideStep2": "Activez la validation en 2 étapes",
-    "gmailGuideStep3": "Cherchez \"Mots de passe des applications\" et créez-en un",
+    "gmailGuideTitle": "Mot de passe d’application Gmail — 4 étapes",
+    "gmailGuideStep1": "Accédez à myaccount.google.com → Sécurité",
+    "gmailGuideStep2": "Activez la validation en deux étapes si elle n’est pas déjà activée",
+    "gmailGuideStep3": "Accédez à myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
     "gmailGuideStep4": "Copiez le code à 16 caractères et collez-le ici — supprimez tous les espaces",
-    "gmailGuideTip": "Conseil : utilisez un compte reviews@gmail.com dédié pour garder votre boîte principale propre",
-    "googleWorkspaceGuideTitle": "Google Workspace App Mot de passe — 4 steps",
-    "googleWorkspaceGuideStep1": "Demandez à votre administrateur Workspace d'activer la vérification en 2 étapes dans admin.google.com",
-    "googleWorkspaceGuideStep2": "Connectez-vous à myaccount.google.com avec votre compte professionnel → Sécurité",
-    "googleWorkspaceGuideStep3": "Allez sur myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
+    "gmailGuideTip": "Google n’affiche le code qu’une seule fois. Créez un nouveau mot de passe d’application après avoir changé votre mot de passe Google et révoquez-le lorsque vous déconnectez Get Phame.",
+    "googleWorkspaceGuideTitle": "Mot de passe d’application Google Workspace — 4 étapes",
+    "googleWorkspaceGuideStep1": "Connectez-vous à myaccount.google.com avec votre compte professionnel → Sécurité",
+    "googleWorkspaceGuideStep2": "Activez la validation en deux étapes si elle est disponible pour votre compte",
+    "googleWorkspaceGuideStep3": "Accédez à myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
     "googleWorkspaceGuideStep4": "Copiez le code à 16 caractères et collez-le ici — supprimez tous les espaces",
     "outlookGuideTitle": "Microsoft App Mot de passe — 4 steps",
     "outlookGuideStep1": "Allez sur account.microsoft.com → Sécurité",
@@ -1103,7 +1105,45 @@
     "checkInbox": "Vérifiez votre boîte de réception et cliquez sur le lien de vérification.",
     "icloudGuideStep1": "Allez sur appleid.apple.com → Connexion et sécurité",
     "icloudGuideStep2": "Activez l'authentification à deux facteurs",
-    "icloudGuideStep3": "Créez un mot de passe spécifique à l'application"
+    "icloudGuideStep3": "Créez un mot de passe spécifique à l'application",
+    "googleWorkspaceGuideTip": "Si les mots de passe d’application ne sont pas disponibles, votre organisation peut les limiter, exiger une vérification uniquement par clé de sécurité ou utiliser la Protection Avancée. Demandez à votre administrateur Workspace la méthode SMTP ou OAuth approuvée.",
+    "deliveryStatus": {
+      "active": "Actif pour les demandes d’avis clients",
+      "notSelected": "Connecté, mais non sélectionné pour les demandes d’avis clients",
+      "bulkActive": "Connecté, mais votre service d’envoi en volume est actif pour les demandes d’avis clients",
+      "needsAttention": "Attention requise : mettez à jour vos informations SMTP et reconnectez-vous avant d’envoyer des demandes d’avis clients"
+    },
+    "connectionSavedMessage": "Votre serveur e-mail est connecté et prêt à envoyer des demandes aux clients.",
+    "gmailAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Gmail",
+    "workspaceAppPasswordTooltipLabel": "Aide sur le mot de passe d’application Google Workspace",
+    "gmailAppPasswordTooltip": "Utilisez un mot de passe d’application de 16 caractères, pas votre mot de passe Gmail habituel. Activez d’abord la validation en deux étapes.",
+    "workspaceAppPasswordTooltip": "Votre administrateur Workspace doit autoriser les mots de passe d’application. Si cette option est indisponible, utilisez la méthode SMTP ou OAuth approuvée par votre organisation.",
+    "testPassedNotSaved": "Le test de connexion a réussi. Vos identifiants ne sont pas encore enregistrés.",
+    "testFailed": "Le test de connexion a échoué. Vérifiez les informations du serveur et réessayez.",
+    "testingCandidate": "Test de votre serveur e-mail…",
+    "testBeforeSave": "Tester avant d’enregistrer",
+    "connectingAndVerifying": "Connexion et vérification…",
+    "connectAndSave": "Connecter et enregistrer",
+    "testEmailRecipient": "Envoyer un e-mail de test à",
+    "testEmailHint": "Utilisez une adresse que vous contrôlez. Votre serveur enregistré est utilisé sans enregistrer de nouveau destinataire.",
+    "testEmailRecipientRequired": "Saisissez l’adresse qui doit recevoir l’e-mail de test.",
+    "sendingTestEmail": "Envoi de l’e-mail de test…",
+    "sendTestEmail": "Envoyer l’e-mail de test",
+    "testEmailSent": "E-mail de test envoyé. Vérifiez la boîte du destinataire.",
+    "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
+    "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
+    "disconnecting": "Déconnexion…",
+    "disconnectConfirmAction": "Déconnecter et réinitialiser",
+    "testEmailHistoryTitle": "Historique des e-mails de test",
+    "testEmailHistoryPrivacy": "Les destinataires sont masqués. Seules vos 12 dernières tentatives sont affichées.",
+    "testEmailHistoryEmpty": "Aucun e-mail de diagnostic n’a encore été envoyé.",
+    "testEmailHistorySent": "Envoyé",
+    "testEmailHistoryFailed": "Échec",
+    "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés.",
+    "retryTestEmail": "Réessayer",
+    "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
+    "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
+    "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1265,7 +1305,9 @@
         "created": "Créé",
         "page": "Page {{current}} sur {{total}}"
       }
-    }
+    },
+    "addConsentLabel": "Je confirme que ce client a consenti à être contacté par {businessName} par e-mail et/ou SMS concernant son expérience et ses achats",
+    "addConsentRequired": "La confirmation du consentement est requise pour ajouter un contact"
   },
   "pageHeader": {
     "title": "Contacts enregistrés",
@@ -1406,7 +1448,8 @@
     "sending": "Envoi en cours…",
     "sendButton": "Envoyer {{count}} demandes",
     "confirmButton": "Envoyer {{count}} demande(s)",
-    "schedulingReminders": "Programmation des rappels…"
+    "schedulingReminders": "Programmation des rappels…",
+    "consentCheck": "Je confirme que les clients ont consenti à être contactés par mon entreprise par e-mail et/ou SMS"
   },
   "wooSyncHistory": {
     "title": "Historique de synchronisation",
@@ -1802,7 +1845,8 @@
     "signedInAs": "Connecté en tant que",
     "dashboard": "Tableau de bord",
     "darkMode": "Mode sombre",
-    "lightMode": "Mode clair"
+    "lightMode": "Mode clair",
+    "avatarAlt": "Votre photo de profil"
   },
   "account": {
     "administrator": "Administrateur",
@@ -2136,7 +2180,8 @@
     "stats": {
       "thisMonth": "Ce mois-ci",
       "allTime": "Total",
-      "last7Days": "7 derniers jours"
+      "last7Days": "7 derniers jours",
+      "consented": "Consentis"
     },
     "weeklyBreakdown": {
       "title": "7 derniers jours",
@@ -2187,7 +2232,23 @@
       "markAllSuccess": "{{count}} éléments marqués comme examinés",
       "markReviewed": "Marquer comme examiné"
     },
-    "viewAll": "Voir tout"
+    "viewAll": "Voir tout",
+    "mailHealth": {
+      "healthy": "Serveur e-mail opérationnel",
+      "healthyDetail": "Votre serveur connecté est prêt pour les envois.",
+      "attention": "Le serveur e-mail nécessite une intervention",
+      "attentionDetail": "Testez-le à nouveau ou mettez-le à jour dans Paramètres avant d’envoyer.",
+      "disconnected": "Serveur e-mail non connecté",
+      "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
+      "bulkActive": "Serveur d’envoi en masse actif",
+      "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif.",
+      "healthyTooltip": "Un serveur personnel vérifié est sélectionné et son dernier état ne nécessite aucune action.",
+      "attentionTooltip": "Votre connexion enregistrée nécessite une attention. Testez-la de nouveau ou mettez à jour les paramètres avant l’envoi.",
+      "disconnectedTooltip": "Aucun canal vérifié n’est sélectionné. Les demandes restent en pause jusqu’à la connexion dans les paramètres.",
+      "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
+      "details": "Détails de l’état du serveur de messagerie",
+      "troubleshoot": "Dépanner"
+    }
   },
   "pricing": {
     "sectionTitle": "Tarification simple et honnête",
@@ -2248,7 +2309,12 @@
   "onboarding": {
     "googleBtn": "Continuer with Google",
     "appleBtn": "Continuer with Apple",
-    "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Sans carte bancaire."
+    "finePrint": "Commencez gratuitement — 10 demandes d'avis incluses. Sans carte bancaire.",
+    "consentStepTitle": "Ajoutez une case de consentement à vos formulaires",
+    "consentStepDesc": "Avant de collecter des contacts ou d'envoyer des demandes d'avis, vos formulaires doivent inclure une case de consentement. Ceci est requis par CAN-SPAM, TCPA et RGPD.",
+    "consentStepAction": "Télécharger le Guide de Consentement (PDF)",
+    "consentStepAck": "J'ai ajouté (ou j'ajouterai) une case de consentement à mes formulaires clients",
+    "consentStepAckRequired": "Veuillez confirmer que vous ajouterez la case de consentement avant de continuer"
   },
   "bulkBar": {
     "sendTo": "Envoyer à {{count}} contact(s)"
@@ -2798,7 +2864,12 @@
       "smtpPort": "Port",
       "testConnection": "Tester la connexion",
       "testFailed": "Échec du test de connexion.",
-      "update": "Mettre à jour"
+      "update": "Mettre à jour",
+      "legacyPlatformNotice": "Une ancienne connexion de messagerie de la plateforme a été détectée, mais elle ne peut pas être utilisée pour les communications clients. Connectez un compte de fournisseur d’envoi en volume qui vous appartient.",
+      "activeOutreach": "Actif pour les demandes d’avis clients",
+      "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients",
+      "connectionSavedMessage": "Votre serveur d’envoi en masse est connecté et prêt à être utilisé.",
+      "connectingAndVerifying": "Connexion et vérification…"
     }
   },
   "login": {
@@ -3048,14 +3119,14 @@
   "developerIntegrations": {
     "sources": {
       "title": "Connecter une source",
-      "description": "Choisissez où commence un événement client autorisé. Get Phame vérifie le consentement spécifique, la suppression, l’état de livraison et l’idempotence avant toute activation d’une demande d’avis automatisée.",
-      "badge": "Valider d’abord · activer ensuite",
+      "description": "Choisissez l’origine des fiches clients. Get Phame fournit une recette sécurisée, limitée à l’importation, pour une automatisation fiable côté serveur.",
+      "badge": "Importe uniquement les contacts",
       "workflowTitle": "Parcours de connexion d’une source",
       "steps": {
         "choose": "Choisir une source",
-        "key": "Créer une clé source",
-        "map": "Mapper les champs et le consentement",
-        "test": "Contrôle et essai sécurisé"
+        "key": "Créer une clé d’importation",
+        "map": "Associer les champs et le consentement",
+        "test": "Envoyer un test autorisé"
       },
       "choose": "Choisir une source",
       "recipeCopied": "Recette de configuration sécurisée copiée.",
@@ -3067,8 +3138,7 @@
         "secret": "Conservez la clé API Get Phame uniquement dans un champ secret protégé côté serveur. Ne la placez jamais dans un formulaire, une URL, le code source d’une page ou un script du navigateur.",
         "consent": "Importez uniquement des clients existants ou des personnes ayant donné un consentement explicite. Laissez les cases de consentement facultatives décochées par défaut.",
         "idempotency": "Réutilisez le même ID d’événement du fournisseur à chaque nouvelle tentative afin qu’une soumission ne crée pas de doublon.",
-        "importOnly": "Ce parcours importe ou met à jour un contact. Il n’envoie jamais automatiquement une demande d’avis.",
-        "activation": "Commencez en mode essai sécurisé. L’envoi réel reste désactivé jusqu’à ce qu’une personne autorisée termine le contrôle, vérifie un événement fournisseur et active explicitement la source."
+        "importOnly": "Ce parcours importe ou met à jour un contact. Il n’envoie jamais automatiquement une demande d’avis."
       },
       "providers": {
         "jotform": {
@@ -3093,47 +3163,24 @@
           "idempotency": "Utilisez l’ID immuable de soumission, d’enregistrement, de commande ou d’événement du système source à chaque nouvelle tentative."
         }
       },
-      "recipeTitle": "Recette sécurisée d’événement d’avis",
+      "recipeTitle": "Recette d’association sécurisée",
       "recipeDescription": "Utilisez un espace réservé pendant la configuration. Collez la vraie clé uniquement dans le champ secret protégé du service d’automatisation.",
       "copyRecipe": "Copier la recette",
       "apiField": "Champ API",
       "mapTo": "Associer depuis la source",
       "fields": {
         "name": "Champ du nom du client",
-        "email": "Champ de l’e-mail du client",
+        "email": "Champ de l’adresse e-mail du client",
         "externalId": "ID immuable de l’événement ou de l’enregistrement fournisseur",
-        "sourceApp": "Identifiant fournisseur fixe affiché ci-dessus",
-        "consentConfirmed": "true uniquement après une autorisation affirmative",
+        "sourceApp": "Identifiant fixe du fournisseur affiché ci-dessus",
+        "consentConfirmed": "Booléen true uniquement après un consentement explicite",
         "consentBasis": "customer_relationship, explicit_opt_in ou other",
-        "consentSource": "Courte description du lieu de recueil de l’autorisation",
-        "eventType": "Valeur fixe : review_request",
-        "phone": "Champ facultatif du téléphone du client",
-        "sourceFormId": "Identifiant stable du formulaire fournisseur",
-        "sourceSubmissionId": "Identifiant immuable de la soumission ou du prospect",
-        "preferredLocale": "Code de langue pris en charge : en, es, fr, it, th, zh-CN ou zh-TW",
-        "consentPurpose": "Valeur fixe : review_outreach",
-        "consentChannel": "Valeur fixe : email",
-        "consentCapturedAt": "Horodatage ISO 8601 avec fuseau horaire",
-        "consentText": "Libellé exact de la case d’autorisation présenté à la personne",
-        "consentVersion": "Version immuable du libellé gérée par l’entreprise",
-        "privacyPolicyUrl": "URL HTTPS de la politique de confidentialité affichée près de la case"
+        "consentSource": "Brève description du lieu où le consentement a été recueilli"
       },
       "nextTitle": "Prêt à connecter ?",
-      "nextDescription": "Créez une clé avec contacts:write et review_requests:send, liez-la à une source gérée, puis terminez le contrôle et un essai sécurisé.",
-      "createKey": "Créer une clé source",
-      "viewImports": "Gérer les sources",
-      "consentCopyTitle": "Case de demande d’avis — copier et adapter",
-      "consentCopyInstructions": "Laissez cette case décochée au départ. Vous pouvez l’exiger pour l’inscription aux demandes d’avis automatisées, mais pas comme condition d’un achat, devis ou service sans rapport. Faites approuver votre texte et votre flux définitifs par un conseil juridique qualifié.",
-      "reviewConsentCopy": "J’accepte que {{business_name}} m’envoie des e-mails au sujet de mon achat ou de mon expérience de service récente, dont une demande d’avis et jusqu’à deux rappels. Je peux me désabonner à tout moment. Le consentement n’est pas une condition d’achat. Consultez la Politique de confidentialité.",
-      "marketingConsentTitle": "Autorisation marketing facultative distincte",
-      "marketingConsentCopy": "Je souhaite recevoir occasionnellement des e-mails marketing et des offres de {{business_name}}. Je peux me désabonner à tout moment. Le consentement n’est pas une condition d’achat. Consultez la Politique de confidentialité.",
-      "channelBoundary": "Ne considérez aucune case e-mail comme une autorisation pour les SMS, appels automatisés ou une autre finalité. Rendez inéligibles les soumissions sans preuve valable pour la demande d’avis et ne les envoyez pas automatiquement.",
-      "testTitle": "Tester, relancer et révoquer en toute sécurité",
-      "testImport": "Lancez le point de terminaison de validation en lecture seule avec un destinataire autorisé. Vérifiez la source, la suppression, SMTP, le quota, le modèle et la destination sans importer ni envoyer.",
-      "testReplay": "Activez l’essai sécurisé, soumettez un événement fournisseur réel, puis rejouez-le avec la même Idempotency-Key. Le même résultat doit être renvoyé sans travail en double.",
-      "testFailure": "Traitez les conflits de consentement et les erreurs de validation comme définitifs. Ne relancez que les échecs récupérables, respectez Retry-After et réutilisez toujours le même ID.",
-      "testActivate": "Vérifiez le modèle approuvé, la langue, la destination, les rappels et le délai avant de passer de l’essai à l’envoi réel.",
-      "testRevoke": "Pour arrêter une source, mettez-la en pause dans Get Phame et chez le fournisseur, révoquez ou renouvelez sa clé, et conservez l’historique d’audit expurgé."
+      "nextDescription": "Créez une clé contacts:write, envoyez un enregistrement test autorisé, puis confirmez le résultat masqué dans les importations API récentes.",
+      "createKey": "Créer une clé d’importation",
+      "viewImports": "Voir les importations"
     },
     "back": "Retour aux paramètres",
     "confirm": {
@@ -3312,8 +3359,8 @@
         "make": "Importation client Make",
         "custom": "Importation client personnalisée"
       },
-      "apiKey": "Clé API de la source",
-      "noKeys": "Aucune clé source active",
+      "apiKey": "Clé API d'importation",
+      "noKeys": "Aucune clé d'importation active",
       "expected": "Activité attendue",
       "intervals": {
         "15": "Toutes les 15 minutes",
@@ -3358,8 +3405,8 @@
       "pause": "Mettre la surveillance en pause",
       "resume": "Reprendre la surveillance",
       "archive": "Archiver",
-      "template": "modèle d’événement automatisé",
-      "templateDescription": "Copiez exactement cet événement de demande d’avis dans l’action HTTP ou webhook protégée de l’automatisation.",
+      "template": "modèle guidé",
+      "templateDescription": "Copiez cette requête exacte dans l'action HTTP ou webhook protégée de votre automatisation.",
       "copyRecipe": "Copier la recette",
       "recipeCopied": "Recette de connexion copiée.",
       "secretReminder": "N'utilisez la clé API brute que dans le champ secret protégé du fournisseur. L'ID de source peut être copié en toute sécurité mais ne fonctionne qu'avec la clé qui lui est liée.",
@@ -3383,23 +3430,23 @@
           "2": "Ajoutez Webhooks by Zapier et sélectionnez Custom Request.",
           "3": "Définissez la méthode sur POST et collez le point de terminaison Get Phame.",
           "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
-          "5": "Mappez sourceSubmissionId, preferredLocale et l’objet imbriqué complet de preuve de consentement.",
-          "6": "Lancez le contrôle en lecture seule, activez l’essai sécurisé, envoyez un événement autorisé, puis décidez du passage en production."
+          "5": "Mappez les champs JSON en utilisant un identifiant fournisseur stable pour externalId et Idempotency-Key.",
+          "6": "Testez l'action avec un enregistrement autorisé, puis actualisez l'état ici."
         },
         "make": {
           "1": "Choisissez le module déclencheur qui produit un enregistrement client éligible.",
           "2": "Ajoutez HTTP et sélectionnez Make a request.",
           "3": "Définissez Method sur POST, Body type sur Raw et Content type sur application/json.",
           "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
-          "5": "Mappez sourceSubmissionId, preferredLocale et l’objet imbriqué complet de preuve de consentement.",
-          "6": "Lancez le contrôle en lecture seule, activez l’essai sécurisé, envoyez un événement autorisé, puis décidez du passage en production."
+          "5": "Mappez les champs JSON en utilisant un identifiant de bundle stable pour externalId et Idempotency-Key.",
+          "6": "Exécutez le scénario une fois avec un enregistrement autorisé, puis actualisez l'état ici."
         },
         "custom": {
           "1": "Utilisez un flux de travail côté serveur de confiance qui prend en charge POST et les en-têtes protégés.",
           "2": "Stockez la clé API dans le magasin de secrets du workflow, jamais dans du code côté navigateur ni dans une URL.",
           "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
-          "4": "Utilisez un ID de source immuable pour sourceSubmissionId et Idempotency-Key.",
-          "5": "Lancez le contrôle en lecture seule, activez l’essai sécurisé, envoyez un événement autorisé, puis décidez du passage en production."
+          "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
+          "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
         }
       },
       "automation": {
@@ -3428,7 +3475,7 @@
         "delays": {
           "immediate": "Immédiatement",
           "day": "24 heures",
-          "minutes": "{{count}} minutes"
+          "minutes": "{{count}} min"
         },
         "dryRunCompleted": "Essai du fournisseur",
         "notCompleted": "Non effectué",
@@ -3515,7 +3562,12 @@
       "providerAcceptedMessage": "Votre fournisseur de messagerie a accepté le guide pour l'envoi.",
       "sharePrompt": "Partagez le guide gratuit des demandes d'avis.",
       "tryAgain": "Réessayer l'envoi par e‑mail",
-      "description": "Recevez un guide gratuit pour planifier des demandes d'avis claires et conformes, ainsi que des nouveautés produit et des conseils pratiques de réputation."
+      "description": "Recevez un guide gratuit pour planifier des demandes d'avis claires et conformes, ainsi que des nouveautés produit et des conseils pratiques de réputation.",
+      "consentCheckLabel": "J'accepte que Get Phame (getphame.app) me contacte par e-mail avec des mises à jour et des conseils sur le produit. Je peux me désabonner à tout moment.",
+      "consentRequired": "Veuillez cocher la case pour continuer.",
+      "thankYouHeading": "C'est tout bon !",
+      "thankYouMessage": "Votre guide est en route vers {{email}}. Vérifiez les spams s'il n'arrive pas.",
+      "thankYouDownload": "L'envoi par e-mail n'était pas disponible. Téléchargez votre guide directement ci-dessous."
     },
     "purpose": {
       "description": "Get Phame aide les commerces locaux à envoyer des e‑mails personnalisés de demande d'avis depuis leur propre compte e‑mail connecté. Il est conçu pour les propriétaires d'entreprise, les photographes, les cafés et restaurants, les équipes de services à domicile, les cliniques et salons, les agences et les boutiques WooCommerce qui souhaitent une façon plus simple de demander un retour à de vrais clients.",
@@ -4377,5 +4429,169 @@
     "reloadTab": "Recharger cet onglet",
     "applyingTitle": "Application de votre mise à jour",
     "applyingDescription": "GET PHAME prépare la dernière version. Cet onglet s’actualisera dans un instant."
+  },
+  "adminEmailPreview": {
+    "title": "Aperçu des modèles d’e-mail",
+    "selectTemplate": "Sélectionner un modèle",
+    "loading": "Chargement de l’aperçu…",
+    "error": "Échec du chargement de l’aperçu.",
+    "noPreview": "Aucun aperçu disponible.",
+    "note": "L’aperçu utilise des données exemples. Les vrais e-mails sont envoyés avec les noms réels et des liens sécurisés.",
+    "sendTest": "Envoyer un e-mail test",
+    "sending": "Envoi en cours…",
+    "testSent": "E-mail test envoyé !",
+    "testFailed": "Échec de l’envoi du test.",
+    "darkMode": "Mode sombre",
+    "copyHtml": "Copier le HTML",
+    "copied": "Copié !",
+    "emailPlaceholder": "Envoyer à…",
+    "openTab": "Ouvrir dans un onglet",
+    "variables": "Variables",
+    "variablesNote": "Remplace les espaces réservés [name], [company], [plan], [email] dans le modèle",
+    "resetVars": "Réinitialiser",
+    "split": "Split",
+    "savePreset": "Enregistrer",
+    "presetNamePlaceholder": "Nom du profil…",
+    "previewReady": "Aperçu prêt",
+    "previewFallback": "Cet aperçu n’a pas pu s’afficher dans le cadre intégré.",
+    "previewLoading": "Génération de l’aperçu de l’e-mail…",
+    "exportHtml": "Exporter le code HTML",
+    "exported": "Téléchargé !",
+    "copyFailed": "La copie du HTML rendu a été bloquée par ce navigateur."
+  },
+  "adminRouteAudit": {
+    "eyebrow": "Assurance de production",
+    "title": "Audit des routes de production",
+    "description": "Vérifie en toute sécurité les routes publiques du plan de site pour détecter les erreurs de rendu du navigateur. Aucun compte, formulaire ni donnée client n’est utilisé.",
+    "run": "Lancer l’audit des routes",
+    "running": "Audit des routes…",
+    "viewHistory": "Voir l’historique",
+    "runningDescription": "Lancement d’un navigateur propre pour le plan de site public actuel. Cette opération peut prendre jusqu’à deux minutes.",
+    "unavailable": "Exécuteur d’audit indisponible",
+    "completedWithIssues": "Audit terminé avec des problèmes",
+    "completed": "Audit terminé avec succès",
+    "failureCode": "Code d’échec",
+    "summary": "{{routes}} routes auditées · {{failures}} échecs",
+    "resultRoutes": "Routes auditées",
+    "issue": "À examiner",
+    "rendered": "Rendue",
+    "passed": "L’audit des routes de production a réussi.",
+    "failed": "L’audit des routes de production a détecté des problèmes.",
+    "runFailed": "L’audit des routes de production n’a pas pu être exécuté."
+  },
+  "adminAuditLog": {
+    "back": "Tableau de bord administrateur",
+    "title": "Historique des audits et du rendu",
+    "description": "Historique opérationnel réservé aux administrateurs. Les enregistrements contiennent des signaux d’audit assainis, jamais du contenu client, du HTML d’e-mail, des cookies ou des journaux de navigateur.",
+    "refresh": "Actualiser l’historique",
+    "routeTitle": "Audits des routes de production",
+    "routeDescription": "Vérifications manuelles du navigateur pour les routes publiques détectées dans le plan de site, de la plus récente à la plus ancienne.",
+    "runAnother": "Lancer un autre audit →",
+    "routeError": "L’historique des audits de routes n’a pas pu être chargé.",
+    "routes": "pages",
+    "issuesFound": "{{count}} problèmes",
+    "passed": "Réussi",
+    "routeEmpty": "Aucun audit de route de production n’a encore été enregistré.",
+    "routePagination": "Pagination de l’historique des audits de routes",
+    "rendererTitle": "Erreurs du moteur d’aperçu des e-mails",
+    "rendererDescription": "Signaux assainis capturés uniquement si un aperçu administrateur ne peut pas rendre du contenu vérifié.",
+    "rendererError": "L’historique des erreurs de rendu n’a pas pu être chargé.",
+    "rendererEmpty": "Aucune erreur de rendu n’a été enregistrée.",
+    "rendererPagination": "Pagination de l’historique des erreurs de rendu",
+    "records": "enregistrements",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "darkPreview": "sombre",
+    "releaseTitle": "Historique des versions",
+    "releaseDescription": "Enregistrements assainis de la lignée des versions avec état de correspondance, tri et aperçu d’export limité.",
+    "retention": "Paramètres de conservation",
+    "releaseStatus": "État de parité",
+    "allStatuses": "Tous les états",
+    "matched": "Correspondant",
+    "needsReview": "À examiner",
+    "releaseSort": "Trier par",
+    "releaseSortDate": "Heure de version",
+    "releaseSortCheckpoint": "Point de contrôle",
+    "releaseDirection": "Ordre",
+    "newestFirst": "Plus récent d’abord",
+    "oldestFirst": "Plus ancien d’abord",
+    "releaseExport": "Aperçu de l’export",
+    "releaseExportFailed": "L’export de l’historique des versions n’a pas pu être préparé.",
+    "releaseError": "L’historique des versions n’a pas pu être chargé.",
+    "releaseEmpty": "Aucun enregistrement de version vérifiée n’a encore été sauvegardé.",
+    "releasePagination": "Pagination de l’historique des versions",
+    "time": "Heure",
+    "checkpoint": "Point de contrôle",
+    "mainCommit": "Commit principal",
+    "parity": "Parité",
+    "releaseExportTitle": "Aperçu de l’export de l’historique des versions",
+    "releaseExportDescription": "Examinez l’instantané exact, assaini et limité avant de le copier ou de le télécharger.",
+    "releaseExportSummary": "Aperçu de {{previewed}} sur {{exported}} lignes exportées · {{matched}} correspondantes",
+    "releaseExportTruncated": "La limite d’export inclut {{exported}} sur {{matched}} enregistrements correspondants.",
+    "close": "Fermer",
+    "copied": "Copié",
+    "copy": "Copier le CSV",
+    "copyFailed": "Échec de la copie — réessayez",
+    "download": "Télécharger le CSV"
+  },
+  "adminAuditRetention": {
+    "back": "Historique des audits",
+    "title": "Contrôles de conservation des audits",
+    "description": "Choisissez combien de temps les diagnostics assainis des routes de production et des erreurs de rendu restent disponibles aux administrateurs.",
+    "controlsTitle": "Cycle de vie des données",
+    "controlsDescription": "Modifier une durée supprime immédiatement uniquement les enregistrements antérieurs à la nouvelle limite. Les enregistrements restent assainis et réservés aux administrateurs.",
+    "routeDays": "Historique des audits de routes",
+    "routeDaysHelp": "Nombre de jours de conservation des résultats assainis d’audits de routes publiques.",
+    "rendererDays": "Historique des erreurs de rendu",
+    "rendererDaysHelp": "Nombre de jours de conservation des signaux assainis d’erreurs du rendu d’aperçu.",
+    "days": "jours",
+    "invalid": "Choisissez une durée de conservation de 7 à 3 650 jours.",
+    "save": "Enregistrer et appliquer la conservation",
+    "saved": "Les contrôles de conservation sont enregistrés et les diagnostics expirés ont été purgés.",
+    "saveFailed": "Les contrôles de conservation n’ont pas pu être enregistrés.",
+    "confirmTitle": "Appliquer les limites de conservation ?",
+    "confirmDescription": "Les diagnostics assainis expirés seront supprimés définitivement maintenant. Cette action est irréversible.",
+    "confirmSummary": "Audits de routes : {{routeDays}} jours · Erreurs de rendu : {{rendererDays}} jours",
+    "cancel": "Annuler",
+    "confirm": "Appliquer et purger"
+  },
+  "adminRendererTrend": {
+    "title": "Échecs répétés du rendu d’aperçu des e-mails",
+    "description": "{{count}} échecs correspondants de {{template}} sont survenus au cours des {{hours}} dernières heures. Examinez l’historique assaini avant la prochaine version.",
+    "review": "Examiner l’historique"
+  },
+  "adminExportSchedule": {
+    "title": "Rapport automatisé de l’historique des versions",
+    "description": "Créez un instantané CSV limité et assaini selon une planification UTC. Le dernier rapport reste disponible dans l’historique d’audit.",
+    "enabled": "Activer les rapports automatisés",
+    "cron": "Planification UTC",
+    "cronHelp": "Utilisez six champs : secondes, minutes, heures, jour, mois et jour de la semaine. Par défaut : lundi à 09:00 UTC.",
+    "save": "Enregistrer la planification",
+    "saved": "Le rapport automatisé de l’historique des versions a été mis à jour.",
+    "saveFailed": "Les paramètres du rapport automatisé n’ont pas pu être enregistrés.",
+    "lastRun": "Dernier rapport : {{date}} · {{count}} lignes",
+    "recentRuns": "Rapports automatisés récents",
+    "ready": "Prêt",
+    "failed": "Échec",
+    "rows": "lignes"
+  },
+  "adminRetentionHistory": {
+    "title": "Modifications récentes de conservation",
+    "summary": "Routes : {{fromRoute}} → {{toRoute}} jours · Moteur de rendu : {{fromRenderer}} → {{toRenderer}} jours"
+  },
+  "adminRendererAcknowledgement": {
+    "action": "Accuser réception",
+    "saved": "L’alerte du moteur de rendu est reconnue jusqu’à ce qu’un élément plus récent soit enregistré.",
+    "failed": "L’alerte du moteur de rendu n’a pas pu être reconnue."
+  },
+  "automationPaused": {
+    "bannerTitle": "Les demandes d’avis automatiques sont en pause",
+    "bannerDescription": "{{count}} demande(s) automatique(s) en attente attendent la reconnexion d’un serveur de messagerie vérifié.",
+    "viewQueue": "Voir les demandes en pause",
+    "queueTitle": "Demandes automatiques en pause",
+    "queueDescription": "Ces demandes resteront en attente jusqu’à ce que vous connectiez et sélectionniez un serveur vérifié.",
+    "reviewRequest": "Demande d’avis",
+    "followUp": "Relance",
+    "morePending": "{{count}} demande(s) supplémentaire(s) sont en attente."
   }
 }
