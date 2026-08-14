@@ -57,6 +57,10 @@ import {
 import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
+import {
+  listSmtpTestEmailAttempts,
+  recordSmtpTestEmailAttempt,
+} from "./smtpTestEmailHistory";
 import { selectOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import {
@@ -81,6 +85,7 @@ import {
   checkManualSearchEventRateLimit,
   checkOnboardingChecklistEventRateLimit,
   checkOnboardingFunnelInsightRateLimit,
+  checkSmtpTestEmailRateLimit,
 } from "./rateLimiter";
 import {
   AdaptiveSendLimitError,
@@ -357,6 +362,7 @@ import {
   detectSmtpSettings,
   getAppPasswordHint,
   sendWelcomeEmail,
+  sendSmtpTestEmail,
   updateSmtpFromName,
   runSmtpHealthChecks,
 } from "./smtp";
@@ -1470,6 +1476,67 @@ export const appRouter = router({
         });
       }
       return { success: true };
+    }),
+
+    /** Send one diagnostic email through the user's saved personal SMTP server. */
+    sendTestEmail: protectedProcedure
+      .input(z.object({ to: z.string().trim().email().max(320) }))
+      .mutation(async ({ ctx, input }) => {
+        checkSmtpTestEmailRateLimit(ctx.user.id);
+        const result = await sendSmtpTestEmail(ctx.user.id, input.to);
+        try {
+          await recordSmtpTestEmailAttempt({
+            userId: ctx.user.id,
+            recipient: input.to,
+            ok: result.ok,
+            error: result.error,
+          });
+        } catch (historyError) {
+          console.warn("[smtp.sendTestEmail] Unable to save sanitized diagnostic history", historyError);
+        }
+        if (!result.ok) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: result.error ?? "The test email could not be sent. Please re-test your mail server.",
+          });
+        }
+        return { success: true as const, to: input.to };
+      }),
+
+    /** Return only the requesting tenant's newest privacy-minimized diagnostic attempts. */
+    testEmailHistory: protectedProcedure.query(async ({ ctx }) => {
+      return listSmtpTestEmailAttempts(ctx.user.id);
+    }),
+
+    /** Return pending automated work only when this tenant has no usable outbound mail channel. */
+    pausedAutomationQueue: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const channel = await resolveOutboundDeliveryChannel(ctx.user.id);
+      if (channel) return { paused: false as const, total: 0, items: [] as Array<never> };
+
+      const [[quietCount], [reminderCount], quietRows, reminderRows] = await Promise.all([
+        db.select({ value: count() }).from(quietHoursQueuedSends).where(and(eq(quietHoursQueuedSends.userId, ctx.user.id), eq(quietHoursQueuedSends.status, "pending"))),
+        db.select({ value: count() }).from(followUpReminders).where(and(eq(followUpReminders.userId, ctx.user.id), eq(followUpReminders.status, "pending"))),
+        db.select({ id: quietHoursQueuedSends.id, scheduledAt: quietHoursQueuedSends.scheduledAt, customerName: customerRequests.customerName })
+          .from(quietHoursQueuedSends)
+          .leftJoin(customerRequests, eq(quietHoursQueuedSends.customerRequestId, customerRequests.id))
+          .where(and(eq(quietHoursQueuedSends.userId, ctx.user.id), eq(quietHoursQueuedSends.status, "pending")))
+          .orderBy(asc(quietHoursQueuedSends.scheduledAt))
+          .limit(12),
+        db.select({ id: followUpReminders.id, scheduledAt: followUpReminders.scheduledAt, customerName: followUpReminders.customerName })
+          .from(followUpReminders)
+          .where(and(eq(followUpReminders.userId, ctx.user.id), eq(followUpReminders.status, "pending")))
+          .orderBy(asc(followUpReminders.scheduledAt))
+          .limit(12),
+      ]);
+
+      const items = [
+        ...quietRows.map(row => ({ id: `quiet:${row.id}`, type: "review_request" as const, label: row.customerName || "Scheduled review request", scheduledAt: row.scheduledAt })),
+        ...reminderRows.map(row => ({ id: `reminder:${row.id}`, type: "follow_up" as const, label: row.customerName || "Scheduled follow-up", scheduledAt: row.scheduledAt })),
+      ].sort((a, b) => Number(a.scheduledAt) - Number(b.scheduledAt)).slice(0, 12);
+      const total = Number(quietCount?.value ?? 0) + Number(reminderCount?.value ?? 0);
+      return { paused: total > 0, total, items };
     }),
 
     /** Return rendered HTML preview of the review request email using real profile data */

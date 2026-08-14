@@ -97,35 +97,37 @@ export async function resolveOutboundDeliveryChannel(userId: number): Promise<Re
     db.select().from(bulkSenderCredentials).where(and(
       eq(bulkSenderCredentials.userId, userId),
       eq(bulkSenderCredentials.connected, 1),
-      ne(bulkSenderCredentials.provider, "sendgrid"),
     )).limit(1),
     db.select().from(smtpCredentials).where(eq(smtpCredentials.userId, userId)).limit(1),
   ]);
 
   const tier = profile?.tier ?? "free";
+  const userOwnedBulk = bulk && !(bulk.provider === "sendgrid" && !(bulk.smtpHost && bulk.smtpPort && bulk.smtpUsername))
+    ? bulk
+    : null;
   if (preference?.selectedChannel === "bulk" &&
     tier !== "free"
-    && bulk
-    && bulk.smtpHost
-    && bulk.smtpPort
-    && bulk.smtpUsername
+    && userOwnedBulk
+    && userOwnedBulk.smtpHost
+    && userOwnedBulk.smtpPort
+    && userOwnedBulk.smtpUsername
   ) {
-    const provider = bulk.provider as BulkSenderProvider;
+    const provider = userOwnedBulk.provider as BulkSenderProvider;
     return {
-      key: `bulk:${bulk.id}:${provider}`,
+      key: `bulk:${userOwnedBulk.id}:${provider}`,
       type: "bulk",
       providerId: provider,
       providerLabel: BULK_SENDER_PRESETS[provider]?.label ?? provider,
-      connectedAt: asTimestamp(bulk.createdAt),
+      connectedAt: asTimestamp(userOwnedBulk.createdAt),
       tier,
-      host: bulk.smtpHost,
-      port: bulk.smtpPort,
-      secure: bulk.smtpSecure === 1,
-      username: bulk.smtpUsername,
-      encryptedSecret: bulk.apiKey,
-      fromEmail: bulk.fromEmail,
-      fromName: bulk.fromName ?? bulk.fromEmail,
-      replyTo: bulk.fromEmail,
+      host: userOwnedBulk.smtpHost,
+      port: userOwnedBulk.smtpPort,
+      secure: userOwnedBulk.smtpSecure === 1,
+      username: userOwnedBulk.smtpUsername,
+      encryptedSecret: userOwnedBulk.apiKey,
+      fromEmail: userOwnedBulk.fromEmail,
+      fromName: userOwnedBulk.fromName ?? userOwnedBulk.fromEmail,
+      replyTo: userOwnedBulk.fromEmail,
     };
   }
 

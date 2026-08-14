@@ -1123,7 +1123,27 @@
     "testingCandidate": "Probando tu servidor de correo…",
     "testBeforeSave": "Probar antes de guardar",
     "connectingAndVerifying": "Conectando y verificando…",
-    "connectAndSave": "Conectar y guardar"
+    "connectAndSave": "Conectar y guardar",
+    "testEmailRecipient": "Enviar un correo de prueba a",
+    "testEmailHint": "Usa una dirección que controles. Se usa tu servidor guardado y no se guarda un destinatario nuevo.",
+    "testEmailRecipientRequired": "Introduce la dirección que recibirá el correo de prueba.",
+    "sendingTestEmail": "Enviando correo de prueba…",
+    "sendTestEmail": "Enviar correo de prueba",
+    "testEmailSent": "Correo de prueba enviado. Revisa la bandeja del destinatario.",
+    "disconnectConfirmTitle": "¿Desconectar este servidor de correo?",
+    "disconnectConfirmDescription": "Esto elimina permanentemente las credenciales guardadas y detiene los envíos hasta que conectes un servidor verificado.",
+    "disconnecting": "Desconectando…",
+    "disconnectConfirmAction": "Desconectar y restablecer",
+    "testEmailHistoryTitle": "Historial de correos de prueba",
+    "testEmailHistoryPrivacy": "Los destinatarios se ocultan. Solo se muestran tus 12 intentos de diagnóstico más recientes.",
+    "testEmailHistoryEmpty": "Aún no se han enviado correos de diagnóstico.",
+    "testEmailHistorySent": "Enviado",
+    "testEmailHistoryFailed": "Falló",
+    "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo.",
+    "retryTestEmail": "Reintentar",
+    "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado.",
+    "connectionTestPassed": "Se verificó la conexión del servidor de correo.",
+    "connectionTestFailed": "El servidor de correo aún necesita atención."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2212,7 +2232,23 @@
       "markAllSuccess": "{{count}} elementos marcados como revisados",
       "markReviewed": "Marcar como revisado"
     },
-    "viewAll": "Ver todo"
+    "viewAll": "Ver todo",
+    "mailHealth": {
+      "healthy": "Servidor de correo correcto",
+      "healthyDetail": "Tu servidor conectado está listo para los envíos.",
+      "attention": "El servidor de correo necesita atención",
+      "attentionDetail": "Vuelve a probarlo o actualízalo en Ajustes antes de enviar.",
+      "disconnected": "Servidor de correo no conectado",
+      "disconnectedDetail": "Conecta un servidor propio antes de enviar.",
+      "bulkActive": "Servidor de correo masivo activo",
+      "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos.",
+      "healthyTooltip": "Hay un servidor de correo personal verificado seleccionado y su último estado no requiere acción.",
+      "attentionTooltip": "Tu conexión guardada necesita atención. Vuelve a probarla o actualiza la configuración antes de enviar solicitudes.",
+      "disconnectedTooltip": "No hay un canal de entrega verificado seleccionado. Las solicitudes están pausadas hasta que conectes uno en Configuración.",
+      "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
+      "details": "Detalles de salud del servidor de correo",
+      "troubleshoot": "Solucionar problemas"
+    }
   },
   "pricing": {
     "sectionTitle": "Precios simples y honestos",
@@ -4547,5 +4583,15 @@
     "action": "Confirmar",
     "saved": "La alerta del renderizador se confirmó hasta que se registre evidencia más reciente.",
     "failed": "No se pudo confirmar la alerta del renderizador."
+  },
+  "automationPaused": {
+    "bannerTitle": "Las solicitudes de reseñas automáticas están en pausa",
+    "bannerDescription": "{{count}} solicitud(es) automática(s) pendiente(s) esperan que vuelva a conectar un servidor de correo verificado.",
+    "viewQueue": "Ver solicitudes pausadas",
+    "queueTitle": "Solicitudes automáticas pausadas",
+    "queueDescription": "Estas solicitudes seguirán pendientes hasta que conecte y seleccione un servidor de correo verificado.",
+    "reviewRequest": "Solicitud de reseña",
+    "followUp": "Seguimiento",
+    "morePending": "Hay {{count}} solicitud(es) más pendiente(s)."
   }
 }

@@ -27,7 +27,12 @@ vi.mock("@/lib/trpc", () => ({
       get: { useQuery: () => query(profileFixture) },
       setGoal: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
     },
-    smtp: { status: { useQuery: () => query({ connected: true, lastHealthStatus: "pass" }) } },
+    smtp: {
+      status: { useQuery: () => query({ connected: true, lastHealthStatus: "pass" }) },
+      pausedAutomationQueue: { useQuery: () => query({ paused: false, total: 0, items: [] }) },
+      test: { useMutation: () => ({ mutate: vi.fn(), isPending: false, data: null }) },
+    },
+    bulkSender: { status: { useQuery: () => query({ connected: false, selectedForOutreach: false }) } },
     requests: { stats: { useQuery: () => query({ thisMonth: 0, total: 0, recent: [] }) } },
     onboarding: {
       status: {
@@ -53,7 +58,7 @@ vi.mock("@/lib/trpc", () => ({
     analytics: {
       trackPwaEvent: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
     },
-    useUtils: () => ({ profile: { get: { invalidate: vi.fn() } } }),
+    useUtils: () => ({ profile: { get: { invalidate: vi.fn() } }, smtp: { status: { invalidate: vi.fn() }, pausedAutomationQueue: { invalidate: vi.fn() } } }),
   },
 }));
 

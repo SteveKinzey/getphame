@@ -1123,7 +1123,27 @@
     "testingCandidate": "Test de votre serveur e-mail…",
     "testBeforeSave": "Tester avant d’enregistrer",
     "connectingAndVerifying": "Connexion et vérification…",
-    "connectAndSave": "Connecter et enregistrer"
+    "connectAndSave": "Connecter et enregistrer",
+    "testEmailRecipient": "Envoyer un e-mail de test à",
+    "testEmailHint": "Utilisez une adresse que vous contrôlez. Votre serveur enregistré est utilisé sans enregistrer de nouveau destinataire.",
+    "testEmailRecipientRequired": "Saisissez l’adresse qui doit recevoir l’e-mail de test.",
+    "sendingTestEmail": "Envoi de l’e-mail de test…",
+    "sendTestEmail": "Envoyer l’e-mail de test",
+    "testEmailSent": "E-mail de test envoyé. Vérifiez la boîte du destinataire.",
+    "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
+    "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
+    "disconnecting": "Déconnexion…",
+    "disconnectConfirmAction": "Déconnecter et réinitialiser",
+    "testEmailHistoryTitle": "Historique des e-mails de test",
+    "testEmailHistoryPrivacy": "Les destinataires sont masqués. Seules vos 12 dernières tentatives sont affichées.",
+    "testEmailHistoryEmpty": "Aucun e-mail de diagnostic n’a encore été envoyé.",
+    "testEmailHistorySent": "Envoyé",
+    "testEmailHistoryFailed": "Échec",
+    "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés.",
+    "retryTestEmail": "Réessayer",
+    "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
+    "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
+    "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2212,7 +2232,23 @@
       "markAllSuccess": "{{count}} éléments marqués comme examinés",
       "markReviewed": "Marquer comme examiné"
     },
-    "viewAll": "Voir tout"
+    "viewAll": "Voir tout",
+    "mailHealth": {
+      "healthy": "Serveur e-mail opérationnel",
+      "healthyDetail": "Votre serveur connecté est prêt pour les envois.",
+      "attention": "Le serveur e-mail nécessite une intervention",
+      "attentionDetail": "Testez-le à nouveau ou mettez-le à jour dans Paramètres avant d’envoyer.",
+      "disconnected": "Serveur e-mail non connecté",
+      "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
+      "bulkActive": "Serveur d’envoi en masse actif",
+      "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif.",
+      "healthyTooltip": "Un serveur personnel vérifié est sélectionné et son dernier état ne nécessite aucune action.",
+      "attentionTooltip": "Votre connexion enregistrée nécessite une attention. Testez-la de nouveau ou mettez à jour les paramètres avant l’envoi.",
+      "disconnectedTooltip": "Aucun canal vérifié n’est sélectionné. Les demandes restent en pause jusqu’à la connexion dans les paramètres.",
+      "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
+      "details": "Détails de l’état du serveur de messagerie",
+      "troubleshoot": "Dépanner"
+    }
   },
   "pricing": {
     "sectionTitle": "Tarification simple et honnête",
@@ -4547,5 +4583,15 @@
     "action": "Accuser réception",
     "saved": "L’alerte du moteur de rendu est reconnue jusqu’à ce qu’un élément plus récent soit enregistré.",
     "failed": "L’alerte du moteur de rendu n’a pas pu être reconnue."
+  },
+  "automationPaused": {
+    "bannerTitle": "Les demandes d’avis automatiques sont en pause",
+    "bannerDescription": "{{count}} demande(s) automatique(s) en attente attendent la reconnexion d’un serveur de messagerie vérifié.",
+    "viewQueue": "Voir les demandes en pause",
+    "queueTitle": "Demandes automatiques en pause",
+    "queueDescription": "Ces demandes resteront en attente jusqu’à ce que vous connectiez et sélectionniez un serveur vérifié.",
+    "reviewRequest": "Demande d’avis",
+    "followUp": "Relance",
+    "morePending": "{{count}} demande(s) supplémentaire(s) sont en attente."
   }
 }

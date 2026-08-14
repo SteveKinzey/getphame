@@ -957,7 +957,27 @@
     "testingCandidate": "Testing your mail server…",
     "testBeforeSave": "Test before saving",
     "connectingAndVerifying": "Connecting and verifying…",
-    "connectAndSave": "Connect and save"
+    "connectAndSave": "Connect and save",
+    "testEmailRecipient": "Send a test email to",
+    "testEmailHint": "Use an address you control. This uses your saved mail server and does not save a new recipient.",
+    "testEmailRecipientRequired": "Enter the address that should receive the test email.",
+    "sendingTestEmail": "Sending test email…",
+    "sendTestEmail": "Send test email",
+    "testEmailSent": "Test email sent. Check the recipient inbox to confirm delivery.",
+    "disconnectConfirmTitle": "Disconnect this mail server?",
+    "disconnectConfirmDescription": "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server.",
+    "disconnecting": "Disconnecting…",
+    "disconnectConfirmAction": "Disconnect and reset",
+    "testEmailHistoryTitle": "Test email history",
+    "testEmailHistoryPrivacy": "Recipients are masked. Only your 12 newest diagnostic attempts are shown.",
+    "testEmailHistoryEmpty": "No diagnostic test emails have been sent yet.",
+    "testEmailHistorySent": "Sent",
+    "testEmailHistoryFailed": "Failed",
+    "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials.",
+    "retryTestEmail": "Retry",
+    "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
+    "connectionTestPassed": "Mail server connection verified.",
+    "connectionTestFailed": "Mail server still needs attention."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2052,6 +2072,22 @@
       "markAllShort": "Mark all",
       "markAllSuccess": "{{count}} items marked as reviewed",
       "markReviewed": "Mark as reviewed"
+    },
+    "mailHealth": {
+      "healthy": "Mail server healthy",
+      "healthyDetail": "Your connected mail server is ready for outreach.",
+      "attention": "Mail server needs attention",
+      "attentionDetail": "Re-test or update your mail server in Settings before sending outreach.",
+      "disconnected": "Mail server not connected",
+      "disconnectedDetail": "Connect a user-owned mail server before sending outreach.",
+      "bulkActive": "Bulk mail server active",
+      "bulkActiveDetail": "Your selected bulk mail provider is active for outreach.",
+      "healthyTooltip": "A verified personal mail server is selected, and its latest health signal does not require action.",
+      "attentionTooltip": "Your saved connection needs attention. Re-test it or update the provider settings before sending customer outreach.",
+      "disconnectedTooltip": "No verified tenant-owned delivery channel is selected. Customer outreach stays paused until you connect one in Settings.",
+      "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
+      "details": "Mail server health details",
+      "troubleshoot": "Troubleshoot"
     }
   },
   "pricing": {
@@ -4496,5 +4532,15 @@
     "action": "Acknowledge",
     "saved": "Renderer alert acknowledged until newer evidence is recorded.",
     "failed": "The renderer alert could not be acknowledged."
+  },
+  "automationPaused": {
+    "bannerTitle": "Automated review requests are paused",
+    "bannerDescription": "{{count}} pending automated request(s) are waiting for you to reconnect a verified mail server.",
+    "viewQueue": "View paused requests",
+    "queueTitle": "Paused automated requests",
+    "queueDescription": "These requests will stay pending until you connect and select a verified mail server.",
+    "reviewRequest": "Review request",
+    "followUp": "Follow-up",
+    "morePending": "{{count}} more request(s) are pending."
   }
 }

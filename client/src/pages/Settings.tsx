@@ -59,7 +59,9 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -104,6 +106,8 @@ import {
   SmtpAppPasswordHelpTooltip,
   SmtpCandidateConnectionActions,
 } from "@/components/SmtpConnectionFeedback";
+import SmtpTestEmailHistory from "@/components/SmtpTestEmailHistory";
+import PausedAutomationQueue from "@/components/PausedAutomationQueue";
 import { BulkProviderDiscoveryControls } from "@/components/BulkProviderDiscoveryControls";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
@@ -1587,6 +1591,8 @@ export default function SettingsPage() {
 
   // ── SMTP email connection ──────────────────────────────────────────────────
   const { data: smtpStatus, isLoading: smtpLoading } = trpc.smtp.status.useQuery();
+  const { data: smtpTestEmailHistory, isLoading: smtpTestEmailHistoryLoading } = trpc.smtp.testEmailHistory.useQuery();
+  const { data: pausedAutomationQueue } = trpc.smtp.pausedAutomationQueue.useQuery();
   const [smtpEmail, setSmtpEmail] = useState("");
   const [smtpPassword, setSmtpPassword] = useState("");
   const [smtpHost, setSmtpHost] = useState("");
@@ -1600,6 +1606,16 @@ export default function SettingsPage() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<{ ok: boolean; error?: string | null } | null>(null);
   const [smtpConnectionSavedNotice, setSmtpConnectionSavedNotice] = useState(false);
+  const [testEmailRecipient, setTestEmailRecipient] = useState("");
+  const [testEmailSentNotice, setTestEmailSentNotice] = useState(false);
+  const [disconnectConfirmOpen, setDisconnectConfirmOpen] = useState(false);
+  const [disconnectAcknowledged, setDisconnectAcknowledged] = useState(false);
+
+  useEffect(() => {
+    const focusSmtp = window.location.hash === "#smtp-settings" || new URLSearchParams(window.location.search).get("focus") === "smtp";
+    if (smtpLoading || !focusSmtp) return;
+    window.setTimeout(() => document.getElementById("smtp-settings")?.scrollIntoView({ block: "start" }), 0);
+  }, [smtpLoading]);
 
   // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
   const { data: smtpDetect } = trpc.smtp.detect.useQuery(
@@ -1634,7 +1650,15 @@ export default function SettingsPage() {
   const disconnectSmtp = trpc.smtp.disconnect.useMutation({
     onSuccess: () => {
       utils.smtp.status.invalidate();
-      toast.success("Email account disconnected.");
+      utils.smtp.testEmailHistory.invalidate();
+      utils.smtp.pausedAutomationQueue.invalidate();
+      setDisconnectConfirmOpen(false);
+      setDisconnectAcknowledged(false);
+      setSmtpConnectionSavedNotice(false);
+      setTestEmailSentNotice(false);
+      setSmtpPassword("");
+      setShowSmtpForm(true);
+      toast.success("Email account disconnected. Connect a new server to resume outreach.");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1673,6 +1697,24 @@ export default function SettingsPage() {
     },
     onError: (err) => toast.error(err.message),
   });
+
+  const sendSmtpTestEmail = trpc.smtp.sendTestEmail.useMutation({
+    onSuccess: ({ to }) => {
+      setTestEmailSentNotice(true);
+      utils.smtp.testEmailHistory.invalidate();
+      toast.success(`Test email sent to ${to}.`, { duration: 5000 });
+    },
+    onError: (err) => {
+      utils.smtp.testEmailHistory.invalidate();
+      toast.error(err.message);
+    },
+  });
+
+  const retryFailedSmtpTestEmail = () => {
+    setTestEmailSentNotice(false);
+    setTestEmailRecipient((current) => current || smtpStatus?.email || "");
+    window.setTimeout(() => document.getElementById("smtp-test-email-recipient")?.focus(), 0);
+  };
 
   function handleSaveProfile() {
     if (!businessName.trim()) { toast.error("Business name is required"); return; }
@@ -2390,7 +2432,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Email Connection (SMTP) ───────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
+        <div id="smtp-settings" className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
             <Mail size={18} className="rr-text-navy" />
             <h2
@@ -2479,15 +2521,35 @@ export default function SettingsPage() {
                   {t('smtp.resendVerification')}
                 </button>
                 <button
-                  onClick={() => disconnectSmtp.mutate()}
-                  disabled={disconnectSmtp.isPending}
+                  onClick={() => setDisconnectConfirmOpen(true)}
+                  disabled={disconnectSmtp.isPending || sendSmtpTestEmail.isPending}
                   className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
                   style={{ background: "oklch(0.97 0.02 27)", color: "oklch(0.50 0.18 27)" }}
                 >
                   {disconnectSmtp.isPending ? <Loader2 size={13} className="animate-spin" /> : <LogOut size={13} />}
-                  {t('smtp.disconnect')}
+                  {t('smtp.disconnect', { defaultValue: 'Disconnect / reset' })}
                 </button>
               </div>
+
+              <div className="rounded-xl border p-3" style={{ borderColor: "oklch(0.90 0.02 260)", background: "oklch(0.985 0.01 260)" }}>
+                <label className="block text-xs font-bold rr-text-navy-mid" htmlFor="smtp-test-email-recipient">
+                  {t("smtp.testEmailRecipient", { defaultValue: "Send a test email to" })}
+                </label>
+                <p className="mt-1 text-xs rr-text-navy-muted">{t("smtp.testEmailHint", { defaultValue: "Use an address you control. This uses your saved mail server and does not save a new recipient." })}</p>
+                <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                  <input id="smtp-test-email-recipient" type="email" value={testEmailRecipient} onChange={(event) => { setTestEmailRecipient(event.target.value); setTestEmailSentNotice(false); }} placeholder={smtpStatus.email ?? "you@example.com"} className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm" style={{ borderColor: "oklch(0.86 0.02 260)" }} />
+                  <button type="button" onClick={() => {
+                    if (!testEmailRecipient.trim()) { toast.error(t("smtp.testEmailRecipientRequired", { defaultValue: "Enter the address that should receive the test email." })); return; }
+                    sendSmtpTestEmail.mutate({ to: testEmailRecipient.trim() });
+                  }} disabled={sendSmtpTestEmail.isPending || disconnectSmtp.isPending} aria-busy={sendSmtpTestEmail.isPending} className="flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold rr-bg-navy text-white">
+                    {sendSmtpTestEmail.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                    {sendSmtpTestEmail.isPending ? t("smtp.sendingTestEmail", { defaultValue: "Sending test email…" }) : t("smtp.sendTestEmail", { defaultValue: "Send test email" })}
+                  </button>
+                </div>
+                {testEmailSentNotice && <ConnectionSavedNotice message={t("smtp.testEmailSent", { defaultValue: "Test email sent. Check the recipient inbox to confirm delivery." })} />}
+              </div>
+
+              <SmtpTestEmailHistory attempts={smtpTestEmailHistory} isLoading={smtpTestEmailHistoryLoading} translate={t} onRetryFailedAttempt={retryFailedSmtpTestEmail} />
 
               {/* Inline From Name edit */}
               <InlineFromNameEdit
@@ -2509,6 +2571,27 @@ export default function SettingsPage() {
                   </span>
                 </p>
               )}
+              <AlertDialog open={disconnectConfirmOpen} onOpenChange={(open) => { setDisconnectConfirmOpen(open); if (!open) setDisconnectAcknowledged(false); }}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t("smtp.disconnectConfirmTitle", { defaultValue: "Disconnect this mail server?" })}</AlertDialogTitle>
+                    <AlertDialogDescription>{t("smtp.disconnectConfirmDescription", { defaultValue: "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server." })}</AlertDialogDescription>
+                    <p className="mt-3 rounded-lg border px-3 py-2 text-sm font-medium" style={{ borderColor: "oklch(0.88 0.08 27)", background: "oklch(0.97 0.02 27)", color: "oklch(0.42 0.12 27)" }}>
+                      {t("smtp.disconnectAutomationPauseWarning", { defaultValue: "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server." })}
+                    </p>
+                    <label className="mt-3 flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm rr-text-navy" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
+                      <Checkbox checked={disconnectAcknowledged} onCheckedChange={(checked) => setDisconnectAcknowledged(checked === true)} aria-label={t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })} />
+                      <span>{t("smtp.disconnectAcknowledgement", { defaultValue: "I understand that this removes my saved mail-server credentials." })}</span>
+                    </label>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel disabled={disconnectSmtp.isPending}>{t("common.cancel", { defaultValue: "Cancel" })}</AlertDialogCancel>
+                    <AlertDialogAction onClick={(event) => { event.preventDefault(); disconnectSmtp.mutate(); }} disabled={!disconnectAcknowledged || disconnectSmtp.isPending} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      {disconnectSmtp.isPending ? t("smtp.disconnecting", { defaultValue: "Disconnecting…" }) : t("smtp.disconnectConfirmAction", { defaultValue: "Disconnect and reset" })}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -2526,6 +2609,7 @@ export default function SettingsPage() {
                   </p>
                 </div>
               )}
+              <PausedAutomationQueue queue={pausedAutomationQueue} translate={t} />
 
               {/* Email field */}
               <div>

@@ -17,6 +17,7 @@ const MAX_SENDS_PER_WINDOW = 200;
 const MAX_ONBOARDING_EVENTS_PER_WINDOW = 60;
 const MAX_ONBOARDING_INSIGHTS_PER_WINDOW = 12;
 const MAX_MANUAL_SEARCH_EVENTS_PER_WINDOW = 60;
+const MAX_SMTP_TEST_EMAILS_PER_WINDOW = 5;
 
 interface WindowEntry {
   count: number;
@@ -28,6 +29,7 @@ const sendWindows = new Map<number, WindowEntry>();
 const onboardingEventWindows = new Map<number, WindowEntry>();
 const onboardingInsightWindows = new Map<number, WindowEntry>();
 const manualSearchEventWindows = new Map<number, WindowEntry>();
+const smtpTestEmailWindows = new Map<number, WindowEntry>();
 
 /**
  * Check and increment the send rate limit for a user.
@@ -56,6 +58,30 @@ export function checkSendRateLimit(userId: number, count = 1): void {
   }
 
   entry.count = projected;
+}
+
+/** Bound post-save SMTP test emails so this self-service diagnostic cannot become an outbound relay. */
+export function checkSmtpTestEmailRateLimit(userId: number): void {
+  const now = Date.now();
+  const entry = smtpTestEmailWindows.get(userId);
+
+  if (!entry || now - entry.windowStart >= WINDOW_MS) {
+    smtpTestEmailWindows.set(userId, { count: 1, windowStart: now });
+    return;
+  }
+
+  if (entry.count >= MAX_SMTP_TEST_EMAILS_PER_WINDOW) {
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "Test-email limit reached. Please try again in about an hour.",
+    });
+  }
+
+  entry.count += 1;
+}
+
+export function resetSmtpTestEmailRateLimitForTests(): void {
+  smtpTestEmailWindows.clear();
 }
 
 /**
@@ -157,6 +183,11 @@ setInterval(() => {
   for (const [userId, entry] of Array.from(manualSearchEventWindows.entries())) {
     if (now - entry.windowStart >= WINDOW_MS) {
       manualSearchEventWindows.delete(userId);
+    }
+  }
+  for (const [userId, entry] of Array.from(smtpTestEmailWindows.entries())) {
+    if (now - entry.windowStart >= WINDOW_MS) {
+      smtpTestEmailWindows.delete(userId);
     }
   }
 }, WINDOW_MS);

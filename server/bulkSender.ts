@@ -261,7 +261,7 @@ export const bulkSenderRouter = router({
       legacyPlatformConnection: false as const,
       selectedForOutreach: false as const,
     };
-    if (credentials.provider === "sendgrid") {
+    if (credentials.provider === "sendgrid" && !(credentials.smtpHost && credentials.smtpPort && credentials.smtpUsername)) {
       return {
         connected: false as const,
         legacyPlatformConnection: true as const,

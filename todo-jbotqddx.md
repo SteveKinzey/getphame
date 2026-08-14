@@ -22,3 +22,38 @@
 - [x] Add an end-to-end behavioral test for the rendered Settings mail connection components, including test-before-save, loading, saved feedback, and Gmail or Workspace help.
 - [x] Directly reach and verify the final deep SMTP and bulk mail controls at the mobile breakpoint, then record the result with the existing desktop verification.
 - [x] Save a corrected checkpoint and synchronize the exact post-gap-fix tree to GitHub main.
+- [x] Update and validate the reusable tenant-owned mail connection skill with post-save verification, health visibility, and safe reset guidance.
+- [x] Add a saved-connection test-email flow that sends only to a user-specified address with safe loading, success, and error feedback.
+- [x] Add a dashboard mail-server health badge using tenant-scoped connection and verification status.
+- [x] Add a protected SMTP disconnect or reset flow that removes the user’s active outreach connection without exposing credentials.
+- [x] Add behavioral coverage for saved SMTP test-email and protected disconnect/reset paths, and verify the new dashboard and Settings controls on mobile.
+- [x] Save a corrected checkpoint and synchronize the exact post-validation tree to GitHub main.
+- [x] Update and validate the reusable tenant-owned mail connection skill with diagnostic history, detailed health status, and disconnect-confirmation guidance.
+- [x] Add tenant-scoped persisted test-email history with recipient privacy, outcome, timestamp, and bounded presentation in Settings.
+- [x] Add an accessible dashboard health-detail tooltip explaining each tenant mail connection state.
+- [x] Verify and enhance the SMTP disconnect confirmation modal so accidental credential removal requires an explicit user decision.
+- [x] Add focused tests and full validation for the diagnostic-history, health-detail, and disconnect-confirmation enhancements.
+- [x] Save a release checkpoint and synchronize the exact diagnostic-history enhancement tree to GitHub main.
+- [x] Verify and correct visible dashboard placement of the mail-health badge after the detailed tooltip enhancement.
+- [x] Restore home dashboard test-fixture compatibility while preserving the tenant-scoped bulk mail-health state.
+- [x] Update and validate the reusable tenant-owned mail connection skill with failed-diagnostic retry, troubleshooting navigation, and automation-pause guidance.
+- [x] Add a safe retry action for failed tenant SMTP diagnostic attempts without exposing stored recipient data.
+- [x] Add a needs-attention troubleshooting link from the root dashboard health-detail tooltip to the SMTP settings card.
+- [x] Add a clear automation-pause warning to the acknowledged SMTP disconnect confirmation flow.
+- [x] Add focused tests and full validation for the retry, troubleshooting, and automation-pause enhancements.
+- [x] Save a release checkpoint and synchronize the exact retry-and-recovery enhancement tree to GitHub main.
+- [x] Correct the retry and disconnect-warning regression test runtime setup, then rerun validation.
+- [x] Update and validate the reusable tenant-owned mail connection skill with paused automation visibility, settings queue, and in-place recheck guidance.
+- [x] Add a tenant-scoped dashboard warning when automated review requests are paused because no usable mail server is selected.
+- [x] Add a bounded Settings queue showing the user’s paused automated review requests without exposing other tenants’ records.
+- [x] Add an in-place saved-server Test Connection action inside the needs-attention health tooltip.
+- [x] Add focused tests and full validation for the provider restoration and paused automation recovery enhancements.
+- [ ] Save a release checkpoint and synchronize the exact provider-restoration and paused-automation enhancement tree to GitHub main.
+- [x] Verify and enforce that the platform SendGrid account is unavailable to all user-owned mail configuration, testing, and outreach delivery paths.
+- [x] Expand the bulk-mail provider selector to support users’ own SendGrid, Mailgun, Mailjet, and other configured providers without exposing platform credentials.
+- [x] Restore the prior full user-owned bulk-provider list, including a user-owned SendGrid option, with platform SendGrid permanently excluded from user credentials and delivery.
+- [x] Reconcile the bulk-provider database enum with the restored user-facing catalog so valid user-owned providers can be saved safely.
+- [x] Repair full-suite regressions for user-owned SendGrid isolation and tenant-owned queued or reminder delivery fixtures, then rerun validation.
+- [ ] Add an actual Settings provider-switching behavior test that verifies credential guidance, sender verification, and documentation link changes together.
+- [ ] Align provider preset regression assertions with the extracted rendered setup guide component.
+- [ ] Run focused tests, full validation, responsive verification, checkpoint release, and exact GitHub main synchronization for the provider-recovery enhancements.

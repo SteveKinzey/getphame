@@ -915,7 +915,27 @@
     "testingCandidate": "正在測試您的郵件伺服器…",
     "testBeforeSave": "儲存前測試",
     "connectingAndVerifying": "正在連線並驗證…",
-    "connectAndSave": "連線並儲存"
+    "connectAndSave": "連線並儲存",
+    "testEmailRecipient": "將測試電子郵件寄送至",
+    "testEmailHint": "請使用您可控制的地址。系統會使用已儲存的郵件伺服器，不會儲存新的收件者。",
+    "testEmailRecipientRequired": "請輸入要接收測試電子郵件的地址。",
+    "sendingTestEmail": "正在傳送測試電子郵件…",
+    "sendTestEmail": "傳送測試電子郵件",
+    "testEmailSent": "測試電子郵件已傳送。請檢查收件者收件匣。",
+    "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
+    "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
+    "disconnecting": "正在中斷連線…",
+    "disconnectConfirmAction": "中斷並重設",
+    "testEmailHistoryTitle": "測試郵件記錄",
+    "testEmailHistoryPrivacy": "收件者已遮蔽。僅顯示最近 12 次診斷嘗試。",
+    "testEmailHistoryEmpty": "尚未傳送診斷測試郵件。",
+    "testEmailHistorySent": "已傳送",
+    "testEmailHistoryFailed": "失敗",
+    "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。",
+    "retryTestEmail": "重試",
+    "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
+    "connectionTestPassed": "郵件伺服器連線已驗證。",
+    "connectionTestFailed": "郵件伺服器仍需處理。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1797,6 +1817,22 @@
       "markAllShort": "全部標記",
       "markAllSuccess": "{{count}} 條已標記為審閱",
       "markReviewed": "標記為已審閱"
+    },
+    "mailHealth": {
+      "healthy": "郵件伺服器運作正常",
+      "healthyDetail": "您已連接的郵件伺服器已準備好傳送訊息。",
+      "attention": "郵件伺服器需要處理",
+      "attentionDetail": "請在傳送前於設定中重新測試或更新郵件伺服器。",
+      "disconnected": "郵件伺服器未連接",
+      "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
+      "bulkActive": "大量郵件伺服器已啟用",
+      "bulkActiveDetail": "您選取的大量郵件服務商已啟用。",
+      "healthyTooltip": "已選取經過驗證的個人郵件伺服器，最新健康狀態無需處理。",
+      "attentionTooltip": "已儲存的連線需要處理。請重新測試或更新服務商設定後再傳送客戶外聯。",
+      "disconnectedTooltip": "未選取經過驗證的租戶郵件通道。在設定中連線前，客戶外聯將保持暫停。",
+      "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
+      "details": "郵件伺服器健康詳細資料",
+      "troubleshoot": "疑難排解"
     }
   },
   "pricing": {
@@ -4058,5 +4094,15 @@
     "action": "確認",
     "saved": "已確認轉譯器警示，直到記錄到更新的證據。",
     "failed": "無法確認轉譯器警示。"
+  },
+  "automationPaused": {
+    "bannerTitle": "自動評論請求已暫停",
+    "bannerDescription": "有 {{count}} 個待處理的自動請求，等待您重新連線已驗證的郵件伺服器。",
+    "viewQueue": "查看已暫停請求",
+    "queueTitle": "已暫停的自動請求",
+    "queueDescription": "這些請求會保持待處理狀態，直到您連線並選取已驗證的郵件伺服器。",
+    "reviewRequest": "評論請求",
+    "followUp": "跟進",
+    "morePending": "另有 {{count}} 個請求待處理。"
   }
 }

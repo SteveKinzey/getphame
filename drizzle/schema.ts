@@ -69,6 +69,7 @@ export const bulkProviderEnum = pgEnum("bulk_provider", [
   "sendgrid",
   "amazon_ses",
   "mailgun",
+  "mailjet",
   "mailersend",
   "smtp2go",
   "brevo",
@@ -1229,6 +1230,29 @@ export const smtpCredentials = pgTable("smtp_credentials", {
 
 export type SmtpCredential = typeof smtpCredentials.$inferSelect;
 export type InsertSmtpCredential = typeof smtpCredentials.$inferInsert;
+
+/**
+ * Tenant-owned, privacy-minimized diagnostic test-email outcomes. The full
+ * recipient, message content, SMTP endpoint, credentials, and raw transport
+ * errors are intentionally excluded.
+ */
+export const smtpTestEmailAttempts = pgTable(
+  "smtp_test_email_attempts",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").notNull(),
+    recipientMasked: varchar("recipient_masked", { length: 320 }).notNull(),
+    outcome: healthStatusEnum("outcome").notNull(),
+    errorSummary: varchar("error_summary", { length: 500 }),
+    attemptedAt: bigint("attempted_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("smtp_test_email_attempts_user_time_idx").on(table.userId, table.attemptedAt),
+    index("smtp_test_email_attempts_time_idx").on(table.attemptedAt),
+  ]
+);
+export type SmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferSelect;
+export type InsertSmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferInsert;
 
 /**
  * The user-selected, tenant-owned delivery channel for review outreach. Platform
