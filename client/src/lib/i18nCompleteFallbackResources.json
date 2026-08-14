@@ -653,7 +653,9 @@
       "testEmailHistoryFailed": "Failed",
       "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials.",
       "retryTestEmail": "Retry",
-      "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server."
+      "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
+      "connectionTestPassed": "Mail server connection verified.",
+      "connectionTestFailed": "Mail server still needs attention."
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -1805,6 +1807,16 @@
       "action": "Acknowledge",
       "saved": "Renderer alert acknowledged until newer evidence is recorded.",
       "failed": "The renderer alert could not be acknowledged."
+    },
+    "automationPaused": {
+      "bannerTitle": "Automated review requests are paused",
+      "bannerDescription": "{{count}} pending automated request(s) are waiting for you to reconnect a verified mail server.",
+      "viewQueue": "View paused requests",
+      "queueTitle": "Paused automated requests",
+      "queueDescription": "These requests will stay pending until you connect and select a verified mail server.",
+      "reviewRequest": "Review request",
+      "followUp": "Follow-up",
+      "morePending": "{{count}} more request(s) are pending."
     }
   },
   "es": {
@@ -2481,7 +2493,9 @@
       "testEmailHistoryFailed": "Falló",
       "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo.",
       "retryTestEmail": "Reintentar",
-      "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado."
+      "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado.",
+      "connectionTestPassed": "Se verificó la conexión del servidor de correo.",
+      "connectionTestFailed": "El servidor de correo aún necesita atención."
     },
     "comparisonTable": {
       "feature": "Función",
@@ -3814,6 +3828,16 @@
       "action": "Confirmar",
       "saved": "La alerta del renderizador se confirmó hasta que se registre evidencia más reciente.",
       "failed": "No se pudo confirmar la alerta del renderizador."
+    },
+    "automationPaused": {
+      "bannerTitle": "Las solicitudes de reseñas automáticas están en pausa",
+      "bannerDescription": "{{count}} solicitud(es) automática(s) pendiente(s) esperan que vuelva a conectar un servidor de correo verificado.",
+      "viewQueue": "Ver solicitudes pausadas",
+      "queueTitle": "Solicitudes automáticas pausadas",
+      "queueDescription": "Estas solicitudes seguirán pendientes hasta que conecte y seleccione un servidor de correo verificado.",
+      "reviewRequest": "Solicitud de reseña",
+      "followUp": "Seguimiento",
+      "morePending": "Hay {{count}} solicitud(es) más pendiente(s)."
     }
   },
   "fr": {
@@ -4492,7 +4516,9 @@
       "testEmailHistoryFailed": "Échec",
       "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés.",
       "retryTestEmail": "Réessayer",
-      "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié."
+      "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
+      "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
+      "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -5844,6 +5870,16 @@
       "action": "Accuser réception",
       "saved": "L’alerte du moteur de rendu est reconnue jusqu’à ce qu’un élément plus récent soit enregistré.",
       "failed": "L’alerte du moteur de rendu n’a pas pu être reconnue."
+    },
+    "automationPaused": {
+      "bannerTitle": "Les demandes d’avis automatiques sont en pause",
+      "bannerDescription": "{{count}} demande(s) automatique(s) en attente attendent la reconnexion d’un serveur de messagerie vérifié.",
+      "viewQueue": "Voir les demandes en pause",
+      "queueTitle": "Demandes automatiques en pause",
+      "queueDescription": "Ces demandes resteront en attente jusqu’à ce que vous connectiez et sélectionniez un serveur vérifié.",
+      "reviewRequest": "Demande d’avis",
+      "followUp": "Relance",
+      "morePending": "{{count}} demande(s) supplémentaire(s) sont en attente."
     }
   },
   "it": {
@@ -6500,7 +6536,9 @@
       "testEmailHistoryFailed": "Non riuscita",
       "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email.",
       "retryTestEmail": "Riprova",
-      "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato."
+      "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato.",
+      "connectionTestPassed": "La connessione al server di posta è stata verificata.",
+      "connectionTestFailed": "Il server di posta richiede ancora attenzione."
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -7721,6 +7759,16 @@
       "action": "Conferma",
       "saved": "L’avviso del renderer è stato confermato finché non verranno registrate evidenze più recenti.",
       "failed": "Non è stato possibile confermare l’avviso del renderer."
+    },
+    "automationPaused": {
+      "bannerTitle": "Le richieste di recensione automatiche sono in pausa",
+      "bannerDescription": "{{count}} richiesta/e automatica/he in attesa aspettano la riconnessione di un server di posta verificato.",
+      "viewQueue": "Visualizza richieste in pausa",
+      "queueTitle": "Richieste automatiche in pausa",
+      "queueDescription": "Queste richieste resteranno in attesa finché non colleghi e selezioni un server di posta verificato.",
+      "reviewRequest": "Richiesta di recensione",
+      "followUp": "Promemoria",
+      "morePending": "Altre {{count}} richieste sono in attesa."
     }
   },
   "th": {
@@ -8377,7 +8425,9 @@
       "testEmailHistoryFailed": "ล้มเหลว",
       "disconnectAcknowledgement": "ฉันเข้าใจว่าการดำเนินการนี้จะลบข้อมูลรับรองเซิร์ฟเวอร์อีเมลที่บันทึกไว้",
       "retryTestEmail": "ลองอีกครั้ง",
-      "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่"
+      "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่",
+      "connectionTestPassed": "ยืนยันการเชื่อมต่อเซิร์ฟเวอร์อีเมลแล้ว",
+      "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ"
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -9588,6 +9638,16 @@
       "action": "รับทราบ",
       "saved": "รับทราบการแจ้งเตือนตัวเรนเดอร์แล้วจนกว่าจะมีหลักฐานใหม่กว่า",
       "failed": "ไม่สามารถรับทราบการแจ้งเตือนตัวเรนเดอร์ได้"
+    },
+    "automationPaused": {
+      "bannerTitle": "คำขอรีวิวอัตโนมัติถูกพักไว้",
+      "bannerDescription": "คำขออัตโนมัติที่รอดำเนินการ {{count}} รายการกำลังรอให้คุณเชื่อมต่อเซิร์ฟเวอร์อีเมลที่ยืนยันแล้วอีกครั้ง",
+      "viewQueue": "ดูคำขอที่พักไว้",
+      "queueTitle": "คำขออัตโนมัติที่พักไว้",
+      "queueDescription": "คำขอเหล่านี้จะยังรอดำเนินการจนกว่าคุณจะเชื่อมต่อและเลือกเซิร์ฟเวอร์อีเมลที่ยืนยันแล้ว",
+      "reviewRequest": "คำขอรีวิว",
+      "followUp": "ติดตามผล",
+      "morePending": "มีคำขอเพิ่มเติม {{count}} รายการที่รอดำเนินการ"
     }
   },
   "zh-CN": {
@@ -10243,7 +10303,9 @@
       "testEmailHistoryFailed": "失败",
       "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。",
       "retryTestEmail": "重试",
-      "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。"
+      "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。",
+      "connectionTestPassed": "邮件服务器连接已验证。",
+      "connectionTestFailed": "邮件服务器仍需处理。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -11445,6 +11507,16 @@
       "action": "确认",
       "saved": "已确认渲染器警报，直到记录到更新的证据。",
       "failed": "无法确认渲染器警报。"
+    },
+    "automationPaused": {
+      "bannerTitle": "自动评价请求已暂停",
+      "bannerDescription": "有 {{count}} 个待处理的自动请求，等待您重新连接已验证的邮件服务器。",
+      "viewQueue": "查看已暂停请求",
+      "queueTitle": "已暂停的自动请求",
+      "queueDescription": "这些请求会保持待处理状态，直到您连接并选择已验证的邮件服务器。",
+      "reviewRequest": "评价请求",
+      "followUp": "跟进",
+      "morePending": "另有 {{count}} 个请求待处理。"
     }
   },
   "zh-TW": {
@@ -12101,7 +12173,9 @@
       "testEmailHistoryFailed": "失敗",
       "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。",
       "retryTestEmail": "重試",
-      "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。"
+      "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
+      "connectionTestPassed": "郵件伺服器連線已驗證。",
+      "connectionTestFailed": "郵件伺服器仍需處理。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -13317,6 +13391,16 @@
       "action": "確認",
       "saved": "已確認轉譯器警示，直到記錄到更新的證據。",
       "failed": "無法確認轉譯器警示。"
+    },
+    "automationPaused": {
+      "bannerTitle": "自動評論請求已暫停",
+      "bannerDescription": "有 {{count}} 個待處理的自動請求，等待您重新連線已驗證的郵件伺服器。",
+      "viewQueue": "查看已暫停請求",
+      "queueTitle": "已暫停的自動請求",
+      "queueDescription": "這些請求會保持待處理狀態，直到您連線並選取已驗證的郵件伺服器。",
+      "reviewRequest": "評論請求",
+      "followUp": "跟進",
+      "morePending": "另有 {{count}} 個請求待處理。"
     }
   }
 }

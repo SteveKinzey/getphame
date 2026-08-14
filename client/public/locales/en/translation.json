@@ -975,7 +975,9 @@
     "testEmailHistoryFailed": "Failed",
     "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials.",
     "retryTestEmail": "Retry",
-    "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server."
+    "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
+    "connectionTestPassed": "Mail server connection verified.",
+    "connectionTestFailed": "Mail server still needs attention."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -4530,5 +4532,15 @@
     "action": "Acknowledge",
     "saved": "Renderer alert acknowledged until newer evidence is recorded.",
     "failed": "The renderer alert could not be acknowledged."
+  },
+  "automationPaused": {
+    "bannerTitle": "Automated review requests are paused",
+    "bannerDescription": "{{count}} pending automated request(s) are waiting for you to reconnect a verified mail server.",
+    "viewQueue": "View paused requests",
+    "queueTitle": "Paused automated requests",
+    "queueDescription": "These requests will stay pending until you connect and select a verified mail server.",
+    "reviewRequest": "Review request",
+    "followUp": "Follow-up",
+    "morePending": "{{count}} more request(s) are pending."
   }
 }

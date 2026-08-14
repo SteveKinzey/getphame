@@ -933,7 +933,9 @@
     "testEmailHistoryFailed": "失敗",
     "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。",
     "retryTestEmail": "重試",
-    "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。"
+    "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
+    "connectionTestPassed": "郵件伺服器連線已驗證。",
+    "connectionTestFailed": "郵件伺服器仍需處理。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -4092,5 +4094,15 @@
     "action": "確認",
     "saved": "已確認轉譯器警示，直到記錄到更新的證據。",
     "failed": "無法確認轉譯器警示。"
+  },
+  "automationPaused": {
+    "bannerTitle": "自動評論請求已暫停",
+    "bannerDescription": "有 {{count}} 個待處理的自動請求，等待您重新連線已驗證的郵件伺服器。",
+    "viewQueue": "查看已暫停請求",
+    "queueTitle": "已暫停的自動請求",
+    "queueDescription": "這些請求會保持待處理狀態，直到您連線並選取已驗證的郵件伺服器。",
+    "reviewRequest": "評論請求",
+    "followUp": "跟進",
+    "morePending": "另有 {{count}} 個請求待處理。"
   }
 }

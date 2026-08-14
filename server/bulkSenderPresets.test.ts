@@ -21,11 +21,13 @@ const mailjetResearchSource = readFileSync(resolve(process.cwd(), "docs/mailjet-
 const supportedLocales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 
 describe("Bulk Sender provider presets", () => {
-  it("ships only user-owned bulk providers, including Mailjet", () => {
-    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(12);
+  it("ships the full user-owned bulk provider catalog, including SendGrid and Mailjet", () => {
+    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(13);
     expect(Object.keys(BULK_SENDER_PRESETS)).toEqual([...BULK_SENDER_PROVIDER_IDS]);
     expect(BULK_SENDER_PROVIDER_IDS).toContain("mailjet");
-    expect(BULK_SENDER_PROVIDER_IDS).not.toContain("sendgrid");
+    expect(BULK_SENDER_PROVIDER_IDS).toContain("sendgrid");
+    expect(BULK_SENDER_PRESETS.sendgrid.fixedUsername).toBe("apikey");
+    expect(BULK_SENDER_PRESETS.sendgrid.secretHelp).toContain("own SendGrid account");
   });
 
   it("gives every provider safe credential guidance and an official HTTPS setup link", () => {
@@ -112,10 +114,11 @@ describe("Bulk Sender transport safeguards", () => {
     expect(schemaSource).toContain('varchar("providerRegion"');
   });
 
-  it("requires an explicit user-owned channel and excludes legacy platform SendGrid from outreach resolution", () => {
+  it("requires an explicit user-owned channel, permits verified user SendGrid SMTP, and blocks legacy platform-style SendGrid", () => {
     expect(deliveryRoutingSource).toContain('preference?.selectedChannel === "bulk"');
     expect(deliveryRoutingSource).toContain('preference?.selectedChannel !== "personal"');
-    expect(deliveryRoutingSource).toContain('ne(bulkSenderCredentials.provider, "sendgrid")');
+    expect(deliveryRoutingSource).toContain('bulk.provider === "sendgrid" && !(bulk.smtpHost && bulk.smtpPort && bulk.smtpUsername)');
+    expect(serverSource).toContain('credentials.provider === "sendgrid" && !(credentials.smtpHost && credentials.smtpPort && credentials.smtpUsername)');
     expect(serverSource).toContain('legacyPlatformConnection: true as const');
     expect(serverSource).toContain('selectedForOutreach: activeChannel?.type === "bulk"');
     expect(serverSource).toContain('await selectOutboundDeliveryChannel(ctx.user.id, "bulk")');

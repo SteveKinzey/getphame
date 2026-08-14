@@ -932,7 +932,9 @@
     "testEmailHistoryFailed": "失败",
     "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。",
     "retryTestEmail": "重试",
-    "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。"
+    "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。",
+    "connectionTestPassed": "邮件服务器连接已验证。",
+    "connectionTestFailed": "邮件服务器仍需处理。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -4070,5 +4072,15 @@
     "action": "确认",
     "saved": "已确认渲染器警报，直到记录到更新的证据。",
     "failed": "无法确认渲染器警报。"
+  },
+  "automationPaused": {
+    "bannerTitle": "自动评价请求已暂停",
+    "bannerDescription": "有 {{count}} 个待处理的自动请求，等待您重新连接已验证的邮件服务器。",
+    "viewQueue": "查看已暂停请求",
+    "queueTitle": "已暂停的自动请求",
+    "queueDescription": "这些请求会保持待处理状态，直到您连接并选择已验证的邮件服务器。",
+    "reviewRequest": "评价请求",
+    "followUp": "跟进",
+    "morePending": "另有 {{count}} 个请求待处理。"
   }
 }
