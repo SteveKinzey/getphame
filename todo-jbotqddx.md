@@ -21,4 +21,4 @@
 - [x] Add localized Gmail and Workspace App Password setup tooltips beside the relevant credential inputs.
 - [x] Add an end-to-end behavioral test for the rendered Settings mail connection components, including test-before-save, loading, saved feedback, and Gmail or Workspace help.
 - [x] Directly reach and verify the final deep SMTP and bulk mail controls at the mobile breakpoint, then record the result with the existing desktop verification.
-- [ ] Save a corrected checkpoint and synchronize the exact post-gap-fix tree to GitHub main.
+- [x] Save a corrected checkpoint and synchronize the exact post-gap-fix tree to GitHub main.

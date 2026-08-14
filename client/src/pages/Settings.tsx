@@ -104,6 +104,7 @@ import {
   SmtpAppPasswordHelpTooltip,
   SmtpCandidateConnectionActions,
 } from "@/components/SmtpConnectionFeedback";
+import { BulkProviderDiscoveryControls } from "@/components/BulkProviderDiscoveryControls";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -855,25 +856,14 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
           </div>
         </div>
       ) : (
-        <div className="space-y-3">
+          <div className="space-y-3">
           <div>
             <label htmlFor="bulk-sender-provider" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.provider", { defaultValue: "Provider" })}</label>
-            <select
-              id="bulk-sender-provider"
-              value={provider}
-              onChange={(event) => applyProvider(event.target.value as BulkSenderProvider)}
-              className="min-h-11 w-full rounded-xl px-3 py-2 text-sm font-semibold outline-none rr-text-navy"
-              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-            >
-              {BULK_SENDER_PROVIDER_IDS.map((providerId) => (
-                <option key={providerId} value={providerId}>
-                  {providerId === "mailjet"
-                    ? t("settings.bulkSender.providers.mailjet.label", { defaultValue: "Mailjet" })
-                    : BULK_SENDER_PRESETS[providerId].label}
-                </option>
-              ))}
-            </select>
-            <p className="mt-1 text-xs rr-text-navy-muted">{localizedPreset.description}</p>
+            <BulkProviderDiscoveryControls
+              provider={provider}
+              onProviderChange={applyProvider}
+              translate={(key, options) => t(key, options) as string}
+            />
           </div>
 
           {preset.regions?.length ? (
