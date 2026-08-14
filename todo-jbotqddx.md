@@ -54,6 +54,6 @@
 - [x] Restore the prior full user-owned bulk-provider list, including a user-owned SendGrid option, with platform SendGrid permanently excluded from user credentials and delivery.
 - [x] Reconcile the bulk-provider database enum with the restored user-facing catalog so valid user-owned providers can be saved safely.
 - [x] Repair full-suite regressions for user-owned SendGrid isolation and tenant-owned queued or reminder delivery fixtures, then rerun validation.
-- [ ] Add an actual Settings provider-switching behavior test that verifies credential guidance, sender verification, and documentation link changes together.
-- [ ] Align provider preset regression assertions with the extracted rendered setup guide component.
+- [x] Add an actual Settings provider-switching behavior test that verifies credential guidance, sender verification, and documentation link changes together.
+- [x] Align provider preset regression assertions with the extracted rendered setup guide component.
 - [ ] Run focused tests, full validation, responsive verification, checkpoint release, and exact GitHub main synchronization for the provider-recovery enhancements.

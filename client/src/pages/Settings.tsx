@@ -669,11 +669,13 @@ function isBulkSenderProvider(value: string | null | undefined): value is BulkSe
   return Boolean(value && BULK_SENDER_PROVIDER_IDS.includes(value as BulkSenderProvider));
 }
 
-function BulkSenderSection({ profile }: { profile: ProfileData | null | undefined }) {
+function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: ProfileData | null | undefined; disableStatusQuery?: boolean }) {
   const { t } = useTranslation();
   const tier = profile?.tier ?? "free";
   const isPro = tier !== "free";
-  const { data: status, refetch } = trpc.bulkSender.status.useQuery();
+  const statusQuery = trpc.bulkSender.status.useQuery(undefined, { enabled: !disableStatusQuery });
+  const status = disableStatusQuery ? undefined : statusQuery.data;
+  const refetch = statusQuery.refetch;
   const [provider, setProvider] = useState<BulkSenderProvider>(BULK_SENDER_PROVIDER_IDS[0]);
   const [secret, setSecret] = useState("");
   const [smtpUsername, setSmtpUsername] = useState("");
@@ -1019,6 +1021,11 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
       )}
     </div>
   );
+}
+
+/** Development-only browser coverage fixture for the real Settings bulk-sender flow. */
+export function SettingsBulkSenderTestFixture() {
+  return <BulkSenderSection profile={{ tier: "pro" } as ProfileData} disableStatusQuery />;
 }
 
 function AccountProfileCard() {

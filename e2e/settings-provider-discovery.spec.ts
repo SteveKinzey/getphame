@@ -5,7 +5,7 @@ test("the Settings provider selector updates credential, sender verification, an
 
   await expect(page.getByTestId("provider-verification-note")).toContainText("Sender Authentication");
   await expect(page.getByTestId("provider-credential-note")).toContainText("Mail Send permission");
-  await expect(page.getByRole("link", { name: /SendGrid setup guide/i })).toHaveAttribute("href", /twilio\.com\/docs\/sendgrid/);
+  await expect(page.getByRole("link", { name: /SendGrid \(your account\) setup guide/i })).toHaveAttribute("href", /twilio\.com\/docs\/sendgrid/);
 
   await page.selectOption("#bulk-sender-provider", "mailgun");
 

@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
-import SettingsPage from "./pages/Settings";
+import SettingsPage, { SettingsBulkSenderTestFixture } from "./pages/Settings";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
   useOnboardingGuide,
@@ -36,8 +36,6 @@ import {
   SmtpAppPasswordHelpTooltip,
   SmtpCandidateConnectionActions,
 } from "./components/SmtpConnectionFeedback";
-import { BulkProviderDiscoveryControls } from "./components/BulkProviderDiscoveryControls";
-import { BULK_SENDER_PROVIDER_IDS, type BulkSenderProvider } from "../../shared/bulkSenderPresets";
 import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
@@ -652,16 +650,9 @@ function SmtpConnectionFeedbackTestHarness() {
 }
 
 function ProviderDiscoveryTestHarness() {
-  const [provider, setProvider] = useState<BulkSenderProvider>(BULK_SENDER_PROVIDER_IDS[0]);
-  const translate = (key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? key;
-
   return (
     <main className="min-h-screen bg-white p-6">
-      <BulkProviderDiscoveryControls
-        provider={provider}
-        onProviderChange={setProvider}
-        translate={translate}
-      />
+      <SettingsBulkSenderTestFixture />
     </main>
   );
 }
