@@ -12,6 +12,8 @@ import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackR
 import { resolveSafeCustomSmtpHost } from "./bulkSender";
 
 const settingsSource = readFileSync(resolve(process.cwd(), "client/src/pages/Settings.tsx"), "utf8");
+const providerDiscoveryControlsSource = readFileSync(resolve(process.cwd(), "client/src/components/BulkProviderDiscoveryControls.tsx"), "utf8");
+const providerSetupGuideSource = readFileSync(resolve(process.cwd(), "client/src/components/BulkProviderSetupGuide.tsx"), "utf8");
 const mailDeliveryNoticeSource = readFileSync(resolve(process.cwd(), "client/src/components/MailDeliveryStateNotice.tsx"), "utf8");
 const serverSource = readFileSync(resolve(process.cwd(), "server/bulkSender.ts"), "utf8");
 const schemaSource = readFileSync(resolve(process.cwd(), "drizzle/schema.ts"), "utf8");
@@ -127,8 +129,13 @@ describe("Bulk Sender transport safeguards", () => {
 
 describe("Bulk Sender Settings experience", () => {
   it("uses guided provider presets, accessible fields, and a single verify-and-connect action", () => {
-    expect(settingsSource).toContain("BULK_SENDER_PROVIDER_IDS.map");
-    expect(settingsSource).toContain('id="bulk-sender-provider"');
+    expect(settingsSource).toContain("BulkProviderDiscoveryControls");
+    expect(providerDiscoveryControlsSource).toContain("BULK_SENDER_PROVIDER_IDS.filter");
+    expect(providerDiscoveryControlsSource).toContain('id="bulk-sender-provider-search"');
+    expect(providerDiscoveryControlsSource).toContain('id="bulk-sender-provider"');
+    expect(providerSetupGuideSource).toContain('data-testid="provider-credential-note"');
+    expect(providerSetupGuideSource).toContain('data-testid="provider-verification-note"');
+    expect(providerSetupGuideSource).toContain("preset.docsUrl");
     expect(settingsSource).toContain('id="bulk-sender-secret"');
     expect(settingsSource).toContain('id="bulk-sender-from-email"');
     expect(settingsSource).toContain("Connect and test");
@@ -145,8 +152,8 @@ describe("Bulk Sender Settings experience", () => {
   });
 
   it("localizes Mailjet labels and guidance in every catalog and synchronous fallback", () => {
-    expect(settingsSource).toContain('provider === "mailjet"');
-    expect(settingsSource).toContain("settings.bulkSender.providers.mailjet.secretHelp");
+    expect(providerDiscoveryControlsSource).toContain('provider === "mailjet"');
+    expect(providerDiscoveryControlsSource).toContain("settings.bulkSender.providers.mailjet.secretHelp");
     expect(settingsSource).toContain("fromEmailIsValid");
 
     for (const locale of supportedLocales) {

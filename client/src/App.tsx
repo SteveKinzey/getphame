@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
-import SettingsPage from "./pages/Settings";
+import SettingsPage, { SettingsBulkSenderTestFixture } from "./pages/Settings";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
   useOnboardingGuide,
@@ -649,6 +649,14 @@ function SmtpConnectionFeedbackTestHarness() {
   );
 }
 
+function ProviderDiscoveryTestHarness() {
+  return (
+    <main className="min-h-screen bg-white p-6">
+      <SettingsBulkSenderTestFixture />
+    </main>
+  );
+}
+
 function App() {
   if (
     import.meta.env.DEV &&
@@ -669,6 +677,16 @@ function App() {
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
           <SmtpConnectionFeedbackTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/provider-discovery") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <ProviderDiscoveryTestHarness />
         </TooltipProvider>
       </ThemeProvider>
     );
