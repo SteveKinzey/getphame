@@ -651,7 +651,9 @@
       "testEmailHistoryEmpty": "No diagnostic test emails have been sent yet.",
       "testEmailHistorySent": "Sent",
       "testEmailHistoryFailed": "Failed",
-      "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials."
+      "disconnectAcknowledgement": "I understand that this removes my saved mail-server credentials.",
+      "retryTestEmail": "Retry",
+      "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server."
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -1186,7 +1188,8 @@
         "attentionTooltip": "Your saved connection needs attention. Re-test it or update the provider settings before sending customer outreach.",
         "disconnectedTooltip": "No verified tenant-owned delivery channel is selected. Customer outreach stays paused until you connect one in Settings.",
         "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
-        "details": "Mail server health details"
+        "details": "Mail server health details",
+        "troubleshoot": "Troubleshoot"
       }
     },
     "reminderRow": {
@@ -2476,7 +2479,9 @@
       "testEmailHistoryEmpty": "Aún no se han enviado correos de diagnóstico.",
       "testEmailHistorySent": "Enviado",
       "testEmailHistoryFailed": "Falló",
-      "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo."
+      "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo.",
+      "retryTestEmail": "Reintentar",
+      "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado."
     },
     "comparisonTable": {
       "feature": "Función",
@@ -3025,7 +3030,8 @@
         "attentionTooltip": "Tu conexión guardada necesita atención. Vuelve a probarla o actualiza la configuración antes de enviar solicitudes.",
         "disconnectedTooltip": "No hay un canal de entrega verificado seleccionado. Las solicitudes están pausadas hasta que conectes uno en Configuración.",
         "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
-        "details": "Detalles de salud del servidor de correo"
+        "details": "Detalles de salud del servidor de correo",
+        "troubleshoot": "Solucionar problemas"
       }
     },
     "reminderRow": {
@@ -4484,7 +4490,9 @@
       "testEmailHistoryEmpty": "Aucun e-mail de diagnostic n’a encore été envoyé.",
       "testEmailHistorySent": "Envoyé",
       "testEmailHistoryFailed": "Échec",
-      "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés."
+      "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés.",
+      "retryTestEmail": "Réessayer",
+      "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié."
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -5040,7 +5048,8 @@
         "attentionTooltip": "Votre connexion enregistrée nécessite une attention. Testez-la de nouveau ou mettez à jour les paramètres avant l’envoi.",
         "disconnectedTooltip": "Aucun canal vérifié n’est sélectionné. Les demandes restent en pause jusqu’à la connexion dans les paramètres.",
         "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
-        "details": "Détails de l’état du serveur de messagerie"
+        "details": "Détails de l’état du serveur de messagerie",
+        "troubleshoot": "Dépanner"
       }
     },
     "reminderRow": {
@@ -6489,7 +6498,9 @@
       "testEmailHistoryEmpty": "Non sono ancora state inviate email di diagnostica.",
       "testEmailHistorySent": "Inviata",
       "testEmailHistoryFailed": "Non riuscita",
-      "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email."
+      "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email.",
+      "retryTestEmail": "Riprova",
+      "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato."
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -7034,7 +7045,8 @@
         "attentionTooltip": "La connessione salvata richiede attenzione. Provala di nuovo o aggiorna le impostazioni prima dell’invio.",
         "disconnectedTooltip": "Non è selezionato alcun canale verificato. Le richieste restano in pausa finché non ne colleghi uno nelle Impostazioni.",
         "bulkActiveTooltip": "È selezionato un provider bulk verificato. Gestiscilo o sostituiscilo nelle Impostazioni.",
-        "details": "Dettagli stato server email"
+        "details": "Dettagli stato server email",
+        "troubleshoot": "Risolvi problemi"
       }
     },
     "reminderRow": {
@@ -8363,7 +8375,9 @@
       "testEmailHistoryEmpty": "ยังไม่มีการส่งอีเมลวินิจฉัย",
       "testEmailHistorySent": "ส่งแล้ว",
       "testEmailHistoryFailed": "ล้มเหลว",
-      "disconnectAcknowledgement": "ฉันเข้าใจว่าการดำเนินการนี้จะลบข้อมูลรับรองเซิร์ฟเวอร์อีเมลที่บันทึกไว้"
+      "disconnectAcknowledgement": "ฉันเข้าใจว่าการดำเนินการนี้จะลบข้อมูลรับรองเซิร์ฟเวอร์อีเมลที่บันทึกไว้",
+      "retryTestEmail": "ลองอีกครั้ง",
+      "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่"
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -8899,7 +8913,8 @@
         "attentionTooltip": "การเชื่อมต่อที่บันทึกไว้ต้องได้รับการตรวจสอบ ทดสอบใหม่หรืออัปเดตการตั้งค่าก่อนส่ง",
         "disconnectedTooltip": "ยังไม่ได้เลือกช่องทางส่งที่ยืนยันแล้ว การส่งคำขอจะหยุดชั่วคราวจนกว่าจะเชื่อมต่อในตั้งค่า",
         "bulkActiveTooltip": "มีการเลือกผู้ให้บริการส่งจำนวนมากที่ยืนยันแล้ว จัดการหรือเปลี่ยนได้ในตั้งค่า",
-        "details": "รายละเอียดสถานะเซิร์ฟเวอร์อีเมล"
+        "details": "รายละเอียดสถานะเซิร์ฟเวอร์อีเมล",
+        "troubleshoot": "แก้ไขปัญหา"
       }
     },
     "reminderRow": {
@@ -10226,7 +10241,9 @@
       "testEmailHistoryEmpty": "尚未发送诊断测试邮件。",
       "testEmailHistorySent": "已发送",
       "testEmailHistoryFailed": "失败",
-      "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。"
+      "disconnectAcknowledgement": "我了解此操作会删除已保存的邮件服务器凭据。",
+      "retryTestEmail": "重试",
+      "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -10761,7 +10778,8 @@
         "attentionTooltip": "保存的连接需要处理。请重新测试或更新服务商设置后再发送客户外联。",
         "disconnectedTooltip": "未选择经过验证的租户邮件通道。在设置中连接前，客户外联将保持暂停。",
         "bulkActiveTooltip": "已选择经过验证的租户批量邮件服务商。请在设置中管理或替换。",
-        "details": "邮件服务器健康详情"
+        "details": "邮件服务器健康详情",
+        "troubleshoot": "排查问题"
       }
     },
     "reminderRow": {
@@ -12081,7 +12099,9 @@
       "testEmailHistoryEmpty": "尚未傳送診斷測試郵件。",
       "testEmailHistorySent": "已傳送",
       "testEmailHistoryFailed": "失敗",
-      "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。"
+      "disconnectAcknowledgement": "我了解此操作會刪除已儲存的郵件伺服器憑證。",
+      "retryTestEmail": "重試",
+      "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -12616,7 +12636,8 @@
         "attentionTooltip": "已儲存的連線需要處理。請重新測試或更新服務商設定後再傳送客戶外聯。",
         "disconnectedTooltip": "未選取經過驗證的租戶郵件通道。在設定中連線前，客戶外聯將保持暫停。",
         "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
-        "details": "郵件伺服器健康詳細資料"
+        "details": "郵件伺服器健康詳細資料",
+        "troubleshoot": "疑難排解"
       }
     },
     "reminderRow": {

@@ -323,7 +323,9 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
       "disconnectConfirmTitle": "Disconnect this mail server?",
       "disconnectConfirmDescription": "This permanently removes your saved mail-server credentials and stops future outreach until you connect a new verified server.",
       "disconnecting": "Disconnecting…",
-      "disconnectConfirmAction": "Disconnect and reset"
+      "disconnectConfirmAction": "Disconnect and reset",
+      "retryTestEmail": "Retry",
+      "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server."
     },
     "dashboard": {
       "mailHealth": {
@@ -334,7 +336,8 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
         "disconnected": "Mail server not connected",
         "disconnectedDetail": "Connect a user-owned mail server before sending outreach.",
         "bulkActive": "Bulk mail server active",
-        "bulkActiveDetail": "Your selected bulk mail provider is active for outreach."
+        "bulkActiveDetail": "Your selected bulk mail provider is active for outreach.",
+        "troubleshoot": "Troubleshoot"
       }
     }
   },
@@ -349,7 +352,9 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
       "disconnectConfirmTitle": "¿Desconectar este servidor de correo?",
       "disconnectConfirmDescription": "Esto elimina permanentemente las credenciales guardadas y detiene los envíos hasta que conectes un servidor verificado.",
       "disconnecting": "Desconectando…",
-      "disconnectConfirmAction": "Desconectar y restablecer"
+      "disconnectConfirmAction": "Desconectar y restablecer",
+      "retryTestEmail": "Reintentar",
+      "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado."
     },
     "dashboard": {
       "mailHealth": {
@@ -360,7 +365,8 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
         "disconnected": "Servidor de correo no conectado",
         "disconnectedDetail": "Conecta un servidor propio antes de enviar.",
         "bulkActive": "Servidor de correo masivo activo",
-        "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos."
+        "bulkActiveDetail": "Tu proveedor masivo seleccionado está activo para los envíos.",
+        "troubleshoot": "Solucionar problemas"
       }
     }
   },
@@ -375,7 +381,9 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
       "disconnectConfirmTitle": "Déconnecter ce serveur e-mail ?",
       "disconnectConfirmDescription": "Cela supprime définitivement vos identifiants enregistrés et arrête les envois jusqu’à la connexion d’un serveur vérifié.",
       "disconnecting": "Déconnexion…",
-      "disconnectConfirmAction": "Déconnecter et réinitialiser"
+      "disconnectConfirmAction": "Déconnecter et réinitialiser",
+      "retryTestEmail": "Réessayer",
+      "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié."
     },
     "dashboard": {
       "mailHealth": {
@@ -386,7 +394,8 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
         "disconnected": "Serveur e-mail non connecté",
         "disconnectedDetail": "Connectez un serveur vous appartenant avant d’envoyer.",
         "bulkActive": "Serveur d’envoi en masse actif",
-        "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif."
+        "bulkActiveDetail": "Votre fournisseur d’envoi en masse sélectionné est actif.",
+        "troubleshoot": "Dépanner"
       }
     }
   },
@@ -401,7 +410,9 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
       "disconnectConfirmTitle": "Disconnettere questo server e-mail?",
       "disconnectConfirmDescription": "Questa azione elimina definitivamente le credenziali salvate e interrompe gli invii finché non colleghi un server verificato.",
       "disconnecting": "Disconnessione…",
-      "disconnectConfirmAction": "Disconnetti e reimposta"
+      "disconnectConfirmAction": "Disconnetti e reimposta",
+      "retryTestEmail": "Riprova",
+      "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato."
     },
     "dashboard": {
       "mailHealth": {
@@ -412,7 +423,8 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
         "disconnected": "Server e-mail non connesso",
         "disconnectedDetail": "Collega un server di tua proprietà prima di inviare.",
         "bulkActive": "Server di invio massivo attivo",
-        "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo."
+        "bulkActiveDetail": "Il provider di invio massivo selezionato è attivo.",
+        "troubleshoot": "Risolvi problemi"
       }
     }
   },
@@ -427,7 +439,9 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
       "disconnectConfirmTitle": "ตัดการเชื่อมต่อเซิร์ฟเวอร์อีเมลนี้หรือไม่?",
       "disconnectConfirmDescription": "การดำเนินการนี้จะลบข้อมูลรับรองที่บันทึกไว้ถาวรและหยุดการส่งจนกว่าคุณจะเชื่อมต่อเซิร์ฟเวอร์ที่ยืนยันแล้ว",
       "disconnecting": "กำลังตัดการเชื่อมต่อ…",
-      "disconnectConfirmAction": "ตัดการเชื่อมต่อและรีเซ็ต"
+      "disconnectConfirmAction": "ตัดการเชื่อมต่อและรีเซ็ต",
+      "retryTestEmail": "ลองอีกครั้ง",
+      "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่"
     },
     "dashboard": {
       "mailHealth": {
@@ -438,7 +452,8 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
         "disconnected": "ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์อีเมล",
         "disconnectedDetail": "เชื่อมต่อเซิร์ฟเวอร์ของคุณก่อนส่งข้อความ",
         "bulkActive": "เซิร์ฟเวอร์ส่งอีเมลจำนวนมากทำงานอยู่",
-        "bulkActiveDetail": "ผู้ให้บริการส่งจำนวนมากที่เลือกกำลังทำงานอยู่"
+        "bulkActiveDetail": "ผู้ให้บริการส่งจำนวนมากที่เลือกกำลังทำงานอยู่",
+        "troubleshoot": "แก้ไขปัญหา"
       }
     }
   },
@@ -453,7 +468,9 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
       "disconnectConfirmTitle": "要断开此邮件服务器吗？",
       "disconnectConfirmDescription": "此操作将永久删除已保存的邮件服务器凭据，并停止未来发送，直到您连接新的已验证服务器。",
       "disconnecting": "正在断开连接…",
-      "disconnectConfirmAction": "断开并重置"
+      "disconnectConfirmAction": "断开并重置",
+      "retryTestEmail": "重试",
+      "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。"
     },
     "dashboard": {
       "mailHealth": {
@@ -464,7 +481,8 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
         "disconnected": "邮件服务器未连接",
         "disconnectedDetail": "请先连接您自己的邮件服务器再发送消息。",
         "bulkActive": "批量邮件服务器已启用",
-        "bulkActiveDetail": "您选择的批量邮件服务商已启用。"
+        "bulkActiveDetail": "您选择的批量邮件服务商已启用。",
+        "troubleshoot": "排查问题"
       }
     }
   },
@@ -479,7 +497,9 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
       "disconnectConfirmTitle": "要中斷此郵件伺服器嗎？",
       "disconnectConfirmDescription": "此操作會永久移除已儲存的郵件伺服器憑證，並停止後續傳送，直到您連接新的已驗證伺服器。",
       "disconnecting": "正在中斷連線…",
-      "disconnectConfirmAction": "中斷並重設"
+      "disconnectConfirmAction": "中斷並重設",
+      "retryTestEmail": "重試",
+      "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。"
     },
     "dashboard": {
       "mailHealth": {
@@ -490,7 +510,8 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
         "disconnected": "郵件伺服器未連接",
         "disconnectedDetail": "請先連接您自己的郵件伺服器再傳送訊息。",
         "bulkActive": "大量郵件伺服器已啟用",
-        "bulkActiveDetail": "您選取的大量郵件服務商已啟用。"
+        "bulkActiveDetail": "您選取的大量郵件服務商已啟用。",
+        "troubleshoot": "疑難排解"
       }
     }
   }

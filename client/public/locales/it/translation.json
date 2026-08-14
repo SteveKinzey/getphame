@@ -738,7 +738,8 @@
       "attentionTooltip": "La connessione salvata richiede attenzione. Provala di nuovo o aggiorna le impostazioni prima dell’invio.",
       "disconnectedTooltip": "Non è selezionato alcun canale verificato. Le richieste restano in pausa finché non ne colleghi uno nelle Impostazioni.",
       "bulkActiveTooltip": "È selezionato un provider bulk verificato. Gestiscilo o sostituiscilo nelle Impostazioni.",
-      "details": "Dettagli stato server email"
+      "details": "Dettagli stato server email",
+      "troubleshoot": "Risolvi problemi"
     }
   },
   "settings": {
@@ -2198,7 +2199,9 @@
     "testEmailHistoryEmpty": "Non sono ancora state inviate email di diagnostica.",
     "testEmailHistorySent": "Inviata",
     "testEmailHistoryFailed": "Non riuscita",
-    "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email."
+    "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email.",
+    "retryTestEmail": "Riprova",
+    "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato."
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",

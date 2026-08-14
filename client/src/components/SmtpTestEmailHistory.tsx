@@ -14,10 +14,12 @@ export default function SmtpTestEmailHistory({
   attempts,
   isLoading,
   translate,
+  onRetryFailedAttempt,
 }: {
   attempts: SmtpDiagnosticAttempt[] | undefined;
   isLoading: boolean;
   translate: Translate;
+  onRetryFailedAttempt?: () => void;
 }) {
   return (
     <section data-testid="smtp-test-email-history" className="rounded-xl border p-3" style={{ borderColor: "oklch(0.90 0.02 260)", background: "oklch(0.99 0.005 260)" }}>
@@ -43,6 +45,15 @@ export default function SmtpTestEmailHistory({
                   <p className="font-bold rr-text-navy">{attempt.recipientMasked} · {sent ? translate("smtp.testEmailHistorySent", { defaultValue: "Sent" }) : translate("smtp.testEmailHistoryFailed", { defaultValue: "Failed" })}</p>
                   <p className="rr-text-navy-muted">{new Date(attempt.attemptedAt).toLocaleString()}</p>
                   {!sent && attempt.errorSummary ? <p className="mt-0.5 text-destructive">{attempt.errorSummary}</p> : null}
+                  {!sent && onRetryFailedAttempt ? (
+                    <button
+                      type="button"
+                      onClick={onRetryFailedAttempt}
+                      className="mt-2 min-h-8 rounded-md px-2 text-xs font-bold rr-bg-navy text-white"
+                    >
+                      {translate("smtp.retryTestEmail", { defaultValue: "Retry" })}
+                    </button>
+                  ) : null}
                 </div>
               </li>
             );
