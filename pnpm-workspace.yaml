@@ -20,15 +20,9 @@ overrides:
   fast-xml-parser: ">=5.7.0"
   # Security: form-data CRLF injection fix
   form-data: ">=4.0.6"
-<<<<<<< HEAD
   # Security: DOMPurify IN_PLACE hook-detachment XSS fix (GHSA-55q2-fjhq-7xh7)
   dompurify: ">=3.4.13"
   # Security: Mermaid XY chart and parser fixes (requires 11.16.1 or newer)
-=======
-  # Security: dompurify XSS fix (mermaid pulls an older advisory-affected release)
-  dompurify: ">=3.4.13"
-  # Security: mermaid XSS fix (streamdown pulls 11.12.x, needs >=11.15.0)
->>>>>>> origin/main
   mermaid: ">=11.16.1"
   # Security: esbuild dev server request smuggling fix
   esbuild: ">=0.28.1"
@@ -38,11 +32,7 @@ overrides:
   uuid: ">=11.1.1"
   # Security: qs prototype pollution fix
   qs: ">=6.15.2"
-<<<<<<< HEAD
   # Security: brace-expansion unbounded intermediate-array DoS fix (GHSA-rgw5-rvv9-x895)
-=======
-  # Security: brace-expansion unbounded-length DoS fix (GHSA-mh99-v99m-4gvg)
->>>>>>> origin/main
   brace-expansion: ">=5.0.9"
   # Security: mdast-util-to-hast XSS fix
   mdast-util-to-hast: ">=13.2.1"
