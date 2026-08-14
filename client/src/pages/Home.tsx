@@ -20,6 +20,7 @@ import { getPwaPlatform, shareGetPhame } from "@/lib/pwaShare";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 import SetupProgressCard from "@/components/dashboard/SetupProgressCard";
 import MailServerHealthBadge from "@/components/dashboard/MailServerHealthBadge";
+import { PausedAutomationBanner } from "@/components/PausedAutomationQueue";
 
 const TrackingSummaryCard = lazy(() => import("@/components/dashboard/TrackingSummaryCard"));
 const PlatformBreakdownChart = lazy(() => import("@/components/dashboard/PlatformBreakdownChart"));
@@ -290,11 +291,21 @@ export default function HomePage() {
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: bulkSenderStatus } = trpc.bulkSender.status.useQuery();
+  const { data: pausedAutomationQueue } = trpc.smtp.pausedAutomationQueue.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery();
   const { data: referralData } = trpc.referral.getCode.useQuery();
   const utils = trpc.useUtils();
   const pwaAnalytics = trpc.analytics.trackPwaEvent.useMutation();
+  const recheckMailServer = trpc.smtp.test.useMutation({
+    onSuccess: (result) => {
+      utils.smtp.status.invalidate();
+      utils.smtp.pausedAutomationQueue.invalidate();
+      if (result.ok) toast.success(t("smtp.connectionTestPassed", { defaultValue: "Mail server connection verified." }));
+      else toast.error(result.error || t("smtp.connectionTestFailed", { defaultValue: "Mail server still needs attention." }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
 
   // Goal tracker state
   const [editingGoal, setEditingGoal] = useState(false);
@@ -498,7 +509,8 @@ export default function HomePage() {
           ))}
         </div>
 
-        <MailServerHealthBadge smtp={smtpStatus} bulk={bulkSenderStatus} translate={t} />
+        <MailServerHealthBadge smtp={smtpStatus} bulk={bulkSenderStatus} translate={t} onTestConnection={() => recheckMailServer.mutate()} isTesting={recheckMailServer.isPending} testResult={recheckMailServer.data ?? null} />
+        <PausedAutomationBanner queue={pausedAutomationQueue} translate={t} />
 
         {effectivePlan === "free" && (
           <FreeQuotaStatus quota={profile?.freeQuota} t={t} />

@@ -1,4 +1,5 @@
 export const BULK_SENDER_PROVIDER_IDS = [
+  "sendgrid",
   "amazon_ses",
   "mailgun",
   "mailjet",
@@ -64,6 +65,21 @@ const AMAZON_SES_REGIONS = [
 ] as const;
 
 export const BULK_SENDER_PRESETS: Record<BulkSenderProvider, BulkSenderPreset> = {
+  sendgrid: {
+    label: "SendGrid (your account)",
+    description: "Your own SendGrid SMTP relay; never the Get Phame platform account",
+    docsUrl: "https://www.twilio.com/docs/sendgrid/for-developers/sending-email/getting-started-smtp",
+    defaultHost: "smtp.sendgrid.net",
+    defaultPort: 587,
+    defaultSecurity: "starttls",
+    usernameMode: "fixed",
+    fixedUsername: "apikey",
+    usernameLabel: "SMTP username",
+    usernamePlaceholder: "apikey",
+    secretLabel: "SendGrid API key",
+    secretPlaceholder: "Your SendGrid API key",
+    secretHelp: "Use an API key from your own SendGrid account with Mail Send permission. Get Phame never shares or uses its platform SendGrid account here.",
+  },
   amazon_ses: {
     label: "Amazon SES",
     description: "Region-specific Amazon SES SMTP relay",

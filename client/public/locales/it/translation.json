@@ -2201,7 +2201,9 @@
     "testEmailHistoryFailed": "Non riuscita",
     "disconnectAcknowledgement": "Comprendo che questa azione rimuove le credenziali salvate del server email.",
     "retryTestEmail": "Riprova",
-    "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato."
+    "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato.",
+    "connectionTestPassed": "La connessione al server di posta è stata verificata.",
+    "connectionTestFailed": "Il server di posta richiede ancora attenzione."
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",
@@ -4808,5 +4810,15 @@
     "action": "Conferma",
     "saved": "L’avviso del renderer è stato confermato finché non verranno registrate evidenze più recenti.",
     "failed": "Non è stato possibile confermare l’avviso del renderer."
+  },
+  "automationPaused": {
+    "bannerTitle": "Le richieste di recensione automatiche sono in pausa",
+    "bannerDescription": "{{count}} richiesta/e automatica/he in attesa aspettano la riconnessione di un server di posta verificato.",
+    "viewQueue": "Visualizza richieste in pausa",
+    "queueTitle": "Richieste automatiche in pausa",
+    "queueDescription": "Queste richieste resteranno in attesa finché non colleghi e selezioni un server di posta verificato.",
+    "reviewRequest": "Richiesta di recensione",
+    "followUp": "Promemoria",
+    "morePending": "Altre {{count}} richieste sono in attesa."
   }
 }

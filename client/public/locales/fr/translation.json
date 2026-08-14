@@ -1141,7 +1141,9 @@
     "testEmailHistoryFailed": "Échec",
     "disconnectAcknowledgement": "Je comprends que cela supprime mes identifiants de serveur de messagerie enregistrés.",
     "retryTestEmail": "Réessayer",
-    "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié."
+    "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
+    "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
+    "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -4581,5 +4583,15 @@
     "action": "Accuser réception",
     "saved": "L’alerte du moteur de rendu est reconnue jusqu’à ce qu’un élément plus récent soit enregistré.",
     "failed": "L’alerte du moteur de rendu n’a pas pu être reconnue."
+  },
+  "automationPaused": {
+    "bannerTitle": "Les demandes d’avis automatiques sont en pause",
+    "bannerDescription": "{{count}} demande(s) automatique(s) en attente attendent la reconnexion d’un serveur de messagerie vérifié.",
+    "viewQueue": "Voir les demandes en pause",
+    "queueTitle": "Demandes automatiques en pause",
+    "queueDescription": "Ces demandes resteront en attente jusqu’à ce que vous connectiez et sélectionniez un serveur vérifié.",
+    "reviewRequest": "Demande d’avis",
+    "followUp": "Relance",
+    "morePending": "{{count}} demande(s) supplémentaire(s) sont en attente."
   }
 }

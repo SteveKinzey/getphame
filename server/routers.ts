@@ -1508,6 +1508,37 @@ export const appRouter = router({
       return listSmtpTestEmailAttempts(ctx.user.id);
     }),
 
+    /** Return pending automated work only when this tenant has no usable outbound mail channel. */
+    pausedAutomationQueue: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const channel = await resolveOutboundDeliveryChannel(ctx.user.id);
+      if (channel) return { paused: false as const, total: 0, items: [] as Array<never> };
+
+      const [[quietCount], [reminderCount], quietRows, reminderRows] = await Promise.all([
+        db.select({ value: count() }).from(quietHoursQueuedSends).where(and(eq(quietHoursQueuedSends.userId, ctx.user.id), eq(quietHoursQueuedSends.status, "pending"))),
+        db.select({ value: count() }).from(followUpReminders).where(and(eq(followUpReminders.userId, ctx.user.id), eq(followUpReminders.status, "pending"))),
+        db.select({ id: quietHoursQueuedSends.id, scheduledAt: quietHoursQueuedSends.scheduledAt, customerName: customerRequests.customerName })
+          .from(quietHoursQueuedSends)
+          .leftJoin(customerRequests, eq(quietHoursQueuedSends.customerRequestId, customerRequests.id))
+          .where(and(eq(quietHoursQueuedSends.userId, ctx.user.id), eq(quietHoursQueuedSends.status, "pending")))
+          .orderBy(asc(quietHoursQueuedSends.scheduledAt))
+          .limit(12),
+        db.select({ id: followUpReminders.id, scheduledAt: followUpReminders.scheduledAt, customerName: followUpReminders.customerName })
+          .from(followUpReminders)
+          .where(and(eq(followUpReminders.userId, ctx.user.id), eq(followUpReminders.status, "pending")))
+          .orderBy(asc(followUpReminders.scheduledAt))
+          .limit(12),
+      ]);
+
+      const items = [
+        ...quietRows.map(row => ({ id: `quiet:${row.id}`, type: "review_request" as const, label: row.customerName || "Scheduled review request", scheduledAt: row.scheduledAt })),
+        ...reminderRows.map(row => ({ id: `reminder:${row.id}`, type: "follow_up" as const, label: row.customerName || "Scheduled follow-up", scheduledAt: row.scheduledAt })),
+      ].sort((a, b) => Number(a.scheduledAt) - Number(b.scheduledAt)).slice(0, 12);
+      const total = Number(quietCount?.value ?? 0) + Number(reminderCount?.value ?? 0);
+      return { paused: total > 0, total, items };
+    }),
+
     /** Return rendered HTML preview of the review request email using real profile data */
     previewEmail: protectedProcedure.query(async ({ ctx }) => {
       const { buildReviewRequestEmail } = await import("./emailTemplates");

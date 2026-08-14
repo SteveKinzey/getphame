@@ -69,6 +69,7 @@ export const bulkProviderEnum = pgEnum("bulk_provider", [
   "sendgrid",
   "amazon_ses",
   "mailgun",
+  "mailjet",
   "mailersend",
   "smtp2go",
   "brevo",
