@@ -48,7 +48,7 @@
 - [x] Add a bounded Settings queue showing the user’s paused automated review requests without exposing other tenants’ records.
 - [x] Add an in-place saved-server Test Connection action inside the needs-attention health tooltip.
 - [x] Add focused tests and full validation for the provider restoration and paused automation recovery enhancements.
-- [ ] Save a release checkpoint and synchronize the exact provider-restoration and paused-automation enhancement tree to GitHub main.
+- [x] Save a release checkpoint and synchronize the exact provider-restoration and paused-automation enhancement tree to GitHub main.
 - [x] Verify and enforce that the platform SendGrid account is unavailable to all user-owned mail configuration, testing, and outreach delivery paths.
 - [x] Expand the bulk-mail provider selector to support users’ own SendGrid, Mailgun, Mailjet, and other configured providers without exposing platform credentials.
 - [x] Restore the prior full user-owned bulk-provider list, including a user-owned SendGrid option, with platform SendGrid permanently excluded from user credentials and delivery.
@@ -56,4 +56,5 @@
 - [x] Repair full-suite regressions for user-owned SendGrid isolation and tenant-owned queued or reminder delivery fixtures, then rerun validation.
 - [x] Add an actual Settings provider-switching behavior test that verifies credential guidance, sender verification, and documentation link changes together.
 - [x] Align provider preset regression assertions with the extracted rendered setup guide component.
+- [x] Complete server TypeScript validation for the current release tree, or document the external SIGTERM blocker with unchanged-server parity evidence.
 - [ ] Run focused tests, full validation, responsive verification, checkpoint release, and exact GitHub main synchronization for the provider-recovery enhancements.
