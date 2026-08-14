@@ -1141,7 +1141,9 @@
     "testEmailHistoryFailed": "Falló",
     "disconnectAcknowledgement": "Entiendo que esto elimina mis credenciales guardadas del servidor de correo.",
     "retryTestEmail": "Reintentar",
-    "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado."
+    "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado.",
+    "connectionTestPassed": "Se verificó la conexión del servidor de correo.",
+    "connectionTestFailed": "El servidor de correo aún necesita atención."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -4581,5 +4583,15 @@
     "action": "Confirmar",
     "saved": "La alerta del renderizador se confirmó hasta que se registre evidencia más reciente.",
     "failed": "No se pudo confirmar la alerta del renderizador."
+  },
+  "automationPaused": {
+    "bannerTitle": "Las solicitudes de reseñas automáticas están en pausa",
+    "bannerDescription": "{{count}} solicitud(es) automática(s) pendiente(s) esperan que vuelva a conectar un servidor de correo verificado.",
+    "viewQueue": "Ver solicitudes pausadas",
+    "queueTitle": "Solicitudes automáticas pausadas",
+    "queueDescription": "Estas solicitudes seguirán pendientes hasta que conecte y seleccione un servidor de correo verificado.",
+    "reviewRequest": "Solicitud de reseña",
+    "followUp": "Seguimiento",
+    "morePending": "Hay {{count}} solicitud(es) más pendiente(s)."
   }
 }

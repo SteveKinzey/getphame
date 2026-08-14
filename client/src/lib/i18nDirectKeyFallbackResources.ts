@@ -516,12 +516,31 @@ const mailManagementFallbacks: Record<string, ResourceRecord> = {
     }
   }
 };
+const pausedAutomationFallbacks: Record<string, ResourceRecord> = {
+  en: { automationPaused: { bannerTitle: "Automated review requests are paused", bannerDescription: "{{count}} pending automated request(s) are waiting for you to reconnect a verified mail server.", viewQueue: "View paused requests", queueTitle: "Paused automated requests", queueDescription: "These requests will stay pending until you connect and select a verified mail server.", reviewRequest: "Review request", followUp: "Follow-up", morePending: "{{count}} more request(s) are pending." } },
+  es: { automationPaused: { bannerTitle: "Las solicitudes de reseñas automáticas están en pausa", bannerDescription: "{{count}} solicitud(es) automática(s) pendiente(s) esperan que vuelva a conectar un servidor de correo verificado.", viewQueue: "Ver solicitudes pausadas", queueTitle: "Solicitudes automáticas pausadas", queueDescription: "Estas solicitudes seguirán pendientes hasta que conecte y seleccione un servidor de correo verificado.", reviewRequest: "Solicitud de reseña", followUp: "Seguimiento", morePending: "Hay {{count}} solicitud(es) más pendiente(s)." } },
+  fr: { automationPaused: { bannerTitle: "Les demandes d’avis automatiques sont en pause", bannerDescription: "{{count}} demande(s) automatique(s) en attente attendent la reconnexion d’un serveur de messagerie vérifié.", viewQueue: "Voir les demandes en pause", queueTitle: "Demandes automatiques en pause", queueDescription: "Ces demandes resteront en attente jusqu’à ce que vous connectiez et sélectionniez un serveur vérifié.", reviewRequest: "Demande d’avis", followUp: "Relance", morePending: "{{count}} demande(s) supplémentaire(s) sont en attente." } },
+  it: { automationPaused: { bannerTitle: "Le richieste di recensione automatiche sono in pausa", bannerDescription: "{{count}} richiesta/e automatica/he in attesa aspettano la riconnessione di un server di posta verificato.", viewQueue: "Visualizza richieste in pausa", queueTitle: "Richieste automatiche in pausa", queueDescription: "Queste richieste resteranno in attesa finché non colleghi e selezioni un server di posta verificato.", reviewRequest: "Richiesta di recensione", followUp: "Promemoria", morePending: "Altre {{count}} richieste sono in attesa." } },
+  th: { automationPaused: { bannerTitle: "คำขอรีวิวอัตโนมัติถูกพักไว้", bannerDescription: "คำขออัตโนมัติที่รอดำเนินการ {{count}} รายการกำลังรอให้คุณเชื่อมต่อเซิร์ฟเวอร์อีเมลที่ยืนยันแล้วอีกครั้ง", viewQueue: "ดูคำขอที่พักไว้", queueTitle: "คำขออัตโนมัติที่พักไว้", queueDescription: "คำขอเหล่านี้จะยังรอดำเนินการจนกว่าคุณจะเชื่อมต่อและเลือกเซิร์ฟเวอร์อีเมลที่ยืนยันแล้ว", reviewRequest: "คำขอรีวิว", followUp: "ติดตามผล", morePending: "มีคำขอเพิ่มเติม {{count}} รายการที่รอดำเนินการ" } },
+  "zh-CN": { automationPaused: { bannerTitle: "自动评价请求已暂停", bannerDescription: "有 {{count}} 个待处理的自动请求，等待您重新连接已验证的邮件服务器。", viewQueue: "查看已暂停请求", queueTitle: "已暂停的自动请求", queueDescription: "这些请求会保持待处理状态，直到您连接并选择已验证的邮件服务器。", reviewRequest: "评价请求", followUp: "跟进", morePending: "另有 {{count}} 个请求待处理。" } },
+  "zh-TW": { automationPaused: { bannerTitle: "自動評論請求已暫停", bannerDescription: "有 {{count}} 個待處理的自動請求，等待您重新連線已驗證的郵件伺服器。", viewQueue: "查看已暫停請求", queueTitle: "已暫停的自動請求", queueDescription: "這些請求會保持待處理狀態，直到您連線並選取已驗證的郵件伺服器。", reviewRequest: "評論請求", followUp: "跟進", morePending: "另有 {{count}} 個請求待處理。" } },
+};
+const dashboardRecheckFallbacks: Record<string, ResourceRecord> = {
+  en: { connectionTestPassed: "Mail server connection verified.", connectionTestFailed: "Mail server still needs attention." },
+  es: { connectionTestPassed: "Se verificó la conexión del servidor de correo.", connectionTestFailed: "El servidor de correo aún necesita atención." },
+  fr: { connectionTestPassed: "La connexion au serveur de messagerie est vérifiée.", connectionTestFailed: "Le serveur de messagerie nécessite encore votre attention." },
+  it: { connectionTestPassed: "La connessione al server di posta è stata verificata.", connectionTestFailed: "Il server di posta richiede ancora attenzione." },
+  th: { connectionTestPassed: "ยืนยันการเชื่อมต่อเซิร์ฟเวอร์อีเมลแล้ว", connectionTestFailed: "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ" },
+  "zh-CN": { connectionTestPassed: "邮件服务器连接已验证。", connectionTestFailed: "邮件服务器仍需处理。" },
+  "zh-TW": { connectionTestPassed: "郵件伺服器連線已驗證。", connectionTestFailed: "郵件伺服器仍需處理。" },
+};
 for (const [locale, values] of Object.entries(mailManagementFallbacks)) {
   const resource = directKeyFallbackResources[locale] ?? {};
   directKeyFallbackResources[locale] = {
     ...resource,
-    smtp: { ...(resource.smtp as ResourceRecord ?? {}), ...(values.smtp as ResourceRecord ?? {}) },
+    smtp: { ...(resource.smtp as ResourceRecord ?? {}), ...(values.smtp as ResourceRecord ?? {}), ...(dashboardRecheckFallbacks[locale] ?? {}) },
     dashboard: { ...(resource.dashboard as ResourceRecord ?? {}), ...(values.dashboard as ResourceRecord ?? {}) },
+    automationPaused: { ...(resource.automationPaused as ResourceRecord ?? {}), ...(pausedAutomationFallbacks[locale]?.automationPaused as ResourceRecord ?? {}) },
   };
 }
 

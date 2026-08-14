@@ -19,10 +19,16 @@ export default function MailServerHealthBadge({
   smtp,
   bulk,
   translate,
+  onTestConnection,
+  isTesting = false,
+  testResult,
 }: {
   smtp: { connected?: boolean; verified?: boolean; lastHealthStatus?: string | null; activeDeliveryChannel?: string | null } | undefined;
   bulk: { connected?: boolean; selectedForOutreach?: boolean } | undefined;
   translate: Translate;
+  onTestConnection?: () => void;
+  isTesting?: boolean;
+  testResult?: { ok: boolean; error?: string | null } | null;
 }) {
   const health = resolveMailServerHealth(smtp, bulk);
   const details: Record<MailServerHealth, { label: string; message: string; tooltip: string; icon: typeof CheckCircle2; tone: string; background: string }> = {
@@ -79,14 +85,14 @@ export default function MailServerHealthBadge({
         <div className="space-y-2">
           <p>{current.tooltip}</p>
           {health === "attention" ? (
-            <a
-              href="/settings?focus=smtp#smtp-settings"
-              data-testid="dashboard-mail-health-troubleshoot"
-              className="inline-flex min-h-8 items-center rounded-md px-2 text-xs font-bold text-white rr-bg-navy"
-            >
-              {translate("dashboard.mailHealth.troubleshoot", { defaultValue: "Troubleshoot" })}
-            </a>
+            <div className="flex flex-wrap gap-2">
+              {onTestConnection ? <button type="button" onClick={onTestConnection} disabled={isTesting} data-testid="dashboard-mail-health-test-connection" className="inline-flex min-h-8 items-center rounded-md px-2 text-xs font-bold text-white rr-bg-navy">{isTesting ? translate("smtp.testingConnection", { defaultValue: "Testing…" }) : translate("smtp.testConnection", { defaultValue: "Test Connection" })}</button> : null}
+              <a href="/settings?focus=smtp#smtp-settings" data-testid="dashboard-mail-health-troubleshoot" className="inline-flex min-h-8 items-center rounded-md border px-2 text-xs font-bold rr-text-navy">
+                {translate("dashboard.mailHealth.troubleshoot", { defaultValue: "Troubleshoot" })}
+              </a>
+            </div>
           ) : null}
+          {health === "attention" && testResult ? <p role="status" className="text-xs">{testResult.ok ? translate("smtp.connectionTestPassed", { defaultValue: "Connection verified." }) : testResult.error || translate("smtp.connectionTestFailed", { defaultValue: "Connection still needs attention." })}</p> : null}
         </div>
       </TooltipContent>
     </Tooltip>

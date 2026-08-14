@@ -20,10 +20,10 @@ import { processDueReminders, sendReminderNow } from "./reminders";
 const profile = {
   userId: 7,
   businessName: "Owner Business",
-  businessTimeZone: "America/Chicago",
-  quietHoursStartMinutes: 20 * 60,
-  quietHoursEndMinutes: 8 * 60,
-  quietHoursShorteningApproved: 0,
+  businessTimeZone: "UTC",
+  quietHoursStartMinutes: 0,
+  quietHoursEndMinutes: 1,
+  quietHoursShorteningApproved: 1,
   followUpEnabled: 1,
   followUpFirstEnabled: 1,
   followUpSecondEnabled: 1,
@@ -54,6 +54,7 @@ function createDb(selectResults: unknown[], updateResults: unknown[] = []) {
 describe("tenant-owned queued and reminder delivery paths", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(Date, "now").mockReturnValue(Date.parse("2026-08-14T12:00:00.000Z"));
     vi.stubEnv("EMAIL_TRACKING_SECRET", "tenant-owned-delivery-test-secret-that-is-long-enough");
     mocks.getDefaultReviewPlatform.mockResolvedValue({ url: "https://reviews.example.test" });
     mocks.sendTenantOwnedReviewEmail.mockRejectedValue(
@@ -62,6 +63,7 @@ describe("tenant-owned queued and reminder delivery paths", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllEnvs();
   });
 

@@ -41,5 +41,16 @@
 - [x] Add a needs-attention troubleshooting link from the root dashboard health-detail tooltip to the SMTP settings card.
 - [x] Add a clear automation-pause warning to the acknowledged SMTP disconnect confirmation flow.
 - [x] Add focused tests and full validation for the retry, troubleshooting, and automation-pause enhancements.
-- [ ] Save a release checkpoint and synchronize the exact retry-and-recovery enhancement tree to GitHub main.
+- [x] Save a release checkpoint and synchronize the exact retry-and-recovery enhancement tree to GitHub main.
 - [x] Correct the retry and disconnect-warning regression test runtime setup, then rerun validation.
+- [x] Update and validate the reusable tenant-owned mail connection skill with paused automation visibility, settings queue, and in-place recheck guidance.
+- [x] Add a tenant-scoped dashboard warning when automated review requests are paused because no usable mail server is selected.
+- [x] Add a bounded Settings queue showing the user’s paused automated review requests without exposing other tenants’ records.
+- [x] Add an in-place saved-server Test Connection action inside the needs-attention health tooltip.
+- [x] Add focused tests and full validation for the provider restoration and paused automation recovery enhancements.
+- [ ] Save a release checkpoint and synchronize the exact provider-restoration and paused-automation enhancement tree to GitHub main.
+- [x] Verify and enforce that the platform SendGrid account is unavailable to all user-owned mail configuration, testing, and outreach delivery paths.
+- [x] Expand the bulk-mail provider selector to support users’ own SendGrid, Mailgun, Mailjet, and other configured providers without exposing platform credentials.
+- [x] Restore the prior full user-owned bulk-provider list, including a user-owned SendGrid option, with platform SendGrid permanently excluded from user credentials and delivery.
+- [x] Reconcile the bulk-provider database enum with the restored user-facing catalog so valid user-owned providers can be saved safely.
+- [x] Repair full-suite regressions for user-owned SendGrid isolation and tenant-owned queued or reminder delivery fixtures, then rerun validation.

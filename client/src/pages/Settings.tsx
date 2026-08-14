@@ -107,6 +107,7 @@ import {
   SmtpCandidateConnectionActions,
 } from "@/components/SmtpConnectionFeedback";
 import SmtpTestEmailHistory from "@/components/SmtpTestEmailHistory";
+import PausedAutomationQueue from "@/components/PausedAutomationQueue";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
 
@@ -1601,6 +1602,7 @@ export default function SettingsPage() {
   // ── SMTP email connection ──────────────────────────────────────────────────
   const { data: smtpStatus, isLoading: smtpLoading } = trpc.smtp.status.useQuery();
   const { data: smtpTestEmailHistory, isLoading: smtpTestEmailHistoryLoading } = trpc.smtp.testEmailHistory.useQuery();
+  const { data: pausedAutomationQueue } = trpc.smtp.pausedAutomationQueue.useQuery();
   const [smtpEmail, setSmtpEmail] = useState("");
   const [smtpPassword, setSmtpPassword] = useState("");
   const [smtpHost, setSmtpHost] = useState("");
@@ -1659,6 +1661,7 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.smtp.status.invalidate();
       utils.smtp.testEmailHistory.invalidate();
+      utils.smtp.pausedAutomationQueue.invalidate();
       setDisconnectConfirmOpen(false);
       setDisconnectAcknowledged(false);
       setSmtpConnectionSavedNotice(false);
@@ -2616,6 +2619,7 @@ export default function SettingsPage() {
                   </p>
                 </div>
               )}
+              <PausedAutomationQueue queue={pausedAutomationQueue} translate={t} />
 
               {/* Email field */}
               <div>

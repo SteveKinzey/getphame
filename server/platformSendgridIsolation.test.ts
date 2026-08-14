@@ -7,10 +7,10 @@ const bulkSenderSource = readFileSync(resolve(process.cwd(), "server/bulkSender.
 const sendgridSource = readFileSync(resolve(process.cwd(), "server/sendgrid.ts"), "utf8");
 
 describe("platform SendGrid isolation", () => {
-  it("keeps the platform relay server-managed while user bulk setup blocks legacy SendGrid", () => {
+  it("keeps the platform relay server-managed while allowing only verified user-owned SendGrid SMTP", () => {
     expect(sendgridSource).toContain("server-managed only");
     expect(sendgridSource).toContain("customer outreach must never receive a SendGrid credential");
-    expect(bulkSenderSource).toContain('if (credentials.provider === "sendgrid")');
+    expect(bulkSenderSource).toContain('credentials.provider === "sendgrid" && !(credentials.smtpHost && credentials.smtpPort && credentials.smtpUsername)');
     expect(bulkSenderSource).toContain("legacyPlatformConnection: true as const");
   });
 
