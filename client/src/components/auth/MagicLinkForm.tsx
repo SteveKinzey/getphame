@@ -28,6 +28,7 @@ interface MagicLinkFormProps {
   lockEmail?: boolean;
   intent?: "enroll_passkey";
   humanVerificationToken?: string | null;
+  returnPath?: string | null;
 }
 
 export default function MagicLinkForm({
@@ -38,6 +39,7 @@ export default function MagicLinkForm({
   lockEmail = false,
   intent,
   humanVerificationToken,
+  returnPath = null,
 }: MagicLinkFormProps) {
   const { t } = useTranslation("translation");
   const [email, setEmail] = useState(() => initialEmail.trim().toLowerCase());
@@ -80,6 +82,7 @@ export default function MagicLinkForm({
         body: JSON.stringify({
           email: candidateEmail,
           origin: window.location.origin,
+          ...(returnPath ? { returnTo: returnPath } : {}),
           ...(intent ? { intent } : {}),
           ...(humanVerificationToken ? { humanVerificationToken } : {}),
         }),
@@ -107,7 +110,7 @@ export default function MagicLinkForm({
         }),
       };
     }
-  }, [humanVerificationToken, intent, t]);
+  }, [humanVerificationToken, intent, returnPath, t]);
 
   const handleSubmit = useCallback(async (event: React.FormEvent) => {
     event.preventDefault();

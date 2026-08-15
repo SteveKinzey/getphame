@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { getSafeAuthReturnPath } from "../../shared/authReturnPath";
 
 export const PASSKEY_ENROLLMENT_INTENT = "enroll_passkey" as const;
 export const PASSKEY_ENROLLMENT_SUCCESS_PATH = "/settings?passkey_enroll=1";
@@ -14,6 +15,7 @@ interface ProviderStatePayload {
   intent?: typeof PASSKEY_ENROLLMENT_INTENT;
   expectedEmailHash?: string;
   humanVerificationAttemptId?: string;
+  returnTo?: string;
 }
 
 export type ProviderOAuthCallbackState =
@@ -41,7 +43,9 @@ export function createProviderOAuthState(input?: {
   intent?: typeof PASSKEY_ENROLLMENT_INTENT;
   expectedEmailHash?: string;
   humanVerificationAttemptId?: string;
+  returnTo?: string;
 }): string {
+  const returnTo = getSafeAuthReturnPath(input?.returnTo);
   const payload: ProviderStatePayload = {
     v: 1,
     csrf: crypto.randomBytes(16).toString("hex"),
@@ -52,6 +56,7 @@ export function createProviderOAuthState(input?: {
     ...(input?.humanVerificationAttemptId
       ? { humanVerificationAttemptId: input.humanVerificationAttemptId }
       : {}),
+    ...(returnTo ? { returnTo } : {}),
   };
   const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
   return `${encoded}.${sign(encoded)}`;
@@ -92,6 +97,11 @@ export function verifyProviderOAuthState(
       payload.humanVerificationAttemptId !== undefined &&
       (typeof payload.humanVerificationAttemptId !== "string" ||
         !/^[0-9a-f-]{36}$/i.test(payload.humanVerificationAttemptId))
+    )
+      return null;
+    if (
+      payload.returnTo !== undefined &&
+      getSafeAuthReturnPath(payload.returnTo) !== payload.returnTo
     )
       return null;
     return payload;
