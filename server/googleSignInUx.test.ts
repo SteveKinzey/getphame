@@ -36,7 +36,9 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain(
       'const destination = await createVerifiedProviderUrl("google")'
     );
-    expect(login).toContain("fetch(`/api/auth/${provider}/start`");
+    expect(login).toContain(
+      "appendAuthReturnPath(`${authPath}/start`, returnPath)"
+    );
     expect(login).not.toContain("human_proof");
     expect(login).toContain("window.location.assign(destination)");
   });

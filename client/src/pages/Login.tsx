@@ -28,6 +28,11 @@ import HumanVerification from "@/components/auth/HumanVerification";
 import { AlertTriangle } from "lucide-react";
 import { isPasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
 import { useUpdateCriticalActivity } from "@/contexts/UpdateSafetyContext";
+import { useAuth } from "@/_core/hooks/useAuth";
+import {
+  appendAuthReturnPath,
+  getSafeAuthReturnPath,
+} from "@shared/authReturnPath";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -149,6 +154,10 @@ const OrDivider = ({ label }: { label: string }) => (
 
 export default function Login() {
   const { t } = useTranslation("translation");
+  const { user, loading: authLoading } = useAuth();
+  const returnPath = getSafeAuthReturnPath(
+    new URLSearchParams(window.location.search).get("returnTo")
+  );
   const googleLoginEnabled = isGoogleSignInHost(window.location.hostname);
   const appleLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
@@ -208,14 +217,25 @@ export default function Login() {
     }
   }, [t]);
 
+  useEffect(() => {
+    if (authLoading || !user) return;
+    window.location.replace(returnPath ?? "/");
+  }, [authLoading, returnPath, user]);
+
   const createVerifiedProviderUrl = useCallback(
     async (provider: "google" | "apple") => {
-      if (!humanVerificationToken) return `/api/auth/${provider}`;
-      const response = await fetch(`/api/auth/${provider}/start`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: humanVerificationToken }),
-      });
+      const authPath = `/api/auth/${provider}`;
+      if (!humanVerificationToken) {
+        return appendAuthReturnPath(authPath, returnPath);
+      }
+      const response = await fetch(
+        appendAuthReturnPath(`${authPath}/start`, returnPath),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: humanVerificationToken }),
+        }
+      );
       const data = (await response.json().catch(() => ({}))) as {
         url?: string;
         error?: string;
@@ -227,7 +247,7 @@ export default function Login() {
       }
       return data.url;
     },
-    [humanVerificationToken]
+    [humanVerificationToken, returnPath]
   );
 
   const handleGoogleSignIn = useCallback(async () => {
@@ -332,6 +352,18 @@ export default function Login() {
             }
           : null;
 
+  if (authLoading || user) {
+    return (
+      <main
+        className="flex min-h-screen items-center justify-center bg-[#0F1B2D] text-white"
+        role="status"
+        aria-live="polite"
+      >
+        {t("login.subtitle", { defaultValue: "Sign in to your account" })}
+      </main>
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // Render
   // ---------------------------------------------------------------------------
@@ -414,6 +446,7 @@ export default function Login() {
               idPrefix="login"
               autoFocus
               humanVerificationToken={humanVerificationToken}
+              returnPath={returnPath}
             />
             {shouldShowSocialSection && (
               <>

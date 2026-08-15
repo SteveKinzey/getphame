@@ -182,10 +182,15 @@ describe("email magic-link verification", () => {
 
     const response = await request(app)
       .get("/api/auth/magic-link/verify")
-      .query({ token: record.token });
+      .query({
+        token: record.token,
+        returnTo: "/admin/email-preview?template=welcome",
+      });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/");
+    expect(response.headers.location).toBe(
+      "/admin/email-preview?template=welcome"
+    );
     expect(mocks.upsertUser).toHaveBeenCalledWith(expect.objectContaining({
       openId: existingAccount.openId,
       email: record.email,
