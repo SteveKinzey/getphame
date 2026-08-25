@@ -745,7 +745,8 @@
     "off": "Off",
     "copy": "Copy",
     "optional": "optional",
-    "undo": "Undo"
+    "undo": "Undo",
+    "emailFormatValid": "Email format looks good."
   },
   "profile": {
     "title": "Business Profile",
@@ -977,7 +978,9 @@
     "retryTestEmail": "Retry",
     "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
     "connectionTestPassed": "Mail server connection verified.",
-    "connectionTestFailed": "Mail server still needs attention."
+    "connectionTestFailed": "Mail server still needs attention.",
+    "credentialReady": "Looks good.",
+    "credentialRequired": "This field is required."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1516,6 +1519,7 @@
     "consentSuffix": ".",
     "signInCancelled": "Sign-in was cancelled. Please try again.",
     "appleSignInFailed": "Apple sign-in could not be completed. Please try again.",
+    "appleSignInLoading": "Opening secure Apple sign-in…",
     "invalidMagicLink": "Invalid or already-used sign-in link. Please request a new one.",
     "magicLinkExpired": "That sign-in link has expired. Please request a new one.",
     "verificationFailed": "Verification failed. Please request a new link.",
@@ -2008,6 +2012,18 @@
     "header": {
       "label": "Dashboard",
       "title": "Your Results"
+    },
+    "shareProfile": {
+      "button": "Share Profile",
+      "copied": "Copied",
+      "copySuccess": "Profile link copied.",
+      "copyError": "Could not copy the profile link. Please try again.",
+      "unavailable": "Add your profile link in Settings to share it."
+    },
+    "loading": {
+      "ariaLabel": "Loading your dashboard",
+      "title": "Loading your dashboard…",
+      "description": "Getting your latest review-request activity ready."
     },
     "stats": {
       "thisMonth": "This Month",

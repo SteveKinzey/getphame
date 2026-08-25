@@ -60,7 +60,7 @@ function Textarea({
       onCompositionEnd={handleCompositionEnd}
       onKeyDown={handleKeyDown}
       {...props}
-    />
+     name="rr-components-ui-textarea-field-53" />
   );
 }
 

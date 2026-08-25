@@ -111,6 +111,7 @@ import PausedAutomationQueue from "@/components/PausedAutomationQueue";
 import { BulkProviderDiscoveryControls } from "@/components/BulkProviderDiscoveryControls";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
+const EMAIL_ADDRESS_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function timeToMinutes(value: string) {
   const [hours, minutes] = value.split(":").map(Number);
@@ -246,7 +247,7 @@ function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: ()
         className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
         autoFocus
-      />
+       name="rr-pages-settings-value-241" />
       <button
         onClick={() => setEditing(false)}
         className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy-muted rr-bg-surface-darker"
@@ -302,7 +303,7 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
         className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
         autoFocus
-      />
+       name="rr-pages-settings-value-297"  autoComplete="email"/>
       <button
         onClick={() => setEditing(false)}
         className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy-muted rr-bg-surface-darker"
@@ -384,7 +385,7 @@ function SendFeedbackSection() {
         maxLength={1000}
         className="w-full rounded-xl px-3 py-2.5 text-xs resize-none outline-none bg-white rr-text-navy" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
         aria-label="Feedback message"
-      />
+       name="rr-pages-settings-message-379" />
       <div className="flex items-center justify-between gap-2">
         <span className="text-sm font-bold" style={{ color: "oklch(0.25 0.04 260)" }}>
           {message.length}/1000
@@ -462,7 +463,7 @@ function DeleteAccountSection() {
           checked={confirmed}
           onChange={(e) => setConfirmed(e.target.checked)}
           className="mt-0.5"
-        />
+         name="rr-pages-settings-confirmed-460" />
         <span className="text-sm font-bold" style={{ color: "oklch(0.15 0.05 260)" }}>
           I understand this is permanent and cannot be reversed.
         </span>
@@ -687,6 +688,8 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
   const [fromName, setFromName] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
+  const [usernameTouched, setUsernameTouched] = useState(false);
+  const [secretTouched, setSecretTouched] = useState(false);
   const [connectionSavedNotice, setConnectionSavedNotice] = useState(false);
   const preset = getBulkSenderPreset(provider);
   const localizedPreset = provider === "mailjet" ? {
@@ -757,6 +760,13 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
   const usernameIsValid = preset.usernameMode !== "user" || smtpUsername.trim().length > 0;
   const customHostIsValid = provider !== "custom_smtp" || smtpHost.trim().length > 0;
   const fromEmailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail.trim());
+  const usernameValidation =
+    preset.usernameMode === "user" && usernameTouched
+      ? smtpUsername.trim().length > 0 ? "valid" : "invalid"
+      : "idle";
+  const secretValidation = secretTouched
+    ? secret.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
   const canConnect = Boolean(secret.trim() && fromEmailIsValid && usernameIsValid && customHostIsValid);
 
   const submitConnection = () => {
@@ -918,7 +928,8 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
           {preset.usernameMode === "user" ? (
             <div>
               <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{localizedPreset.usernameLabel}</label>
-              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={localizedPreset.usernamePlaceholder} autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => { setSmtpUsername(event.target.value); setUsernameTouched(true); }} onBlur={() => setUsernameTouched(true)} placeholder={localizedPreset.usernamePlaceholder} autoComplete="username" autoCapitalize="none" spellCheck={false} aria-invalid={usernameValidation === "invalid"} aria-describedby={usernameValidation === "idle" ? undefined : "bulk-sender-username-feedback"} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: usernameValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : usernameValidation === "valid" ? "2px solid oklch(0.56 0.14 145)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              {usernameValidation !== "idle" && <p id="bulk-sender-username-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: usernameValidation === "valid" ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(usernameValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: usernameValidation === "valid" ? "Looks good." : "This field is required." })}</p>}
             </div>
           ) : (
             <div className="rounded-xl px-3 py-2.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
@@ -939,21 +950,26 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
                 id="bulk-sender-secret"
                 type={showSecret ? "text" : "password"}
                 value={secret}
-                onChange={(event) => setSecret(event.target.value)}
+                onChange={(event) => { setSecret(event.target.value); setSecretTouched(true); }}
+                onBlur={() => setSecretTouched(true)}
                 placeholder={localizedPreset.secretPlaceholder}
                 autoComplete="new-password"
+                aria-invalid={secretValidation === "invalid"}
+                aria-describedby={secretValidation === "idle" ? undefined : "bulk-sender-secret-feedback"}
                 className="min-h-11 w-full px-3 py-2 pr-11 rounded-xl outline-none"
-                style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                style={{ border: secretValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : secretValidation === "valid" ? "2px solid oklch(0.56 0.14 145)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
               />
               <button
                 type="button"
                 onClick={() => setShowSecret((value) => !value)}
                 aria-label={showSecret ? t("settings.bulkSender.hideSecret", { defaultValue: "Hide secret" }) : t("settings.bulkSender.showSecret", { defaultValue: "Show secret" })}
+                aria-pressed={showSecret}
                 className="absolute right-1 top-1/2 flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg rr-text-navy-muted"
               >
                 {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {secretValidation !== "idle" && <p id="bulk-sender-secret-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: secretValidation === "valid" ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(secretValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: secretValidation === "valid" ? "Secret entered. Test before saving." : "This field is required." })}</p>}
             <p className="mt-1 text-xs rr-text-navy-muted">{localizedPreset.secretHelp}</p>
           </div>
 
@@ -968,7 +984,7 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
               autoCapitalize="none"
               className="min-h-11 w-full px-3 py-2 rounded-xl outline-none"
               style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-            />
+             autoComplete="email"/>
             <p className="text-xs mt-1 rr-text-navy-muted">
               {provider === "mailjet"
                 ? t("settings.bulkSender.providers.mailjet.fromEmailHelp", { defaultValue: "This sender address or domain must already be validated in Mailjet." })
@@ -1148,7 +1164,7 @@ function AccountProfileCard() {
             accept="image/jpeg,image/png,image/webp"
             className="sr-only"
             onChange={(event) => chooseAvatar(event.target.files?.[0])}
-          />
+           name="rr-pages-settings-field-1145" />
           <p className="text-center text-[11px] font-semibold rr-text-navy-muted">
             {t("settings.accountProfile.avatarHelp", { defaultValue: "JPG, PNG, or WebP · 3 MB max" })}
           </p>
@@ -1173,7 +1189,7 @@ function AccountProfileCard() {
             <label htmlFor="account-email" className="mb-1.5 block text-xs font-bold rr-text-navy-mid">
               {t("settings.accountProfile.email", { defaultValue: "Email address" })}
             </label>
-            <input id="account-email" value={account?.email ?? ""} readOnly className="w-full cursor-not-allowed rounded-xl px-4 py-3 text-sm font-semibold opacity-70 rr-bg-surface-darker rr-text-navy" />
+            <input id="account-email" name="account-email" type="email" autoComplete="email" value={account?.email ?? ""} readOnly className="w-full cursor-not-allowed rounded-xl px-4 py-3 text-sm font-semibold opacity-70 rr-bg-surface-darker rr-text-navy" />
             <p className="mt-1 text-[11px] rr-text-navy-muted">
               {t("settings.accountProfile.emailHelp", { defaultValue: "Your sign-in email is managed by your authentication provider." })}
             </p>
@@ -1408,6 +1424,8 @@ export default function SettingsPage() {
   const [wooUrl, setWooUrl] = useState("");
   const [wooKey, setWooKey] = useState("");
   const [wooSecret, setWooSecret] = useState("");
+  const [wooSecretTouched, setWooSecretTouched] = useState(false);
+  const [showWooSecret, setShowWooSecret] = useState(false);
   const [wooFormOpen, setWooFormOpen] = useState(false);
 
   const saveWooCreds = trpc.woo.saveCredentials.useMutation({
@@ -1576,7 +1594,7 @@ export default function SettingsPage() {
     apple: "Apple Maps",
     other: "Other",
   };
-  // PLATFORM_ICONS kept for <select> option text only (SVG can't go inside <option>)
+  // PLATFORM_ICONS kept for <select name="rr-pages-settings-field-1579"> option text only (SVG can't go inside <option>)
   const PLATFORM_ICONS: Record<string, string> = {
     google: "Google",
     yelp: "Yelp",
@@ -1601,7 +1619,9 @@ export default function SettingsPage() {
   const { data: smtpTestEmailHistory, isLoading: smtpTestEmailHistoryLoading } = trpc.smtp.testEmailHistory.useQuery();
   const { data: pausedAutomationQueue } = trpc.smtp.pausedAutomationQueue.useQuery();
   const [smtpEmail, setSmtpEmail] = useState("");
+  const [smtpEmailTouched, setSmtpEmailTouched] = useState(false);
   const [smtpPassword, setSmtpPassword] = useState("");
+  const [smtpPasswordTouched, setSmtpPasswordTouched] = useState(false);
   const [smtpHost, setSmtpHost] = useState("");
   const [smtpPort, setSmtpPort] = useState(587);
   const [smtpSecure, setSmtpSecure] = useState(0);
@@ -1617,6 +1637,16 @@ export default function SettingsPage() {
   const [testEmailSentNotice, setTestEmailSentNotice] = useState(false);
   const [disconnectConfirmOpen, setDisconnectConfirmOpen] = useState(false);
   const [disconnectAcknowledged, setDisconnectAcknowledged] = useState(false);
+  const normalizedSmtpEmail = smtpEmail.trim().toLowerCase();
+  const smtpEmailValidation =
+    smtpEmailTouched && normalizedSmtpEmail.length > 0
+      ? EMAIL_ADDRESS_PATTERN.test(normalizedSmtpEmail)
+        ? "valid"
+        : "invalid"
+      : "idle";
+  const smtpPasswordValidation = smtpPasswordTouched
+    ? smtpPassword.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
 
   useEffect(() => {
     const focusSmtp = window.location.hash === "#smtp-settings" || new URLSearchParams(window.location.search).get("focus") === "smtp";
@@ -1885,7 +1915,7 @@ export default function SettingsPage() {
                     fontFamily: "'Nunito', sans-serif",
                     fontSize: "16px",
                   }}
-                />
+                 name="rr-pages-settings-business-name-1877" />
               </div>
 
               <div>
@@ -1904,7 +1934,7 @@ export default function SettingsPage() {
                     fontFamily: "'Nunito', sans-serif",
                     fontSize: "16px",
                   }}
-                />
+                 name="rr-pages-settings-review-link-1896" />
                 <p className="text-xs mt-1 rr-text-navy-muted">
                   {t('profile.reviewLinkDescription')}
                 </p>
@@ -1928,7 +1958,7 @@ export default function SettingsPage() {
                       onChange={(e) => setFromName(e.target.value)}
                       placeholder={businessName || "e.g. Maria's Hair Salon"}
                       className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-from-name-1925" />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.fromNameDescription')}
                     </p>
@@ -1943,7 +1973,7 @@ export default function SettingsPage() {
                       onChange={(e) => setReplyTo(e.target.value)}
                       placeholder="e.g. steve@sk-america.com"
                       className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-reply-to-1940"  autoComplete="email"/>
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.replyToEmailDescription')}
                     </p>
@@ -1958,7 +1988,7 @@ export default function SettingsPage() {
                       onChange={(e) => setConsentLabelName(e.target.value)}
                       placeholder={businessName || "e.g. Maria's Hair Salon"}
                       className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-consent-label-name-1955" />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.consentLabelNameDescription', { defaultValue: 'The business name shown in the consent checkbox label on your forms. Defaults to your business name above.' })}
                     </p>
@@ -2343,7 +2373,7 @@ export default function SettingsPage() {
                       value={newPlatformType}
                       onChange={(e) => setNewPlatformType(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    >
+                     name="rr-pages-settings-new-platform-type-2342">
                       {Object.entries(PLATFORM_LABELS).map(([val, label]) => (
                         <option key={val} value={val}>{label}</option>
                       ))}
@@ -2375,7 +2405,7 @@ export default function SettingsPage() {
                       placeholder={PLATFORM_PLACEHOLDERS[newPlatformType] ?? "https://..."}
                       className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                       style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-new-platform-url-2371" />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {newPlatformType === "yelp"
                         ? t("reviewPlatforms.yelpSearchHelp", { defaultValue: "Enter a plain-text search instruction (for example: Search for [Your Business] on Yelp in [City, State]). This text appears in the email body — no link is created, keeping you Yelp-compliant." })
@@ -2394,7 +2424,7 @@ export default function SettingsPage() {
                         placeholder={t("reviewPlatforms.customLabelExample", { defaultValue: "e.g. Houzz, Angi, Thumbtack" })}
                         className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                      />
+                       name="rr-pages-settings-new-platform-label-2390" />
                     </div>
                   )}
                   <div className="flex gap-2">
@@ -2544,7 +2574,7 @@ export default function SettingsPage() {
                 </label>
                 <p className="mt-1 text-xs rr-text-navy-muted">{t("smtp.testEmailHint", { defaultValue: "Use an address you control. This uses your saved mail server and does not save a new recipient." })}</p>
                 <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                  <input id="smtp-test-email-recipient" type="email" value={testEmailRecipient} onChange={(event) => { setTestEmailRecipient(event.target.value); setTestEmailSentNotice(false); }} placeholder={smtpStatus.email ?? "you@example.com"} className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm" style={{ borderColor: "oklch(0.86 0.02 260)" }} />
+                  <input id="smtp-test-email-recipient" type="email" value={testEmailRecipient} onChange={(event) => { setTestEmailRecipient(event.target.value); setTestEmailSentNotice(false); }} placeholder={smtpStatus.email ?? "you@example.com"} className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm" style={{ borderColor: "oklch(0.86 0.02 260)" }}  autoComplete="email"/>
                   <button type="button" onClick={() => {
                     if (!testEmailRecipient.trim()) { toast.error(t("smtp.testEmailRecipientRequired", { defaultValue: "Enter the address that should receive the test email." })); return; }
                     sendSmtpTestEmail.mutate({ to: testEmailRecipient.trim() });
@@ -2620,15 +2650,39 @@ export default function SettingsPage() {
 
               {/* Email field */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.emailAddressLabel", { defaultValue: "Your Email Address *" })}</label>
+                <label htmlFor="smtp-email" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.emailAddressLabel", { defaultValue: "Your Email Address *" })}</label>
                 <input
+                  id="smtp-email"
                   type="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   value={smtpEmail}
-                  onChange={(e) => setSmtpEmail(e.target.value)}
+                  onChange={(e) => {
+                    setSmtpEmail(e.target.value);
+                    setSmtpEmailTouched(true);
+                  }}
+                  onBlur={() => setSmtpEmailTouched(true)}
                   placeholder="you@yourbusiness.com"
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                  aria-invalid={smtpEmailValidation === "invalid"}
+                  aria-describedby={smtpEmailValidation === "idle" ? undefined : "smtp-email-validation"}
+                  style={{ border: smtpEmailValidation === "valid" ? "2px solid oklch(0.70 0.15 160)" : smtpEmailValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                 name="rr-pages-settings-smtp-email-2624" />
+                {smtpEmailValidation !== "idle" && (
+                  <p
+                    id="smtp-email-validation"
+                    data-testid="smtp-email-validation"
+                    role="status"
+                    aria-live="polite"
+                    className={`mt-1.5 flex items-center gap-1.5 text-xs font-semibold ${smtpEmailValidation === "valid" ? "text-emerald-700" : "text-red-700"}`}
+                  >
+                    {smtpEmailValidation === "valid" ? <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> : <span aria-hidden="true">⚠</span>}
+                    {smtpEmailValidation === "valid"
+                      ? t("common.emailFormatValid", { defaultValue: "Email format looks good." })
+                      : t("login.invalidEmail", { defaultValue: "Enter a valid email address." })}
+                  </p>
+                )}
               </div>
 
               {/* Password field — smart provider-aware */}
@@ -2748,24 +2802,32 @@ export default function SettingsPage() {
                     )}
 
                     <div className="relative">
-                      <input
-                        type={showSmtpPassword ? 'text' : 'password'}
-                        value={smtpPassword}
-                        onChange={(e) => setSmtpPassword(e.target.value)}
-                        placeholder={passwordPlaceholder}
-                        className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
-                        style={{ border: '2px solid oklch(0.90 0.02 260)', fontSize: '16px' }}
-                      />
+	                      <input
+	                        id="smtp-password"
+	                        type={showSmtpPassword ? 'text' : 'password'}
+	                        autoComplete="current-password"
+	                        value={smtpPassword}
+	                        onChange={(e) => { setSmtpPassword(e.target.value); setSmtpPasswordTouched(true); }}
+	                        onBlur={() => setSmtpPasswordTouched(true)}
+	                        placeholder={passwordPlaceholder}
+	                        aria-invalid={smtpPasswordValidation === "invalid"}
+	                        aria-describedby={smtpPasswordValidation === "idle" ? undefined : "smtp-password-feedback"}
+	                        className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
+	                        style={{ border: smtpPasswordValidation === "invalid" ? '2px solid oklch(0.62 0.20 27)' : smtpPasswordValidation === "valid" ? '2px solid oklch(0.56 0.14 145)' : '2px solid oklch(0.90 0.02 260)', fontSize: '16px' }}
+                       name="rr-pages-settings-smtp-password-2751" />
                       <button
-                        type="button"
-                        onClick={() => setShowSmtpPassword((v) => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold rr-text-navy-mid"
+	                        type="button"
+	                        onClick={() => setShowSmtpPassword((v) => !v)}
+	                        aria-label={showSmtpPassword ? t("common.hide", { defaultValue: "Hide password" }) : t("common.show", { defaultValue: "Show password" })}
+	                        aria-pressed={showSmtpPassword}
+	                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold rr-text-navy-mid"
                       >
                         {showSmtpPassword ? t("common.hide", { defaultValue: "Hide" }) : t("common.show", { defaultValue: "Show" })}
-                      </button>
-                    </div>
+	                      </button>
+	                    </div>
+	                    {smtpPasswordValidation !== "idle" && <p id="smtp-password-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: smtpPasswordValidation === "valid" ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(smtpPasswordValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: smtpPasswordValidation === "valid" ? "Password entered. Test before saving." : "Password is required." })}</p>}
 
-                    {/* Inline hint for known providers that need app passwords */}
+	                    {/* Inline hint for known providers that need app passwords */}
                     {(isGmail || isGoogleWorkspace) && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
                         {t("smtp.inlineHints.google", { defaultValue: "Not your regular account password — use an App Password. Tap How to get it above." })}
@@ -2816,15 +2878,17 @@ export default function SettingsPage() {
 
               {/* Display name */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.displayNameLabel", { defaultValue: "Display Name (optional)" })}</label>
+                <label htmlFor="smtp-from-name" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.displayNameLabel", { defaultValue: "Display Name (optional)" })}</label>
                 <input
+                  id="smtp-from-name"
                   type="text"
+                  autoComplete="name"
                   value={smtpFromName}
                   onChange={(e) => setSmtpFromName(e.target.value)}
                   placeholder={t("smtp.displayNamePlaceholder", { defaultValue: "e.g. Steve at Acme Plumbing" })}
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-smtp-from-name-2820" />
                 <p className="text-xs mt-1 rr-text-navy-muted">{t("smtp.displayNameHelp", { defaultValue: "Shown as the sender name in your customer's inbox." })}</p>
               </div>
 
@@ -3112,7 +3176,7 @@ export default function SettingsPage() {
                       placeholder="smtp.yourdomain.com"
                       className="w-full px-3 py-2 rounded-xl text-sm outline-none"
                       style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-smtp-host-3108" />
                   </div>
                   <div className="flex gap-2">
                     <div className="flex-1">
@@ -3123,7 +3187,7 @@ export default function SettingsPage() {
                         onChange={(e) => setSmtpPort(Number(e.target.value))}
                         className="w-full px-3 py-2 rounded-xl text-sm outline-none"
                         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                      />
+                       name="rr-pages-settings-smtp-port-3120" />
                     </div>
                     <div className="flex-1">
                       <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Security</label>
@@ -3131,7 +3195,7 @@ export default function SettingsPage() {
                         value={smtpSecure}
                         onChange={(e) => setSmtpSecure(Number(e.target.value))}
                         className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                      >
+                       name="rr-pages-settings-smtp-secure-3130">
                         <option value={0}>STARTTLS (587)</option>
                         <option value={1}>SSL/TLS (465)</option>
                       </select>
@@ -3323,7 +3387,7 @@ export default function SettingsPage() {
                   placeholder="https://yourstore.com"
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-woo-url-3319" />
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Key *</label>
@@ -3334,18 +3398,30 @@ export default function SettingsPage() {
                   placeholder="ck_xxxxxxxxxxxxxxxx"
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-woo-key-3330" />
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Secret *</label>
-                <input
-                  type="password"
-                  value={wooSecret}
-                  onChange={(e) => setWooSecret(e.target.value)}
-                  placeholder="cs_xxxxxxxxxxxxxxxx"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                <div className="relative">
+                  <input
+                    id="woo-consumer-secret"
+                    type={showWooSecret ? "text" : "password"}
+                    value={wooSecret}
+                    onChange={(e) => { setWooSecret(e.target.value); setWooSecretTouched(true); }}
+                    onBlur={() => setWooSecretTouched(true)}
+                    placeholder="cs_xxxxxxxxxxxxxxxx"
+                    autoComplete="new-password"
+                    aria-invalid={wooSecretTouched && !wooSecret.trim()}
+                    aria-describedby={wooSecretTouched ? "woo-consumer-secret-feedback" : undefined}
+                    className="w-full px-3 py-3 pr-12 rounded-xl text-sm outline-none"
+                    style={{ border: wooSecretTouched && !wooSecret.trim() ? "2px solid oklch(0.62 0.20 27)" : wooSecretTouched ? "2px solid oklch(0.56 0.14 145)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    name="rr-pages-settings-woo-secret-3341"
+                  />
+                  <button type="button" onClick={() => setShowWooSecret((value) => !value)} aria-label={showWooSecret ? "Hide consumer secret" : "Show consumer secret"} aria-pressed={showWooSecret} className="absolute right-1 top-1/2 flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg rr-text-navy-muted">
+                    {showWooSecret ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                {wooSecretTouched && <p id="woo-consumer-secret-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: wooSecret.trim() ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(wooSecret.trim() ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: wooSecret.trim() ? "Secret entered." : "Consumer secret is required." })}</p>}
                 <p className="text-xs mt-1 rr-text-navy-muted">
                   WooCommerce → Settings → Advanced → REST API → Add key (Read permission)
                 </p>
@@ -3468,21 +3544,21 @@ export default function SettingsPage() {
                 onChange={(e) => setNewWebhookLabel(e.target.value)}
                 placeholder="Label (e.g. Zapier CRM)"
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
-              />
+               name="rr-pages-settings-new-webhook-label-3465" />
               <input
                 type="url"
                 value={newWebhookUrl}
                 onChange={(e) => setNewWebhookUrl(e.target.value)}
                 placeholder="https://hooks.zapier.com/..."
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
-              />
+               name="rr-pages-settings-new-webhook-url-3472" />
               <input
                 type="text"
                 value={newWebhookSecret}
                 onChange={(e) => setNewWebhookSecret(e.target.value)}
                 placeholder="Signing secret (optional — HMAC-SHA256)"
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
-              />
+               name="rr-pages-settings-new-webhook-secret-3479" />
               <div className="flex gap-2 justify-end">
                 <button onClick={() => setShowAddWebhook(false)} className="px-3 py-1.5 rounded-xl text-sm font-black rr-text-navy" style={{ background: "oklch(0.90 0.01 260)" }}>Cancel</button>
                 <button

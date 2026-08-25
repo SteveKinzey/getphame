@@ -18,6 +18,7 @@ import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
 import SettingsPage, { SettingsBulkSenderTestFixture } from "./pages/Settings";
+import MagicLinkForm from "./components/auth/MagicLinkForm";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
   useOnboardingGuide,
@@ -311,15 +312,21 @@ function AppShell() {
     dismissOnboardingForSession();
   };
 
-  if (loading) {
+  const path = window.location.pathname;
+  // The static preview contains sample content only. In development, render it
+  // immediately rather than waiting for an unavailable or stale local session.
+  // Production remains read-only for guests and keeps all mutable actions behind
+  // server-side administrator authorization.
+  const isDevelopmentPreviewBypass =
+    import.meta.env.DEV && path === "/admin/email-preview";
+
+  if (loading && !isDevelopmentPreviewBypass) {
     return (
       <div className="flex min-h-screen items-center justify-center rr-bg-navy">
         <Loader2 className="animate-spin text-white" size={32} />
       </div>
     );
   }
-
-  const path = window.location.pathname;
 
   // ── Public pages — always accessible, wrapped in PublicLayout ───────────
   if (path === "/landing")
@@ -657,6 +664,73 @@ function ProviderDiscoveryTestHarness() {
   );
 }
 
+function FormAutofillTestHarness() {
+  const [smtpEmail, setSmtpEmail] = useState("");
+  const [smtpTouched, setSmtpTouched] = useState(false);
+  const [smtpUsername, setSmtpUsername] = useState("");
+  const [smtpUsernameTouched, setSmtpUsernameTouched] = useState(false);
+  const [smtpPassword, setSmtpPassword] = useState("");
+  const [smtpPasswordTouched, setSmtpPasswordTouched] = useState(false);
+  const [showSmtpPassword, setShowSmtpPassword] = useState(false);
+  const normalizedSmtpEmail = smtpEmail.trim().toLowerCase();
+  const smtpState =
+    smtpTouched && normalizedSmtpEmail.length > 0
+      ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedSmtpEmail)
+        ? "valid"
+        : "invalid"
+      : "idle";
+  const smtpUsernameState = smtpUsernameTouched
+    ? smtpUsername.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
+  const smtpPasswordState = smtpPasswordTouched
+    ? smtpPassword.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
+
+  return (
+    <main className="min-h-screen bg-[#0F1B2D] px-6 py-10 text-white" data-testid="form-autofill-test-harness">
+      <div className="mx-auto max-w-xl space-y-8">
+      <section>
+        <h1 className="mb-3 text-lg font-bold">Login email</h1>
+        <MagicLinkForm idPrefix="autofill-login" />
+      </section>
+      <section aria-labelledby="autofill-smtp-title" className="rounded-2xl bg-white p-6 text-[#0F1B2D]">
+        <h2 id="autofill-smtp-title" className="mb-3 text-lg font-bold">SMTP identity</h2>
+        <label htmlFor="autofill-smtp-email" className="mb-1 block text-sm font-semibold">SMTP email</label>
+        <input
+          id="autofill-smtp-email"
+          name="autofill-smtp-email"
+          type="email"
+          autoComplete="email"
+          value={smtpEmail}
+          onChange={(event) => {
+            setSmtpEmail(event.target.value);
+            setSmtpTouched(true);
+          }}
+          onBlur={() => setSmtpTouched(true)}
+          aria-invalid={smtpState === "invalid"}
+          aria-describedby={smtpState === "idle" ? undefined : "autofill-smtp-feedback"}
+          className="w-full rounded-md border px-3 py-2"
+        />
+        {smtpState !== "idle" && (
+          <p id="autofill-smtp-feedback" data-testid="autofill-smtp-feedback" role="status" aria-live="polite" className="mt-2 text-sm">
+            {smtpState === "valid" ? "Email format looks good." : "Enter a valid email address."}
+          </p>
+        )}
+        <label htmlFor="autofill-smtp-username" className="mb-1 mt-4 block text-sm font-semibold">SMTP username</label>
+        <input id="autofill-smtp-username" name="autofill-smtp-username" autoComplete="username" value={smtpUsername} onChange={(event) => { setSmtpUsername(event.target.value); setSmtpUsernameTouched(true); }} onBlur={() => setSmtpUsernameTouched(true)} aria-invalid={smtpUsernameState === "invalid"} aria-describedby={smtpUsernameState === "idle" ? undefined : "autofill-smtp-username-feedback"} className="w-full rounded-md border px-3 py-2" />
+        {smtpUsernameState !== "idle" && <p id="autofill-smtp-username-feedback" data-testid="autofill-smtp-username-feedback" role="status" aria-live="polite" className="mt-2 text-sm">{smtpUsernameState === "valid" ? "Looks good." : "This field is required."}</p>}
+        <label htmlFor="autofill-smtp-password" className="mb-1 mt-4 block text-sm font-semibold">SMTP password</label>
+        <div className="relative">
+          <input id="autofill-smtp-password" name="autofill-smtp-password" type={showSmtpPassword ? "text" : "password"} autoComplete="current-password" value={smtpPassword} onChange={(event) => { setSmtpPassword(event.target.value); setSmtpPasswordTouched(true); }} onBlur={() => setSmtpPasswordTouched(true)} aria-invalid={smtpPasswordState === "invalid"} aria-describedby={smtpPasswordState === "idle" ? undefined : "autofill-smtp-password-feedback"} className="w-full rounded-md border px-3 py-2 pr-20" />
+          <button type="button" data-testid="autofill-smtp-password-toggle" onClick={() => setShowSmtpPassword((value) => !value)} aria-label={showSmtpPassword ? "Hide password" : "Show password"} aria-pressed={showSmtpPassword} className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-semibold">{showSmtpPassword ? "Hide" : "Show"}</button>
+        </div>
+        {smtpPasswordState !== "idle" && <p id="autofill-smtp-password-feedback" data-testid="autofill-smtp-password-feedback" role="status" aria-live="polite" className="mt-2 text-sm">{smtpPasswordState === "valid" ? "Password entered. Test before saving." : "Password is required."}</p>}
+      </section>
+      </div>
+    </main>
+  );
+}
+
 function App() {
   if (
     import.meta.env.DEV &&
@@ -687,6 +761,19 @@ function App() {
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
           <ProviderDiscoveryTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/form-autofill") {
+    return (
+      <ThemeProvider defaultTheme="dark" switchable={true}>
+        <TooltipProvider>
+          <UpdateSafetyProvider>
+            <Toaster position="top-center" richColors />
+            <FormAutofillTestHarness />
+          </UpdateSafetyProvider>
         </TooltipProvider>
       </ThemeProvider>
     );

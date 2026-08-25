@@ -663,6 +663,18 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "title": "Dashboard",
+    "shareProfile": {
+      "button": "Condividi profilo",
+      "copied": "Copiato",
+      "copySuccess": "Link del profilo copiato.",
+      "copyError": "Impossibile copiare il link del profilo. Riprova.",
+      "unavailable": "Aggiungi il link del tuo profilo nelle Impostazioni per condividerlo."
+    },
+    "loading": {
+      "ariaLabel": "Caricamento della dashboard",
+      "title": "Caricamento della dashboard…",
+      "description": "Stiamo preparando le ultime attività delle richieste di recensione."
+    },
     "totalSent": "Totale Inviati",
     "openRate": "Tasso di Apertura",
     "clickRate": "Tasso di Clic",
@@ -2038,7 +2050,8 @@
     "off": "Disattivo",
     "on": "Attivo",
     "optional": "facoltativo",
-    "undo": "Annulla"
+    "undo": "Annulla",
+    "emailFormatValid": "Il formato dell'email è corretto."
   },
   "profile": {
     "title": "Profilo Aziendale",
@@ -2203,7 +2216,9 @@
     "retryTestEmail": "Riprova",
     "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato.",
     "connectionTestPassed": "La connessione al server di posta è stata verificata.",
-    "connectionTestFailed": "Il server di posta richiede ancora attenzione."
+    "connectionTestFailed": "Il server di posta richiede ancora attenzione.",
+    "credentialReady": "Tutto è corretto.",
+    "credentialRequired": "Questo campo è obbligatorio."
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",
@@ -3020,6 +3035,7 @@
     "consentSuffix": ".",
     "signInCancelled": "L’accesso è stato annullato. Riprova.",
     "appleSignInFailed": "Non è stato possibile completare l’accesso con Apple. Riprova.",
+    "appleSignInLoading": "Apertura dell’accesso sicuro con Apple…",
     "invalidMagicLink": "Il link di accesso non è valido o è già stato usato. Richiedine uno nuovo.",
     "magicLinkExpired": "Il link di accesso è scaduto. Richiedine uno nuovo.",
     "verificationFailed": "La verifica non è riuscita. Richiedi un nuovo link.",

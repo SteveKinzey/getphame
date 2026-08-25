@@ -9,3 +9,40 @@
 - [x] Complete and verify the interrupted return-path and authenticated-entry implementation without weakening redirect safety.
 - [x] Run focused Google OAuth, magic-link, and authenticated-entry regression tests for the repaired path.
 - [x] Run collected positive and negative redirect-safety regressions for same-origin and rejected `returnTo` destinations.
+- [x] Reproduce and diagnose the current email-preview login error and confirm the active production authorization behavior.
+- [x] Add a clear, accessible loading animation and actionable error state to the administrator sign-in form.
+- [x] Allow development-only email-preview access without a login while retaining production admin authorization and route safety.
+- [x] Add regression coverage for login feedback, development bypass activation, and production bypass rejection.
+- [x] Run focused and full authentication tests, client type checks, production build, dependency audit, and responsive route verification; server type checks were terminated by sandbox resource limits after the production build passed.
+- [x] Verify the targeted email-preview authentication changes were absent from selected GitHub `main`, then synchronize them through quality-gated PR #148.
+- [x] Capture protected-main merge, required-check, and exact-tree-parity evidence for the approved targeted email-preview changes.
+- [x] Validate the three targeted email-preview and administrator sign-in behaviors with focused regression tests.
+- [x] Complete the required release synchronization for the approved targeted fixes after PR #148 quality checks passed and merged normally.
+- [x] Create and validate a reusable skill for secure email-preview authentication and release workflows.
+- [x] Confirm the administrator-protected Send Test Email action already provides recipient input, pending feedback, and success/error delivery confirmation.
+- [x] Add an administrator dashboard shortcut to the email preview page.
+- [x] Confirm in-page email-template switching already uses local selection state without requiring a URL change.
+- [x] Add regression coverage and run focused/full validation for the new skill-related UI and email-preview changes.
+- [x] Release and synchronize the validated email-preview usability improvements without merging unrelated work.
+- [x] Identify and resolve the GitHub branch-protection status preventing PR #148 from merging: the Copilot fallback-localization review thread required resolution.
+- [x] Correct the release path without administrative bypasses by adding six non-English fallback translations, resolving the addressed thread, and retaining normal auto-merge.
+- [x] Verify the normal merge, required checks, and remote-main parity for PR #148 before closing the release workflow.
+- [x] Audit user-editable form controls for missing `id` and `name` attributes that can impair browser autofill.
+- [x] Add unique, stable identifiers to every affected form field without changing current validation or label bindings.
+- [x] Add automated coverage that prevents form fields without `id` or `name` from being introduced.
+- [x] Run focused and full accessibility/form regression validation, production build, dependency audit, and representative visual verification; release synchronization remains pending.
+- [x] Save and synchronize the validated form-field identifier remediation through quality-gated PR #150, then verify the merged protected-main tree matches the release branch.
+- [x] Inspect identity, email, and SMTP fields to define safe autocomplete tokens and validation-feedback behavior.
+- [x] Create and validate a reusable form-autofill quality skill with the verified audit and release workflow.
+- [x] Standardize autocomplete tokens for all applicable identity and email fields and verify them with a deterministic native-email coverage test.
+- [x] Add accessible real-time visual validation feedback to the updated identity and email fields.
+- [x] Add browser-level autofill smoke tests for login and SMTP setup forms across desktop and mobile Chromium.
+- [x] Run focused and full validation, client type checks, production build, dependency audit, desktop/mobile smoke tests, and visual review.
+- [x] Save and synchronize the validated form-autofill quality improvements through quality-gated PR #151, then verify the merged protected-main tree matches the release branch.
+- [x] Inspect username/password forms and current login and SMTP submission-success behavior.
+- [x] Update and validate the reusable form-autofill quality skill with password feedback, visibility, and success-feedback guidance.
+- [x] Add interaction-based validation feedback for relevant username and password fields, including Bulk Sender, SMTP, WooCommerce, and onboarding credentials.
+- [x] Add accessible show/hide toggles to SMTP secrets and other applicable password inputs, including Bulk Sender, WooCommerce, and onboarding SMTP credentials.
+- [x] Add immediate, accessible success feedback after magic-link and SMTP setup submissions.
+- [x] Add focused and browser-level regression coverage and complete client type, full-suite, build, audit, and visual validation; protected-main release remains pending.
+- [ ] Save and synchronize the expanded credential-feedback improvements through a quality-gated protected-main pull request.

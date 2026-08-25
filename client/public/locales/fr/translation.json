@@ -821,7 +821,8 @@
     "off": "Désactivé",
     "on": "Activé",
     "optional": "facultatif",
-    "undo": "Annuler"
+    "undo": "Annuler",
+    "emailFormatValid": "Le format de l’e-mail est correct."
   },
   "profile": {
     "title": "Profil d'entreprise",
@@ -1143,7 +1144,9 @@
     "retryTestEmail": "Réessayer",
     "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
     "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
-    "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
+    "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention.",
+    "credentialReady": "Tout est correct.",
+    "credentialRequired": "Ce champ est obligatoire."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -2177,6 +2180,18 @@
       "label": "Tableau de bord",
       "title": "Vos résultats"
     },
+    "shareProfile": {
+      "button": "Partager le profil",
+      "copied": "Copié",
+      "copySuccess": "Lien du profil copié.",
+      "copyError": "Impossible de copier le lien du profil. Réessayez.",
+      "unavailable": "Ajoutez le lien de votre profil dans les paramètres pour le partager."
+    },
+    "loading": {
+      "ariaLabel": "Chargement de votre tableau de bord",
+      "title": "Chargement de votre tableau de bord…",
+      "description": "Préparation de vos dernières activités de demandes d’avis."
+    },
     "stats": {
       "thisMonth": "Ce mois-ci",
       "allTime": "Total",
@@ -2900,6 +2915,7 @@
     "consentSuffix": ".",
     "signInCancelled": "La connexion a été annulée. Réessayez.",
     "appleSignInFailed": "La connexion avec Apple n’a pas pu être finalisée. Réessayez.",
+    "appleSignInLoading": "Ouverture de la connexion sécurisée avec Apple…",
     "invalidMagicLink": "Le lien de connexion est invalide ou a déjà été utilisé. Demandez-en un nouveau.",
     "magicLinkExpired": "Ce lien de connexion a expiré. Demandez-en un nouveau.",
     "verificationFailed": "La vérification a échoué. Demandez un nouveau lien.",

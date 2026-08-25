@@ -3,7 +3,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw } from "lucide-react";
+import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw, Share2 } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
@@ -26,6 +26,27 @@ function formatDate(date: Date): string {
   }
 }
 
+async function copyTextToClipboard(value: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+
+  if (!copied) {
+    throw new Error("Clipboard copy failed");
+  }
+}
+
 export default function DashboardPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
@@ -38,6 +59,44 @@ export default function DashboardPage() {
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: bulkSenderStatus } = trpc.bulkSender.status.useQuery();
   const utils = trpc.useUtils();
+  const [profileLinkCopied, setProfileLinkCopied] = useState(false);
+
+  const showDashboardApiError = () => {
+    toast.error(
+      t("apiRecovery.unavailableTitle", {
+        defaultValue: "We’re reconnecting Get Phame.",
+      }),
+      {
+        description: t("apiRecovery.unavailableDescription", {
+          defaultValue:
+            "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
+        }),
+        duration: 8_000,
+      }
+    );
+  };
+
+  const handleShareProfile = async () => {
+    const profileLink = profile?.reviewLink;
+    if (!profileLink) return;
+
+    try {
+      await copyTextToClipboard(profileLink);
+      setProfileLinkCopied(true);
+      toast.success(
+        t("dashboard.shareProfile.copySuccess", {
+          defaultValue: "Profile link copied.",
+        })
+      );
+      window.setTimeout(() => setProfileLinkCopied(false), 3_000);
+    } catch {
+      toast.error(
+        t("dashboard.shareProfile.copyError", {
+          defaultValue: "Could not copy the profile link. Please try again.",
+        })
+      );
+    }
+  };
 
   // Undo toast state for single-row mark in the activity feed
   const [feedUndoId, setFeedUndoId] = useState<number | null>(null);
@@ -58,12 +117,16 @@ export default function DashboardPage() {
         startFeedUndoTimer(() => setFeedUndoId(null));
       }
     },
+    onError: showDashboardApiError,
   });
 
   // Undo mutation for single-row feed mark — separate instance
   const feedUndoMutation = trpc.requests.markResponded.useMutation({
     onSuccess: () => { utils.requests.list.invalidate(); setFeedUndoId(null); },
-    onError: () => setFeedUndoId(null),
+    onError: () => {
+      setFeedUndoId(null);
+      showDashboardApiError();
+    },
   });
 
   // Bulk selection state
@@ -105,7 +168,7 @@ export default function DashboardPage() {
       }
       setSelected(new Set());
     },
-    onError: (err) => toast.error(err.message),
+    onError: showDashboardApiError,
   });
 
   // Bulk mark-as-responded mutation with optimistic update
@@ -120,7 +183,7 @@ export default function DashboardPage() {
     },
     onError: (_err, _vars, ctx) => {
       if (ctx?.prev) utils.requests.list.setData(undefined, ctx.prev);
-      toast.error("Failed to update requests.");
+      showDashboardApiError();
     },
     onSuccess: (result) => {
       utils.requests.list.invalidate();
@@ -212,6 +275,37 @@ export default function DashboardPage() {
     return { last7, prior7, delta };
   }, [allRequests]);
 
+  if (isLoading || listLoading) {
+    return (
+      <main
+        data-testid="dashboard-loading"
+        role="status"
+        aria-live="polite"
+        aria-label={t("dashboard.loading.ariaLabel", {
+          defaultValue: "Loading your dashboard",
+        })}
+        className="flex min-h-screen items-center justify-center px-4"
+        style={{ background: "var(--background)" }}
+      >
+        <div className="flex max-w-sm flex-col items-center gap-3 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl rr-bg-navy">
+            <Loader2 className="animate-spin rr-text-gold" aria-hidden="true" />
+          </div>
+          <div>
+            <p className="text-base font-black rr-text-navy">
+              {t("dashboard.loading.title", { defaultValue: "Loading your dashboard…" })}
+            </p>
+            <p className="mt-1 text-sm rr-text-navy-muted">
+              {t("dashboard.loading.description", {
+                defaultValue: "Getting your latest review-request activity ready.",
+              })}
+            </p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <div className="min-h-screen pb-40" style={{ background: "var(--background)" }}>
       {/* Navy Header */}
@@ -225,7 +319,41 @@ export default function DashboardPage() {
               {t('dashboard.header.label')}
             </span>
           </div>
-          <LanguageFlyout />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              data-testid="dashboard-share-profile"
+              onClick={() => void handleShareProfile()}
+              disabled={!profile?.reviewLink}
+              aria-label={
+                profile?.reviewLink
+                  ? t("dashboard.shareProfile.button", { defaultValue: "Share Profile" })
+                  : t("dashboard.shareProfile.unavailable", {
+                      defaultValue: "Add your profile link in Settings to share it.",
+                    })
+              }
+              title={
+                profile?.reviewLink
+                  ? t("dashboard.shareProfile.button", { defaultValue: "Share Profile" })
+                  : t("dashboard.shareProfile.unavailable", {
+                      defaultValue: "Add your profile link in Settings to share it.",
+                    })
+              }
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-white/20 px-2.5 text-xs font-bold text-white transition-all hover:bg-white/10 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              {profileLinkCopied ? (
+                <CheckCircle2 size={14} className="rr-text-gold" aria-hidden="true" />
+              ) : (
+                <Share2 size={14} className="rr-text-gold" aria-hidden="true" />
+              )}
+              <span className="hidden sm:inline">
+                {profileLinkCopied
+                  ? t("dashboard.shareProfile.copied", { defaultValue: "Copied" })
+                  : t("dashboard.shareProfile.button", { defaultValue: "Share Profile" })}
+              </span>
+            </button>
+            <LanguageFlyout />
+          </div>
         </div>
         <h1
           className="text-2xl mb-6 text-white rr-fw-black"

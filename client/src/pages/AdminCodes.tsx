@@ -214,7 +214,7 @@ export default function AdminCodesPage() {
                 onChange={(e) => setCustomCode(e.target.value.toUpperCase())}
                 placeholder="e.g. LAUNCH2026"
                 className="w-full px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-              />
+               name="rr-pages-admin-codes-custom-code-211" />
             </div>
 
             {/* Internal note */}
@@ -228,7 +228,7 @@ export default function AdminCodesPage() {
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="e.g. Beta cohort — Jan 2026"
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-              />
+               name="rr-pages-admin-codes-note-225" />
             </div>
 
             <div className="flex gap-3">
@@ -244,7 +244,7 @@ export default function AdminCodesPage() {
                   onChange={(e) => setMaxUses(e.target.value)}
                   placeholder="∞"
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-                />
+                 name="rr-pages-admin-codes-max-uses-240" />
               </div>
 
               {/* Expiry days */}
@@ -259,7 +259,7 @@ export default function AdminCodesPage() {
                   onChange={(e) => setExpiryDays(e.target.value)}
                   placeholder="never"
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-                />
+                 name="rr-pages-admin-codes-expiry-days-255" />
               </div>
             </div>
 
@@ -274,7 +274,7 @@ export default function AdminCodesPage() {
                   className="w-full rounded-xl px-4 py-3 text-sm font-bold outline-none rr-bg-navy text-white"
                   style={{ border: "1px solid rgba(255,255,255,0.15)" }}
                   aria-label={t("accessCode.grantUnitLabel", { defaultValue: "Grant duration unit" })}
-                >
+                 name="rr-pages-admin-codes-grant-duration-unit-271">
                   <option value="day">{t("accessCode.units.day", { defaultValue: "Days" })}</option>
                   <option value="month">{t("accessCode.units.month", { defaultValue: "Months" })}</option>
                   <option value="lifetime">{t("accessCode.units.lifetime", { defaultValue: "Lifetime" })}</option>
@@ -289,7 +289,7 @@ export default function AdminCodesPage() {
                     className="w-full rounded-xl px-4 py-3 text-sm outline-none rr-bg-navy text-white"
                     style={{ border: "1px solid rgba(255,255,255,0.15)" }}
                     aria-label={t("accessCode.grantValueLabel", { defaultValue: "Grant duration value" })}
-                  />
+                   name="rr-pages-admin-codes-grant-duration-value-283" />
                 )}
               </div>
               <p className="mt-1.5 text-xs font-semibold text-white/55">

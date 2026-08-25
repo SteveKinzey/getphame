@@ -1,5 +1,5 @@
 /**
- * HapticInput — drop-in replacement for <input> and <textarea> that fires
+ * HapticInput — drop-in replacement for <input name="rr-components-haptic-input-field-2"> and <textarea name="rr-components-haptic-input-field-2"> that fires
  * a light keyPress haptic on every keystroke, respecting the user's
  * hapticEnabled preference from useHaptics().
  *
@@ -56,7 +56,7 @@ const HapticInput = React.forwardRef<
         {...rest}
         ref={ref as React.Ref<HTMLTextAreaElement>}
         onKeyDown={handleKeyDown as React.KeyboardEventHandler<HTMLTextAreaElement>}
-      />
+       name="rr-components-haptic-input-field-55" />
     );
   }
 
@@ -66,7 +66,7 @@ const HapticInput = React.forwardRef<
       {...rest}
       ref={ref as React.Ref<HTMLInputElement>}
       onKeyDown={handleKeyDown as React.KeyboardEventHandler<HTMLInputElement>}
-    />
+     name="rr-components-haptic-input-field-65" />
   );
 });
 

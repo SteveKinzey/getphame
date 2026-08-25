@@ -46,6 +46,7 @@
       "termsPrefix": "By continuing, you agree to our",
       "checkInbox": "Check your inbox",
       "continueWithApple": "Continue with Apple",
+      "appleSignInLoading": "Opening secure Apple sign-in…",
       "continueWithGoogle": "Continue with Google",
       "emailLabel": "Email address",
       "emailRequired": "Email is required.",
@@ -655,7 +656,9 @@
       "retryTestEmail": "Retry",
       "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
       "connectionTestPassed": "Mail server connection verified.",
-      "connectionTestFailed": "Mail server still needs attention."
+      "connectionTestFailed": "Mail server still needs attention.",
+      "credentialReady": "Looks good.",
+      "credentialRequired": "This field is required."
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -803,7 +806,8 @@
       "off": "Off",
       "on": "On",
       "show": "Show",
-      "undo": "Undo"
+      "undo": "Undo",
+      "emailFormatValid": "Email format looks good."
     },
     "onboardingGuide": {
       "allSet": {
@@ -1125,6 +1129,18 @@
       "header": {
         "label": "Dashboard",
         "title": "Your Results"
+      },
+      "shareProfile": {
+        "button": "Share Profile",
+        "copied": "Copied",
+        "copySuccess": "Profile link copied.",
+        "copyError": "Could not copy the profile link. Please try again.",
+        "unavailable": "Add your profile link in Settings to share it."
+      },
+      "loading": {
+        "ariaLabel": "Loading your dashboard",
+        "title": "Loading your dashboard…",
+        "description": "Getting your latest review-request activity ready."
       },
       "stats": {
         "thisMonth": "This Month",
@@ -1871,6 +1887,7 @@
       "termsPrefix": "Al continuar, aceptas nuestros",
       "checkInbox": "Revisa tu bandeja de entrada",
       "continueWithApple": "Continuar con Apple",
+      "appleSignInLoading": "Abriendo el inicio de sesión seguro de Apple…",
       "continueWithGoogle": "Continuar con Google",
       "emailLabel": "Dirección de correo electrónico",
       "emailRequired": "Se requiere correo electrónico.",
@@ -2495,7 +2512,9 @@
       "retryTestEmail": "Reintentar",
       "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado.",
       "connectionTestPassed": "Se verificó la conexión del servidor de correo.",
-      "connectionTestFailed": "El servidor de correo aún necesita atención."
+      "connectionTestFailed": "El servidor de correo aún necesita atención.",
+      "credentialReady": "Todo está correcto.",
+      "credentialRequired": "Este campo es obligatorio."
     },
     "comparisonTable": {
       "feature": "Función",
@@ -2646,7 +2665,8 @@
       "off": "Desactivado",
       "on": "Activado",
       "show": "Mostrar",
-      "undo": "Deshacer"
+      "undo": "Deshacer",
+      "emailFormatValid": "El formato del correo electrónico es correcto."
     },
     "onboardingGuide": {
       "allSet": {
@@ -2979,6 +2999,18 @@
       "header": {
         "label": "Panel de control",
         "title": "Tus resultados"
+      },
+      "shareProfile": {
+        "button": "Compartir perfil",
+        "copied": "Copiado",
+        "copySuccess": "Enlace del perfil copiado.",
+        "copyError": "No se pudo copiar el enlace del perfil. Inténtalo de nuevo.",
+        "unavailable": "Añade el enlace de tu perfil en Configuración para compartirlo."
+      },
+      "loading": {
+        "ariaLabel": "Cargando tu panel",
+        "title": "Cargando tu panel…",
+        "description": "Estamos preparando tu actividad más reciente de solicitudes de reseña."
       },
       "stats": {
         "thisMonth": "Este mes",
@@ -3892,6 +3924,7 @@
       "termsPrefix": "En continuant, vous acceptez nos",
       "checkInbox": "Vérifiez votre boîte de réception",
       "continueWithApple": "Continuer avec Apple",
+      "appleSignInLoading": "Ouverture de la connexion sécurisée avec Apple…",
       "continueWithGoogle": "Continuer avec Google",
       "emailLabel": "Adresse e‑mail",
       "emailRequired": "L'e‑mail est requis.",
@@ -4518,7 +4551,9 @@
       "retryTestEmail": "Réessayer",
       "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
       "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
-      "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
+      "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention.",
+      "credentialReady": "Tout est correct.",
+      "credentialRequired": "Ce champ est obligatoire."
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -4672,7 +4707,8 @@
       "off": "Désactivé",
       "on": "Activé",
       "show": "Afficher",
-      "undo": "Annuler"
+      "undo": "Annuler",
+      "emailFormatValid": "Le format de l’e-mail est correct."
     },
     "onboardingGuide": {
       "allSet": {
@@ -5005,6 +5041,18 @@
       "header": {
         "label": "Tableau de bord",
         "title": "Vos résultats"
+      },
+      "shareProfile": {
+        "button": "Partager le profil",
+        "copied": "Copié",
+        "copySuccess": "Lien du profil copié.",
+        "copyError": "Impossible de copier le lien du profil. Réessayez.",
+        "unavailable": "Ajoutez le lien de votre profil dans les paramètres pour le partager."
+      },
+      "loading": {
+        "ariaLabel": "Chargement de votre tableau de bord",
+        "title": "Chargement de votre tableau de bord…",
+        "description": "Préparation de vos dernières activités de demandes d’avis."
       },
       "stats": {
         "thisMonth": "Ce mois-ci",
@@ -5929,6 +5977,7 @@
       "termsPrefix": "Continuando, accetti i nostri",
       "checkInbox": "Controlla la tua casella di posta",
       "continueWithApple": "Continua con Apple",
+      "appleSignInLoading": "Apertura dell’accesso sicuro con Apple…",
       "continueWithGoogle": "Continua con Google",
       "emailLabel": "Indirizzo email",
       "emailRequired": "Email obbligatoria.",
@@ -6538,7 +6587,9 @@
       "retryTestEmail": "Riprova",
       "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato.",
       "connectionTestPassed": "La connessione al server di posta è stata verificata.",
-      "connectionTestFailed": "Il server di posta richiede ancora attenzione."
+      "connectionTestFailed": "Il server di posta richiede ancora attenzione.",
+      "credentialReady": "Tutto è corretto.",
+      "credentialRequired": "Questo campo è obbligatorio."
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -6693,7 +6744,8 @@
       "off": "Disattivato",
       "on": "Attivato",
       "show": "Mostra",
-      "undo": "Annulla"
+      "undo": "Annulla",
+      "emailFormatValid": "Il formato dell'email è corretto."
     },
     "onboardingGuide": {
       "allSet": {
@@ -7018,6 +7070,18 @@
       "header": {
         "label": "Dashboard",
         "title": "Risultati"
+      },
+      "shareProfile": {
+        "button": "Condividi profilo",
+        "copied": "Copiato",
+        "copySuccess": "Link del profilo copiato.",
+        "copyError": "Impossibile copiare il link del profilo. Riprova.",
+        "unavailable": "Aggiungi il link del tuo profilo nelle Impostazioni per condividerlo."
+      },
+      "loading": {
+        "ariaLabel": "Caricamento della dashboard",
+        "title": "Caricamento della dashboard…",
+        "description": "Stiamo preparando le ultime attività delle richieste di recensione."
       },
       "stats": {
         "thisMonth": "Questo mese",
@@ -7818,6 +7882,7 @@
       "termsPrefix": "เมื่อดำเนินการต่อ คุณยอมรับ",
       "checkInbox": "ตรวจสอบอีเมลของคุณ",
       "continueWithApple": "ดำเนินการต่อด้วย Apple",
+      "appleSignInLoading": "กำลังเปิดการลงชื่อเข้าใช้ Apple ที่ปลอดภัย…",
       "continueWithGoogle": "ดำเนินการต่อด้วย Google",
       "emailLabel": "ที่อยู่อีเมล",
       "emailRequired": "จำเป็นต้องใส่อีเมล.",
@@ -8427,7 +8492,9 @@
       "retryTestEmail": "ลองอีกครั้ง",
       "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่",
       "connectionTestPassed": "ยืนยันการเชื่อมต่อเซิร์ฟเวอร์อีเมลแล้ว",
-      "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ"
+      "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ",
+      "credentialReady": "ข้อมูลถูกต้อง",
+      "credentialRequired": "ต้องกรอกข้อมูลในช่องนี้"
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -8575,7 +8642,8 @@
       "off": "ปิด",
       "on": "เปิด",
       "show": "แสดง",
-      "undo": "เลิกทำ"
+      "undo": "เลิกทำ",
+      "emailFormatValid": "รูปแบบอีเมลถูกต้อง"
     },
     "onboardingGuide": {
       "allSet": {
@@ -8898,6 +8966,18 @@
       "header": {
         "label": "แดชบอร์ด",
         "title": "ผลลัพธ์ของคุณ"
+      },
+      "shareProfile": {
+        "button": "แชร์โปรไฟล์",
+        "copied": "คัดลอกแล้ว",
+        "copySuccess": "คัดลอกลิงก์โปรไฟล์แล้ว",
+        "copyError": "ไม่สามารถคัดลอกลิงก์โปรไฟล์ได้ โปรดลองอีกครั้ง",
+        "unavailable": "เพิ่มลิงก์โปรไฟล์ของคุณในการตั้งค่าเพื่อแชร์"
+      },
+      "loading": {
+        "ariaLabel": "กำลังโหลดแดชบอร์ดของคุณ",
+        "title": "กำลังโหลดแดชบอร์ดของคุณ…",
+        "description": "กำลังเตรียมกิจกรรมคำขอรีวิวล่าสุดของคุณ"
       },
       "stats": {
         "thisMonth": "เดือนนี้",
@@ -9696,6 +9776,7 @@
       "termsPrefix": "继续即表示您同意我们的",
       "checkInbox": "请检查您的收件箱",
       "continueWithApple": "使用 Apple 继续",
+      "appleSignInLoading": "正在打开安全的 Apple 登录…",
       "continueWithGoogle": "使用 Google 继续",
       "emailLabel": "电子邮件地址",
       "emailRequired": "必须填写电子邮件。",
@@ -10305,7 +10386,9 @@
       "retryTestEmail": "重试",
       "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。",
       "connectionTestPassed": "邮件服务器连接已验证。",
-      "connectionTestFailed": "邮件服务器仍需处理。"
+      "connectionTestFailed": "邮件服务器仍需处理。",
+      "credentialReady": "内容正确。",
+      "credentialRequired": "此字段为必填项。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -10453,7 +10536,8 @@
       "off": "关闭",
       "on": "开启",
       "show": "显示",
-      "undo": "撤销"
+      "undo": "撤销",
+      "emailFormatValid": "电子邮件格式正确。"
     },
     "onboardingGuide": {
       "allSet": {
@@ -10775,6 +10859,18 @@
       "header": {
         "label": "仪表板",
         "title": "您的结果"
+      },
+      "shareProfile": {
+        "button": "分享资料",
+        "copied": "已复制",
+        "copySuccess": "资料链接已复制。",
+        "copyError": "无法复制资料链接。请重试。",
+        "unavailable": "请先在“设置”中添加您的资料链接以进行分享。"
+      },
+      "loading": {
+        "ariaLabel": "正在加载您的仪表盘",
+        "title": "正在加载您的仪表盘…",
+        "description": "正在准备您最新的评价请求活动。"
       },
       "stats": {
         "thisMonth": "本月",
@@ -11566,6 +11662,7 @@
       "termsPrefix": "繼續表示您同意我們的",
       "checkInbox": "請檢查您的收件匣",
       "continueWithApple": "以 Apple 繼續",
+      "appleSignInLoading": "正在開啟安全的 Apple 登入…",
       "continueWithGoogle": "以 Google 繼續",
       "emailLabel": "電子郵件地址",
       "emailRequired": "電子郵件為必填。",
@@ -12175,7 +12272,9 @@
       "retryTestEmail": "重試",
       "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
       "connectionTestPassed": "郵件伺服器連線已驗證。",
-      "connectionTestFailed": "郵件伺服器仍需處理。"
+      "connectionTestFailed": "郵件伺服器仍需處理。",
+      "credentialReady": "內容正確。",
+      "credentialRequired": "此欄位為必填。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -12323,7 +12422,8 @@
       "off": "關閉",
       "on": "開啟",
       "show": "顯示",
-      "undo": "復原"
+      "undo": "復原",
+      "emailFormatValid": "電子郵件格式正確。"
     },
     "onboardingGuide": {
       "allSet": {
@@ -12645,6 +12745,18 @@
       "header": {
         "label": "儀表板",
         "title": "您的成效"
+      },
+      "shareProfile": {
+        "button": "分享個人資料",
+        "copied": "已複製",
+        "copySuccess": "個人資料連結已複製。",
+        "copyError": "無法複製個人資料連結。請再試一次。",
+        "unavailable": "請在「設定」中新增您的個人資料連結以分享。"
+      },
+      "loading": {
+        "ariaLabel": "正在載入您的儀表板",
+        "title": "正在載入您的儀表板…",
+        "description": "正在準備您最新的評論請求活動。"
       },
       "stats": {
         "thisMonth": "本月",

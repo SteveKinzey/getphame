@@ -6266,7 +6266,8 @@ export const appRouter = router({
         const sharedHtml = buildAdminEmailPreviewTemplate({
           template: input.template,
           recipientName: (ctx.user.name ?? "").split(" ")[0] || "Alex",
-          magicLinkUrl: "https://getphame.app/login?from=test-email-preview",
+          magicLinkUrl:
+            "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview",
         });
         await sendSystemEmail({
           to: input.to,

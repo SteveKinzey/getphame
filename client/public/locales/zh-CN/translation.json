@@ -245,7 +245,8 @@
     "off": "关",
     "on": "开",
     "optional": "可选",
-    "undo": "撤销"
+    "undo": "撤销",
+    "emailFormatValid": "电子邮件格式正确。"
   },
   "seo": {
     "title": "Get Phame — 通过邮箱发送个性化评论请求",
@@ -934,7 +935,9 @@
     "retryTestEmail": "重试",
     "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。",
     "connectionTestPassed": "邮件服务器连接已验证。",
-    "connectionTestFailed": "邮件服务器仍需处理。"
+    "connectionTestFailed": "邮件服务器仍需处理。",
+    "credentialReady": "内容正确。",
+    "credentialRequired": "此字段为必填项。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1678,6 +1681,18 @@
       "label": "仪表盘",
       "title": "您的结果"
     },
+    "shareProfile": {
+      "button": "分享资料",
+      "copied": "已复制",
+      "copySuccess": "资料链接已复制。",
+      "copyError": "无法复制资料链接。请重试。",
+      "unavailable": "请先在“设置”中添加您的资料链接以进行分享。"
+    },
+    "loading": {
+      "ariaLabel": "正在加载您的仪表盘",
+      "title": "正在加载您的仪表盘…",
+      "description": "正在准备您最新的评价请求活动。"
+    },
     "stats": {
       "thisMonth": "本月",
       "allTime": "所有时间",
@@ -2284,6 +2299,7 @@
     "consentSuffix": "。",
     "signInCancelled": "登录已取消。请重试。",
     "appleSignInFailed": "无法完成 Apple 登录。请重试。",
+    "appleSignInLoading": "正在打开安全的 Apple 登录…",
     "invalidMagicLink": "登录链接无效或已被使用。请重新申请链接。",
     "magicLinkExpired": "登录链接已失效。请重新申请链接。",
     "verificationFailed": "验证失败。请申请新的链接。",
