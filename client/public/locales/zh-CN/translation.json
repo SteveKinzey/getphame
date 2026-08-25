@@ -2296,6 +2296,7 @@
     "consentSuffix": "。",
     "signInCancelled": "登录已取消。请重试。",
     "appleSignInFailed": "无法完成 Apple 登录。请重试。",
+    "appleSignInLoading": "正在打开安全的 Apple 登录…",
     "invalidMagicLink": "登录链接无效或已被使用。请重新申请链接。",
     "magicLinkExpired": "登录链接已失效。请重新申请链接。",
     "verificationFailed": "验证失败。请申请新的链接。",

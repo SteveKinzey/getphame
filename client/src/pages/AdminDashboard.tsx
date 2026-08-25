@@ -2368,6 +2368,16 @@ export default function AdminDashboard() {
                 <span className="rr-text-gold">→</span>
               </button>
               <button
+                onClick={() => navigate("/admin/email-preview")}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
+              >
+                <span className="flex items-center gap-2">
+                  <Mail size={16} className="rr-text-gold" />
+                  Email Template Preview
+                </span>
+                <span className="rr-text-gold">→</span>
+              </button>
+              <button
                 onClick={() => navigate("/admin/smtp-stats")}
                 className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
               >

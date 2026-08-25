@@ -1516,6 +1516,7 @@
     "consentSuffix": ".",
     "signInCancelled": "Sign-in was cancelled. Please try again.",
     "appleSignInFailed": "Apple sign-in could not be completed. Please try again.",
+    "appleSignInLoading": "Opening secure Apple sign-in…",
     "invalidMagicLink": "Invalid or already-used sign-in link. Please request a new one.",
     "magicLinkExpired": "That sign-in link has expired. Please request a new one.",
     "verificationFailed": "Verification failed. Please request a new link.",
