@@ -1772,6 +1772,20 @@
       "bulkActiveTooltip": "已选择经过验证的租户批量邮件服务商。请在设置中管理或替换。",
       "details": "邮件服务器健康详情",
       "troubleshoot": "排查问题"
+    },
+    "profileEditor": {
+      "button": "编辑资料",
+      "title": "编辑商家资料",
+      "description": "更新用于评价请求和公开资料的商家信息。",
+      "businessName": "商家名称",
+      "reviewLink": "评价链接",
+      "fromName": "发件人名称",
+      "replyTo": "回复邮箱",
+      "consentLabelName": "同意说明中的商家名称",
+      "save": "保存资料",
+      "saved": "资料已更新。",
+      "businessNameRequired": "请输入商家名称。",
+      "reviewLinkRequired": "请输入评价链接。"
     }
   },
   "pricing": {

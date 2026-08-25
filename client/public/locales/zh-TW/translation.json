@@ -1848,6 +1848,20 @@
       "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
       "details": "郵件伺服器健康詳細資料",
       "troubleshoot": "疑難排解"
+    },
+    "profileEditor": {
+      "button": "編輯資料",
+      "title": "編輯商家資料",
+      "description": "更新用於評價請求和公開資料的商家資訊。",
+      "businessName": "商家名稱",
+      "reviewLink": "評價連結",
+      "fromName": "寄件者名稱",
+      "replyTo": "回覆電子郵件",
+      "consentLabelName": "同意說明中的商家名稱",
+      "save": "儲存資料",
+      "saved": "資料已更新。",
+      "businessNameRequired": "請輸入商家名稱。",
+      "reviewLinkRequired": "請輸入評價連結。"
     }
   },
   "pricing": {

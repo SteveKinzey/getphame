@@ -713,6 +713,29 @@
   --input:       oklch(0.28 0.04 260);
 }
 
+/* Dashboard dark mode keeps existing feature cards readable without creating a
+ * second theme system. The root `.dark` class is owned by ThemeProvider. */
+.dark .dashboard-content .bg-white {
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+.dark .dashboard-content :is(.rr-text-navy, .rr-text-navy-mid) {
+  color: var(--card-foreground);
+}
+.dark .dashboard-content :is(.rr-text-navy-muted, .rr-text-navy-faint) {
+  color: var(--muted-foreground);
+}
+.dark .dashboard-content :is(.bg-gray-50, .bg-slate-50, .rr-bg-surface, .rr-bg-white-card) {
+  background-color: var(--muted);
+}
+.dark .dashboard-content :is(.border-gray-200, .border-gray-100, .border-slate-200, .border-slate-300) {
+  border-color: var(--border);
+}
+.dark .dashboard-content input.bg-white {
+  background-color: var(--card) !important;
+  color: var(--card-foreground);
+}
+
 /* ── Micro-animation keyframes ──────────────────────────────────────────────── */
 
 @keyframes fadeUp {

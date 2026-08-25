@@ -1208,6 +1208,20 @@
         "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
         "details": "Mail server health details",
         "troubleshoot": "Troubleshoot"
+      },
+      "profileEditor": {
+        "button": "Edit profile",
+        "title": "Edit business profile",
+        "description": "Update the business details used in your review requests and public profile.",
+        "businessName": "Business name",
+        "reviewLink": "Review link",
+        "fromName": "Sender name",
+        "replyTo": "Reply-to email",
+        "consentLabelName": "Consent-label business name",
+        "save": "Save profile",
+        "saved": "Profile updated.",
+        "businessNameRequired": "Enter your business name.",
+        "reviewLinkRequired": "Enter your review link."
       }
     },
     "reminderRow": {
@@ -3078,6 +3092,20 @@
         "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
         "details": "Detalles de salud del servidor de correo",
         "troubleshoot": "Solucionar problemas"
+      },
+      "profileEditor": {
+        "button": "Editar perfil",
+        "title": "Editar perfil del negocio",
+        "description": "Actualiza los datos del negocio usados en tus solicitudes de reseñas y perfil público.",
+        "businessName": "Nombre del negocio",
+        "reviewLink": "Enlace de reseñas",
+        "fromName": "Nombre del remitente",
+        "replyTo": "Correo de respuesta",
+        "consentLabelName": "Nombre del negocio para el consentimiento",
+        "save": "Guardar perfil",
+        "saved": "Perfil actualizado.",
+        "businessNameRequired": "Introduce el nombre de tu negocio.",
+        "reviewLinkRequired": "Introduce tu enlace de reseñas."
       }
     },
     "reminderRow": {
@@ -5124,6 +5152,20 @@
         "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
         "details": "Détails de l’état du serveur de messagerie",
         "troubleshoot": "Dépanner"
+      },
+      "profileEditor": {
+        "button": "Modifier le profil",
+        "title": "Modifier le profil de l’entreprise",
+        "description": "Mettez à jour les informations utilisées dans vos demandes d’avis et votre profil public.",
+        "businessName": "Nom de l’entreprise",
+        "reviewLink": "Lien d’avis",
+        "fromName": "Nom de l’expéditeur",
+        "replyTo": "E-mail de réponse",
+        "consentLabelName": "Nom de l’entreprise pour le consentement",
+        "save": "Enregistrer le profil",
+        "saved": "Profil mis à jour.",
+        "businessNameRequired": "Saisissez le nom de votre entreprise.",
+        "reviewLinkRequired": "Saisissez votre lien d’avis."
       }
     },
     "reminderRow": {
@@ -7149,6 +7191,20 @@
         "bulkActiveTooltip": "È selezionato un provider bulk verificato. Gestiscilo o sostituiscilo nelle Impostazioni.",
         "details": "Dettagli stato server email",
         "troubleshoot": "Risolvi problemi"
+      },
+      "profileEditor": {
+        "button": "Modifica profilo",
+        "title": "Modifica profilo aziendale",
+        "description": "Aggiorna i dettagli aziendali usati nelle richieste di recensioni e nel profilo pubblico.",
+        "businessName": "Nome dell’azienda",
+        "reviewLink": "Link per le recensioni",
+        "fromName": "Nome del mittente",
+        "replyTo": "E-mail di risposta",
+        "consentLabelName": "Nome dell’azienda per il consenso",
+        "save": "Salva profilo",
+        "saved": "Profilo aggiornato.",
+        "businessNameRequired": "Inserisci il nome della tua azienda.",
+        "reviewLinkRequired": "Inserisci il link per le recensioni."
       }
     },
     "reminderRow": {
@@ -9045,6 +9101,20 @@
         "bulkActiveTooltip": "มีการเลือกผู้ให้บริการส่งจำนวนมากที่ยืนยันแล้ว จัดการหรือเปลี่ยนได้ในตั้งค่า",
         "details": "รายละเอียดสถานะเซิร์ฟเวอร์อีเมล",
         "troubleshoot": "แก้ไขปัญหา"
+      },
+      "profileEditor": {
+        "button": "แก้ไขโปรไฟล์",
+        "title": "แก้ไขโปรไฟล์ธุรกิจ",
+        "description": "อัปเดตรายละเอียดธุรกิจที่ใช้ในคำขอรีวิวและโปรไฟล์สาธารณะของคุณ",
+        "businessName": "ชื่อธุรกิจ",
+        "reviewLink": "ลิงก์รีวิว",
+        "fromName": "ชื่อผู้ส่ง",
+        "replyTo": "อีเมลสำหรับตอบกลับ",
+        "consentLabelName": "ชื่อธุรกิจในข้อความยินยอม",
+        "save": "บันทึกโปรไฟล์",
+        "saved": "อัปเดตโปรไฟล์แล้ว",
+        "businessNameRequired": "กรุณากรอกชื่อธุรกิจ",
+        "reviewLinkRequired": "กรุณากรอกลิงก์รีวิว"
       }
     },
     "reminderRow": {
@@ -10938,6 +11008,20 @@
         "bulkActiveTooltip": "已选择经过验证的租户批量邮件服务商。请在设置中管理或替换。",
         "details": "邮件服务器健康详情",
         "troubleshoot": "排查问题"
+      },
+      "profileEditor": {
+        "button": "编辑资料",
+        "title": "编辑商家资料",
+        "description": "更新用于评价请求和公开资料的商家信息。",
+        "businessName": "商家名称",
+        "reviewLink": "评价链接",
+        "fromName": "发件人名称",
+        "replyTo": "回复邮箱",
+        "consentLabelName": "同意说明中的商家名称",
+        "save": "保存资料",
+        "saved": "资料已更新。",
+        "businessNameRequired": "请输入商家名称。",
+        "reviewLinkRequired": "请输入评价链接。"
       }
     },
     "reminderRow": {
@@ -12824,6 +12908,20 @@
         "bulkActiveTooltip": "已選取經過驗證的租戶大量郵件服務商。請在設定中管理或替換。",
         "details": "郵件伺服器健康詳細資料",
         "troubleshoot": "疑難排解"
+      },
+      "profileEditor": {
+        "button": "編輯資料",
+        "title": "編輯商家資料",
+        "description": "更新用於評價請求和公開資料的商家資訊。",
+        "businessName": "商家名稱",
+        "reviewLink": "評價連結",
+        "fromName": "寄件者名稱",
+        "replyTo": "回覆電子郵件",
+        "consentLabelName": "同意說明中的商家名稱",
+        "save": "儲存資料",
+        "saved": "資料已更新。",
+        "businessNameRequired": "請輸入商家名稱。",
+        "reviewLinkRequired": "請輸入評價連結。"
       }
     },
     "reminderRow": {

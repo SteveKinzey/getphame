@@ -30,19 +30,49 @@ describe("dashboard feedback experience", () => {
 
   it("keeps the initial dashboard spinner screen-reader accessible", () => {
     const dashboard = read("client/src/pages/Dashboard.tsx");
+    const feedback = read("client/src/components/dashboard/DashboardFeedbackExperience.tsx");
 
-    expect(dashboard).toContain('data-testid="dashboard-loading"');
-    expect(dashboard).toContain('role="status"');
-    expect(dashboard).toContain('aria-live="polite"');
-    expect(dashboard).toContain('t("dashboard.loading.title"');
+    expect(dashboard).toContain("return <DashboardLoadingState />");
+    expect(feedback).toContain('data-testid="dashboard-loading"');
+    expect(feedback).toContain('role="status"');
+    expect(feedback).toContain('aria-live="polite"');
+    expect(feedback).toContain('t("dashboard.loading.title"');
+  });
+
+  it("uses the existing persisted theme mechanism with an accessible dashboard shortcut", () => {
+    const dashboard = read("client/src/pages/Dashboard.tsx");
+    const styles = read("client/src/index.css");
+
+    expect(dashboard).toContain('useTheme()');
+    expect(dashboard).toContain('data-testid="dashboard-theme-toggle"');
+    expect(dashboard).toContain("onClick={toggleTheme}");
+    expect(dashboard).toContain('aria-pressed={theme === "dark"}');
+    expect(styles).toContain(".dark .dashboard-content .bg-white");
+    expect(styles).toContain(".dark .dashboard-content :is(.rr-text-navy");
+    expect(styles).toContain(".bg-slate-50");
+    expect(styles).toContain(".dark .dashboard-content input.bg-white");
+  });
+
+  it("edits only the authenticated user business profile through the established profile upsert contract", () => {
+    const dashboard = read("client/src/pages/Dashboard.tsx");
+
+    expect(dashboard).toContain('data-testid="dashboard-edit-profile"');
+    expect(dashboard).toContain("trpc.profile.upsert.useMutation");
+    expect(dashboard).toContain("utils.profile.get.invalidate()");
+    expect(dashboard).toContain('id="dashboard-profile-business-name"');
+    expect(dashboard).toContain('id="dashboard-profile-review-link"');
+    expect(dashboard).toContain('id="dashboard-profile-reply-to"');
+    expect(dashboard).toContain('t("dashboard.profileEditor.saved"');
+    expect(dashboard).toContain("onError: showDashboardApiError");
   });
 
   it("routes dashboard mutation failures through one localized recovery message", () => {
     const dashboard = read("client/src/pages/Dashboard.tsx");
+    const feedback = read("client/src/components/dashboard/DashboardFeedbackExperience.tsx");
 
-    expect(dashboard).toContain("const showDashboardApiError = () =>");
-    expect(dashboard).toContain('t("apiRecovery.unavailableTitle"');
-    expect(dashboard.match(/onError: showDashboardApiError/g)).toHaveLength(2);
+    expect(dashboard).toContain("const showDashboardApiError = useDashboardApiErrorToast()");
+    expect(feedback).toContain('t("apiRecovery.unavailableTitle"');
+    expect(dashboard.match(/onError: showDashboardApiError/g)).toHaveLength(3);
     expect(dashboard).toContain("showDashboardApiError();");
     expect(dashboard).not.toContain("toast.error(err.message)");
   });
@@ -63,8 +93,13 @@ describe("dashboard feedback experience", () => {
       expect(dashboard?.shareProfile?.copySuccess).toBeTruthy();
       expect(dashboard?.shareProfile?.copyError).toBeTruthy();
       expect(dashboard?.loading?.title).toBeTruthy();
+      expect(dashboard?.profileEditor?.button).toBeTruthy();
+      expect(dashboard?.profileEditor?.title).toBeTruthy();
+      expect(dashboard?.profileEditor?.save).toBeTruthy();
       expect(offlineDashboard?.shareProfile?.button).toBeTruthy();
       expect(offlineDashboard?.loading?.title).toBeTruthy();
+      expect(offlineDashboard?.profileEditor?.button).toBeTruthy();
+      expect(offlineDashboard?.profileEditor?.save).toBeTruthy();
     }
   });
 });

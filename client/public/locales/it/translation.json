@@ -752,6 +752,20 @@
       "bulkActiveTooltip": "È selezionato un provider bulk verificato. Gestiscilo o sostituiscilo nelle Impostazioni.",
       "details": "Dettagli stato server email",
       "troubleshoot": "Risolvi problemi"
+    },
+    "profileEditor": {
+      "button": "Modifica profilo",
+      "title": "Modifica profilo aziendale",
+      "description": "Aggiorna i dettagli aziendali usati nelle richieste di recensioni e nel profilo pubblico.",
+      "businessName": "Nome dell’azienda",
+      "reviewLink": "Link per le recensioni",
+      "fromName": "Nome del mittente",
+      "replyTo": "E-mail di risposta",
+      "consentLabelName": "Nome dell’azienda per il consenso",
+      "save": "Salva profilo",
+      "saved": "Profilo aggiornato.",
+      "businessNameRequired": "Inserisci il nome della tua azienda.",
+      "reviewLinkRequired": "Inserisci il link per le recensioni."
     }
   },
   "settings": {

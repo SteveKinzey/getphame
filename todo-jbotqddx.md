@@ -68,3 +68,11 @@
 - [x] Add centralized localized dashboard API-failure feedback for both queries and mutations, replacing raw or silent dashboard error paths.
 - [x] Add a mobile-safe accessible name to the icon-only Share Profile button and extend focused regression coverage.
 - [x] Add localized regression coverage, validate the dashboard interactions, release the enhancement, and synchronize the exact tree to GitHub main.
+- [x] Verify the synced preview’s dashboard API-failure toast and loading spinner behavior.
+- [x] Exercise the actual dashboard loading spinner in a deterministic browser preview and confirm its accessible loading copy.
+- [x] Exercise the user-facing dashboard API-failure toast path in browser coverage and confirm raw server errors are not displayed.
+- [x] Create and validate a reusable skill for dashboard feedback, accessible toast recovery, clipboard sharing, and loading-state verification.
+- [x] Add an accessible persistent dark-mode toggle to the dashboard experience.
+- [x] Correct dark-mode contrast in nested dashboard analytics surfaces observed during live browser verification.
+- [x] Add a localized dashboard profile-editing flow that safely updates the user’s profile information.
+- [ ] Add regression coverage, validate the dashboard enhancements, release the exact tree, and synchronize it to GitHub main.

@@ -3,7 +3,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw, Share2 } from "lucide-react";
+import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw, Share2, Moon, Sun, Pencil, Building2, Link2, Mail } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
@@ -15,6 +15,9 @@ import ClientDetailSheet from "@/components/ClientDetailSheet";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 import RecentActivityCard from "@/components/dashboard/RecentActivityCard";
 import MailServerHealthBadge from "@/components/dashboard/MailServerHealthBadge";
+import { DashboardLoadingState, useDashboardApiErrorToast } from "@/components/dashboard/DashboardFeedbackExperience";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"));
 
@@ -49,6 +52,7 @@ async function copyTextToClipboard(value: string) {
 
 export default function DashboardPage() {
   const { t } = useTranslation();
+  const { theme, toggleTheme, switchable } = useTheme();
   const [, navigate] = useLocation();
   const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
   const { data: stats, isLoading } = trpc.requests.stats.useQuery();
@@ -60,21 +64,14 @@ export default function DashboardPage() {
   const { data: bulkSenderStatus } = trpc.bulkSender.status.useQuery();
   const utils = trpc.useUtils();
   const [profileLinkCopied, setProfileLinkCopied] = useState(false);
+  const [profileEditorOpen, setProfileEditorOpen] = useState(false);
+  const [businessName, setBusinessName] = useState("");
+  const [reviewLink, setReviewLink] = useState("");
+  const [fromName, setFromName] = useState("");
+  const [replyTo, setReplyTo] = useState("");
+  const [consentLabelName, setConsentLabelName] = useState("");
 
-  const showDashboardApiError = () => {
-    toast.error(
-      t("apiRecovery.unavailableTitle", {
-        defaultValue: "We’re reconnecting Get Phame.",
-      }),
-      {
-        description: t("apiRecovery.unavailableDescription", {
-          defaultValue:
-            "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
-        }),
-        duration: 8_000,
-      }
-    );
-  };
+  const showDashboardApiError = useDashboardApiErrorToast();
 
   const handleShareProfile = async () => {
     const profileLink = profile?.reviewLink;
@@ -96,6 +93,43 @@ export default function DashboardPage() {
         })
       );
     }
+  };
+
+  const openProfileEditor = () => {
+    if (!profile) return;
+    setBusinessName(profile.businessName ?? "");
+    setReviewLink(profile.reviewLink ?? "");
+    setFromName(profile.fromName ?? "");
+    setReplyTo(profile.replyTo ?? "");
+    setConsentLabelName(profile.consentLabelName ?? "");
+    setProfileEditorOpen(true);
+  };
+
+  const updateDashboardProfile = trpc.profile.upsert.useMutation({
+    onSuccess: async () => {
+      await utils.profile.get.invalidate();
+      setProfileEditorOpen(false);
+      toast.success(t("dashboard.profileEditor.saved", { defaultValue: "Profile updated." }));
+    },
+    onError: showDashboardApiError,
+  });
+
+  const handleDashboardProfileSave = () => {
+    if (!businessName.trim()) {
+      toast.error(t("dashboard.profileEditor.businessNameRequired", { defaultValue: "Enter your business name." }));
+      return;
+    }
+    if (!reviewLink.trim()) {
+      toast.error(t("dashboard.profileEditor.reviewLinkRequired", { defaultValue: "Enter your review link." }));
+      return;
+    }
+    updateDashboardProfile.mutate({
+      businessName: businessName.trim(),
+      reviewLink: reviewLink.trim(),
+      fromName: fromName.trim() || undefined,
+      replyTo: replyTo.trim() || undefined,
+      consentLabelName: consentLabelName.trim() || undefined,
+    });
   };
 
   // Undo toast state for single-row mark in the activity feed
@@ -276,34 +310,7 @@ export default function DashboardPage() {
   }, [allRequests]);
 
   if (isLoading || listLoading) {
-    return (
-      <main
-        data-testid="dashboard-loading"
-        role="status"
-        aria-live="polite"
-        aria-label={t("dashboard.loading.ariaLabel", {
-          defaultValue: "Loading your dashboard",
-        })}
-        className="flex min-h-screen items-center justify-center px-4"
-        style={{ background: "var(--background)" }}
-      >
-        <div className="flex max-w-sm flex-col items-center gap-3 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl rr-bg-navy">
-            <Loader2 className="animate-spin rr-text-gold" aria-hidden="true" />
-          </div>
-          <div>
-            <p className="text-base font-black rr-text-navy">
-              {t("dashboard.loading.title", { defaultValue: "Loading your dashboard…" })}
-            </p>
-            <p className="mt-1 text-sm rr-text-navy-muted">
-              {t("dashboard.loading.description", {
-                defaultValue: "Getting your latest review-request activity ready.",
-              })}
-            </p>
-          </div>
-        </div>
-      </main>
-    );
+    return <DashboardLoadingState />;
   }
 
   return (
@@ -320,6 +327,31 @@ export default function DashboardPage() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              data-testid="dashboard-edit-profile"
+              onClick={openProfileEditor}
+              disabled={!profile}
+              aria-label={t("dashboard.profileEditor.button", { defaultValue: "Edit profile" })}
+              title={t("dashboard.profileEditor.button", { defaultValue: "Edit profile" })}
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-white/20 px-2.5 text-xs font-bold text-white transition-all hover:bg-white/10 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              <Pencil size={14} className="rr-text-gold" aria-hidden="true" />
+              <span className="hidden lg:inline">{t("dashboard.profileEditor.button", { defaultValue: "Edit profile" })}</span>
+            </button>
+            {switchable && toggleTheme && (
+              <button
+                type="button"
+                data-testid="dashboard-theme-toggle"
+                onClick={toggleTheme}
+                aria-label={theme === "dark" ? t("theme.switchToLight", { defaultValue: "Switch to light mode" }) : t("theme.switchToDark", { defaultValue: "Switch to dark mode" })}
+                title={theme === "dark" ? t("theme.light", { defaultValue: "Light mode" }) : t("theme.dark", { defaultValue: "Dark mode" })}
+                aria-pressed={theme === "dark"}
+                className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-xl border border-white/20 text-white transition-all hover:bg-white/10 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              >
+                {theme === "dark" ? <Sun size={14} className="rr-text-gold" aria-hidden="true" /> : <Moon size={14} className="rr-text-gold" aria-hidden="true" />}
+              </button>
+            )}
             <button
               type="button"
               data-testid="dashboard-share-profile"
@@ -394,7 +426,7 @@ export default function DashboardPage() {
         <MailServerHealthBadge smtp={smtpStatus} bulk={bulkSenderStatus} translate={t} />
       </div>
 
-      <div className="px-4 py-4 lg:px-8 lg:py-6">
+      <div className="dashboard-content px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-4xl mx-auto flex flex-col gap-4">
         {/* ── Analytics Card: deferred Chart.js module and data query ─────── */}
         <DeferredDashboardSection loadingLabel="Loading analytics" minHeightClassName="min-h-[324px]">
@@ -787,6 +819,49 @@ export default function DashboardPage() {
         requestId={selectedRequestId}
         onClose={() => setSelectedRequestId(null)}
       />
+
+      <Dialog open={profileEditorOpen} onOpenChange={setProfileEditorOpen}>
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Building2 size={18} className="rr-text-gold" aria-hidden="true" />
+              {t("dashboard.profileEditor.title", { defaultValue: "Edit business profile" })}
+            </DialogTitle>
+            <DialogDescription>{t("dashboard.profileEditor.description", { defaultValue: "Update the business details used in your review requests and public profile." })}</DialogDescription>
+          </DialogHeader>
+          <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); handleDashboardProfileSave(); }}>
+            <div className="space-y-2">
+              <label htmlFor="dashboard-profile-business-name" className="text-sm font-bold text-foreground">{t("dashboard.profileEditor.businessName", { defaultValue: "Business name" })} *</label>
+              <Input id="dashboard-profile-business-name" name="dashboard-profile-business-name" autoComplete="organization" value={businessName} onChange={(event) => setBusinessName(event.target.value)} className="rr-form-field" />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="dashboard-profile-review-link" className="flex items-center gap-1 text-sm font-bold text-foreground"><Link2 size={14} aria-hidden="true" />{t("dashboard.profileEditor.reviewLink", { defaultValue: "Review link" })} *</label>
+              <Input id="dashboard-profile-review-link" name="dashboard-profile-review-link" type="url" autoComplete="url" value={reviewLink} onChange={(event) => setReviewLink(event.target.value)} className="rr-form-field" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label htmlFor="dashboard-profile-from-name" className="text-sm font-bold text-foreground">{t("dashboard.profileEditor.fromName", { defaultValue: "Sender name" })}</label>
+                <Input id="dashboard-profile-from-name" name="dashboard-profile-from-name" autoComplete="organization" value={fromName} onChange={(event) => setFromName(event.target.value)} className="rr-form-field" />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="dashboard-profile-reply-to" className="flex items-center gap-1 text-sm font-bold text-foreground"><Mail size={14} aria-hidden="true" />{t("dashboard.profileEditor.replyTo", { defaultValue: "Reply-to email" })}</label>
+                <Input id="dashboard-profile-reply-to" name="dashboard-profile-reply-to" type="email" autoComplete="email" value={replyTo} onChange={(event) => setReplyTo(event.target.value)} className="rr-form-field" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="dashboard-profile-consent-label" className="text-sm font-bold text-foreground">{t("dashboard.profileEditor.consentLabelName", { defaultValue: "Consent-label business name" })}</label>
+              <Input id="dashboard-profile-consent-label" name="dashboard-profile-consent-label" autoComplete="organization" value={consentLabelName} onChange={(event) => setConsentLabelName(event.target.value)} className="rr-form-field" />
+            </div>
+            <DialogFooter>
+              <button type="button" onClick={() => setProfileEditorOpen(false)} className="rounded-lg border border-border px-4 py-2 text-sm font-bold transition-colors hover:bg-muted">{t("common.cancel", { defaultValue: "Cancel" })}</button>
+              <button type="submit" disabled={updateDashboardProfile.isPending} className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 active:scale-[0.97] disabled:opacity-50">
+                {updateDashboardProfile.isPending && <Loader2 size={15} className="animate-spin" aria-hidden="true" />}
+                {t("dashboard.profileEditor.save", { defaultValue: "Save profile" })}
+              </button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
