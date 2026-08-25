@@ -667,6 +667,11 @@ function ProviderDiscoveryTestHarness() {
 function FormAutofillTestHarness() {
   const [smtpEmail, setSmtpEmail] = useState("");
   const [smtpTouched, setSmtpTouched] = useState(false);
+  const [smtpUsername, setSmtpUsername] = useState("");
+  const [smtpUsernameTouched, setSmtpUsernameTouched] = useState(false);
+  const [smtpPassword, setSmtpPassword] = useState("");
+  const [smtpPasswordTouched, setSmtpPasswordTouched] = useState(false);
+  const [showSmtpPassword, setShowSmtpPassword] = useState(false);
   const normalizedSmtpEmail = smtpEmail.trim().toLowerCase();
   const smtpState =
     smtpTouched && normalizedSmtpEmail.length > 0
@@ -674,6 +679,12 @@ function FormAutofillTestHarness() {
         ? "valid"
         : "invalid"
       : "idle";
+  const smtpUsernameState = smtpUsernameTouched
+    ? smtpUsername.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
+  const smtpPasswordState = smtpPasswordTouched
+    ? smtpPassword.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
 
   return (
     <main className="min-h-screen bg-[#0F1B2D] px-6 py-10 text-white" data-testid="form-autofill-test-harness">
@@ -706,9 +717,14 @@ function FormAutofillTestHarness() {
           </p>
         )}
         <label htmlFor="autofill-smtp-username" className="mb-1 mt-4 block text-sm font-semibold">SMTP username</label>
-        <input id="autofill-smtp-username" name="autofill-smtp-username" autoComplete="username" className="w-full rounded-md border px-3 py-2" />
+        <input id="autofill-smtp-username" name="autofill-smtp-username" autoComplete="username" value={smtpUsername} onChange={(event) => { setSmtpUsername(event.target.value); setSmtpUsernameTouched(true); }} onBlur={() => setSmtpUsernameTouched(true)} aria-invalid={smtpUsernameState === "invalid"} aria-describedby={smtpUsernameState === "idle" ? undefined : "autofill-smtp-username-feedback"} className="w-full rounded-md border px-3 py-2" />
+        {smtpUsernameState !== "idle" && <p id="autofill-smtp-username-feedback" data-testid="autofill-smtp-username-feedback" role="status" aria-live="polite" className="mt-2 text-sm">{smtpUsernameState === "valid" ? "Looks good." : "This field is required."}</p>}
         <label htmlFor="autofill-smtp-password" className="mb-1 mt-4 block text-sm font-semibold">SMTP password</label>
-        <input id="autofill-smtp-password" name="autofill-smtp-password" type="password" autoComplete="current-password" className="w-full rounded-md border px-3 py-2" />
+        <div className="relative">
+          <input id="autofill-smtp-password" name="autofill-smtp-password" type={showSmtpPassword ? "text" : "password"} autoComplete="current-password" value={smtpPassword} onChange={(event) => { setSmtpPassword(event.target.value); setSmtpPasswordTouched(true); }} onBlur={() => setSmtpPasswordTouched(true)} aria-invalid={smtpPasswordState === "invalid"} aria-describedby={smtpPasswordState === "idle" ? undefined : "autofill-smtp-password-feedback"} className="w-full rounded-md border px-3 py-2 pr-20" />
+          <button type="button" data-testid="autofill-smtp-password-toggle" onClick={() => setShowSmtpPassword((value) => !value)} aria-label={showSmtpPassword ? "Hide password" : "Show password"} aria-pressed={showSmtpPassword} className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-semibold">{showSmtpPassword ? "Hide" : "Show"}</button>
+        </div>
+        {smtpPasswordState !== "idle" && <p id="autofill-smtp-password-feedback" data-testid="autofill-smtp-password-feedback" role="status" aria-live="polite" className="mt-2 text-sm">{smtpPasswordState === "valid" ? "Password entered. Test before saving." : "Password is required."}</p>}
       </section>
       </div>
     </main>
@@ -755,6 +771,7 @@ function App() {
       <ThemeProvider defaultTheme="dark" switchable={true}>
         <TooltipProvider>
           <UpdateSafetyProvider>
+            <Toaster position="top-center" richColors />
             <FormAutofillTestHarness />
           </UpdateSafetyProvider>
         </TooltipProvider>

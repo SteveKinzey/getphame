@@ -429,6 +429,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
   const [host, setHost] = useState("");
   const [port, setPort] = useState(587);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -468,6 +469,9 @@ function Step1Email({ onDone }: { onDone: () => void }) {
 
   const hintKey = getHintKey(email, host);
   const hint = hintKey ? t(hintKey) : null;
+  const passwordValidation = passwordTouched
+    ? password.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
   const detectedAuto = !!detectHost(email);
   // Show Google Workspace disclosure when auto-detect fails and user has a custom domain
   const showWorkspaceDisclosure =
@@ -538,7 +542,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
-        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+        <label htmlFor="onboarding-smtp-password" className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
           <span>{t("step1Email.passwordLabel")} {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}</span>
           <OnboardingHelpTip
             label={t("onboardingWizard.tooltips.smtpPassword.label")}
@@ -547,20 +551,28 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         </label>
         <div className="relative">
           <input
+            id="onboarding-smtp-password"
             type={showPass ? "text" : "password"}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => { setPassword(e.target.value); setPasswordTouched(true); }}
+            onBlur={() => setPasswordTouched(true)}
             placeholder={hint ? t("step1Email.appPasswordPlaceholder") : t("step1Email.emailPasswordPlaceholder")}
-            className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
+            autoComplete="current-password"
+            aria-invalid={passwordValidation === "invalid"}
+            aria-describedby={passwordValidation === "idle" ? undefined : "onboarding-smtp-password-feedback"}
+            className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: passwordValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : passwordValidation === "valid" ? "2px solid oklch(0.56 0.14 145)" : "1px solid oklch(0.32 0.06 260)" }}
            name="rr-components-onboarding-wizard-password-549" />
           <button
             type="button"
             onClick={() => setShowPass(!showPass)}
+            aria-label={showPass ? t("common.hide", { defaultValue: "Hide password" }) : t("common.show", { defaultValue: "Show password" })}
+            aria-pressed={showPass}
             className="absolute right-3 top-1/2 -translate-y-1/2 rr-text-navy-muted"
           >
             {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
+        {passwordValidation !== "idle" && <p id="onboarding-smtp-password-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: passwordValidation === "valid" ? "oklch(0.72 0.14 145)" : "oklch(0.72 0.17 27)" }}>{t(passwordValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: passwordValidation === "valid" ? "Password entered. Test before saving." : "Password is required." })}</p>}
         {hint && (
           <div
             className="flex items-start gap-2 mt-2 px-3 py-2 rounded-lg rr-text-gold" style={{ background: "oklch(0.22 0.08 80)" }}

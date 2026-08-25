@@ -978,7 +978,9 @@
     "retryTestEmail": "Retry",
     "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
     "connectionTestPassed": "Mail server connection verified.",
-    "connectionTestFailed": "Mail server still needs attention."
+    "connectionTestFailed": "Mail server still needs attention.",
+    "credentialReady": "Looks good.",
+    "credentialRequired": "This field is required."
   },
   "wooCommerce": {
     "title": "WooCommerce",

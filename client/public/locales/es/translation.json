@@ -1144,7 +1144,9 @@
     "retryTestEmail": "Reintentar",
     "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado.",
     "connectionTestPassed": "Se verificó la conexión del servidor de correo.",
-    "connectionTestFailed": "El servidor de correo aún necesita atención."
+    "connectionTestFailed": "El servidor de correo aún necesita atención.",
+    "credentialReady": "Todo está correcto.",
+    "credentialRequired": "Este campo es obligatorio."
   },
   "wooCommerce": {
     "title": "WooCommerce",

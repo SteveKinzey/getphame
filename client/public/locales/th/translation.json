@@ -936,7 +936,9 @@
     "retryTestEmail": "ลองอีกครั้ง",
     "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่",
     "connectionTestPassed": "ยืนยันการเชื่อมต่อเซิร์ฟเวอร์อีเมลแล้ว",
-    "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ"
+    "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ",
+    "credentialReady": "ข้อมูลถูกต้อง",
+    "credentialRequired": "ต้องกรอกข้อมูลในช่องนี้"
   },
   "wooCommerce": {
     "title": "WooCommerce",

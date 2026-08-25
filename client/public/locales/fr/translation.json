@@ -1144,7 +1144,9 @@
     "retryTestEmail": "Réessayer",
     "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
     "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
-    "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
+    "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention.",
+    "credentialReady": "Tout est correct.",
+    "credentialRequired": "Ce champ est obligatoire."
   },
   "wooCommerce": {
     "title": "WooCommerce",

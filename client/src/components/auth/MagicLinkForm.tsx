@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { CheckCircle2, Loader2, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
   useUpdateCriticalActivity,
   useUpdateDirtySource,
@@ -152,6 +153,7 @@ export default function MagicLinkForm({
     setSentTo(result.email);
     setResendSeconds(MAGIC_LINK_RESEND_COOLDOWN_SECONDS);
     setRequestState("sent");
+    toast.success(t("login.checkInbox", { defaultValue: "Check your inbox" }));
   }, [email, isResending, isSending, requestMagicLink, t]);
 
   const handleResend = useCallback(async () => {

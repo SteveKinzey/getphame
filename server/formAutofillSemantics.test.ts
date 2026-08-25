@@ -53,6 +53,10 @@ describe("form autofill semantics", () => {
       resolve(root, "client/src/pages/Settings.tsx"),
       "utf8"
     );
+    const onboarding = readFileSync(
+      resolve(root, "client/src/components/OnboardingWizard.tsx"),
+      "utf8"
+    );
 
     expect(magicLink).toContain('autoComplete="email"');
     expect(magicLink).toContain('data-testid={`${idPrefix}-email-validation`}');
@@ -62,6 +66,16 @@ describe("form autofill semantics", () => {
     expect(settings).toContain('autoComplete="username"');
     expect(settings).toContain('autoComplete="current-password"');
     expect(settings).toContain('data-testid="smtp-email-validation"');
+    expect(settings).toContain("const smtpPasswordValidation");
+    expect(settings).toContain("aria-pressed={showSmtpPassword}");
+    expect(settings).toContain("aria-pressed={showWooSecret}");
+    expect(settings).toContain("const usernameValidation");
+    expect(settings).toContain("const secretValidation");
+    expect(magicLink).toContain("toast.success(t(\"login.checkInbox\"");
+    expect(onboarding).toContain('id="onboarding-smtp-password"');
+    expect(onboarding).toContain('autoComplete="current-password"');
+    expect(onboarding).toContain("aria-pressed={showPass}");
+    expect(onboarding).toContain("const passwordValidation");
   });
 
   it("requires an autocomplete token on every native email input", () => {
