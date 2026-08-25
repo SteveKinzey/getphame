@@ -141,12 +141,19 @@ describe("admin email preview runtime contract", () => {
     const browserPreviewSource = routerSource.slice(
       routerSource.indexOf("emailPreview: publicProcedure")
     );
+    const templateSource = readFileSync(
+      resolve(process.cwd(), "server/adminEmailPreviewTemplates.ts"),
+      "utf8"
+    );
 
-    expect(sendTestSource).toContain("https://getphame.app/login?from=test-email-preview");
-    expect(sendTestSource).toContain("Open Get Phame sign-in");
+    expect(sendTestSource).toContain(
+      "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview"
+    );
     expect(sendTestSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
-    expect(browserPreviewSource).toContain("https://getphame.app/login?from=email-preview");
-    expect(browserPreviewSource).toContain("Open Get Phame sign-in");
+    expect(templateSource).toContain(
+      "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview"
+    );
+    expect(templateSource).toContain("Open Get Phame sign-in");
     expect(browserPreviewSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
   });
 

@@ -41,6 +41,10 @@ describe("Google sign-in interaction feedback", () => {
     );
     expect(login).not.toContain("human_proof");
     expect(login).toContain("window.location.assign(destination)");
+    expect(login).toContain("setFormError(message)");
+    expect(login).toContain('const APPLE_AUTH_STATUS_ID = "apple-auth-status"');
+    expect(login).toContain('aria-describedby={\n                        isAppleSubmitting ? APPLE_AUTH_STATUS_ID : undefined');
+    expect(login).toContain('t("login.appleSignInLoading"');
   });
 
   it("keeps account-establishing methods before passkey authentication in JSX source order and preserves the autofocus contract", () => {
