@@ -2263,6 +2263,20 @@
       "bulkActiveTooltip": "Un fournisseur d’envoi groupé vérifié est sélectionné. Gérez-le ou remplacez-le dans les paramètres.",
       "details": "Détails de l’état du serveur de messagerie",
       "troubleshoot": "Dépanner"
+    },
+    "profileEditor": {
+      "button": "Modifier le profil",
+      "title": "Modifier le profil de l’entreprise",
+      "description": "Mettez à jour les informations utilisées dans vos demandes d’avis et votre profil public.",
+      "businessName": "Nom de l’entreprise",
+      "reviewLink": "Lien d’avis",
+      "fromName": "Nom de l’expéditeur",
+      "replyTo": "E-mail de réponse",
+      "consentLabelName": "Nom de l’entreprise pour le consentement",
+      "save": "Enregistrer le profil",
+      "saved": "Profil mis à jour.",
+      "businessNameRequired": "Saisissez le nom de votre entreprise.",
+      "reviewLinkRequired": "Saisissez votre lien d’avis."
     }
   },
   "pricing": {

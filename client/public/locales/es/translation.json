@@ -2263,6 +2263,20 @@
       "bulkActiveTooltip": "Hay un proveedor masivo verificado seleccionado para las solicitudes. Adminístralo o sustitúyelo en Configuración.",
       "details": "Detalles de salud del servidor de correo",
       "troubleshoot": "Solucionar problemas"
+    },
+    "profileEditor": {
+      "button": "Editar perfil",
+      "title": "Editar perfil del negocio",
+      "description": "Actualiza los datos del negocio usados en tus solicitudes de reseñas y perfil público.",
+      "businessName": "Nombre del negocio",
+      "reviewLink": "Enlace de reseñas",
+      "fromName": "Nombre del remitente",
+      "replyTo": "Correo de respuesta",
+      "consentLabelName": "Nombre del negocio para el consentimiento",
+      "save": "Guardar perfil",
+      "saved": "Perfil actualizado.",
+      "businessNameRequired": "Introduce el nombre de tu negocio.",
+      "reviewLinkRequired": "Introduce tu enlace de reseñas."
     }
   },
   "pricing": {
