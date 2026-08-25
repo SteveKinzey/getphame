@@ -761,6 +761,12 @@
         "notActive": "Connected, but not selected for customer review requests",
         "connectionSavedMessage": "Your bulk mail server is connected and ready to use.",
         "connectingAndVerifying": "Connecting and verifying…"
+      },
+      "appearance": {
+        "title": "Appearance",
+        "description": "Choose the color mode you want Get Phame to remember on this device.",
+        "label": "Color mode",
+        "saved": "{{theme}} mode is saved on this device."
       }
     },
     "profile": {
@@ -2633,6 +2639,12 @@
         "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
         "connectionSavedMessage": "Tu servidor de correo masivo está conectado y listo para usar.",
         "connectingAndVerifying": "Conectando y verificando…"
+      },
+      "appearance": {
+        "title": "Apariencia",
+        "description": "Elige el modo de color que quieres que Get Phame recuerde en este dispositivo.",
+        "label": "Modo de color",
+        "saved": "El modo {{theme}} se guarda en este dispositivo."
       }
     },
     "profile": {
@@ -4687,6 +4699,12 @@
         "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients",
         "connectionSavedMessage": "Votre serveur d’envoi en masse est connecté et prêt à être utilisé.",
         "connectingAndVerifying": "Connexion et vérification…"
+      },
+      "appearance": {
+        "title": "Apparence",
+        "description": "Choisissez le mode de couleur que Get Phame doit mémoriser sur cet appareil.",
+        "label": "Mode de couleur",
+        "saved": "Le mode {{theme}} est enregistré sur cet appareil."
       }
     },
     "profile": {
@@ -6741,6 +6759,12 @@
         "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
         "connectionSavedMessage": "Il tuo server per invii in massa è connesso e pronto all’uso.",
         "connectingAndVerifying": "Connessione e verifica…"
+      },
+      "appearance": {
+        "title": "Aspetto",
+        "description": "Scegli la modalità colore che Get Phame deve ricordare su questo dispositivo.",
+        "label": "Modalità colore",
+        "saved": "La modalità {{theme}} è salvata su questo dispositivo."
       }
     },
     "profile": {
@@ -8653,6 +8677,12 @@
         "notActive": "เชื่อมต่อแล้ว แต่ยังไม่ได้เลือกสำหรับคำขอรีวิวจากลูกค้า",
         "connectionSavedMessage": "เซิร์ฟเวอร์อีเมลสำหรับส่งจำนวนมากของคุณเชื่อมต่อแล้วและพร้อมใช้งาน",
         "connectingAndVerifying": "กำลังเชื่อมต่อและตรวจสอบ…"
+      },
+      "appearance": {
+        "title": "รูปแบบ",
+        "description": "เลือกรูปแบบสีที่ต้องการให้ Get Phame จดจำบนอุปกรณ์นี้",
+        "label": "รูปแบบสี",
+        "saved": "บันทึกโหมด{{theme}}บนอุปกรณ์นี้แล้ว"
       }
     },
     "profile": {
@@ -10561,6 +10591,12 @@
         "notActive": "已连接，但未被选用于客户评价请求",
         "connectionSavedMessage": "您的批量邮件服务器已连接，可立即使用。",
         "connectingAndVerifying": "正在连接并验证…"
+      },
+      "appearance": {
+        "title": "外观",
+        "description": "选择希望 Get Phame 在此设备上记住的颜色模式。",
+        "label": "颜色模式",
+        "saved": "此设备已保存{{theme}}模式。"
       }
     },
     "profile": {
@@ -12461,6 +12497,12 @@
         "notActive": "已連線，但未被選用於客戶評價請求",
         "connectionSavedMessage": "您的大量寄信伺服器已連線，可立即使用。",
         "connectingAndVerifying": "正在連線並驗證…"
+      },
+      "appearance": {
+        "title": "外觀",
+        "description": "選擇希望 Get Phame 在此裝置上記住的顏色模式。",
+        "label": "顏色模式",
+        "saved": "此裝置已儲存{{theme}}模式。"
       }
     },
     "profile": {

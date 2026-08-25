@@ -76,3 +76,15 @@
 - [x] Correct dark-mode contrast in nested dashboard analytics surfaces observed during live browser verification.
 - [x] Add a localized dashboard profile-editing flow that safely updates the user’s profile information.
 - [x] Add regression coverage, validate the dashboard enhancements, release the exact tree, and synchronize it to GitHub main.
+- [x] Inspect existing theme persistence, Settings patterns, and dashboard recovery boundaries for the requested preference and retry behavior.
+- [x] Create and validate a reusable skill for persisted UI preferences and safe recoverable-request retry actions.
+- [x] Add an accessible Settings theme preference that persists the user’s dark-mode choice.
+- [x] Add a safe retry action to recoverable dashboard API error toasts without replaying unsafe mutations.
+- [x] Stabilize the Dashboard retry callback and error-toast trigger so each failed query transition produces one recoverable toast rather than repeated notifications.
+- [x] Add browser coverage for the real Dashboard recoverable query-error path, confirming Retry refreshes safe reads and never appears for mutation failures.
+- [x] Mount the actual Dashboard route in a deterministic failure fixture with real tRPC query errors and verify Retry invokes safe refetch callbacks.
+- [x] Verify an actual Dashboard profile-save mutation failure shows the sanitized error toast without any Retry action.
+- [x] Resolve client TypeScript incompatibilities in Dashboard test-mode routing and mutation error callback signatures.
+- [x] Align the dashboard profile mutation regression assertion with the typed sanitized-error wrapper.
+- [x] Revalidate the timed-out SMTP welcome-email regression and resolve any reproducible release-blocking failure.
+- [ ] Add focused coverage, validate, release, and synchronize the exact preference-and-retry enhancement tree to GitHub main.

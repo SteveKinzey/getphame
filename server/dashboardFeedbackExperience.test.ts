@@ -53,6 +53,19 @@ describe("dashboard feedback experience", () => {
     expect(styles).toContain(".dark .dashboard-content input.bg-white");
   });
 
+  it("offers an accessible Settings appearance preference through the shared persisted theme context", () => {
+    const settings = read("client/src/pages/Settings.tsx");
+    const themeContext = read("client/src/contexts/ThemeContext.tsx");
+
+    expect(themeContext).toContain("setThemePreference?: (theme: Theme) => void");
+    expect(themeContext).toContain('localStorage.setItem("theme", theme)');
+    expect(settings).toContain('data-testid="settings-theme-preference"');
+    expect(settings).toContain('role="radiogroup"');
+    expect(settings).toContain('role="radio"');
+    expect(settings).toContain("aria-checked={selected}");
+    expect(settings).toContain("setThemePreference(option)");
+  });
+
   it("edits only the authenticated user business profile through the established profile upsert contract", () => {
     const dashboard = read("client/src/pages/Dashboard.tsx");
 
@@ -63,7 +76,7 @@ describe("dashboard feedback experience", () => {
     expect(dashboard).toContain('id="dashboard-profile-review-link"');
     expect(dashboard).toContain('id="dashboard-profile-reply-to"');
     expect(dashboard).toContain('t("dashboard.profileEditor.saved"');
-    expect(dashboard).toContain("onError: showDashboardApiError");
+    expect(dashboard).toContain("onError: showDashboardMutationError");
   });
 
   it("routes dashboard mutation failures through one localized recovery message", () => {
@@ -72,20 +85,44 @@ describe("dashboard feedback experience", () => {
 
     expect(dashboard).toContain("const showDashboardApiError = useDashboardApiErrorToast()");
     expect(feedback).toContain('t("apiRecovery.unavailableTitle"');
-    expect(dashboard.match(/onError: showDashboardApiError/g)).toHaveLength(3);
+    expect(dashboard.match(/onError: showDashboardMutationError/g)).toHaveLength(3);
     expect(dashboard).toContain("showDashboardApiError();");
     expect(dashboard).not.toContain("toast.error(err.message)");
+  });
+
+  it("adds a retry action only for recoverable dashboard query refreshes", () => {
+    const dashboard = read("client/src/pages/Dashboard.tsx");
+    const feedback = read("client/src/components/dashboard/DashboardFeedbackExperience.tsx");
+
+    expect(feedback).toContain("type DashboardApiErrorToastOptions");
+    expect(feedback).toContain("action: options.onRetry");
+    expect(feedback).toContain('t("apiRecovery.retry"');
+    expect(dashboard).toContain("const retryDashboardData = useCallback");
+    expect(dashboard).toContain("hasRecoverableDashboardQueryError");
+    expect(dashboard).toContain("useRecoverableDashboardQueryError(hasRecoverableDashboardQueryError, retryDashboardData)");
+    expect(dashboard).toContain("testRecoveryMode !== \"mutation\"");
+    expect(dashboard).toContain('data-testid="dashboard-page-mutation-error-trigger"');
+    expect(dashboard).toContain("updateDashboardProfile.mutate");
+    expect(feedback).toContain("wasErroredRef");
+    expect(feedback).toContain("if (wasErroredRef.current) return");
+    expect(dashboard).not.toContain("onError: showDashboardApiError({ onRetry:");
   });
 
   it("ships dashboard feedback copy in every locale and the offline PWA fallback", () => {
     const fallback = JSON.parse(
       readFileSync(`${projectRoot}client/src/lib/i18nCompleteFallbackResources.json`, "utf8")
-    ) as Record<string, { dashboard?: Record<string, Record<string, string>> }>;
+    ) as Record<string, {
+      dashboard?: Record<string, Record<string, string>>;
+      settings?: { appearance?: Record<string, string> };
+    }>;
 
     for (const locale of locales) {
       const catalog = JSON.parse(
         read(`client/public/locales/${locale}/translation.json`)
-      ) as { dashboard?: Record<string, Record<string, string>> };
+      ) as {
+        dashboard?: Record<string, Record<string, string>>;
+        settings?: { appearance?: Record<string, string> };
+      };
       const dashboard = catalog.dashboard;
       const offlineDashboard = fallback[locale]?.dashboard;
 
@@ -100,6 +137,10 @@ describe("dashboard feedback experience", () => {
       expect(offlineDashboard?.loading?.title).toBeTruthy();
       expect(offlineDashboard?.profileEditor?.button).toBeTruthy();
       expect(offlineDashboard?.profileEditor?.save).toBeTruthy();
+      expect(catalog.settings?.appearance?.title).toBeTruthy();
+      expect(catalog.settings?.appearance?.saved).toBeTruthy();
+      expect(fallback[locale]?.settings?.appearance?.title).toBeTruthy();
+      expect(fallback[locale]?.settings?.appearance?.saved).toBeTruthy();
     }
   });
 });

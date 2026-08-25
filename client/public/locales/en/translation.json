@@ -2952,6 +2952,12 @@
       "notActive": "Connected, but not selected for customer review requests",
       "connectionSavedMessage": "Your bulk mail server is connected and ready to use.",
       "connectingAndVerifying": "Connecting and verifying…"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Choose the color mode you want Get Phame to remember on this device.",
+      "label": "Color mode",
+      "saved": "{{theme}} mode is saved on this device."
     }
   },
   "complianceGuide": {
