@@ -33,15 +33,16 @@ describe("Get Phame agent discovery", () => {
     expect(markdown.text).toContain("# Get Phame");
   });
 
-  it("publishes catalog, OpenAPI, authentication, skills, and protected-resource metadata", async () => {
+  it("publishes catalog, OpenAPI, authentication guidance, and skills without advertising OAuth", async () => {
     const app = buildDiscoveryApp();
-    const [catalog, openApi, oidc, protectedResource, skills, auth] = await Promise.all([
+    const [catalog, openApi, skills, auth, oidc, oauthServer, protectedResource] = await Promise.all([
       request(app).get("/.well-known/api-catalog"),
       request(app).get("/openapi.json"),
-      request(app).get("/.well-known/openid-configuration"),
-      request(app).get("/.well-known/oauth-protected-resource"),
       request(app).get("/.well-known/agent-skills/index.json"),
       request(app).get("/auth.md"),
+      request(app).get("/.well-known/openid-configuration"),
+      request(app).get("/.well-known/oauth-authorization-server"),
+      request(app).get("/.well-known/oauth-protected-resource"),
     ]);
 
     expect(catalog.headers["content-type"]).toContain("application/linkset+json");
@@ -50,15 +51,14 @@ describe("Get Phame agent discovery", () => {
     );
     expect(openApi.headers["content-type"]).toContain("application/vnd.oai.openapi+json");
     expect(openApi.body.openapi).toBe("3.1.0");
-    expect(oidc.body.grant_types_supported).toEqual([]);
-    expect(oidc.body.agent_auth.credential_types_supported).toEqual(["api_key"]);
-    expect(protectedResource.body.scopes_supported).toEqual(
-      expect.arrayContaining(["contacts:write", "review_requests:send"])
-    );
     expect(skills.body.$schema).toContain("agentskills.io");
     expect(skills.body.skills[0].digest).toMatch(/^sha256:[a-f0-9]{64}$/);
     expect(auth.headers["content-type"]).toContain("text/markdown");
     expect(auth.text).toContain("# auth.md");
+    expect(auth.text).toContain("does not offer automatic agent account registration or OAuth");
+    expect(oidc.status).toBe(404);
+    expect(oauthServer.status).toBe(404);
+    expect(protectedResource.status).toBe(404);
   });
 
   it("limits MCP discovery to a read-only public information tool", async () => {

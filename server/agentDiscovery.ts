@@ -275,59 +275,6 @@ export function registerAgentDiscoveryRoutes(app: Express): void {
   app.get("/docs/api", (_req, res) => sendMarkdown(res, API_DOCS_MARKDOWN));
   app.get("/auth.md", (_req, res) => sendMarkdown(res, AUTH_MD));
 
-  app.get("/.well-known/openid-configuration", (_req, res) =>
-    sendJson(res, {
-      issuer: BASE_URL,
-      authorization_endpoint: `${BASE_URL}/api/agent/authorize`,
-      token_endpoint: `${BASE_URL}/api/agent/token`,
-      jwks_uri: `${BASE_URL}/.well-known/jwks.json`,
-      response_types_supported: [],
-      grant_types_supported: [],
-      scopes_supported: ["contacts:write", "review_requests:send"],
-      token_endpoint_auth_methods_supported: [],
-      service_documentation: `${BASE_URL}/auth.md`,
-      agent_auth: {
-        skill: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`,
-        register_uri: `${BASE_URL}/login`,
-        identity_types_supported: ["verified_email"],
-        identity_assertion: { assertion_types_supported: ["verified_email"] },
-        credential_types_supported: ["api_key"],
-        claim_uri: `${BASE_URL}/docs/api`,
-      },
-    })
-  );
-  app.get("/.well-known/oauth-authorization-server", (_req, res) =>
-    sendJson(res, {
-      issuer: BASE_URL,
-      authorization_endpoint: `${BASE_URL}/api/agent/authorize`,
-      token_endpoint: `${BASE_URL}/api/agent/token`,
-      jwks_uri: `${BASE_URL}/.well-known/jwks.json`,
-      response_types_supported: [],
-      grant_types_supported: [],
-      scopes_supported: ["contacts:write", "review_requests:send"],
-      token_endpoint_auth_methods_supported: [],
-      service_documentation: `${BASE_URL}/auth.md`,
-      agent_auth: {
-        skill: `${BASE_URL}/.well-known/agent-skills/get-phame-public-api/SKILL.md`,
-        register_uri: `${BASE_URL}/login`,
-        identity_types_supported: ["verified_email"],
-        identity_assertion: { assertion_types_supported: ["verified_email"] },
-        credential_types_supported: ["api_key"],
-        claim_uri: `${BASE_URL}/docs/api`,
-      },
-    })
-  );
-  app.get("/.well-known/jwks.json", (_req, res) => sendJson(res, { keys: [] }));
-  app.get("/.well-known/oauth-protected-resource", (_req, res) =>
-    sendJson(res, {
-      resource: `${BASE_URL}/api/v1`,
-      authorization_servers: [BASE_URL],
-      scopes_supported: ["contacts:write", "review_requests:send"],
-      bearer_methods_supported: ["header"],
-      resource_documentation: `${BASE_URL}/docs/api`,
-    })
-  );
-
   app.get("/.well-known/mcp/server-card.json", (_req, res) =>
     sendJson(res, {
       serverInfo: { name: "Get Phame public discovery", version: "1.0.0" },
@@ -378,19 +325,6 @@ export function registerAgentDiscoveryRoutes(app: Express): void {
           digest: `sha256:${sha256(AGENT_SKILL)}`,
         },
       ],
-    })
-  );
-
-  app.get("/api/agent/authorize", (_req, res) =>
-    res.status(400).json({
-      error: "unsupported_response_type",
-      error_description: "Get Phame does not provide automated OAuth authorization. Use account-owner-provisioned developer API keys as documented in /auth.md.",
-    })
-  );
-  app.post("/api/agent/token", (_req, res) =>
-    res.status(400).json({
-      error: "unsupported_grant_type",
-      error_description: "Get Phame does not mint OAuth access tokens. Use an owner-provisioned developer API key as documented in /auth.md.",
     })
   );
 }
