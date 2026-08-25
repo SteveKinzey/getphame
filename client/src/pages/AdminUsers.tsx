@@ -636,7 +636,7 @@ export default function AdminUsersPage() {
                 max={auditDateTo || undefined}
                 onChange={(event) => setAuditDateFrom(event.target.value)}
                 className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-              />
+               name="rr-pages-admin-users-audit-date-from-633" />
             </label>
             <label className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">
               {t("adminUsers.smtpAuditTo", { defaultValue: "To date" })}
@@ -646,7 +646,7 @@ export default function AdminUsersPage() {
                 min={auditDateFrom || undefined}
                 onChange={(event) => setAuditDateTo(event.target.value)}
                 className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-              />
+               name="rr-pages-admin-users-audit-date-to-643" />
             </label>
             <label className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">
               {t("adminUsers.smtpAuditAdministrator", { defaultValue: "Administrator" })}
@@ -654,7 +654,7 @@ export default function AdminUsersPage() {
                 value={auditAdminId}
                 onChange={(event) => setAuditAdminId(event.target.value)}
                 className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-              >
+               name="rr-pages-admin-users-audit-admin-id-653">
                 <option value="all">{t("adminUsers.smtpAuditAllAdministrators", { defaultValue: "All administrators" })}</option>
                 {smtpAuditActors.data?.map((actor) => (
                   <option key={actor.id} value={String(actor.id)}>{actor.name || actor.email || `Admin #${actor.id}`}</option>
@@ -667,7 +667,7 @@ export default function AdminUsersPage() {
                 value={auditOutcome}
                 onChange={(event) => setAuditOutcome(event.target.value as SmtpAuditOutcomeFilter)}
                 className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-              >
+               name="rr-pages-admin-users-audit-outcome-666">
                 <option value="all">{t("adminUsers.smtpAuditAllOutcomes", { defaultValue: "All outcomes" })}</option>
                 <option value="removed">{t("adminUsers.smtpAuditOutcomeRemoved", { defaultValue: "Removed" })}</option>
               </select>

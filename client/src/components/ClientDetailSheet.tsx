@@ -150,7 +150,7 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
                     onChange={(e) => setEditSubject(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl text-sm outline-none"
                     style={{ border: "2px solid oklch(0.80 0.18 80)", fontSize: "14px" }}
-                  />
+                   name="rr-components-client-detail-sheet-edit-subject-147" />
                 ) : (
                   <p className="text-sm rr-text-navy px-3 py-2 rounded-xl" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
                     {editSubject || <span className="rr-text-navy-muted italic">No subject</span>}
@@ -180,7 +180,7 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
                     className="w-full px-3 py-2 rounded-xl text-sm outline-none resize-none font-mono"
                     style={{ border: "2px solid oklch(0.80 0.18 80)", fontSize: "12px" }}
                     placeholder="HTML email body..."
-                  />
+                   name="rr-components-client-detail-sheet-edit-body-176" />
                 ) : showPreview ? (
                   <div
                     className="rounded-xl overflow-hidden"

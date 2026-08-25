@@ -330,14 +330,14 @@ function LeadsSection() {
             style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "oklch(0.975 0.003 100)" }}
             onFocus={(e) => (e.target.style.borderColor = "oklch(0.22 0.09 260)")}
             onBlur={(e) => (e.target.style.borderColor = "oklch(0.88 0.02 260)")}
-          />
+           name="rr-pages-admin-dashboard-search-324" />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
           className="px-3 py-2 rounded-xl text-xs font-bold outline-none cursor-pointer"
           style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "oklch(0.975 0.003 100)", color: "oklch(0.22 0.09 260)" }}
-        >
+         name="rr-pages-admin-dashboard-status-filter-335">
           <option value="all">All statuses</option>
           <option value="consented">Consented</option>
           <option value="no-consent">No consent</option>
@@ -1256,7 +1256,7 @@ export default function AdminDashboard() {
                           setOnboardingFunnelStartDate(event.target.value)
                         }
                         className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
-                      />
+                       name="rr-pages-admin-dashboard-onboarding-funnel-start-date-1252" />
                     </label>
                     <label className="text-xs font-semibold text-slate-700">
                       End date
@@ -1267,7 +1267,7 @@ export default function AdminDashboard() {
                           setOnboardingFunnelEndDate(event.target.value)
                         }
                         className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
-                      />
+                       name="rr-pages-admin-dashboard-onboarding-funnel-end-date-1263" />
                     </label>
                     {!onboardingFunnelRangeValid && (
                       <p className="sm:col-span-2 text-xs font-semibold text-rose-700">
@@ -1945,7 +1945,7 @@ export default function AdminDashboard() {
                         setSupportReportEndDate("");
                       }}
                       className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-                    >
+                     name="rr-pages-admin-dashboard-support-reporting-period-1938">
                       <option value="7">Last 7 days</option>
                       <option value="30">Last 30 days</option>
                       <option value="90">Last 90 days</option>
@@ -1965,7 +1965,7 @@ export default function AdminDashboard() {
                           setSupportReportStartDate(event.target.value)
                         }
                         className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-                      />
+                       name="rr-pages-admin-dashboard-support-report-start-date-1960" />
                     </label>
                     <label className="text-xs font-black rr-text-navy">
                       <span className="mb-1 block">To</span>
@@ -1977,7 +1977,7 @@ export default function AdminDashboard() {
                           setSupportReportEndDate(event.target.value)
                         }
                         className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-                      />
+                       name="rr-pages-admin-dashboard-support-report-end-date-1972" />
                     </label>
                   </div>
                   <p className="max-w-xs text-xs font-medium rr-text-navy-muted">
@@ -2248,7 +2248,7 @@ export default function AdminDashboard() {
                     background: "oklch(0.97 0.003 260)",
                     border: "1px solid oklch(0.88 0.02 260)",
                   }}
-                />
+                 name="rr-pages-admin-dashboard-search-input-2241" />
                 {searchInput && (
                   <button
                     onClick={() => setSearchInput("")}

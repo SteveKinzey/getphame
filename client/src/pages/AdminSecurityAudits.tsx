@@ -264,7 +264,7 @@ export default function AdminSecurityAudits() {
                   setDays(Number(event.target.value) as 30 | 90 | 365)
                 }
                 className="min-h-11 rounded-lg border border-border bg-background px-3 rr-b2 rr-text-navy focus:outline-none focus:ring-2 focus:ring-ring"
-              >
+               name="rr-pages-admin-security-audits-days-261">
                 <option value={30}>
                   {t("securityAudits.lastDays", {
                     count: 30,
@@ -295,7 +295,7 @@ export default function AdminSecurityAudits() {
                   setOutcome(event.target.value as OutcomeFilter)
                 }
                 className="min-h-11 rounded-lg border border-border bg-background px-3 rr-b2 rr-text-navy focus:outline-none focus:ring-2 focus:ring-ring"
-              >
+               name="rr-pages-admin-security-audits-outcome-292">
                 <option value="all">
                   {t("securityAudits.outcome.all", {
                     defaultValue: "All outcomes",

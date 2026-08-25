@@ -100,7 +100,7 @@ export default function LeadCapture() {
                         aria-describedby="lead-email-guidance"
                         disabled={submitLead.isPending}
                         className={`flex-1 px-4 py-3.5 bg-[#1a2744] border rounded-xl text-white placeholder:text-slate-400 font-medium focus:outline-none focus:ring-1 transition-all disabled:opacity-60 ${showEmailError ? "border-red-400 focus:border-red-400 focus:ring-red-400/20" : "border-[#2a3a5c] focus:border-primary/50 focus:ring-primary/20"}`}
-                      />
+                       name="rr-components-landing-lead-capture-email-87" />
                       <button
                         type="submit"
                         disabled={submitLead.isPending || validation.error !== null || !consentChecked}
@@ -137,7 +137,7 @@ export default function LeadCapture() {
                           onChange={(e) => { setConsentChecked(e.target.checked); setConsentTouched(true); }}
                           className="sr-only"
                           aria-describedby="lead-consent-error"
-                        />
+                         name="rr-components-landing-lead-capture-consent-checked-134" />
                         <div
                           className="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-150"
                           style={{

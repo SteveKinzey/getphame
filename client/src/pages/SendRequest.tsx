@@ -737,7 +737,7 @@ export default function SendRequestPage() {
                   fontFamily: "'Nunito', sans-serif",
                   fontSize: "16px",
                 }}
-              />
+               name="rr-pages-send-request-customer-name-728" />
               {errors.name && (
                 <p className="text-xs mt-1" style={{ color: "oklch(0.65 0.22 27)" }}>{errors.name}</p>
               )}
@@ -761,7 +761,7 @@ export default function SendRequestPage() {
                   fontFamily: "'Nunito', sans-serif",
                   fontSize: "16px",
                 }}
-              />
+               name="rr-pages-send-request-customer-email-752" />
               {errors.email && (
                 <p className="text-xs mt-1" style={{ color: "oklch(0.65 0.22 27)" }}>{errors.email}</p>
               )}
@@ -781,7 +781,7 @@ export default function SendRequestPage() {
                     setSelectedTemplateId(val === "default" ? null : Number(val));
                   }}
                   className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none bg-white rr-text-navy" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "15px" }}
-                >
+                 name="rr-pages-send-request-selected-template-id-777">
                   <option value="default">
                     {defaultTemplate
                       ? t("mainForm.defaultTemplateWithName", { templateName: defaultTemplate.name })
@@ -967,7 +967,7 @@ export default function SendRequestPage() {
                       setSelectedPlatformId(val === "default" ? null : Number(val));
                     }}
                     className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none bg-white rr-text-navy" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "15px" }}
-                  >
+                   name="rr-pages-send-request-selected-platform-id-963">
                     <option value="default">
                       {platforms.find((p) => p.isDefault === 1)
                         ? `${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || t("mainForm.defaultPlatform")} (${t("mainForm.defaultPlatform", { defaultValue: "default" })})`
@@ -1198,7 +1198,7 @@ export default function SendRequestPage() {
                     checked={complianceChecked[item.key]}
                     onChange={(event) => setComplianceChecked((current) => ({ ...current, [item.key]: event.target.checked }))}
                     className="mt-0.5 h-4 w-4 shrink-0 accent-[oklch(0.55_0.18_145)]"
-                  />
+                   name="rr-pages-send-request-compliance-checked-1196" />
                   <span className="text-xs leading-relaxed rr-text-navy-mid">{item.label}</span>
                 </label>
               ))}
@@ -1208,7 +1208,7 @@ export default function SendRequestPage() {
                   checked={consentCheckCompliance}
                   onChange={(e) => setConsentCheckCompliance(e.target.checked)}
                   className="mt-0.5 h-4 w-4 shrink-0 accent-[oklch(0.55_0.18_145)]"
-                />
+                 name="rr-pages-send-request-consent-check-compliance-1206" />
                 <span className="text-xs leading-relaxed rr-text-navy-mid">{t("bulkSendDialog.consentCheck", "I confirm customers have consented to be contacted by my business via email and/or text")}</span>
               </label>
             </div>

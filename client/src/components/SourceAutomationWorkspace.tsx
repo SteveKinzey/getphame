@@ -158,7 +158,7 @@ export function SourceAutomationWorkspace({ source, apiKeys, endpoint }: SourceA
               ? { id: source.id, automationMode: "review_request", dryRun: true }
               : { id: source.id, automationMode: "import_only", automationEnabled: false, dryRun: true, pauseReason: "Switched to import-only mode" })}
             className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
-          >
+           name="rr-components-source-automation-workspace-review-mode-154">
             <option value="import_only">{t("developerIntegrations.sourceOps.automation.modes.importOnly", { defaultValue: "Import only" })}</option>
             <option value="review_request">{t("developerIntegrations.sourceOps.automation.modes.reviewRequest", { defaultValue: "Review request" })}</option>
           </select>
@@ -166,14 +166,14 @@ export function SourceAutomationWorkspace({ source, apiKeys, endpoint }: SourceA
 
         <label className="grid gap-1.5 rr-l2 rr-text-navy">
           {t("developerIntegrations.sourceOps.automation.locale", { defaultValue: "Recipient language" })}
-          <select value={source.preferredLocale} disabled={updateSource.isPending} onChange={event => update({ id: source.id, preferredLocale: event.target.value as "en" | "es" | "fr" | "it" | "th" | "zh-CN" | "zh-TW" })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60">
+          <select value={source.preferredLocale} disabled={updateSource.isPending} onChange={event => update({ id: source.id, preferredLocale: event.target.value as "en" | "es" | "fr" | "it" | "th" | "zh-CN" | "zh-TW" })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" name="rr-components-source-automation-workspace-source-169">
             {["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"].map(locale => <option key={locale} value={locale}>{t(`languages.${locale}`, { defaultValue: locale })}</option>)}
           </select>
         </label>
 
         <label className="grid gap-1.5 rr-l2 rr-text-navy">
           {t("developerIntegrations.sourceOps.automation.template", { defaultValue: "Approved template" })}
-          <select value={source.templateId ?? ""} disabled={updateSource.isPending || templatesQuery.isLoading} onChange={event => update({ id: source.id, templateId: event.target.value ? Number(event.target.value) : null })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60">
+          <select value={source.templateId ?? ""} disabled={updateSource.isPending || templatesQuery.isLoading} onChange={event => update({ id: source.id, templateId: event.target.value ? Number(event.target.value) : null })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" name="rr-components-source-automation-workspace-source-176">
             <option value="">{t("developerIntegrations.sourceOps.automation.defaultTemplate", { defaultValue: "Approved default template" })}</option>
             {templates.map(template => <option key={template.id} value={template.id}>{template.name}{template.isDefault ? ` · ${t("developerIntegrations.sourceOps.automation.default", { defaultValue: "default" })}` : ""}</option>)}
           </select>
@@ -181,7 +181,7 @@ export function SourceAutomationWorkspace({ source, apiKeys, endpoint }: SourceA
 
         <label className="grid gap-1.5 rr-l2 rr-text-navy">
           {t("developerIntegrations.sourceOps.automation.platform", { defaultValue: "Review destination" })}
-          <select value={source.platformId ?? ""} disabled={updateSource.isPending || platformsQuery.isLoading} onChange={event => update({ id: source.id, platformId: event.target.value ? Number(event.target.value) : null })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60">
+          <select value={source.platformId ?? ""} disabled={updateSource.isPending || platformsQuery.isLoading} onChange={event => update({ id: source.id, platformId: event.target.value ? Number(event.target.value) : null })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" name="rr-components-source-automation-workspace-source-184">
             <option value="">{t("developerIntegrations.sourceOps.automation.defaultPlatform", { defaultValue: "Verified default destination" })}</option>
             {platforms.map(platform => <option key={platform.id} value={platform.id}>{platform.label || platform.platform}{platform.isDefault ? ` · ${t("developerIntegrations.sourceOps.automation.default", { defaultValue: "default" })}` : ""}</option>)}
           </select>
@@ -189,7 +189,7 @@ export function SourceAutomationWorkspace({ source, apiKeys, endpoint }: SourceA
 
         <label className="grid gap-1.5 rr-l2 rr-text-navy">
           {t("developerIntegrations.sourceOps.automation.delay", { defaultValue: "Send delay" })}
-          <select value={source.sendDelayMinutes} disabled={updateSource.isPending} onChange={event => update({ id: source.id, sendDelayMinutes: Number(event.target.value) })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60">
+          <select value={source.sendDelayMinutes} disabled={updateSource.isPending} onChange={event => update({ id: source.id, sendDelayMinutes: Number(event.target.value) })} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" name="rr-components-source-automation-workspace-source-192">
             {DELAY_OPTIONS.map(minutes => <option key={minutes} value={minutes}>{minutes === 0 ? t("developerIntegrations.sourceOps.automation.delays.immediate", { defaultValue: "Immediately" }) : minutes === 1_440 ? t("developerIntegrations.sourceOps.automation.delays.day", { defaultValue: "24 hours" }) : t("developerIntegrations.sourceOps.automation.delays.minutes", { defaultValue: "{{count}} minutes", count: minutes })}</option>)}
           </select>
         </label>
@@ -223,8 +223,8 @@ export function SourceAutomationWorkspace({ source, apiKeys, endpoint }: SourceA
           <div className="flex items-center gap-2 rr-text-navy"><CheckCircle2 size={17} aria-hidden="true" /><h4 id="source-preflight-title" className="font-black">{t("developerIntegrations.sourceOps.automation.preflightTitle", { defaultValue: "Read-only preflight" })}</h4></div>
           <p className="mt-1 text-xs leading-5 text-slate-600">{t("developerIntegrations.sourceOps.automation.preflightDescription", { defaultValue: "Check source binding, suppression, SMTP, quota, destination, and approved template readiness. This test does not import a contact or send email." })}</p>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <label className="grid gap-1.5 text-xs font-black rr-text-navy">{t("developerIntegrations.sourceOps.automation.testName", { defaultValue: "Permitted test name" })}<input value={preflightName} onChange={event => setPreflightName(event.target.value)} required maxLength={255} className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal rr-text-navy focus-visible:ring-2 focus-visible:ring-ring" /></label>
-            <label className="grid gap-1.5 text-xs font-black rr-text-navy">{t("developerIntegrations.sourceOps.automation.testEmail", { defaultValue: "Permitted test email" })}<input type="email" value={preflightEmail} onChange={event => setPreflightEmail(event.target.value)} required maxLength={320} autoComplete="off" className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal rr-text-navy focus-visible:ring-2 focus-visible:ring-ring" /></label>
+            <label className="grid gap-1.5 text-xs font-black rr-text-navy">{t("developerIntegrations.sourceOps.automation.testName", { defaultValue: "Permitted test name" })}<input value={preflightName} onChange={event => setPreflightName(event.target.value)} required maxLength={255} className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal rr-text-navy focus-visible:ring-2 focus-visible:ring-ring"  name="rr-components-source-automation-workspace-preflight-name-226" /></label>
+            <label className="grid gap-1.5 text-xs font-black rr-text-navy">{t("developerIntegrations.sourceOps.automation.testEmail", { defaultValue: "Permitted test email" })}<input type="email" value={preflightEmail} onChange={event => setPreflightEmail(event.target.value)} required maxLength={320} autoComplete="off" className="min-h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-normal rr-text-navy focus-visible:ring-2 focus-visible:ring-ring"  name="rr-components-source-automation-workspace-preflight-email-227" /></label>
           </div>
           <button type="submit" disabled={preflight.isPending || !preflightName.trim() || !preflightEmail.trim()} className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl rr-bg-navy px-4 text-xs font-black rr-text-gold transition active:scale-[0.97] disabled:opacity-50">{preflight.isPending ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : <ShieldCheck size={14} aria-hidden="true" />}{t("developerIntegrations.sourceOps.automation.runPreflight", { defaultValue: "Run preflight" })}</button>
         </form>

@@ -423,7 +423,7 @@ export default function ActivityTrendCard({
                 max={today}
                 onChange={event => setCustomStartDate(event.target.value)}
                 className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-              />
+               name="rr-components-dashboard-activity-trend-card-custom-start-date-420" />
             </label>
             <label className="grid gap-1 text-xs font-bold rr-text-navy">
               {t("activityTrend.rangeTo", { defaultValue: "To" })}
@@ -433,7 +433,7 @@ export default function ActivityTrendCard({
                 max={today}
                 onChange={event => setCustomEndDate(event.target.value)}
                 className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-              />
+               name="rr-components-dashboard-activity-trend-card-custom-end-date-430" />
             </label>
             <button
               type="button"
@@ -502,7 +502,7 @@ export default function ActivityTrendCard({
                   checked={checked}
                   onChange={() => toggleExportSeries(series)}
                   className="h-4 w-4 accent-amber-500"
-                />
+                 name="rr-components-dashboard-activity-trend-card-checked-500" />
                 {exportSeriesLabels[series]}
               </label>
             );
