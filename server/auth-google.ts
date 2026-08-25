@@ -35,6 +35,7 @@ import {
   providerEmailMatches,
   verifyProviderOAuthCallbackState,
 } from "./security/passkeyEnrollmentIntent";
+import { getSafeAuthReturnPath } from "../shared/authReturnPath";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -82,6 +83,7 @@ function createGoogleAuthorization(
     typeof req.query.expected_email_hash === "string"
       ? req.query.expected_email_hash
       : undefined;
+  const returnTo = getSafeAuthReturnPath(req.query.returnTo);
   if (
     intent !== undefined &&
     (intent !== PASSKEY_ENROLLMENT_INTENT ||
@@ -94,6 +96,7 @@ function createGoogleAuthorization(
       ? { intent, expectedEmailHash }
       : {}),
     ...(humanVerificationAttemptId ? { humanVerificationAttemptId } : {}),
+    ...(returnTo ? { returnTo } : {}),
   });
   res.cookie("google_oauth_state", state, {
     httpOnly: true,
@@ -201,6 +204,7 @@ export function registerGoogleAuthRoutes(app: Express) {
       stateVerification.kind === "signed" ? stateVerification.payload : null;
     const isPasskeyEnrollment =
       statePayload?.intent === PASSKEY_ENROLLMENT_INTENT;
+    const returnTo = getSafeAuthReturnPath(statePayload?.returnTo);
 
     if (error || !code) {
       if (error) console.warn("[GoogleAuth] User denied access:", error);
@@ -395,8 +399,9 @@ export function registerGoogleAuthRoutes(app: Express) {
         res,
       });
 
-      // Redirect to app root (or onboarding if new user)
-      res.redirect(302, isNewUser ? "/onboarding" : "/");
+      // Existing users resume only to a same-origin path signed into the OAuth
+      // state before leaving the app. New accounts continue through onboarding.
+      res.redirect(302, isNewUser ? "/onboarding" : returnTo ?? "/");
     } catch (err) {
       console.error("[GoogleAuth] Callback failed:", err);
       res.redirect(302, "/?auth_error=google_failed");

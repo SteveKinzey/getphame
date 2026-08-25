@@ -196,6 +196,47 @@ describe("Google callback human-proof enforcement", () => {
     ).not.toHaveBeenCalled();
   });
 
+  it("returns a verified existing user to a signed same-origin admin preview route", async () => {
+    const canonicalUser = {
+      id: 42,
+      openId: "apple-existing-member",
+      email: "member@example.test",
+      name: "Existing Member",
+    };
+    mocks.getUserByEmail.mockResolvedValue(canonicalUser);
+    const state = createProviderOAuthState({
+      returnTo: "/admin/email-preview?template=welcome",
+    });
+
+    const response = await callbackRequest(createApp(), state);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe(
+      "/admin/email-preview?template=welcome"
+    );
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(
+      expect.objectContaining({ userId: canonicalUser.id })
+    );
+  });
+
+  it("drops an unsafe OAuth return path and falls back to the application root", async () => {
+    const canonicalUser = {
+      id: 42,
+      openId: "apple-existing-member",
+      email: "member@example.test",
+      name: "Existing Member",
+    };
+    mocks.getUserByEmail.mockResolvedValue(canonicalUser);
+    const state = createProviderOAuthState({
+      returnTo: "https://attacker.example/",
+    });
+
+    const response = await callbackRequest(createApp(), state);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/");
+  });
+
   it("creates a new Google account only once from a consumed provider-bound attempt", async () => {
     const attemptId = "22222222-2222-4222-8222-222222222222";
     const createdUser = {

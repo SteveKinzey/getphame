@@ -13,7 +13,7 @@ describe("returning-user public sign-in entry", () => {
 
   it("offers returning users a separate login route from the new-account onboarding form", () => {
     const onboarding = fs.readFileSync(path.join(root, "client/src/pages/Onboarding.tsx"), "utf8");
-    expect(onboarding).toContain('href="/login"');
+    expect(onboarding).toContain('appendAuthReturnPath("/login", returnPath)');
     expect(onboarding).toContain("Already have an account?");
   });
 
@@ -27,5 +27,17 @@ describe("returning-user public sign-in entry", () => {
     expect(login).toContain("<MagicLinkForm");
     expect(onboarding).toContain("<MagicLinkForm");
     expect(magicLinkForm).toContain("origin: window.location.origin");
+    expect(magicLinkForm).toContain("returnTo: returnPath");
+    expect(login).toContain("appendAuthReturnPath");
+    expect(onboarding).toContain("appendAuthReturnPath");
+  });
+
+  it("redirects an existing session away from both sign-in entry screens", () => {
+    const login = fs.readFileSync(path.join(root, "client/src/pages/Login.tsx"), "utf8");
+    const onboarding = fs.readFileSync(path.join(root, "client/src/pages/Onboarding.tsx"), "utf8");
+    expect(login).toContain("const { user, loading: authLoading } = useAuth()");
+    expect(login).toContain('window.location.replace(returnPath ?? "/")');
+    expect(onboarding).toContain("const { user, loading: authLoading } = useAuth()");
+    expect(onboarding).toContain('window.location.replace(returnPath ?? "/")');
   });
 });

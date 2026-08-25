@@ -4,25 +4,49 @@
 // Apple OAuth remains preview-only until separately approved for production.
 import { Mail, Shield, Lock, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/landing/SEOHead";
 import { isGoogleSignInHost, isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
 import MagicLinkForm from "@/components/auth/MagicLinkForm";
+import { useAuth } from "@/_core/hooks/useAuth";
+import {
+  appendAuthReturnPath,
+  getSafeAuthReturnPath,
+} from "@shared/authReturnPath";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
 
 export default function OnboardingPage() {
   const { t } = useTranslation();
+  const { user, loading: authLoading } = useAuth();
+  const returnPath = getSafeAuthReturnPath(
+    new URLSearchParams(window.location.search).get("returnTo")
+  );
   const googleLoginEnabled = isGoogleSignInHost(window.location.hostname);
   const appleLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [showEmailForm, setShowEmailForm] = useState(false);
 
   function handleGoogleSignIn() {
-    window.location.href = "/api/auth/google";
+    window.location.href = appendAuthReturnPath("/api/auth/google", returnPath);
   }
   function handleAppleSignIn() {
-    window.location.href = "/api/auth/apple";
+    window.location.href = appendAuthReturnPath("/api/auth/apple", returnPath);
+  }
+  useEffect(() => {
+    if (authLoading || !user) return;
+    window.location.replace(returnPath ?? "/");
+  }, [authLoading, returnPath, user]);
+  if (authLoading || user) {
+    return (
+      <main
+        className="flex min-h-screen items-center justify-center bg-[#0a1628] text-white"
+        role="status"
+        aria-live="polite"
+      >
+        {t("login.subtitle", { defaultValue: "Sign in to your account" })}
+      </main>
+    );
   }
   return (
     <div className="min-h-screen bg-[#0a1628] text-white flex flex-col">
@@ -202,6 +226,7 @@ export default function OnboardingPage() {
                       idPrefix="onboarding"
                       autoFocus
                       onCancel={() => setShowEmailForm(false)}
+                      returnPath={returnPath}
                     />
                   )}
                 </div>
@@ -212,7 +237,7 @@ export default function OnboardingPage() {
                 </p>
                 <p className="mt-4 text-center text-sm font-bold text-white/70">
                   Already have an account?{" "}
-                  <a href="/login" className="underline underline-offset-4 transition-colors hover:text-white" style={{ color: "oklch(0.78 0.15 75)" }}>
+                  <a href={appendAuthReturnPath("/login", returnPath)} className="underline underline-offset-4 transition-colors hover:text-white" style={{ color: "oklch(0.78 0.15 75)" }}>
                     Sign in
                   </a>
                 </p>

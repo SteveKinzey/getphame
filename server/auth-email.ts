@@ -43,6 +43,7 @@ import {
   verifyTurnstileHuman,
 } from "./signupRisk";
 import { isHighConfidenceDisposableEmail } from "./disposableDomains";
+import { getSafeAuthReturnPath } from "../shared/authReturnPath";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -201,10 +202,11 @@ export function registerEmailAuthRoutes(app: Express) {
    * If the email doesn't exist yet, the account will be created on verification.
    */
   app.post("/api/auth/magic-link", async (req: Request, res: Response) => {
-    const { email, intent, humanVerificationToken } = req.body as {
+    const { email, intent, humanVerificationToken, returnTo } = req.body as {
       email?: string;
       intent?: string;
       humanVerificationToken?: unknown;
+      returnTo?: unknown;
     };
     const requestId = crypto.randomUUID();
     const requestStartedAt = Date.now();
@@ -309,6 +311,8 @@ export function registerEmailAuthRoutes(app: Express) {
       // Build magic link URL
       const baseUrl = process.env.APP_BASE_URL?.replace(/\/$/, "") || "https://getphame.app";
       const magicLinkParams = new URLSearchParams({ token });
+      const safeReturnTo = getSafeAuthReturnPath(returnTo);
+      if (safeReturnTo) magicLinkParams.set("returnTo", safeReturnTo);
       if (intent === PASSKEY_ENROLLMENT_INTENT) {
         magicLinkParams.set("intent", PASSKEY_ENROLLMENT_INTENT);
         magicLinkParams.set("intent_signature", signPasskeyEnrollmentIntent(token, normalizedEmail));
@@ -362,6 +366,7 @@ export function registerEmailAuthRoutes(app: Express) {
     const requestedIntent = typeof req.query.intent === "string" ? req.query.intent : null;
     const intentSignature = typeof req.query.intent_signature === "string" ? req.query.intent_signature : null;
     const humanProof = typeof req.query.human_proof === "string" ? req.query.human_proof : undefined;
+    const returnTo = getSafeAuthReturnPath(req.query.returnTo);
     const verificationStartedAt = Date.now();
     let requestId: string = crypto.randomUUID();
     let verificationEmail: string | null = null;
@@ -521,7 +526,14 @@ export function registerEmailAuthRoutes(app: Express) {
       });
 
       // Enrollment resumes only after this one-time verification created a session.
-      res.redirect(302, isPasskeyEnrollment ? "/settings?passkey_enroll=1" : isNewUser ? "/onboarding" : "/");
+      res.redirect(
+        302,
+        isPasskeyEnrollment
+          ? "/settings?passkey_enroll=1"
+          : isNewUser
+            ? "/onboarding"
+            : returnTo ?? "/"
+      );
     } catch (err) {
       void recordAuthLifecycleEvent({
         requestId,
