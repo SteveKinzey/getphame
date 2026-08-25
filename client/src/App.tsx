@@ -32,6 +32,7 @@ import {
   DashboardReadinessGate,
   useDashboardReadiness,
 } from "./components/ApiRecoveryExperience";
+import { DashboardFeedbackPreviewHarness } from "./components/dashboard/DashboardFeedbackExperience";
 import {
   ConnectionSavedNotice,
   SmtpAppPasswordHelpTooltip,
@@ -741,6 +742,17 @@ function App() {
         <TooltipProvider>
           <Toaster position="top-center" richColors />
           <ApiRecoveryTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-feedback") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <Toaster position="top-center" richColors />
+          <DashboardFeedbackPreviewHarness />
         </TooltipProvider>
       </ThemeProvider>
     );

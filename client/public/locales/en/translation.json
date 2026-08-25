@@ -2104,6 +2104,20 @@
       "bulkActiveTooltip": "A verified tenant-owned bulk provider is selected for customer outreach. Manage or replace it in Settings.",
       "details": "Mail server health details",
       "troubleshoot": "Troubleshoot"
+    },
+    "profileEditor": {
+      "button": "Edit profile",
+      "title": "Edit business profile",
+      "description": "Update the business details used in your review requests and public profile.",
+      "businessName": "Business name",
+      "reviewLink": "Review link",
+      "fromName": "Sender name",
+      "replyTo": "Reply-to email",
+      "consentLabelName": "Consent-label business name",
+      "save": "Save profile",
+      "saved": "Profile updated.",
+      "businessNameRequired": "Enter your business name.",
+      "reviewLinkRequired": "Enter your review link."
     }
   },
   "pricing": {
