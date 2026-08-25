@@ -67,4 +67,4 @@
 - [x] Add an accessible main-dashboard loading spinner while core dashboard data is fetching.
 - [x] Add centralized localized dashboard API-failure feedback for both queries and mutations, replacing raw or silent dashboard error paths.
 - [x] Add a mobile-safe accessible name to the icon-only Share Profile button and extend focused regression coverage.
-- [ ] Add localized regression coverage, validate the dashboard interactions, release the enhancement, and synchronize the exact tree to GitHub main.
+- [x] Add localized regression coverage, validate the dashboard interactions, release the enhancement, and synchronize the exact tree to GitHub main.
