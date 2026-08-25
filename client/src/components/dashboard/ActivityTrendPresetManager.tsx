@@ -285,7 +285,7 @@ export function ActivityTrendPresetManager({
               defaultValue: "Example: Monthly performance",
             })}
             className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-          />
+           name="rr-components-dashboard-activity-trend-preset-manager-name-277" />
         </label>
         <button
           type="button"

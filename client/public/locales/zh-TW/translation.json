@@ -703,7 +703,8 @@
     "off": "關閉",
     "on": "開啟",
     "optional": "選填",
-    "undo": "復原"
+    "undo": "復原",
+    "emailFormatValid": "電子郵件格式正確。"
   },
   "profile": {
     "title": "商家資料",
@@ -935,7 +936,9 @@
     "retryTestEmail": "重試",
     "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
     "connectionTestPassed": "郵件伺服器連線已驗證。",
-    "connectionTestFailed": "郵件伺服器仍需處理。"
+    "connectionTestFailed": "郵件伺服器仍需處理。",
+    "credentialReady": "內容正確。",
+    "credentialRequired": "此欄位為必填。"
   },
   "wooCommerce": {
     "title": "WooCommerce",

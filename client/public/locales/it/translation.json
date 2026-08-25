@@ -2050,7 +2050,8 @@
     "off": "Disattivo",
     "on": "Attivo",
     "optional": "facoltativo",
-    "undo": "Annulla"
+    "undo": "Annulla",
+    "emailFormatValid": "Il formato dell'email è corretto."
   },
   "profile": {
     "title": "Profilo Aziendale",
@@ -2215,7 +2216,9 @@
     "retryTestEmail": "Riprova",
     "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato.",
     "connectionTestPassed": "La connessione al server di posta è stata verificata.",
-    "connectionTestFailed": "Il server di posta richiede ancora attenzione."
+    "connectionTestFailed": "Il server di posta richiede ancora attenzione.",
+    "credentialReady": "Tutto è corretto.",
+    "credentialRequired": "Questo campo è obbligatorio."
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",

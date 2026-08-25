@@ -695,11 +695,11 @@ export default function AdminSupportInboxPage() {
                   <p className="mt-2 text-xs font-medium rr-text-navy-muted">Use 0 for the first inbox check after an urgent ticket is overdue. The current policy resolves to {formatEscalationThreshold(Number(breachThresholdMinutes) || 0)}.</p>
                   <div className="mt-4 space-y-3">
                     <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm rr-text-navy">
-                      <input type="checkbox" checked={includeAssignee} onChange={(event) => setIncludeAssignee(event.target.checked)} className="mt-0.5 size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                      <input type="checkbox" checked={includeAssignee} onChange={(event) => setIncludeAssignee(event.target.checked)} className="mt-0.5 size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400"  name="rr-pages-admin-support-inbox-include-assignee-698" />
                       <span><strong>Notify the assigned administrator</strong><span className="mt-0.5 block text-xs font-medium rr-text-navy-muted">Adds the current ticket owner when one is assigned.</span></span>
                     </label>
                     <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm rr-text-navy">
-                      <input type="checkbox" checked={includeAllAdminsWhenUnassigned} onChange={(event) => setIncludeAllAdminsWhenUnassigned(event.target.checked)} className="mt-0.5 size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                      <input type="checkbox" checked={includeAllAdminsWhenUnassigned} onChange={(event) => setIncludeAllAdminsWhenUnassigned(event.target.checked)} className="mt-0.5 size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400"  name="rr-pages-admin-support-inbox-include-all-admins-when-unassigned-702" />
                       <span><strong>Notify all administrators when unassigned</strong><span className="mt-0.5 block text-xs font-medium rr-text-navy-muted">Keeps unowned urgent tickets visible to the team.</span></span>
                     </label>
                   </div>
@@ -710,7 +710,7 @@ export default function AdminSupportInboxPage() {
                   <div className="mt-3 max-h-52 space-y-2 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-2">
                     {assignees.isLoading ? <p className="px-2 py-3 text-xs font-semibold rr-text-navy-muted">Loading administrators…</p> : assignees.data?.map((admin) => (
                       <label key={admin.id} className="flex cursor-pointer items-center gap-3 rounded-lg bg-white px-3 py-2 text-sm rr-text-navy shadow-sm">
-                        <input type="checkbox" checked={escalationRecipientIds.includes(admin.id)} onChange={() => toggleEscalationRecipient(admin.id)} className="size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                        <input type="checkbox" checked={escalationRecipientIds.includes(admin.id)} onChange={() => toggleEscalationRecipient(admin.id)} className="size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400"  name="rr-pages-admin-support-inbox-escalation-recipient-ids-713" />
                         <span className="min-w-0"><strong className="block truncate">{admin.name || "Administrator"}</strong><span className="block truncate text-xs font-medium rr-text-navy-muted">{admin.email}</span></span>
                       </label>
                     ))}

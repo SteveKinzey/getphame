@@ -385,7 +385,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
             className="appearance-none rounded-xl border border-white/20 bg-white px-4 py-2.5 pr-10 text-sm font-semibold text-gray-800 shadow-sm focus:outline-none focus:ring-2"
             style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
             aria-label={t("adminEmailPreview.selectTemplate", { defaultValue: "Select template" })}
-          >
+           name="rr-pages-admin-email-preview-selected-382">
             {TEMPLATES.map(tpl => (
               <option key={tpl.value} value={tpl.value}>{tpl.label}</option>
             ))}
@@ -492,7 +492,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 w-56"
               style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
               aria-label={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
-            />
+             name="rr-pages-admin-email-preview-test-email-487"  autoComplete="email"/>
             <button
               type="button"
               disabled={sendTest.isPending || isLoading || !data?.html || !testEmail}
@@ -562,7 +562,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
                   className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2"
                   style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
                   placeholder={DEFAULT_VARS[key]}
-                />
+                 name="rr-pages-admin-email-preview-vars-558" />
               </label>
             ))}
           </div>
@@ -605,7 +605,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2"
               style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
               onKeyDown={e => e.key === "Enter" && savePreset()}
-            />
+             name="rr-pages-admin-email-preview-preset-name-600" />
             <button
               type="button"
               onClick={savePreset}

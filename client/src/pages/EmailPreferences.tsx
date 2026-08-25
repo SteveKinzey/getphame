@@ -81,7 +81,7 @@ export default function EmailPreferences() {
                   style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "oklch(0.975 0.003 100)" }}
                   onFocus={(e) => (e.target.style.borderColor = "oklch(0.22 0.09 260)")}
                   onBlur={(e) => (e.target.style.borderColor = "oklch(0.88 0.02 260)")}
-                />
+                 name="rr-pages-email-preferences-email-73" />
                 {lookupError && <p className="mt-1.5 text-xs font-medium text-red-500">{lookupError}</p>}
               </div>
               <button
@@ -185,7 +185,7 @@ export default function EmailPreferences() {
                     onChange={(e) => setUnsubscribeReason(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl text-xs font-medium outline-none"
                     style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "white", color: "oklch(0.22 0.09 260)" }}
-                  >
+                   name="rr-pages-email-preferences-unsubscribe-reason-183">
                     <option value="">Select a reason…</option>
                     <option value="too_many_emails">Too many emails</option>
                     <option value="not_relevant">Content not relevant to me</option>

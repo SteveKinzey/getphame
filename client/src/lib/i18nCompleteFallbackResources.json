@@ -656,7 +656,9 @@
       "retryTestEmail": "Retry",
       "disconnectAutomationPauseWarning": "Disconnecting pauses any active automated review requests. They stay paused until you configure and select a new verified mail server.",
       "connectionTestPassed": "Mail server connection verified.",
-      "connectionTestFailed": "Mail server still needs attention."
+      "connectionTestFailed": "Mail server still needs attention.",
+      "credentialReady": "Looks good.",
+      "credentialRequired": "This field is required."
     },
     "comparisonTable": {
       "feature": "Feature",
@@ -804,7 +806,8 @@
       "off": "Off",
       "on": "On",
       "show": "Show",
-      "undo": "Undo"
+      "undo": "Undo",
+      "emailFormatValid": "Email format looks good."
     },
     "onboardingGuide": {
       "allSet": {
@@ -2509,7 +2512,9 @@
       "retryTestEmail": "Reintentar",
       "disconnectAutomationPauseWarning": "Al desconectar se pausarán las solicitudes de reseñas automatizadas activas. Seguirán pausadas hasta que configures y selecciones un nuevo servidor verificado.",
       "connectionTestPassed": "Se verificó la conexión del servidor de correo.",
-      "connectionTestFailed": "El servidor de correo aún necesita atención."
+      "connectionTestFailed": "El servidor de correo aún necesita atención.",
+      "credentialReady": "Todo está correcto.",
+      "credentialRequired": "Este campo es obligatorio."
     },
     "comparisonTable": {
       "feature": "Función",
@@ -2660,7 +2665,8 @@
       "off": "Desactivado",
       "on": "Activado",
       "show": "Mostrar",
-      "undo": "Deshacer"
+      "undo": "Deshacer",
+      "emailFormatValid": "El formato del correo electrónico es correcto."
     },
     "onboardingGuide": {
       "allSet": {
@@ -4545,7 +4551,9 @@
       "retryTestEmail": "Réessayer",
       "disconnectAutomationPauseWarning": "La déconnexion met en pause les demandes d’avis automatisées actives. Elles restent en pause jusqu’à ce que vous configuriez et sélectionniez un nouveau serveur vérifié.",
       "connectionTestPassed": "La connexion au serveur de messagerie est vérifiée.",
-      "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention."
+      "connectionTestFailed": "Le serveur de messagerie nécessite encore votre attention.",
+      "credentialReady": "Tout est correct.",
+      "credentialRequired": "Ce champ est obligatoire."
     },
     "comparisonTable": {
       "feature": "Fonctionnalité",
@@ -4699,7 +4707,8 @@
       "off": "Désactivé",
       "on": "Activé",
       "show": "Afficher",
-      "undo": "Annuler"
+      "undo": "Annuler",
+      "emailFormatValid": "Le format de l’e-mail est correct."
     },
     "onboardingGuide": {
       "allSet": {
@@ -6578,7 +6587,9 @@
       "retryTestEmail": "Riprova",
       "disconnectAutomationPauseWarning": "La disconnessione mette in pausa le richieste di recensione automatizzate attive. Restano in pausa finché non configuri e selezioni un nuovo server verificato.",
       "connectionTestPassed": "La connessione al server di posta è stata verificata.",
-      "connectionTestFailed": "Il server di posta richiede ancora attenzione."
+      "connectionTestFailed": "Il server di posta richiede ancora attenzione.",
+      "credentialReady": "Tutto è corretto.",
+      "credentialRequired": "Questo campo è obbligatorio."
     },
     "comparisonTable": {
       "feature": "Funzionalità",
@@ -6733,7 +6744,8 @@
       "off": "Disattivato",
       "on": "Attivato",
       "show": "Mostra",
-      "undo": "Annulla"
+      "undo": "Annulla",
+      "emailFormatValid": "Il formato dell'email è corretto."
     },
     "onboardingGuide": {
       "allSet": {
@@ -8480,7 +8492,9 @@
       "retryTestEmail": "ลองอีกครั้ง",
       "disconnectAutomationPauseWarning": "การตัดการเชื่อมต่อจะหยุดคำขอรีวิวอัตโนมัติที่กำลังทำงานชั่วคราว และจะหยุดต่อไปจนกว่าคุณจะตั้งค่าและเลือกเซิร์ฟเวอร์ที่ยืนยันแล้วใหม่",
       "connectionTestPassed": "ยืนยันการเชื่อมต่อเซิร์ฟเวอร์อีเมลแล้ว",
-      "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ"
+      "connectionTestFailed": "เซิร์ฟเวอร์อีเมลยังต้องได้รับการตรวจสอบ",
+      "credentialReady": "ข้อมูลถูกต้อง",
+      "credentialRequired": "ต้องกรอกข้อมูลในช่องนี้"
     },
     "comparisonTable": {
       "feature": "คุณสมบัติ",
@@ -8628,7 +8642,8 @@
       "off": "ปิด",
       "on": "เปิด",
       "show": "แสดง",
-      "undo": "เลิกทำ"
+      "undo": "เลิกทำ",
+      "emailFormatValid": "รูปแบบอีเมลถูกต้อง"
     },
     "onboardingGuide": {
       "allSet": {
@@ -10371,7 +10386,9 @@
       "retryTestEmail": "重试",
       "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。",
       "connectionTestPassed": "邮件服务器连接已验证。",
-      "connectionTestFailed": "邮件服务器仍需处理。"
+      "connectionTestFailed": "邮件服务器仍需处理。",
+      "credentialReady": "内容正确。",
+      "credentialRequired": "此字段为必填项。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -10519,7 +10536,8 @@
       "off": "关闭",
       "on": "开启",
       "show": "显示",
-      "undo": "撤销"
+      "undo": "撤销",
+      "emailFormatValid": "电子邮件格式正确。"
     },
     "onboardingGuide": {
       "allSet": {
@@ -12254,7 +12272,9 @@
       "retryTestEmail": "重試",
       "disconnectAutomationPauseWarning": "中斷連線會暫停所有進行中的自動評論請求。在您設定並選取新的已驗證郵件伺服器之前，它們將持續暫停。",
       "connectionTestPassed": "郵件伺服器連線已驗證。",
-      "connectionTestFailed": "郵件伺服器仍需處理。"
+      "connectionTestFailed": "郵件伺服器仍需處理。",
+      "credentialReady": "內容正確。",
+      "credentialRequired": "此欄位為必填。"
     },
     "comparisonTable": {
       "feature": "功能",
@@ -12402,7 +12422,8 @@
       "off": "關閉",
       "on": "開啟",
       "show": "顯示",
-      "undo": "復原"
+      "undo": "復原",
+      "emailFormatValid": "電子郵件格式正確。"
     },
     "onboardingGuide": {
       "allSet": {

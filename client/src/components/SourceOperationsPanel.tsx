@@ -256,7 +256,7 @@ Idempotency-Key: <stable-provider-event-id>
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1.5 rr-l2 rr-text-navy">
             {t("developerIntegrations.sourceOps.provider", { defaultValue: "Automation provider" })}
-            <select value={provider} onChange={event => setProviderWithLabel(event.target.value as SourceProvider)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring">
+            <select value={provider} onChange={event => setProviderWithLabel(event.target.value as SourceProvider)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring" name="rr-components-source-operations-panel-provider-259">
               <option value="zapier">Zapier</option>
               <option value="make">Make</option>
               <option value="custom">{t("developerIntegrations.sourceOps.custom", { defaultValue: "Custom webhook" })}</option>
@@ -264,17 +264,17 @@ Idempotency-Key: <stable-provider-event-id>
           </label>
           <label className="grid gap-1.5 rr-l2 rr-text-navy">
             {t("developerIntegrations.sourceOps.label", { defaultValue: "Connection name" })}
-            <input value={label} onChange={event => setLabel(event.target.value)} maxLength={100} required className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring" />
+            <input value={label} onChange={event => setLabel(event.target.value)} maxLength={100} required className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring"  name="rr-components-source-operations-panel-label-267" />
           </label>
           <label className="grid gap-1.5 rr-l2 rr-text-navy">
             {t("developerIntegrations.sourceOps.apiKey", { defaultValue: "Import API key" })}
-            <select value={effectiveApiKeyId} onChange={event => setApiKeyId(event.target.value)} disabled={activeKeys.length === 0} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60">
+            <select value={effectiveApiKeyId} onChange={event => setApiKeyId(event.target.value)} disabled={activeKeys.length === 0} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" name="rr-components-source-operations-panel-effective-api-key-id-271">
               {activeKeys.length === 0 ? <option value="">{t("developerIntegrations.sourceOps.noKeys", { defaultValue: "No active import key" })}</option> : activeKeys.map(key => <option key={key.id} value={key.id}>{key.label} · {key.keyHint}</option>)}
             </select>
           </label>
           <label className="grid gap-1.5 rr-l2 rr-text-navy">
             {t("developerIntegrations.sourceOps.expected", { defaultValue: "Expected activity" })}
-            <select value={intervalMinutes} onChange={event => setIntervalMinutes(event.target.value)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring">
+            <select value={intervalMinutes} onChange={event => setIntervalMinutes(event.target.value)} className="min-h-12 rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy focus-visible:ring-2 focus-visible:ring-ring" name="rr-components-source-operations-panel-interval-minutes-277">
               {INTERVALS.map(interval => <option key={interval.minutes} value={interval.minutes}>{t(`developerIntegrations.sourceOps.intervals.${interval.minutes}`, { defaultValue: interval.fallback })}</option>)}
             </select>
           </label>

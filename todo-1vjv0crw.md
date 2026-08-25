@@ -27,3 +27,22 @@
 - [x] Identify and resolve the GitHub branch-protection status preventing PR #148 from merging: the Copilot fallback-localization review thread required resolution.
 - [x] Correct the release path without administrative bypasses by adding six non-English fallback translations, resolving the addressed thread, and retaining normal auto-merge.
 - [x] Verify the normal merge, required checks, and remote-main parity for PR #148 before closing the release workflow.
+- [x] Audit user-editable form controls for missing `id` and `name` attributes that can impair browser autofill.
+- [x] Add unique, stable identifiers to every affected form field without changing current validation or label bindings.
+- [x] Add automated coverage that prevents form fields without `id` or `name` from being introduced.
+- [x] Run focused and full accessibility/form regression validation, production build, dependency audit, and representative visual verification; release synchronization remains pending.
+- [x] Save and synchronize the validated form-field identifier remediation through quality-gated PR #150, then verify the merged protected-main tree matches the release branch.
+- [x] Inspect identity, email, and SMTP fields to define safe autocomplete tokens and validation-feedback behavior.
+- [x] Create and validate a reusable form-autofill quality skill with the verified audit and release workflow.
+- [x] Standardize autocomplete tokens for all applicable identity and email fields and verify them with a deterministic native-email coverage test.
+- [x] Add accessible real-time visual validation feedback to the updated identity and email fields.
+- [x] Add browser-level autofill smoke tests for login and SMTP setup forms across desktop and mobile Chromium.
+- [x] Run focused and full validation, client type checks, production build, dependency audit, desktop/mobile smoke tests, and visual review.
+- [x] Save and synchronize the validated form-autofill quality improvements through quality-gated PR #151, then verify the merged protected-main tree matches the release branch.
+- [x] Inspect username/password forms and current login and SMTP submission-success behavior.
+- [x] Update and validate the reusable form-autofill quality skill with password feedback, visibility, and success-feedback guidance.
+- [x] Add interaction-based validation feedback for relevant username and password fields, including Bulk Sender, SMTP, WooCommerce, and onboarding credentials.
+- [x] Add accessible show/hide toggles to SMTP secrets and other applicable password inputs, including Bulk Sender, WooCommerce, and onboarding SMTP credentials.
+- [x] Add immediate, accessible success feedback after magic-link and SMTP setup submissions.
+- [x] Add focused and browser-level regression coverage and complete client type, full-suite, build, audit, and visual validation; protected-main release remains pending.
+- [ ] Save and synchronize the expanded credential-feedback improvements through a quality-gated protected-main pull request.
