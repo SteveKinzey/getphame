@@ -326,7 +326,7 @@ export default function WooCustomers() {
                 value={wooPlatformId ?? ""}
                 onChange={(e) => setWooPlatformId(e.target.value ? Number(e.target.value) : null)}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)" }}
-              >
+               name="rr-pages-woo-customers-woo-platform-id-325">
                 <option value="">Use default platform</option>
                 {platforms.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -494,7 +494,7 @@ export default function WooCustomers() {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-9 py-2.5 rounded-xl text-sm bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:border-transparent"
             style={{ fontFamily: "'Nunito', sans-serif" }}
-          />
+           name="rr-pages-woo-customers-search-490" />
           {search && (
             <button
               onClick={() => setSearch("")}

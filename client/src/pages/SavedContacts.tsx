@@ -616,7 +616,7 @@ export default function SavedContacts() {
                   minWidth: "72px",
                 }}
                 title="Sync window"
-              >
+               name="rr-pages-saved-contacts-woo-days-607">
                 <option value={30}>30 days</option>
                 <option value={60}>60 days</option>
                 <option value={90}>90 days</option>
@@ -1183,7 +1183,7 @@ export default function SavedContacts() {
                             placeholder="tag name"
                             className="text-xs px-2 py-0.5 rounded-full border outline-none w-24"
                             style={{ borderColor: "oklch(0.75 0.08 160)" }}
-                          />
+                           name="rr-pages-saved-contacts-tag-input-value-1178" />
                         </form>
                       ) : (
                         <button
@@ -1474,7 +1474,7 @@ export default function SavedContacts() {
                     setBulkPlatformId(val === "default" ? null : Number(val));
                   }}
                   className="w-full px-3 py-2 pr-8 rounded-xl text-sm outline-none appearance-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
-                >
+                 name="rr-pages-saved-contacts-bulk-platform-id-1470">
                   <option value="default">
                     {platforms.find((p) => p.isDefault === 1)
                       ? `${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || "Default"} (default)`
@@ -1609,7 +1609,7 @@ export default function SavedContacts() {
                 placeholder="A note about your email preferences from {{businessName}}"
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none"
                 style={{ border: "1.5px solid oklch(0.88 0.02 260)", fontSize: "13px" }}
-              />
+               name="rr-pages-saved-contacts-consent-custom-subject-1605" />
             </div>
             <div>
               <label className="block text-xs font-semibold mb-1 rr-text-navy-mid">Message body</label>
@@ -1620,7 +1620,7 @@ export default function SavedContacts() {
                 rows={5}
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none resize-none"
                 style={{ border: "1.5px solid oklch(0.88 0.02 260)", fontSize: "13px", lineHeight: "1.5" }}
-              />
+               name="rr-pages-saved-contacts-consent-custom-body-1616" />
             </div>
             {(consentCustomSubject || consentCustomBody) && (
               <button

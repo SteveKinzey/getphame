@@ -246,7 +246,7 @@ function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: ()
         className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
         autoFocus
-      />
+       name="rr-pages-settings-value-241" />
       <button
         onClick={() => setEditing(false)}
         className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy-muted rr-bg-surface-darker"
@@ -302,7 +302,7 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
         className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
         autoFocus
-      />
+       name="rr-pages-settings-value-297" />
       <button
         onClick={() => setEditing(false)}
         className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy-muted rr-bg-surface-darker"
@@ -384,7 +384,7 @@ function SendFeedbackSection() {
         maxLength={1000}
         className="w-full rounded-xl px-3 py-2.5 text-xs resize-none outline-none bg-white rr-text-navy" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
         aria-label="Feedback message"
-      />
+       name="rr-pages-settings-message-379" />
       <div className="flex items-center justify-between gap-2">
         <span className="text-sm font-bold" style={{ color: "oklch(0.25 0.04 260)" }}>
           {message.length}/1000
@@ -462,7 +462,7 @@ function DeleteAccountSection() {
           checked={confirmed}
           onChange={(e) => setConfirmed(e.target.checked)}
           className="mt-0.5"
-        />
+         name="rr-pages-settings-confirmed-460" />
         <span className="text-sm font-bold" style={{ color: "oklch(0.15 0.05 260)" }}>
           I understand this is permanent and cannot be reversed.
         </span>
@@ -1148,7 +1148,7 @@ function AccountProfileCard() {
             accept="image/jpeg,image/png,image/webp"
             className="sr-only"
             onChange={(event) => chooseAvatar(event.target.files?.[0])}
-          />
+           name="rr-pages-settings-field-1145" />
           <p className="text-center text-[11px] font-semibold rr-text-navy-muted">
             {t("settings.accountProfile.avatarHelp", { defaultValue: "JPG, PNG, or WebP · 3 MB max" })}
           </p>
@@ -1576,7 +1576,7 @@ export default function SettingsPage() {
     apple: "Apple Maps",
     other: "Other",
   };
-  // PLATFORM_ICONS kept for <select> option text only (SVG can't go inside <option>)
+  // PLATFORM_ICONS kept for <select name="rr-pages-settings-field-1579"> option text only (SVG can't go inside <option>)
   const PLATFORM_ICONS: Record<string, string> = {
     google: "Google",
     yelp: "Yelp",
@@ -1885,7 +1885,7 @@ export default function SettingsPage() {
                     fontFamily: "'Nunito', sans-serif",
                     fontSize: "16px",
                   }}
-                />
+                 name="rr-pages-settings-business-name-1877" />
               </div>
 
               <div>
@@ -1904,7 +1904,7 @@ export default function SettingsPage() {
                     fontFamily: "'Nunito', sans-serif",
                     fontSize: "16px",
                   }}
-                />
+                 name="rr-pages-settings-review-link-1896" />
                 <p className="text-xs mt-1 rr-text-navy-muted">
                   {t('profile.reviewLinkDescription')}
                 </p>
@@ -1928,7 +1928,7 @@ export default function SettingsPage() {
                       onChange={(e) => setFromName(e.target.value)}
                       placeholder={businessName || "e.g. Maria's Hair Salon"}
                       className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-from-name-1925" />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.fromNameDescription')}
                     </p>
@@ -1943,7 +1943,7 @@ export default function SettingsPage() {
                       onChange={(e) => setReplyTo(e.target.value)}
                       placeholder="e.g. steve@sk-america.com"
                       className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-reply-to-1940" />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.replyToEmailDescription')}
                     </p>
@@ -1958,7 +1958,7 @@ export default function SettingsPage() {
                       onChange={(e) => setConsentLabelName(e.target.value)}
                       placeholder={businessName || "e.g. Maria's Hair Salon"}
                       className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-consent-label-name-1955" />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.consentLabelNameDescription', { defaultValue: 'The business name shown in the consent checkbox label on your forms. Defaults to your business name above.' })}
                     </p>
@@ -2343,7 +2343,7 @@ export default function SettingsPage() {
                       value={newPlatformType}
                       onChange={(e) => setNewPlatformType(e.target.value)}
                       className="w-full px-3 py-2 rounded-lg text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    >
+                     name="rr-pages-settings-new-platform-type-2342">
                       {Object.entries(PLATFORM_LABELS).map(([val, label]) => (
                         <option key={val} value={val}>{label}</option>
                       ))}
@@ -2375,7 +2375,7 @@ export default function SettingsPage() {
                       placeholder={PLATFORM_PLACEHOLDERS[newPlatformType] ?? "https://..."}
                       className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                       style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-new-platform-url-2371" />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {newPlatformType === "yelp"
                         ? t("reviewPlatforms.yelpSearchHelp", { defaultValue: "Enter a plain-text search instruction (for example: Search for [Your Business] on Yelp in [City, State]). This text appears in the email body — no link is created, keeping you Yelp-compliant." })
@@ -2394,7 +2394,7 @@ export default function SettingsPage() {
                         placeholder={t("reviewPlatforms.customLabelExample", { defaultValue: "e.g. Houzz, Angi, Thumbtack" })}
                         className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                      />
+                       name="rr-pages-settings-new-platform-label-2390" />
                     </div>
                   )}
                   <div className="flex gap-2">
@@ -2628,7 +2628,7 @@ export default function SettingsPage() {
                   placeholder="you@yourbusiness.com"
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-smtp-email-2624" />
               </div>
 
               {/* Password field — smart provider-aware */}
@@ -2755,7 +2755,7 @@ export default function SettingsPage() {
                         placeholder={passwordPlaceholder}
                         className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
                         style={{ border: '2px solid oklch(0.90 0.02 260)', fontSize: '16px' }}
-                      />
+                       name="rr-pages-settings-smtp-password-2751" />
                       <button
                         type="button"
                         onClick={() => setShowSmtpPassword((v) => !v)}
@@ -2824,7 +2824,7 @@ export default function SettingsPage() {
                   placeholder={t("smtp.displayNamePlaceholder", { defaultValue: "e.g. Steve at Acme Plumbing" })}
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-smtp-from-name-2820" />
                 <p className="text-xs mt-1 rr-text-navy-muted">{t("smtp.displayNameHelp", { defaultValue: "Shown as the sender name in your customer's inbox." })}</p>
               </div>
 
@@ -3112,7 +3112,7 @@ export default function SettingsPage() {
                       placeholder="smtp.yourdomain.com"
                       className="w-full px-3 py-2 rounded-xl text-sm outline-none"
                       style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                    />
+                     name="rr-pages-settings-smtp-host-3108" />
                   </div>
                   <div className="flex gap-2">
                     <div className="flex-1">
@@ -3123,7 +3123,7 @@ export default function SettingsPage() {
                         onChange={(e) => setSmtpPort(Number(e.target.value))}
                         className="w-full px-3 py-2 rounded-xl text-sm outline-none"
                         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                      />
+                       name="rr-pages-settings-smtp-port-3120" />
                     </div>
                     <div className="flex-1">
                       <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Security</label>
@@ -3131,7 +3131,7 @@ export default function SettingsPage() {
                         value={smtpSecure}
                         onChange={(e) => setSmtpSecure(Number(e.target.value))}
                         className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                      >
+                       name="rr-pages-settings-smtp-secure-3130">
                         <option value={0}>STARTTLS (587)</option>
                         <option value={1}>SSL/TLS (465)</option>
                       </select>
@@ -3323,7 +3323,7 @@ export default function SettingsPage() {
                   placeholder="https://yourstore.com"
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-woo-url-3319" />
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Key *</label>
@@ -3334,7 +3334,7 @@ export default function SettingsPage() {
                   placeholder="ck_xxxxxxxxxxxxxxxx"
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-woo-key-3330" />
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Secret *</label>
@@ -3345,7 +3345,7 @@ export default function SettingsPage() {
                   placeholder="cs_xxxxxxxxxxxxxxxx"
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
+                 name="rr-pages-settings-woo-secret-3341" />
                 <p className="text-xs mt-1 rr-text-navy-muted">
                   WooCommerce → Settings → Advanced → REST API → Add key (Read permission)
                 </p>
@@ -3468,21 +3468,21 @@ export default function SettingsPage() {
                 onChange={(e) => setNewWebhookLabel(e.target.value)}
                 placeholder="Label (e.g. Zapier CRM)"
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
-              />
+               name="rr-pages-settings-new-webhook-label-3465" />
               <input
                 type="url"
                 value={newWebhookUrl}
                 onChange={(e) => setNewWebhookUrl(e.target.value)}
                 placeholder="https://hooks.zapier.com/..."
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
-              />
+               name="rr-pages-settings-new-webhook-url-3472" />
               <input
                 type="text"
                 value={newWebhookSecret}
                 onChange={(e) => setNewWebhookSecret(e.target.value)}
                 placeholder="Signing secret (optional — HMAC-SHA256)"
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
-              />
+               name="rr-pages-settings-new-webhook-secret-3479" />
               <div className="flex gap-2 justify-end">
                 <button onClick={() => setShowAddWebhook(false)} className="px-3 py-1.5 rounded-xl text-sm font-black rr-text-navy" style={{ background: "oklch(0.90 0.01 260)" }}>Cancel</button>
                 <button

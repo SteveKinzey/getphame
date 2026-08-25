@@ -482,7 +482,7 @@ export default function ImportContactsPage() {
                 accept=".csv,text/csv"
                 className="hidden"
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
-              />
+               name="rr-pages-import-contacts-field-479" />
             </div>
           </div>
         )}
@@ -516,7 +516,7 @@ export default function ImportContactsPage() {
                       className="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-0 outline-none rr-bg-navy rr-text-gold"
                       value={mapping[h] ?? "skip"}
                       onChange={(e) => setMapping((m) => ({ ...m, [h]: e.target.value as ColumnKey }))}
-                    >
+                     name="rr-pages-import-contacts-mapping-515">
                       {(Object.keys(COLUMN_LABELS) as ColumnKey[]).map((k) => (
                         <option key={k} value={k}>{COLUMN_LABELS[k]}</option>
                       ))}

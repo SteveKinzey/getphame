@@ -249,7 +249,7 @@ function SurveyPanel({ selected, setSelected, comment, setComment, onContinue, t
         ))}
       </div>
       <label className="mt-5 block text-xs font-black uppercase tracking-wider text-[#52617b]">{t("commentLabel")}</label>
-      <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder={t("commentPlaceholder")} rows={3} className="mt-2 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#061a3a] outline-none transition focus:border-[#D4A017] focus:ring-2 focus:ring-[#D4A017]/20" />
+      <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder={t("commentPlaceholder")} rows={3} className="mt-2 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#061a3a] outline-none transition focus:border-[#D4A017] focus:ring-2 focus:ring-[#D4A017]/20"  name="rr-pages-churn-survey-comment-252" />
       <div className="mt-5 grid gap-2 sm:grid-cols-2">
         <button type="button" onClick={onContinue} className="rounded-xl bg-[#061a3a] px-5 py-3.5 text-sm font-black text-white transition active:scale-[.98]">{t("continue")}</button>
         <button type="button" onClick={onContinue} className="rounded-xl px-5 py-3.5 text-sm font-bold text-[#52617b] transition hover:bg-slate-50">{t("skipSurvey")}</button>
@@ -271,7 +271,7 @@ function ConfirmationPanel({ isRefund, alreadyRefunded, confirmed, setConfirmed,
         </div>
       </div>
       <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-4 transition hover:bg-slate-50">
-        <input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} className="mt-0.5 h-5 w-5 accent-[#061a3a]" />
+        <input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} className="mt-0.5 h-5 w-5 accent-[#061a3a]"  name="rr-pages-churn-survey-confirmed-274" />
         <span className="text-sm font-bold leading-relaxed text-[#31415f]">{isRefund ? t("confirmRefundCheckbox") : t("confirmRenewalCheckbox")}</span>
       </label>
       {error && <p role="alert" className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-bold text-red-800">{isRefund ? t("refundError") : t("cancelError")} <span className="font-medium">{error}</span></p>}

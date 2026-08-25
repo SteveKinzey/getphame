@@ -177,7 +177,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="flex-1 bg-transparent text-sm outline-none rr-text-navy"
-            />
+             name="rr-components-contact-picker-modal-query-174" />
             {query && (
               <button onClick={() => setQuery('')}>
                 <X size={14} className="rr-text-navy-muted" />

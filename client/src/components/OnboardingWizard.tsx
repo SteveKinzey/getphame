@@ -354,11 +354,11 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
                   <div className="space-y-2 rounded-xl p-3" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.38 0.06 260)" }}>
                     <p className="text-xs font-black text-white">{t("developerEnrollment.terms.onboardingTitle", { defaultValue: "Accept the API rules to create your import key" })}</p>
                     <label className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5" style={{ color: "oklch(0.92 0.02 260)" }}>
-                      <input type="checkbox" checked={apiTermsAccepted} onChange={(event) => setApiTermsAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]" />
+                      <input type="checkbox" checked={apiTermsAccepted} onChange={(event) => setApiTermsAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]"  name="rr-components-onboarding-wizard-api-terms-accepted-357" />
                       <span>{t("developerEnrollment.terms.termsLabel", { defaultValue: "I accept the API Terms in the Get Phame Terms of Service." })} <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline rr-text-gold">{t("developerEnrollment.terms.readTerms", { defaultValue: "Read Terms" })}</a></span>
                     </label>
                     <label className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5" style={{ color: "oklch(0.92 0.02 260)" }}>
-                      <input type="checkbox" checked={apiAcceptableUseAccepted} onChange={(event) => setApiAcceptableUseAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]" />
+                      <input type="checkbox" checked={apiAcceptableUseAccepted} onChange={(event) => setApiAcceptableUseAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]"  name="rr-components-onboarding-wizard-api-acceptable-use-accepted-361" />
                       <span>{t("developerEnrollment.terms.aupLabel", { defaultValue: "I accept the Acceptable Use Policy: no spam, purchased or scraped lists, browser-exposed keys, rate-limit bypassing, or deceptive automation." })} <a href="/compliance" target="_blank" rel="noopener noreferrer" className="underline rr-text-gold">{t("developerEnrollment.terms.readGuide", { defaultValue: "Read Compliance Guide" })}</a></span>
                     </label>
                   </div>
@@ -534,7 +534,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("step1Email.emailAddressPlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-        />
+         name="rr-components-onboarding-wizard-email-531" />
       </div>
 
       <div>
@@ -552,7 +552,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder={hint ? t("step1Email.appPasswordPlaceholder") : t("step1Email.emailPasswordPlaceholder")}
             className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-          />
+           name="rr-components-onboarding-wizard-password-549" />
           <button
             type="button"
             onClick={() => setShowPass(!showPass)}
@@ -582,7 +582,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           onChange={(e) => setFromName(e.target.value)}
           placeholder={t("step1Email.fromNamePlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-        />
+         name="rr-components-onboarding-wizard-from-name-579" />
         <p className="text-xs mt-1 rr-text-navy-muted">
           {t("settings.fromNameDescription", "Customers will see this as the sender name in their inbox.")}
         </p>
@@ -598,7 +598,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           onChange={(e) => setReplyTo(e.target.value)}
           placeholder={t("step1Email.replyToEmailPlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-        />
+         name="rr-components-onboarding-wizard-reply-to-595" />
         <p className="text-xs mt-1 rr-text-navy-muted">
           {t("settings.replyToDescription", "Where customer replies will go. Leave blank to use your sending address.")}
         </p>
@@ -683,7 +683,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
                 onChange={(e) => setHost(e.target.value)}
                 placeholder={`smtp.${email.split("@")[1] ?? "yourdomain.com"}`}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-              />
+               name="rr-components-onboarding-wizard-host-680" />
             </div>
             <div className="w-24">
               <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
@@ -694,7 +694,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
                 value={port}
                 onChange={(e) => setPort(Number(e.target.value))}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-              />
+               name="rr-components-onboarding-wizard-port-692" />
             </div>
           </div>
         </div>
@@ -817,7 +817,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
           value={platform}
           onChange={(e) => { setPlatform(e.target.value); setUrl(""); }}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-        >
+         name="rr-components-onboarding-wizard-platform-816">
           {PLATFORM_OPTIONS.map((p) => (
             <option key={p.value} value={p.value}>
               {p.label}
@@ -840,7 +840,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
           onChange={(e) => setUrl(e.target.value)}
           placeholder={PLATFORM_PLACEHOLDERS[platform]}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-        />
+         name="rr-components-onboarding-wizard-url-837" />
         <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.03 260)" }}>
           {t("step2Platform.reviewPageUrlHint")}
         </p>
@@ -1123,7 +1123,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 checked={consentChecked}
                 onChange={(e) => setConsentChecked(e.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[oklch(0.80_0.18_80)]"
-              />
+               name="rr-components-onboarding-wizard-consent-checked-1121" />
               <span className="text-sm leading-snug" style={{ color: "oklch(0.90 0.05 80)" }}>
                 {t("onboarding.consentStepAck", "I have added (or will add) a consent checkbox to my customer-facing forms")}
               </span>

@@ -412,11 +412,11 @@ export default function DeveloperIntegrationsPage() {
           <form onSubmit={submitKey} className="mt-6 grid gap-4 rounded-2xl bg-slate-50 p-4 lg:grid-cols-12" data-testid="developer-key-form">
             <label className="lg:col-span-7">
               <span className="mb-1.5 block text-sm font-bold rr-text-navy">{t("developerIntegrations.keys.label", { defaultValue: "Key label" })}</span>
-              <input value={label} onChange={(event) => setLabel(event.target.value)} maxLength={100} autoComplete="off" required className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.66_0.16_80)]" placeholder={t("developerIntegrations.keys.labelPlaceholder", { defaultValue: "Website contact form" })} />
+              <input value={label} onChange={(event) => setLabel(event.target.value)} maxLength={100} autoComplete="off" required className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.66_0.16_80)]" placeholder={t("developerIntegrations.keys.labelPlaceholder", { defaultValue: "Website contact form" })}  name="rr-pages-developer-integrations-label-415" />
             </label>
             <label className="lg:col-span-5">
               <span className="mb-1.5 block text-sm font-bold rr-text-navy">{t("developerIntegrations.keys.expiry", { defaultValue: "Expiry" })}</span>
-              <select value={expiryDays} onChange={(event) => setExpiryDays(event.target.value)} className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.66_0.16_80)]">
+              <select value={expiryDays} onChange={(event) => setExpiryDays(event.target.value)} className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm rr-text-navy outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.66_0.16_80)]" name="rr-pages-developer-integrations-expiry-days-419">
                 <option value="never">{t("developerIntegrations.keys.neverExpires", { defaultValue: "No earlier expiry" })}</option>
                 <option value="30">{t("developerIntegrations.keys.days30", { defaultValue: "30 days" })}</option>
                 <option value="90">{t("developerIntegrations.keys.days90", { defaultValue: "90 days" })}</option>

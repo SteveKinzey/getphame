@@ -731,7 +731,7 @@ export default function UpgradePage() {
               onKeyDown={(e) => e.key === "Enter" && handleRedeemCode()}
               placeholder={t("accessCode.placeholder")}
               className="flex-1 px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-            />
+             name="rr-pages-upgrade-access-code-727" />
             <button
               onClick={handleRedeemCode}
               disabled={!accessCode.trim() || redeemCode.isPending}

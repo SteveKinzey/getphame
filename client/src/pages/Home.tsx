@@ -780,7 +780,7 @@ export default function HomePage() {
                   }
                   if (e.key === "Escape") setEditingGoal(false);
                 }}
-              />
+               name="rr-pages-home-goal-input-766" />
               <span className="text-sm font-semibold rr-text-navy-mid">{t("homePage.reviewsPerMonth", { defaultValue: "reviews / month" })}</span>
             </div>
           ) : reviewGoal > 0 ? (
