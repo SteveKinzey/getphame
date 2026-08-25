@@ -1754,6 +1754,18 @@
       "label": "儀表盤",
       "title": "您的結果"
     },
+    "shareProfile": {
+      "button": "分享個人資料",
+      "copied": "已複製",
+      "copySuccess": "個人資料連結已複製。",
+      "copyError": "無法複製個人資料連結。請再試一次。",
+      "unavailable": "請在「設定」中新增您的個人資料連結以分享。"
+    },
+    "loading": {
+      "ariaLabel": "正在載入您的儀表板",
+      "title": "正在載入您的儀表板…",
+      "description": "正在準備您最新的評論請求活動。"
+    },
     "stats": {
       "thisMonth": "本月",
       "allTime": "所有時間",
