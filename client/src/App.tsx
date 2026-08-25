@@ -18,6 +18,7 @@ import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
 import SettingsPage, { SettingsBulkSenderTestFixture } from "./pages/Settings";
+import MagicLinkForm from "./components/auth/MagicLinkForm";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
   useOnboardingGuide,
@@ -663,6 +664,57 @@ function ProviderDiscoveryTestHarness() {
   );
 }
 
+function FormAutofillTestHarness() {
+  const [smtpEmail, setSmtpEmail] = useState("");
+  const [smtpTouched, setSmtpTouched] = useState(false);
+  const normalizedSmtpEmail = smtpEmail.trim().toLowerCase();
+  const smtpState =
+    smtpTouched && normalizedSmtpEmail.length > 0
+      ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedSmtpEmail)
+        ? "valid"
+        : "invalid"
+      : "idle";
+
+  return (
+    <main className="min-h-screen bg-[#0F1B2D] px-6 py-10 text-white" data-testid="form-autofill-test-harness">
+      <div className="mx-auto max-w-xl space-y-8">
+      <section>
+        <h1 className="mb-3 text-lg font-bold">Login email</h1>
+        <MagicLinkForm idPrefix="autofill-login" />
+      </section>
+      <section aria-labelledby="autofill-smtp-title" className="rounded-2xl bg-white p-6 text-[#0F1B2D]">
+        <h2 id="autofill-smtp-title" className="mb-3 text-lg font-bold">SMTP identity</h2>
+        <label htmlFor="autofill-smtp-email" className="mb-1 block text-sm font-semibold">SMTP email</label>
+        <input
+          id="autofill-smtp-email"
+          name="autofill-smtp-email"
+          type="email"
+          autoComplete="email"
+          value={smtpEmail}
+          onChange={(event) => {
+            setSmtpEmail(event.target.value);
+            setSmtpTouched(true);
+          }}
+          onBlur={() => setSmtpTouched(true)}
+          aria-invalid={smtpState === "invalid"}
+          aria-describedby={smtpState === "idle" ? undefined : "autofill-smtp-feedback"}
+          className="w-full rounded-md border px-3 py-2"
+        />
+        {smtpState !== "idle" && (
+          <p id="autofill-smtp-feedback" data-testid="autofill-smtp-feedback" role="status" aria-live="polite" className="mt-2 text-sm">
+            {smtpState === "valid" ? "Email format looks good." : "Enter a valid email address."}
+          </p>
+        )}
+        <label htmlFor="autofill-smtp-username" className="mb-1 mt-4 block text-sm font-semibold">SMTP username</label>
+        <input id="autofill-smtp-username" name="autofill-smtp-username" autoComplete="username" className="w-full rounded-md border px-3 py-2" />
+        <label htmlFor="autofill-smtp-password" className="mb-1 mt-4 block text-sm font-semibold">SMTP password</label>
+        <input id="autofill-smtp-password" name="autofill-smtp-password" type="password" autoComplete="current-password" className="w-full rounded-md border px-3 py-2" />
+      </section>
+      </div>
+    </main>
+  );
+}
+
 function App() {
   if (
     import.meta.env.DEV &&
@@ -693,6 +745,18 @@ function App() {
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
           <ProviderDiscoveryTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/form-autofill") {
+    return (
+      <ThemeProvider defaultTheme="dark" switchable={true}>
+        <TooltipProvider>
+          <UpdateSafetyProvider>
+            <FormAutofillTestHarness />
+          </UpdateSafetyProvider>
         </TooltipProvider>
       </ThemeProvider>
     );

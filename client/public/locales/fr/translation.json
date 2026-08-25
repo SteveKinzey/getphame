@@ -821,7 +821,8 @@
     "off": "Désactivé",
     "on": "Activé",
     "optional": "facultatif",
-    "undo": "Annuler"
+    "undo": "Annuler",
+    "emailFormatValid": "Le format de l’e-mail est correct."
   },
   "profile": {
     "title": "Profil d'entreprise",
