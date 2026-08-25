@@ -2050,7 +2050,8 @@
     "off": "Disattivo",
     "on": "Attivo",
     "optional": "facoltativo",
-    "undo": "Annulla"
+    "undo": "Annulla",
+    "emailFormatValid": "Il formato dell'email è corretto."
   },
   "profile": {
     "title": "Profilo Aziendale",

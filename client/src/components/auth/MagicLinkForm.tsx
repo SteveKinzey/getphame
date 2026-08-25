@@ -48,10 +48,18 @@ export default function MagicLinkForm({
   const [error, setError] = useState<string | null>(null);
   const [resendNotice, setResendNotice] = useState<string | null>(null);
   const [resendSeconds, setResendSeconds] = useState(0);
+  const [emailTouched, setEmailTouched] = useState(false);
 
   const isSending = requestState === "sending";
   const isResending = requestState === "resending";
   const initialEmailValue = initialEmail.trim().toLowerCase();
+  const normalizedEmail = email.trim().toLowerCase();
+  const emailValidation =
+    emailTouched && normalizedEmail.length > 0
+      ? EMAIL_PATTERN.test(normalizedEmail)
+        ? "valid"
+        : "invalid"
+      : "idle";
   useUpdateDirtySource(
     `${idPrefix}-magic-link-email`,
     !lockEmail && !sentTo && email !== initialEmailValue,
@@ -63,6 +71,7 @@ export default function MagicLinkForm({
   const canResend = Boolean(sentTo) && resendSeconds === 0 && !isResending;
   const timerId = `${idPrefix}-magic-link-resend-timer`;
   const sendingStatusId = `${idPrefix}-magic-link-sending-status`;
+  const emailFeedbackId = `${idPrefix}-email-feedback`;
 
   useEffect(() => {
     if (!sentTo || resendSeconds <= 0) return;
@@ -168,6 +177,7 @@ export default function MagicLinkForm({
 
   const handleDifferentEmail = useCallback(() => {
     setEmail("");
+    setEmailTouched(false);
     setSentTo(null);
     setRequestState("idle");
     setError(null);
@@ -257,17 +267,56 @@ export default function MagicLinkForm({
         </label>
         <input
           id={`${idPrefix}-email`}
+          name={`${idPrefix}-email`}
           type="email"
           autoComplete="email"
+          autoCapitalize="none"
+          spellCheck={false}
           autoFocus={autoFocus}
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setEmailTouched(true);
+          }}
+          onBlur={() => setEmailTouched(true)}
           placeholder={t("login.emailPlaceholder", { defaultValue: "you@example.com" })}
           required
           disabled={isSending || lockEmail}
           readOnly={lockEmail}
-          className="w-full min-h-12 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-medium text-white placeholder:text-white/40 focus:border-[#C9A84C]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 disabled:cursor-wait disabled:opacity-70"
+          aria-invalid={emailValidation === "invalid"}
+          aria-describedby={emailValidation === "idle" ? undefined : emailFeedbackId}
+          className={`w-full min-h-12 rounded-xl border bg-white/[0.06] px-4 py-3 text-base font-medium text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 disabled:cursor-wait disabled:opacity-70 ${
+            emailValidation === "valid"
+              ? "border-emerald-300/70 focus:border-emerald-300"
+              : emailValidation === "invalid"
+                ? "border-red-300/80 focus:border-red-300"
+                : "border-white/15 focus:border-[#C9A84C]/60"
+          }`}
         />
+        {emailValidation !== "idle" && (
+          <p
+            id={emailFeedbackId}
+            data-testid={`${idPrefix}-email-validation`}
+            role="status"
+            aria-live="polite"
+            className={`mt-1.5 flex items-center gap-1.5 text-xs font-semibold ${
+              emailValidation === "valid" ? "text-emerald-300" : "text-red-300"
+            }`}
+          >
+            {emailValidation === "valid" ? (
+              <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : (
+              <span aria-hidden="true">⚠</span>
+            )}
+            {emailValidation === "valid"
+              ? t("common.emailFormatValid", {
+                  defaultValue: "Email format looks good.",
+                })
+              : t("login.invalidEmail", {
+                  defaultValue: "Enter a valid email address.",
+                })}
+          </p>
+        )}
       </div>
 
       {error && (

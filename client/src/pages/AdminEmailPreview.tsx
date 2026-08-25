@@ -492,7 +492,7 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 w-56"
               style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
               aria-label={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
-             name="rr-pages-admin-email-preview-test-email-487" />
+             name="rr-pages-admin-email-preview-test-email-487"  autoComplete="email"/>
             <button
               type="button"
               disabled={sendTest.isPending || isLoading || !data?.html || !testEmail}

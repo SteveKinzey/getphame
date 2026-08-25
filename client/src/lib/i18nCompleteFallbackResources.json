@@ -804,7 +804,8 @@
       "off": "Off",
       "on": "On",
       "show": "Show",
-      "undo": "Undo"
+      "undo": "Undo",
+      "emailFormatValid": "Email format looks good."
     },
     "onboardingGuide": {
       "allSet": {
@@ -2660,7 +2661,8 @@
       "off": "Desactivado",
       "on": "Activado",
       "show": "Mostrar",
-      "undo": "Deshacer"
+      "undo": "Deshacer",
+      "emailFormatValid": "El formato del correo electrónico es correcto."
     },
     "onboardingGuide": {
       "allSet": {
@@ -4699,7 +4701,8 @@
       "off": "Désactivé",
       "on": "Activé",
       "show": "Afficher",
-      "undo": "Annuler"
+      "undo": "Annuler",
+      "emailFormatValid": "Le format de l’e-mail est correct."
     },
     "onboardingGuide": {
       "allSet": {
@@ -6733,7 +6736,8 @@
       "off": "Disattivato",
       "on": "Attivato",
       "show": "Mostra",
-      "undo": "Annulla"
+      "undo": "Annulla",
+      "emailFormatValid": "Il formato dell'email è corretto."
     },
     "onboardingGuide": {
       "allSet": {
@@ -8628,7 +8632,8 @@
       "off": "ปิด",
       "on": "เปิด",
       "show": "แสดง",
-      "undo": "เลิกทำ"
+      "undo": "เลิกทำ",
+      "emailFormatValid": "รูปแบบอีเมลถูกต้อง"
     },
     "onboardingGuide": {
       "allSet": {
@@ -10519,7 +10524,8 @@
       "off": "关闭",
       "on": "开启",
       "show": "显示",
-      "undo": "撤销"
+      "undo": "撤销",
+      "emailFormatValid": "电子邮件格式正确。"
     },
     "onboardingGuide": {
       "allSet": {
@@ -12402,7 +12408,8 @@
       "off": "關閉",
       "on": "開啟",
       "show": "顯示",
-      "undo": "復原"
+      "undo": "復原",
+      "emailFormatValid": "電子郵件格式正確。"
     },
     "onboardingGuide": {
       "allSet": {

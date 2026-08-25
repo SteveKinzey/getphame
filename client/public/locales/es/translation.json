@@ -821,7 +821,8 @@
     "off": "Desactivado",
     "on": "Activado",
     "optional": "opcional",
-    "undo": "Deshacer"
+    "undo": "Deshacer",
+    "emailFormatValid": "El formato del correo electrónico es correcto."
   },
   "profile": {
     "title": "Perfil de empresa",

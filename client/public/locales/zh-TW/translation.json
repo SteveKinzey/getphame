@@ -703,7 +703,8 @@
     "off": "關閉",
     "on": "開啟",
     "optional": "選填",
-    "undo": "復原"
+    "undo": "復原",
+    "emailFormatValid": "電子郵件格式正確。"
   },
   "profile": {
     "title": "商家資料",

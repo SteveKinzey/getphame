@@ -534,7 +534,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("step1Email.emailAddressPlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-         name="rr-components-onboarding-wizard-email-531" />
+         name="rr-components-onboarding-wizard-email-531"  autoComplete="email"/>
       </div>
 
       <div>
@@ -598,7 +598,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           onChange={(e) => setReplyTo(e.target.value)}
           placeholder={t("step1Email.replyToEmailPlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-         name="rr-components-onboarding-wizard-reply-to-595" />
+         name="rr-components-onboarding-wizard-reply-to-595"  autoComplete="email"/>
         <p className="text-xs mt-1 rr-text-navy-muted">
           {t("settings.replyToDescription", "Where customer replies will go. Leave blank to use your sending address.")}
         </p>

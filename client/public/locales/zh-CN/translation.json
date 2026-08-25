@@ -245,7 +245,8 @@
     "off": "关",
     "on": "开",
     "optional": "可选",
-    "undo": "撤销"
+    "undo": "撤销",
+    "emailFormatValid": "电子邮件格式正确。"
   },
   "seo": {
     "title": "Get Phame — 通过邮箱发送个性化评论请求",

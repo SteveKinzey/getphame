@@ -761,7 +761,7 @@ export default function SendRequestPage() {
                   fontFamily: "'Nunito', sans-serif",
                   fontSize: "16px",
                 }}
-               name="rr-pages-send-request-customer-email-752" />
+               name="rr-pages-send-request-customer-email-752"  autoComplete="email"/>
               {errors.email && (
                 <p className="text-xs mt-1" style={{ color: "oklch(0.65 0.22 27)" }}>{errors.email}</p>
               )}

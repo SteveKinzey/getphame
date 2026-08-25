@@ -111,6 +111,7 @@ import PausedAutomationQueue from "@/components/PausedAutomationQueue";
 import { BulkProviderDiscoveryControls } from "@/components/BulkProviderDiscoveryControls";
 
 const QUIET_HOURS_MINUTES = 12 * 60;
+const EMAIL_ADDRESS_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function timeToMinutes(value: string) {
   const [hours, minutes] = value.split(":").map(Number);
@@ -302,7 +303,7 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
         className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
         autoFocus
-       name="rr-pages-settings-value-297" />
+       name="rr-pages-settings-value-297"  autoComplete="email"/>
       <button
         onClick={() => setEditing(false)}
         className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy-muted rr-bg-surface-darker"
@@ -918,7 +919,7 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
           {preset.usernameMode === "user" ? (
             <div>
               <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{localizedPreset.usernameLabel}</label>
-              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={localizedPreset.usernamePlaceholder} autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={localizedPreset.usernamePlaceholder} autoComplete="username" autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
             </div>
           ) : (
             <div className="rounded-xl px-3 py-2.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
@@ -968,7 +969,7 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
               autoCapitalize="none"
               className="min-h-11 w-full px-3 py-2 rounded-xl outline-none"
               style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-            />
+             autoComplete="email"/>
             <p className="text-xs mt-1 rr-text-navy-muted">
               {provider === "mailjet"
                 ? t("settings.bulkSender.providers.mailjet.fromEmailHelp", { defaultValue: "This sender address or domain must already be validated in Mailjet." })
@@ -1173,7 +1174,7 @@ function AccountProfileCard() {
             <label htmlFor="account-email" className="mb-1.5 block text-xs font-bold rr-text-navy-mid">
               {t("settings.accountProfile.email", { defaultValue: "Email address" })}
             </label>
-            <input id="account-email" value={account?.email ?? ""} readOnly className="w-full cursor-not-allowed rounded-xl px-4 py-3 text-sm font-semibold opacity-70 rr-bg-surface-darker rr-text-navy" />
+            <input id="account-email" name="account-email" type="email" autoComplete="email" value={account?.email ?? ""} readOnly className="w-full cursor-not-allowed rounded-xl px-4 py-3 text-sm font-semibold opacity-70 rr-bg-surface-darker rr-text-navy" />
             <p className="mt-1 text-[11px] rr-text-navy-muted">
               {t("settings.accountProfile.emailHelp", { defaultValue: "Your sign-in email is managed by your authentication provider." })}
             </p>
@@ -1601,6 +1602,7 @@ export default function SettingsPage() {
   const { data: smtpTestEmailHistory, isLoading: smtpTestEmailHistoryLoading } = trpc.smtp.testEmailHistory.useQuery();
   const { data: pausedAutomationQueue } = trpc.smtp.pausedAutomationQueue.useQuery();
   const [smtpEmail, setSmtpEmail] = useState("");
+  const [smtpEmailTouched, setSmtpEmailTouched] = useState(false);
   const [smtpPassword, setSmtpPassword] = useState("");
   const [smtpHost, setSmtpHost] = useState("");
   const [smtpPort, setSmtpPort] = useState(587);
@@ -1617,6 +1619,13 @@ export default function SettingsPage() {
   const [testEmailSentNotice, setTestEmailSentNotice] = useState(false);
   const [disconnectConfirmOpen, setDisconnectConfirmOpen] = useState(false);
   const [disconnectAcknowledged, setDisconnectAcknowledged] = useState(false);
+  const normalizedSmtpEmail = smtpEmail.trim().toLowerCase();
+  const smtpEmailValidation =
+    smtpEmailTouched && normalizedSmtpEmail.length > 0
+      ? EMAIL_ADDRESS_PATTERN.test(normalizedSmtpEmail)
+        ? "valid"
+        : "invalid"
+      : "idle";
 
   useEffect(() => {
     const focusSmtp = window.location.hash === "#smtp-settings" || new URLSearchParams(window.location.search).get("focus") === "smtp";
@@ -1943,7 +1952,7 @@ export default function SettingsPage() {
                       onChange={(e) => setReplyTo(e.target.value)}
                       placeholder="e.g. steve@sk-america.com"
                       className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                     name="rr-pages-settings-reply-to-1940" />
+                     name="rr-pages-settings-reply-to-1940"  autoComplete="email"/>
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.replyToEmailDescription')}
                     </p>
@@ -2544,7 +2553,7 @@ export default function SettingsPage() {
                 </label>
                 <p className="mt-1 text-xs rr-text-navy-muted">{t("smtp.testEmailHint", { defaultValue: "Use an address you control. This uses your saved mail server and does not save a new recipient." })}</p>
                 <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                  <input id="smtp-test-email-recipient" type="email" value={testEmailRecipient} onChange={(event) => { setTestEmailRecipient(event.target.value); setTestEmailSentNotice(false); }} placeholder={smtpStatus.email ?? "you@example.com"} className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm" style={{ borderColor: "oklch(0.86 0.02 260)" }} />
+                  <input id="smtp-test-email-recipient" type="email" value={testEmailRecipient} onChange={(event) => { setTestEmailRecipient(event.target.value); setTestEmailSentNotice(false); }} placeholder={smtpStatus.email ?? "you@example.com"} className="min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm" style={{ borderColor: "oklch(0.86 0.02 260)" }}  autoComplete="email"/>
                   <button type="button" onClick={() => {
                     if (!testEmailRecipient.trim()) { toast.error(t("smtp.testEmailRecipientRequired", { defaultValue: "Enter the address that should receive the test email." })); return; }
                     sendSmtpTestEmail.mutate({ to: testEmailRecipient.trim() });
@@ -2620,15 +2629,39 @@ export default function SettingsPage() {
 
               {/* Email field */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.emailAddressLabel", { defaultValue: "Your Email Address *" })}</label>
+                <label htmlFor="smtp-email" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.emailAddressLabel", { defaultValue: "Your Email Address *" })}</label>
                 <input
+                  id="smtp-email"
                   type="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   value={smtpEmail}
-                  onChange={(e) => setSmtpEmail(e.target.value)}
+                  onChange={(e) => {
+                    setSmtpEmail(e.target.value);
+                    setSmtpEmailTouched(true);
+                  }}
+                  onBlur={() => setSmtpEmailTouched(true)}
                   placeholder="you@yourbusiness.com"
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                  aria-invalid={smtpEmailValidation === "invalid"}
+                  aria-describedby={smtpEmailValidation === "idle" ? undefined : "smtp-email-validation"}
+                  style={{ border: smtpEmailValidation === "valid" ? "2px solid oklch(0.70 0.15 160)" : smtpEmailValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                  name="rr-pages-settings-smtp-email-2624" />
+                {smtpEmailValidation !== "idle" && (
+                  <p
+                    id="smtp-email-validation"
+                    data-testid="smtp-email-validation"
+                    role="status"
+                    aria-live="polite"
+                    className={`mt-1.5 flex items-center gap-1.5 text-xs font-semibold ${smtpEmailValidation === "valid" ? "text-emerald-700" : "text-red-700"}`}
+                  >
+                    {smtpEmailValidation === "valid" ? <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> : <span aria-hidden="true">⚠</span>}
+                    {smtpEmailValidation === "valid"
+                      ? t("common.emailFormatValid", { defaultValue: "Email format looks good." })
+                      : t("login.invalidEmail", { defaultValue: "Enter a valid email address." })}
+                  </p>
+                )}
               </div>
 
               {/* Password field — smart provider-aware */}
@@ -2749,7 +2782,9 @@ export default function SettingsPage() {
 
                     <div className="relative">
                       <input
+                        id="smtp-password"
                         type={showSmtpPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
                         value={smtpPassword}
                         onChange={(e) => setSmtpPassword(e.target.value)}
                         placeholder={passwordPlaceholder}
@@ -2816,9 +2851,11 @@ export default function SettingsPage() {
 
               {/* Display name */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.displayNameLabel", { defaultValue: "Display Name (optional)" })}</label>
+                <label htmlFor="smtp-from-name" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.displayNameLabel", { defaultValue: "Display Name (optional)" })}</label>
                 <input
+                  id="smtp-from-name"
                   type="text"
+                  autoComplete="name"
                   value={smtpFromName}
                   onChange={(e) => setSmtpFromName(e.target.value)}
                   placeholder={t("smtp.displayNamePlaceholder", { defaultValue: "e.g. Steve at Acme Plumbing" })}
