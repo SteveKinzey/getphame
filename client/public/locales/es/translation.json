@@ -2177,6 +2177,18 @@
       "label": "Panel",
       "title": "Tus resultados"
     },
+    "shareProfile": {
+      "button": "Compartir perfil",
+      "copied": "Copiado",
+      "copySuccess": "Enlace del perfil copiado.",
+      "copyError": "No se pudo copiar el enlace del perfil. Inténtalo de nuevo.",
+      "unavailable": "Añade el enlace de tu perfil en Configuración para compartirlo."
+    },
+    "loading": {
+      "ariaLabel": "Cargando tu panel",
+      "title": "Cargando tu panel…",
+      "description": "Estamos preparando tu actividad más reciente de solicitudes de reseña."
+    },
     "stats": {
       "thisMonth": "Este mes",
       "allTime": "Total",
@@ -2900,6 +2912,7 @@
     "consentSuffix": ".",
     "signInCancelled": "El inicio de sesión se canceló. Inténtalo de nuevo.",
     "appleSignInFailed": "No se pudo completar el inicio de sesión con Apple. Inténtalo de nuevo.",
+    "appleSignInLoading": "Abriendo el inicio de sesión seguro con Apple…",
     "invalidMagicLink": "El enlace de acceso no es válido o ya se usó. Solicita uno nuevo.",
     "magicLinkExpired": "El enlace de acceso ha vencido. Solicita uno nuevo.",
     "verificationFailed": "La verificación falló. Solicita un enlace nuevo.",

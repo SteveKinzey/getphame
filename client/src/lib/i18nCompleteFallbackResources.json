@@ -46,6 +46,7 @@
       "termsPrefix": "By continuing, you agree to our",
       "checkInbox": "Check your inbox",
       "continueWithApple": "Continue with Apple",
+      "appleSignInLoading": "Opening secure Apple sign-in…",
       "continueWithGoogle": "Continue with Google",
       "emailLabel": "Email address",
       "emailRequired": "Email is required.",
@@ -1125,6 +1126,18 @@
       "header": {
         "label": "Dashboard",
         "title": "Your Results"
+      },
+      "shareProfile": {
+        "button": "Share Profile",
+        "copied": "Copied",
+        "copySuccess": "Profile link copied.",
+        "copyError": "Could not copy the profile link. Please try again.",
+        "unavailable": "Add your profile link in Settings to share it."
+      },
+      "loading": {
+        "ariaLabel": "Loading your dashboard",
+        "title": "Loading your dashboard…",
+        "description": "Getting your latest review-request activity ready."
       },
       "stats": {
         "thisMonth": "This Month",
@@ -2979,6 +2992,18 @@
       "header": {
         "label": "Panel de control",
         "title": "Tus resultados"
+      },
+      "shareProfile": {
+        "button": "Compartir perfil",
+        "copied": "Copiado",
+        "copySuccess": "Enlace del perfil copiado.",
+        "copyError": "No se pudo copiar el enlace del perfil. Inténtalo de nuevo.",
+        "unavailable": "Añade el enlace de tu perfil en Configuración para compartirlo."
+      },
+      "loading": {
+        "ariaLabel": "Cargando tu panel",
+        "title": "Cargando tu panel…",
+        "description": "Estamos preparando tu actividad más reciente de solicitudes de reseña."
       },
       "stats": {
         "thisMonth": "Este mes",
@@ -5006,6 +5031,18 @@
         "label": "Tableau de bord",
         "title": "Vos résultats"
       },
+      "shareProfile": {
+        "button": "Partager le profil",
+        "copied": "Copié",
+        "copySuccess": "Lien du profil copié.",
+        "copyError": "Impossible de copier le lien du profil. Réessayez.",
+        "unavailable": "Ajoutez le lien de votre profil dans les paramètres pour le partager."
+      },
+      "loading": {
+        "ariaLabel": "Chargement de votre tableau de bord",
+        "title": "Chargement de votre tableau de bord…",
+        "description": "Préparation de vos dernières activités de demandes d’avis."
+      },
       "stats": {
         "thisMonth": "Ce mois-ci",
         "allTime": "Depuis le début",
@@ -7019,6 +7056,18 @@
         "label": "Dashboard",
         "title": "Risultati"
       },
+      "shareProfile": {
+        "button": "Condividi profilo",
+        "copied": "Copiato",
+        "copySuccess": "Link del profilo copiato.",
+        "copyError": "Impossibile copiare il link del profilo. Riprova.",
+        "unavailable": "Aggiungi il link del tuo profilo nelle Impostazioni per condividerlo."
+      },
+      "loading": {
+        "ariaLabel": "Caricamento della dashboard",
+        "title": "Caricamento della dashboard…",
+        "description": "Stiamo preparando le ultime attività delle richieste di recensione."
+      },
       "stats": {
         "thisMonth": "Questo mese",
         "allTime": "Dall'inizio",
@@ -8899,6 +8948,18 @@
         "label": "แดชบอร์ด",
         "title": "ผลลัพธ์ของคุณ"
       },
+      "shareProfile": {
+        "button": "แชร์โปรไฟล์",
+        "copied": "คัดลอกแล้ว",
+        "copySuccess": "คัดลอกลิงก์โปรไฟล์แล้ว",
+        "copyError": "ไม่สามารถคัดลอกลิงก์โปรไฟล์ได้ โปรดลองอีกครั้ง",
+        "unavailable": "เพิ่มลิงก์โปรไฟล์ของคุณในการตั้งค่าเพื่อแชร์"
+      },
+      "loading": {
+        "ariaLabel": "กำลังโหลดแดชบอร์ดของคุณ",
+        "title": "กำลังโหลดแดชบอร์ดของคุณ…",
+        "description": "กำลังเตรียมกิจกรรมคำขอรีวิวล่าสุดของคุณ"
+      },
       "stats": {
         "thisMonth": "เดือนนี้",
         "allTime": "ตลอดเวลา",
@@ -10776,6 +10837,18 @@
         "label": "仪表板",
         "title": "您的结果"
       },
+      "shareProfile": {
+        "button": "分享资料",
+        "copied": "已复制",
+        "copySuccess": "资料链接已复制。",
+        "copyError": "无法复制资料链接。请重试。",
+        "unavailable": "请先在“设置”中添加您的资料链接以进行分享。"
+      },
+      "loading": {
+        "ariaLabel": "正在加载您的仪表盘",
+        "title": "正在加载您的仪表盘…",
+        "description": "正在准备您最新的评价请求活动。"
+      },
       "stats": {
         "thisMonth": "本月",
         "allTime": "所有时间",
@@ -12645,6 +12718,18 @@
       "header": {
         "label": "儀表板",
         "title": "您的成效"
+      },
+      "shareProfile": {
+        "button": "分享個人資料",
+        "copied": "已複製",
+        "copySuccess": "個人資料連結已複製。",
+        "copyError": "無法複製個人資料連結。請再試一次。",
+        "unavailable": "請在「設定」中新增您的個人資料連結以分享。"
+      },
+      "loading": {
+        "ariaLabel": "正在載入您的儀表板",
+        "title": "正在載入您的儀表板…",
+        "description": "正在準備您最新的評論請求活動。"
       },
       "stats": {
         "thisMonth": "本月",

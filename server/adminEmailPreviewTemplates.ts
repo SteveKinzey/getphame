@@ -29,7 +29,7 @@ type PreviewTemplateOptions = {
 export function buildAdminEmailPreviewTemplate({
   template,
   recipientName = "Alex",
-  magicLinkUrl = "https://getphame.app/login?from=email-preview",
+  magicLinkUrl = "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview",
 }: PreviewTemplateOptions): string {
   const wrapEmail = (headTitle: string, bodyHtml: string, footerHtml: string) => {
     const headerHtml = renderGetPhameEmailHeader(headTitle);

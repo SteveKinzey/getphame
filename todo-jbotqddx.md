@@ -58,3 +58,13 @@
 - [x] Align provider preset regression assertions with the extracted rendered setup guide component.
 - [x] Complete server TypeScript validation for the current release tree, or document the external SIGTERM blocker with unchanged-server parity evidence.
 - [x] Complete focused provider tests, the full suite, client TypeScript, production build, responsive verification, checkpoint release, and exact GitHub main synchronization for the provider-recovery enhancements; document the external server TypeScript SIGTERM blocker rather than asserting that check passed.
+- [x] Diagnose the reported getphame.app console errors and distinguish actionable production defects from browser-extension, PWA, and third-party diagnostics.
+- [x] Remediate the verified Cloudflare CSP gap and validate it through the source contract, full release gates, and an isolated production-mode preview; document the managed-domain routing mismatch that blocks custom-domain confirmation.
+- [x] Create and validate a reusable skill for CSP verification, stale-deployment diagnosis, and safe temporary-preview testing.
+- [x] Demonstrate a production-mode CSP verification route for the corrected checkpoint and provide the available temporary Manus preview address.
+- [x] Add a consistent user-friendly toast notification path for dashboard API request failures.
+- [x] Add an accessible Share Profile action that copies the user’s profile link and confirms success or clipboard failure.
+- [x] Add an accessible main-dashboard loading spinner while core dashboard data is fetching.
+- [x] Add centralized localized dashboard API-failure feedback for both queries and mutations, replacing raw or silent dashboard error paths.
+- [x] Add a mobile-safe accessible name to the icon-only Share Profile button and extend focused regression coverage.
+- [ ] Add localized regression coverage, validate the dashboard interactions, release the enhancement, and synchronize the exact tree to GitHub main.
