@@ -9,3 +9,21 @@
 - [x] Complete and verify the interrupted return-path and authenticated-entry implementation without weakening redirect safety.
 - [x] Run focused Google OAuth, magic-link, and authenticated-entry regression tests for the repaired path.
 - [x] Run collected positive and negative redirect-safety regressions for same-origin and rejected `returnTo` destinations.
+- [x] Reproduce and diagnose the current email-preview login error and confirm the active production authorization behavior.
+- [x] Add a clear, accessible loading animation and actionable error state to the administrator sign-in form.
+- [x] Allow development-only email-preview access without a login while retaining production admin authorization and route safety.
+- [x] Add regression coverage for login feedback, development bypass activation, and production bypass rejection.
+- [x] Run focused and full authentication tests, client type checks, production build, dependency audit, and responsive route verification; server type checks were terminated by sandbox resource limits after the production build passed.
+- [x] Verify the targeted email-preview authentication changes were absent from selected GitHub `main`, then synchronize them through quality-gated PR #148.
+- [x] Capture protected-main merge, required-check, and exact-tree-parity evidence for the approved targeted email-preview changes.
+- [x] Validate the three targeted email-preview and administrator sign-in behaviors with focused regression tests.
+- [x] Complete the required release synchronization for the approved targeted fixes after PR #148 quality checks passed and merged normally.
+- [x] Create and validate a reusable skill for secure email-preview authentication and release workflows.
+- [x] Confirm the administrator-protected Send Test Email action already provides recipient input, pending feedback, and success/error delivery confirmation.
+- [x] Add an administrator dashboard shortcut to the email preview page.
+- [x] Confirm in-page email-template switching already uses local selection state without requiring a URL change.
+- [x] Add regression coverage and run focused/full validation for the new skill-related UI and email-preview changes.
+- [x] Release and synchronize the validated email-preview usability improvements without merging unrelated work.
+- [x] Identify and resolve the GitHub branch-protection status preventing PR #148 from merging: the Copilot fallback-localization review thread required resolution.
+- [x] Correct the release path without administrative bypasses by adding six non-English fallback translations, resolving the addressed thread, and retaining normal auto-merge.
+- [x] Verify the normal merge, required checks, and remote-main parity for PR #148 before closing the release workflow.
