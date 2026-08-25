@@ -977,6 +977,12 @@
       "notActive": "Connesso, ma non selezionato per le richieste di recensione dei clienti",
       "connectionSavedMessage": "Il tuo server per invii in massa è connesso e pronto all’uso.",
       "connectingAndVerifying": "Connessione e verifica…"
+    },
+    "appearance": {
+      "title": "Aspetto",
+      "description": "Scegli la modalità colore che Get Phame deve ricordare su questo dispositivo.",
+      "label": "Modalità colore",
+      "saved": "La modalità {{theme}} è salvata su questo dispositivo."
     }
   },
   "emailConnect": {

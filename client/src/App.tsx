@@ -32,7 +32,7 @@ import {
   DashboardReadinessGate,
   useDashboardReadiness,
 } from "./components/ApiRecoveryExperience";
-import { DashboardFeedbackPreviewHarness } from "./components/dashboard/DashboardFeedbackExperience";
+import { DashboardFeedbackPreviewHarness, DashboardQueryRecoveryPreviewHarness } from "./components/dashboard/DashboardFeedbackExperience";
 import {
   ConnectionSavedNotice,
   SmtpAppPasswordHelpTooltip,
@@ -159,6 +159,7 @@ const AdminEmailPreviewPage = lazy(() => import("./pages/AdminEmailPreview"));
 const AdminAuditLogPage = lazy(() => import("./pages/AdminAuditLog"));
 const AdminAuditRetentionPage = lazy(() => import("./pages/AdminAuditRetention"));
 const AuthenticatedAdminEmailPreviewPage = () => <AdminEmailPreviewPage />;
+const AuthenticatedDashboardPage = () => <DashboardPage />;
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 
 /**
@@ -506,7 +507,7 @@ function AppShell() {
                 <Switch>
                   <Route path="/" component={HomePage} />
                   <Route path="/send" component={SendRequestPage} />
-                  <Route path="/dashboard" component={DashboardPage} />
+                  <Route path="/dashboard" component={AuthenticatedDashboardPage} />
                   <Route
                     path="/developer"
                     component={DeveloperIntegrationsPage}
@@ -753,6 +754,43 @@ function App() {
         <TooltipProvider>
           <Toaster position="top-center" richColors />
           <DashboardFeedbackPreviewHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-query-recovery") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <Toaster position="top-center" richColors />
+          <DashboardQueryRecoveryPreviewHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-page-query-recovery") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <UpdateSafetyProvider>
+            <Toaster position="top-center" richColors />
+            <DashboardPage testRecoveryMode="query" />
+          </UpdateSafetyProvider>
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-page-mutation-recovery") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <UpdateSafetyProvider>
+            <Toaster position="top-center" richColors />
+            <DashboardPage testRecoveryMode="mutation" />
+          </UpdateSafetyProvider>
         </TooltipProvider>
       </ThemeProvider>
     );

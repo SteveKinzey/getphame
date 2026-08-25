@@ -2899,6 +2899,12 @@
       "notActive": "Conectado, pero no seleccionado para solicitudes de reseñas de clientes",
       "connectionSavedMessage": "Tu servidor de correo masivo está conectado y listo para usar.",
       "connectingAndVerifying": "Conectando y verificando…"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "description": "Elige el modo de color que quieres que Get Phame recuerde en este dispositivo.",
+      "label": "Modo de color",
+      "saved": "El modo {{theme}} se guarda en este dispositivo."
     }
   },
   "login": {

@@ -7,7 +7,7 @@ import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap,
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
-import { lazy, useMemo, useRef, useEffect, useState } from "react";
+import { lazy, useCallback, useMemo, useRef, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import LanguageFlyout from "@/components/LanguageFlyout";
@@ -15,7 +15,7 @@ import ClientDetailSheet from "@/components/ClientDetailSheet";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 import RecentActivityCard from "@/components/dashboard/RecentActivityCard";
 import MailServerHealthBadge from "@/components/dashboard/MailServerHealthBadge";
-import { DashboardLoadingState, useDashboardApiErrorToast } from "@/components/dashboard/DashboardFeedbackExperience";
+import { DashboardLoadingState, useDashboardApiErrorToast, useRecoverableDashboardQueryError } from "@/components/dashboard/DashboardFeedbackExperience";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -50,18 +50,31 @@ async function copyTextToClipboard(value: string) {
   }
 }
 
-export default function DashboardPage() {
+type DashboardPageProps = {
+  testRecoveryMode?: "query" | "mutation";
+};
+
+export default function DashboardPage({ testRecoveryMode }: DashboardPageProps = {}) {
   const { t } = useTranslation();
   const { theme, toggleTheme, switchable } = useTheme();
   const [, navigate] = useLocation();
+  const fixtureQueriesEnabled = testRecoveryMode !== "mutation";
+  const fixtureQueryRetry = testRecoveryMode === "query" ? false : undefined;
   const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
-  const { data: stats, isLoading } = trpc.requests.stats.useQuery();
-  const { data: consentStats } = trpc.contacts.consentStats.useQuery();
-  const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
-  const { data: profile } = trpc.profile.get.useQuery();
-  const { data: emailPerf } = trpc.tracking.overallStats.useQuery();
-  const { data: smtpStatus } = trpc.smtp.status.useQuery();
-  const { data: bulkSenderStatus } = trpc.bulkSender.status.useQuery();
+  const statsQuery = trpc.requests.stats.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
+  const consentStatsQuery = trpc.contacts.consentStats.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
+  const requestsQuery = trpc.requests.list.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
+  const profileQuery = trpc.profile.get.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
+  const emailPerfQuery = trpc.tracking.overallStats.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
+  const smtpStatusQuery = trpc.smtp.status.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
+  const bulkSenderStatusQuery = trpc.bulkSender.status.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
+  const { data: stats, isLoading, isError: statsIsError, refetch: refetchStats } = statsQuery;
+  const { data: consentStats, isError: consentStatsIsError, refetch: refetchConsentStats } = consentStatsQuery;
+  const { data: allRequests, isLoading: listLoading, isError: requestsIsError, refetch: refetchRequests } = requestsQuery;
+  const { data: profile, isError: profileIsError, refetch: refetchProfile } = profileQuery;
+  const { data: emailPerf, isError: emailPerfIsError, refetch: refetchEmailPerf } = emailPerfQuery;
+  const { data: smtpStatus, isError: smtpStatusIsError, refetch: refetchSmtpStatus } = smtpStatusQuery;
+  const { data: bulkSenderStatus, isError: bulkSenderStatusIsError, refetch: refetchBulkSenderStatus } = bulkSenderStatusQuery;
   const utils = trpc.useUtils();
   const [profileLinkCopied, setProfileLinkCopied] = useState(false);
   const [profileEditorOpen, setProfileEditorOpen] = useState(false);
@@ -72,6 +85,38 @@ export default function DashboardPage() {
   const [consentLabelName, setConsentLabelName] = useState("");
 
   const showDashboardApiError = useDashboardApiErrorToast();
+  const showDashboardMutationError = useCallback(() => {
+    showDashboardApiError();
+  }, [showDashboardApiError]);
+  const retryDashboardData = useCallback(() => {
+    void Promise.all([
+      refetchStats(),
+      refetchConsentStats(),
+      refetchRequests(),
+      refetchProfile(),
+      refetchEmailPerf(),
+      refetchSmtpStatus(),
+      refetchBulkSenderStatus(),
+    ]);
+  }, [
+    refetchBulkSenderStatus,
+    refetchConsentStats,
+    refetchEmailPerf,
+    refetchProfile,
+    refetchRequests,
+    refetchSmtpStatus,
+    refetchStats,
+  ]);
+  const hasRecoverableDashboardQueryError =
+    statsIsError ||
+    consentStatsIsError ||
+    requestsIsError ||
+    profileIsError ||
+    emailPerfIsError ||
+    smtpStatusIsError ||
+    bulkSenderStatusIsError;
+
+  useRecoverableDashboardQueryError(hasRecoverableDashboardQueryError, retryDashboardData);
 
   const handleShareProfile = async () => {
     const profileLink = profile?.reviewLink;
@@ -111,7 +156,7 @@ export default function DashboardPage() {
       setProfileEditorOpen(false);
       toast.success(t("dashboard.profileEditor.saved", { defaultValue: "Profile updated." }));
     },
-    onError: showDashboardApiError,
+    onError: showDashboardMutationError,
   });
 
   const handleDashboardProfileSave = () => {
@@ -151,7 +196,7 @@ export default function DashboardPage() {
         startFeedUndoTimer(() => setFeedUndoId(null));
       }
     },
-    onError: showDashboardApiError,
+    onError: showDashboardMutationError,
   });
 
   // Undo mutation for single-row feed mark — separate instance
@@ -202,7 +247,7 @@ export default function DashboardPage() {
       }
       setSelected(new Set());
     },
-    onError: showDashboardApiError,
+    onError: showDashboardMutationError,
   });
 
   // Bulk mark-as-responded mutation with optimistic update
@@ -268,7 +313,7 @@ export default function DashboardPage() {
   const requestIds = useMemo(() => allRequests?.map((r) => r.id) ?? [], [allRequests]);
   const { data: trackingStats } = trpc.tracking.requestStats.useQuery(
     { requestIds },
-    { enabled: requestIds.length > 0 }
+    { enabled: fixtureQueriesEnabled && requestIds.length > 0 }
   );
   const trackingMap = useMemo(() => {
     const m = new Map<number, { opens: number; clicks: number }>();
@@ -308,6 +353,31 @@ export default function DashboardPage() {
     const delta = last7 - prior7;
     return { last7, prior7, delta };
   }, [allRequests]);
+
+  if (testRecoveryMode) {
+    return (
+      <main
+        data-testid="dashboard-page-recovery-fixture"
+        className="min-h-screen p-6"
+        style={{ background: "var(--background)" }}
+      >
+        <h1 className="rr-text-navy text-xl font-black">Dashboard recovery fixture</h1>
+        {testRecoveryMode === "mutation" ? (
+          <button
+            type="button"
+            data-testid="dashboard-page-mutation-error-trigger"
+            onClick={() => updateDashboardProfile.mutate({
+              businessName: "Recovery test business",
+              reviewLink: "https://example.com/reviews",
+            })}
+            className="mt-4 rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold"
+          >
+            Simulate dashboard update failure
+          </button>
+        ) : null}
+      </main>
+    );
+  }
 
   if (isLoading || listLoading) {
     return <DashboardLoadingState />;

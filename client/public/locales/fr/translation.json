@@ -2899,6 +2899,12 @@
       "notActive": "Connecté, mais non sélectionné pour les demandes d’avis clients",
       "connectionSavedMessage": "Votre serveur d’envoi en masse est connecté et prêt à être utilisé.",
       "connectingAndVerifying": "Connexion et vérification…"
+    },
+    "appearance": {
+      "title": "Apparence",
+      "description": "Choisissez le mode de couleur que Get Phame doit mémoriser sur cet appareil.",
+      "label": "Mode de couleur",
+      "saved": "Le mode {{theme}} est enregistré sur cet appareil."
     }
   },
   "login": {

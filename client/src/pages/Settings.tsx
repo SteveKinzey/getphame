@@ -1266,6 +1266,76 @@ function SettingsSkeleton({ title }: { title: string }) {
   );
 }
 
+function ThemePreferenceCard() {
+  const { t } = useTranslation();
+  const { theme, setThemePreference, switchable } = useTheme();
+
+  if (!switchable || !setThemePreference) return null;
+
+  return (
+    <section
+      data-testid="settings-theme-preference"
+      className="rounded-2xl bg-white p-5 shadow-sm"
+      aria-labelledby="settings-appearance-title"
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold">
+          {theme === "dark" ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h2 id="settings-appearance-title" className="text-base font-black rr-text-navy">
+            {t("settings.appearance.title", { defaultValue: "Appearance" })}
+          </h2>
+          <p className="mt-1 text-sm rr-text-navy-muted">
+            {t("settings.appearance.description", {
+              defaultValue: "Choose the color mode you want Get Phame to remember on this device.",
+            })}
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="mt-4 grid grid-cols-2 gap-2"
+        role="radiogroup"
+        aria-label={t("settings.appearance.label", { defaultValue: "Color mode" })}
+      >
+        {(["light", "dark"] as const).map(option => {
+          const selected = theme === option;
+          const label = t(`theme.${option}`, {
+            defaultValue: option === "light" ? "Light" : "Dark",
+          });
+          const Icon = option === "light" ? Sun : Moon;
+
+          return (
+            <button
+              key={option}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              data-testid={`settings-theme-${option}`}
+              onClick={() => setThemePreference(option)}
+              className={`flex min-h-12 items-center justify-center gap-2 rounded-xl border px-3 text-sm font-black transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                selected
+                  ? "border-amber-400 rr-bg-navy rr-text-gold"
+                  : "border-slate-200 bg-slate-50 rr-text-navy hover:border-amber-300"
+              }`}
+            >
+              <Icon size={16} aria-hidden="true" />
+              {label}
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-xs font-semibold rr-text-navy-muted" aria-live="polite">
+        {t("settings.appearance.saved", {
+          theme: t(`theme.${theme}`, { defaultValue: theme === "light" ? "Light" : "Dark" }),
+          defaultValue: "{{theme}} mode is saved on this device.",
+        })}
+      </p>
+    </section>
+  );
+}
+
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
@@ -1881,6 +1951,7 @@ export default function SettingsPage() {
       <div className="px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
         <AccountProfileCard />
+        <ThemePreferenceCard />
         <PasskeySecurityCard />
         <RecoveryDrillCard />
         {/* ── Business Profile ──────────────────────────────────────────────── */}

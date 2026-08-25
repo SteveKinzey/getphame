@@ -2283,6 +2283,12 @@
       "notActive": "已连接，但未被选用于客户评价请求",
       "connectionSavedMessage": "您的批量邮件服务器已连接，可立即使用。",
       "connectingAndVerifying": "正在连接并验证…"
+    },
+    "appearance": {
+      "title": "外观",
+      "description": "选择希望 Get Phame 在此设备上记住的颜色模式。",
+      "label": "颜色模式",
+      "saved": "此设备已保存{{theme}}模式。"
     }
   },
   "login": {

@@ -2305,6 +2305,12 @@
       "notActive": "已連線，但未被選用於客戶評價請求",
       "connectionSavedMessage": "您的大量寄信伺服器已連線，可立即使用。",
       "connectingAndVerifying": "正在連線並驗證…"
+    },
+    "appearance": {
+      "title": "外觀",
+      "description": "選擇希望 Get Phame 在此裝置上記住的顏色模式。",
+      "label": "顏色模式",
+      "saved": "此裝置已儲存{{theme}}模式。"
     }
   },
   "login": {
