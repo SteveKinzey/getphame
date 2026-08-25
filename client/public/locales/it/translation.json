@@ -663,6 +663,18 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "title": "Dashboard",
+    "shareProfile": {
+      "button": "Condividi profilo",
+      "copied": "Copiato",
+      "copySuccess": "Link del profilo copiato.",
+      "copyError": "Impossibile copiare il link del profilo. Riprova.",
+      "unavailable": "Aggiungi il link del tuo profilo nelle Impostazioni per condividerlo."
+    },
+    "loading": {
+      "ariaLabel": "Caricamento della dashboard",
+      "title": "Caricamento della dashboard…",
+      "description": "Stiamo preparando le ultime attività delle richieste di recensione."
+    },
     "totalSent": "Totale Inviati",
     "openRate": "Tasso di Apertura",
     "clickRate": "Tasso di Clic",

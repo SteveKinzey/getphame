@@ -2009,6 +2009,18 @@
       "label": "Dashboard",
       "title": "Your Results"
     },
+    "shareProfile": {
+      "button": "Share Profile",
+      "copied": "Copied",
+      "copySuccess": "Profile link copied.",
+      "copyError": "Could not copy the profile link. Please try again.",
+      "unavailable": "Add your profile link in Settings to share it."
+    },
+    "loading": {
+      "ariaLabel": "Loading your dashboard",
+      "title": "Loading your dashboard…",
+      "description": "Getting your latest review-request activity ready."
+    },
     "stats": {
       "thisMonth": "This Month",
       "allTime": "All Time",

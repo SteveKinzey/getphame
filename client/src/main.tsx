@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
+import { toast } from "sonner";
 import App from "./App";
 import { getLoginUrl } from "./const";
 import { apiFetch } from "./lib/apiFetch";
@@ -51,6 +52,21 @@ queryClient.getQueryCache().subscribe(event => {
     // Intermediate failures remain in a fetching state while React Query retries.
     if (event.query.state.fetchStatus === "idle") {
       console.error("[API Query Error]", error);
+      // Surface one concise, localized recovery message without exposing a raw
+      // server error or creating a separate toast for every failed query.
+      toast.error(
+        i18n.t("apiRecovery.unavailableTitle", {
+          defaultValue: "We’re reconnecting Get Phame.",
+        }),
+        {
+          id: "api-query-error",
+          description: i18n.t("apiRecovery.unavailableDescription", {
+            defaultValue:
+              "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
+          }),
+          duration: 8_000,
+        }
+      );
     }
   }
 });

@@ -1678,6 +1678,18 @@
       "label": "仪表盘",
       "title": "您的结果"
     },
+    "shareProfile": {
+      "button": "分享资料",
+      "copied": "已复制",
+      "copySuccess": "资料链接已复制。",
+      "copyError": "无法复制资料链接。请重试。",
+      "unavailable": "请先在“设置”中添加您的资料链接以进行分享。"
+    },
+    "loading": {
+      "ariaLabel": "正在加载您的仪表盘",
+      "title": "正在加载您的仪表盘…",
+      "description": "正在准备您最新的评价请求活动。"
+    },
     "stats": {
       "thisMonth": "本月",
       "allTime": "所有时间",
