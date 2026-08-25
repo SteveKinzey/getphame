@@ -38,4 +38,11 @@
 - [x] Add accessible real-time visual validation feedback to the updated identity and email fields.
 - [x] Add browser-level autofill smoke tests for login and SMTP setup forms across desktop and mobile Chromium.
 - [x] Run focused and full validation, client type checks, production build, dependency audit, desktop/mobile smoke tests, and visual review.
-- [ ] Save and synchronize the validated form-autofill quality improvements through a quality-gated protected-main pull request.
+- [x] Save and synchronize the validated form-autofill quality improvements through quality-gated PR #151, then verify the merged protected-main tree matches the release branch.
+- [x] Inspect username/password forms and current login and SMTP submission-success behavior.
+- [x] Update and validate the reusable form-autofill quality skill with password feedback, visibility, and success-feedback guidance.
+- [x] Add interaction-based validation feedback for relevant username and password fields, including Bulk Sender, SMTP, WooCommerce, and onboarding credentials.
+- [x] Add accessible show/hide toggles to SMTP secrets and other applicable password inputs, including Bulk Sender, WooCommerce, and onboarding SMTP credentials.
+- [x] Add immediate, accessible success feedback after magic-link and SMTP setup submissions.
+- [x] Add focused and browser-level regression coverage and complete client type, full-suite, build, audit, and visual validation; protected-main release remains pending.
+- [ ] Save and synchronize the expanded credential-feedback improvements through a quality-gated protected-main pull request.

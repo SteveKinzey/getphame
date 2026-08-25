@@ -688,6 +688,8 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
   const [fromName, setFromName] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
+  const [usernameTouched, setUsernameTouched] = useState(false);
+  const [secretTouched, setSecretTouched] = useState(false);
   const [connectionSavedNotice, setConnectionSavedNotice] = useState(false);
   const preset = getBulkSenderPreset(provider);
   const localizedPreset = provider === "mailjet" ? {
@@ -758,6 +760,13 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
   const usernameIsValid = preset.usernameMode !== "user" || smtpUsername.trim().length > 0;
   const customHostIsValid = provider !== "custom_smtp" || smtpHost.trim().length > 0;
   const fromEmailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail.trim());
+  const usernameValidation =
+    preset.usernameMode === "user" && usernameTouched
+      ? smtpUsername.trim().length > 0 ? "valid" : "invalid"
+      : "idle";
+  const secretValidation = secretTouched
+    ? secret.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
   const canConnect = Boolean(secret.trim() && fromEmailIsValid && usernameIsValid && customHostIsValid);
 
   const submitConnection = () => {
@@ -919,7 +928,8 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
           {preset.usernameMode === "user" ? (
             <div>
               <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{localizedPreset.usernameLabel}</label>
-              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={localizedPreset.usernamePlaceholder} autoComplete="username" autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => { setSmtpUsername(event.target.value); setUsernameTouched(true); }} onBlur={() => setUsernameTouched(true)} placeholder={localizedPreset.usernamePlaceholder} autoComplete="username" autoCapitalize="none" spellCheck={false} aria-invalid={usernameValidation === "invalid"} aria-describedby={usernameValidation === "idle" ? undefined : "bulk-sender-username-feedback"} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: usernameValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : usernameValidation === "valid" ? "2px solid oklch(0.56 0.14 145)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              {usernameValidation !== "idle" && <p id="bulk-sender-username-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: usernameValidation === "valid" ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(usernameValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: usernameValidation === "valid" ? "Looks good." : "This field is required." })}</p>}
             </div>
           ) : (
             <div className="rounded-xl px-3 py-2.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
@@ -940,21 +950,26 @@ function BulkSenderSection({ profile, disableStatusQuery = false }: { profile: P
                 id="bulk-sender-secret"
                 type={showSecret ? "text" : "password"}
                 value={secret}
-                onChange={(event) => setSecret(event.target.value)}
+                onChange={(event) => { setSecret(event.target.value); setSecretTouched(true); }}
+                onBlur={() => setSecretTouched(true)}
                 placeholder={localizedPreset.secretPlaceholder}
                 autoComplete="new-password"
+                aria-invalid={secretValidation === "invalid"}
+                aria-describedby={secretValidation === "idle" ? undefined : "bulk-sender-secret-feedback"}
                 className="min-h-11 w-full px-3 py-2 pr-11 rounded-xl outline-none"
-                style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                style={{ border: secretValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : secretValidation === "valid" ? "2px solid oklch(0.56 0.14 145)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
               />
               <button
                 type="button"
                 onClick={() => setShowSecret((value) => !value)}
                 aria-label={showSecret ? t("settings.bulkSender.hideSecret", { defaultValue: "Hide secret" }) : t("settings.bulkSender.showSecret", { defaultValue: "Show secret" })}
+                aria-pressed={showSecret}
                 className="absolute right-1 top-1/2 flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg rr-text-navy-muted"
               >
                 {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {secretValidation !== "idle" && <p id="bulk-sender-secret-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: secretValidation === "valid" ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(secretValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: secretValidation === "valid" ? "Secret entered. Test before saving." : "This field is required." })}</p>}
             <p className="mt-1 text-xs rr-text-navy-muted">{localizedPreset.secretHelp}</p>
           </div>
 
@@ -1409,6 +1424,8 @@ export default function SettingsPage() {
   const [wooUrl, setWooUrl] = useState("");
   const [wooKey, setWooKey] = useState("");
   const [wooSecret, setWooSecret] = useState("");
+  const [wooSecretTouched, setWooSecretTouched] = useState(false);
+  const [showWooSecret, setShowWooSecret] = useState(false);
   const [wooFormOpen, setWooFormOpen] = useState(false);
 
   const saveWooCreds = trpc.woo.saveCredentials.useMutation({
@@ -1604,6 +1621,7 @@ export default function SettingsPage() {
   const [smtpEmail, setSmtpEmail] = useState("");
   const [smtpEmailTouched, setSmtpEmailTouched] = useState(false);
   const [smtpPassword, setSmtpPassword] = useState("");
+  const [smtpPasswordTouched, setSmtpPasswordTouched] = useState(false);
   const [smtpHost, setSmtpHost] = useState("");
   const [smtpPort, setSmtpPort] = useState(587);
   const [smtpSecure, setSmtpSecure] = useState(0);
@@ -1626,6 +1644,9 @@ export default function SettingsPage() {
         ? "valid"
         : "invalid"
       : "idle";
+  const smtpPasswordValidation = smtpPasswordTouched
+    ? smtpPassword.trim().length > 0 ? "valid" : "invalid"
+    : "idle";
 
   useEffect(() => {
     const focusSmtp = window.location.hash === "#smtp-settings" || new URLSearchParams(window.location.search).get("focus") === "smtp";
@@ -2781,26 +2802,32 @@ export default function SettingsPage() {
                     )}
 
                     <div className="relative">
-                      <input
-                        id="smtp-password"
-                        type={showSmtpPassword ? 'text' : 'password'}
-                        autoComplete="current-password"
-                        value={smtpPassword}
-                        onChange={(e) => setSmtpPassword(e.target.value)}
-                        placeholder={passwordPlaceholder}
-                        className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
-                        style={{ border: '2px solid oklch(0.90 0.02 260)', fontSize: '16px' }}
+	                      <input
+	                        id="smtp-password"
+	                        type={showSmtpPassword ? 'text' : 'password'}
+	                        autoComplete="current-password"
+	                        value={smtpPassword}
+	                        onChange={(e) => { setSmtpPassword(e.target.value); setSmtpPasswordTouched(true); }}
+	                        onBlur={() => setSmtpPasswordTouched(true)}
+	                        placeholder={passwordPlaceholder}
+	                        aria-invalid={smtpPasswordValidation === "invalid"}
+	                        aria-describedby={smtpPasswordValidation === "idle" ? undefined : "smtp-password-feedback"}
+	                        className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
+	                        style={{ border: smtpPasswordValidation === "invalid" ? '2px solid oklch(0.62 0.20 27)' : smtpPasswordValidation === "valid" ? '2px solid oklch(0.56 0.14 145)' : '2px solid oklch(0.90 0.02 260)', fontSize: '16px' }}
                        name="rr-pages-settings-smtp-password-2751" />
                       <button
-                        type="button"
-                        onClick={() => setShowSmtpPassword((v) => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold rr-text-navy-mid"
+	                        type="button"
+	                        onClick={() => setShowSmtpPassword((v) => !v)}
+	                        aria-label={showSmtpPassword ? t("common.hide", { defaultValue: "Hide password" }) : t("common.show", { defaultValue: "Show password" })}
+	                        aria-pressed={showSmtpPassword}
+	                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold rr-text-navy-mid"
                       >
                         {showSmtpPassword ? t("common.hide", { defaultValue: "Hide" }) : t("common.show", { defaultValue: "Show" })}
-                      </button>
-                    </div>
+	                      </button>
+	                    </div>
+	                    {smtpPasswordValidation !== "idle" && <p id="smtp-password-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: smtpPasswordValidation === "valid" ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(smtpPasswordValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: smtpPasswordValidation === "valid" ? "Password entered. Test before saving." : "Password is required." })}</p>}
 
-                    {/* Inline hint for known providers that need app passwords */}
+	                    {/* Inline hint for known providers that need app passwords */}
                     {(isGmail || isGoogleWorkspace) && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
                         {t("smtp.inlineHints.google", { defaultValue: "Not your regular account password — use an App Password. Tap How to get it above." })}
@@ -3375,14 +3402,26 @@ export default function SettingsPage() {
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Secret *</label>
-                <input
-                  type="password"
-                  value={wooSecret}
-                  onChange={(e) => setWooSecret(e.target.value)}
-                  placeholder="cs_xxxxxxxxxxxxxxxx"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                 name="rr-pages-settings-woo-secret-3341" />
+                <div className="relative">
+                  <input
+                    id="woo-consumer-secret"
+                    type={showWooSecret ? "text" : "password"}
+                    value={wooSecret}
+                    onChange={(e) => { setWooSecret(e.target.value); setWooSecretTouched(true); }}
+                    onBlur={() => setWooSecretTouched(true)}
+                    placeholder="cs_xxxxxxxxxxxxxxxx"
+                    autoComplete="new-password"
+                    aria-invalid={wooSecretTouched && !wooSecret.trim()}
+                    aria-describedby={wooSecretTouched ? "woo-consumer-secret-feedback" : undefined}
+                    className="w-full px-3 py-3 pr-12 rounded-xl text-sm outline-none"
+                    style={{ border: wooSecretTouched && !wooSecret.trim() ? "2px solid oklch(0.62 0.20 27)" : wooSecretTouched ? "2px solid oklch(0.56 0.14 145)" : "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    name="rr-pages-settings-woo-secret-3341"
+                  />
+                  <button type="button" onClick={() => setShowWooSecret((value) => !value)} aria-label={showWooSecret ? "Hide consumer secret" : "Show consumer secret"} aria-pressed={showWooSecret} className="absolute right-1 top-1/2 flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg rr-text-navy-muted">
+                    {showWooSecret ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                {wooSecretTouched && <p id="woo-consumer-secret-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: wooSecret.trim() ? "oklch(0.40 0.12 145)" : "oklch(0.48 0.16 27)" }}>{t(wooSecret.trim() ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: wooSecret.trim() ? "Secret entered." : "Consumer secret is required." })}</p>}
                 <p className="text-xs mt-1 rr-text-navy-muted">
                   WooCommerce → Settings → Advanced → REST API → Add key (Read permission)
                 </p>

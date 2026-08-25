@@ -935,7 +935,9 @@
     "retryTestEmail": "重试",
     "disconnectAutomationPauseWarning": "断开连接会暂停所有正在进行的自动评价请求。在您配置并选择新的已验证邮件服务器之前，它们将一直暂停。",
     "connectionTestPassed": "邮件服务器连接已验证。",
-    "connectionTestFailed": "邮件服务器仍需处理。"
+    "connectionTestFailed": "邮件服务器仍需处理。",
+    "credentialReady": "内容正确。",
+    "credentialRequired": "此字段为必填项。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
