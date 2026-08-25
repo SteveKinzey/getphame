@@ -44,6 +44,7 @@ interface GoogleStatusResponse {
 
 const GOOGLE_REDIRECT_FEEDBACK_MS = 420;
 const GOOGLE_REDIRECT_STATUS_MS = 140;
+const APPLE_AUTH_STATUS_ID = "apple-auth-status";
 
 // ---------------------------------------------------------------------------
 // SVG Icons (inline — no extra icon package needed)
@@ -288,10 +289,12 @@ export default function Login() {
       clearGoogleSignInPending();
       setIsGoogleSubmitting(false);
       setGoogleStatus(null);
+      const message = t("authFeedback.googleOpenFailed", {
+        defaultValue: "Google sign-in could not be opened. Please try again.",
+      });
+      setFormError(message);
       toast.error(
-        t("authFeedback.googleOpenFailed", {
-          defaultValue: "Google sign-in could not be opened. Please try again.",
-        }),
+        message,
         {
           id: GOOGLE_SIGN_IN_TOAST_ID,
         }
@@ -494,11 +497,15 @@ export default function Login() {
                   )}
 
                   {appleLoginEnabled && (
+                    <div>
                     <button
                       type="button"
                       onClick={handleAppleSignIn}
                       disabled={isAppleSubmitting}
                       aria-busy={isAppleSubmitting}
+                      aria-describedby={
+                        isAppleSubmitting ? APPLE_AUTH_STATUS_ID : undefined
+                      }
                       className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 disabled:cursor-wait disabled:text-white/60 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
                     >
                       {isAppleSubmitting ? <Spinner /> : <AppleIcon />}
@@ -506,6 +513,19 @@ export default function Login() {
                         defaultValue: "Continue with Apple",
                       })}
                     </button>
+                    {isAppleSubmitting && (
+                      <p
+                        id={APPLE_AUTH_STATUS_ID}
+                        role="status"
+                        aria-live="polite"
+                        className="mt-2 text-center text-xs font-semibold text-white/70"
+                      >
+                        {t("login.appleSignInLoading", {
+                          defaultValue: "Opening secure Apple sign-in…",
+                        })}
+                      </p>
+                    )}
+                    </div>
                   )}
                 </div>
               </>

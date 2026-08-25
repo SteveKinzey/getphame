@@ -46,6 +46,7 @@
       "termsPrefix": "By continuing, you agree to our",
       "checkInbox": "Check your inbox",
       "continueWithApple": "Continue with Apple",
+      "appleSignInLoading": "Opening secure Apple sign-in…",
       "continueWithGoogle": "Continue with Google",
       "emailLabel": "Email address",
       "emailRequired": "Email is required.",

@@ -39,6 +39,9 @@ describe("admin email preview runtime contract", () => {
     expect(unauthenticatedRoute).toContain("<AdminEmailPreviewPage readOnly />");
     expect(unauthenticatedRoute).not.toContain("<AuthRequiredRedirect");
     expect(appSource).toContain('path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage}');
+    expect(appSource).toContain("const isDevelopmentPreviewBypass");
+    expect(appSource).toContain('import.meta.env.DEV && path === "/admin/email-preview"');
+    expect(appSource).toContain("if (loading && !isDevelopmentPreviewBypass)");
   });
 
   it("uses a sanitized Shadow DOM surface instead of a policy-sensitive nested document", () => {
@@ -141,12 +144,19 @@ describe("admin email preview runtime contract", () => {
     const browserPreviewSource = routerSource.slice(
       routerSource.indexOf("emailPreview: publicProcedure")
     );
+    const templateSource = readFileSync(
+      resolve(process.cwd(), "server/adminEmailPreviewTemplates.ts"),
+      "utf8"
+    );
 
-    expect(sendTestSource).toContain("https://getphame.app/login?from=test-email-preview");
-    expect(sendTestSource).toContain("Open Get Phame sign-in");
+    expect(sendTestSource).toContain(
+      "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview"
+    );
     expect(sendTestSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
-    expect(browserPreviewSource).toContain("https://getphame.app/login?from=email-preview");
-    expect(browserPreviewSource).toContain("Open Get Phame sign-in");
+    expect(templateSource).toContain(
+      "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview"
+    );
+    expect(templateSource).toContain("Open Get Phame sign-in");
     expect(browserPreviewSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
   });
 
@@ -160,5 +170,18 @@ describe("admin email preview runtime contract", () => {
     expect(routerSource.match(/buildAdminEmailPreviewTemplate\(/g)).toHaveLength(2);
     expect(routerSource).toContain("const testMessageId = Date.now().toString(36)");
     expect(routerSource).toContain("[Test Preview ${testMessageId}]");
+  });
+
+  it("keeps an email-preview shortcut in both administrator dashboard access surfaces", () => {
+    const dashboardSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/AdminDashboard.tsx"),
+      "utf8"
+    );
+
+    expect(dashboardSource).toContain('path: "/admin/email-preview"');
+    expect(dashboardSource).toContain(
+      'onClick={() => navigate("/admin/email-preview")}'
+    );
+    expect(dashboardSource).toContain("Email Template Preview");
   });
 });

@@ -311,15 +311,21 @@ function AppShell() {
     dismissOnboardingForSession();
   };
 
-  if (loading) {
+  const path = window.location.pathname;
+  // The static preview contains sample content only. In development, render it
+  // immediately rather than waiting for an unavailable or stale local session.
+  // Production remains read-only for guests and keeps all mutable actions behind
+  // server-side administrator authorization.
+  const isDevelopmentPreviewBypass =
+    import.meta.env.DEV && path === "/admin/email-preview";
+
+  if (loading && !isDevelopmentPreviewBypass) {
     return (
       <div className="flex min-h-screen items-center justify-center rr-bg-navy">
         <Loader2 className="animate-spin text-white" size={32} />
       </div>
     );
   }
-
-  const path = window.location.pathname;
 
   // ── Public pages — always accessible, wrapped in PublicLayout ───────────
   if (path === "/landing")

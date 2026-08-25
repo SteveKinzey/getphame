@@ -2318,6 +2318,7 @@
     "consentSuffix": "。",
     "signInCancelled": "登入已取消。請再試一次。",
     "appleSignInFailed": "無法完成 Apple 登入。請再試一次。",
+    "appleSignInLoading": "正在開啟安全的 Apple 登入…",
     "invalidMagicLink": "登入連結無效或已被使用。請申請新的連結。",
     "magicLinkExpired": "登入連結已失效。請申請新的連結。",
     "verificationFailed": "驗證失敗。請申請新的連結。",

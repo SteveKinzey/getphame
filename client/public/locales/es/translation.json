@@ -2912,6 +2912,7 @@
     "consentSuffix": ".",
     "signInCancelled": "El inicio de sesión se canceló. Inténtalo de nuevo.",
     "appleSignInFailed": "No se pudo completar el inicio de sesión con Apple. Inténtalo de nuevo.",
+    "appleSignInLoading": "Abriendo el inicio de sesión seguro con Apple…",
     "invalidMagicLink": "El enlace de acceso no es válido o ya se usó. Solicita uno nuevo.",
     "magicLinkExpired": "El enlace de acceso ha vencido. Solicita uno nuevo.",
     "verificationFailed": "La verificación falló. Solicita un enlace nuevo.",
