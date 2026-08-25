@@ -75,4 +75,4 @@
 - [x] Add an accessible persistent dark-mode toggle to the dashboard experience.
 - [x] Correct dark-mode contrast in nested dashboard analytics surfaces observed during live browser verification.
 - [x] Add a localized dashboard profile-editing flow that safely updates the user’s profile information.
-- [ ] Add regression coverage, validate the dashboard enhancements, release the exact tree, and synchronize it to GitHub main.
+- [x] Add regression coverage, validate the dashboard enhancements, release the exact tree, and synchronize it to GitHub main.
