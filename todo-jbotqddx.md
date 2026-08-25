@@ -87,4 +87,4 @@
 - [x] Resolve client TypeScript incompatibilities in Dashboard test-mode routing and mutation error callback signatures.
 - [x] Align the dashboard profile mutation regression assertion with the typed sanitized-error wrapper.
 - [x] Revalidate the timed-out SMTP welcome-email regression and resolve any reproducible release-blocking failure.
-- [ ] Add focused coverage, validate, release, and synchronize the exact preference-and-retry enhancement tree to GitHub main.
+- [x] Add focused coverage, validate, release, and synchronize the exact preference-and-retry enhancement tree to GitHub main.
