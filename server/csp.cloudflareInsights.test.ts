@@ -7,15 +7,15 @@ const serverEntry = readFileSync(serverEntryPath, "utf8");
 
 describe("production Content Security Policy", () => {
   it("permits Cloudflare's automatically injected Web Analytics script without widening beacon connections", () => {
-    const scriptSrc = serverEntry.slice(
-      serverEntry.indexOf("scriptSrc: ["),
-      serverEntry.indexOf("scriptSrcAttr:")
-    );
-    const connectSrc = serverEntry.slice(
-      serverEntry.indexOf("connectSrc: ["),
-      serverEntry.indexOf("objectSrc:")
-    );
+    const cspDirectiveBlock = serverEntry.match(
+      /defaultSrc:\s*\[[\s\S]*?scriptSrcAttr:\s*\[[^\]]*\]/
+    )?.[0];
+    const scriptSrc = cspDirectiveBlock?.match(/scriptSrc:\s*\[([^\]]*)\]/)?.[1];
+    const connectSrc = cspDirectiveBlock?.match(/connectSrc:\s*\[([^\]]*)\]/)?.[1];
 
+    expect(cspDirectiveBlock).toBeDefined();
+    expect(scriptSrc).toBeDefined();
+    expect(connectSrc).toBeDefined();
     expect(scriptSrc).toContain('"https://static.cloudflareinsights.com"');
     expect(connectSrc).toContain('"\'self\'"');
     expect(connectSrc).not.toContain("cloudflareinsights.com");

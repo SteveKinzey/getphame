@@ -25,7 +25,9 @@ describe("Get Phame agent discovery", () => {
 
     expect(html.status).toBe(200);
     expect(html.headers.link).toBe(HOMEPAGE_AGENT_LINK_HEADER);
+    expect(html.headers.vary).toContain("Accept");
     expect(html.headers["content-type"]).toContain("text/html");
+    expect(markdown.headers.vary).toContain("Accept");
     expect(markdown.headers["content-type"]).toContain("text/markdown");
     expect(markdown.text).toContain("# Get Phame");
   });
@@ -50,6 +52,34 @@ describe("Get Phame agent discovery", () => {
     expect(tools.body.result.tools[0]).toMatchObject({
       name: "get_phame_public_product_information",
       annotations: { readOnlyHint: true },
+    });
+  });
+
+  it("keeps OpenAPI and well-known discovery payloads JSON-only and structurally authoritative", async () => {
+    const app = buildDiscoveryApp();
+    const [openApi, authorizationServer] = await Promise.all([
+      request(app).get("/openapi.json").set("Accept", "text/markdown"),
+      request(app)
+        .get("/.well-known/oauth-authorization-server")
+        .set("Accept", "text/markdown"),
+    ]);
+
+    expect(openApi.headers["content-type"]).toContain("application/vnd.oai.openapi+json");
+    expect(openApi.body).toMatchObject({
+      openapi: "3.1.0",
+      info: { title: "Get Phame Developer API", version: "1.0.0" },
+      components: {
+        securitySchemes: {
+          developerApiKey: { scheme: "bearer" },
+        },
+      },
+    });
+    expect(Object.keys(openApi.body)).toContain("info");
+    expect(Object.keys(openApi.body)).toContain("components");
+    expect(authorizationServer.headers["content-type"]).toContain("application/json");
+    expect(authorizationServer.body.agent_auth).toMatchObject({
+      credential_types_supported: ["api_key"],
+      claim_uri: "https://getphame.app/docs/api",
     });
   });
 
