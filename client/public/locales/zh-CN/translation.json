@@ -989,7 +989,8 @@
     "light": "浅色",
     "dark": "深色",
     "switchToLight": "切换到浅色模式",
-    "switchToDark": "切换到深色模式"
+    "switchToDark": "切换到深色模式",
+    "system": "系统"
   },
   "logout": {
     "button": "退出登录"
@@ -2010,7 +2011,17 @@
     "retryConnection": "重试连接",
     "networkStatusLabel": "网络状态",
     "networkOnline": "在线",
-    "networkOffline": "离线"
+    "networkOffline": "离线",
+    "viewDetails": "查看详情",
+    "details": {
+      "title": "连接详情",
+      "recoverableDescription": "Get Phame 无法刷新最新仪表板信息。未发送任何更改，您可以安全地重试。",
+      "updateDescription": "Get Phame 无法完成请求的更新。系统没有自动重放您的更改；您可以检查后再次提交。",
+      "readLabel": "仪表板数据刷新",
+      "updateLabel": "仪表板更新",
+      "readNextStep": "使用“再试一次”仅刷新您的仪表板数据。",
+      "updateNextStep": "检查您的信息，然后再次提交更新。"
+    }
   },
   "profileMenu": {
     "account": "账户",
@@ -2288,7 +2299,16 @@
       "title": "外观",
       "description": "选择希望 Get Phame 在此设备上记住的颜色模式。",
       "label": "颜色模式",
-      "saved": "此设备已保存{{theme}}模式。"
+      "saved": "此设备已保存{{theme}}模式。",
+      "systemSaved": "系统模式已保存，当前使用{{theme}}模式。"
+    },
+    "dataExport": {
+      "title": "下载您的数据",
+      "description": "将您的账户身份、业务资料和设备偏好下载为 JSON 文件。",
+      "scope": "此下载不包含密码、邮件凭据、API 密钥、付款详情、客户记录或诊断历史。",
+      "action": "下载资料和偏好",
+      "success": "您的资料和偏好下载已准备就绪。",
+      "unavailable": "您的资料仍在加载中，请稍后重试。"
     }
   },
   "login": {

@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
-import SettingsPage, { SettingsBulkSenderTestFixture } from "./pages/Settings";
+import SettingsPage, { SettingsBulkSenderTestFixture, ThemePreferenceCard } from "./pages/Settings";
 import MagicLinkForm from "./components/auth/MagicLinkForm";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
@@ -765,6 +765,20 @@ function App() {
         <TooltipProvider>
           <Toaster position="top-center" richColors />
           <DashboardQueryRecoveryPreviewHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (import.meta.env.DEV && window.location.pathname === "/__test/settings-theme-preference") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <main className="min-h-screen p-6 rr-bg-cream-warm">
+            <div className="mx-auto max-w-md">
+              <ThemePreferenceCard />
+            </div>
+          </main>
         </TooltipProvider>
       </ThemeProvider>
     );

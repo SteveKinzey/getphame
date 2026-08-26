@@ -88,3 +88,10 @@
 - [x] Align the dashboard profile mutation regression assertion with the typed sanitized-error wrapper.
 - [x] Revalidate the timed-out SMTP welcome-email regression and resolve any reproducible release-blocking failure.
 - [x] Add focused coverage, validate, release, and synchronize the exact preference-and-retry enhancement tree to GitHub main.
+- [x] Inspect existing theme, toast, modal, profile, and preferences data contracts for the requested System theme, error details, and export flows.
+- [x] Create and validate a reusable skill for system-synced preferences, safe error-context disclosure, and self-service profile data export.
+- [x] Add an accessible System theme preference that follows live operating-system color-scheme changes.
+- [x] Add a user-friendly View Details action for dashboard API errors that exposes safe contextual information in an accessible modal.
+- [x] Preserve the safe query-retry affordance inside the recoverable error-details modal after the toast is dismissed.
+- [x] Add a Settings export that downloads only the authenticated user’s profile and preference data without secrets or other users’ records.
+- [ ] Add focused coverage, validate, release, and synchronize the exact theme, error-details, and export enhancement tree to GitHub main.

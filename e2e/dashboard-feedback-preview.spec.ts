@@ -13,6 +13,12 @@ test("shows the actual dashboard loading state and a sanitized API recovery toas
   await expect(page.getByText("The service is taking a little longer than expected. Your work is safe; try again when you’re ready.")).toBeVisible();
   await expect(page.getByText(/raw server error/i)).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Try again" }).click();
+  await page.getByRole("button", { name: "View details" }).click();
+  await expect(page.getByTestId("dashboard-api-error-details")).toBeVisible();
+  await expect(page.getByText("Connection details")).toBeVisible();
+  await expect(page.getByText("Dashboard data refresh")).toBeVisible();
+  await expect(page.getByText(/raw server error/i)).toHaveCount(0);
+  await page.getByTestId("dashboard-api-error-details-retry").click();
+  await expect(page.getByTestId("dashboard-api-error-details")).toHaveCount(0);
   await expect(page.getByTestId("dashboard-feedback-preview-retried")).toHaveText("Retry requested");
 });

@@ -1227,7 +1227,8 @@
     "light": "Claro",
     "dark": "Oscuro",
     "switchToLight": "Cambiar a modo claro",
-    "switchToDark": "Cambiar a modo oscuro"
+    "switchToDark": "Cambiar a modo oscuro",
+    "system": "Sistema"
   },
   "logout": {
     "button": "Cerrar sesión"
@@ -1839,7 +1840,17 @@
     "retryConnection": "Reintentar conexión",
     "networkStatusLabel": "Estado de la red",
     "networkOnline": "En línea",
-    "networkOffline": "Sin conexión"
+    "networkOffline": "Sin conexión",
+    "viewDetails": "Ver detalles",
+    "details": {
+      "title": "Detalles de conexión",
+      "recoverableDescription": "Get Phame no pudo actualizar la información más reciente del panel. No se enviaron cambios y es seguro intentarlo de nuevo.",
+      "updateDescription": "Get Phame no pudo completar la actualización solicitada. Tu cambio no se repitió automáticamente, así que puedes revisarlo y enviarlo de nuevo cuando estés listo.",
+      "readLabel": "Actualización de datos del panel",
+      "updateLabel": "Actualización del panel",
+      "readNextStep": "Usa Intentar de nuevo para actualizar solo los datos de tu panel.",
+      "updateNextStep": "Revisa tu información y vuelve a enviar la actualización."
+    }
   },
   "profileMenu": {
     "account": "Cuenta",
@@ -2904,7 +2915,16 @@
       "title": "Apariencia",
       "description": "Elige el modo de color que quieres que Get Phame recuerde en este dispositivo.",
       "label": "Modo de color",
-      "saved": "El modo {{theme}} se guarda en este dispositivo."
+      "saved": "El modo {{theme}} se guarda en este dispositivo.",
+      "systemSaved": "El modo del sistema está guardado y actualmente usa {{theme}}."
+    },
+    "dataExport": {
+      "title": "Descargar tus datos",
+      "description": "Descarga la identidad de tu cuenta, el perfil del negocio y las preferencias del dispositivo en un archivo JSON.",
+      "scope": "Esta descarga no incluye contraseñas, credenciales de correo, claves API, datos de pago, registros de clientes ni historial de diagnósticos.",
+      "action": "Descargar perfil y preferencias",
+      "success": "La descarga de tu perfil y preferencias está lista.",
+      "unavailable": "Tu perfil aún se está cargando. Inténtalo de nuevo en un momento."
     }
   },
   "login": {
