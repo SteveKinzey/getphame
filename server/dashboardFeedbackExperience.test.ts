@@ -57,9 +57,15 @@ describe("dashboard feedback experience", () => {
     const settings = read("client/src/pages/Settings.tsx");
     const themeContext = read("client/src/contexts/ThemeContext.tsx");
 
-    expect(themeContext).toContain("setThemePreference?: (theme: Theme) => void");
-    expect(themeContext).toContain('localStorage.setItem("theme", theme)');
+    expect(themeContext).toContain('export type ThemePreference = "light" | "dark" | "system"');
+    expect(themeContext).toContain("setThemePreference?: (theme: ThemePreference) => void");
+    expect(themeContext).toContain('localStorage.setItem("theme", themePreference)');
+    expect(themeContext).toContain('matchMedia("(prefers-color-scheme: dark)")');
+    expect(themeContext).toContain('mediaQuery.addEventListener("change", syncSystemTheme)');
+    expect(themeContext).toContain("mediaQuery.addListener(syncSystemTheme)");
     expect(settings).toContain('data-testid="settings-theme-preference"');
+    expect(settings).toContain('data-testid={`settings-theme-${option}`}');
+    expect(settings).toContain('["light", "dark", "system"]');
     expect(settings).toContain('role="radiogroup"');
     expect(settings).toContain('role="radio"');
     expect(settings).toContain("aria-checked={selected}");
@@ -108,12 +114,49 @@ describe("dashboard feedback experience", () => {
     expect(dashboard).not.toContain("onError: showDashboardApiError({ onRetry:");
   });
 
+  it("offers only safe API-error context in an accessible details dialog", () => {
+    const dashboard = read("client/src/pages/Dashboard.tsx");
+    const feedback = read("client/src/components/dashboard/DashboardFeedbackExperience.tsx");
+
+    expect(dashboard).toContain("<DashboardApiErrorFeedbackBoundary>");
+    expect(feedback).toContain('data-testid="dashboard-api-error-details"');
+    expect(feedback).toContain('t("apiRecovery.viewDetails"');
+    expect(feedback).toContain("DashboardApiErrorDetails");
+    expect(feedback).toContain("recoverable: Boolean(options.onRetry)");
+    expect(feedback).not.toContain("error.message");
+    expect(feedback).not.toContain("stack");
+  });
+
+  it("exports an allowlisted account, business profile, and local preferences without secrets", () => {
+    const settings = read("client/src/pages/Settings.tsx");
+    const exportCard = settings.slice(
+      settings.indexOf("function ProfilePreferencesExportCard"),
+      settings.indexOf("export default function SettingsPage")
+    );
+
+    expect(exportCard).toContain('data-testid="settings-profile-data-export"');
+    expect(exportCard).toContain('data-testid="settings-profile-data-export-download"');
+    expect(exportCard).toContain('format: "get-phame-profile-preferences/v1"');
+    expect(exportCard).toContain("themePreference");
+    expect(exportCard).toContain("hapticsEnabled");
+    expect(exportCard).toContain("new Blob([JSON.stringify(payload, null, 2)]");
+    expect(exportCard).toContain("URL.revokeObjectURL(url)");
+    expect(exportCard).toContain("aria-busy={!account}");
+    expect(exportCard).not.toContain("disabled={!account}");
+    expect(exportCard).toContain("get-phame-profile-preferences-${new Date().toISOString().slice(0, 10)}.json");
+    expect(exportCard).toContain("does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history");
+    expect(exportCard).not.toContain("smtpPassword");
+    expect(exportCard).not.toContain("bulkSenderSecret");
+  });
+
   it("ships dashboard feedback copy in every locale and the offline PWA fallback", () => {
     const fallback = JSON.parse(
       readFileSync(`${projectRoot}client/src/lib/i18nCompleteFallbackResources.json`, "utf8")
     ) as Record<string, {
       dashboard?: Record<string, Record<string, string>>;
-      settings?: { appearance?: Record<string, string> };
+      settings?: { appearance?: Record<string, string>; dataExport?: Record<string, string> };
+      theme?: Record<string, string>;
+      apiRecovery?: { details?: Record<string, string>; viewDetails?: string };
     }>;
 
     for (const locale of locales) {
@@ -121,7 +164,9 @@ describe("dashboard feedback experience", () => {
         read(`client/public/locales/${locale}/translation.json`)
       ) as {
         dashboard?: Record<string, Record<string, string>>;
-        settings?: { appearance?: Record<string, string> };
+        settings?: { appearance?: Record<string, string>; dataExport?: Record<string, string> };
+        theme?: Record<string, string>;
+        apiRecovery?: { details?: Record<string, string>; viewDetails?: string };
       };
       const dashboard = catalog.dashboard;
       const offlineDashboard = fallback[locale]?.dashboard;
@@ -139,8 +184,18 @@ describe("dashboard feedback experience", () => {
       expect(offlineDashboard?.profileEditor?.save).toBeTruthy();
       expect(catalog.settings?.appearance?.title).toBeTruthy();
       expect(catalog.settings?.appearance?.saved).toBeTruthy();
+      expect(catalog.settings?.appearance?.systemSaved).toBeTruthy();
+      expect(catalog.settings?.dataExport?.title).toBeTruthy();
+      expect(catalog.settings?.dataExport?.scope).toBeTruthy();
+      expect(catalog.theme?.system).toBeTruthy();
+      expect(catalog.apiRecovery?.viewDetails).toBeTruthy();
+      expect(catalog.apiRecovery?.details?.title).toBeTruthy();
       expect(fallback[locale]?.settings?.appearance?.title).toBeTruthy();
       expect(fallback[locale]?.settings?.appearance?.saved).toBeTruthy();
+      expect(fallback[locale]?.settings?.appearance?.systemSaved).toBeTruthy();
+      expect(fallback[locale]?.settings?.dataExport?.title).toBeTruthy();
+      expect(fallback[locale]?.theme?.system).toBeTruthy();
+      expect(fallback[locale]?.apiRecovery?.details?.title).toBeTruthy();
     }
   });
 });

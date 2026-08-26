@@ -44,6 +44,7 @@ import {
   ShieldCheck,
   Moon,
   Sun,
+  Monitor,
   Zap,
   AlertTriangle,
   CheckCircle,
@@ -1266,9 +1267,9 @@ function SettingsSkeleton({ title }: { title: string }) {
   );
 }
 
-function ThemePreferenceCard() {
+export function ThemePreferenceCard() {
   const { t } = useTranslation();
-  const { theme, setThemePreference, switchable } = useTheme();
+  const { theme, themePreference, setThemePreference, switchable } = useTheme();
 
   if (!switchable || !setThemePreference) return null;
 
@@ -1280,7 +1281,7 @@ function ThemePreferenceCard() {
     >
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold">
-          {theme === "dark" ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
+          {themePreference === "system" ? <Monitor size={18} aria-hidden="true" /> : theme === "dark" ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
         </div>
         <div className="min-w-0 flex-1">
           <h2 id="settings-appearance-title" className="text-base font-black rr-text-navy">
@@ -1295,16 +1296,16 @@ function ThemePreferenceCard() {
       </div>
 
       <div
-        className="mt-4 grid grid-cols-2 gap-2"
+        className="mt-4 grid grid-cols-3 gap-2"
         role="radiogroup"
         aria-label={t("settings.appearance.label", { defaultValue: "Color mode" })}
       >
-        {(["light", "dark"] as const).map(option => {
-          const selected = theme === option;
+        {(["light", "dark", "system"] as const).map(option => {
+          const selected = themePreference === option;
           const label = t(`theme.${option}`, {
-            defaultValue: option === "light" ? "Light" : "Dark",
+            defaultValue: option === "light" ? "Light" : option === "dark" ? "Dark" : "System",
           });
-          const Icon = option === "light" ? Sun : Moon;
+          const Icon = option === "light" ? Sun : option === "dark" ? Moon : Monitor;
 
           return (
             <button
@@ -1327,11 +1328,94 @@ function ThemePreferenceCard() {
         })}
       </div>
       <p className="mt-3 text-xs font-semibold rr-text-navy-muted" aria-live="polite">
-        {t("settings.appearance.saved", {
-          theme: t(`theme.${theme}`, { defaultValue: theme === "light" ? "Light" : "Dark" }),
-          defaultValue: "{{theme}} mode is saved on this device.",
-        })}
+        {themePreference === "system"
+          ? t("settings.appearance.systemSaved", {
+              theme: t(`theme.${theme}`, { defaultValue: theme === "light" ? "Light" : "Dark" }),
+              defaultValue: "System mode is saved and currently using {{theme}}.",
+            })
+          : t("settings.appearance.saved", {
+              theme: t(`theme.${themePreference}`, { defaultValue: themePreference === "light" ? "Light" : "Dark" }),
+              defaultValue: "{{theme}} mode is saved on this device.",
+            })}
       </p>
+    </section>
+  );
+}
+
+function ProfilePreferencesExportCard({ profile }: { profile: ProfileData | null | undefined }) {
+  const { t } = useTranslation();
+  const { data: account } = trpc.accountProfile.get.useQuery();
+  const { theme, themePreference } = useTheme();
+  const { hapticEnabled } = useHaptics();
+  const safeString = (value: unknown) => typeof value === "string" ? value : null;
+
+  const downloadExport = () => {
+    if (!account) {
+      toast.error(t("settings.dataExport.unavailable", { defaultValue: "Your profile is still loading. Please try again in a moment." }));
+      return;
+    }
+
+    const payload = {
+      format: "get-phame-profile-preferences/v1",
+      exportedAt: new Date().toISOString(),
+      account: {
+        displayName: account.name,
+        email: account.email,
+      },
+      businessProfile: {
+        businessName: safeString(profile?.businessName),
+        reviewLink: safeString(profile?.reviewLink),
+        fromName: safeString(profile?.fromName),
+        replyTo: safeString(profile?.replyTo),
+        consentLabelName: safeString(profile?.consentLabelName),
+        physicalAddress: safeString(profile?.physicalAddress),
+      },
+      preferences: {
+        themePreference,
+        resolvedTheme: theme,
+        hapticsEnabled: Boolean(hapticEnabled),
+      },
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `get-phame-profile-preferences-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    toast.success(t("settings.dataExport.success", { defaultValue: "Your profile and preferences download is ready." }));
+  };
+
+  return (
+    <section data-testid="settings-profile-data-export" className="rounded-2xl bg-white p-5 shadow-sm" aria-labelledby="settings-data-export-title">
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold">
+          <Download size={18} aria-hidden="true" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h2 id="settings-data-export-title" className="text-base font-black rr-text-navy">
+            {t("settings.dataExport.title", { defaultValue: "Download your data" })}
+          </h2>
+          <p className="mt-1 text-sm rr-text-navy-muted">
+            {t("settings.dataExport.description", { defaultValue: "Download your account identity, business profile, and on-device preferences as a JSON file." })}
+          </p>
+        </div>
+      </div>
+      <p className="mt-4 rounded-xl rr-bg-surface-darker px-3 py-2 text-xs rr-text-navy-muted">
+        {t("settings.dataExport.scope", { defaultValue: "This download does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history." })}
+      </p>
+      <button
+        type="button"
+        data-testid="settings-profile-data-export-download"
+        onClick={downloadExport}
+        aria-busy={!account}
+        className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black text-white rr-bg-navy"
+      >
+        <Download size={16} aria-hidden="true" />
+        {t("settings.dataExport.action", { defaultValue: "Download profile and preferences" })}
+      </button>
     </section>
   );
 }
@@ -1952,6 +2036,7 @@ export default function SettingsPage() {
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
         <AccountProfileCard />
         <ThemePreferenceCard />
+        <ProfilePreferencesExportCard profile={profile as ProfileData | null | undefined} />
         <PasskeySecurityCard />
         <RecoveryDrillCard />
         {/* ── Business Profile ──────────────────────────────────────────────── */}

@@ -1227,7 +1227,8 @@
     "light": "Clair",
     "dark": "Sombre",
     "switchToLight": "Passer en mode clair",
-    "switchToDark": "Passer en mode sombre"
+    "switchToDark": "Passer en mode sombre",
+    "system": "Système"
   },
   "logout": {
     "button": "Se déconnecter"
@@ -1839,7 +1840,17 @@
     "retryConnection": "Réessayer la connexion",
     "networkStatusLabel": "État du réseau",
     "networkOnline": "En ligne",
-    "networkOffline": "Hors ligne"
+    "networkOffline": "Hors ligne",
+    "viewDetails": "Voir les détails",
+    "details": {
+      "title": "Détails de connexion",
+      "recoverableDescription": "Get Phame n’a pas pu actualiser les dernières informations du tableau de bord. Aucun changement n’a été envoyé et vous pouvez réessayer en toute sécurité.",
+      "updateDescription": "Get Phame n’a pas pu terminer la mise à jour demandée. Votre modification n’a pas été rejouée automatiquement ; vous pouvez la vérifier et la soumettre à nouveau.",
+      "readLabel": "Actualisation des données du tableau de bord",
+      "updateLabel": "Mise à jour du tableau de bord",
+      "readNextStep": "Utilisez Réessayer pour actualiser uniquement les données du tableau de bord.",
+      "updateNextStep": "Vérifiez vos informations, puis soumettez de nouveau la mise à jour."
+    }
   },
   "profileMenu": {
     "account": "Compte",
@@ -2904,7 +2915,16 @@
       "title": "Apparence",
       "description": "Choisissez le mode de couleur que Get Phame doit mémoriser sur cet appareil.",
       "label": "Mode de couleur",
-      "saved": "Le mode {{theme}} est enregistré sur cet appareil."
+      "saved": "Le mode {{theme}} est enregistré sur cet appareil.",
+      "systemSaved": "Le mode système est enregistré et utilise actuellement {{theme}}."
+    },
+    "dataExport": {
+      "title": "Télécharger vos données",
+      "description": "Téléchargez l’identité de votre compte, le profil de votre entreprise et les préférences de cet appareil dans un fichier JSON.",
+      "scope": "Ce téléchargement n’inclut pas les mots de passe, identifiants de messagerie, clés API, données de paiement, dossiers clients ni historique de diagnostic.",
+      "action": "Télécharger le profil et les préférences",
+      "success": "Le téléchargement de votre profil et de vos préférences est prêt.",
+      "unavailable": "Votre profil est encore en cours de chargement. Réessayez dans un instant."
     }
   },
   "login": {

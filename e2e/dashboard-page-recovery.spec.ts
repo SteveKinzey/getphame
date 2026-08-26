@@ -19,7 +19,10 @@ test("actual Dashboard query recovery refreshes safe reads through one Retry act
 
   await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
   expect(statsCalls).toBeGreaterThan(0);
-  await page.getByRole("button", { name: "Try again" }).click();
+  await page.getByRole("button", { name: "View details" }).click();
+  await expect(page.getByTestId("dashboard-api-error-details")).toBeVisible();
+  await expect(page.getByText("Dashboard data refresh")).toBeVisible();
+  await page.getByTestId("dashboard-api-error-details-retry").click();
   await expect.poll(() => statsCalls).toBeGreaterThan(1);
 });
 
@@ -41,4 +44,8 @@ test("actual Dashboard mutation recovery stays non-replayable", async ({ page })
   await page.getByTestId("dashboard-page-mutation-error-trigger").click();
   await expect(page.getByText("We’re reconnecting Get Phame.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Try again" })).toHaveCount(0);
+  await page.getByRole("button", { name: "View details" }).click();
+  await expect(page.getByTestId("dashboard-api-error-details")).toBeVisible();
+  await expect(page.getByTestId("dashboard-api-error-details").getByText("Dashboard update")).toBeVisible();
+  await expect(page.getByTestId("dashboard-api-error-details-retry")).toHaveCount(0);
 });

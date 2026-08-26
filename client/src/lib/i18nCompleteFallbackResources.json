@@ -766,7 +766,16 @@
         "title": "Appearance",
         "description": "Choose the color mode you want Get Phame to remember on this device.",
         "label": "Color mode",
-        "saved": "{{theme}} mode is saved on this device."
+        "saved": "{{theme}} mode is saved on this device.",
+        "systemSaved": "System mode is saved and currently using {{theme}}."
+      },
+      "dataExport": {
+        "title": "Download your data",
+        "description": "Download your account identity, business profile, and on-device preferences as a JSON file.",
+        "scope": "This download does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history.",
+        "action": "Download profile and preferences",
+        "success": "Your profile and preferences download is ready.",
+        "unavailable": "Your profile is still loading. Please try again in a moment."
       }
     },
     "profile": {
@@ -1028,7 +1037,8 @@
     },
     "theme": {
       "switchToDark": "Switch to dark mode",
-      "switchToLight": "Switch to light mode"
+      "switchToLight": "Switch to light mode",
+      "system": "System"
     },
     "successScreen": {
       "yesRemindMe": "Yes, remind me",
@@ -1853,6 +1863,18 @@
       "reviewRequest": "Review request",
       "followUp": "Follow-up",
       "morePending": "{{count}} more request(s) are pending."
+    },
+    "apiRecovery": {
+      "viewDetails": "View details",
+      "details": {
+        "title": "Connection details",
+        "recoverableDescription": "Get Phame could not refresh the latest dashboard information. No changes were sent, and it is safe to try again.",
+        "updateDescription": "Get Phame could not complete the requested update. Your change was not replayed automatically, so you can review it and submit again when ready.",
+        "readLabel": "Dashboard data refresh",
+        "updateLabel": "Dashboard update",
+        "readNextStep": "Use Try again to refresh only your dashboard data.",
+        "updateNextStep": "Review your information, then submit the update again."
+      }
     }
   },
   "es": {
@@ -2644,7 +2666,16 @@
         "title": "Apariencia",
         "description": "Elige el modo de color que quieres que Get Phame recuerde en este dispositivo.",
         "label": "Modo de color",
-        "saved": "El modo {{theme}} se guarda en este dispositivo."
+        "saved": "El modo {{theme}} se guarda en este dispositivo.",
+        "systemSaved": "El modo del sistema está guardado y actualmente usa {{theme}}."
+      },
+      "dataExport": {
+        "title": "Descargar tus datos",
+        "description": "Descarga la identidad de tu cuenta, el perfil del negocio y las preferencias del dispositivo en un archivo JSON.",
+        "scope": "Esta descarga no incluye contraseñas, credenciales de correo, claves API, datos de pago, registros de clientes ni historial de diagnósticos.",
+        "action": "Descargar perfil y preferencias",
+        "success": "La descarga de tu perfil y preferencias está lista.",
+        "unavailable": "Tu perfil aún se está cargando. Inténtalo de nuevo en un momento."
       }
     },
     "profile": {
@@ -2918,7 +2949,8 @@
     },
     "theme": {
       "switchToDark": "Cambiar a modo oscuro",
-      "switchToLight": "Cambiar a modo claro"
+      "switchToLight": "Cambiar a modo claro",
+      "system": "Sistema"
     },
     "successScreen": {
       "yesRemindMe": "Sí, recuérdame",
@@ -3910,6 +3942,18 @@
       "reviewRequest": "Solicitud de reseña",
       "followUp": "Seguimiento",
       "morePending": "Hay {{count}} solicitud(es) más pendiente(s)."
+    },
+    "apiRecovery": {
+      "viewDetails": "Ver detalles",
+      "details": {
+        "title": "Detalles de conexión",
+        "recoverableDescription": "Get Phame no pudo actualizar la información más reciente del panel. No se enviaron cambios y es seguro intentarlo de nuevo.",
+        "updateDescription": "Get Phame no pudo completar la actualización solicitada. Tu cambio no se repitió automáticamente, así que puedes revisarlo y enviarlo de nuevo cuando estés listo.",
+        "readLabel": "Actualización de datos del panel",
+        "updateLabel": "Actualización del panel",
+        "readNextStep": "Usa Intentar de nuevo para actualizar solo los datos de tu panel.",
+        "updateNextStep": "Revisa tu información y vuelve a enviar la actualización."
+      }
     }
   },
   "fr": {
@@ -4704,7 +4748,16 @@
         "title": "Apparence",
         "description": "Choisissez le mode de couleur que Get Phame doit mémoriser sur cet appareil.",
         "label": "Mode de couleur",
-        "saved": "Le mode {{theme}} est enregistré sur cet appareil."
+        "saved": "Le mode {{theme}} est enregistré sur cet appareil.",
+        "systemSaved": "Le mode système est enregistré et utilise actuellement {{theme}}."
+      },
+      "dataExport": {
+        "title": "Télécharger vos données",
+        "description": "Téléchargez l’identité de votre compte, le profil de votre entreprise et les préférences de cet appareil dans un fichier JSON.",
+        "scope": "Ce téléchargement n’inclut pas les mots de passe, identifiants de messagerie, clés API, données de paiement, dossiers clients ni historique de diagnostic.",
+        "action": "Télécharger le profil et les préférences",
+        "success": "Le téléchargement de votre profil et de vos préférences est prêt.",
+        "unavailable": "Votre profil est encore en cours de chargement. Réessayez dans un instant."
       }
     },
     "profile": {
@@ -4980,7 +5033,8 @@
     },
     "theme": {
       "switchToDark": "Passer en mode sombre",
-      "switchToLight": "Passer en mode clair"
+      "switchToLight": "Passer en mode clair",
+      "system": "Système"
     },
     "successScreen": {
       "yesRemindMe": "Oui, rappelle-moi",
@@ -5988,6 +6042,18 @@
       "reviewRequest": "Demande d’avis",
       "followUp": "Relance",
       "morePending": "{{count}} demande(s) supplémentaire(s) sont en attente."
+    },
+    "apiRecovery": {
+      "viewDetails": "Voir les détails",
+      "details": {
+        "title": "Détails de connexion",
+        "recoverableDescription": "Get Phame n’a pas pu actualiser les dernières informations du tableau de bord. Aucun changement n’a été envoyé et vous pouvez réessayer en toute sécurité.",
+        "updateDescription": "Get Phame n’a pas pu terminer la mise à jour demandée. Votre modification n’a pas été rejouée automatiquement ; vous pouvez la vérifier et la soumettre à nouveau.",
+        "readLabel": "Actualisation des données du tableau de bord",
+        "updateLabel": "Mise à jour du tableau de bord",
+        "readNextStep": "Utilisez Réessayer pour actualiser uniquement les données du tableau de bord.",
+        "updateNextStep": "Vérifiez vos informations, puis soumettez de nouveau la mise à jour."
+      }
     }
   },
   "it": {
@@ -6764,7 +6830,16 @@
         "title": "Aspetto",
         "description": "Scegli la modalità colore che Get Phame deve ricordare su questo dispositivo.",
         "label": "Modalità colore",
-        "saved": "La modalità {{theme}} è salvata su questo dispositivo."
+        "saved": "La modalità {{theme}} è salvata su questo dispositivo.",
+        "systemSaved": "La modalità di sistema è salvata e sta usando {{theme}}."
+      },
+      "dataExport": {
+        "title": "Scarica i tuoi dati",
+        "description": "Scarica l’identità dell’account, il profilo dell’attività e le preferenze del dispositivo in un file JSON.",
+        "scope": "Questo download non include password, credenziali e-mail, chiavi API, dati di pagamento, record dei clienti o cronologia diagnostica.",
+        "action": "Scarica profilo e preferenze",
+        "success": "Il download del profilo e delle preferenze è pronto.",
+        "unavailable": "Il tuo profilo è ancora in caricamento. Riprova tra poco."
       }
     },
     "profile": {
@@ -7029,7 +7104,8 @@
     },
     "theme": {
       "switchToDark": "Passa alla modalità scura",
-      "switchToLight": "Passa alla modalità chiara"
+      "switchToLight": "Passa alla modalità chiara",
+      "system": "Sistema"
     },
     "successScreen": {
       "yesRemindMe": "Sì, ricordami",
@@ -7913,6 +7989,18 @@
       "reviewRequest": "Richiesta di recensione",
       "followUp": "Promemoria",
       "morePending": "Altre {{count}} richieste sono in attesa."
+    },
+    "apiRecovery": {
+      "viewDetails": "Visualizza dettagli",
+      "details": {
+        "title": "Dettagli della connessione",
+        "recoverableDescription": "Get Phame non ha potuto aggiornare le ultime informazioni della dashboard. Non sono state inviate modifiche ed è sicuro riprovare.",
+        "updateDescription": "Get Phame non ha potuto completare l’aggiornamento richiesto. La modifica non è stata ripetuta automaticamente; puoi controllarla e inviarla di nuovo.",
+        "readLabel": "Aggiornamento dati dashboard",
+        "updateLabel": "Aggiornamento dashboard",
+        "readNextStep": "Usa Riprova per aggiornare solo i dati della dashboard.",
+        "updateNextStep": "Controlla le informazioni, quindi invia di nuovo l’aggiornamento."
+      }
     }
   },
   "th": {
@@ -8682,7 +8770,16 @@
         "title": "รูปแบบ",
         "description": "เลือกรูปแบบสีที่ต้องการให้ Get Phame จดจำบนอุปกรณ์นี้",
         "label": "รูปแบบสี",
-        "saved": "บันทึกโหมด{{theme}}บนอุปกรณ์นี้แล้ว"
+        "saved": "บันทึกโหมด{{theme}}บนอุปกรณ์นี้แล้ว",
+        "systemSaved": "บันทึกโหมดระบบแล้ว และขณะนี้ใช้โหมด{{theme}}"
+      },
+      "dataExport": {
+        "title": "ดาวน์โหลดข้อมูลของคุณ",
+        "description": "ดาวน์โหลดข้อมูลระบุตัวตนบัญชี โปรไฟล์ธุรกิจ และการตั้งค่าบนอุปกรณ์เป็นไฟล์ JSON",
+        "scope": "ไฟล์นี้ไม่มีรหัสผ่าน ข้อมูลรับรองอีเมล คีย์ API ข้อมูลการชำระเงิน ข้อมูลลูกค้า หรือประวัติการวินิจฉัย",
+        "action": "ดาวน์โหลดโปรไฟล์และการตั้งค่า",
+        "success": "ไฟล์ดาวน์โหลดโปรไฟล์และการตั้งค่าของคุณพร้อมแล้ว",
+        "unavailable": "โปรไฟล์ของคุณยังโหลดอยู่ โปรดลองอีกครั้งในอีกสักครู่"
       }
     },
     "profile": {
@@ -8945,7 +9042,8 @@
     },
     "theme": {
       "switchToDark": "เปลี่ยนเป็นโหมดมืด",
-      "switchToLight": "เปลี่ยนเป็นโหมดสว่าง"
+      "switchToLight": "เปลี่ยนเป็นโหมดสว่าง",
+      "system": "ระบบ"
     },
     "successScreen": {
       "yesRemindMe": "ใช่ เตือนฉัน",
@@ -9828,6 +9926,18 @@
       "reviewRequest": "คำขอรีวิว",
       "followUp": "ติดตามผล",
       "morePending": "มีคำขอเพิ่มเติม {{count}} รายการที่รอดำเนินการ"
+    },
+    "apiRecovery": {
+      "viewDetails": "ดูรายละเอียด",
+      "details": {
+        "title": "รายละเอียดการเชื่อมต่อ",
+        "recoverableDescription": "Get Phame ไม่สามารถรีเฟรชข้อมูลแดชบอร์ดล่าสุดได้ ไม่มีการส่งการเปลี่ยนแปลง และสามารถลองใหม่ได้อย่างปลอดภัย",
+        "updateDescription": "Get Phame ไม่สามารถดำเนินการอัปเดตที่ขอให้เสร็จสิ้น การเปลี่ยนแปลงของคุณไม่ได้ถูกทำซ้ำโดยอัตโนมัติ คุณจึงตรวจสอบและส่งใหม่ได้",
+        "readLabel": "การรีเฟรชข้อมูลแดชบอร์ด",
+        "updateLabel": "การอัปเดตแดชบอร์ด",
+        "readNextStep": "ใช้ลองอีกครั้งเพื่อรีเฟรชเฉพาะข้อมูลแดชบอร์ดของคุณ",
+        "updateNextStep": "ตรวจสอบข้อมูลของคุณ แล้วส่งการอัปเดตอีกครั้ง"
+      }
     }
   },
   "zh-CN": {
@@ -10596,7 +10706,16 @@
         "title": "外观",
         "description": "选择希望 Get Phame 在此设备上记住的颜色模式。",
         "label": "颜色模式",
-        "saved": "此设备已保存{{theme}}模式。"
+        "saved": "此设备已保存{{theme}}模式。",
+        "systemSaved": "系统模式已保存，当前使用{{theme}}模式。"
+      },
+      "dataExport": {
+        "title": "下载您的数据",
+        "description": "将您的账户身份、业务资料和设备偏好下载为 JSON 文件。",
+        "scope": "此下载不包含密码、邮件凭据、API 密钥、付款详情、客户记录或诊断历史。",
+        "action": "下载资料和偏好",
+        "success": "您的资料和偏好下载已准备就绪。",
+        "unavailable": "您的资料仍在加载中，请稍后重试。"
       }
     },
     "profile": {
@@ -10858,7 +10977,8 @@
     },
     "theme": {
       "switchToDark": "切换到深色模式",
-      "switchToLight": "切换到浅色模式"
+      "switchToLight": "切换到浅色模式",
+      "system": "系统"
     },
     "successScreen": {
       "yesRemindMe": "是的，请提醒我",
@@ -11733,6 +11853,18 @@
       "reviewRequest": "评价请求",
       "followUp": "跟进",
       "morePending": "另有 {{count}} 个请求待处理。"
+    },
+    "apiRecovery": {
+      "viewDetails": "查看详情",
+      "details": {
+        "title": "连接详情",
+        "recoverableDescription": "Get Phame 无法刷新最新仪表板信息。未发送任何更改，您可以安全地重试。",
+        "updateDescription": "Get Phame 无法完成请求的更新。系统没有自动重放您的更改；您可以检查后再次提交。",
+        "readLabel": "仪表板数据刷新",
+        "updateLabel": "仪表板更新",
+        "readNextStep": "使用“再试一次”仅刷新您的仪表板数据。",
+        "updateNextStep": "检查您的信息，然后再次提交更新。"
+      }
     }
   },
   "zh-TW": {
@@ -12502,7 +12634,16 @@
         "title": "外觀",
         "description": "選擇希望 Get Phame 在此裝置上記住的顏色模式。",
         "label": "顏色模式",
-        "saved": "此裝置已儲存{{theme}}模式。"
+        "saved": "此裝置已儲存{{theme}}模式。",
+        "systemSaved": "系統模式已儲存，目前使用{{theme}}模式。"
+      },
+      "dataExport": {
+        "title": "下載您的資料",
+        "description": "將您的帳戶身分、商家資料和裝置偏好下載為 JSON 檔案。",
+        "scope": "此下載不包含密碼、郵件憑證、API 金鑰、付款詳情、客戶記錄或診斷歷程。",
+        "action": "下載資料與偏好",
+        "success": "您的資料與偏好下載已準備就緒。",
+        "unavailable": "您的資料仍在載入中，請稍後再試。"
       }
     },
     "profile": {
@@ -12764,7 +12905,8 @@
     },
     "theme": {
       "switchToDark": "切換到深色模式",
-      "switchToLight": "切換到淺色模式"
+      "switchToLight": "切換到淺色模式",
+      "system": "系統"
     },
     "successScreen": {
       "yesRemindMe": "請提醒我",
@@ -13653,6 +13795,18 @@
       "reviewRequest": "評論請求",
       "followUp": "跟進",
       "morePending": "另有 {{count}} 個請求待處理。"
+    },
+    "apiRecovery": {
+      "viewDetails": "查看詳細資料",
+      "details": {
+        "title": "連線詳細資料",
+        "recoverableDescription": "Get Phame 無法重新整理最新儀表板資訊。未傳送任何變更，您可以放心重試。",
+        "updateDescription": "Get Phame 無法完成要求的更新。系統沒有自動重送您的變更；您可以檢查後再次提交。",
+        "readLabel": "儀表板資料重新整理",
+        "updateLabel": "儀表板更新",
+        "readNextStep": "使用「再試一次」只重新整理您的儀表板資料。",
+        "updateNextStep": "檢查您的資訊，然後再次提交更新。"
+      }
     }
   }
 }
