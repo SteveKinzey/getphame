@@ -116,7 +116,7 @@
 - [x] Align the export-history browser assertion with the rendered format-label casing.
 - [x] Resolve the export-preview fixture’s missing profile tier required by the Settings export-card contract.
 - [x] Diagnose the managed deployment timeout and correct any verified startup or readiness issue before release.
-- [ ] Add regression coverage, validate, release, and synchronize the exact data-management enhancement tree to GitHub main.
+- [x] Add regression coverage, validate, release, and synchronize the exact data-management enhancement tree to GitHub main.
 - [x] Add export-history foreign-key cascade behavior so account deletion removes tenant download history.
 - [x] Propagate unavailable export-history storage as an explicit query failure instead of an empty history.
 - [x] Correct the export-history regression matcher and add behavioral coverage for unavailable storage.
