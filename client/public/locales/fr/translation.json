@@ -2916,15 +2916,23 @@
       "description": "Choisissez le mode de couleur que Get Phame doit mémoriser sur cet appareil.",
       "label": "Mode de couleur",
       "saved": "Le mode {{theme}} est enregistré sur cet appareil.",
-      "systemSaved": "Le mode système est enregistré et utilise actuellement {{theme}}."
+      "systemSaved": "Le mode système est enregistré et utilise actuellement {{theme}}.",
+      "resetSystem": "Réinitialiser au réglage système"
     },
     "dataExport": {
       "title": "Télécharger vos données",
-      "description": "Téléchargez l’identité de votre compte, le profil de votre entreprise et les préférences de cet appareil dans un fichier JSON.",
+      "description": "Téléchargez l’identité de votre compte, le profil de votre entreprise et les préférences de cet appareil dans un fichier JSON ou CSV.",
       "scope": "Ce téléchargement n’inclut pas les mots de passe, identifiants de messagerie, clés API, données de paiement, dossiers clients ni historique de diagnostic.",
       "action": "Télécharger le profil et les préférences",
       "success": "Le téléchargement de votre profil et de vos préférences est prêt.",
-      "unavailable": "Votre profil est encore en cours de chargement. Réessayez dans un instant."
+      "unavailable": "Votre profil est encore en cours de chargement. Réessayez dans un instant.",
+      "formatLabel": "Format de téléchargement",
+      "historyTitle": "Historique des téléchargements",
+      "historyLoading": "Chargement de l’historique des téléchargements…",
+      "historyEmpty": "Vos téléchargements apparaîtront ici.",
+      "historyRecordError": "Votre fichier a été téléchargé, mais nous n’avons pas pu mettre à jour l’historique des téléchargements.",
+      "historyError": "Nous n’avons pas pu charger votre historique des téléchargements.",
+      "historyRetry": "Réessayer"
     }
   },
   "login": {

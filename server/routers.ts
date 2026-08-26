@@ -61,6 +61,10 @@ import {
   listSmtpTestEmailAttempts,
   recordSmtpTestEmailAttempt,
 } from "./smtpTestEmailHistory";
+import {
+  listProfilePreferenceExportHistory,
+  recordProfilePreferenceExport,
+} from "./profilePreferenceExportHistory";
 import { selectOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import {
@@ -1283,6 +1287,15 @@ export const appRouter = router({
       });
       return { success: true as const };
     }),
+    exportHistory: protectedProcedure.query(async ({ ctx }) =>
+      listProfilePreferenceExportHistory(ctx.user.id)
+    ),
+    recordExport: protectedProcedure
+      .input(z.object({ format: z.enum(["json", "csv"]) }))
+      .mutation(async ({ ctx, input }) => {
+        await recordProfilePreferenceExport({ userId: ctx.user.id, format: input.format });
+        return { success: true as const };
+      }),
   }),
 
   smtp: router({

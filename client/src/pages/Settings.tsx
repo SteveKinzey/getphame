@@ -71,6 +71,12 @@ import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
 import LandingBrandLink from "@/components/LandingBrandLink";
+import {
+  buildProfilePreferencesExportFilename,
+  serializeProfilePreferencesCsv,
+  type ProfilePreferenceExportFormat,
+  type ProfilePreferencesExportPayload,
+} from "@/lib/profilePreferencesExport";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
@@ -1338,24 +1344,59 @@ export function ThemePreferenceCard() {
               defaultValue: "{{theme}} mode is saved on this device.",
             })}
       </p>
+      {themePreference !== "system" ? (
+        <button
+          type="button"
+          data-testid="settings-theme-reset-system"
+          onClick={() => setThemePreference("system")}
+          className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-black rr-text-navy transition active:scale-[0.97] hover:border-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+        >
+          <RotateCcw size={16} aria-hidden="true" />
+          {t("settings.appearance.resetSystem", { defaultValue: "Reset to System default" })}
+        </button>
+      ) : null}
     </section>
   );
 }
 
-function ProfilePreferencesExportCard({ profile }: { profile: ProfileData | null | undefined }) {
+type ExportHistoryPreviewEntry = { id: number; format: string; exportedAt: number };
+type ProfilePreferencesExportCardTestOverride = {
+  account: { name: string | null; email: string | null };
+  history?: ExportHistoryPreviewEntry[];
+  historyError?: boolean;
+};
+
+export function ProfilePreferencesExportCard({
+  profile,
+  testOverride,
+}: {
+  profile: ProfileData | null | undefined;
+  testOverride?: ProfilePreferencesExportCardTestOverride;
+}) {
   const { t } = useTranslation();
-  const { data: account } = trpc.accountProfile.get.useQuery();
+  const accountQuery = trpc.accountProfile.get.useQuery(undefined, { enabled: !testOverride });
+  const exportHistory = trpc.accountProfile.exportHistory.useQuery(undefined, { enabled: !testOverride });
+  const recordExport = trpc.accountProfile.recordExport.useMutation({
+    onSuccess: () => exportHistory.refetch(),
+    onError: () => toast.error(t("settings.dataExport.historyRecordError", { defaultValue: "Your file downloaded, but we could not update download history." })),
+  });
   const { theme, themePreference } = useTheme();
   const { hapticEnabled } = useHaptics();
+  const [selectedFormat, setSelectedFormat] = useState<ProfilePreferenceExportFormat>("json");
+  const [previewHistory, setPreviewHistory] = useState<ExportHistoryPreviewEntry[]>(testOverride?.history ?? []);
+  const account = testOverride?.account ?? accountQuery.data;
+  const historyEntries = testOverride ? previewHistory : exportHistory.data;
+  const historyIsLoading = testOverride ? false : exportHistory.isLoading;
+  const historyHasError = testOverride?.historyError ?? exportHistory.isError;
   const safeString = (value: unknown) => typeof value === "string" ? value : null;
 
-  const downloadExport = () => {
+  const downloadExport = (format: ProfilePreferenceExportFormat) => {
     if (!account) {
       toast.error(t("settings.dataExport.unavailable", { defaultValue: "Your profile is still loading. Please try again in a moment." }));
       return;
     }
 
-    const payload = {
+    const payload: ProfilePreferencesExportPayload = {
       format: "get-phame-profile-preferences/v1",
       exportedAt: new Date().toISOString(),
       account: {
@@ -1376,15 +1417,22 @@ function ProfilePreferencesExportCard({ profile }: { profile: ProfileData | null
         hapticsEnabled: Boolean(hapticEnabled),
       },
     };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+    const content = format === "json" ? JSON.stringify(payload, null, 2) : serializeProfilePreferencesCsv(payload);
+    const contentType = format === "json" ? "application/json;charset=utf-8" : "text/csv;charset=utf-8";
+    const blob = new Blob([content], { type: contentType });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `get-phame-profile-preferences-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.download = buildProfilePreferencesExportFilename(format, payload.exportedAt);
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    if (testOverride) {
+      setPreviewHistory(current => [{ id: Date.now(), format, exportedAt: Date.now() }, ...current]);
+    } else {
+      recordExport.mutate({ format });
+    }
     toast.success(t("settings.dataExport.success", { defaultValue: "Your profile and preferences download is ready." }));
   };
 
@@ -1399,23 +1447,74 @@ function ProfilePreferencesExportCard({ profile }: { profile: ProfileData | null
             {t("settings.dataExport.title", { defaultValue: "Download your data" })}
           </h2>
           <p className="mt-1 text-sm rr-text-navy-muted">
-            {t("settings.dataExport.description", { defaultValue: "Download your account identity, business profile, and on-device preferences as a JSON file." })}
+            {t("settings.dataExport.description", { defaultValue: "Download your account identity, business profile, and on-device preferences as a JSON or CSV file." })}
           </p>
         </div>
       </div>
       <p className="mt-4 rounded-xl rr-bg-surface-darker px-3 py-2 text-xs rr-text-navy-muted">
         {t("settings.dataExport.scope", { defaultValue: "This download does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history." })}
       </p>
+      <div className="mt-4" role="radiogroup" aria-label={t("settings.dataExport.formatLabel", { defaultValue: "Download format" })}>
+        <p className="text-xs font-bold rr-text-navy-muted">{t("settings.dataExport.formatLabel", { defaultValue: "Download format" })}</p>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          {(["json", "csv"] as const).map(format => (
+            <button
+              key={format}
+              type="button"
+              role="radio"
+              aria-checked={selectedFormat === format}
+              data-testid={`settings-profile-data-export-format-${format}`}
+              onClick={() => setSelectedFormat(format)}
+              className={`min-h-11 rounded-xl border px-3 text-sm font-black transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                selectedFormat === format ? "border-amber-400 rr-bg-navy rr-text-gold" : "border-slate-200 bg-slate-50 rr-text-navy hover:border-amber-300"
+              }`}
+            >
+              {format.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
       <button
         type="button"
         data-testid="settings-profile-data-export-download"
-        onClick={downloadExport}
-        aria-busy={!account}
+        onClick={() => downloadExport(selectedFormat)}
+        aria-busy={!account || recordExport.isPending}
         className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black text-white rr-bg-navy"
       >
-        <Download size={16} aria-hidden="true" />
+        {recordExport.isPending ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <Download size={16} aria-hidden="true" />}
         {t("settings.dataExport.action", { defaultValue: "Download profile and preferences" })}
       </button>
+      <div className="mt-5 border-t border-slate-100 pt-4" aria-live="polite">
+        <div className="flex items-center gap-2">
+          <Clock size={15} className="rr-text-gold" aria-hidden="true" />
+          <h3 className="text-sm font-black rr-text-navy">{t("settings.dataExport.historyTitle", { defaultValue: "Download history" })}</h3>
+        </div>
+        {historyIsLoading ? (
+          <div className="mt-3 flex items-center gap-2 text-xs rr-text-navy-muted"><Loader2 size={14} className="animate-spin" aria-hidden="true" />{t("settings.dataExport.historyLoading", { defaultValue: "Loading download history…" })}</div>
+        ) : historyHasError ? (
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs" role="alert">
+            <span className="rr-text-navy-muted">{t("settings.dataExport.historyError", { defaultValue: "We could not load your download history." })}</span>
+            <button
+              type="button"
+              onClick={() => exportHistory.refetch()}
+              className="min-h-9 shrink-0 rounded-lg px-2 font-black rr-text-navy hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              {t("settings.dataExport.historyRetry", { defaultValue: "Retry" })}
+            </button>
+          </div>
+        ) : historyEntries?.length ? (
+          <ul data-testid="settings-profile-data-export-history" className="mt-3 space-y-2">
+            {historyEntries.map(entry => (
+              <li key={entry.id} className="flex items-center justify-between gap-3 rounded-xl rr-bg-surface-darker px-3 py-2 text-xs">
+                <span className="font-black uppercase rr-text-navy">{entry.format}</span>
+                <time className="text-right rr-text-navy-muted" dateTime={new Date(entry.exportedAt).toISOString()}>{new Date(entry.exportedAt).toLocaleString()}</time>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-xs rr-text-navy-muted">{t("settings.dataExport.historyEmpty", { defaultValue: "Your downloads will appear here." })}</p>
+        )}
+      </div>
     </section>
   );
 }

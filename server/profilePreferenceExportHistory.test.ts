@@ -1,0 +1,37 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+
+const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+
+describe("profile preference export history", () => {
+  it("stores only tenant ID, format, and timestamp with a tenant-time index", () => {
+    const schema = read("drizzle/schema.ts");
+    expect(schema).toContain('"profile_preference_export_history"');
+    expect(schema).toContain('format: varchar("format", { length: 8 }).notNull()');
+    expect(schema).toContain('exportedAt: bigint("exported_at", { mode: "number" }).notNull()');
+    expect(schema).toContain('profile_preference_export_history_user_time_idx').toContain("table.userId, table.exportedAt");
+  });
+
+  it("records and lists history strictly through authenticated tenant ownership with a bounded newest-first list", () => {
+    const helper = read("server/profilePreferenceExportHistory.ts");
+    const router = read("server/routers.ts");
+    expect(helper).toContain("MAX_PROFILE_PREFERENCE_EXPORT_HISTORY_ROWS = 20");
+    expect(helper).toContain("where(eq(profilePreferenceExportHistory.userId, userId))");
+    expect(helper).toContain("orderBy(desc(profilePreferenceExportHistory.exportedAt))");
+    expect(helper).toContain(".limit(MAX_PROFILE_PREFERENCE_EXPORT_HISTORY_ROWS)");
+    expect(router).toContain("listProfilePreferenceExportHistory(ctx.user.id)");
+    expect(router).toContain("recordProfilePreferenceExport({ userId: ctx.user.id, format: input.format })");
+    expect(router).toContain('z.enum(["json", "csv"])');
+  });
+
+  it("keeps Settings data management discoverable and avoids sensitive export fields", () => {
+    const settings = read("client/src/pages/Settings.tsx");
+    expect(settings).toContain('data-testid="settings-theme-reset-system"');
+    expect(settings).toContain('serializeProfilePreferencesCsv(payload)');
+    expect(settings).toContain('recordExport.mutate({ format })');
+    expect(settings).toContain('data-testid="settings-profile-data-export-history"');
+    expect(settings).toContain('t("settings.dataExport.historyError"');
+    expect(settings).toContain("historyHasError");
+    expect(settings).not.toContain("encryptedPass");
+  });
+});

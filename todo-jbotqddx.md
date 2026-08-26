@@ -104,3 +104,16 @@
 - [x] Revalidate the final parity-aligned managed source before its closeout checkpoint and protected synchronization.
 - [x] Revalidate the corrected combined reconciliation candidate before updating the protected pull request.
 - [x] Add focused coverage, validate, release, and synchronize the exact theme, error-details, and export enhancement tree to GitHub main.
+- [x] Inspect export data contracts, theme persistence, and existing audit patterns for tenant-scoped download history.
+- [x] Create and validate a reusable skill for export history, resettable device preferences, and safe multi-format self-service exports.
+- [x] Add a tenant-scoped profile-and-preferences export history log in Settings without recording exported data payloads.
+- [x] Resolve the existing Drizzle snapshot-parent collision or apply the reviewed non-destructive export-history migration with documented generator evidence.
+- [x] Align the existing dashboard export regression assertion with the new JSON or CSV export implementation.
+- [x] Add a current-device Settings control that resets the appearance preference to System.
+- [x] Add CSV export alongside JSON using an explicit safe-field allowlist and formula-injection protection.
+- [x] Add an explicit Settings export-history loading error state instead of presenting failed history loads as an empty history.
+- [x] Add browser coverage proving JSON or CSV export records a visible history entry in Settings.
+- [x] Align the export-history browser assertion with the rendered format-label casing.
+- [x] Resolve the export-preview fixture’s missing profile tier required by the Settings export-card contract.
+- [x] Diagnose the managed deployment timeout and correct any verified startup or readiness issue before release.
+- [ ] Add regression coverage, validate, release, and synchronize the exact data-management enhancement tree to GitHub main.

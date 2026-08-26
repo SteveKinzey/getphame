@@ -983,15 +983,23 @@
       "description": "Scegli la modalità colore che Get Phame deve ricordare su questo dispositivo.",
       "label": "Modalità colore",
       "saved": "La modalità {{theme}} è salvata su questo dispositivo.",
-      "systemSaved": "La modalità di sistema è salvata e sta usando {{theme}}."
+      "systemSaved": "La modalità di sistema è salvata e sta usando {{theme}}.",
+      "resetSystem": "Reimposta al valore predefinito del sistema"
     },
     "dataExport": {
       "title": "Scarica i tuoi dati",
-      "description": "Scarica l’identità dell’account, il profilo dell’attività e le preferenze del dispositivo in un file JSON.",
+      "description": "Scarica l’identità del tuo account, il profilo aziendale e le preferenze di questo dispositivo in un file JSON o CSV.",
       "scope": "Questo download non include password, credenziali e-mail, chiavi API, dati di pagamento, record dei clienti o cronologia diagnostica.",
       "action": "Scarica profilo e preferenze",
       "success": "Il download del profilo e delle preferenze è pronto.",
-      "unavailable": "Il tuo profilo è ancora in caricamento. Riprova tra poco."
+      "unavailable": "Il tuo profilo è ancora in caricamento. Riprova tra poco.",
+      "formatLabel": "Formato di download",
+      "historyTitle": "Cronologia dei download",
+      "historyLoading": "Caricamento della cronologia dei download…",
+      "historyEmpty": "I tuoi download appariranno qui.",
+      "historyRecordError": "Il file è stato scaricato, ma non siamo riusciti ad aggiornare la cronologia dei download.",
+      "historyError": "Non siamo riusciti a caricare la cronologia dei download.",
+      "historyRetry": "Riprova"
     }
   },
   "emailConnect": {
