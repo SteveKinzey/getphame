@@ -767,15 +767,23 @@
         "description": "Choose the color mode you want Get Phame to remember on this device.",
         "label": "Color mode",
         "saved": "{{theme}} mode is saved on this device.",
-        "systemSaved": "System mode is saved and currently using {{theme}}."
+        "systemSaved": "System mode is saved and currently using {{theme}}.",
+        "resetSystem": "Reset to System default"
       },
       "dataExport": {
         "title": "Download your data",
-        "description": "Download your account identity, business profile, and on-device preferences as a JSON file.",
+        "description": "Download your account identity, business profile, and on-device preferences as a JSON or CSV file.",
         "scope": "This download does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history.",
         "action": "Download profile and preferences",
         "success": "Your profile and preferences download is ready.",
-        "unavailable": "Your profile is still loading. Please try again in a moment."
+        "unavailable": "Your profile is still loading. Please try again in a moment.",
+        "formatLabel": "Download format",
+        "historyTitle": "Download history",
+        "historyLoading": "Loading download history…",
+        "historyEmpty": "Your downloads will appear here.",
+        "historyRecordError": "Your file downloaded, but we could not update download history.",
+        "historyError": "We could not load your download history.",
+        "historyRetry": "Retry"
       }
     },
     "profile": {
@@ -2667,15 +2675,23 @@
         "description": "Elige el modo de color que quieres que Get Phame recuerde en este dispositivo.",
         "label": "Modo de color",
         "saved": "El modo {{theme}} se guarda en este dispositivo.",
-        "systemSaved": "El modo del sistema está guardado y actualmente usa {{theme}}."
+        "systemSaved": "El modo del sistema está guardado y actualmente usa {{theme}}.",
+        "resetSystem": "Restablecer al valor predeterminado del sistema"
       },
       "dataExport": {
         "title": "Descargar tus datos",
-        "description": "Descarga la identidad de tu cuenta, el perfil del negocio y las preferencias del dispositivo en un archivo JSON.",
+        "description": "Descarga la identidad de tu cuenta, el perfil del negocio y las preferencias de este dispositivo en un archivo JSON o CSV.",
         "scope": "Esta descarga no incluye contraseñas, credenciales de correo, claves API, datos de pago, registros de clientes ni historial de diagnósticos.",
         "action": "Descargar perfil y preferencias",
         "success": "La descarga de tu perfil y preferencias está lista.",
-        "unavailable": "Tu perfil aún se está cargando. Inténtalo de nuevo en un momento."
+        "unavailable": "Tu perfil aún se está cargando. Inténtalo de nuevo en un momento.",
+        "formatLabel": "Formato de descarga",
+        "historyTitle": "Historial de descargas",
+        "historyLoading": "Cargando el historial de descargas…",
+        "historyEmpty": "Tus descargas aparecerán aquí.",
+        "historyRecordError": "Tu archivo se descargó, pero no pudimos actualizar el historial de descargas.",
+        "historyError": "No pudimos cargar tu historial de descargas.",
+        "historyRetry": "Reintentar"
       }
     },
     "profile": {
@@ -4749,15 +4765,23 @@
         "description": "Choisissez le mode de couleur que Get Phame doit mémoriser sur cet appareil.",
         "label": "Mode de couleur",
         "saved": "Le mode {{theme}} est enregistré sur cet appareil.",
-        "systemSaved": "Le mode système est enregistré et utilise actuellement {{theme}}."
+        "systemSaved": "Le mode système est enregistré et utilise actuellement {{theme}}.",
+        "resetSystem": "Réinitialiser au réglage système"
       },
       "dataExport": {
         "title": "Télécharger vos données",
-        "description": "Téléchargez l’identité de votre compte, le profil de votre entreprise et les préférences de cet appareil dans un fichier JSON.",
+        "description": "Téléchargez l’identité de votre compte, le profil de votre entreprise et les préférences de cet appareil dans un fichier JSON ou CSV.",
         "scope": "Ce téléchargement n’inclut pas les mots de passe, identifiants de messagerie, clés API, données de paiement, dossiers clients ni historique de diagnostic.",
         "action": "Télécharger le profil et les préférences",
         "success": "Le téléchargement de votre profil et de vos préférences est prêt.",
-        "unavailable": "Votre profil est encore en cours de chargement. Réessayez dans un instant."
+        "unavailable": "Votre profil est encore en cours de chargement. Réessayez dans un instant.",
+        "formatLabel": "Format de téléchargement",
+        "historyTitle": "Historique des téléchargements",
+        "historyLoading": "Chargement de l’historique des téléchargements…",
+        "historyEmpty": "Vos téléchargements apparaîtront ici.",
+        "historyRecordError": "Votre fichier a été téléchargé, mais nous n’avons pas pu mettre à jour l’historique des téléchargements.",
+        "historyError": "Nous n’avons pas pu charger votre historique des téléchargements.",
+        "historyRetry": "Réessayer"
       }
     },
     "profile": {
@@ -6831,15 +6855,23 @@
         "description": "Scegli la modalità colore che Get Phame deve ricordare su questo dispositivo.",
         "label": "Modalità colore",
         "saved": "La modalità {{theme}} è salvata su questo dispositivo.",
-        "systemSaved": "La modalità di sistema è salvata e sta usando {{theme}}."
+        "systemSaved": "La modalità di sistema è salvata e sta usando {{theme}}.",
+        "resetSystem": "Reimposta al valore predefinito del sistema"
       },
       "dataExport": {
         "title": "Scarica i tuoi dati",
-        "description": "Scarica l’identità dell’account, il profilo dell’attività e le preferenze del dispositivo in un file JSON.",
+        "description": "Scarica l’identità del tuo account, il profilo aziendale e le preferenze di questo dispositivo in un file JSON o CSV.",
         "scope": "Questo download non include password, credenziali e-mail, chiavi API, dati di pagamento, record dei clienti o cronologia diagnostica.",
         "action": "Scarica profilo e preferenze",
         "success": "Il download del profilo e delle preferenze è pronto.",
-        "unavailable": "Il tuo profilo è ancora in caricamento. Riprova tra poco."
+        "unavailable": "Il tuo profilo è ancora in caricamento. Riprova tra poco.",
+        "formatLabel": "Formato di download",
+        "historyTitle": "Cronologia dei download",
+        "historyLoading": "Caricamento della cronologia dei download…",
+        "historyEmpty": "I tuoi download appariranno qui.",
+        "historyRecordError": "Il file è stato scaricato, ma non siamo riusciti ad aggiornare la cronologia dei download.",
+        "historyError": "Non siamo riusciti a caricare la cronologia dei download.",
+        "historyRetry": "Riprova"
       }
     },
     "profile": {
@@ -8771,15 +8803,23 @@
         "description": "เลือกรูปแบบสีที่ต้องการให้ Get Phame จดจำบนอุปกรณ์นี้",
         "label": "รูปแบบสี",
         "saved": "บันทึกโหมด{{theme}}บนอุปกรณ์นี้แล้ว",
-        "systemSaved": "บันทึกโหมดระบบแล้ว และขณะนี้ใช้โหมด{{theme}}"
+        "systemSaved": "บันทึกโหมดระบบแล้ว และขณะนี้ใช้โหมด{{theme}}",
+        "resetSystem": "รีเซ็ตเป็นค่าเริ่มต้นของระบบ"
       },
       "dataExport": {
         "title": "ดาวน์โหลดข้อมูลของคุณ",
-        "description": "ดาวน์โหลดข้อมูลระบุตัวตนบัญชี โปรไฟล์ธุรกิจ และการตั้งค่าบนอุปกรณ์เป็นไฟล์ JSON",
+        "description": "ดาวน์โหลดข้อมูลบัญชี โปรไฟล์ธุรกิจ และการตั้งค่าบนอุปกรณ์นี้เป็นไฟล์ JSON หรือ CSV",
         "scope": "ไฟล์นี้ไม่มีรหัสผ่าน ข้อมูลรับรองอีเมล คีย์ API ข้อมูลการชำระเงิน ข้อมูลลูกค้า หรือประวัติการวินิจฉัย",
         "action": "ดาวน์โหลดโปรไฟล์และการตั้งค่า",
         "success": "ไฟล์ดาวน์โหลดโปรไฟล์และการตั้งค่าของคุณพร้อมแล้ว",
-        "unavailable": "โปรไฟล์ของคุณยังโหลดอยู่ โปรดลองอีกครั้งในอีกสักครู่"
+        "unavailable": "โปรไฟล์ของคุณยังโหลดอยู่ โปรดลองอีกครั้งในอีกสักครู่",
+        "formatLabel": "รูปแบบการดาวน์โหลด",
+        "historyTitle": "ประวัติการดาวน์โหลด",
+        "historyLoading": "กำลังโหลดประวัติการดาวน์โหลด…",
+        "historyEmpty": "รายการดาวน์โหลดของคุณจะแสดงที่นี่",
+        "historyRecordError": "ดาวน์โหลดไฟล์แล้ว แต่เราไม่สามารถอัปเดตประวัติการดาวน์โหลดได้",
+        "historyError": "เราไม่สามารถโหลดประวัติการดาวน์โหลดของคุณได้",
+        "historyRetry": "ลองอีกครั้ง"
       }
     },
     "profile": {
@@ -10707,15 +10747,23 @@
         "description": "选择希望 Get Phame 在此设备上记住的颜色模式。",
         "label": "颜色模式",
         "saved": "此设备已保存{{theme}}模式。",
-        "systemSaved": "系统模式已保存，当前使用{{theme}}模式。"
+        "systemSaved": "系统模式已保存，当前使用{{theme}}模式。",
+        "resetSystem": "重置为系统默认值"
       },
       "dataExport": {
         "title": "下载您的数据",
-        "description": "将您的账户身份、业务资料和设备偏好下载为 JSON 文件。",
+        "description": "将您的帐户身份、企业资料和本设备偏好设置下载为 JSON 或 CSV 文件。",
         "scope": "此下载不包含密码、邮件凭据、API 密钥、付款详情、客户记录或诊断历史。",
         "action": "下载资料和偏好",
         "success": "您的资料和偏好下载已准备就绪。",
-        "unavailable": "您的资料仍在加载中，请稍后重试。"
+        "unavailable": "您的资料仍在加载中，请稍后重试。",
+        "formatLabel": "下载格式",
+        "historyTitle": "下载历史记录",
+        "historyLoading": "正在加载下载历史记录…",
+        "historyEmpty": "您的下载记录将显示在这里。",
+        "historyRecordError": "您的文件已下载，但我们无法更新下载历史记录。",
+        "historyError": "我们无法加载您的下载历史记录。",
+        "historyRetry": "重试"
       }
     },
     "profile": {
@@ -12635,15 +12683,23 @@
         "description": "選擇希望 Get Phame 在此裝置上記住的顏色模式。",
         "label": "顏色模式",
         "saved": "此裝置已儲存{{theme}}模式。",
-        "systemSaved": "系統模式已儲存，目前使用{{theme}}模式。"
+        "systemSaved": "系統模式已儲存，目前使用{{theme}}模式。",
+        "resetSystem": "重設為系統預設值"
       },
       "dataExport": {
         "title": "下載您的資料",
-        "description": "將您的帳戶身分、商家資料和裝置偏好下載為 JSON 檔案。",
+        "description": "將您的帳戶身分、商家資料和此裝置偏好設定下載為 JSON 或 CSV 檔案。",
         "scope": "此下載不包含密碼、郵件憑證、API 金鑰、付款詳情、客戶記錄或診斷歷程。",
         "action": "下載資料與偏好",
         "success": "您的資料與偏好下載已準備就緒。",
-        "unavailable": "您的資料仍在載入中，請稍後再試。"
+        "unavailable": "您的資料仍在載入中，請稍後再試。",
+        "formatLabel": "下載格式",
+        "historyTitle": "下載紀錄",
+        "historyLoading": "正在載入下載紀錄…",
+        "historyEmpty": "您的下載紀錄會顯示在這裡。",
+        "historyRecordError": "您的檔案已下載，但我們無法更新下載紀錄。",
+        "historyError": "我們無法載入您的下載紀錄。",
+        "historyRetry": "重試"
       }
     },
     "profile": {

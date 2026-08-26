@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
-import SettingsPage, { SettingsBulkSenderTestFixture, ThemePreferenceCard } from "./pages/Settings";
+import SettingsPage, { ProfilePreferencesExportCard, SettingsBulkSenderTestFixture, ThemePreferenceCard } from "./pages/Settings";
 import MagicLinkForm from "./components/auth/MagicLinkForm";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
@@ -777,6 +777,40 @@ function App() {
           <main className="min-h-screen p-6 rr-bg-cream-warm">
             <div className="mx-auto max-w-md">
               <ThemePreferenceCard />
+            </div>
+          </main>
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (
+    import.meta.env.DEV &&
+    (window.location.pathname === "/__test/settings-data-export" ||
+      window.location.pathname === "/__test/settings-data-export-history-error")
+  ) {
+    const historyError = window.location.pathname === "/__test/settings-data-export-history-error";
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <Toaster position="top-center" richColors />
+          <main className="min-h-screen p-6 rr-bg-cream-warm">
+            <div className="mx-auto max-w-xl">
+              <ProfilePreferencesExportCard
+                profile={{
+                  tier: "free",
+                  businessName: "Preview Business",
+                  reviewLink: "https://example.test/review",
+                  fromName: "Preview Owner",
+                  replyTo: "owner@example.test",
+                  consentLabelName: "Preview Business",
+                  physicalAddress: "1 Preview Lane",
+                }}
+                testOverride={{
+                  account: { name: "Preview Owner", email: "owner@example.test" },
+                  historyError,
+                }}
+              />
             </div>
           </main>
         </TooltipProvider>

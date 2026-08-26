@@ -2300,15 +2300,23 @@
       "description": "选择希望 Get Phame 在此设备上记住的颜色模式。",
       "label": "颜色模式",
       "saved": "此设备已保存{{theme}}模式。",
-      "systemSaved": "系统模式已保存，当前使用{{theme}}模式。"
+      "systemSaved": "系统模式已保存，当前使用{{theme}}模式。",
+      "resetSystem": "重置为系统默认值"
     },
     "dataExport": {
       "title": "下载您的数据",
-      "description": "将您的账户身份、业务资料和设备偏好下载为 JSON 文件。",
+      "description": "将您的帐户身份、企业资料和本设备偏好设置下载为 JSON 或 CSV 文件。",
       "scope": "此下载不包含密码、邮件凭据、API 密钥、付款详情、客户记录或诊断历史。",
       "action": "下载资料和偏好",
       "success": "您的资料和偏好下载已准备就绪。",
-      "unavailable": "您的资料仍在加载中，请稍后重试。"
+      "unavailable": "您的资料仍在加载中，请稍后重试。",
+      "formatLabel": "下载格式",
+      "historyTitle": "下载历史记录",
+      "historyLoading": "正在加载下载历史记录…",
+      "historyEmpty": "您的下载记录将显示在这里。",
+      "historyRecordError": "您的文件已下载，但我们无法更新下载历史记录。",
+      "historyError": "我们无法加载您的下载历史记录。",
+      "historyRetry": "重试"
     }
   },
   "login": {

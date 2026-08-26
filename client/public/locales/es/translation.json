@@ -2916,15 +2916,23 @@
       "description": "Elige el modo de color que quieres que Get Phame recuerde en este dispositivo.",
       "label": "Modo de color",
       "saved": "El modo {{theme}} se guarda en este dispositivo.",
-      "systemSaved": "El modo del sistema está guardado y actualmente usa {{theme}}."
+      "systemSaved": "El modo del sistema está guardado y actualmente usa {{theme}}.",
+      "resetSystem": "Restablecer al valor predeterminado del sistema"
     },
     "dataExport": {
       "title": "Descargar tus datos",
-      "description": "Descarga la identidad de tu cuenta, el perfil del negocio y las preferencias del dispositivo en un archivo JSON.",
+      "description": "Descarga la identidad de tu cuenta, el perfil del negocio y las preferencias de este dispositivo en un archivo JSON o CSV.",
       "scope": "Esta descarga no incluye contraseñas, credenciales de correo, claves API, datos de pago, registros de clientes ni historial de diagnósticos.",
       "action": "Descargar perfil y preferencias",
       "success": "La descarga de tu perfil y preferencias está lista.",
-      "unavailable": "Tu perfil aún se está cargando. Inténtalo de nuevo en un momento."
+      "unavailable": "Tu perfil aún se está cargando. Inténtalo de nuevo en un momento.",
+      "formatLabel": "Formato de descarga",
+      "historyTitle": "Historial de descargas",
+      "historyLoading": "Cargando el historial de descargas…",
+      "historyEmpty": "Tus descargas aparecerán aquí.",
+      "historyRecordError": "Tu archivo se descargó, pero no pudimos actualizar el historial de descargas.",
+      "historyError": "No pudimos cargar tu historial de descargas.",
+      "historyRetry": "Reintentar"
     }
   },
   "login": {

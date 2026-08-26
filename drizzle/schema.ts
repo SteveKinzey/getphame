@@ -1255,6 +1255,26 @@ export type SmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferSelect;
 export type InsertSmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferInsert;
 
 /**
+ * Privacy-minimized, tenant-owned evidence of profile and preference downloads.
+ * The generated payload, browser/device data, credentials, and customer records
+ * are intentionally never persisted.
+ */
+export const profilePreferenceExportHistory = pgTable(
+  "profile_preference_export_history",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    format: varchar("format", { length: 8 }).notNull(),
+    exportedAt: bigint("exported_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("profile_preference_export_history_user_time_idx").on(table.userId, table.exportedAt),
+  ]
+);
+export type ProfilePreferenceExportHistory = typeof profilePreferenceExportHistory.$inferSelect;
+export type InsertProfilePreferenceExportHistory = typeof profilePreferenceExportHistory.$inferInsert;
+
+/**
  * The user-selected, tenant-owned delivery channel for review outreach. Platform
  * mail infrastructure is deliberately not represented in this table.
  */

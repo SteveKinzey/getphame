@@ -139,11 +139,13 @@ describe("dashboard feedback experience", () => {
     expect(exportCard).toContain('format: "get-phame-profile-preferences/v1"');
     expect(exportCard).toContain("themePreference");
     expect(exportCard).toContain("hapticsEnabled");
-    expect(exportCard).toContain("new Blob([JSON.stringify(payload, null, 2)]");
+    expect(exportCard).toContain("serializeProfilePreferencesCsv(payload)");
+    expect(exportCard).toContain("buildProfilePreferencesExportFilename(format, payload.exportedAt)");
+    expect(exportCard).toContain("recordExport.mutate({ format })");
+    expect(exportCard).toContain('data-testid="settings-profile-data-export-history"');
     expect(exportCard).toContain("URL.revokeObjectURL(url)");
-    expect(exportCard).toContain("aria-busy={!account}");
+    expect(exportCard).toContain("aria-busy={!account || recordExport.isPending}");
     expect(exportCard).not.toContain("disabled={!account}");
-    expect(exportCard).toContain("get-phame-profile-preferences-${new Date().toISOString().slice(0, 10)}.json");
     expect(exportCard).toContain("does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history");
     expect(exportCard).not.toContain("smtpPassword");
     expect(exportCard).not.toContain("bulkSenderSecret");

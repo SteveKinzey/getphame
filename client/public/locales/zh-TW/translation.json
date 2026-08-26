@@ -2322,15 +2322,23 @@
       "description": "選擇希望 Get Phame 在此裝置上記住的顏色模式。",
       "label": "顏色模式",
       "saved": "此裝置已儲存{{theme}}模式。",
-      "systemSaved": "系統模式已儲存，目前使用{{theme}}模式。"
+      "systemSaved": "系統模式已儲存，目前使用{{theme}}模式。",
+      "resetSystem": "重設為系統預設值"
     },
     "dataExport": {
       "title": "下載您的資料",
-      "description": "將您的帳戶身分、商家資料和裝置偏好下載為 JSON 檔案。",
+      "description": "將您的帳戶身分、商家資料和此裝置偏好設定下載為 JSON 或 CSV 檔案。",
       "scope": "此下載不包含密碼、郵件憑證、API 金鑰、付款詳情、客戶記錄或診斷歷程。",
       "action": "下載資料與偏好",
       "success": "您的資料與偏好下載已準備就緒。",
-      "unavailable": "您的資料仍在載入中，請稍後再試。"
+      "unavailable": "您的資料仍在載入中，請稍後再試。",
+      "formatLabel": "下載格式",
+      "historyTitle": "下載紀錄",
+      "historyLoading": "正在載入下載紀錄…",
+      "historyEmpty": "您的下載紀錄會顯示在這裡。",
+      "historyRecordError": "您的檔案已下載，但我們無法更新下載紀錄。",
+      "historyError": "我們無法載入您的下載紀錄。",
+      "historyRetry": "重試"
     }
   },
   "login": {

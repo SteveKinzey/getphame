@@ -2969,15 +2969,23 @@
       "description": "Choose the color mode you want Get Phame to remember on this device.",
       "label": "Color mode",
       "saved": "{{theme}} mode is saved on this device.",
-      "systemSaved": "System mode is saved and currently using {{theme}}."
+      "systemSaved": "System mode is saved and currently using {{theme}}.",
+      "resetSystem": "Reset to System default"
     },
     "dataExport": {
       "title": "Download your data",
-      "description": "Download your account identity, business profile, and on-device preferences as a JSON file.",
+      "description": "Download your account identity, business profile, and on-device preferences as a JSON or CSV file.",
       "scope": "This download does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history.",
       "action": "Download profile and preferences",
       "success": "Your profile and preferences download is ready.",
-      "unavailable": "Your profile is still loading. Please try again in a moment."
+      "unavailable": "Your profile is still loading. Please try again in a moment.",
+      "formatLabel": "Download format",
+      "historyTitle": "Download history",
+      "historyLoading": "Loading download history…",
+      "historyEmpty": "Your downloads will appear here.",
+      "historyRecordError": "Your file downloaded, but we could not update download history.",
+      "historyError": "We could not load your download history.",
+      "historyRetry": "Retry"
     }
   },
   "complianceGuide": {
