@@ -25,8 +25,11 @@ describe("Get Phame agent discovery", () => {
 
     expect(html.status).toBe(200);
     expect(html.headers.link).toBe(HOMEPAGE_AGENT_LINK_HEADER);
+    expect(html.headers.vary).toContain("Accept");
     expect(html.headers["content-type"]).toContain("text/html");
+    expect(markdown.status).toBe(200);
     expect(markdown.headers["content-type"]).toContain("text/markdown");
+    expect(markdown.headers["x-markdown-tokens"]).toMatch(/^\d+$/);
     expect(markdown.text).toContain("# Get Phame");
   });
 

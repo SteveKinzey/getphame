@@ -154,7 +154,10 @@ function mcpSuccess(res: Response, id: string | number | null, result: unknown) 
 
 export function registerAgentDiscoveryLinkHeaders(app: Express): void {
   app.use((req, res, next) => {
-    if (req.path === "/" && (req.method === "GET" || req.method === "HEAD")) res.setHeader("Link", HOMEPAGE_AGENT_LINK_HEADER);
+    if (req.path === "/" && (req.method === "GET" || req.method === "HEAD")) {
+      res.setHeader("Link", HOMEPAGE_AGENT_LINK_HEADER);
+      res.vary("Accept");
+    }
     next();
   });
 }
