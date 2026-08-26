@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  deployments: write
   issues: write
 
 concurrency:
@@ -15,6 +16,55 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  reconcile-deployments:
+    name: Reconcile stale Fly.io deployment statuses
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      STALE_AFTER_SECONDS: "1800"
+
+    steps:
+      - name: Mark timed-out Fly.io deployments terminal
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          now_epoch="$(date -u +%s)"
+          cutoff_epoch=$((now_epoch - STALE_AFTER_SECONDS))
+          reconciled=0
+
+          deployments="$(
+            gh api --method GET "repos/$GH_REPO/deployments"               -f environment=production               -F per_page=30
+          )"
+
+          while IFS= read -r deployment; do
+            deployment_id="$(jq -r '.id' <<<"$deployment")"
+            created_at="$(jq -r '.created_at' <<<"$deployment")"
+            created_epoch="$(date -u -d "$created_at" +%s)"
+
+            if [ "$created_epoch" -gt "$cutoff_epoch" ]; then
+              continue
+            fi
+
+            latest_state="$(
+              gh api --method GET                 "repos/$GH_REPO/deployments/$deployment_id/statuses"                 -F per_page=1                 --jq '.[0].state // "pending"'
+            )"
+
+            case "$latest_state" in
+              pending|queued|in_progress)
+                gh api --method POST                   "repos/$GH_REPO/deployments/$deployment_id/statuses"                   -f state=error                   -f environment=production                   -f description="Fly.io did not report a terminal status within 30 minutes."                   -F auto_inactive=false                   >/dev/null
+                echo "Marked Fly.io deployment $deployment_id terminal after stale state: $latest_state."
+                reconciled=$((reconciled + 1))
+                ;;
+            esac
+          done < <(
+            jq -c '.[] | select(.creator.login == "fly-io" or .creator.login == "fly-io[bot]")'               <<<"$deployments"
+          )
+
+          echo "Reconciled $reconciled stale Fly.io deployment(s)."
+
   probe:
     name: Probe deployed API health
     runs-on: ubuntu-latest
