@@ -97,7 +97,7 @@
 - [x] Add legacy MediaQueryList listener fallback support for System theme synchronization.
 - [x] Make the profile-export loading feedback reachable while preserving a safe authenticated export boundary.
 - [x] Reconcile the user-approved concurrent managed-checkpoint deployment and agent-discovery files through a separate protected GitHub release branch.
-- [ ] Validate the combined reconciliation tree and prove protected GitHub main exactly matches the final managed checkpoint.
+- [x] Validate the combined reconciliation tree and prove protected GitHub main exactly matches the final managed checkpoint.
 - [x] Resolve valid PR #160 review findings for agent-discovery header and payload correctness plus resilient CSP regression coverage.
 - [x] Explicitly resolve the PR #160 agent-discovery payload-correctness concern with runtime contract evidence or a documented false-positive rationale.
 - [x] Align the managed source discovery-header ordering and strengthened regression assertions with the protected-main merge resolution to prove exact parity.
