@@ -1410,8 +1410,8 @@ function ProfilePreferencesExportCard({ profile }: { profile: ProfileData | null
         type="button"
         data-testid="settings-profile-data-export-download"
         onClick={downloadExport}
-        disabled={!account}
-        className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50 rr-bg-navy"
+        aria-busy={!account}
+        className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black text-white rr-bg-navy"
       >
         <Download size={16} aria-hidden="true" />
         {t("settings.dataExport.action", { defaultValue: "Download profile and preferences" })}

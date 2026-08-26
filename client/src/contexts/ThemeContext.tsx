@@ -45,8 +45,12 @@ export function ThemeProvider({
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const syncSystemTheme = () => setSystemTheme(mediaQuery.matches ? "dark" : "light");
     syncSystemTheme();
-    mediaQuery.addEventListener("change", syncSystemTheme);
-    return () => mediaQuery.removeEventListener("change", syncSystemTheme);
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", syncSystemTheme);
+      return () => mediaQuery.removeEventListener("change", syncSystemTheme);
+    }
+    mediaQuery.addListener(syncSystemTheme);
+    return () => mediaQuery.removeListener(syncSystemTheme);
   }, [switchable, themePreference]);
 
   useEffect(() => {

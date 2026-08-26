@@ -62,6 +62,7 @@ describe("dashboard feedback experience", () => {
     expect(themeContext).toContain('localStorage.setItem("theme", themePreference)');
     expect(themeContext).toContain('matchMedia("(prefers-color-scheme: dark)")');
     expect(themeContext).toContain('mediaQuery.addEventListener("change", syncSystemTheme)');
+    expect(themeContext).toContain("mediaQuery.addListener(syncSystemTheme)");
     expect(settings).toContain('data-testid="settings-theme-preference"');
     expect(settings).toContain('data-testid={`settings-theme-${option}`}');
     expect(settings).toContain('["light", "dark", "system"]');
@@ -140,6 +141,8 @@ describe("dashboard feedback experience", () => {
     expect(exportCard).toContain("hapticsEnabled");
     expect(exportCard).toContain("new Blob([JSON.stringify(payload, null, 2)]");
     expect(exportCard).toContain("URL.revokeObjectURL(url)");
+    expect(exportCard).toContain("aria-busy={!account}");
+    expect(exportCard).not.toContain("disabled={!account}");
     expect(exportCard).toContain("get-phame-profile-preferences-${new Date().toISOString().slice(0, 10)}.json");
     expect(exportCard).toContain("does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history");
     expect(exportCard).not.toContain("smtpPassword");

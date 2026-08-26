@@ -94,4 +94,6 @@
 - [x] Add a user-friendly View Details action for dashboard API errors that exposes safe contextual information in an accessible modal.
 - [x] Preserve the safe query-retry affordance inside the recoverable error-details modal after the toast is dismissed.
 - [x] Add a Settings export that downloads only the authenticated user’s profile and preference data without secrets or other users’ records.
+- [x] Add legacy MediaQueryList listener fallback support for System theme synchronization.
+- [x] Make the profile-export loading feedback reachable while preserving a safe authenticated export boundary.
 - [ ] Add focused coverage, validate, release, and synchronize the exact theme, error-details, and export enhancement tree to GitHub main.
