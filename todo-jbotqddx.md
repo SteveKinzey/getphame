@@ -96,4 +96,9 @@
 - [x] Add a Settings export that downloads only the authenticated user’s profile and preference data without secrets or other users’ records.
 - [x] Add legacy MediaQueryList listener fallback support for System theme synchronization.
 - [x] Make the profile-export loading feedback reachable while preserving a safe authenticated export boundary.
+- [ ] Reconcile the user-approved concurrent managed-checkpoint deployment and agent-discovery files through a separate protected GitHub release branch.
+- [ ] Validate the combined reconciliation tree and prove protected GitHub main exactly matches the final managed checkpoint.
+- [x] Resolve valid PR #160 review findings for agent-discovery header and payload correctness plus resilient CSP regression coverage.
+- [x] Explicitly resolve the PR #160 agent-discovery payload-correctness concern with runtime contract evidence or a documented false-positive rationale.
+- [x] Revalidate the corrected combined reconciliation candidate before updating the protected pull request.
 - [ ] Add focused coverage, validate, release, and synchronize the exact theme, error-details, and export enhancement tree to GitHub main.
