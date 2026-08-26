@@ -17,7 +17,7 @@ describe("production Content Security Policy", () => {
     expect(scriptSrc).toBeDefined();
     expect(connectSrc).toBeDefined();
     expect(scriptSrc).toContain('"https://static.cloudflareinsights.com"');
-    expect(connectSrc).toContain('"\'self\'"');
+    expect(connectSrc).toContain("'self'");
     expect(connectSrc).not.toContain("cloudflareinsights.com");
   });
 });
