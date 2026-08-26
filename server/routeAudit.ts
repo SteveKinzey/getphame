@@ -3,6 +3,7 @@ import { chromium } from "playwright-core";
 const CANONICAL_PRODUCTION_ORIGIN = "https://getphame.app";
 const MAX_ROUTES_PER_AUDIT = 25;
 const NAVIGATION_TIMEOUT_MS = 20_000;
+export const ROUTE_AUDIT_DEFERRED_CODE = "route_audit_deferred";
 
 export type RouteAuditFinding = {
   route: string;
@@ -32,6 +33,11 @@ export class RouteAuditError extends Error {
     super(code);
     this.name = "RouteAuditError";
   }
+}
+
+/** Browser-backed audits run only in an explicitly provisioned Chromium runtime. */
+export function isProductionRouteAuditEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.ROUTE_AUDIT_ENABLED === "true";
 }
 
 /** Extract only canonical same-origin routes from a sitemap document. */
@@ -81,6 +87,10 @@ function findingFailed(finding: RouteAuditFinding): boolean {
  * The returned data is sanitized before it is persisted or displayed.
  */
 export async function runProductionRouteAudit(): Promise<ProductionRouteAuditResult> {
+  if (!isProductionRouteAuditEnabled()) {
+    throw new RouteAuditError(ROUTE_AUDIT_DEFERRED_CODE);
+  }
+
   const startedAt = Date.now();
   const sitemapResponse = await fetch(`${CANONICAL_PRODUCTION_ORIGIN}/sitemap.xml`, {
     headers: { accept: "application/xml,text/xml;q=0.9,*/*;q=0.1" },

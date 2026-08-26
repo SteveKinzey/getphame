@@ -1,7 +1,12 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { extractProductionAuditRoutes, RouteAuditError } from "./routeAudit";
+import {
+  extractProductionAuditRoutes,
+  isProductionRouteAuditEnabled,
+  ROUTE_AUDIT_DEFERRED_CODE,
+  RouteAuditError,
+} from "./routeAudit";
 
 describe("production route audit boundaries", () => {
   it("keeps only canonical same-origin public sitemap routes", () => {
@@ -28,6 +33,12 @@ describe("production route audit boundaries", () => {
     expect(error.name).toBe("RouteAuditError");
     expect(error.code).toBe("browser_unavailable");
     expect(error.message).not.toContain("cookie");
+  });
+
+  it("defers browser-backed audits unless a Chromium-capable runtime explicitly enables them", () => {
+    expect(isProductionRouteAuditEnabled({})).toBe(false);
+    expect(isProductionRouteAuditEnabled({ ROUTE_AUDIT_ENABLED: "true" })).toBe(true);
+    expect(new RouteAuditError(ROUTE_AUDIT_DEFERRED_CODE).code).toBe("route_audit_deferred");
   });
 
   it("retries transient browser console and page errors before persisting a route failure", () => {

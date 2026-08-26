@@ -1,0 +1,22 @@
+# Project TODO
+
+- [x] Inspect Dependabot advisory #172 and identify the vulnerable nanoid resolution path.
+- [x] Upgrade or override nanoid to the advisory-fixed version while preserving the lockfile contract.
+- [x] Add or update a focused regression test proving the repository resolves a non-vulnerable nanoid version.
+- [x] Run focused dependency checks, the full test suite, TypeScript validation, production build, and responsive verification.
+- [x] Restart the managed development environment and retry the terminated TypeScript validation gates.
+- [x] Save the validated security-remediation checkpoint and publish it after confirmation.
+- [ ] Reconcile the managed checkpoint with the divergent protected-main GitHub tree without overwriting unrelated work.
+- [x] Decide how to preserve the currently published Cloudflare Web Analytics CSP allowlist change during GitHub reconciliation.
+- [ ] Reconcile the later concurrent managed release with the GitHub parity path without overwriting its unrelated work.
+- [ ] Create a replacement managed checkpoint after validating the reconciled protected-main candidate.
+- [ ] Synchronize the exact checkpoint tree through a history-preserving GitHub pull request, merge, and protected-main parity verification after confirmation.
+- [ ] Diagnose and resolve the deployment timeout reported for the latest managed checkpoint before release synchronization.
+- [ ] Validate the streamlined Dockerfile build contract and auto-published replacement checkpoint deployment.
+- [ ] Reconcile the current managed tree with the latest protected-main baseline, then rerun the required validation gates.
+- [ ] Verify a successful replacement deployment and responsive production smoke check before GitHub synchronization.
+- [ ] Resolve the stale public asset manifest observed after checkpoint a7e9cfe0 before claiming deployment success.
+- [ ] Add and validate a production-only Docker image build command that excludes duplicate audit and test execution.
+- [ ] Replace the image’s full development dependency set with production-pruned runtime dependencies while preserving Chromium route auditing.
+- [ ] Remove the custom Dockerfile so the current release uses the standard deployment path approved by the user.
+- [ ] Record Chromium-dependent production route auditing as deferred work for a dedicated runtime solution.
