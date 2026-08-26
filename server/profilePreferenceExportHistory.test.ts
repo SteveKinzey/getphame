@@ -1,15 +1,29 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getDb } from "./db";
+import { listProfilePreferenceExportHistory } from "./profilePreferenceExportHistory";
+
+vi.mock("./db", () => ({
+  getDb: vi.fn(),
+}));
 
 const read = (path: string) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 describe("profile preference export history", () => {
+  beforeEach(() => {
+    vi.mocked(getDb).mockReset();
+  });
+
   it("stores only tenant ID, format, and timestamp with a tenant-time index", () => {
     const schema = read("drizzle/schema.ts");
+    const migration = read("drizzle/manual-pending/20260826_add_profile_preference_export_history.sql");
     expect(schema).toContain('"profile_preference_export_history"');
     expect(schema).toContain('format: varchar("format", { length: 8 }).notNull()');
     expect(schema).toContain('exportedAt: bigint("exported_at", { mode: "number" }).notNull()');
-    expect(schema).toContain('profile_preference_export_history_user_time_idx').toContain("table.userId, table.exportedAt");
+    expect(schema).toContain('profile_preference_export_history_user_time_idx');
+    expect(schema).toContain("table.userId, table.exportedAt");
+    expect(schema).toContain('references(() => users.id, { onDelete: "cascade" })');
+    expect(migration).toContain("FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE");
   });
 
   it("records and lists history strictly through authenticated tenant ownership with a bounded newest-first list", () => {
@@ -22,6 +36,12 @@ describe("profile preference export history", () => {
     expect(router).toContain("listProfilePreferenceExportHistory(ctx.user.id)");
     expect(router).toContain("recordProfilePreferenceExport({ userId: ctx.user.id, format: input.format })");
     expect(router).toContain('z.enum(["json", "csv"])');
+  });
+
+  it("surfaces unavailable history storage as an explicit failure instead of an empty list", async () => {
+    vi.mocked(getDb).mockResolvedValue(undefined as never);
+
+    await expect(listProfilePreferenceExportHistory(1)).rejects.toThrow("Database not available");
   });
 
   it("keeps Settings data management discoverable and avoids sensitive export fields", () => {

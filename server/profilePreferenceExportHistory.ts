@@ -25,7 +25,7 @@ export async function recordProfilePreferenceExport(input: {
 
 export async function listProfilePreferenceExportHistory(userId: number) {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) throw new Error("Database not available");
   return db
     .select({
       id: profilePreferenceExportHistory.id,

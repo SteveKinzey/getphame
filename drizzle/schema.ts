@@ -1263,7 +1263,7 @@ export const profilePreferenceExportHistory = pgTable(
   "profile_preference_export_history",
   {
     id: serial("id").primaryKey(),
-    userId: integer("user_id").notNull(),
+    userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     format: varchar("format", { length: 8 }).notNull(),
     exportedAt: bigint("exported_at", { mode: "number" }).notNull(),
   },
