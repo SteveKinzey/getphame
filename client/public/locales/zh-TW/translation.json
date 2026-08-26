@@ -990,7 +990,8 @@
     "light": "淺色",
     "dark": "深色",
     "switchToLight": "切換到淺色模式",
-    "switchToDark": "切換到深色模式"
+    "switchToDark": "切換到深色模式",
+    "system": "系統"
   },
   "logout": {
     "button": "退出登入"
@@ -1474,7 +1475,17 @@
     "retryConnection": "重試連線",
     "networkStatusLabel": "網路狀態",
     "networkOnline": "在線",
-    "networkOffline": "離線"
+    "networkOffline": "離線",
+    "viewDetails": "查看詳細資料",
+    "details": {
+      "title": "連線詳細資料",
+      "recoverableDescription": "Get Phame 無法重新整理最新儀表板資訊。未傳送任何變更，您可以放心重試。",
+      "updateDescription": "Get Phame 無法完成要求的更新。系統沒有自動重送您的變更；您可以檢查後再次提交。",
+      "readLabel": "儀表板資料重新整理",
+      "updateLabel": "儀表板更新",
+      "readNextStep": "使用「再試一次」只重新整理您的儀表板資料。",
+      "updateNextStep": "檢查您的資訊，然後再次提交更新。"
+    }
   },
   "profileMenu": {
     "account": "帳戶",
@@ -2310,7 +2321,16 @@
       "title": "外觀",
       "description": "選擇希望 Get Phame 在此裝置上記住的顏色模式。",
       "label": "顏色模式",
-      "saved": "此裝置已儲存{{theme}}模式。"
+      "saved": "此裝置已儲存{{theme}}模式。",
+      "systemSaved": "系統模式已儲存，目前使用{{theme}}模式。"
+    },
+    "dataExport": {
+      "title": "下載您的資料",
+      "description": "將您的帳戶身分、商家資料和裝置偏好下載為 JSON 檔案。",
+      "scope": "此下載不包含密碼、郵件憑證、API 金鑰、付款詳情、客戶記錄或診斷歷程。",
+      "action": "下載資料與偏好",
+      "success": "您的資料與偏好下載已準備就緒。",
+      "unavailable": "您的資料仍在載入中，請稍後再試。"
     }
   },
   "login": {

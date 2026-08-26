@@ -15,7 +15,7 @@ import ClientDetailSheet from "@/components/ClientDetailSheet";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 import RecentActivityCard from "@/components/dashboard/RecentActivityCard";
 import MailServerHealthBadge from "@/components/dashboard/MailServerHealthBadge";
-import { DashboardLoadingState, useDashboardApiErrorToast, useRecoverableDashboardQueryError } from "@/components/dashboard/DashboardFeedbackExperience";
+import { DashboardApiErrorFeedbackBoundary, DashboardLoadingState, useDashboardApiErrorToast, useRecoverableDashboardQueryError } from "@/components/dashboard/DashboardFeedbackExperience";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -54,7 +54,15 @@ type DashboardPageProps = {
   testRecoveryMode?: "query" | "mutation";
 };
 
-export default function DashboardPage({ testRecoveryMode }: DashboardPageProps = {}) {
+export default function DashboardPage(props: DashboardPageProps = {}) {
+  return (
+    <DashboardApiErrorFeedbackBoundary>
+      <DashboardPageContent {...props} />
+    </DashboardApiErrorFeedbackBoundary>
+  );
+}
+
+function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
   const { t } = useTranslation();
   const { theme, toggleTheme, switchable } = useTheme();
   const [, navigate] = useLocation();

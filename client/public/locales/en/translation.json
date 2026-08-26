@@ -1032,7 +1032,8 @@
     "light": "Light",
     "dark": "Dark",
     "switchToLight": "Switch to light mode",
-    "switchToDark": "Switch to dark mode"
+    "switchToDark": "Switch to dark mode",
+    "system": "System"
   },
   "logout": {
     "button": "Log Out"
@@ -1575,7 +1576,17 @@
     "retryConnection": "Retry Connection",
     "networkStatusLabel": "Network status",
     "networkOnline": "Online",
-    "networkOffline": "Offline"
+    "networkOffline": "Offline",
+    "viewDetails": "View details",
+    "details": {
+      "title": "Connection details",
+      "recoverableDescription": "Get Phame could not refresh the latest dashboard information. No changes were sent, and it is safe to try again.",
+      "updateDescription": "Get Phame could not complete the requested update. Your change was not replayed automatically, so you can review it and submit again when ready.",
+      "readLabel": "Dashboard data refresh",
+      "updateLabel": "Dashboard update",
+      "readNextStep": "Use Try again to refresh only your dashboard data.",
+      "updateNextStep": "Review your information, then submit the update again."
+    }
   },
   "profileMenu": {
     "account": "Account",
@@ -2957,7 +2968,16 @@
       "title": "Appearance",
       "description": "Choose the color mode you want Get Phame to remember on this device.",
       "label": "Color mode",
-      "saved": "{{theme}} mode is saved on this device."
+      "saved": "{{theme}} mode is saved on this device.",
+      "systemSaved": "System mode is saved and currently using {{theme}}."
+    },
+    "dataExport": {
+      "title": "Download your data",
+      "description": "Download your account identity, business profile, and on-device preferences as a JSON file.",
+      "scope": "This download does not include passwords, mail credentials, API keys, payment details, customer records, or diagnostic history.",
+      "action": "Download profile and preferences",
+      "success": "Your profile and preferences download is ready.",
+      "unavailable": "Your profile is still loading. Please try again in a moment."
     }
   },
   "complianceGuide": {

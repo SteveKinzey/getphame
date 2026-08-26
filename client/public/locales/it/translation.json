@@ -982,7 +982,16 @@
       "title": "Aspetto",
       "description": "Scegli la modalità colore che Get Phame deve ricordare su questo dispositivo.",
       "label": "Modalità colore",
-      "saved": "La modalità {{theme}} è salvata su questo dispositivo."
+      "saved": "La modalità {{theme}} è salvata su questo dispositivo.",
+      "systemSaved": "La modalità di sistema è salvata e sta usando {{theme}}."
+    },
+    "dataExport": {
+      "title": "Scarica i tuoi dati",
+      "description": "Scarica l’identità dell’account, il profilo dell’attività e le preferenze del dispositivo in un file JSON.",
+      "scope": "Questo download non include password, credenziali e-mail, chiavi API, dati di pagamento, record dei clienti o cronologia diagnostica.",
+      "action": "Scarica profilo e preferenze",
+      "success": "Il download del profilo e delle preferenze è pronto.",
+      "unavailable": "Il tuo profilo è ancora in caricamento. Riprova tra poco."
     }
   },
   "emailConnect": {
@@ -2580,7 +2589,17 @@
     "retryConnection": "Riprova connessione",
     "networkStatusLabel": "Stato della rete",
     "networkOnline": "Online",
-    "networkOffline": "Offline"
+    "networkOffline": "Offline",
+    "viewDetails": "Visualizza dettagli",
+    "details": {
+      "title": "Dettagli della connessione",
+      "recoverableDescription": "Get Phame non ha potuto aggiornare le ultime informazioni della dashboard. Non sono state inviate modifiche ed è sicuro riprovare.",
+      "updateDescription": "Get Phame non ha potuto completare l’aggiornamento richiesto. La modifica non è stata ripetuta automaticamente; puoi controllarla e inviarla di nuovo.",
+      "readLabel": "Aggiornamento dati dashboard",
+      "updateLabel": "Aggiornamento dashboard",
+      "readNextStep": "Usa Riprova per aggiornare solo i dati della dashboard.",
+      "updateNextStep": "Controlla le informazioni, quindi invia di nuovo l’aggiornamento."
+    }
   },
   "profileMenu": {
     "account": "Account",
