@@ -36,12 +36,6 @@ jobs:
           cutoff_epoch=$((now_epoch - STALE_AFTER_SECONDS))
           reconciled=0
 
-          deployments="$(
-            gh api --paginate --method GET \
-              "repos/$GH_REPO/deployments" \
-              -f environment=production
-          )"
-
           while IFS= read -r deployment; do
             deployment_id="$(jq -r '.id' <<<"$deployment")"
             created_at="$(jq -r '.created_at' <<<"$deployment")"
@@ -54,7 +48,7 @@ jobs:
             latest_state="$(
               gh api --method GET \
                 "repos/$GH_REPO/deployments/$deployment_id/statuses" \
-                -F per_page=1 \
+                -f per_page=1 \
                 --jq '.[0].state // "pending"'
             )"
 
@@ -72,8 +66,10 @@ jobs:
                 ;;
             esac
           done < <(
-            jq -c '.[] | select(.creator.login == "fly-io" or .creator.login == "fly-io[bot]")' \
-              <<<"$deployments"
+            gh api --paginate --method GET \
+              "repos/$GH_REPO/deployments" \
+              -f environment=production \
+              --jq '.[] | select(.creator.login == "fly-io" or .creator.login == "fly-io[bot]")'
           )
 
           echo "Reconciled $reconciled stale Fly.io deployment(s)."
