@@ -120,3 +120,6 @@
 - [x] Add export-history foreign-key cascade behavior so account deletion removes tenant download history.
 - [x] Propagate unavailable export-history storage as an explicit query failure instead of an empty history.
 - [x] Correct the export-history regression matcher and add behavioral coverage for unavailable storage.
+- [x] Strengthen export-history schema privacy coverage to prove payloads cannot be persisted alongside metadata.
+- [x] Revalidate the production dependency audit and build after the transient OSV HTTP 403 response.
+- [x] Re-run the complete `pnpm build` command after the recovered OSV audit pass and record its result.

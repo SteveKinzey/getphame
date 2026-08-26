@@ -17,6 +17,14 @@ describe("profile preference export history", () => {
   it("stores only tenant ID, format, and timestamp with a tenant-time index", () => {
     const schema = read("drizzle/schema.ts");
     const migration = read("drizzle/manual-pending/20260826_add_profile_preference_export_history.sql");
+    const tableDefinition = schema.match(
+      /export const profilePreferenceExportHistory = pgTable\([\s\S]*?\n\);\nexport type ProfilePreferenceExportHistory/
+    )?.[0];
+
+    expect(tableDefinition).toBeTruthy();
+    const fields = [...(tableDefinition ?? "").matchAll(/^    (\w+):/gm)].map(match => match[1]);
+    expect(fields).toEqual(["id", "userId", "format", "exportedAt"]);
+    expect(tableDefinition).not.toMatch(/payload|content|body|data/i);
     expect(schema).toContain('"profile_preference_export_history"');
     expect(schema).toContain('format: varchar("format", { length: 8 }).notNull()');
     expect(schema).toContain('exportedAt: bigint("exported_at", { mode: "number" }).notNull()');
