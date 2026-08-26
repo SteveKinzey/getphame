@@ -484,6 +484,8 @@ async function startServer() {
                   "'self'",
                   "'unsafe-inline'",
                   "https://manus-analytics.com",
+                  // Cloudflare Web Analytics injects this integrity-protected beacon at the proxied edge.
+                  "https://static.cloudflareinsights.com",
                   // Invisible Turnstile protects genuinely new account creation.
                   "https://challenges.cloudflare.com",
                 ],
