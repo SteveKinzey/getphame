@@ -123,3 +123,14 @@
 - [x] Strengthen export-history schema privacy coverage to prove payloads cannot be persisted alongside metadata.
 - [x] Revalidate the production dependency audit and build after the transient OSV HTTP 403 response.
 - [x] Re-run the complete `pnpm build` command after the recovered OSV audit pass and record its result.
+- [x] Inspect export history, account-deletion, and Settings data-management contracts for safe filtering, receipts, and deletion impact preview.
+- [x] Create and validate a reusable skill for export-history search, portable export receipts, and account-deletion impact previews.
+- [x] Add a tenant-scoped export-history date filter with clear applied and empty states.
+- [x] Add privacy-safe downloadable receipts for the authenticated user’s completed profile-preference exports.
+- [x] Add an account-wide deletion preview that shows the authenticated user’s data impact before final confirmation.
+- [x] Audit and align account deletion with the previewed user-owned data categories so the preview does not omit retained records.
+- [x] Localize deletion-preview category names on the client instead of returning English labels from the protected server response.
+- [x] Add deterministic browser coverage for export-history filtering, metadata-only receipt downloads, and read-only deletion impact preview rendering.
+- [x] Restore full-suite form identifier coverage for the date-filter inputs and document or translate any new English-identical locale values.
+- [x] Resolve the duplicate Drizzle import in export-history filtering that blocked focused regression compilation.
+- [ ] Add regression coverage, validate, release, and synchronize the exact data-management enhancement tree to GitHub main.

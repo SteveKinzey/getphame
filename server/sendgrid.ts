@@ -22,7 +22,7 @@
 import sgMail from "@sendgrid/mail";
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
-import { recordRelayEvent, sendSlackWebhookNotification } from "./relayHealth";
+import { recordRelayEvent, sanitizeRelayDiagnostic, sendSlackWebhookNotification } from "./relayHealth";
 
 export interface SystemEmailOptions {
   to: string;
@@ -76,13 +76,16 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
     } catch (primaryError) {
       const hasSendgrid = Boolean(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey);
       const errorMessage = primaryError instanceof Error ? primaryError.message : "Primary SMTP send failed";
-      const redactedError = errorMessage.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted]");
+      const safeError = sanitizeRelayDiagnostic(errorMessage);
       const recipientDomainMatch = opts.to.match(/@([^>\s,]+)/);
-
+      console.warn("[SystemEmail] Primary SYSTEM_SMTP delivery failed; evaluating configured SendGrid failover", {
+        errorType: primaryError instanceof Error ? primaryError.name : "UnknownError",
+        backupConfigured: hasSendgrid,
+      });
       recordRelayEvent({
         fromProvider: "system_smtp",
         toProvider: hasSendgrid ? "sendgrid" : "none",
-        reason: redactedError,
+        reason: safeError,
         source: "outbound_send",
       });
 
@@ -94,12 +97,12 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
         fields: [
           { title: "Event", value: "Runtime Outbound Send Error" },
           { title: "Recipient Domain", value: recipientDomainMatch?.[1] ?? "unknown" },
-          { title: "Error", value: redactedError.slice(0, 150) },
+          { title: "Error", value: safeError.slice(0, 150) },
           { title: "Timestamp", value: new Date().toUTCString() },
         ],
       }).catch(() => {});
 
-      if (!(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey)) {
+      if (!hasSendgrid) {
         throw primaryError;
       }
       // Fall through to SendGrid backup path below

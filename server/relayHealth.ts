@@ -36,10 +36,19 @@ let lastFailoverAlertAt: number | null = null;
 let lastCheckedAt: number | null = null;
 let lastKnownStatus: RelayHealthState = "healthy";
 
-function boundedCause(value: string): string {
+export function sanitizeRelayDiagnostic(value: string): string {
   const normalized = value.replace(/\s+/g, " ").trim();
-  const redacted = normalized.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted]");
+  const redacted = normalized
+    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted-email]")
+    .replace(/\bhttps?:\/\/[^\s<>"']+/gi, "[redacted-url]")
+    .replace(/\b(api[_-]?key|password|pass|secret|token|code)\s*(?:=|:)\s*(?:bearer\s+)?[A-Za-z0-9_~+\-/=.:-]{8,}/gi, "$1: [redacted]")
+    .replace(/\b(authorization|bearer)\s+(?:bearer\s+)?\S{8,}/gi, "$1 [redacted]")
+    .replace(/\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g, "[redacted-token]");
   return redacted.slice(0, 300) || "Primary SMTP connection verification failed";
+}
+
+function boundedCause(value: string): string {
+  return sanitizeRelayDiagnostic(value);
 }
 
 function asOutageRecord(row: typeof emailRelayOutages.$inferSelect, now = Date.now()): OutageRecord {

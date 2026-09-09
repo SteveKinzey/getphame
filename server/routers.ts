@@ -65,6 +65,7 @@ import {
   listProfilePreferenceExportHistory,
   recordProfilePreferenceExport,
 } from "./profilePreferenceExportHistory";
+import { deleteAccountOwnedData, getAccountDeletionImpact } from "./accountDeletionImpact";
 import { selectOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 import { sendSystemEmail, NOREPLY_FROM } from "./sendgrid";
 import {
@@ -826,6 +827,35 @@ function parseSupportReportDay(value: string, field: "start" | "end"): Date {
   return parsed;
 }
 
+function isValidUtcCalendarDate(value: string): boolean {
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return (
+    parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day
+  );
+}
+
+const profilePreferenceExportHistoryInputSchema = z
+  .object({
+    startDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .refine(isValidUtcCalendarDate, "Use a valid start date.")
+      .optional(),
+    endDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .refine(isValidUtcCalendarDate, "Use a valid end date.")
+      .optional(),
+  })
+  .default({})
+  .refine(
+    input => !input.startDate || !input.endDate || input.startDate <= input.endDate,
+    { message: "Start date must not be after end date" }
+  );
+
 function resolveSupportMetricsRange(input?: SupportMetricsInput) {
   const generatedAt = new Date();
   if (input?.startDate && input.endDate) {
@@ -1287,9 +1317,11 @@ export const appRouter = router({
       });
       return { success: true as const };
     }),
-    exportHistory: protectedProcedure.query(async ({ ctx }) =>
-      listProfilePreferenceExportHistory(ctx.user.id)
-    ),
+    exportHistory: protectedProcedure
+      .input(profilePreferenceExportHistoryInputSchema)
+      .query(async ({ ctx, input }) =>
+        listProfilePreferenceExportHistory(ctx.user.id, input)
+      ),
     recordExport: protectedProcedure
       .input(z.object({ format: z.enum(["json", "csv"]) }))
       .mutation(async ({ ctx, input }) => {
@@ -4441,6 +4473,17 @@ export const appRouter = router({
 
   /** Account self-service: delete all data and the account itself */
   account: router({
+    previewDeletion: protectedProcedure.query(async ({ ctx }) => {
+      try {
+        return await getAccountDeletionImpact(ctx.user.id);
+      } catch (error) {
+        console.warn("[account.previewDeletion] Could not calculate deletion impact:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Deletion preview unavailable",
+        });
+      }
+    }),
     delete: protectedProcedure.mutation(async ({ ctx }) => {
       const db = await getDb();
       if (!db)
@@ -4449,32 +4492,8 @@ export const appRouter = router({
           message: "DB unavailable",
         });
       const uid = ctx.user.id;
-      // Delete all user data in dependency order (children before parents)
-      await db.delete(emailEvents).where(eq(emailEvents.userId, uid));
-      await db
-        .delete(koalendarBookings)
-        .where(eq(koalendarBookings.userId, uid));
-      await db
-        .delete(koalendarConnections)
-        .where(eq(koalendarConnections.userId, uid));
-      await db
-        .delete(followUpReminders)
-        .where(eq(followUpReminders.userId, uid));
-      await db.delete(customerRequests).where(eq(customerRequests.userId, uid));
-      await db.delete(savedContacts).where(eq(savedContacts.userId, uid));
-      await db.delete(emailTemplates).where(eq(emailTemplates.userId, uid));
-      await db.delete(reviewPlatforms).where(eq(reviewPlatforms.userId, uid));
-      await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, uid));
-      await db.delete(wooCustomers).where(eq(wooCustomers.userId, uid));
-      await db.delete(wooCredentials).where(eq(wooCredentials.userId, uid));
-      await db
-        .delete(accessCodeRedemptions)
-        .where(eq(accessCodeRedemptions.userId, uid));
-      await db
-        .delete(stripeSubscriptions)
-        .where(eq(stripeSubscriptions.userId, uid));
-      await db.delete(businessProfiles).where(eq(businessProfiles.userId, uid));
-      await db.delete(gmailTokens).where(eq(gmailTokens.userId, uid));
+      // Keep permanent deletion and its user-facing impact preview on one tenant-scoped scope.
+      await deleteAccountOwnedData(uid);
       // Capture user email/name before deleting the user row
       const deletedUser = ctx.user;
       // Finally delete the user row itself

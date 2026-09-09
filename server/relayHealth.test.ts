@@ -29,6 +29,8 @@ vi.mock("@sendgrid/mail", () => ({
   },
 }));
 
+const originalFetch = globalThis.fetch;
+
 describe("operational email relay failover, slack alerts, and outage durations", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -49,6 +51,10 @@ describe("operational email relay failover, slack alerts, and outage durations",
 
     const { resetRelayHealthState } = await import("./relayHealth");
     resetRelayHealthState();
+  });
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
   });
 
   it("reports healthy when primary SMTP succeeds and skips Slack alert", async () => {
@@ -143,7 +149,7 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SENDGRID_API_KEY = "SG.mock_key";
     process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/RUNTIME/000";
 
-    mocks.sendMailMock.mockRejectedValueOnce(new Error("Network connection lost"));
+    mocks.sendMailMock.mockRejectedValueOnce(new Error("Network connection lost for customer@example.com via https://smtp.example.test/trace?token=secret-value password=correct-horse-battery-staple"));
     mocks.sendMock.mockResolvedValueOnce([{ statusCode: 202 }, {}]);
 
     const { sendSystemEmail } = await import("./sendgrid");
@@ -161,22 +167,43 @@ describe("operational email relay failover, slack alerts, and outage durations",
     const [, callOptions] = mocks.fetchMock.mock.calls[0];
     const payload = JSON.parse(callOptions.body);
     expect(payload.attachments[0].title).toContain("Outbound Email Failed Over to SendGrid");
+    const slackError = payload.attachments[0].fields.find((field: { title: string }) => field.title === "Error")?.value;
+    expect(slackError).not.toContain("customer@example.com");
+    expect(slackError).not.toContain("smtp.example.test");
+    expect(slackError).not.toContain("correct-horse-battery-staple");
 
     const events = getRecentFailoverEvents(1);
     expect(events[0].fromProvider).toBe("system_smtp");
     expect(events[0].toProvider).toBe("sendgrid");
+    expect(events[0].reason).not.toContain("customer@example.com");
   });
 
-  it("caps in-memory outage history when database is unavailable", async () => {
+  it("redacts email addresses, URLs, credential values, and bearer tokens from diagnostics", async () => {
+    const { sanitizeRelayDiagnostic } = await import("./relayHealth");
+    const safe = sanitizeRelayDiagnostic(
+      "Authentication failed for owner@getphame.app at https://smtp.example.test/debug?trace=1; password=correct-horse-battery-staple; Bearer abcdefghijklmnop"
+    );
+
+    expect(safe).toContain("[redacted-email]");
+    expect(safe).toContain("[redacted-url]");
+    expect(safe).toContain("password: [redacted]");
+    expect(safe).toContain("Bearer [redacted]");
+    expect(safe).not.toContain("owner@getphame.app");
+    expect(safe).not.toContain("smtp.example.test");
+    expect(safe).not.toContain("correct-horse-battery-staple");
+    expect(safe).not.toContain("abcdefghijklmnop");
+  });
+
+  it("caps in-memory outage history when the database is unavailable", async () => {
     const { startRelayOutage, resolveActiveRelayOutage, getOutageHistory } = await import("./relayHealth");
 
-    for (let i = 0; i < 25; i++) {
-      const startedAt = Date.now() + i;
-      await startRelayOutage(`Outage ${i}`, "heartbeat_check", startedAt);
+    for (let index = 0; index < 25; index += 1) {
+      const startedAt = Date.now() + index;
+      await startRelayOutage(`Outage ${index}`, "heartbeat_check", startedAt);
       await resolveActiveRelayOutage(startedAt + 60_000);
     }
 
     const history = await getOutageHistory(50);
-    expect(history.length).toBe(20);
+    expect(history).toHaveLength(20);
   });
 });
