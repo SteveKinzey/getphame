@@ -37,7 +37,9 @@ let lastCheckedAt: number | null = null;
 let lastKnownStatus: RelayHealthState = "healthy";
 
 function boundedCause(value: string): string {
-  return value.replace(/\s+/g, " ").trim().slice(0, 300) || "Primary SMTP connection verification failed";
+  const normalized = value.replace(/\s+/g, " ").trim();
+  const redacted = normalized.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[redacted]");
+  return redacted.slice(0, 300) || "Primary SMTP connection verification failed";
 }
 
 function asOutageRecord(row: typeof emailRelayOutages.$inferSelect, now = Date.now()): OutageRecord {
