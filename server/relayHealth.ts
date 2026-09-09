@@ -285,7 +285,8 @@ export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
     if (activeFailoverIncident) {
       activeFailoverIncident = false;
       alertType = "recovery";
-      recordRelayEvent({ fromProvider: "sendgrid", toProvider: "system_smtp", reason: "Primary SYSTEM_SMTP transport verified healthy. Traffic restored to primary relay.", source: "heartbeat_check" });
+      const recoveredFrom: RelayProvider = lastKnownStatus === "degraded" ? "none" : "sendgrid";
+      recordRelayEvent({ fromProvider: recoveredFrom, toProvider: "system_smtp", reason: "Primary SYSTEM_SMTP transport verified healthy. Traffic restored to primary relay.", source: "heartbeat_check" });
       const outage = await resolveActiveRelayOutage(startedAt);
       try {
         transitionAlertSent = await notifyOwner({
