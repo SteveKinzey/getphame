@@ -4970,7 +4970,29 @@
       "durationResolved": "Durata risolta",
       "recentEvents": "Eventi di failover recenti",
       "lastChecked": "Ultimo controllo {{time}}",
-      "noEvents": "Nessun evento di failover registrato. Tutto il traffico operativo è stato inviato normalmente tramite il relay primario."
+      "noEvents": "Nessun evento di failover registrato. Tutto il traffico operativo è stato inviato normalmente tramite il relay primario.",
+      "slackTest": "Invia avviso di prova Slack",
+      "slackTesting": "Invio prova Slack…",
+      "slackTestSuccess": "Avviso di prova Slack consegnato.",
+      "slackTestFallback": "Slack non ha confermato la consegna; è stata inviata l’e-mail di riserva al proprietario.",
+      "slackTestFailure": "Slack non ha confermato la consegna e l’e-mail di riserva non era disponibile.",
+      "diagnosticsTitle": "Ultime 10 diagnostiche heartbeat sanificate",
+      "diagnosticsCaption": "Solo stato tecnico. Risposte del provider, credenziali, destinatari, token e URL sono rimossi in modo permanente.",
+      "diagnosticsEmpty": "Non è stata ancora registrata alcuna diagnostica heartbeat.",
+      "source": "Origine",
+      "sourceScheduled": "Heartbeat pianificato",
+      "sourceManual": "Controllo amministratore",
+      "statusHealthy": "Operativo",
+      "statusFailover": "Failover attivo",
+      "statusDegraded": "Degradato",
+      "statusUnconfigured": "Non configurato",
+      "relay": "Inoltro",
+      "duration": "Durata della prova",
+      "alertDelivery": "Consegna dell’avviso",
+      "alertDelivered": "Slack consegnato",
+      "alertFallbackDelivered": "E-mail di riserva consegnata",
+      "alertNotSent": "Nessuna consegna dell’avviso confermata",
+      "sanitizedDiagnostic": "Diagnostica sanificata"
     }
   }
 }

@@ -4730,7 +4730,29 @@
       "durationResolved": "Duración resuelta",
       "recentEvents": "Eventos recientes de conmutación",
       "lastChecked": "Última comprobación {{time}}",
-      "noEvents": "No se registraron eventos de conmutación. Todo el tráfico operativo se ha enviado normalmente mediante el relé principal."
+      "noEvents": "No se registraron eventos de conmutación. Todo el tráfico operativo se ha enviado normalmente mediante el relé principal.",
+      "slackTest": "Enviar alerta de prueba de Slack",
+      "slackTesting": "Enviando prueba de Slack…",
+      "slackTestSuccess": "Alerta de prueba de Slack entregada.",
+      "slackTestFallback": "Slack no confirmó la entrega; se envió el correo alternativo al propietario.",
+      "slackTestFailure": "Slack no confirmó la entrega y el correo alternativo no estuvo disponible.",
+      "diagnosticsTitle": "Últimos 10 diagnósticos de latido depurados",
+      "diagnosticsCaption": "Solo estado técnico. Las respuestas del proveedor, credenciales, destinatarios, tokens y URL se eliminan permanentemente.",
+      "diagnosticsEmpty": "Aún no se registraron diagnósticos de latido.",
+      "source": "Origen",
+      "sourceScheduled": "Latido programado",
+      "sourceManual": "Comprobación del administrador",
+      "statusHealthy": "En buen estado",
+      "statusFailover": "Conmutación activa",
+      "statusDegraded": "Degradado",
+      "statusUnconfigured": "Sin configurar",
+      "relay": "Relé",
+      "duration": "Duración de prueba",
+      "alertDelivery": "Entrega de alerta",
+      "alertDelivered": "Slack entregado",
+      "alertFallbackDelivered": "Correo alternativo entregado",
+      "alertNotSent": "No se confirmó la entrega de alerta",
+      "sanitizedDiagnostic": "Diagnóstico depurado"
     }
   }
 }

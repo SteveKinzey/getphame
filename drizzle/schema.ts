@@ -383,6 +383,34 @@ export type EmailRelayOutage = typeof emailRelayOutages.$inferSelect;
 export type InsertEmailRelayOutage = typeof emailRelayOutages.$inferInsert;
 
 /**
+ * Bounded, privacy-safe email relay heartbeat observations for administrator
+ * troubleshooting. Raw provider output, recipients, and credentials are never stored.
+ */
+export const emailRelayDiagnostics = pgTable(
+  "email_relay_diagnostics",
+  {
+    id: serial("id").primaryKey(),
+    checkedAt: bigint("checked_at", { mode: "number" }).notNull(),
+    source: varchar("source", { length: 32 }).notNull(),
+    status: varchar("status", { length: 32 }).notNull(),
+    activeRelay: varchar("active_relay", { length: 32 }).notNull(),
+    primaryHealthy: boolean("primary_healthy").notNull(),
+    backupConfigured: boolean("backup_configured").notNull(),
+    durationMs: integer("duration_ms").notNull(),
+    alertType: varchar("alert_type", { length: 16 }),
+    slackAlertSent: boolean("slack_alert_sent").notNull().default(false),
+    emailFallbackAttempted: boolean("email_fallback_attempted").notNull().default(false),
+    emailFallbackDelivered: boolean("email_fallback_delivered").notNull().default(false),
+    diagnostic: varchar("diagnostic", { length: 300 }).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  table => [index("email_relay_diagnostics_checked_idx").on(table.checkedAt)]
+);
+
+export type EmailRelayDiagnostic = typeof emailRelayDiagnostics.$inferSelect;
+export type InsertEmailRelayDiagnostic = typeof emailRelayDiagnostics.$inferInsert;
+
+/**
  * Sanitized production-route audit outcomes triggered by administrators. The
  * findings payload contains only route paths, aggregate browser signal counts,
  * and render metrics; it deliberately excludes cookies, page markup, request

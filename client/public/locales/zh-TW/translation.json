@@ -4241,7 +4241,29 @@
       "durationResolved": "已解決時長",
       "recentEvents": "最近的容錯移轉事件",
       "lastChecked": "上次檢查 {{time}}",
-      "noEvents": "尚未記錄容錯移轉事件。所有營運流量皆透過主要中繼正常傳送。"
+      "noEvents": "尚未記錄容錯移轉事件。所有營運流量皆透過主要中繼正常傳送。",
+      "slackTest": "傳送 Slack 測試警示",
+      "slackTesting": "正在傳送 Slack 測試…",
+      "slackTestSuccess": "Slack 測試警示已送達。",
+      "slackTestFallback": "Slack 未確認送達；已向擁有者傳送備援電子郵件。",
+      "slackTestFailure": "Slack 未確認送達，且備援電子郵件無法使用。",
+      "diagnosticsTitle": "最近 10 筆已去識別化心跳診斷",
+      "diagnosticsCaption": "僅顯示技術狀態。供應商回應、認證資訊、收件者、權杖與 URL 已永久去識別化。",
+      "diagnosticsEmpty": "尚未記錄心跳診斷。",
+      "source": "來源",
+      "sourceScheduled": "排程心跳",
+      "sourceManual": "管理員檢查",
+      "statusHealthy": "正常",
+      "statusFailover": "容錯移轉已啟用",
+      "statusDegraded": "效能降低",
+      "statusUnconfigured": "未設定",
+      "relay": "中繼",
+      "duration": "探測時間",
+      "alertDelivery": "警示投遞",
+      "alertDelivered": "Slack 已送達",
+      "alertFallbackDelivered": "備援電子郵件已送達",
+      "alertNotSent": "未確認警示投遞",
+      "sanitizedDiagnostic": "已去識別化診斷"
     }
   }
 }

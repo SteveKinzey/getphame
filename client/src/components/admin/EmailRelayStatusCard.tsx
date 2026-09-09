@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
-import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, Clock, Bell, Activity } from "lucide-react";
+import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, Clock, Bell, BellRing, Activity, FileText } from "lucide-react";
 import { toast } from "sonner";
 import {
   BarChart,
@@ -28,6 +28,22 @@ export function EmailRelayStatusCard() {
         toast.warning(t("admin.emailRelay.primaryUnreachableToast"));
       } else {
         toast.error(t("admin.emailRelay.diagnosticFailureToast", { message: res.status }));
+      }
+      refetch();
+    },
+    onError: (err) => {
+      toast.error(t("admin.emailRelay.diagnosticFailureToast", { message: err.message }));
+    },
+  });
+
+  const testSlackWebhook = trpc.admin.testRelaySlackWebhook.useMutation({
+    onSuccess: (res) => {
+      if (res.slackDelivered) {
+        toast.success(t("admin.emailRelay.slackTestSuccess"));
+      } else if (res.emailFallbackDelivered) {
+        toast.warning(t("admin.emailRelay.slackTestFallback"));
+      } else {
+        toast.error(t("admin.emailRelay.slackTestFailure"));
       }
       refetch();
     },
@@ -123,15 +139,26 @@ export function EmailRelayStatusCard() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => triggerHeartbeat.mutate()}
-          disabled={triggerHeartbeat.isPending || isLoading}
-          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95 disabled:opacity-50"
-        >
-          <RefreshCw size={14} className={triggerHeartbeat.isPending ? "animate-spin" : ""} />
-          {triggerHeartbeat.isPending ? t("admin.emailRelay.testing") : t("admin.emailRelay.check")}
-        </button>
+        <div className="flex flex-wrap gap-2 sm:justify-end">
+          <button
+            type="button"
+            onClick={() => testSlackWebhook.mutate()}
+            disabled={testSlackWebhook.isPending || isLoading}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-2 text-xs font-bold text-purple-800 shadow-sm transition hover:bg-purple-100 active:scale-95 disabled:opacity-50"
+          >
+            <BellRing size={14} className={testSlackWebhook.isPending ? "animate-pulse" : ""} />
+            {testSlackWebhook.isPending ? t("admin.emailRelay.slackTesting") : t("admin.emailRelay.slackTest")}
+          </button>
+          <button
+            type="button"
+            onClick={() => triggerHeartbeat.mutate()}
+            disabled={triggerHeartbeat.isPending || isLoading}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95 disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={triggerHeartbeat.isPending ? "animate-spin" : ""} />
+            {triggerHeartbeat.isPending ? t("admin.emailRelay.testing") : t("admin.emailRelay.check")}
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -298,6 +325,68 @@ export function EmailRelayStatusCard() {
               </div>
             )}
           </div>
+
+          {/* Last ten sanitized heartbeat diagnostics. Never renders raw provider output. */}
+          <details className="rounded-xl border border-slate-200/80 bg-white/80 p-3 shadow-xs">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-600 outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
+              <span className="flex items-center gap-2">
+                <FileText size={14} className="text-slate-500" />
+                {t("admin.emailRelay.diagnosticsTitle")}
+              </span>
+              <span className="text-[11px] font-medium normal-case tracking-normal text-slate-400">
+                {relayStatus?.recentDiagnostics?.length ?? 0}/10
+              </span>
+            </summary>
+            <p className="mt-2 text-[11px] font-semibold text-slate-500">
+              {t("admin.emailRelay.diagnosticsCaption")}
+            </p>
+
+            {(!relayStatus?.recentDiagnostics || relayStatus.recentDiagnostics.length === 0) ? (
+              <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-500">
+                {t("admin.emailRelay.diagnosticsEmpty")}
+              </p>
+            ) : (
+              <ol className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-100 bg-white">
+                {relayStatus.recentDiagnostics.map((item) => {
+                  const sourceLabel = item.source === "scheduled_heartbeat"
+                    ? t("admin.emailRelay.sourceScheduled")
+                    : t("admin.emailRelay.sourceManual");
+                  const statusLabel = item.status === "healthy"
+                    ? t("admin.emailRelay.statusHealthy")
+                    : item.status === "failover"
+                      ? t("admin.emailRelay.statusFailover")
+                      : item.status === "degraded"
+                        ? t("admin.emailRelay.statusDegraded")
+                        : t("admin.emailRelay.statusUnconfigured");
+                  const alertLabel = item.slackAlertSent
+                    ? t("admin.emailRelay.alertDelivered")
+                    : item.emailFallbackDelivered
+                      ? t("admin.emailRelay.alertFallbackDelivered")
+                      : t("admin.emailRelay.alertNotSent");
+                  return (
+                    <li key={item.id} className="p-3 text-xs">
+                      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                        <span className="font-bold text-slate-800">{statusLabel}</span>
+                        <time className="text-[11px] font-medium text-slate-400">
+                          {new Date(item.checkedAt).toLocaleString()}
+                        </time>
+                      </div>
+                      <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-slate-600 sm:grid-cols-4">
+                        <div><dt className="sr-only">{t("admin.emailRelay.source")}</dt><dd>{sourceLabel}</dd></div>
+                        <div><dt className="sr-only">{t("admin.emailRelay.relay")}</dt><dd>{item.activeRelay.toUpperCase()}</dd></div>
+                        <div><dt className="sr-only">{t("admin.emailRelay.duration")}</dt><dd>{item.durationMs} ms</dd></div>
+                        <div><dt className="sr-only">{t("admin.emailRelay.alertDelivery")}</dt><dd>{alertLabel}</dd></div>
+                      </dl>
+                      <p className="mt-2 break-words rounded-md bg-slate-50 px-2.5 py-2 font-mono text-[11px] leading-5 text-slate-600">
+                        <span className="font-sans font-semibold text-slate-500">{t("admin.emailRelay.sanitizedDiagnostic")}: </span>
+                        {item.diagnostic}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </details>
         </div>
       )}
     </section>

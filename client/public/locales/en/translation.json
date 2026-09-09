@@ -4679,7 +4679,29 @@
       "durationResolved": "Resolved Duration",
       "recentEvents": "Recent Failover Events",
       "lastChecked": "Last checked {{time}}",
-      "noEvents": "No failover events recorded. All operational traffic has dispatched normally through the primary relay."
+      "noEvents": "No failover events recorded. All operational traffic has dispatched normally through the primary relay.",
+      "slackTest": "Send Slack test alert",
+      "slackTesting": "Sending Slack test…",
+      "slackTestSuccess": "Slack test alert delivered.",
+      "slackTestFallback": "Slack did not confirm delivery; the owner email fallback was sent.",
+      "slackTestFailure": "Slack did not confirm delivery and the email fallback was unavailable.",
+      "diagnosticsTitle": "Last 10 Sanitized Heartbeat Diagnostics",
+      "diagnosticsCaption": "Technical state only. Provider responses, credentials, recipients, tokens, and URLs are permanently redacted.",
+      "diagnosticsEmpty": "No heartbeat diagnostics have been recorded yet.",
+      "source": "Source",
+      "sourceScheduled": "Scheduled heartbeat",
+      "sourceManual": "Administrator check",
+      "statusHealthy": "Healthy",
+      "statusFailover": "Failover active",
+      "statusDegraded": "Degraded",
+      "statusUnconfigured": "Unconfigured",
+      "relay": "Relay",
+      "duration": "Probe duration",
+      "alertDelivery": "Alert delivery",
+      "alertDelivered": "Slack delivered",
+      "alertFallbackDelivered": "Email fallback delivered",
+      "alertNotSent": "No alert delivery confirmed",
+      "sanitizedDiagnostic": "Sanitized diagnostic"
     }
   }
 }

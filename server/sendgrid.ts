@@ -23,6 +23,7 @@ import sgMail from "@sendgrid/mail";
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
 import { recordRelayEvent, sanitizeRelayDiagnostic, sendSlackWebhookNotification } from "./relayHealth";
+import { sendRelayAlertEmailFallback } from "./relayAlertEmail";
 
 export interface SystemEmailOptions {
   to: string;
@@ -31,6 +32,8 @@ export interface SystemEmailOptions {
   text?: string;
   from?: string;   // explicit override; prefer the helpers below
   replyTo?: string;
+  /** Internal incident fallback delivery only; prevents recursive alert escalation. */
+  suppressRelayAlert?: boolean;
 }
 
 /** Transactional sender — magic links, auth, account deletion, welcome. */
@@ -89,18 +92,31 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
         source: "outbound_send",
       });
 
-      sendSlackWebhookNotification({
-        title: hasSendgrid
-          ? "⚠️ Get Phame: Outbound Email Failed Over to SendGrid"
-          : "🚨 Get Phame: Outbound Email Failed (No SendGrid Backup)",
-        color: hasSendgrid ? "#f59e0b" : "#e11d48",
-        fields: [
-          { title: "Event", value: "Runtime Outbound Send Error" },
-          { title: "Recipient Domain", value: recipientDomainMatch?.[1] ?? "unknown" },
-          { title: "Error", value: safeError.slice(0, 150) },
-          { title: "Timestamp", value: new Date().toUTCString() },
-        ],
-      }).catch(() => {});
+      if (!opts.suppressRelayAlert) {
+        const checkedAt = Date.now();
+        const slackDelivered = await sendSlackWebhookNotification({
+          title: hasSendgrid
+            ? "⚠️ Get Phame: Outbound Email Failed Over to SendGrid"
+            : "🚨 Get Phame: Outbound Email Failed (No SendGrid Backup)",
+          color: hasSendgrid ? "#f59e0b" : "#e11d48",
+          fields: [
+            { title: "Event", value: "Runtime Outbound Send Error" },
+            { title: "Recipient Domain", value: recipientDomainMatch?.[1] ?? "unknown" },
+            { title: "Error", value: safeError.slice(0, 150) },
+            { title: "Timestamp", value: new Date(checkedAt).toUTCString() },
+          ],
+        });
+
+        if (!slackDelivered) {
+          await sendRelayAlertEmailFallback({
+            event: "failure",
+            activeRelay: hasSendgrid ? "sendgrid" : "none",
+            checkedAt,
+            source: "outbound_send",
+            diagnostic: safeError,
+          });
+        }
+      }
 
       if (!hasSendgrid) {
         throw primaryError;
