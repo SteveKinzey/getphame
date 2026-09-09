@@ -1,3 +1,4 @@
+import { runRelayHeartbeatCheck, getCurrentRelaySummary } from "./relayHealth";
 import { z } from "zod";
 import { COOKIE_NAME, FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { getEffectiveTier } from "@shared/plans";
@@ -5011,6 +5012,13 @@ export const appRouter = router({
     /** Platform-wide reminder timing attribution for administrator operations. */
     reminderPerformance: adminProcedure.query(async () => {
       return getReminderTimingPerformance();
+    }),
+
+    relayHealthStatus: adminProcedure.query(async () => {
+      return getCurrentRelaySummary();
+    }),
+    triggerRelayHeartbeat: adminProcedure.mutation(async () => {
+      return runRelayHeartbeatCheck();
     }),
 
     /** Durable 24-hour SMTP and authentication health observations. */
