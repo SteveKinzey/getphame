@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+const originalFetch = globalThis.fetch;
 
 const mocks = vi.hoisted(() => ({
   notifyOwner: vi.fn(),
@@ -8,6 +10,10 @@ const mocks = vi.hoisted(() => ({
   setApiKeyMock: vi.fn(),
   fetchMock: vi.fn(),
 }));
+
+afterAll(() => {
+  globalThis.fetch = originalFetch as any;
+});
 
 vi.mock("./_core/notification", () => ({
   notifyOwner: mocks.notifyOwner,
