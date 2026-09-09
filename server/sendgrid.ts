@@ -75,16 +75,20 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
       return;
     } catch (primaryError) {
       console.warn("[SystemEmail] Primary SYSTEM_SMTP delivery failed, attempting SendGrid failover:", primaryError);
+      const sendgridConfigured = Boolean(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey);
+
       recordRelayEvent({
         fromProvider: "system_smtp",
-        toProvider: (process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey) ? "sendgrid" : "none",
+        toProvider: sendgridConfigured ? "sendgrid" : "none",
         reason: primaryError instanceof Error ? primaryError.message : "Primary SMTP send failed",
         source: "outbound_send",
       });
 
-      sendSlackWebhookNotification({
-        title: "⚠️ Get Phame: Outbound Email Failed Over to SendGrid",
-        color: "#f59e0b",
+      void sendSlackWebhookNotification({
+        title: sendgridConfigured
+          ? "⚠️ Get Phame: Outbound Email Failed Over to SendGrid"
+          : "🚨 Get Phame: Outbound Email Failed (No Backup Relay)",
+        color: sendgridConfigured ? "#f59e0b" : "#e11d48",
         fields: [
           { title: "Event", value: "Runtime Outbound Send Error" },
           { title: "Recipient Domain", value: opts.to.split("@")[1] || "unknown" },
@@ -93,10 +97,9 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
         ],
       }).catch(() => {});
 
-      if (!(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey)) {
+      if (!sendgridConfigured) {
         throw primaryError;
       }
-      // Fall through to SendGrid backup path below
     }
   }
 
