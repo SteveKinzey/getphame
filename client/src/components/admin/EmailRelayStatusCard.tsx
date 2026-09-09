@@ -24,7 +24,8 @@ export function EmailRelayStatusCard() {
     },
   });
 
-  const isHealthy = relayStatus?.lastKnownStatus === "healthy";
+  const hasChecked = Boolean(relayStatus?.lastCheckedAt);
+  const isHealthy = hasChecked && relayStatus?.lastKnownStatus === "healthy";
   const isFailover = relayStatus?.lastKnownStatus === "failover" || relayStatus?.activeFailoverIncident;
   const isUnconfigured = relayStatus?.lastKnownStatus === "unconfigured";
 
