@@ -28,6 +28,7 @@ describe("public media durability", () => {
   it("keeps the authorized storage proxy for private and user-uploaded objects", () => {
     const storageProxy = readProjectFile("./_core/storageProxy.ts");
 
+    expect(storageProxy).toContain('app.get(["/manus-storage", "/manus-storage/"]');
     expect(storageProxy).toContain('app.get("/manus-storage/*key"');
     expect(storageProxy).toContain("Authorization: `Bearer ${ENV.forgeApiKey}`");
     expect(storageProxy).toContain('res.set("Cache-Control", "no-store")');
