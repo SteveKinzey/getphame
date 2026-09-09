@@ -75,6 +75,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { EmailRelayStatusCard } from "@/components/admin/EmailRelayStatusCard";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -1790,6 +1791,7 @@ export default function AdminDashboard() {
 
             {/* ── Lead Capture List ─────────────────────────────────────────── */}
             <ConsentHealthBanner />
+            <EmailRelayStatusCard />
             <ReleaseParityCard />
             <LeadsSection />
 

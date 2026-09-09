@@ -22,6 +22,7 @@
 import sgMail from "@sendgrid/mail";
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
+import { recordRelayEvent } from "./relayHealth";
 
 export interface SystemEmailOptions {
   to: string;
@@ -54,28 +55,44 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
   const hasSystemSmtp = Boolean(host && user && pass && Number.isFinite(port));
 
   if (hasSystemSmtp && host && user && pass) {
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465,
-      auth: { user, pass },
-      tls: { rejectUnauthorized: process.env.ALLOW_INSECURE_SMTP_TLS !== "true" },
-    });
+    try {
+      const transporter = nodemailer.createTransport({
+        host,
+        port,
+        secure: port === 465,
+        auth: { user, pass },
+        tls: { rejectUnauthorized: process.env.ALLOW_INSECURE_SMTP_TLS !== "true" },
+      });
 
-    await transporter.sendMail({
-      from: fromDisplay,
-      replyTo: opts.replyTo ?? fromEmail,
-      to: opts.to,
-      subject: opts.subject,
-      html: opts.html,
-      text: opts.text ?? stripHtml(opts.html),
-    });
-    return;
+      await transporter.sendMail({
+        from: fromDisplay,
+        replyTo: opts.replyTo ?? fromEmail,
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+        text: opts.text ?? stripHtml(opts.html),
+      });
+      return;
+    } catch (primaryError) {
+      console.warn("[SystemEmail] Primary SYSTEM_SMTP delivery failed, attempting SendGrid failover:", primaryError);
+      recordRelayEvent({
+        fromProvider: "system_smtp",
+        toProvider: (process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey) ? "sendgrid" : "none",
+        reason: primaryError instanceof Error ? primaryError.message : "Primary SMTP send failed",
+        source: "outbound_send",
+      });
+
+      if (!(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey)) {
+        throw primaryError;
+      }
+      // Fall through to SendGrid backup path below
+    }
   }
 
   // ── 2. Backup path: SendGrid API failover ──────────────────────────────
-  if (ENV.sendgridApiKey) {
-    sgMail.setApiKey(ENV.sendgridApiKey);
+  const sendgridKey = process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey;
+  if (sendgridKey) {
+    sgMail.setApiKey(sendgridKey);
     await sgMail.send({
       to: opts.to,
       from: fromDisplay,

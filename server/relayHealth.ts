@@ -1,0 +1,285 @@
+import nodemailer from "nodemailer";
+import { notifyOwner } from "./_core/notification";
+import { ENV } from "./_core/env";
+
+export type RelayProvider = "system_smtp" | "sendgrid" | "none";
+export type RelayHealthState = "healthy" | "failover" | "degraded" | "unconfigured";
+
+export interface FailoverEvent {
+  id: string;
+  timestamp: number;
+  fromProvider: RelayProvider;
+  toProvider: RelayProvider;
+  reason: string;
+  source: string; // e.g. "outbound_send" | "heartbeat_check"
+}
+
+// In-memory ring buffer of recent failover and relay health events (up to 50 entries)
+const MAX_FAILOVER_HISTORY = 50;
+const failoverHistory: FailoverEvent[] = [];
+
+// Track consecutive primary failures and active alert state
+let activeFailoverIncident = false;
+let lastFailoverAlertAt: number | null = null;
+let lastCheckedAt: number | null = null;
+let lastKnownStatus: RelayHealthState = "healthy";
+
+/**
+ * Reset module state for tests or clean restarts
+ */
+export function resetRelayHealthState() {
+  activeFailoverIncident = false;
+  lastFailoverAlertAt = null;
+  lastCheckedAt = null;
+  lastKnownStatus = "healthy";
+  failoverHistory.length = 0;
+}
+
+/**
+ * Record a relay event or failover transition
+ */
+export function recordRelayEvent(event: Omit<FailoverEvent, "id" | "timestamp">): FailoverEvent {
+  const fullEvent: FailoverEvent = {
+    ...event,
+    id: `fe_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
+    timestamp: Date.now(),
+  };
+
+  failoverHistory.unshift(fullEvent);
+  if (failoverHistory.length > MAX_FAILOVER_HISTORY) {
+    failoverHistory.pop();
+  }
+  return fullEvent;
+}
+
+/**
+ * Get recent failover events
+ */
+export function getRecentFailoverEvents(limit = 10): FailoverEvent[] {
+  return failoverHistory.slice(0, Math.min(limit, MAX_FAILOVER_HISTORY));
+}
+
+/**
+ * Inspect environment configuration for relay channels
+ */
+export function getRelayConfigStatus() {
+  const host = process.env.SYSTEM_SMTP_HOST;
+  const user = process.env.SYSTEM_SMTP_USER;
+  const pass = process.env.SYSTEM_SMTP_PASS;
+  const port = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "587", 10);
+  const hasSystemSmtp = Boolean(host && user && pass && Number.isFinite(port));
+  const hasSendGrid = Boolean(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey);
+
+  return {
+    primaryConfigured: hasSystemSmtp,
+    primaryHost: host ?? null,
+    primaryPort: Number.isFinite(port) ? port : null,
+    backupConfigured: hasSendGrid,
+  };
+}
+
+/**
+ * Probe primary SYSTEM_SMTP connection without sending mail
+ */
+export async function probePrimarySmtp(): Promise<{ ok: boolean; error?: string; durationMs: number }> {
+  const host = process.env.SYSTEM_SMTP_HOST;
+  const user = process.env.SYSTEM_SMTP_USER;
+  const pass = process.env.SYSTEM_SMTP_PASS;
+  const port = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "587", 10);
+
+  if (!host || !user || !pass || !Number.isFinite(port)) {
+    return { ok: false, error: "SYSTEM_SMTP_* credentials not configured", durationMs: 0 };
+  }
+
+  const startedAt = Date.now();
+  try {
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
+      tls: { rejectUnauthorized: process.env.ALLOW_INSECURE_SMTP_TLS !== "true" },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+    });
+
+    await transporter.verify();
+    return { ok: true, durationMs: Date.now() - startedAt };
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : "SMTP connection rejected";
+    return { ok: false, error: errorMsg, durationMs: Date.now() - startedAt };
+  }
+}
+
+export interface RelayHeartbeatResult {
+  checkedAt: number;
+  status: RelayHealthState;
+  activeRelay: RelayProvider;
+  primaryHealthy: boolean;
+  backupConfigured: boolean;
+  primaryError?: string | null;
+  durationMs: number;
+  transitionAlertSent: boolean;
+  alertType?: "failure" | "recovery" | null;
+}
+
+/**
+ * Run diagnostic check on email relays and alert administrator on failover transitions
+ */
+export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
+  const startedAt = Date.now();
+  const config = getRelayConfigStatus();
+  lastCheckedAt = startedAt;
+
+  if (!config.primaryConfigured && !config.backupConfigured) {
+    lastKnownStatus = "unconfigured";
+    return {
+      checkedAt: startedAt,
+      status: "unconfigured",
+      activeRelay: "none",
+      primaryHealthy: false,
+      backupConfigured: false,
+      primaryError: "Neither primary SYSTEM_SMTP nor backup SendGrid are configured",
+      durationMs: 0,
+      transitionAlertSent: false,
+      alertType: null,
+    };
+  }
+
+  if (!config.primaryConfigured && config.backupConfigured) {
+    // Operating in SendGrid-only mode
+    lastKnownStatus = "failover";
+    return {
+      checkedAt: startedAt,
+      status: "failover",
+      activeRelay: "sendgrid",
+      primaryHealthy: false,
+      backupConfigured: true,
+      primaryError: "SYSTEM_SMTP_* not configured; running on backup SendGrid relay",
+      durationMs: 0,
+      transitionAlertSent: false,
+      alertType: null,
+    };
+  }
+
+  // Probe primary SMTP
+  const probe = await probePrimarySmtp();
+  let status: RelayHealthState = "healthy";
+  let activeRelay: RelayProvider = "system_smtp";
+  let alertType: "failure" | "recovery" | null = null;
+  let transitionAlertSent = false;
+
+  if (probe.ok) {
+    status = "healthy";
+    activeRelay = "system_smtp";
+
+    if (activeFailoverIncident) {
+      // Recovery transition!
+      activeFailoverIncident = false;
+      alertType = "recovery";
+
+      recordRelayEvent({
+        fromProvider: "sendgrid",
+        toProvider: "system_smtp",
+        reason: "Primary SYSTEM_SMTP transport verified healthy. Traffic restored to primary relay.",
+        source: "heartbeat_check",
+      });
+
+      try {
+        transitionAlertSent = await notifyOwner({
+          title: "Get Phame: Operational email primary relay recovered",
+          content: [
+            "Primary SYSTEM_SMTP relay connection has been verified healthy.",
+            `Host: ${config.primaryHost}`,
+            `Verified at: ${new Date(startedAt).toISOString()}`,
+            "Operational emails have returned to the primary transport.",
+            "Review: /admin",
+          ].join("\n"),
+        });
+      } catch (e) {
+        console.warn("[RelayHealth] Failed to send recovery alert:", e);
+      }
+    }
+  } else {
+    // Primary failed!
+    const failReason = probe.error || "Primary SMTP connection verification failed";
+
+    if (config.backupConfigured) {
+      status = "failover";
+      activeRelay = "sendgrid";
+    } else {
+      status = "degraded";
+      activeRelay = "none";
+    }
+
+    if (!activeFailoverIncident) {
+      // New failover incident!
+      activeFailoverIncident = true;
+      lastFailoverAlertAt = startedAt;
+      alertType = "failure";
+
+      recordRelayEvent({
+        fromProvider: "system_smtp",
+        toProvider: config.backupConfigured ? "sendgrid" : "none",
+        reason: failReason,
+        source: "heartbeat_check",
+      });
+
+      try {
+        transitionAlertSent = await notifyOwner({
+          title: config.backupConfigured
+            ? "Get Phame: Operational email failed over to SendGrid backup"
+            : "Get Phame: Operational email primary relay failed (No backup)",
+          content: [
+            "Primary SYSTEM_SMTP relay connection failed verification.",
+            `Host: ${config.primaryHost}`,
+            `Error: ${failReason}`,
+            `Status: ${config.backupConfigured ? "Shifted traffic to SendGrid backup failover" : "Outbound operational emails may fail"}`,
+            `Detected at: ${new Date(startedAt).toISOString()}`,
+            "Review: /admin",
+          ].join("\n"),
+        });
+      } catch (e) {
+        console.warn("[RelayHealth] Failed to send failover alert:", e);
+      }
+    }
+  }
+
+  lastKnownStatus = status;
+
+  return {
+    checkedAt: startedAt,
+    status,
+    activeRelay,
+    primaryHealthy: probe.ok,
+    backupConfigured: config.backupConfigured,
+    primaryError: probe.ok ? null : probe.error,
+    durationMs: probe.durationMs,
+    transitionAlertSent,
+    alertType,
+  };
+}
+
+/**
+ * Get current relay status for the admin dashboard
+ */
+export async function getCurrentRelaySummary() {
+  const config = getRelayConfigStatus();
+  const derivedStatus: RelayHealthState = lastCheckedAt
+    ? lastKnownStatus
+    : config.primaryConfigured
+      ? "healthy"
+      : config.backupConfigured
+        ? "failover"
+        : "unconfigured";
+  return {
+    lastCheckedAt,
+    lastKnownStatus: derivedStatus,
+    activeFailoverIncident,
+    lastFailoverAlertAt,
+    primaryConfigured: config.primaryConfigured,
+    primaryHost: config.primaryHost,
+    backupConfigured: config.backupConfigured,
+    recentEvents: getRecentFailoverEvents(5),
+  };
+}

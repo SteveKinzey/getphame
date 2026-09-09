@@ -5013,6 +5013,18 @@ export const appRouter = router({
       return getReminderTimingPerformance();
     }),
 
+    /** Current operational email relay status, heartbeat diagnostics, and failover event history. */
+    relayHealthStatus: adminProcedure.query(async () => {
+      const { getCurrentRelaySummary } = await import("./relayHealth");
+      return getCurrentRelaySummary();
+    }),
+
+    /** On-demand administrator diagnostic run for operational email relay failover. */
+    triggerRelayHeartbeat: adminProcedure.mutation(async () => {
+      const { runRelayHeartbeatCheck } = await import("./relayHealth");
+      return runRelayHeartbeatCheck();
+    }),
+
     /** Durable 24-hour SMTP and authentication health observations. */
     systemHealthTrend: adminProcedure
       .input(
