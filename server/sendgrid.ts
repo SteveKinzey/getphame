@@ -22,7 +22,7 @@
 import sgMail from "@sendgrid/mail";
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
-import { recordRelayEvent } from "./relayHealth";
+import { recordRelayEvent, sendSlackWebhookNotification } from "./relayHealth";
 
 export interface SystemEmailOptions {
   to: string;
@@ -81,6 +81,17 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
         reason: primaryError instanceof Error ? primaryError.message : "Primary SMTP send failed",
         source: "outbound_send",
       });
+
+      sendSlackWebhookNotification({
+        title: "⚠️ Get Phame: Outbound Email Failed Over to SendGrid",
+        color: "#f59e0b",
+        fields: [
+          { title: "Event", value: "Runtime Outbound Send Error" },
+          { title: "Recipient Domain", value: opts.to.split("@")[1] || "unknown" },
+          { title: "Error", value: (primaryError instanceof Error ? primaryError.message : "SMTP send failed").slice(0, 150) },
+          { title: "Timestamp", value: new Date().toUTCString() },
+        ],
+      }).catch(() => {});
 
       if (!(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey)) {
         throw primaryError;

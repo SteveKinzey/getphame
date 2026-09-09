@@ -1,7 +1,17 @@
-import { useState } from "react";
+import { useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, ShieldCheck, ShieldAlert, Clock } from "lucide-react";
+import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, Clock, Bell, Activity } from "lucide-react";
 import { toast } from "sonner";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  CartesianGrid,
+} from "recharts";
 
 export function EmailRelayStatusCard() {
   const { data: relayStatus, isLoading, refetch } = trpc.admin.relayHealthStatus.useQuery(undefined, {
@@ -36,6 +46,23 @@ export function EmailRelayStatusCard() {
     ? "border-red-200 bg-red-50/50"
     : "border-slate-200 bg-white";
 
+  // Prepare chart data for failover outages
+  const outageChartData = useMemo(() => {
+    if (!relayStatus?.outageHistory || relayStatus.outageHistory.length === 0) {
+      return [];
+    }
+    return relayStatus.outageHistory
+      .slice(0, 10)
+      .reverse()
+      .map((item, idx) => ({
+        id: item.id,
+        label: new Date(item.startedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        duration: item.durationMinutes,
+        status: item.status,
+        cause: item.cause,
+      }));
+  }, [relayStatus?.outageHistory]);
+
   return (
     <section
       data-testid="admin-email-relay-widget"
@@ -56,7 +83,7 @@ export function EmailRelayStatusCard() {
             <Mail size={22} />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-navy-muted">
                 System email relay
               </p>
@@ -70,6 +97,17 @@ export function EmailRelayStatusCard() {
                   <AlertTriangle size={12} /> Failover active
                 </span>
               )}
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                  relayStatus?.slackWebhookConfigured
+                    ? "bg-purple-100 text-purple-800"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+                title={relayStatus?.slackWebhookConfigured ? "Slack alert webhook active" : "SLACK_ALERT_WEBHOOK_URL optional"}
+              >
+                <Bell size={11} />
+                {relayStatus?.slackWebhookConfigured ? "Slack connected" : "Slack webhook standby"}
+              </span>
             </div>
             <h2
               id="email-relay-status-title"
@@ -78,7 +116,7 @@ export function EmailRelayStatusCard() {
               Operational Delivery & Failover
             </h2>
             <p className="mt-0.5 text-xs font-semibold rr-text-navy-muted">
-              Auto-fails over to Twilio SendGrid backup if primary SYSTEM_SMTP experiences an outage.
+              Auto-fails over to Twilio SendGrid backup if primary SYSTEM_SMTP experiences an outage. Checked every 15 minutes.
             </p>
           </div>
         </div>
@@ -159,6 +197,63 @@ export function EmailRelayStatusCard() {
                 {relayStatus?.backupConfigured ? (isFailover ? "Serving traffic" : "Standby") : "Missing"}
               </span>
             </div>
+          </div>
+
+          {/* Outage Duration Chart */}
+          <div className="rounded-xl border border-slate-200/80 bg-white/80 p-3.5 shadow-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Activity size={14} className="text-slate-500" />
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                  Failover Outage Durations (Minutes)
+                </p>
+              </div>
+              <span className="text-[11px] font-medium text-slate-400">
+                {outageChartData.length} recorded incident{outageChartData.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+
+            {outageChartData.length === 0 ? (
+              <div className="mt-2.5 flex h-24 items-center justify-center rounded-lg bg-slate-50/70 text-center">
+                <p className="text-xs font-semibold text-slate-500">
+                  No failover outages recorded. The primary SYSTEM_SMTP transport has operated without interruptions.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-3 h-36 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={outageChartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="label" tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} unit="m" />
+                    <Tooltip
+                      formatter={(value: any, _name: any, item: any) => [
+                        `${value} minute${value !== 1 ? "s" : ""}`,
+                        item?.payload?.status === "ongoing" ? "Duration (Ongoing)" : "Resolved Duration",
+                      ]}
+                      labelFormatter={(label, items) => {
+                        const cause = items?.[0]?.payload?.cause;
+                        return `${label}${cause ? ` · ${cause.slice(0, 40)}` : ""}`;
+                      }}
+                      contentStyle={{
+                        borderRadius: 8,
+                        border: "1px solid #e2e8f0",
+                        fontSize: 12,
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                      }}
+                    />
+                    <Bar dataKey="duration" radius={[4, 4, 0, 0]}>
+                      {outageChartData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={entry.status === "ongoing" ? "#f59e0b" : "#64748b"}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
 
           {/* Recent failover event log */}
