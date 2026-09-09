@@ -354,7 +354,7 @@ export async function processDueKoalendarBookings(limit = 100): Promise<number> 
 
 export function registerKoalendarRoutes(app: Express) {
   app.post("/api/integrations/koalendar/:token", async (req: Request, res: Response) => {
-    const token = req.params.token ?? "";
+    const token = typeof req.params.token === "string" ? req.params.token : "";
     if (!/^[a-f0-9]{48}$/.test(token)) return res.status(404).json({ error: "Koalendar connection not found." });
     if (!webhookWithinRateLimit(token)) return res.status(429).json({ error: "Webhook rate limit exceeded." });
     try {
