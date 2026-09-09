@@ -15,6 +15,13 @@ export type ProfilePreferencesExportPayload = {
   };
 };
 
+export type ProfilePreferencesExportReceipt = {
+  receiptId: number;
+  format: ProfilePreferenceExportFormat;
+  exportedAt: number;
+  filename: string;
+};
+
 function neutralizeSpreadsheetFormula(value: string): string {
   return /^\s*[=+\-@]/.test(value) ? `'${value}` : value;
 }
@@ -31,6 +38,28 @@ function displayValue(value: string | boolean | null): string {
 export function buildProfilePreferencesExportFilename(format: ProfilePreferenceExportFormat, exportedAt: string): string {
   const date = /^\d{4}-\d{2}-\d{2}T/.test(exportedAt) ? exportedAt.slice(0, 10) : "export";
   return `get-phame-profile-preferences-${date}.${format}`;
+}
+
+export function buildProfilePreferencesExportReceiptFilename(exportedAt: number): string {
+  const date = Number.isFinite(exportedAt)
+    ? new Date(exportedAt).toISOString().slice(0, 10)
+    : "receipt";
+  return `get-phame-export-receipt-${date}.txt`;
+}
+
+/** Metadata-only receipt: it never contains the user's export payload, credentials, or customer records. */
+export function serializeProfilePreferencesExportReceipt(receipt: ProfilePreferencesExportReceipt): string {
+  return [
+    "GET PHAME",
+    "Profile and preferences export receipt",
+    "",
+    `Receipt ID: ${receipt.receiptId}`,
+    `Export format: ${receipt.format.toUpperCase()}`,
+    `Completed at: ${new Date(receipt.exportedAt).toISOString()}`,
+    `Generated filename: ${receipt.filename}`,
+    "",
+    "This receipt records export metadata only. It does not contain your profile data, customer records, credentials, tokens, payment data, or the exported file contents.",
+  ].join("\n");
 }
 
 export function serializeProfilePreferencesCsv(payload: ProfilePreferencesExportPayload): string {

@@ -54,6 +54,7 @@ import {
   DISPOSABLE_DOMAIN_CALLBACK_PATH,
   reconcileDisposableDomainHeartbeat,
 } from "../disposableDomainHeartbeat";
+import { reconcileRelayHealthHeartbeat } from "../relayHealthHeartbeat";
 import { releaseHistoryExportScheduleHandler } from "../releaseHistoryExportScheduleRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
@@ -735,6 +736,13 @@ async function startServer() {
         )
         .catch(() =>
           console.error("[DisposableDomains] Heartbeat reconciliation failed.")
+        );
+      void reconcileRelayHealthHeartbeat()
+        .then(result =>
+          console.log(`[RelayHealth] Heartbeat ${result.status}.`)
+        )
+        .catch(() =>
+          console.error("[RelayHealth] Heartbeat reconciliation failed.")
         );
     }
     startSmtpWeeklyDigestScheduler();
