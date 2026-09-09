@@ -73,7 +73,9 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 import LandingBrandLink from "@/components/LandingBrandLink";
 import {
   buildProfilePreferencesExportFilename,
+  buildProfilePreferencesExportReceiptFilename,
   serializeProfilePreferencesCsv,
+  serializeProfilePreferencesExportReceipt,
   type ProfilePreferenceExportFormat,
   type ProfilePreferencesExportPayload,
 } from "@/lib/profilePreferencesExport";
@@ -426,11 +428,27 @@ function SendFeedbackSection() {
 }
 
 // ── Delete Account Section ────────────────────────────────────────────────────
-function DeleteAccountSection() {
-  const [open, setOpen] = useState(false);
+type AccountDeletionPreviewTestOverride = {
+  startOpen?: boolean;
+  preview: {
+    totalRecords: number;
+    categories: Array<{ key: string; count: number }>;
+  };
+};
+
+export function DeleteAccountSection({ testOverride }: { testOverride?: AccountDeletionPreviewTestOverride }) {
+  const [open, setOpen] = useState(() => testOverride?.startOpen ?? false);
   const [confirmed, setConfirmed] = useState(false);
   const [, navigate] = useLocation();
   const { logout } = useAuth();
+  const { t } = useTranslation();
+  const deletionPreview = trpc.account.previewDeletion.useQuery(undefined, {
+    enabled: open && !testOverride,
+    retry: false,
+  });
+  const previewData = testOverride?.preview ?? deletionPreview.data;
+  const previewIsLoading = !testOverride && deletionPreview.isLoading;
+  const previewHasError = !testOverride && deletionPreview.isError;
 
   const deleteAccount = trpc.account.delete.useMutation({
     onSuccess: () => {
@@ -464,6 +482,31 @@ function DeleteAccountSection() {
       <p className="text-sm font-bold leading-relaxed" style={{ color: "oklch(0.15 0.05 260)" }}>
         This will permanently delete your account, all contacts, email templates, review requests, tracking data, and SMTP credentials. This action cannot be undone.
       </p>
+      <div className="rounded-xl rr-bg-surface-darker px-3 py-3" data-testid="settings-account-deletion-preview">
+        <p className="text-xs font-black rr-text-navy">
+          {t("settings.deleteAccount.previewTitle", { defaultValue: "Data scheduled for deletion" })}
+        </p>
+        {previewIsLoading ? (
+          <p className="mt-2 flex items-center gap-2 text-xs rr-text-navy-muted"><Loader2 size={13} className="animate-spin" aria-hidden="true" />{t("settings.deleteAccount.previewLoading", { defaultValue: "Calculating your data impact…" })}</p>
+        ) : previewHasError ? (
+          <p className="mt-2 text-xs" role="alert" style={{ color: "oklch(0.48 0.16 25)" }}>
+            {t("settings.deleteAccount.previewUnavailable", { defaultValue: "We could not calculate your data preview. You can cancel and try again." })}
+          </p>
+        ) : previewData ? (
+          <>
+            <p className="mt-1 text-xs rr-text-navy-muted">
+              {t("settings.deleteAccount.previewSummary", { count: previewData.totalRecords, defaultValue: "{{count}} records are currently scheduled for permanent deletion." })}
+            </p>
+            <ul className="mt-2 grid gap-1 text-xs sm:grid-cols-2">
+              {previewData.categories.map(category => (
+                <li key={category.key} className="flex items-center justify-between gap-2 rounded-lg bg-white px-2 py-1.5 rr-text-navy">
+                  <span>{t(`settings.deleteAccount.previewCategories.${category.key}`, { defaultValue: category.key })}</span><strong>{category.count}</strong>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+      </div>
       <label className="flex items-start gap-2 cursor-pointer">
         <input
           type="checkbox"
@@ -1375,7 +1418,15 @@ export function ProfilePreferencesExportCard({
 }) {
   const { t } = useTranslation();
   const accountQuery = trpc.accountProfile.get.useQuery(undefined, { enabled: !testOverride });
-  const exportHistory = trpc.accountProfile.exportHistory.useQuery(undefined, { enabled: !testOverride });
+  const [historyStartDate, setHistoryStartDate] = useState("");
+  const [historyEndDate, setHistoryEndDate] = useState("");
+  const exportHistory = trpc.accountProfile.exportHistory.useQuery(
+    {
+      startDate: historyStartDate || undefined,
+      endDate: historyEndDate || undefined,
+    },
+    { enabled: !testOverride }
+  );
   const recordExport = trpc.accountProfile.recordExport.useMutation({
     onSuccess: () => exportHistory.refetch(),
     onError: () => toast.error(t("settings.dataExport.historyRecordError", { defaultValue: "Your file downloaded, but we could not update download history." })),
@@ -1386,9 +1437,38 @@ export function ProfilePreferencesExportCard({
   const [previewHistory, setPreviewHistory] = useState<ExportHistoryPreviewEntry[]>(testOverride?.history ?? []);
   const account = testOverride?.account ?? accountQuery.data;
   const historyEntries = testOverride ? previewHistory : exportHistory.data;
+  const displayedHistory = testOverride
+    ? (historyEntries ?? []).filter(entry => {
+        const exportedDay = new Date(entry.exportedAt).toISOString().slice(0, 10);
+        return (!historyStartDate || exportedDay >= historyStartDate) && (!historyEndDate || exportedDay <= historyEndDate);
+      })
+    : historyEntries;
   const historyIsLoading = testOverride ? false : exportHistory.isLoading;
   const historyHasError = testOverride?.historyError ?? exportHistory.isError;
   const safeString = (value: unknown) => typeof value === "string" ? value : null;
+
+  const downloadReceipt = (entry: ExportHistoryPreviewEntry) => {
+    const filename = buildProfilePreferencesExportFilename(
+      entry.format as ProfilePreferenceExportFormat,
+      new Date(entry.exportedAt).toISOString()
+    );
+    const receiptFilename = buildProfilePreferencesExportReceiptFilename(entry.exportedAt);
+    const content = serializeProfilePreferencesExportReceipt({
+      receiptId: entry.id,
+      format: entry.format as ProfilePreferenceExportFormat,
+      exportedAt: entry.exportedAt,
+      filename,
+    });
+    const url = URL.createObjectURL(new Blob([content], { type: "text/plain;charset=utf-8" }));
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = receiptFilename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    toast.success(t("settings.dataExport.receiptSuccess", { defaultValue: "Your export receipt is ready." }));
+  };
 
   const downloadExport = (format: ProfilePreferenceExportFormat) => {
     if (!account) {
@@ -1489,6 +1569,21 @@ export function ProfilePreferencesExportCard({
           <Clock size={15} className="rr-text-gold" aria-hidden="true" />
           <h3 className="text-sm font-black rr-text-navy">{t("settings.dataExport.historyTitle", { defaultValue: "Download history" })}</h3>
         </div>
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2" data-testid="settings-profile-data-export-date-filter">
+          <label htmlFor="settings-profile-data-export-date-start" className="text-xs font-bold rr-text-navy-muted">
+            {t("settings.dataExport.filterFrom", { defaultValue: "From date" })}
+            <input id="settings-profile-data-export-date-start" name="exportHistoryStartDate" type="date" data-testid="settings-profile-data-export-date-start" value={historyStartDate} max={historyEndDate || undefined} onChange={event => setHistoryStartDate(event.target.value)} className="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 bg-white px-2 rr-text-navy" />
+          </label>
+          <label htmlFor="settings-profile-data-export-date-end" className="text-xs font-bold rr-text-navy-muted">
+            {t("settings.dataExport.filterTo", { defaultValue: "To date" })}
+            <input id="settings-profile-data-export-date-end" name="exportHistoryEndDate" type="date" data-testid="settings-profile-data-export-date-end" value={historyEndDate} min={historyStartDate || undefined} onChange={event => setHistoryEndDate(event.target.value)} className="mt-1 block min-h-10 w-full rounded-lg border border-slate-200 bg-white px-2 rr-text-navy" />
+          </label>
+        </div>
+        {(historyStartDate || historyEndDate) && (
+          <button type="button" onClick={() => { setHistoryStartDate(""); setHistoryEndDate(""); }} className="mt-2 min-h-9 rounded-lg px-2 text-xs font-black rr-text-navy hover:rr-bg-surface-darker">
+            {t("settings.dataExport.filterClear", { defaultValue: "Clear dates" })}
+          </button>
+        )}
         {historyIsLoading ? (
           <div className="mt-3 flex items-center gap-2 text-xs rr-text-navy-muted"><Loader2 size={14} className="animate-spin" aria-hidden="true" />{t("settings.dataExport.historyLoading", { defaultValue: "Loading download history…" })}</div>
         ) : historyHasError ? (
@@ -1502,17 +1597,22 @@ export function ProfilePreferencesExportCard({
               {t("settings.dataExport.historyRetry", { defaultValue: "Retry" })}
             </button>
           </div>
-        ) : historyEntries?.length ? (
+        ) : displayedHistory?.length ? (
           <ul data-testid="settings-profile-data-export-history" className="mt-3 space-y-2">
-            {historyEntries.map(entry => (
+            {displayedHistory.map(entry => (
               <li key={entry.id} className="flex items-center justify-between gap-3 rounded-xl rr-bg-surface-darker px-3 py-2 text-xs">
                 <span className="font-black uppercase rr-text-navy">{entry.format}</span>
-                <time className="text-right rr-text-navy-muted" dateTime={new Date(entry.exportedAt).toISOString()}>{new Date(entry.exportedAt).toLocaleString()}</time>
+                <div className="flex items-center gap-2">
+                  <time className="text-right rr-text-navy-muted" dateTime={new Date(entry.exportedAt).toISOString()}>{new Date(entry.exportedAt).toLocaleString()}</time>
+                  <button type="button" onClick={() => downloadReceipt(entry)} className="min-h-9 rounded-lg px-2 font-black rr-text-navy hover:bg-white" data-testid={`settings-profile-data-export-receipt-${entry.id}`}>
+                    {t("settings.dataExport.receiptAction", { defaultValue: "Receipt" })}
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-xs rr-text-navy-muted">{t("settings.dataExport.historyEmpty", { defaultValue: "Your downloads will appear here." })}</p>
+          <p className="mt-3 text-xs rr-text-navy-muted">{historyStartDate || historyEndDate ? t("settings.dataExport.historyFilteredEmpty", { defaultValue: "No downloads match those dates." }) : t("settings.dataExport.historyEmpty", { defaultValue: "Your downloads will appear here." })}</p>
         )}
       </div>
     </section>

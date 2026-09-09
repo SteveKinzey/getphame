@@ -360,6 +360,29 @@ export type AuthHealthCheck = typeof authHealthChecks.$inferSelect;
 export type InsertAuthHealthCheck = typeof authHealthChecks.$inferInsert;
 
 /**
+ * Privacy-safe operational email relay outages. Stores provider state and a
+ * bounded technical cause only; it never stores recipient or message content.
+ */
+export const emailRelayOutages = pgTable(
+  "email_relay_outages",
+  {
+    id: serial("id").primaryKey(),
+    startedAt: bigint("started_at", { mode: "number" }).notNull(),
+    resolvedAt: bigint("resolved_at", { mode: "number" }),
+    cause: varchar("cause", { length: 300 }).notNull(),
+    triggerSource: varchar("trigger_source", { length: 32 }).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  table => [
+    index("email_relay_outages_started_idx").on(table.startedAt),
+    index("email_relay_outages_resolved_idx").on(table.resolvedAt),
+  ]
+);
+
+export type EmailRelayOutage = typeof emailRelayOutages.$inferSelect;
+export type InsertEmailRelayOutage = typeof emailRelayOutages.$inferInsert;
+
+/**
  * Sanitized production-route audit outcomes triggered by administrators. The
  * findings payload contains only route paths, aggregate browser signal counts,
  * and render metrics; it deliberately excludes cookies, page markup, request

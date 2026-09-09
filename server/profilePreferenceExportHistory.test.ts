@@ -38,10 +38,14 @@ describe("profile preference export history", () => {
     const helper = read("server/profilePreferenceExportHistory.ts");
     const router = read("server/routers.ts");
     expect(helper).toContain("MAX_PROFILE_PREFERENCE_EXPORT_HISTORY_ROWS = 20");
-    expect(helper).toContain("where(eq(profilePreferenceExportHistory.userId, userId))");
+    expect(helper).toContain("const conditions = [eq(profilePreferenceExportHistory.userId, userId)]");
+    expect(helper).toContain("gte(profilePreferenceExportHistory.exportedAt");
+    expect(helper).toContain("lte(profilePreferenceExportHistory.exportedAt");
     expect(helper).toContain("orderBy(desc(profilePreferenceExportHistory.exportedAt))");
     expect(helper).toContain(".limit(MAX_PROFILE_PREFERENCE_EXPORT_HISTORY_ROWS)");
-    expect(router).toContain("listProfilePreferenceExportHistory(ctx.user.id)");
+    expect(router).toContain("listProfilePreferenceExportHistory(ctx.user.id, input)");
+    expect(router).toContain("isValidUtcCalendarDate");
+    expect(router).toContain("profilePreferenceExportHistoryInputSchema");
     expect(router).toContain("recordProfilePreferenceExport({ userId: ctx.user.id, format: input.format })");
     expect(router).toContain('z.enum(["json", "csv"])');
   });
@@ -58,6 +62,9 @@ describe("profile preference export history", () => {
     expect(settings).toContain('serializeProfilePreferencesCsv(payload)');
     expect(settings).toContain('recordExport.mutate({ format })');
     expect(settings).toContain('data-testid="settings-profile-data-export-history"');
+    expect(settings).toContain('data-testid="settings-profile-data-export-date-filter"');
+    expect(settings).toContain("serializeProfilePreferencesExportReceipt");
+    expect(settings).toContain("settings.dataExport.receiptAction");
     expect(settings).toContain('t("settings.dataExport.historyError"');
     expect(settings).toContain("historyHasError");
     expect(settings).not.toContain("encryptedPass");

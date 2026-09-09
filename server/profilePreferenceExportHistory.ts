@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { profilePreferenceExportHistory } from "../drizzle/schema";
 import { getDb } from "./db";
 
@@ -23,9 +23,29 @@ export async function recordProfilePreferenceExport(input: {
   });
 }
 
-export async function listProfilePreferenceExportHistory(userId: number) {
+export type ProfilePreferenceExportHistoryFilter = {
+  startDate?: string;
+  endDate?: string;
+};
+
+function toUtcStartOfDay(date: string) {
+  const [year, month, day] = date.split("-").map(Number);
+  return Date.UTC(year, month - 1, day);
+}
+
+function toUtcEndOfDay(date: string) {
+  return toUtcStartOfDay(date) + 86_399_999;
+}
+
+export async function listProfilePreferenceExportHistory(
+  userId: number,
+  filter: ProfilePreferenceExportHistoryFilter = {}
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  const conditions = [eq(profilePreferenceExportHistory.userId, userId)];
+  if (filter.startDate) conditions.push(gte(profilePreferenceExportHistory.exportedAt, toUtcStartOfDay(filter.startDate)));
+  if (filter.endDate) conditions.push(lte(profilePreferenceExportHistory.exportedAt, toUtcEndOfDay(filter.endDate)));
   return db
     .select({
       id: profilePreferenceExportHistory.id,
@@ -33,7 +53,7 @@ export async function listProfilePreferenceExportHistory(userId: number) {
       exportedAt: profilePreferenceExportHistory.exportedAt,
     })
     .from(profilePreferenceExportHistory)
-    .where(eq(profilePreferenceExportHistory.userId, userId))
+    .where(and(...conditions))
     .orderBy(desc(profilePreferenceExportHistory.exportedAt))
     .limit(MAX_PROFILE_PREFERENCE_EXPORT_HISTORY_ROWS);
 }

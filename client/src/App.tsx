@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
-import SettingsPage, { ProfilePreferencesExportCard, SettingsBulkSenderTestFixture, ThemePreferenceCard } from "./pages/Settings";
+import SettingsPage, { DeleteAccountSection, ProfilePreferencesExportCard, SettingsBulkSenderTestFixture, ThemePreferenceCard } from "./pages/Settings";
 import MagicLinkForm from "./components/auth/MagicLinkForm";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
@@ -808,7 +808,42 @@ function App() {
                 }}
                 testOverride={{
                   account: { name: "Preview Owner", email: "owner@example.test" },
+                  history: [
+                    { id: 801, format: "json", exportedAt: Date.UTC(2026, 7, 12, 12) },
+                    { id: 802, format: "csv", exportedAt: Date.UTC(2026, 8, 14, 12) },
+                  ],
                   historyError,
+                }}
+              />
+            </div>
+          </main>
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
+  if (
+    import.meta.env.DEV &&
+    (window.location.pathname === "/__test/settings-account-deletion-preview" ||
+      window.location.pathname === "/__test/settings-account-deletion-preview-open")
+  ) {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <Toaster position="top-center" richColors />
+          <main className="min-h-screen p-6 rr-bg-cream-warm">
+            <div className="mx-auto max-w-xl">
+              <DeleteAccountSection
+                testOverride={{
+                  startOpen: window.location.pathname === "/__test/settings-account-deletion-preview-open",
+                  preview: {
+                    totalRecords: 19,
+                    categories: [
+                      { key: "account", count: 1 },
+                      { key: "contacts", count: 12 },
+                      { key: "requests", count: 6 },
+                    ],
+                  },
                 }}
               />
             </div>

@@ -22,7 +22,7 @@
 import sgMail from "@sendgrid/mail";
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
-import { recordRelayEvent } from "./relayHealth";
+import { recordRelayEvent, sanitizeRelayDiagnostic, sendSlackWebhookNotification } from "./relayHealth";
 
 export interface SystemEmailOptions {
   to: string;
@@ -74,15 +74,35 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
       });
       return;
     } catch (primaryError) {
-      console.warn("[SystemEmail] Primary SYSTEM_SMTP delivery failed, attempting SendGrid failover:", primaryError);
+      const hasSendgrid = Boolean(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey);
+      const errorMessage = primaryError instanceof Error ? primaryError.message : "Primary SMTP send failed";
+      const safeError = sanitizeRelayDiagnostic(errorMessage);
+      const recipientDomainMatch = opts.to.match(/@([^>\s,]+)/);
+      console.warn("[SystemEmail] Primary SYSTEM_SMTP delivery failed; evaluating configured SendGrid failover", {
+        errorType: primaryError instanceof Error ? primaryError.name : "UnknownError",
+        backupConfigured: hasSendgrid,
+      });
       recordRelayEvent({
         fromProvider: "system_smtp",
-        toProvider: (process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey) ? "sendgrid" : "none",
-        reason: primaryError instanceof Error ? primaryError.message : "Primary SMTP send failed",
+        toProvider: hasSendgrid ? "sendgrid" : "none",
+        reason: safeError,
         source: "outbound_send",
       });
 
-      if (!(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey)) {
+      sendSlackWebhookNotification({
+        title: hasSendgrid
+          ? "⚠️ Get Phame: Outbound Email Failed Over to SendGrid"
+          : "🚨 Get Phame: Outbound Email Failed (No SendGrid Backup)",
+        color: hasSendgrid ? "#f59e0b" : "#e11d48",
+        fields: [
+          { title: "Event", value: "Runtime Outbound Send Error" },
+          { title: "Recipient Domain", value: recipientDomainMatch?.[1] ?? "unknown" },
+          { title: "Error", value: safeError.slice(0, 150) },
+          { title: "Timestamp", value: new Date().toUTCString() },
+        ],
+      }).catch(() => {});
+
+      if (!hasSendgrid) {
         throw primaryError;
       }
       // Fall through to SendGrid backup path below

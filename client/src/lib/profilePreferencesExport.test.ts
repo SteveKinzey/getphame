@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   buildProfilePreferencesExportFilename,
+  buildProfilePreferencesExportReceiptFilename,
   serializeProfilePreferencesCsv,
+  serializeProfilePreferencesExportReceipt,
   type ProfilePreferencesExportPayload,
 } from "./profilePreferencesExport";
 
@@ -32,5 +34,21 @@ describe("profile and preferences export serialization", () => {
     expect(csv).toContain("Account display name,'=Danger");
     expect(csv).toContain('Business name,"A, Co."');
     expect(csv).not.toContain("smtp");
+  });
+
+  it("creates a date-stamped metadata-only receipt without profile payload values", () => {
+    const receipt = serializeProfilePreferencesExportReceipt({
+      receiptId: 42,
+      format: "csv",
+      exportedAt: Date.parse(payload.exportedAt),
+      filename: buildProfilePreferencesExportFilename("csv", payload.exportedAt),
+    });
+
+    expect(buildProfilePreferencesExportReceiptFilename(Date.parse(payload.exportedAt))).toBe("get-phame-export-receipt-2026-08-26.txt");
+    expect(receipt).toContain("Receipt ID: 42");
+    expect(receipt).toContain("Export format: CSV");
+    expect(receipt).toContain("get-phame-profile-preferences-2026-08-26.csv");
+    expect(receipt).not.toContain("owner@example.test");
+    expect(receipt).not.toContain("=Danger");
   });
 });

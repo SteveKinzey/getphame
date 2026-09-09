@@ -233,8 +233,7 @@ function markOpenNotifySent(userId: number): void {
 
 /** GET /api/track/open/:token — serve 1×1 GIF and record open event */
 export async function handleOpenPixel(req: Request, res: Response): Promise<void> {
-  const token = typeof req.params.token === "string" ? req.params.token : "";
-  const decoded = decodeTrackingToken(token);
+  const decoded = decodeTrackingToken(req.params.token ?? "");
   if (decoded) {
     // Fire-and-forget — do not await so the image is served immediately
     void recordEvent(decoded.requestId, decoded.userId, decoded.templateId, "open", null, req);
@@ -272,8 +271,7 @@ export async function handleOpenPixel(req: Request, res: Response): Promise<void
 export async function handleClickRedirect(req: Request, res: Response): Promise<void> {
   const requestedDestination = typeof req.query.url === "string" ? req.query.url : null;
   const destination = requestedDestination ? normalizeRedirectDestination(requestedDestination) : null;
-  const token = typeof req.params.token === "string" ? req.params.token : "";
-  const decoded = decodeTrackingTokenDetailed(token);
+  const decoded = decodeTrackingTokenDetailed(req.params.token ?? "");
 
   let isAuthorizedDestination = false;
   if (decoded && destination) {
