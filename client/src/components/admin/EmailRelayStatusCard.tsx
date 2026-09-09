@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, ShieldCheck, ShieldAlert, Clock } from "lucide-react";
+import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 export function EmailRelayStatusCard() {
