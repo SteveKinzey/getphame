@@ -34,7 +34,7 @@ describe("API recovery Playwright workflow", () => {
   });
 
   it("installs only Chromium and runs only the focused recovery specification", () => {
-    expect(workflow).toContain("playwright install --with-deps chromium");
+    expect(workflow).toContain("playwright install chromium");
     expect(workflow).toContain(
       "playwright test e2e/api-recovery-reconnection.spec.ts"
     );
