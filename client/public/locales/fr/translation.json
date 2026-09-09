@@ -4730,7 +4730,29 @@
       "durationResolved": "Durée résolue",
       "recentEvents": "Événements de basculement récents",
       "lastChecked": "Dernière vérification {{time}}",
-      "noEvents": "Aucun événement de basculement enregistré. Tout le trafic opérationnel a été envoyé normalement via le relais principal."
+      "noEvents": "Aucun événement de basculement enregistré. Tout le trafic opérationnel a été envoyé normalement via le relais principal.",
+      "slackTest": "Envoyer une alerte de test Slack",
+      "slackTesting": "Envoi du test Slack…",
+      "slackTestSuccess": "Alerte de test Slack distribuée.",
+      "slackTestFallback": "Slack n’a pas confirmé la distribution ; l’e-mail de secours au propriétaire a été envoyé.",
+      "slackTestFailure": "Slack n’a pas confirmé la distribution et l’e-mail de secours était indisponible.",
+      "diagnosticsTitle": "10 derniers diagnostics de pulsation assainis",
+      "diagnosticsCaption": "État technique uniquement. Les réponses fournisseur, identifiants, destinataires, jetons et URL sont définitivement masqués.",
+      "diagnosticsEmpty": "Aucun diagnostic de pulsation n’a encore été enregistré.",
+      "source": "Origine",
+      "sourceScheduled": "Pulsation planifiée",
+      "sourceManual": "Vérification administrateur",
+      "statusHealthy": "Opérationnel",
+      "statusFailover": "Basculement actif",
+      "statusDegraded": "Dégradé",
+      "statusUnconfigured": "Non configuré",
+      "relay": "Relais",
+      "duration": "Durée de la sonde",
+      "alertDelivery": "Distribution de l’alerte",
+      "alertDelivered": "Slack distribué",
+      "alertFallbackDelivered": "E-mail de secours distribué",
+      "alertNotSent": "Aucune distribution d’alerte confirmée",
+      "sanitizedDiagnostic": "Diagnostic assaini"
     }
   }
 }

@@ -5041,7 +5041,13 @@ export const appRouter = router({
     /** On-demand administrator diagnostic run for operational email relay failover. */
     triggerRelayHeartbeat: adminProcedure.mutation(async () => {
       const { runRelayHeartbeatCheck } = await import("./relayHealth");
-      return runRelayHeartbeatCheck();
+      return runRelayHeartbeatCheck({ source: "admin_manual" });
+    }),
+
+    /** Administrator-only controlled Slack webhook test; no relay state is changed. */
+    testRelaySlackWebhook: adminProcedure.mutation(async () => {
+      const { sendRelaySlackTestAlert } = await import("./relayHealth");
+      return sendRelaySlackTestAlert();
     }),
 
     /** Durable 24-hour SMTP and authentication health observations. */

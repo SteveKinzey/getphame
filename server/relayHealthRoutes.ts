@@ -11,7 +11,7 @@ export async function relayHeartbeatHandler(req: Request, res: Response) {
     }
     taskUid = user.taskUid;
 
-    const result = await runRelayHeartbeatCheck();
+    const result = await runRelayHeartbeatCheck({ source: "scheduled_heartbeat" });
     return res.json({
       ok: result.status === "healthy",
       taskUid,
