@@ -1,4 +1,4 @@
-import { desc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, lt, lte, or, sql } from "drizzle-orm";
 import nodemailer from "nodemailer";
 import { emailRelayDiagnostics, emailRelayOutages } from "../drizzle/schema";
 import { notifyOwner } from "./_core/notification";
@@ -352,20 +352,33 @@ export async function reserveRelayAlert(outageId: OutageRecord["id"], now = Date
   const cooldownMs = getRelayAlertCooldownMs();
   const db = await getDb();
   if (db && typeof outageId === "number") {
+    const minAllowedTime = now - cooldownMs;
+    // Atomically claim the alert reservation if unalerted or if cooldown has elapsed
+    const updateRes = await db
+      .update(emailRelayOutages)
+      .set({ lastAlertAt: now })
+      .where(and(
+        eq(emailRelayOutages.id, outageId),
+        or(
+          isNull(emailRelayOutages.lastAlertAt),
+          lt(emailRelayOutages.lastAlertAt, minAllowedTime)
+        )
+      ));
+
+    // If affectedRows is 0, another concurrent call or an ongoing cooldown claimed it
     const [outage] = await db
       .select({ lastAlertAt: emailRelayOutages.lastAlertAt })
       .from(emailRelayOutages)
       .where(eq(emailRelayOutages.id, outageId))
       .limit(1);
-    if (outage?.lastAlertAt !== null && outage?.lastAlertAt !== undefined && now - outage.lastAlertAt < cooldownMs) {
-      return { permitted: false, cooldownMs, retryAt: outage.lastAlertAt + cooldownMs };
+
+    if (outage?.lastAlertAt === now) {
+      lastFailoverAlertAt = now;
+      return { permitted: true, cooldownMs, retryAt: null };
     }
-    await db
-      .update(emailRelayOutages)
-      .set({ lastAlertAt: now })
-      .where(eq(emailRelayOutages.id, outageId));
-    lastFailoverAlertAt = now;
-    return { permitted: true, cooldownMs, retryAt: null };
+
+    const retryAt = outage?.lastAlertAt ? outage.lastAlertAt + cooldownMs : now + cooldownMs;
+    return { permitted: false, cooldownMs, retryAt };
   }
 
   const fallbackOutage = typeof outageId === "string"
