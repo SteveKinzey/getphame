@@ -265,9 +265,16 @@ export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
  */
 export async function getCurrentRelaySummary() {
   const config = getRelayConfigStatus();
+  const derivedStatus: RelayHealthState = lastCheckedAt
+    ? lastKnownStatus
+    : config.primaryConfigured
+      ? "healthy"
+      : config.backupConfigured
+        ? "failover"
+        : "unconfigured";
   return {
     lastCheckedAt,
-    lastKnownStatus,
+    lastKnownStatus: derivedStatus,
     activeFailoverIncident,
     lastFailoverAlertAt,
     primaryConfigured: config.primaryConfigured,
