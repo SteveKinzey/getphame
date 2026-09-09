@@ -166,4 +166,17 @@ describe("operational email relay failover, slack alerts, and outage durations",
     expect(events[0].fromProvider).toBe("system_smtp");
     expect(events[0].toProvider).toBe("sendgrid");
   });
+
+  it("caps in-memory outage history when database is unavailable", async () => {
+    const { startRelayOutage, resolveActiveRelayOutage, getOutageHistory } = await import("./relayHealth");
+
+    for (let i = 0; i < 25; i++) {
+      const startedAt = Date.now() + i;
+      await startRelayOutage(`Outage ${i}`, "heartbeat_check", startedAt);
+      await resolveActiveRelayOutage(startedAt + 60_000);
+    }
+
+    const history = await getOutageHistory(50);
+    expect(history.length).toBe(20);
+  });
 });

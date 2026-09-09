@@ -129,6 +129,7 @@ export async function startRelayOutage(cause: string, triggerSource: string, sta
       status: "ongoing",
     };
     fallbackOutageHistory.unshift(outage);
+    if (fallbackOutageHistory.length > MAX_OUTAGE_HISTORY) fallbackOutageHistory.pop();
     return outage;
   }
 
