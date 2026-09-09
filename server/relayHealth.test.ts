@@ -78,6 +78,14 @@ describe("operational email relay failover, slack alerts, and outage durations",
     expect(mocks.notifyOwner).not.toHaveBeenCalled();
   });
 
+  it("derives unconfigured summary status before the first heartbeat", async () => {
+    const { getCurrentRelaySummary } = await import("./relayHealth");
+    const summary = await getCurrentRelaySummary();
+
+    expect(summary.lastCheckedAt).toBeNull();
+    expect(summary.lastKnownStatus).toBe("unconfigured");
+  });
+
   it("dispatches a Slack incident webhook when primary fails and opens an outage", async () => {
     process.env.SYSTEM_SMTP_HOST = "smtp.resend.com";
     process.env.SYSTEM_SMTP_USER = "resend";

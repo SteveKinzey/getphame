@@ -215,6 +215,12 @@ export function getRelayConfigStatus() {
   };
 }
 
+function derivePrecheckRelayStatus(config: ReturnType<typeof getRelayConfigStatus>): RelayHealthState {
+  if (!config.primaryConfigured && !config.backupConfigured) return "unconfigured";
+  if (!config.primaryConfigured && config.backupConfigured) return "failover";
+  return "healthy";
+}
+
 export async function probePrimarySmtp(): Promise<{ ok: boolean; error?: string; durationMs: number }> {
   const host = process.env.SYSTEM_SMTP_HOST;
   const user = process.env.SYSTEM_SMTP_USER;
@@ -362,9 +368,10 @@ export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
 
 export async function getCurrentRelaySummary() {
   const config = getRelayConfigStatus();
+  const summaryStatus = lastCheckedAt === null ? derivePrecheckRelayStatus(config) : lastKnownStatus;
   return {
     lastCheckedAt,
-    lastKnownStatus,
+    lastKnownStatus: summaryStatus,
     activeFailoverIncident,
     lastFailoverAlertAt,
     primaryConfigured: config.primaryConfigured,
