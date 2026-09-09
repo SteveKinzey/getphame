@@ -6,8 +6,10 @@ export function registerStorageProxy(app: Express) {
   });
 
   app.get("/manus-storage/*key", async (req: any, res: any) => {
-    const keySegments = req.params.key as string[] | undefined;
-    const key = keySegments?.join("/");
+    const keySegments = req.params.key as string | string[] | undefined;
+    const key = Array.isArray(keySegments)
+      ? keySegments.join("/")
+      : keySegments;
     if (!key) {
       res.status(400).send("Missing storage key");
       return;
