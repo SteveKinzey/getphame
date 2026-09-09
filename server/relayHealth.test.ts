@@ -162,6 +162,22 @@ describe("operational email relay failover, slack alerts, and outage durations",
     expect((await getCurrentRelaySummary()).activeFailoverIncident).toBe(false);
   });
 
+  it("returns a Slack test result if its email fallback unexpectedly fails", async () => {
+    process.env.SYSTEM_SMTP_HOST = "smtp.resend.com";
+    process.env.SYSTEM_SMTP_USER = "resend";
+    process.env.SYSTEM_SMTP_PASS = "re_secret";
+    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/TEST/FAIL";
+    mocks.fetchMock.mockResolvedValueOnce({ ok: false, status: 503 } as any);
+    mocks.emailFallbackMock.mockRejectedValueOnce(new Error("Unexpected fallback import failure"));
+
+    const { sendRelaySlackTestAlert } = await import("./relayHealth");
+    await expect(sendRelaySlackTestAlert()).resolves.toMatchObject({
+      slackDelivered: false,
+      emailFallbackAttempted: false,
+      emailFallbackDelivered: false,
+    });
+  });
+
   it("calculates outage duration and dispatches a Slack recovery webhook upon primary restoration", async () => {
     process.env.SYSTEM_SMTP_HOST = "smtp.resend.com";
     process.env.SYSTEM_SMTP_USER = "resend";

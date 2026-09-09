@@ -13,6 +13,6 @@ describe("EmailRelayStatusCard UI component", () => {
     expect(source).toContain("admin.emailRelay.slackTest");
     expect(source).toContain("admin.emailRelay.diagnosticsTitle");
     expect(source).toContain("recentDiagnostics.map");
-    expect(source).toContain("Last ten sanitized heartbeat diagnostics");
+    expect(source).toContain("admin.emailRelay.sanitizedDiagnostic");
   });
 });

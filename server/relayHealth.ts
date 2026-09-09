@@ -1,4 +1,4 @@
-import { desc, eq, isNull } from "drizzle-orm";
+import { desc, eq, inArray, isNull } from "drizzle-orm";
 import nodemailer from "nodemailer";
 import { emailRelayDiagnostics, emailRelayOutages } from "../drizzle/schema";
 import { notifyOwner } from "./_core/notification";
@@ -132,6 +132,24 @@ async function recordHeartbeatDiagnostic(
     }).catch((error) => {
       console.warn("[RelayHealth] Failed to insert durable heartbeat diagnostic:", error instanceof Error ? error.name : "UnknownError");
     });
+
+    // Keep the database log as bounded as the Admin UI contract: the latest ten
+    // sanitized observations only. This prevents an unbounded 15-minute cron log.
+    const staleRows = await db
+      .select({ id: emailRelayDiagnostics.id })
+      .from(emailRelayDiagnostics)
+      .orderBy(desc(emailRelayDiagnostics.checkedAt))
+      .offset(MAX_HEARTBEAT_DIAGNOSTICS)
+      .limit(1000)
+      .catch(() => []);
+    if (staleRows.length > 0) {
+      await db
+        .delete(emailRelayDiagnostics)
+        .where(inArray(emailRelayDiagnostics.id, staleRows.map(row => row.id)))
+        .catch((error) => {
+          console.warn("[RelayHealth] Failed to prune durable heartbeat diagnostics:", error instanceof Error ? error.name : "UnknownError");
+        });
+    }
   }
 
   return result;
@@ -591,7 +609,9 @@ export async function sendRelaySlackTestAlert() {
       checkedAt,
       source: "admin_manual",
       diagnostic: "Manual Slack webhook test did not confirm delivery.",
-    }).then(result => ({ emailFallbackAttempted: result.attempted, emailFallbackDelivered: result.delivered }));
+    })
+      .then(result => ({ emailFallbackAttempted: result.attempted, emailFallbackDelivered: result.delivered }))
+      .catch(() => ({ emailFallbackAttempted: false, emailFallbackDelivered: false }));
 
   return {
     checkedAt,
