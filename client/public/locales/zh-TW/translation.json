@@ -4263,7 +4263,23 @@
       "alertDelivered": "Slack 已送達",
       "alertFallbackDelivered": "備援電子郵件已送達",
       "alertNotSent": "未確認警示投遞",
-      "sanitizedDiagnostic": "已去識別化診斷"
+      "sanitizedDiagnostic": "已去識別化診斷",
+      "alertCooldown": "告警冷卻時間：{{minutes}} 分鐘（已啟用瞬態抖動抑制）",
+      "exportOutages": "匯出故障 CSV",
+      "exportPreparing": "正在準備 CSV 快照…",
+      "exportFailure": "無法產生故障匯出：{{message}}",
+      "exportDownloaded": "已下載 {{count}} 筆去識別化故障紀錄。",
+      "exportDialogTitle": "運作郵件轉發故障日誌",
+      "exportDialogDescription": "用於可靠性稽核的受限、伺服端去識別化 CSV 快照。敏感憑證與診斷細節已被永久排除。",
+      "exportSummary": "快照包含已記錄的 {{total}} 次故障中的 {{count}} 次。",
+      "exportTruncated": "僅顯示最新的 1,000 筆紀錄。",
+      "exportEmpty": "尚未記錄任何轉發故障。",
+      "exportStarted": "開始時間",
+      "exportStatus": "狀態",
+      "exportDuration": "持續時間",
+      "exportCause": "去識別化原因",
+      "exportCancel": "關閉",
+      "exportDownload": "下載 CSV"
     }
   }
 }

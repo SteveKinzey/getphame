@@ -1,4 +1,4 @@
-import { desc, eq, inArray, isNull } from "drizzle-orm";
+import { desc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
 import nodemailer from "nodemailer";
 import { emailRelayDiagnostics, emailRelayOutages } from "../drizzle/schema";
 import { notifyOwner } from "./_core/notification";
@@ -26,6 +26,7 @@ export interface OutageRecord {
   durationMinutes: number;
   cause: string;
   status: "ongoing" | "resolved";
+  triggerSource: string;
 }
 
 export interface RelayHeartbeatDiagnostic {
@@ -47,6 +48,10 @@ export interface RelayHeartbeatDiagnostic {
 const MAX_FAILOVER_HISTORY = 50;
 const MAX_OUTAGE_HISTORY = 20;
 const MAX_HEARTBEAT_DIAGNOSTICS = 10;
+export const RELAY_OUTAGE_EXPORT_LIMIT = 1_000;
+const DEFAULT_ALERT_COOLDOWN_MINUTES = 30;
+const MIN_ALERT_COOLDOWN_MINUTES = 1;
+const MAX_ALERT_COOLDOWN_MINUTES = 24 * 60;
 const failoverHistory: FailoverEvent[] = [];
 const fallbackOutageHistory: OutageRecord[] = [];
 const heartbeatDiagnostics: RelayHeartbeatDiagnostic[] = [];
@@ -55,6 +60,18 @@ let activeFailoverIncident = false;
 let lastFailoverAlertAt: number | null = null;
 let lastCheckedAt: number | null = null;
 let lastKnownStatus: RelayHealthState = "healthy";
+
+export function getRelayAlertCooldownMs() {
+  const configuredMinutes = Number.parseInt(process.env.RELAY_ALERT_COOLDOWN_MINUTES ?? "", 10);
+  const minutes = Number.isFinite(configuredMinutes)
+    ? Math.min(Math.max(configuredMinutes, MIN_ALERT_COOLDOWN_MINUTES), MAX_ALERT_COOLDOWN_MINUTES)
+    : DEFAULT_ALERT_COOLDOWN_MINUTES;
+  return minutes * 60_000;
+}
+
+export function getRelayAlertCooldownMinutes() {
+  return Math.round(getRelayAlertCooldownMs() / 60_000);
+}
 
 /**
  * Strips secrets and personal data before retaining diagnostics in memory,
@@ -84,6 +101,7 @@ function asOutageRecord(row: typeof emailRelayOutages.$inferSelect, now = Date.n
     durationMinutes: Math.max(1, Math.round(durationMs / 60_000)),
     cause: row.cause,
     status: row.resolvedAt === null ? "ongoing" : "resolved",
+    triggerSource: row.triggerSource,
   };
 }
 
@@ -267,6 +285,7 @@ export async function startRelayOutage(cause: string, triggerSource: string, sta
       durationMinutes: 0,
       cause: normalizedCause,
       status: "ongoing",
+      triggerSource,
     };
     fallbackOutageHistory.unshift(outage);
     if (fallbackOutageHistory.length > MAX_OUTAGE_HISTORY) fallbackOutageHistory.pop();
@@ -294,6 +313,7 @@ export async function startRelayOutage(cause: string, triggerSource: string, sta
     durationMinutes: 0,
     cause: normalizedCause,
     status: "ongoing" as const,
+    triggerSource,
   };
 }
 
@@ -324,6 +344,44 @@ export async function resolveActiveRelayOutage(resolvedAt = Date.now()) {
   return asOutageRecord({ ...active, resolvedAt }, resolvedAt);
 }
 
+/**
+ * Reserve the next administrator notification after the configured cooldown.
+ * A durable timestamp prevents cold starts from re-alerting during network flaps.
+ */
+export async function reserveRelayAlert(outageId: OutageRecord["id"], now = Date.now()) {
+  const cooldownMs = getRelayAlertCooldownMs();
+  const db = await getDb();
+  if (db && typeof outageId === "number") {
+    const [outage] = await db
+      .select({ lastAlertAt: emailRelayOutages.lastAlertAt })
+      .from(emailRelayOutages)
+      .where(eq(emailRelayOutages.id, outageId))
+      .limit(1);
+    if (outage?.lastAlertAt !== null && outage?.lastAlertAt !== undefined && now - outage.lastAlertAt < cooldownMs) {
+      return { permitted: false, cooldownMs, retryAt: outage.lastAlertAt + cooldownMs };
+    }
+    await db
+      .update(emailRelayOutages)
+      .set({ lastAlertAt: now })
+      .where(eq(emailRelayOutages.id, outageId));
+    lastFailoverAlertAt = now;
+    return { permitted: true, cooldownMs, retryAt: null };
+  }
+
+  const fallbackOutage = typeof outageId === "string"
+    ? fallbackOutageHistory.find(o => o.id === outageId)
+    : null;
+  const previousAlert = (fallbackOutage as any)?.lastAlertAt ?? lastFailoverAlertAt;
+  if (previousAlert !== null && now - previousAlert < cooldownMs) {
+    return { permitted: false, cooldownMs, retryAt: previousAlert + cooldownMs };
+  }
+  if (fallbackOutage) {
+    (fallbackOutage as any).lastAlertAt = now;
+  }
+  lastFailoverAlertAt = now;
+  return { permitted: true, cooldownMs, retryAt: null };
+}
+
 export async function getOutageHistory(limit = 10): Promise<OutageRecord[]> {
   const db = await getDb();
   if (!db) {
@@ -342,6 +400,43 @@ export async function getOutageHistory(limit = 10): Promise<OutageRecord[]> {
     .orderBy(desc(emailRelayOutages.startedAt))
     .limit(Math.min(limit, MAX_OUTAGE_HISTORY));
   return rows.map(row => asOutageRecord(row));
+}
+
+/**
+ * Capture the one bounded, server-side outage snapshot used for administrator
+ * reliability exports. The browser receives prepared data only, never raw rows.
+ */
+export async function getRelayOutageExportSnapshot() {
+  const snapshotToMs = Date.now();
+  const db = await getDb();
+  if (!db) {
+    const outages = await getOutageHistory(RELAY_OUTAGE_EXPORT_LIMIT);
+    return {
+      outages,
+      totalMatching: outages.length,
+      truncated: false,
+      snapshotToMs,
+    };
+  }
+
+  const [countRow] = await db
+    .select({ total: sql<number>`count(*)` })
+    .from(emailRelayOutages)
+    .where(lte(emailRelayOutages.startedAt, snapshotToMs));
+  const totalMatching = Number(countRow?.total ?? 0);
+  const rows = await db
+    .select()
+    .from(emailRelayOutages)
+    .where(lte(emailRelayOutages.startedAt, snapshotToMs))
+    .orderBy(desc(emailRelayOutages.startedAt))
+    .limit(RELAY_OUTAGE_EXPORT_LIMIT);
+
+  return {
+    outages: rows.map(row => asOutageRecord(row, snapshotToMs)),
+    totalMatching,
+    truncated: totalMatching > rows.length,
+    snapshotToMs,
+  };
 }
 
 export function getRelayConfigStatus() {
@@ -401,6 +496,7 @@ export interface RelayHeartbeatResult {
   slackAlertSent: boolean;
   emailFallbackAttempted: boolean;
   emailFallbackDelivered: boolean;
+  alertSuppressed?: boolean;
   alertType?: "failure" | "recovery" | null;
 }
 
@@ -473,16 +569,17 @@ export async function runRelayHeartbeatCheck(options: { source?: RelayDiagnostic
   let slackAlertSent = false;
   let emailFallbackAttempted = false;
   let emailFallbackDelivered = false;
+  let alertSuppressed = false;
   const safeDiagnostic = probe.ok
     ? "Primary SYSTEM_SMTP transport verification succeeded."
     : boundedCause(probe.error ?? "Primary SMTP connection verification failed");
 
   if (probe.ok) {
+    const outage = await resolveActiveRelayOutage(startedAt);
     if (activeFailoverIncident) {
       activeFailoverIncident = false;
       alertType = "recovery";
       recordRelayEvent({ fromProvider: lastKnownStatus === "failover" ? "sendgrid" : "none", toProvider: "system_smtp", reason: safeDiagnostic, source });
-      const outage = await resolveActiveRelayOutage(startedAt);
       try {
         transitionAlertSent = await notifyOwner({
           title: "Get Phame: Operational email primary relay recovered",
@@ -528,43 +625,47 @@ export async function runRelayHeartbeatCheck(options: { source?: RelayDiagnostic
 
     if (!activeFailoverIncident) {
       activeFailoverIncident = true;
-      lastFailoverAlertAt = startedAt;
       alertType = "failure";
       recordRelayEvent({ fromProvider: "system_smtp", toProvider: activeRelay, reason: safeDiagnostic, source });
-      await startRelayOutage(safeDiagnostic, source, startedAt);
-      try {
-        transitionAlertSent = await notifyOwner({
-          title: config.backupConfigured ? "Get Phame: Operational email failed over to SendGrid backup" : "Get Phame: Operational email primary relay failed (No backup)",
-          content: [
-            "Primary SYSTEM_SMTP relay connection failed verification.",
-            `Host: ${config.primaryHost}`,
-            `Error: ${safeDiagnostic}`,
-            `Status: ${config.backupConfigured ? "Shifted traffic to SendGrid backup failover" : "Outbound operational emails may fail"}`,
-            `Detected at: ${new Date(startedAt).toISOString()}`,
-            "Review: /admin",
-          ].join("\n"),
+      const outage = await startRelayOutage(safeDiagnostic, source, startedAt);
+      const alertReservation = await reserveRelayAlert(outage.id, startedAt);
+      if (!alertReservation.permitted) {
+        alertSuppressed = true;
+      } else {
+        try {
+          transitionAlertSent = await notifyOwner({
+            title: config.backupConfigured ? "Get Phame: Operational email failed over to SendGrid backup" : "Get Phame: Operational email primary relay failed (No backup)",
+            content: [
+              "Primary SYSTEM_SMTP relay connection failed verification.",
+              `Host: ${config.primaryHost}`,
+              `Error: ${safeDiagnostic}`,
+              `Status: ${config.backupConfigured ? "Shifted traffic to SendGrid backup failover" : "Outbound operational emails may fail"}`,
+              `Detected at: ${new Date(startedAt).toISOString()}`,
+              "Review: /admin",
+            ].join("\n"),
+          });
+        } catch (error) {
+          console.warn("[RelayHealth] Failover owner notification failed:", error instanceof Error ? error.name : "UnknownError");
+        }
+        slackAlertSent = await sendSlackWebhookNotification({
+          title: config.backupConfigured ? "⚠️ Get Phame: Operational Email Failed Over to SendGrid" : "🚨 Get Phame: Operational Email Primary Relay Failed (No Backup)",
+          color: config.backupConfigured ? "#f59e0b" : "#e11d48",
+          fields: [
+            { title: "Event", value: "Primary Relay Outage" },
+            { title: "Active Relay", value: config.backupConfigured ? "SendGrid API (Backup)" : "None" },
+            { title: "Reason", value: safeDiagnostic },
+            { title: "Detected At", value: new Date(startedAt).toUTCString() },
+          ],
         });
-      } catch (error) {
-        console.warn("[RelayHealth] Failover owner notification failed:", error instanceof Error ? error.name : "UnknownError");
-      }
-      slackAlertSent = await sendSlackWebhookNotification({
-        title: config.backupConfigured ? "⚠️ Get Phame: Operational Email Failed Over to SendGrid" : "🚨 Get Phame: Operational Email Primary Relay Failed (No Backup)",
-        color: config.backupConfigured ? "#f59e0b" : "#e11d48",
-        fields: [
-          { title: "Event", value: "Primary Relay Outage" },
-          { title: "Active Relay", value: config.backupConfigured ? "SendGrid API (Backup)" : "None" },
-          { title: "Reason", value: safeDiagnostic },
-          { title: "Detected At", value: new Date(startedAt).toUTCString() },
-        ],
-      });
-      if (!slackAlertSent) {
-        ({ emailFallbackAttempted, emailFallbackDelivered } = await sendFallbackAfterSlackFailure({
-          event: "failure",
-          activeRelay,
-          checkedAt: startedAt,
-          source,
-          diagnostic: safeDiagnostic,
-        }));
+        if (!slackAlertSent) {
+          ({ emailFallbackAttempted, emailFallbackDelivered } = await sendFallbackAfterSlackFailure({
+            event: "failure",
+            activeRelay,
+            checkedAt: startedAt,
+            source,
+            diagnostic: safeDiagnostic,
+          }));
+        }
       }
     }
   }
@@ -582,6 +683,7 @@ export async function runRelayHeartbeatCheck(options: { source?: RelayDiagnostic
     slackAlertSent,
     emailFallbackAttempted,
     emailFallbackDelivered,
+    alertSuppressed,
     alertType,
   }, source);
 }
@@ -623,6 +725,8 @@ export async function sendRelaySlackTestAlert() {
 
 export async function getCurrentRelaySummary() {
   const config = getRelayConfigStatus();
+  const cooldownMs = getRelayAlertCooldownMs();
+  const cooldownUntil = lastFailoverAlertAt === null ? null : lastFailoverAlertAt + cooldownMs;
   return {
     lastCheckedAt,
     lastKnownStatus,
@@ -632,6 +736,8 @@ export async function getCurrentRelaySummary() {
     primaryHost: config.primaryHost,
     backupConfigured: config.backupConfigured,
     slackWebhookConfigured: config.slackWebhookConfigured,
+    alertCooldownMinutes: getRelayAlertCooldownMinutes(),
+    alertCooldownUntil: cooldownUntil !== null && cooldownUntil > Date.now() ? cooldownUntil : null,
     recentEvents: getRecentFailoverEvents(5),
     recentDiagnostics: await getRecentHeartbeatDiagnostics(10),
     outageHistory: await getOutageHistory(10),

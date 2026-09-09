@@ -4752,7 +4752,23 @@
       "alertDelivered": "Slack entregado",
       "alertFallbackDelivered": "Correo alternativo entregado",
       "alertNotSent": "No se confirmó la entrega de alerta",
-      "sanitizedDiagnostic": "Diagnóstico depurado"
+      "sanitizedDiagnostic": "Diagnóstico depurado",
+      "alertCooldown": "Tiempo de espera de alertas: {{minutes}} minutos (supresión de fluctuaciones transitorias activada)",
+      "exportOutages": "Exportar CSV de interrupciones",
+      "exportPreparing": "Preparando instantánea CSV…",
+      "exportFailure": "No se pudo generar la exportación de interrupciones: {{message}}",
+      "exportDownloaded": "Se descargaron {{count}} registros saneados de interrupción.",
+      "exportDialogTitle": "Registro de interrupciones del relé operativo",
+      "exportDialogDescription": "Instantánea CSV delimitada y saneada en el servidor para auditorías de confiabilidad. Se excluyen permanentemente credenciales y detalles sensibles.",
+      "exportSummary": "La instantánea contiene {{count}} de {{total}} interrupciones registradas.",
+      "exportTruncated": "Mostrando los últimos 1000 registros.",
+      "exportEmpty": "Aún no se han registrado interrupciones del relé.",
+      "exportStarted": "Inicio",
+      "exportStatus": "Estado",
+      "exportDuration": "Duración",
+      "exportCause": "Causa saneada",
+      "exportCancel": "Cerrar",
+      "exportDownload": "Descargar CSV"
     }
   }
 }

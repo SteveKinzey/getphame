@@ -4752,7 +4752,23 @@
       "alertDelivered": "Slack distribué",
       "alertFallbackDelivered": "E-mail de secours distribué",
       "alertNotSent": "Aucune distribution d’alerte confirmée",
-      "sanitizedDiagnostic": "Diagnostic assaini"
+      "sanitizedDiagnostic": "Diagnostic assaini",
+      "alertCooldown": "Délai de répétition des alertes : {{minutes}} minutes (suppression des battements transitoires activée)",
+      "exportOutages": "Exporter le CSV des pannes",
+      "exportPreparing": "Préparation de l'instantané CSV…",
+      "exportFailure": "Impossible de générer l'export des pannes : {{message}}",
+      "exportDownloaded": "{{count}} enregistrements de panne nettoyés téléchargés.",
+      "exportDialogTitle": "Journal des pannes du relais opérationnel",
+      "exportDialogDescription": "Instantané CSV délimité et assaini côté serveur pour les audits de fiabilité. Les identifiants et détails sensibles sont définitivement exclus.",
+      "exportSummary": "L'instantané contient {{count}} pannes enregistrées sur {{total}}.",
+      "exportTruncated": "Affichage des 1 000 derniers enregistrements.",
+      "exportEmpty": "Aucune panne de relais n'a encore été enregistrée.",
+      "exportStarted": "Début",
+      "exportStatus": "État",
+      "exportDuration": "Durée",
+      "exportCause": "Origine assainie",
+      "exportCancel": "Fermer",
+      "exportDownload": "Télécharger le CSV"
     }
   }
 }

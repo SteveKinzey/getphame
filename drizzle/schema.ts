@@ -369,6 +369,7 @@ export const emailRelayOutages = pgTable(
     id: serial("id").primaryKey(),
     startedAt: bigint("started_at", { mode: "number" }).notNull(),
     resolvedAt: bigint("resolved_at", { mode: "number" }),
+    lastAlertAt: bigint("last_alert_at", { mode: "number" }),
     cause: varchar("cause", { length: 300 }).notNull(),
     triggerSource: varchar("trigger_source", { length: 32 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -14,5 +14,7 @@ describe("EmailRelayStatusCard UI component", () => {
     expect(source).toContain("admin.emailRelay.diagnosticsTitle");
     expect(source).toContain("recentDiagnostics.map");
     expect(source).toContain("admin.emailRelay.sanitizedDiagnostic");
+    expect(source).toContain("exportRelayOutageCsv");
+    expect(source).toContain("admin.emailRelay.exportOutages");
   });
 });

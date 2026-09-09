@@ -4992,7 +4992,23 @@
       "alertDelivered": "Slack consegnato",
       "alertFallbackDelivered": "E-mail di riserva consegnata",
       "alertNotSent": "Nessuna consegna dell’avviso confermata",
-      "sanitizedDiagnostic": "Diagnostica sanificata"
+      "sanitizedDiagnostic": "Diagnostica sanificata",
+      "alertCooldown": "Intervallo di notifica avvisi: {{minutes}} minuti (soppressione delle oscillazioni transitorie attivata)",
+      "exportOutages": "Esporta CSV disservizi",
+      "exportPreparing": "Preparazione istantanea CSV…",
+      "exportFailure": "Impossibile generare l'esportazione dei disservizi: {{message}}",
+      "exportDownloaded": "Scaricati {{count}} record sanitizzati di disservizio.",
+      "exportDialogTitle": "Registro disservizi del relay operativo",
+      "exportDialogDescription": "Istantanea CSV delimitata e sanitizzata lato server per audit di affidabilità. Credenziali e diagnostiche sensibili sono escluse in modo permanente.",
+      "exportSummary": "L'istantanea include {{count}} disservizi registrati su {{total}}.",
+      "exportTruncated": "Visualizzazione degli ultimi 1000 record.",
+      "exportEmpty": "Nessun disservizio del relay registrato finora.",
+      "exportStarted": "Inizio",
+      "exportStatus": "Stato",
+      "exportDuration": "Durata",
+      "exportCause": "Causa sanitizzata",
+      "exportCancel": "Chiudi",
+      "exportDownload": "Scarica CSV"
     }
   }
 }

@@ -34,6 +34,11 @@ vi.mock("./relayAlertEmail", () => ({
   sendRelayAlertEmailFallback: mocks.emailFallbackMock,
 }));
 
+vi.mock("./db", () => ({
+  getDb: vi.fn(async () => null),
+  getUserByOpenId: vi.fn(async () => undefined),
+}));
+
 const originalFetch = globalThis.fetch;
 
 describe("operational email relay failover, slack alerts, and outage durations", () => {
@@ -316,5 +321,22 @@ describe("operational email relay failover, slack alerts, and outage durations",
     expect(diagnostics).toHaveLength(10);
     expect(diagnostics.every(item => item.source === "admin_manual")).toBe(true);
     expect(diagnostics.every(item => item.diagnostic === "Primary SYSTEM_SMTP transport verification succeeded.")).toBe(true);
+  });
+
+  it("enforces the default 30-minute alert cooldown to suppress transient network flapping", async () => {
+    const { getRelayAlertCooldownMinutes, getRelayAlertCooldownMs, reserveRelayAlert } = await import("./relayHealth");
+    const now = Date.now();
+    expect(getRelayAlertCooldownMinutes()).toBe(30);
+    expect(getRelayAlertCooldownMs()).toBe(30 * 60_000);
+
+    const first = await reserveRelayAlert("outage-1", now);
+    expect(first.permitted).toBe(true);
+
+    const flap = await reserveRelayAlert("outage-1", now + 5 * 60_000);
+    expect(flap.permitted).toBe(false);
+    expect(flap.retryAt).toBe(now + 30 * 60_000);
+
+    const afterCooldown = await reserveRelayAlert("outage-1", now + 31 * 60_000);
+    expect(afterCooldown.permitted).toBe(true);
   });
 });
