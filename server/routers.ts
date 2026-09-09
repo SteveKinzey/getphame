@@ -5050,6 +5050,15 @@ export const appRouter = router({
       return sendRelaySlackTestAlert();
     }),
 
+    /** One bounded, server-prepared and sanitized snapshot for reliability-audit CSV download. */
+    exportRelayOutageCsv: adminProcedure.mutation(async () => {
+      const [{ getRelayOutageExportSnapshot }, { buildRelayOutageCsvExport }] = await Promise.all([
+        import("./relayHealth"),
+        import("./relayOutageExport"),
+      ]);
+      return buildRelayOutageCsvExport(await getRelayOutageExportSnapshot());
+    }),
+
     /** Durable 24-hour SMTP and authentication health observations. */
     systemHealthTrend: adminProcedure
       .input(

@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
-import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, Clock, Bell, BellRing, Activity, FileText } from "lucide-react";
+import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, Clock, Bell, BellRing, Activity, FileText, Download } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   BarChart,
   Bar,
@@ -14,8 +15,37 @@ import {
   CartesianGrid,
 } from "recharts";
 
+type RelayOutageCsvExport = {
+  filename: string;
+  mimeType: string;
+  csv: string;
+  rowCount: number;
+  totalMatching: number;
+  truncated: boolean;
+  preview: {
+    rows: Array<Record<string, string>>;
+    rowCount: number;
+    limit: number;
+    truncated: boolean;
+  };
+};
+
+function downloadCsvFile(csv: string, mimeType: string, filename: string) {
+  const blob = new Blob([csv], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 export function EmailRelayStatusCard() {
   const { t } = useTranslation("translation");
+  const [outageExport, setOutageExport] = useState<RelayOutageCsvExport | null>(null);
+  const [outageExportOpen, setOutageExportOpen] = useState(false);
   const { data: relayStatus, isLoading, refetch } = trpc.admin.relayHealthStatus.useQuery(undefined, {
     refetchInterval: 30_000,
   });
@@ -51,6 +81,23 @@ export function EmailRelayStatusCard() {
       toast.error(t("admin.emailRelay.diagnosticFailureToast", { message: err.message }));
     },
   });
+
+  const prepareOutageExport = trpc.admin.exportRelayOutageCsv.useMutation({
+    onSuccess: (result) => {
+      setOutageExport(result);
+      setOutageExportOpen(true);
+    },
+    onError: (error) => {
+      toast.error(t("admin.emailRelay.exportFailure", { message: error.message }));
+    },
+  });
+
+  const downloadOutageExport = () => {
+    if (!outageExport || outageExport.rowCount === 0) return;
+    downloadCsvFile(outageExport.csv, outageExport.mimeType, outageExport.filename);
+    toast.success(t("admin.emailRelay.exportDownloaded", { count: outageExport.rowCount }));
+    setOutageExportOpen(false);
+  };
 
   const isHealthy = relayStatus?.lastKnownStatus === "healthy";
   const isFailover = relayStatus?.lastKnownStatus === "failover" || relayStatus?.activeFailoverIncident;
@@ -136,10 +183,24 @@ export function EmailRelayStatusCard() {
             <p className="mt-0.5 text-xs font-semibold rr-text-navy-muted">
               {t("admin.emailRelay.description")}
             </p>
+            {relayStatus?.alertCooldownMinutes && (
+              <p className="mt-1 text-[11px] font-semibold text-slate-500">
+                {t("admin.emailRelay.alertCooldown", { minutes: relayStatus.alertCooldownMinutes })}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2 sm:justify-end">
+          <button
+            type="button"
+            onClick={() => prepareOutageExport.mutate()}
+            disabled={prepareOutageExport.isPending || isLoading}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95 disabled:opacity-50"
+          >
+            <Download size={14} className={prepareOutageExport.isPending ? "animate-pulse" : ""} />
+            {prepareOutageExport.isPending ? t("admin.emailRelay.exportPreparing") : t("admin.emailRelay.exportOutages")}
+          </button>
           <button
             type="button"
             onClick={() => testSlackWebhook.mutate()}
@@ -389,6 +450,72 @@ export function EmailRelayStatusCard() {
           </details>
         </div>
       )}
+
+      <Dialog open={outageExportOpen} onOpenChange={setOutageExportOpen}>
+        <DialogContent className="max-h-[calc(100vh-2rem)] max-w-3xl overflow-y-auto rounded-2xl border-slate-200 p-5 sm:p-6">
+          <DialogHeader>
+            <DialogTitle className="rr-text-navy">{t("admin.emailRelay.exportDialogTitle")}</DialogTitle>
+            <DialogDescription className="text-sm font-medium rr-text-navy-muted">
+              {t("admin.emailRelay.exportDialogDescription")}
+            </DialogDescription>
+          </DialogHeader>
+
+          {outageExport && (
+            <div className="space-y-3">
+              <div role="status" className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
+                {t("admin.emailRelay.exportSummary", { count: outageExport.rowCount, total: outageExport.totalMatching })}
+                {outageExport.truncated ? ` ${t("admin.emailRelay.exportTruncated")}` : ""}
+              </div>
+              {outageExport.rowCount === 0 ? (
+                <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm font-semibold text-slate-600">
+                  {t("admin.emailRelay.exportEmpty")}
+                </p>
+              ) : (
+                <div className="overflow-x-auto rounded-xl border border-slate-200">
+                  <table className="w-full min-w-[620px] text-left text-xs">
+                    <thead className="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                      <tr>
+                        <th className="px-3 py-2">{t("admin.emailRelay.exportStarted")}</th>
+                        <th className="px-3 py-2">{t("admin.emailRelay.exportStatus")}</th>
+                        <th className="px-3 py-2">{t("admin.emailRelay.exportDuration")}</th>
+                        <th className="px-3 py-2">{t("admin.emailRelay.exportCause")}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 bg-white text-slate-700">
+                      {outageExport.preview.rows.map((row) => (
+                        <tr key={row.outageId}>
+                          <td className="whitespace-nowrap px-3 py-2.5">{new Date(row.startedAtUtc).toLocaleString()}</td>
+                          <td className="px-3 py-2.5 font-semibold">{row.status}</td>
+                          <td className="px-3 py-2.5">{row.durationMinutes} {t("admin.emailRelay.minutes")}</td>
+                          <td className="max-w-80 truncate px-3 py-2.5 font-mono text-[11px]" title={row.causeSanitized}>{row.causeSanitized}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            <button
+              type="button"
+              onClick={() => setOutageExportOpen(false)}
+              className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
+            >
+              {t("admin.emailRelay.exportCancel")}
+            </button>
+            <button
+              type="button"
+              onClick={downloadOutageExport}
+              disabled={!outageExport || outageExport.rowCount === 0}
+              className="inline-flex items-center justify-center gap-2 rounded-xl rr-bg-gold px-4 py-2 text-sm font-black rr-text-navy transition active:scale-95 disabled:opacity-50"
+            >
+              <Download size={15} /> {t("admin.emailRelay.exportDownload")}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

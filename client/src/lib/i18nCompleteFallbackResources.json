@@ -1980,6 +1980,28 @@
         "alertNotSent": "No alert delivery confirmed",
         "sanitizedDiagnostic": "Sanitized diagnostic"
       }
+    },
+    "translation": {
+      "admin": {
+        "emailRelay": {
+          "alertCooldown": "Alert cooldown: {{minutes}} minutes (transient flap suppression enabled)",
+          "exportOutages": "Export outage CSV",
+          "exportPreparing": "Preparing CSV snapshot…",
+          "exportFailure": "Outage export could not be generated: {{message}}",
+          "exportDownloaded": "Downloaded {{count}} sanitized outage records.",
+          "exportDialogTitle": "Operational Relay Outage Log",
+          "exportDialogDescription": "Bounded, server-sanitized CSV snapshot of primary relay outages for reliability audits. Sensitive diagnostic values and credentials are permanently excluded.",
+          "exportSummary": "Snapshot contains {{count}} of {{total}} recorded outages.",
+          "exportTruncated": "Displaying the latest 1,000 records.",
+          "exportEmpty": "No relay outages have been recorded yet.",
+          "exportStarted": "Started",
+          "exportStatus": "Status",
+          "exportDuration": "Duration",
+          "exportCause": "Sanitized cause",
+          "exportCancel": "Close",
+          "exportDownload": "Download CSV"
+        }
+      }
     }
   },
   "es": {
@@ -4163,6 +4185,28 @@
         "alertFallbackDelivered": "Correo alternativo entregado",
         "alertNotSent": "No se confirmó la entrega de alerta",
         "sanitizedDiagnostic": "Diagnóstico depurado"
+      }
+    },
+    "translation": {
+      "admin": {
+        "emailRelay": {
+          "alertCooldown": "Tiempo de espera de alertas: {{minutes}} minutos (supresión de fluctuaciones transitorias activada)",
+          "exportOutages": "Exportar CSV de interrupciones",
+          "exportPreparing": "Preparando instantánea CSV…",
+          "exportFailure": "No se pudo generar la exportación de interrupciones: {{message}}",
+          "exportDownloaded": "Se descargaron {{count}} registros saneados de interrupción.",
+          "exportDialogTitle": "Registro de interrupciones del relé operativo",
+          "exportDialogDescription": "Instantánea CSV delimitada y saneada en el servidor para auditorías de confiabilidad. Se excluyen permanentemente credenciales y detalles sensibles.",
+          "exportSummary": "La instantánea contiene {{count}} de {{total}} interrupciones registradas.",
+          "exportTruncated": "Mostrando los últimos 1000 registros.",
+          "exportEmpty": "Aún no se han registrado interrupciones del relé.",
+          "exportStarted": "Inicio",
+          "exportStatus": "Estado",
+          "exportDuration": "Duración",
+          "exportCause": "Causa saneada",
+          "exportCancel": "Cerrar",
+          "exportDownload": "Descargar CSV"
+        }
       }
     }
   },
@@ -6369,6 +6413,28 @@
         "alertNotSent": "Aucune distribution d’alerte confirmée",
         "sanitizedDiagnostic": "Diagnostic assaini"
       }
+    },
+    "translation": {
+      "admin": {
+        "emailRelay": {
+          "alertCooldown": "Délai de répétition des alertes : {{minutes}} minutes (suppression des battements transitoires activée)",
+          "exportOutages": "Exporter le CSV des pannes",
+          "exportPreparing": "Préparation de l'instantané CSV…",
+          "exportFailure": "Impossible de générer l'export des pannes : {{message}}",
+          "exportDownloaded": "{{count}} enregistrements de panne nettoyés téléchargés.",
+          "exportDialogTitle": "Journal des pannes du relais opérationnel",
+          "exportDialogDescription": "Instantané CSV délimité et assaini côté serveur pour les audits de fiabilité. Les identifiants et détails sensibles sont définitivement exclus.",
+          "exportSummary": "L'instantané contient {{count}} pannes enregistrées sur {{total}}.",
+          "exportTruncated": "Affichage des 1 000 derniers enregistrements.",
+          "exportEmpty": "Aucune panne de relais n'a encore été enregistrée.",
+          "exportStarted": "Début",
+          "exportStatus": "État",
+          "exportDuration": "Durée",
+          "exportCause": "Origine assainie",
+          "exportCancel": "Fermer",
+          "exportDownload": "Télécharger le CSV"
+        }
+      }
     }
   },
   "it": {
@@ -8421,6 +8487,28 @@
         "alertNotSent": "Nessuna consegna dell’avviso confermata",
         "sanitizedDiagnostic": "Diagnostica sanificata"
       }
+    },
+    "translation": {
+      "admin": {
+        "emailRelay": {
+          "alertCooldown": "Intervallo di notifica avvisi: {{minutes}} minuti (soppressione delle oscillazioni transitorie attivata)",
+          "exportOutages": "Esporta CSV disservizi",
+          "exportPreparing": "Preparazione istantanea CSV…",
+          "exportFailure": "Impossibile generare l'esportazione dei disservizi: {{message}}",
+          "exportDownloaded": "Scaricati {{count}} record sanitizzati di disservizio.",
+          "exportDialogTitle": "Registro disservizi del relay operativo",
+          "exportDialogDescription": "Istantanea CSV delimitata e sanitizzata lato server per audit di affidabilità. Credenziali e diagnostiche sensibili sono escluse in modo permanente.",
+          "exportSummary": "L'istantanea include {{count}} disservizi registrati su {{total}}.",
+          "exportTruncated": "Visualizzazione degli ultimi 1000 record.",
+          "exportEmpty": "Nessun disservizio del relay registrato finora.",
+          "exportStarted": "Inizio",
+          "exportStatus": "Stato",
+          "exportDuration": "Durata",
+          "exportCause": "Causa sanitizzata",
+          "exportCancel": "Chiudi",
+          "exportDownload": "Scarica CSV"
+        }
+      }
     }
   },
   "th": {
@@ -10463,6 +10551,28 @@
         "alertNotSent": "ยังไม่ยืนยันการส่งการแจ้งเตือน",
         "sanitizedDiagnostic": "ผลวินิจฉัยที่ผ่านการปกปิด"
       }
+    },
+    "translation": {
+      "admin": {
+        "emailRelay": {
+          "alertCooldown": "ระยะหน่วงการแจ้งเตือน: {{minutes}} นาที (เปิดใช้งานการระงับความผันผวนชั่วคราว)",
+          "exportOutages": "ส่งออก CSV บันทึกเหตุขัดข้อง",
+          "exportPreparing": "กำลังจัดเตรียมสแนปชอต CSV…",
+          "exportFailure": "ไม่สามารถสร้างไฟล์ส่งออกเหตุขัดข้องได้: {{message}}",
+          "exportDownloaded": "ดาวน์โหลดข้อมูลเหตุขัดข้องที่ลบข้อมูลละเอียดอ่อนแล้ว {{count}} รายการ",
+          "exportDialogTitle": "บันทึกเหตุขัดข้องของระบบรีเลย์อีเมล",
+          "exportDialogDescription": "สแนปชอต CSV ที่ถูกจำกัดขอบเขตและตรวจสอบความปลอดภัยจากเซิร์ฟเวอร์สำหรับการตรวจสอบความน่าเชื่อถือ ข้อมูลรับรองและข้อมูลละเอียดอ่อนจะถูกตัดออกอย่างถาวร",
+          "exportSummary": "สแนปชอตประกอบด้วย {{count}} จาก {{total}} เหตุขัดข้องที่บันทึกไว้",
+          "exportTruncated": "กำลังแสดง 1,000 รายการล่าสุด",
+          "exportEmpty": "ยังไม่มีการบันทึกเหตุขัดข้องของระบบรีเลย์",
+          "exportStarted": "เริ่มต้น",
+          "exportStatus": "สถานะ",
+          "exportDuration": "ระยะเวลา",
+          "exportCause": "สาเหตุที่ปรับแต่งความปลอดภัยแล้ว",
+          "exportCancel": "ปิด",
+          "exportDownload": "ดาวน์โหลด CSV"
+        }
+      }
     }
   },
   "zh-CN": {
@@ -12494,6 +12604,28 @@
         "alertFallbackDelivered": "备用电子邮件已送达",
         "alertNotSent": "未确认警报投递",
         "sanitizedDiagnostic": "已脱敏诊断"
+      }
+    },
+    "translation": {
+      "admin": {
+        "emailRelay": {
+          "alertCooldown": "告警冷却时间：{{minutes}} 分钟（已启用瞬态抖动抑制）",
+          "exportOutages": "导出故障 CSV",
+          "exportPreparing": "正在准备 CSV 快照…",
+          "exportFailure": "无法生成故障导出：{{message}}",
+          "exportDownloaded": "已下载 {{count}} 条脱敏故障记录。",
+          "exportDialogTitle": "运行邮件中继故障日志",
+          "exportDialogDescription": "用于可靠性审计的受限、服务端脱敏 CSV 快照。敏感凭据与诊断细节已被永久排除。",
+          "exportSummary": "快照包含已记录的 {{total}} 次故障中的 {{count}} 次。",
+          "exportTruncated": "仅展示最新的 1,000 条记录。",
+          "exportEmpty": "尚未记录任何中继故障。",
+          "exportStarted": "开始时间",
+          "exportStatus": "状态",
+          "exportDuration": "持续时间",
+          "exportCause": "脱敏原因",
+          "exportCancel": "关闭",
+          "exportDownload": "下载 CSV"
+        }
       }
     }
   },
@@ -14541,6 +14673,28 @@
         "alertFallbackDelivered": "備援電子郵件已送達",
         "alertNotSent": "未確認警示投遞",
         "sanitizedDiagnostic": "已去識別化診斷"
+      }
+    },
+    "translation": {
+      "admin": {
+        "emailRelay": {
+          "alertCooldown": "告警冷卻時間：{{minutes}} 分鐘（已啟用瞬態抖動抑制）",
+          "exportOutages": "匯出故障 CSV",
+          "exportPreparing": "正在準備 CSV 快照…",
+          "exportFailure": "無法產生故障匯出：{{message}}",
+          "exportDownloaded": "已下載 {{count}} 筆去識別化故障紀錄。",
+          "exportDialogTitle": "運作郵件轉發故障日誌",
+          "exportDialogDescription": "用於可靠性稽核的受限、伺服端去識別化 CSV 快照。敏感憑證與診斷細節已被永久排除。",
+          "exportSummary": "快照包含已記錄的 {{total}} 次故障中的 {{count}} 次。",
+          "exportTruncated": "僅顯示最新的 1,000 筆紀錄。",
+          "exportEmpty": "尚未記錄任何轉發故障。",
+          "exportStarted": "開始時間",
+          "exportStatus": "狀態",
+          "exportDuration": "持續時間",
+          "exportCause": "去識別化原因",
+          "exportCancel": "關閉",
+          "exportDownload": "下載 CSV"
+        }
       }
     }
   }

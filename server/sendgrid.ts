@@ -22,7 +22,7 @@
 import sgMail from "@sendgrid/mail";
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
-import { recordRelayEvent, sanitizeRelayDiagnostic, sendSlackWebhookNotification } from "./relayHealth";
+import { recordRelayEvent, reserveRelayAlert, sanitizeRelayDiagnostic, sendSlackWebhookNotification, startRelayOutage } from "./relayHealth";
 import { sendRelayAlertEmailFallback } from "./relayAlertEmail";
 
 export interface SystemEmailOptions {
@@ -94,27 +94,31 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
 
       if (!opts.suppressRelayAlert) {
         const checkedAt = Date.now();
-        const slackDelivered = await sendSlackWebhookNotification({
-          title: hasSendgrid
-            ? "⚠️ Get Phame: Outbound Email Failed Over to SendGrid"
-            : "🚨 Get Phame: Outbound Email Failed (No SendGrid Backup)",
-          color: hasSendgrid ? "#f59e0b" : "#e11d48",
-          fields: [
-            { title: "Event", value: "Runtime Outbound Send Error" },
-            { title: "Recipient Domain", value: recipientDomainMatch?.[1] ?? "unknown" },
-            { title: "Error", value: safeError.slice(0, 150) },
-            { title: "Timestamp", value: new Date(checkedAt).toUTCString() },
-          ],
-        });
-
-        if (!slackDelivered) {
-          await sendRelayAlertEmailFallback({
-            event: "failure",
-            activeRelay: hasSendgrid ? "sendgrid" : "none",
-            checkedAt,
-            source: "outbound_send",
-            diagnostic: safeError,
+        const outage = await startRelayOutage(safeError, "outbound_send", checkedAt);
+        const alertReservation = await reserveRelayAlert(outage.id, checkedAt);
+        if (alertReservation.permitted) {
+          const slackDelivered = await sendSlackWebhookNotification({
+            title: hasSendgrid
+              ? "⚠️ Get Phame: Outbound Email Failed Over to SendGrid"
+              : "🚨 Get Phame: Outbound Email Failed (No SendGrid Backup)",
+            color: hasSendgrid ? "#f59e0b" : "#e11d48",
+            fields: [
+              { title: "Event", value: "Runtime Outbound Send Error" },
+              { title: "Recipient Domain", value: recipientDomainMatch?.[1] ?? "unknown" },
+              { title: "Error", value: safeError.slice(0, 150) },
+              { title: "Timestamp", value: new Date(checkedAt).toUTCString() },
+            ],
           });
+
+          if (!slackDelivered) {
+            await sendRelayAlertEmailFallback({
+              event: "failure",
+              activeRelay: hasSendgrid ? "sendgrid" : "none",
+              checkedAt,
+              source: "outbound_send",
+              diagnostic: safeError,
+            });
+          }
         }
       }
 

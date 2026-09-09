@@ -4241,7 +4241,23 @@
       "alertDelivered": "Slack 已送达",
       "alertFallbackDelivered": "备用电子邮件已送达",
       "alertNotSent": "未确认警报投递",
-      "sanitizedDiagnostic": "已脱敏诊断"
+      "sanitizedDiagnostic": "已脱敏诊断",
+      "alertCooldown": "告警冷却时间：{{minutes}} 分钟（已启用瞬态抖动抑制）",
+      "exportOutages": "导出故障 CSV",
+      "exportPreparing": "正在准备 CSV 快照…",
+      "exportFailure": "无法生成故障导出：{{message}}",
+      "exportDownloaded": "已下载 {{count}} 条脱敏故障记录。",
+      "exportDialogTitle": "运行邮件中继故障日志",
+      "exportDialogDescription": "用于可靠性审计的受限、服务端脱敏 CSV 快照。敏感凭据与诊断细节已被永久排除。",
+      "exportSummary": "快照包含已记录的 {{total}} 次故障中的 {{count}} 次。",
+      "exportTruncated": "仅展示最新的 1,000 条记录。",
+      "exportEmpty": "尚未记录任何中继故障。",
+      "exportStarted": "开始时间",
+      "exportStatus": "状态",
+      "exportDuration": "持续时间",
+      "exportCause": "脱敏原因",
+      "exportCancel": "关闭",
+      "exportDownload": "下载 CSV"
     }
   }
 }

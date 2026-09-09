@@ -4701,7 +4701,23 @@
       "alertDelivered": "Slack delivered",
       "alertFallbackDelivered": "Email fallback delivered",
       "alertNotSent": "No alert delivery confirmed",
-      "sanitizedDiagnostic": "Sanitized diagnostic"
+      "sanitizedDiagnostic": "Sanitized diagnostic",
+      "alertCooldown": "Alert cooldown: {{minutes}} minutes (transient flap suppression enabled)",
+      "exportOutages": "Export outage CSV",
+      "exportPreparing": "Preparing CSV snapshot…",
+      "exportFailure": "Outage export could not be generated: {{message}}",
+      "exportDownloaded": "Downloaded {{count}} sanitized outage records.",
+      "exportDialogTitle": "Operational Relay Outage Log",
+      "exportDialogDescription": "Bounded, server-sanitized CSV snapshot of primary relay outages for reliability audits. Sensitive diagnostic values and credentials are permanently excluded.",
+      "exportSummary": "Snapshot contains {{count}} of {{total}} recorded outages.",
+      "exportTruncated": "Displaying the latest 1,000 records.",
+      "exportEmpty": "No relay outages have been recorded yet.",
+      "exportStarted": "Started",
+      "exportStatus": "Status",
+      "exportDuration": "Duration",
+      "exportCause": "Sanitized cause",
+      "exportCancel": "Close",
+      "exportDownload": "Download CSV"
     }
   }
 }
