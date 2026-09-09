@@ -339,4 +339,24 @@ describe("operational email relay failover, slack alerts, and outage durations",
     const afterCooldown = await reserveRelayAlert("outage-1", now + 31 * 60_000);
     expect(afterCooldown.permitted).toBe(true);
   });
+
+  it("prevents concurrent callers from acquiring duplicate alert reservations", async () => {
+    const { reserveRelayAlert } = await import("./relayHealth");
+    const now = Date.now();
+
+    // Simulate 5 simultaneous requests attempting to alert on the same outage
+    const results = await Promise.all([
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+    ]);
+
+    const permittedCount = results.filter(r => r.permitted).length;
+    const suppressedCount = results.filter(r => !r.permitted).length;
+
+    expect(permittedCount).toBe(1);
+    expect(suppressedCount).toBe(4);
+  });
 });
