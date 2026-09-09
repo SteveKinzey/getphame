@@ -1,12 +1,14 @@
-import { desc, eq, isNull } from "drizzle-orm";
+import { desc, eq, inArray, isNull } from "drizzle-orm";
 import nodemailer from "nodemailer";
-import { emailRelayOutages } from "../drizzle/schema";
+import { emailRelayDiagnostics, emailRelayOutages } from "../drizzle/schema";
 import { notifyOwner } from "./_core/notification";
 import { ENV } from "./_core/env";
 import { getDb } from "./db";
+import { sendRelayAlertEmailFallback } from "./relayAlertEmail";
 
 export type RelayProvider = "system_smtp" | "sendgrid" | "none";
 export type RelayHealthState = "healthy" | "failover" | "degraded" | "unconfigured";
+export type RelayDiagnosticSource = "scheduled_heartbeat" | "admin_manual";
 
 export interface FailoverEvent {
   id: string;
@@ -26,16 +28,38 @@ export interface OutageRecord {
   status: "ongoing" | "resolved";
 }
 
+export interface RelayHeartbeatDiagnostic {
+  id: string;
+  checkedAt: number;
+  source: RelayDiagnosticSource;
+  status: RelayHealthState;
+  activeRelay: RelayProvider;
+  primaryHealthy: boolean;
+  backupConfigured: boolean;
+  durationMs: number;
+  alertType: "failure" | "recovery" | null;
+  slackAlertSent: boolean;
+  emailFallbackAttempted: boolean;
+  emailFallbackDelivered: boolean;
+  diagnostic: string;
+}
+
 const MAX_FAILOVER_HISTORY = 50;
 const MAX_OUTAGE_HISTORY = 20;
+const MAX_HEARTBEAT_DIAGNOSTICS = 10;
 const failoverHistory: FailoverEvent[] = [];
 const fallbackOutageHistory: OutageRecord[] = [];
+const heartbeatDiagnostics: RelayHeartbeatDiagnostic[] = [];
 
 let activeFailoverIncident = false;
 let lastFailoverAlertAt: number | null = null;
 let lastCheckedAt: number | null = null;
 let lastKnownStatus: RelayHealthState = "healthy";
 
+/**
+ * Strips secrets and personal data before retaining diagnostics in memory,
+ * persistence, response payloads, Slack, or operational fallback email.
+ */
 export function sanitizeRelayDiagnostic(value: string): string {
   const normalized = value.replace(/\s+/g, " ").trim();
   const redacted = normalized
@@ -63,6 +87,112 @@ function asOutageRecord(row: typeof emailRelayOutages.$inferSelect, now = Date.n
   };
 }
 
+async function recordHeartbeatDiagnostic(
+  result: RelayHeartbeatResult,
+  source: RelayDiagnosticSource
+): Promise<RelayHeartbeatResult> {
+  const safeDiagnostic = result.primaryError
+    ? boundedCause(result.primaryError)
+    : "Primary SYSTEM_SMTP transport verification succeeded.";
+
+  const entry: RelayHeartbeatDiagnostic = {
+    id: `rh_${result.checkedAt.toString(36)}_${Math.random().toString(36).slice(2, 8)}`,
+    checkedAt: result.checkedAt,
+    source,
+    status: result.status,
+    activeRelay: result.activeRelay,
+    primaryHealthy: result.primaryHealthy,
+    backupConfigured: result.backupConfigured,
+    durationMs: result.durationMs,
+    alertType: result.alertType ?? null,
+    slackAlertSent: result.slackAlertSent,
+    emailFallbackAttempted: result.emailFallbackAttempted,
+    emailFallbackDelivered: result.emailFallbackDelivered,
+    diagnostic: safeDiagnostic,
+  };
+
+  heartbeatDiagnostics.unshift(entry);
+  if (heartbeatDiagnostics.length > MAX_HEARTBEAT_DIAGNOSTICS) heartbeatDiagnostics.pop();
+
+  const db = await getDb();
+  if (db) {
+    await db.insert(emailRelayDiagnostics).values({
+      checkedAt: entry.checkedAt,
+      source: entry.source,
+      status: entry.status,
+      activeRelay: entry.activeRelay,
+      primaryHealthy: entry.primaryHealthy,
+      backupConfigured: entry.backupConfigured,
+      durationMs: entry.durationMs,
+      alertType: entry.alertType,
+      slackAlertSent: entry.slackAlertSent,
+      emailFallbackAttempted: entry.emailFallbackAttempted,
+      emailFallbackDelivered: entry.emailFallbackDelivered,
+      diagnostic: entry.diagnostic,
+    }).catch((error) => {
+      console.warn("[RelayHealth] Failed to insert durable heartbeat diagnostic:", error instanceof Error ? error.name : "UnknownError");
+    });
+
+    // Keep the database log as bounded as the Admin UI contract: the latest ten
+    // sanitized observations only. This prevents an unbounded 15-minute cron log.
+    const staleRows = await db
+      .select({ id: emailRelayDiagnostics.id })
+      .from(emailRelayDiagnostics)
+      .orderBy(desc(emailRelayDiagnostics.checkedAt))
+      .offset(MAX_HEARTBEAT_DIAGNOSTICS)
+      .limit(1000)
+      .catch(() => []);
+    if (staleRows.length > 0) {
+      await db
+        .delete(emailRelayDiagnostics)
+        .where(inArray(emailRelayDiagnostics.id, staleRows.map(row => row.id)))
+        .catch((error) => {
+          console.warn("[RelayHealth] Failed to prune durable heartbeat diagnostics:", error instanceof Error ? error.name : "UnknownError");
+        });
+    }
+  }
+
+  return result;
+}
+
+export async function getRecentHeartbeatDiagnostics(limit = MAX_HEARTBEAT_DIAGNOSTICS): Promise<RelayHeartbeatDiagnostic[]> {
+  const db = await getDb();
+  if (!db) {
+    return heartbeatDiagnostics.slice(0, Math.min(limit, MAX_HEARTBEAT_DIAGNOSTICS));
+  }
+
+  const rows = await db
+    .select()
+    .from(emailRelayDiagnostics)
+    .orderBy(desc(emailRelayDiagnostics.checkedAt))
+    .limit(Math.min(limit, MAX_HEARTBEAT_DIAGNOSTICS))
+    .catch(() => []);
+
+  if (rows.length === 0) {
+    return heartbeatDiagnostics.slice(0, Math.min(limit, MAX_HEARTBEAT_DIAGNOSTICS));
+  }
+
+  return rows.map((row) => ({
+    id: String(row.id),
+    checkedAt: row.checkedAt,
+    source: (row.source === "admin_manual" ? "admin_manual" : "scheduled_heartbeat") as RelayDiagnosticSource,
+    status: row.status as RelayHealthState,
+    activeRelay: row.activeRelay as RelayProvider,
+    primaryHealthy: Boolean(row.primaryHealthy),
+    backupConfigured: Boolean(row.backupConfigured),
+    durationMs: row.durationMs,
+    alertType: (row.alertType as "failure" | "recovery" | null) ?? null,
+    slackAlertSent: Boolean(row.slackAlertSent),
+    emailFallbackAttempted: Boolean(row.emailFallbackAttempted),
+    emailFallbackDelivered: Boolean(row.emailFallbackDelivered),
+    diagnostic: boundedCause(row.diagnostic),
+  }));
+}
+
+export function getInMemoryHeartbeatDiagnostics(limit = MAX_HEARTBEAT_DIAGNOSTICS): RelayHeartbeatDiagnostic[] {
+  return heartbeatDiagnostics.slice(0, Math.min(limit, MAX_HEARTBEAT_DIAGNOSTICS));
+}
+
 export function resetRelayHealthState() {
   activeFailoverIncident = false;
   lastFailoverAlertAt = null;
@@ -70,9 +200,10 @@ export function resetRelayHealthState() {
   lastKnownStatus = "healthy";
   failoverHistory.length = 0;
   fallbackOutageHistory.length = 0;
+  heartbeatDiagnostics.length = 0;
 }
 
-/** Dispatch a bounded Slack Incoming Webhook payload; no webhook is logged. */
+/** Dispatch a bounded Slack Incoming Webhook payload; no webhook URL is logged. */
 export async function sendSlackWebhookNotification(payload: {
   title: string;
   color: "#e11d48" | "#10b981" | "#f59e0b";
@@ -88,10 +219,10 @@ export async function sendSlackWebhookNotification(payload: {
       body: JSON.stringify({
         attachments: [{
           color: payload.color,
-          title: payload.title,
+          title: payload.title.slice(0, 180),
           fields: payload.fields.map(field => ({
             title: field.title.slice(0, 80),
-            value: field.value.slice(0, 300),
+            value: boundedCause(field.value).slice(0, 300),
             short: field.short !== false,
           })),
           footer: "Get Phame Operations Monitor",
@@ -268,22 +399,70 @@ export interface RelayHeartbeatResult {
   durationMs: number;
   transitionAlertSent: boolean;
   slackAlertSent: boolean;
+  emailFallbackAttempted: boolean;
+  emailFallbackDelivered: boolean;
   alertType?: "failure" | "recovery" | null;
 }
 
-export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
+async function sendFallbackAfterSlackFailure(input: {
+  event: "failure" | "recovery";
+  activeRelay: RelayProvider;
+  checkedAt: number;
+  source: RelayDiagnosticSource;
+  diagnostic: string;
+  durationMinutes?: number | null;
+}) {
+  const result = await sendRelayAlertEmailFallback(input).catch(() => ({
+    attempted: false,
+    delivered: false,
+    reason: "delivery_failed" as const,
+  }));
+  return {
+    emailFallbackAttempted: result.attempted,
+    emailFallbackDelivered: result.delivered,
+  };
+}
+
+export async function runRelayHeartbeatCheck(options: { source?: RelayDiagnosticSource } = {}): Promise<RelayHeartbeatResult> {
+  const source = options.source ?? "scheduled_heartbeat";
   const startedAt = Date.now();
   const config = getRelayConfigStatus();
   lastCheckedAt = startedAt;
 
   if (!config.primaryConfigured && !config.backupConfigured) {
     lastKnownStatus = "unconfigured";
-    return { checkedAt: startedAt, status: "unconfigured", activeRelay: "none", primaryHealthy: false, backupConfigured: false, primaryError: "Neither primary SYSTEM_SMTP nor backup SendGrid are configured", durationMs: 0, transitionAlertSent: false, slackAlertSent: false, alertType: null };
+    return await recordHeartbeatDiagnostic({
+      checkedAt: startedAt,
+      status: "unconfigured",
+      activeRelay: "none",
+      primaryHealthy: false,
+      backupConfigured: false,
+      primaryError: "Neither primary SYSTEM_SMTP nor backup SendGrid are configured",
+      durationMs: 0,
+      transitionAlertSent: false,
+      slackAlertSent: false,
+      emailFallbackAttempted: false,
+      emailFallbackDelivered: false,
+      alertType: null,
+    }, source);
   }
 
   if (!config.primaryConfigured && config.backupConfigured) {
     lastKnownStatus = "failover";
-    return { checkedAt: startedAt, status: "failover", activeRelay: "sendgrid", primaryHealthy: false, backupConfigured: true, primaryError: "SYSTEM_SMTP_* not configured; running on backup SendGrid relay", durationMs: 0, transitionAlertSent: false, slackAlertSent: false, alertType: null };
+    return await recordHeartbeatDiagnostic({
+      checkedAt: startedAt,
+      status: "failover",
+      activeRelay: "sendgrid",
+      primaryHealthy: false,
+      backupConfigured: true,
+      primaryError: "SYSTEM_SMTP_* not configured; running on backup SendGrid relay",
+      durationMs: 0,
+      transitionAlertSent: false,
+      slackAlertSent: false,
+      emailFallbackAttempted: false,
+      emailFallbackDelivered: false,
+      alertType: null,
+    }, source);
   }
 
   const probe = await probePrimarySmtp();
@@ -292,12 +471,17 @@ export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
   let alertType: "failure" | "recovery" | null = null;
   let transitionAlertSent = false;
   let slackAlertSent = false;
+  let emailFallbackAttempted = false;
+  let emailFallbackDelivered = false;
+  const safeDiagnostic = probe.ok
+    ? "Primary SYSTEM_SMTP transport verification succeeded."
+    : boundedCause(probe.error ?? "Primary SMTP connection verification failed");
 
   if (probe.ok) {
     if (activeFailoverIncident) {
       activeFailoverIncident = false;
       alertType = "recovery";
-      recordRelayEvent({ fromProvider: lastKnownStatus === "failover" ? "sendgrid" : "none", toProvider: "system_smtp", reason: "Primary SYSTEM_SMTP transport verified healthy. Traffic restored to primary relay.", source: "heartbeat_check" });
+      recordRelayEvent({ fromProvider: lastKnownStatus === "failover" ? "sendgrid" : "none", toProvider: "system_smtp", reason: safeDiagnostic, source });
       const outage = await resolveActiveRelayOutage(startedAt);
       try {
         transitionAlertSent = await notifyOwner({
@@ -322,9 +506,18 @@ export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
           { title: "Outage Duration", value: outage ? `${outage.durationMinutes} minute(s)` : "Not observed" },
         ],
       });
+      if (!slackAlertSent) {
+        ({ emailFallbackAttempted, emailFallbackDelivered } = await sendFallbackAfterSlackFailure({
+          event: "recovery",
+          activeRelay: "system_smtp",
+          checkedAt: startedAt,
+          source,
+          diagnostic: safeDiagnostic,
+          durationMinutes: outage?.durationMinutes,
+        }));
+      }
     }
   } else {
-    const failReason = boundedCause(probe.error ?? "Primary SMTP connection verification failed");
     if (config.backupConfigured) {
       status = "failover";
       activeRelay = "sendgrid";
@@ -337,15 +530,15 @@ export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
       activeFailoverIncident = true;
       lastFailoverAlertAt = startedAt;
       alertType = "failure";
-      recordRelayEvent({ fromProvider: "system_smtp", toProvider: activeRelay, reason: failReason, source: "heartbeat_check" });
-      await startRelayOutage(failReason, "heartbeat_check", startedAt);
+      recordRelayEvent({ fromProvider: "system_smtp", toProvider: activeRelay, reason: safeDiagnostic, source });
+      await startRelayOutage(safeDiagnostic, source, startedAt);
       try {
         transitionAlertSent = await notifyOwner({
           title: config.backupConfigured ? "Get Phame: Operational email failed over to SendGrid backup" : "Get Phame: Operational email primary relay failed (No backup)",
           content: [
             "Primary SYSTEM_SMTP relay connection failed verification.",
             `Host: ${config.primaryHost}`,
-            `Error: ${failReason}`,
+            `Error: ${safeDiagnostic}`,
             `Status: ${config.backupConfigured ? "Shifted traffic to SendGrid backup failover" : "Outbound operational emails may fail"}`,
             `Detected at: ${new Date(startedAt).toISOString()}`,
             "Review: /admin",
@@ -360,15 +553,72 @@ export async function runRelayHeartbeatCheck(): Promise<RelayHeartbeatResult> {
         fields: [
           { title: "Event", value: "Primary Relay Outage" },
           { title: "Active Relay", value: config.backupConfigured ? "SendGrid API (Backup)" : "None" },
-          { title: "Reason", value: failReason },
+          { title: "Reason", value: safeDiagnostic },
           { title: "Detected At", value: new Date(startedAt).toUTCString() },
         ],
       });
+      if (!slackAlertSent) {
+        ({ emailFallbackAttempted, emailFallbackDelivered } = await sendFallbackAfterSlackFailure({
+          event: "failure",
+          activeRelay,
+          checkedAt: startedAt,
+          source,
+          diagnostic: safeDiagnostic,
+        }));
+      }
     }
   }
 
   lastKnownStatus = status;
-  return { checkedAt: startedAt, status, activeRelay, primaryHealthy: probe.ok, backupConfigured: config.backupConfigured, primaryError: probe.ok ? null : probe.error, durationMs: probe.durationMs, transitionAlertSent, slackAlertSent, alertType };
+  return await recordHeartbeatDiagnostic({
+    checkedAt: startedAt,
+    status,
+    activeRelay,
+    primaryHealthy: probe.ok,
+    backupConfigured: config.backupConfigured,
+    primaryError: probe.ok ? null : safeDiagnostic,
+    durationMs: probe.durationMs,
+    transitionAlertSent,
+    slackAlertSent,
+    emailFallbackAttempted,
+    emailFallbackDelivered,
+    alertType,
+  }, source);
+}
+
+/** Admin-only controlled webhook test. It never alters failover state or sends customer mail. */
+export async function sendRelaySlackTestAlert() {
+  const checkedAt = Date.now();
+  const config = getRelayConfigStatus();
+  const slackDelivered = await sendSlackWebhookNotification({
+    title: "🔔 Get Phame: Operational Email Relay Slack Test",
+    color: "#10b981",
+    fields: [
+      { title: "Result", value: "Manual webhook delivery test requested by an administrator" },
+      { title: "Primary Relay", value: config.primaryConfigured ? "SYSTEM_SMTP configured" : "SYSTEM_SMTP unconfigured" },
+      { title: "Backup Relay", value: config.backupConfigured ? "SendGrid backup configured" : "SendGrid backup unavailable" },
+      { title: "Tested At", value: new Date(checkedAt).toUTCString() },
+    ],
+  });
+
+  const emailFallback = slackDelivered
+    ? { emailFallbackAttempted: false, emailFallbackDelivered: false }
+    : await sendRelayAlertEmailFallback({
+      event: "slack_test",
+      activeRelay: lastKnownStatus === "failover" ? "sendgrid" : config.primaryConfigured ? "system_smtp" : "none",
+      checkedAt,
+      source: "admin_manual",
+      diagnostic: "Manual Slack webhook test did not confirm delivery.",
+    })
+      .then(result => ({ emailFallbackAttempted: result.attempted, emailFallbackDelivered: result.delivered }))
+      .catch(() => ({ emailFallbackAttempted: false, emailFallbackDelivered: false }));
+
+  return {
+    checkedAt,
+    slackConfigured: config.slackWebhookConfigured,
+    slackDelivered,
+    ...emailFallback,
+  };
 }
 
 export async function getCurrentRelaySummary() {
@@ -383,6 +633,7 @@ export async function getCurrentRelaySummary() {
     backupConfigured: config.backupConfigured,
     slackWebhookConfigured: config.slackWebhookConfigured,
     recentEvents: getRecentFailoverEvents(5),
+    recentDiagnostics: await getRecentHeartbeatDiagnostics(10),
     outageHistory: await getOutageHistory(10),
   };
 }

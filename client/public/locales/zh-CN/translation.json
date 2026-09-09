@@ -4219,7 +4219,29 @@
       "durationResolved": "已解决时长",
       "recentEvents": "最近的故障转移事件",
       "lastChecked": "上次检查 {{time}}",
-      "noEvents": "未记录故障转移事件。所有运营流量都已通过主中继正常发送。"
+      "noEvents": "未记录故障转移事件。所有运营流量都已通过主中继正常发送。",
+      "slackTest": "发送 Slack 测试警报",
+      "slackTesting": "正在发送 Slack 测试…",
+      "slackTestSuccess": "Slack 测试警报已送达。",
+      "slackTestFallback": "Slack 未确认送达；已向所有者发送备用电子邮件。",
+      "slackTestFailure": "Slack 未确认送达，且备用电子邮件不可用。",
+      "diagnosticsTitle": "最近 10 条已脱敏心跳诊断",
+      "diagnosticsCaption": "仅显示技术状态。提供商响应、凭据、收件人、令牌和 URL 已被永久脱敏。",
+      "diagnosticsEmpty": "尚未记录心跳诊断。",
+      "source": "来源",
+      "sourceScheduled": "定时心跳",
+      "sourceManual": "管理员检查",
+      "statusHealthy": "正常",
+      "statusFailover": "故障转移已启用",
+      "statusDegraded": "降级",
+      "statusUnconfigured": "未配置",
+      "relay": "中继",
+      "duration": "探测时长",
+      "alertDelivery": "警报投递",
+      "alertDelivered": "Slack 已送达",
+      "alertFallbackDelivered": "备用电子邮件已送达",
+      "alertNotSent": "未确认警报投递",
+      "sanitizedDiagnostic": "已脱敏诊断"
     }
   }
 }
