@@ -1041,6 +1041,30 @@ export default function AdminDashboard() {
     },
   });
 
+  const generateDiagnosticsSnapshot =
+    trpc.admin.generateMonthlyDiagnosticsSnapshot.useMutation({
+      onSuccess: result => {
+        if ("skipped" in result) {
+          toast.info(
+            result.skipped === "snapshot_already_terminal"
+              ? "A diagnostics snapshot was already delivered this hour."
+              : "This diagnostics snapshot is not available right now."
+          );
+          return;
+        }
+        if (result.summary.sent > 0) {
+          toast.success(
+            `Diagnostics snapshot delivered to ${result.summary.sent} administrator${result.summary.sent === 1 ? "" : "s"}.`
+          );
+          return;
+        }
+        toast.warning(
+          "Snapshot prepared, but no administrator report was delivered. Check system mail and eligible administrator accounts."
+        );
+      },
+      onError: error => toast.error(error.message),
+    });
+
   const downloadOperationsAnalytics = async () => {
     try {
       const result = await operationsExport.refetch();
@@ -1237,6 +1261,22 @@ export default function AdminDashboard() {
                   <span className="hidden text-xs font-normal rr-text-navy-muted sm:block">
                     Live summaries refresh automatically
                   </span>
+                  <button
+                    type="button"
+                    data-testid="admin-monthly-diagnostics-snapshot"
+                    onClick={() => generateDiagnosticsSnapshot.mutate()}
+                    disabled={generateDiagnosticsSnapshot.isPending}
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[oklch(0.77_0.13_80)] bg-white px-4 text-sm font-black rr-text-navy transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 sm:w-auto"
+                  >
+                    {generateDiagnosticsSnapshot.isPending ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <Mail size={16} />
+                    )}
+                    {generateDiagnosticsSnapshot.isPending
+                      ? "Generating snapshot…"
+                      : "Generate Snapshot Now"}
+                  </button>
                   <button
                     type="button"
                     data-testid="admin-operations-csv-export"

@@ -3805,7 +3805,20 @@
     "selectionGaugeLabel": "Envíos estimados disponibles ahora",
     "selectionAdvice": "Según la capacidad actual, hasta {{ready}} de {{selected}} contactos seleccionados pueden enviarse ahora.",
     "selectionOverCapacity": "{{count}} puede tener que esperar a la siguiente ventana de capacidad.",
-    "selectionEstimate": "Esta es una estimación actual. La capacidad puede cambiar antes de confirmar; los límites del servidor siguen aplicándose."
+    "selectionEstimate": "Esta es una estimación actual. La capacidad puede cambiar antes de confirmar; los límites del servidor siguen aplicándose.",
+    "selectionBurstCap": "Tu plan permite hasta {{count}} solicitudes por acción masiva.",
+    "adminCaps": {
+      "eyebrow": "Control de administrador",
+      "title": "Límites de ráfaga de envíos masivos",
+      "description": "Define el máximo de solicitudes que una acción masiva puede iniciar por plan. El calentamiento del proveedor y los límites horario, diario y de cuenta siguen prevaleciendo.",
+      "requests": "solicitudes/acción",
+      "range": "Elige números enteros de {{min}} a {{max}}.",
+      "loadError": "No se pudieron cargar los límites actuales. Actualiza e inténtalo de nuevo.",
+      "protected": "Esta configuración global no puede aumentar un límite de seguridad del proveedor o de la cuenta.",
+      "saved": "Límites de envío masivo guardados.",
+      "saving": "Guardando…",
+      "save": "Guardar límites"
+    }
   },
   "developerEnrollment": {
     "loading": "Cargando registro de desarrollador",
@@ -4775,5 +4788,15 @@
       "exportCancel": "Cerrar",
       "exportDownload": "Descargar CSV"
     }
+  },
+  "trialBanner": {
+    "title": "Tu prueba de Get Phame está activa",
+    "daysRemaining_one": "Queda {{count}} día antes de que comience tu plan de pago.",
+    "daysRemaining_other": "Quedan {{count}} días antes de que comience tu plan de pago.",
+    "checkout": "Elige tu plan de pago",
+    "openingCheckout": "Abriendo el pago…",
+    "checkoutOpened": "El pago seguro se abrió en una pestaña nueva.",
+    "dismiss": "Descartar recordatorio de prueba",
+    "daysRemaining": "Quedan {{count}} días antes de que comience tu plan de pago."
   }
 }

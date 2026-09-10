@@ -107,6 +107,7 @@ import {
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import KoalendarSettingsCard from "@/components/KoalendarSettingsCard";
 import AdaptiveSendLimitStatus from "@/components/AdaptiveSendLimitStatus";
+import AdaptiveSendBurstCapSettings from "@/components/AdaptiveSendBurstCapSettings";
 import PasskeySecurityCard from "@/components/security/PasskeySecurityCard";
 import RecoveryDrillCard from "@/components/security/RecoveryDrillCard";
 import {
@@ -5394,6 +5395,10 @@ export default function SettingsPage() {
                   <div id="email-connection" className="scroll-mt-24">
                     <AdaptiveSendLimitStatus status={adaptiveSendStatus} />
                   </div>
+
+                  <AdaptiveSendBurstCapSettings
+                    isAdmin={user?.role === "admin"}
+                  />
 
                   {/* ── Follow-up Reminder Settings ────────────────────────────────────────── */}
                   <div

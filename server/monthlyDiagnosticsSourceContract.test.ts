@@ -49,6 +49,9 @@ describe("monthly diagnostics persistence and scheduler contract", () => {
     expect(schedule.indexes.some(index => index.config.unique)).toBe(true);
     expect(runs.indexes.some(index => index.config.unique)).toBe(true);
     expect(deliveries.indexes.some(index => index.config.unique)).toBe(true);
+    expect(runs.columns.some(column => column.name === "snapshot_key")).toBe(
+      true
+    );
     expect(monthlyDiagnosticExportSchedules.enabled.default).toBe(true);
     expect(monthlyDiagnosticExportSchedules.cronExpression.default).toBe(
       "0 10 8 1 * *"

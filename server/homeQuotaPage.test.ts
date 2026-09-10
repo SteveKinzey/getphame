@@ -35,6 +35,14 @@ vi.mock("@/lib/trpc", () => ({
       get: { useQuery: () => query(profileFixture) },
       setGoal: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
     },
+    stripe: {
+      subscriptionStatus: {
+        useQuery: () => query({ status: "none", currentPeriodEnd: null }),
+      },
+      createCheckout: {
+        useMutation: () => ({ mutate: vi.fn(), isPending: false }),
+      },
+    },
     smtp: {
       status: {
         useQuery: () => query({ connected: true, lastHealthStatus: "pass" }),

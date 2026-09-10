@@ -36,6 +36,7 @@ export const MONTHLY_DIAGNOSTICS_CALLBACK_PATH =
   "/api/scheduled/monthly-diagnostic-export";
 /** Future administrator UI controls this persisted flag; no UI is exposed in this pass. */
 export const MONTHLY_DIAGNOSTICS_ADMIN_CONTROLLABLE = true;
+const MANUAL_SNAPSHOT_WINDOW_MS = 60 * 60 * 1000;
 
 function getAffectedRows(result: unknown): number {
   if (Array.isArray(result)) {
@@ -76,6 +77,30 @@ export async function getMonthlyDiagnosticsSchedule() {
     )
     .limit(1);
   return row ?? null;
+}
+
+/**
+ * Manual delivery may be used before a production Heartbeat has reconciled.
+ * Creating the singleton is safe because the schedule-key index is unique.
+ */
+async function getOrCreateMonthlyDiagnosticsSchedule(now = Date.now()) {
+  const existing = await getMonthlyDiagnosticsSchedule();
+  if (existing) return existing;
+  const db = await getDb();
+  if (!db) throw new Error("DATABASE_UNAVAILABLE");
+  await db
+    .insert(monthlyDiagnosticExportSchedules)
+    .values({
+      scheduleKey: MONTHLY_DIAGNOSTICS_SCHEDULE_KEY,
+      enabled: true,
+      cronExpression: MONTHLY_DIAGNOSTICS_CRON,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .onDuplicateKeyUpdate({ set: { updatedAt: now } });
+  const schedule = await getMonthlyDiagnosticsSchedule();
+  if (!schedule) throw new Error("MONTHLY_DIAGNOSTICS_SCHEDULE_UNAVAILABLE");
+  return schedule;
 }
 
 export async function getEnabledMonthlyDiagnosticsScheduleByTaskUid(
@@ -124,7 +149,8 @@ export async function saveMonthlyDiagnosticsScheduleTaskUid(
 async function snapshotMonthlyRun(
   scheduleId: number,
   reportMonthKey: string,
-  snapshotGeneratedAtMs: number
+  snapshotGeneratedAtMs: number,
+  snapshotKey = `monthly:${reportMonthKey}`
 ): Promise<{ run: MonthlyDiagnosticExportRun; created: boolean }> {
   const db = await getDb();
   if (!db) throw new Error("DATABASE_UNAVAILABLE");
@@ -136,7 +162,7 @@ async function snapshotMonthlyRun(
         .where(
           and(
             eq(monthlyDiagnosticExportRuns.scheduleId, scheduleId),
-            eq(monthlyDiagnosticExportRuns.reportMonthKey, reportMonthKey)
+            eq(monthlyDiagnosticExportRuns.snapshotKey, snapshotKey)
           )
         )
         .limit(1);
@@ -145,6 +171,7 @@ async function snapshotMonthlyRun(
       const insertResult = await tx.insert(monthlyDiagnosticExportRuns).values({
         scheduleId,
         reportMonthKey,
+        snapshotKey,
         snapshotGeneratedAt: snapshotGeneratedAtMs,
         status: "preparing",
         createdAt: snapshotGeneratedAtMs,
@@ -195,7 +222,7 @@ async function snapshotMonthlyRun(
       .where(
         and(
           eq(monthlyDiagnosticExportRuns.scheduleId, scheduleId),
-          eq(monthlyDiagnosticExportRuns.reportMonthKey, reportMonthKey)
+          eq(monthlyDiagnosticExportRuns.snapshotKey, snapshotKey)
         )
       )
       .limit(1);
@@ -413,28 +440,21 @@ const defaultProcessorDeps: MonthlyDiagnosticsProcessorDeps = {
   sendReport: sendMonthlyDiagnosticReportEmail,
 };
 
-export async function processMonthlyDiagnosticsExport(
-  taskUid: string,
-  now = Date.now(),
-  deps: MonthlyDiagnosticsProcessorDeps = defaultProcessorDeps
-) {
-  const schedule = await deps.getScheduleByTaskUid(taskUid);
-  if (!schedule) return { ok: true, skipped: "orphan_or_disabled" as const };
-  const requestedWindow = deriveCompletedPreviousUtcMonth(now);
-  const runClaim = await deps.snapshotRun(
-    schedule.id,
-    requestedWindow.reportMonthKey,
-    now
-  );
-  const run = runClaim.run;
-  if (["completed", "partial", "failed"].includes(run.status)) {
-    return {
-      ok: true,
-      skipped: "month_already_terminal" as const,
-      reportMonthKey: run.reportMonthKey,
-    };
-  }
+export type ManualMonthlyDiagnosticsProcessorDeps =
+  MonthlyDiagnosticsProcessorDeps & {
+    getOrCreateSchedule: typeof getOrCreateMonthlyDiagnosticsSchedule;
+  };
 
+const defaultManualProcessorDeps: ManualMonthlyDiagnosticsProcessorDeps = {
+  ...defaultProcessorDeps,
+  getOrCreateSchedule: getOrCreateMonthlyDiagnosticsSchedule,
+};
+
+async function deliverMonthlyDiagnosticsRun(
+  run: MonthlyDiagnosticExportRun,
+  now: number,
+  deps: MonthlyDiagnosticsProcessorDeps
+) {
   const source = await deps.loadSource(run.reportMonthKey);
   const report = buildMonthlyDiagnosticsExport({
     snapshotGeneratedAtMs: run.snapshotGeneratedAt,
@@ -516,6 +536,59 @@ export async function processMonthlyDiagnosticsExport(
     authTruncated: report.metadata.auth.truncated,
     summary,
   };
+}
+
+export async function processMonthlyDiagnosticsExport(
+  taskUid: string,
+  now = Date.now(),
+  deps: MonthlyDiagnosticsProcessorDeps = defaultProcessorDeps
+) {
+  const schedule = await deps.getScheduleByTaskUid(taskUid);
+  if (!schedule) return { ok: true, skipped: "orphan_or_disabled" as const };
+  const requestedWindow = deriveCompletedPreviousUtcMonth(now);
+  const runClaim = await deps.snapshotRun(
+    schedule.id,
+    requestedWindow.reportMonthKey,
+    now
+  );
+  const run = runClaim.run;
+  if (["completed", "partial", "failed"].includes(run.status)) {
+    return {
+      ok: true,
+      skipped: "month_already_terminal" as const,
+      reportMonthKey: run.reportMonthKey,
+    };
+  }
+  return deliverMonthlyDiagnosticsRun(run, now, deps);
+}
+
+/**
+ * Sends one privacy-minimized report snapshot to the currently eligible
+ * administrator set. The UTC-hour key makes repeated clicks idempotent and
+ * lets a second operator receive a truthful no-op rather than a duplicate.
+ */
+export async function processManualMonthlyDiagnosticsSnapshot(
+  now = Date.now(),
+  deps: ManualMonthlyDiagnosticsProcessorDeps = defaultManualProcessorDeps
+) {
+  const schedule = await deps.getOrCreateSchedule(now);
+  const requestedWindow = deriveCompletedPreviousUtcMonth(now);
+  const snapshotKey = `manual:${Math.floor(now / MANUAL_SNAPSHOT_WINDOW_MS)}`;
+  const runClaim = await deps.snapshotRun(
+    schedule.id,
+    requestedWindow.reportMonthKey,
+    now,
+    snapshotKey
+  );
+  const run = runClaim.run;
+  if (["completed", "partial", "failed"].includes(run.status)) {
+    return {
+      ok: true,
+      skipped: "snapshot_already_terminal" as const,
+      reportMonthKey: run.reportMonthKey,
+    };
+  }
+  return deliverMonthlyDiagnosticsRun(run, now, deps);
 }
 
 const heartbeatDeps = {

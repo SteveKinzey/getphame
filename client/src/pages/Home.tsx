@@ -23,6 +23,7 @@ import {
   CreditCard,
   Gift,
   Users,
+  Loader2,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -33,6 +34,7 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { getEffectivePlan } from "@shared/plans";
+import { normalizeLifecycleLocale } from "@shared/lifecycleLocale";
 import LandingBrandLink from "@/components/LandingBrandLink";
 import HomeInstallBanner from "@/components/HomeInstallBanner";
 import { getPwaPlatform, shareGetPhame } from "@/lib/pwaShare";
@@ -419,13 +421,15 @@ function formatRelativeTime(
 }
 
 export default function HomePage() {
-  const { t } = useTranslation("translation");
+  const { t, i18n } = useTranslation("translation");
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const [guideOpen, setGuideOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
 
   const { data: profile } = trpc.profile.get.useQuery();
+  const { data: subscriptionStatus } =
+    trpc.stripe.subscriptionStatus.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: bulkSenderStatus } = trpc.bulkSender.status.useQuery();
   const { data: pausedAutomationQueue } =
@@ -465,6 +469,17 @@ export default function HomePage() {
       setEditingGoal(false);
     },
     onError: err => toast.error(err.message),
+  });
+  const trialCheckout = trpc.stripe.createCheckout.useMutation({
+    onSuccess: ({ url }) => {
+      window.open(url, "_blank", "noopener,noreferrer");
+      toast.success(
+        t("trialBanner.checkoutOpened", {
+          defaultValue: "Secure checkout opened in a new tab.",
+        })
+      );
+    },
+    onError: error => toast.error(error.message),
   });
 
   const reviewGoal = profile?.reviewGoal ?? 0;
@@ -539,9 +554,29 @@ export default function HomePage() {
     setSetupBannerDismissed(true);
   };
 
+  const trialEndsAt =
+    subscriptionStatus?.status === "trialing" &&
+    profile?.planExpiresAt != null &&
+    profile.planExpiresAt > Date.now()
+      ? profile.planExpiresAt
+      : null;
+  const trialDismissKey = `rr_trial_banner_dismissed_${trialEndsAt ?? "none"}`;
+  const [trialBannerDismissed, setTrialBannerDismissed] = useState(
+    () => localStorage.getItem(trialDismissKey) === "1"
+  );
+  const dismissTrialBanner = () => {
+    localStorage.setItem(trialDismissKey, "1");
+    setTrialBannerDismissed(true);
+  };
+  const remainingTrialDays = trialEndsAt
+    ? Math.max(1, Math.ceil((trialEndsAt - Date.now()) / (24 * 60 * 60 * 1000)))
+    : null;
+  const trialCheckoutPlan = profile?.tier === "annual" ? "annual" : "monthly";
+
   // Subscription expiry warning banner — show when planExpiresAt < 7 days away
   const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
   const isExpiringSoon =
+    subscriptionStatus?.status !== "trialing" &&
     profile?.planExpiresAt != null &&
     profile.planExpiresAt > Date.now() &&
     profile.planExpiresAt - Date.now() < SEVEN_DAYS_MS;
@@ -867,6 +902,90 @@ export default function HomePage() {
                 >
                   <X size={14} />
                 </button>
+              </div>
+            )}
+
+            {/* ── Trial time remaining and direct checkout ─────────────────────── */}
+            {remainingTrialDays !== null && !trialBannerDismissed && (
+              <div
+                className="rounded-2xl border p-4 shadow-sm"
+                style={{
+                  background: "oklch(0.975 0.025 84)",
+                  borderColor: "oklch(0.82 0.14 80)",
+                }}
+                data-testid="trial-countdown-banner"
+              >
+                <div className="flex items-start gap-3">
+                  <Clock
+                    size={22}
+                    className="mt-0.5 shrink-0"
+                    style={{ color: "oklch(0.53 0.15 72)" }}
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className="text-sm font-black"
+                      style={{
+                        color: "oklch(0.30 0.10 60)",
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
+                    >
+                      {t("trialBanner.title", {
+                        defaultValue: "Your Get Phame trial is active",
+                      })}
+                    </p>
+                    <p
+                      className="mt-0.5 text-xs font-semibold"
+                      style={{ color: "oklch(0.40 0.08 60)" }}
+                    >
+                      {t("trialBanner.daysRemaining", {
+                        defaultValue:
+                          "{{count}} day remains before your paid plan begins.",
+                        count: remainingTrialDays,
+                      })}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        trialCheckout.mutate({
+                          origin: window.location.origin,
+                          plan: trialCheckoutPlan,
+                          locale: normalizeLifecycleLocale(i18n.language),
+                        })
+                      }
+                      disabled={trialCheckout.isPending}
+                      className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black rr-bg-navy rr-text-gold disabled:cursor-wait disabled:opacity-60"
+                    >
+                      {trialCheckout.isPending ? (
+                        <Loader2
+                          size={14}
+                          className="animate-spin"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <CreditCard size={14} aria-hidden="true" />
+                      )}
+                      {trialCheckout.isPending
+                        ? t("trialBanner.openingCheckout", {
+                            defaultValue: "Opening checkout…",
+                          })
+                        : t("trialBanner.checkout", {
+                            defaultValue: "Choose your paid plan",
+                          })}
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={dismissTrialBanner}
+                    aria-label={t("trialBanner.dismiss", {
+                      defaultValue: "Dismiss trial reminder",
+                    })}
+                    className="shrink-0 rounded-lg p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+                    style={{ color: "oklch(0.55 0.10 60)" }}
+                  >
+                    <X size={14} aria-hidden="true" />
+                  </button>
+                </div>
               </div>
             )}
 

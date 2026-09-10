@@ -5,11 +5,13 @@ import {
   ACCOUNT_HARD_DAILY_SEND_CEILING,
   ACCOUNT_HARD_HOURLY_SEND_CEILING,
   buildAdaptiveSendPolicy,
+  getAdaptiveSendBurstCapForTier,
   getAdaptiveSendRecommendedAction,
   getAdaptiveSendWarningLevel,
   type AdaptiveSendWarningLevel,
 } from "../shared/adaptiveSendLimits";
 import { getDb } from "./db";
+import { getAdaptiveSendBurstCaps } from "./adaptiveSendBurstPolicy";
 import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 
 const HOUR_MS = 3_600_000;
@@ -44,6 +46,8 @@ export type AdaptiveSendStatus = {
   dailyRemaining: number;
   hourlyRemaining: number;
   remaining: number;
+  burstCap: number | null;
+  burstRemaining: number;
   utilization: number;
   warningLevel: AdaptiveSendWarningLevel;
   dailyResetAt: number;
@@ -134,6 +138,8 @@ export async function getAdaptiveSendStatus(
       dailyRemaining: 0,
       hourlyRemaining: 0,
       remaining: 0,
+      burstCap: null,
+      burstRemaining: 0,
       utilization: 1,
       warningLevel: "blocked",
       recommendedAction: null,
@@ -168,6 +174,8 @@ export async function getAdaptiveSendStatus(
     );
 
   const policy = buildAdaptiveSendPolicy(channel, now);
+  const burstCaps = await getAdaptiveSendBurstCaps();
+  const burstCap = getAdaptiveSendBurstCapForTier(burstCaps, channel.tier);
   const todayCount = getWindowCount(
     rows,
     ACCOUNT_SCOPE_KEY,
@@ -207,6 +215,7 @@ export async function getAdaptiveSendStatus(
     )
   );
   const remaining = Math.min(dailyRemaining, hourlyRemaining);
+  const burstRemaining = Math.min(remaining, burstCap);
   const utilization = Math.max(
     safeRatio(providerTodayCount, policy.dailyLimit),
     safeRatio(providerHourCount, policy.hourlyLimit),
@@ -231,6 +240,8 @@ export async function getAdaptiveSendStatus(
     dailyRemaining,
     hourlyRemaining,
     remaining,
+    burstCap,
+    burstRemaining,
     utilization,
     warningLevel: getAdaptiveSendWarningLevel(utilization, remaining),
     recommendedAction: getAdaptiveSendRecommendedAction(channel),

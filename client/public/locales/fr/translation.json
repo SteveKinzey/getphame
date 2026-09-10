@@ -3805,7 +3805,20 @@
     "selectionGaugeLabel": "Envois estimés disponibles maintenant",
     "selectionAdvice": "Selon la capacité actuelle, jusqu’à {{ready}} des {{selected}} contacts sélectionnés peuvent être envoyés maintenant.",
     "selectionOverCapacity": "{{count}} devra peut-être attendre la prochaine fenêtre de capacité.",
-    "selectionEstimate": "Il s’agit d’une estimation actuelle. La capacité peut changer avant la confirmation ; les limites du serveur restent applicables."
+    "selectionEstimate": "Il s’agit d’une estimation actuelle. La capacité peut changer avant la confirmation ; les limites du serveur restent applicables.",
+    "selectionBurstCap": "Votre forfait autorise jusqu’à {{count}} demandes par action groupée.",
+    "adminCaps": {
+      "eyebrow": "Contrôle administrateur",
+      "title": "Plafonds de rafale pour envois groupés",
+      "description": "Définit le nombre maximal de demandes qu’une action groupée peut lancer par forfait. Le préchauffage du fournisseur et les limites horaires, quotidiennes et de compte restent prioritaires.",
+      "requests": "demandes/action",
+      "range": "Choisissez des nombres entiers de {{min}} à {{max}}.",
+      "loadError": "Les plafonds actuels n’ont pas pu être chargés. Actualisez puis réessayez.",
+      "protected": "Ce réglage global ne peut pas augmenter une limite de sécurité du fournisseur ou du compte.",
+      "saved": "Plafonds d’envoi groupé enregistrés.",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer les plafonds"
+    }
   },
   "developerEnrollment": {
     "loading": "Chargement de l’inscription développeur",
@@ -4775,5 +4788,15 @@
       "exportCancel": "Fermer",
       "exportDownload": "Télécharger le CSV"
     }
+  },
+  "trialBanner": {
+    "title": "Votre essai Get Phame est actif",
+    "daysRemaining_one": "Il reste {{count}} jour avant le début de votre forfait payant.",
+    "daysRemaining_other": "Il reste {{count}} jours avant le début de votre forfait payant.",
+    "checkout": "Choisir votre forfait payant",
+    "openingCheckout": "Ouverture du paiement…",
+    "checkoutOpened": "Le paiement sécurisé s’est ouvert dans un nouvel onglet.",
+    "dismiss": "Masquer le rappel d’essai",
+    "daysRemaining": "Il reste {{count}} jours avant le début de votre forfait payant."
   }
 }

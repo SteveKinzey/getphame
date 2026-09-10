@@ -2,6 +2,64 @@ export const ADAPTIVE_SEND_WARNING_THRESHOLD = 0.7;
 export const ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD = 0.85;
 export const ACCOUNT_HARD_DAILY_SEND_CEILING = 2_000;
 export const ACCOUNT_HARD_HOURLY_SEND_CEILING = 300;
+export const ADAPTIVE_SEND_MINIMUM_BURST_CAP = 1;
+export const ADAPTIVE_SEND_MAXIMUM_BURST_CAP = 200;
+
+export type AdaptiveSendBurstCaps = {
+  free: number;
+  pro: number;
+  annual: number;
+  lifetime: number;
+};
+
+/**
+ * Platform-wide defaults for the number of review requests a bulk action may
+ * initiate. Provider and account windows remain the final delivery boundary.
+ */
+export const DEFAULT_ADAPTIVE_SEND_BURST_CAPS: Readonly<AdaptiveSendBurstCaps> =
+  {
+    free: 10,
+    pro: 25,
+    annual: 50,
+    lifetime: 100,
+  };
+
+function normalizeBurstCap(value: unknown, fallback: number): number {
+  if (!Number.isFinite(value) || !Number.isInteger(value)) return fallback;
+  return Math.min(
+    ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+    Math.max(ADAPTIVE_SEND_MINIMUM_BURST_CAP, Number(value))
+  );
+}
+
+/** Normalize persisted policy input before it is shown or enforced. */
+export function normalizeAdaptiveSendBurstCaps(
+  input: Partial<AdaptiveSendBurstCaps> | null | undefined
+): AdaptiveSendBurstCaps {
+  return {
+    free: normalizeBurstCap(input?.free, DEFAULT_ADAPTIVE_SEND_BURST_CAPS.free),
+    pro: normalizeBurstCap(input?.pro, DEFAULT_ADAPTIVE_SEND_BURST_CAPS.pro),
+    annual: normalizeBurstCap(
+      input?.annual,
+      DEFAULT_ADAPTIVE_SEND_BURST_CAPS.annual
+    ),
+    lifetime: normalizeBurstCap(
+      input?.lifetime,
+      DEFAULT_ADAPTIVE_SEND_BURST_CAPS.lifetime
+    ),
+  };
+}
+
+/** Resolve a supported plan tier without allowing an unknown tier to expand capacity. */
+export function getAdaptiveSendBurstCapForTier(
+  caps: AdaptiveSendBurstCaps,
+  tier: string | null | undefined
+): number {
+  if (tier === "pro") return caps.pro;
+  if (tier === "annual") return caps.annual;
+  if (tier === "lifetime") return caps.lifetime;
+  return caps.free;
+}
 
 export type AdaptiveSendChannelType = "personal" | "bulk";
 export type AdaptiveSendRampStage =
@@ -24,6 +82,7 @@ export type AdaptiveSendVelocityAdvice = {
   currentRemaining: number;
   estimatedSendCount: number;
   estimatedOverCapacityCount: number;
+  maxBurstCap: number | null;
   isEstimate: true;
 };
 
@@ -145,10 +204,20 @@ export function getAdaptiveSendWarningLevel(
 
 export function getAdaptiveSendVelocityAdvice(
   requestedCount: number,
-  remaining: number
+  remaining: number,
+  maxBurstCap?: number | null
 ): AdaptiveSendVelocityAdvice {
   const normalizedRequested = Math.max(0, Math.floor(requestedCount));
-  const normalizedRemaining = Math.max(0, Math.floor(remaining));
+  const normalizedCap =
+    maxBurstCap === undefined || maxBurstCap === null
+      ? null
+      : normalizeBurstCap(maxBurstCap, ADAPTIVE_SEND_MINIMUM_BURST_CAP);
+  const normalizedRemaining = Math.max(
+    0,
+    Math.floor(
+      normalizedCap === null ? remaining : Math.min(remaining, normalizedCap)
+    )
+  );
   const estimatedSendCount = Math.min(normalizedRequested, normalizedRemaining);
 
   return {
@@ -156,6 +225,7 @@ export function getAdaptiveSendVelocityAdvice(
     currentRemaining: normalizedRemaining,
     estimatedSendCount,
     estimatedOverCapacityCount: normalizedRequested - estimatedSendCount,
+    maxBurstCap: normalizedCap,
     isEstimate: true,
   };
 }

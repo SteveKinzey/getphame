@@ -4045,7 +4045,20 @@
     "selectionGaugeLabel": "Invii stimati disponibili ora",
     "selectionAdvice": "In base alla capacità attuale, fino a {{ready}} dei {{selected}} contatti selezionati possono essere inviati ora.",
     "selectionOverCapacity": "{{count}} potrebbe dover attendere la prossima finestra di capacità.",
-    "selectionEstimate": "Questa è una stima attuale. La capacità può cambiare prima della conferma; i limiti del server restano applicati."
+    "selectionEstimate": "Questa è una stima attuale. La capacità può cambiare prima della conferma; i limiti del server restano applicati.",
+    "selectionBurstCap": "Il tuo piano consente fino a {{count}} richieste per azione in blocco.",
+    "adminCaps": {
+      "eyebrow": "Controllo amministratore",
+      "title": "Limiti di raffica per invii in blocco",
+      "description": "Imposta il massimo di richieste che un’azione in blocco può avviare per piano. Il riscaldamento del provider e i limiti orari, giornalieri e dell’account restano prioritari.",
+      "requests": "richieste/azione",
+      "range": "Scegli numeri interi da {{min}} a {{max}}.",
+      "loadError": "Non è stato possibile caricare i limiti correnti. Aggiorna e riprova.",
+      "protected": "Questa impostazione globale non può aumentare un limite di sicurezza del provider o dell’account.",
+      "saved": "Limiti di invio in blocco salvati.",
+      "saving": "Salvataggio…",
+      "save": "Salva limiti"
+    }
   },
   "developerEnrollment": {
     "loading": "Caricamento della registrazione sviluppatore",
@@ -5015,5 +5028,15 @@
       "exportCancel": "Chiudi",
       "exportDownload": "Scarica CSV"
     }
+  },
+  "trialBanner": {
+    "title": "La tua prova di Get Phame è attiva",
+    "daysRemaining_one": "Manca {{count}} giorno prima dell’inizio del piano a pagamento.",
+    "daysRemaining_other": "Mancano {{count}} giorni prima dell’inizio del piano a pagamento.",
+    "checkout": "Scegli il tuo piano a pagamento",
+    "openingCheckout": "Apertura del pagamento…",
+    "checkoutOpened": "Il pagamento sicuro è stato aperto in una nuova scheda.",
+    "dismiss": "Nascondi il promemoria di prova",
+    "daysRemaining": "Mancano {{count}} giorni prima dell’inizio del piano a pagamento."
   }
 }
