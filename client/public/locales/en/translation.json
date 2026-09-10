@@ -3751,7 +3751,20 @@
     "selectionGaugeLabel": "Estimated sends available now",
     "selectionAdvice": "Based on current capacity, up to {{ready}} of {{selected}} selected contacts can send now.",
     "selectionOverCapacity": "{{count}} may wait for the next capacity window.",
-    "selectionEstimate": "This is a current estimate. Capacity can change before confirmation; server limits still apply."
+    "selectionEstimate": "This is a current estimate. Capacity can change before confirmation; server limits still apply.",
+    "selectionBurstCap": "Your plan allows up to {{count}} requests per bulk action.",
+    "adminCaps": {
+      "eyebrow": "Administrator control",
+      "title": "Bulk-send burst caps",
+      "description": "Sets the maximum requests one bulk action may initiate by plan. Provider warm-up, hourly, daily, and account safety limits still win.",
+      "requests": "requests/action",
+      "range": "Choose whole numbers from {{min}} to {{max}}.",
+      "loadError": "Current caps could not be loaded. Refresh and try again.",
+      "protected": "This global setting cannot raise a provider or account safety limit.",
+      "saved": "Bulk-send caps saved.",
+      "saving": "Saving…",
+      "save": "Save caps"
+    }
   },
   "developerEnrollment": {
     "loading": "Loading developer enrollment",
@@ -4724,5 +4737,15 @@
       "exportCancel": "Close",
       "exportDownload": "Download CSV"
     }
+  },
+  "trialBanner": {
+    "title": "Your Get Phame trial is active",
+    "daysRemaining_one": "{{count}} day remains before your paid plan begins.",
+    "daysRemaining_other": "{{count}} days remain before your paid plan begins.",
+    "checkout": "Choose your paid plan",
+    "openingCheckout": "Opening checkout…",
+    "checkoutOpened": "Secure checkout opened in a new tab.",
+    "dismiss": "Dismiss trial reminder",
+    "daysRemaining": "{{count}} days remain before your paid plan begins."
   }
 }

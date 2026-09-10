@@ -22,7 +22,11 @@ type AdaptiveStatus = {
   providerHourCount: number;
   dailyLimit: number;
   hourlyLimit: number;
+  dailyRemaining: number;
+  hourlyRemaining: number;
   remaining: number;
+  burstCap: number | null;
+  burstRemaining: number;
   utilization: number;
   warningLevel: "normal" | "approaching" | "high" | "blocked";
   dailyResetAt: number;
@@ -194,7 +198,11 @@ export default function AdaptiveSendLimitStatus({
   const velocityAdvice =
     requestedCount === undefined
       ? null
-      : getAdaptiveSendVelocityAdvice(requestedCount, status.remaining);
+      : getAdaptiveSendVelocityAdvice(
+          requestedCount,
+          status.remaining,
+          status.burstCap
+        );
 
   return (
     <section
@@ -341,11 +349,20 @@ export default function AdaptiveSendLimitStatus({
           <p className="mt-2 text-xs font-semibold rr-text-navy-mid">
             {t("adaptiveSending.selectionAdvice", {
               defaultValue:
-                "Based on current capacity, up to {{ready}} of {{selected}} selected contacts can send now.",
+                "Based on current capacity, up to {{ready}} of {{selected}} selected contacts can start now.",
               ready: velocityAdvice.estimatedSendCount,
               selected: velocityAdvice.requestedCount,
             })}
           </p>
+          {velocityAdvice.maxBurstCap !== null && (
+            <p className="mt-1 text-xs font-semibold rr-text-navy-mid">
+              {t("adaptiveSending.selectionBurstCap", {
+                defaultValue:
+                  "Your plan allows up to {{count}} requests per bulk action.",
+                count: velocityAdvice.maxBurstCap,
+              })}
+            </p>
+          )}
           {velocityAdvice.estimatedOverCapacityCount > 0 && (
             <p
               className="mt-1 text-xs font-bold"

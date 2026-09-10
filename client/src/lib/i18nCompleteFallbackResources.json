@@ -2002,6 +2002,31 @@
           "exportDownload": "Download CSV"
         }
       }
+    },
+    "trialBanner": {
+      "title": "Your Get Phame trial is active",
+      "daysRemaining_one": "{{count}} day remains before your paid plan begins.",
+      "daysRemaining_other": "{{count}} days remain before your paid plan begins.",
+      "checkout": "Choose your paid plan",
+      "openingCheckout": "Opening checkout…",
+      "checkoutOpened": "Secure checkout opened in a new tab.",
+      "dismiss": "Dismiss trial reminder",
+      "daysRemaining": "{{count}} days remain before your paid plan begins."
+    },
+    "adaptiveSending": {
+      "selectionBurstCap": "Your plan allows up to {{count}} requests per bulk action.",
+      "adminCaps": {
+        "eyebrow": "Administrator control",
+        "title": "Bulk-send burst caps",
+        "description": "Sets the maximum requests one bulk action may initiate by plan. Provider warm-up, hourly, daily, and account safety limits still win.",
+        "requests": "requests/action",
+        "range": "Choose whole numbers from {{min}} to {{max}}.",
+        "loadError": "Current caps could not be loaded. Refresh and try again.",
+        "protected": "This global setting cannot raise a provider or account safety limit.",
+        "saved": "Bulk-send caps saved.",
+        "saving": "Saving…",
+        "save": "Save caps"
+      }
     }
   },
   "es": {
@@ -4207,6 +4232,31 @@
           "exportCancel": "Cerrar",
           "exportDownload": "Descargar CSV"
         }
+      }
+    },
+    "trialBanner": {
+      "title": "Tu prueba de Get Phame está activa",
+      "daysRemaining_one": "Queda {{count}} día antes de que comience tu plan de pago.",
+      "daysRemaining_other": "Quedan {{count}} días antes de que comience tu plan de pago.",
+      "checkout": "Elige tu plan de pago",
+      "openingCheckout": "Abriendo el pago…",
+      "checkoutOpened": "El pago seguro se abrió en una pestaña nueva.",
+      "dismiss": "Descartar recordatorio de prueba",
+      "daysRemaining": "Quedan {{count}} días antes de que comience tu plan de pago."
+    },
+    "adaptiveSending": {
+      "selectionBurstCap": "Tu plan permite hasta {{count}} solicitudes por acción masiva.",
+      "adminCaps": {
+        "eyebrow": "Control de administrador",
+        "title": "Límites de ráfaga de envíos masivos",
+        "description": "Define el máximo de solicitudes que una acción masiva puede iniciar por plan. El calentamiento del proveedor y los límites horario, diario y de cuenta siguen prevaleciendo.",
+        "requests": "solicitudes/acción",
+        "range": "Elige números enteros de {{min}} a {{max}}.",
+        "loadError": "No se pudieron cargar los límites actuales. Actualiza e inténtalo de nuevo.",
+        "protected": "Esta configuración global no puede aumentar un límite de seguridad del proveedor o de la cuenta.",
+        "saved": "Límites de envío masivo guardados.",
+        "saving": "Guardando…",
+        "save": "Guardar límites"
       }
     }
   },
@@ -6435,6 +6485,31 @@
           "exportDownload": "Télécharger le CSV"
         }
       }
+    },
+    "trialBanner": {
+      "title": "Votre essai Get Phame est actif",
+      "daysRemaining_one": "Il reste {{count}} jour avant le début de votre forfait payant.",
+      "daysRemaining_other": "Il reste {{count}} jours avant le début de votre forfait payant.",
+      "checkout": "Choisir votre forfait payant",
+      "openingCheckout": "Ouverture du paiement…",
+      "checkoutOpened": "Le paiement sécurisé s’est ouvert dans un nouvel onglet.",
+      "dismiss": "Masquer le rappel d’essai",
+      "daysRemaining": "Il reste {{count}} jours avant le début de votre forfait payant."
+    },
+    "adaptiveSending": {
+      "selectionBurstCap": "Votre forfait autorise jusqu’à {{count}} demandes par action groupée.",
+      "adminCaps": {
+        "eyebrow": "Contrôle administrateur",
+        "title": "Plafonds de rafale pour envois groupés",
+        "description": "Définit le nombre maximal de demandes qu’une action groupée peut lancer par forfait. Le préchauffage du fournisseur et les limites horaires, quotidiennes et de compte restent prioritaires.",
+        "requests": "demandes/action",
+        "range": "Choisissez des nombres entiers de {{min}} à {{max}}.",
+        "loadError": "Les plafonds actuels n’ont pas pu être chargés. Actualisez puis réessayez.",
+        "protected": "Ce réglage global ne peut pas augmenter une limite de sécurité du fournisseur ou du compte.",
+        "saved": "Plafonds d’envoi groupé enregistrés.",
+        "saving": "Enregistrement…",
+        "save": "Enregistrer les plafonds"
+      }
     }
   },
   "it": {
@@ -8509,6 +8584,31 @@
           "exportDownload": "Scarica CSV"
         }
       }
+    },
+    "trialBanner": {
+      "title": "La tua prova di Get Phame è attiva",
+      "daysRemaining_one": "Manca {{count}} giorno prima dell’inizio del piano a pagamento.",
+      "daysRemaining_other": "Mancano {{count}} giorni prima dell’inizio del piano a pagamento.",
+      "checkout": "Scegli il tuo piano a pagamento",
+      "openingCheckout": "Apertura del pagamento…",
+      "checkoutOpened": "Il pagamento sicuro è stato aperto in una nuova scheda.",
+      "dismiss": "Nascondi il promemoria di prova",
+      "daysRemaining": "Mancano {{count}} giorni prima dell’inizio del piano a pagamento."
+    },
+    "adaptiveSending": {
+      "selectionBurstCap": "Il tuo piano consente fino a {{count}} richieste per azione in blocco.",
+      "adminCaps": {
+        "eyebrow": "Controllo amministratore",
+        "title": "Limiti di raffica per invii in blocco",
+        "description": "Imposta il massimo di richieste che un’azione in blocco può avviare per piano. Il riscaldamento del provider e i limiti orari, giornalieri e dell’account restano prioritari.",
+        "requests": "richieste/azione",
+        "range": "Scegli numeri interi da {{min}} a {{max}}.",
+        "loadError": "Non è stato possibile caricare i limiti correnti. Aggiorna e riprova.",
+        "protected": "Questa impostazione globale non può aumentare un limite di sicurezza del provider o dell’account.",
+        "saved": "Limiti di invio in blocco salvati.",
+        "saving": "Salvataggio…",
+        "save": "Salva limiti"
+      }
     }
   },
   "th": {
@@ -10573,6 +10673,29 @@
           "exportDownload": "ดาวน์โหลด CSV"
         }
       }
+    },
+    "trialBanner": {
+      "title": "ช่วงทดลองใช้ Get Phame ของคุณยังใช้งานอยู่",
+      "daysRemaining": "เหลืออีก {{count}} วันก่อนที่แพ็กเกจแบบชำระเงินจะเริ่มต้น",
+      "checkout": "เลือกแพ็กเกจแบบชำระเงิน",
+      "openingCheckout": "กำลังเปิดหน้าชำระเงิน…",
+      "checkoutOpened": "เปิดหน้าชำระเงินที่ปลอดภัยในแท็บใหม่แล้ว",
+      "dismiss": "ปิดการแจ้งเตือนช่วงทดลองใช้"
+    },
+    "adaptiveSending": {
+      "selectionBurstCap": "แพ็กเกจของคุณอนุญาตสูงสุด {{count}} คำขอต่อการส่งเป็นชุดหนึ่งครั้ง",
+      "adminCaps": {
+        "eyebrow": "การควบคุมของผู้ดูแล",
+        "title": "เพดานการส่งเป็นชุด",
+        "description": "กำหนดจำนวนคำขอสูงสุดที่การส่งเป็นชุดหนึ่งครั้งเริ่มต้นได้ตามแพ็กเกจ ข้อจำกัดการอุ่นระบบของผู้ให้บริการ รายชั่วโมง รายวัน และระดับบัญชียังคงมีผลเหนือกว่า",
+        "requests": "คำขอ/การดำเนินการ",
+        "range": "เลือกจำนวนเต็มตั้งแต่ {{min}} ถึง {{max}}",
+        "loadError": "ไม่สามารถโหลดเพดานปัจจุบันได้ โปรดรีเฟรชแล้วลองอีกครั้ง",
+        "protected": "การตั้งค่าส่วนกลางนี้ไม่สามารถเพิ่มข้อจำกัดด้านความปลอดภัยของผู้ให้บริการหรือบัญชีได้",
+        "saved": "บันทึกเพดานการส่งเป็นชุดแล้ว",
+        "saving": "กำลังบันทึก…",
+        "save": "บันทึกเพดาน"
+      }
     }
   },
   "zh-CN": {
@@ -12626,6 +12749,29 @@
           "exportCancel": "关闭",
           "exportDownload": "下载 CSV"
         }
+      }
+    },
+    "trialBanner": {
+      "title": "您的 Get Phame 试用期正在进行中",
+      "daysRemaining": "距离付费方案开始还有 {{count}} 天。",
+      "checkout": "选择付费方案",
+      "openingCheckout": "正在打开结账页面…",
+      "checkoutOpened": "安全结账页面已在新标签页中打开。",
+      "dismiss": "关闭试用提醒"
+    },
+    "adaptiveSending": {
+      "selectionBurstCap": "您的方案每次批量操作最多允许 {{count}} 个请求。",
+      "adminCaps": {
+        "eyebrow": "管理员控制",
+        "title": "批量发送突发上限",
+        "description": "设置每个方案一次批量操作可发起的最大请求数。服务商预热、每小时、每日和账户安全限制仍然优先适用。",
+        "requests": "请求/操作",
+        "range": "请选择 {{min}} 到 {{max}} 之间的整数。",
+        "loadError": "无法加载当前上限。请刷新后重试。",
+        "protected": "此全局设置不能提高服务商或账户的安全限制。",
+        "saved": "批量发送上限已保存。",
+        "saving": "正在保存…",
+        "save": "保存上限"
       }
     }
   },
@@ -14695,6 +14841,29 @@
           "exportCancel": "關閉",
           "exportDownload": "下載 CSV"
         }
+      }
+    },
+    "trialBanner": {
+      "title": "您的 Get Phame 試用期正在進行中",
+      "daysRemaining": "距離付費方案開始還有 {{count}} 天。",
+      "checkout": "選擇付費方案",
+      "openingCheckout": "正在開啟結帳頁面…",
+      "checkoutOpened": "安全結帳頁面已在新分頁中開啟。",
+      "dismiss": "關閉試用提醒"
+    },
+    "adaptiveSending": {
+      "selectionBurstCap": "您的方案每次批量操作最多允許 {{count}} 個請求。",
+      "adminCaps": {
+        "eyebrow": "管理員控制",
+        "title": "批量傳送突發上限",
+        "description": "設定每個方案一次批量操作可發起的最大請求數。服務商預熱、每小時、每日和帳戶安全限制仍然優先適用。",
+        "requests": "請求/操作",
+        "range": "請選擇 {{min}} 到 {{max}} 之間的整數。",
+        "loadError": "無法載入目前上限。請重新整理後再試一次。",
+        "protected": "此全域設定無法提高服務商或帳戶的安全限制。",
+        "saved": "批量傳送上限已儲存。",
+        "saving": "正在儲存…",
+        "save": "儲存上限"
       }
     }
   }

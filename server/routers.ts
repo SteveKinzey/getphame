@@ -100,6 +100,15 @@ import {
   getAdaptiveSendStatus,
 } from "./adaptiveSendLimits";
 import {
+  getAdaptiveSendBurstCaps,
+  saveAdaptiveSendBurstCaps,
+} from "./adaptiveSendBurstPolicy";
+import { processManualMonthlyDiagnosticsSnapshot } from "./monthlyDiagnosticsSchedule";
+import {
+  ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+  ADAPTIVE_SEND_MINIMUM_BURST_CAP,
+} from "@shared/adaptiveSendLimits";
+import {
   cancelSubscriptionRenewal,
   claimMoneyBackGuarantee,
   createCheckoutSession,
@@ -466,6 +475,29 @@ const auditRetentionInput = z.object({
     .int()
     .min(AUDIT_RETENTION_MIN_DAYS)
     .max(AUDIT_RETENTION_MAX_DAYS),
+});
+
+const adaptiveSendBurstCapsInput = z.object({
+  free: z
+    .number()
+    .int()
+    .min(ADAPTIVE_SEND_MINIMUM_BURST_CAP)
+    .max(ADAPTIVE_SEND_MAXIMUM_BURST_CAP),
+  pro: z
+    .number()
+    .int()
+    .min(ADAPTIVE_SEND_MINIMUM_BURST_CAP)
+    .max(ADAPTIVE_SEND_MAXIMUM_BURST_CAP),
+  annual: z
+    .number()
+    .int()
+    .min(ADAPTIVE_SEND_MINIMUM_BURST_CAP)
+    .max(ADAPTIVE_SEND_MAXIMUM_BURST_CAP),
+  lifetime: z
+    .number()
+    .int()
+    .min(ADAPTIVE_SEND_MINIMUM_BURST_CAP)
+    .max(ADAPTIVE_SEND_MAXIMUM_BURST_CAP),
 });
 
 const releaseHistoryInput = z.object({
@@ -2543,7 +2575,10 @@ export const appRouter = router({
           throw new Error(
             "Connect an email account in Settings before sending review requests."
           );
-        const toSend = eligibleCustomers.slice(0, initialSendStatus.remaining);
+        const toSend = eligibleCustomers.slice(
+          0,
+          initialSendStatus.burstRemaining
+        );
         const skippedDueToLimit = eligibleCustomers.length - toSend.length;
         if (toSend.length === 0)
           throw new AdaptiveSendLimitError(initialSendStatus);
@@ -2880,7 +2915,7 @@ export const appRouter = router({
           throw new Error(
             "Connect an email account in Settings before sending review requests."
           );
-        const toSend = targets.slice(0, initialSendStatus.remaining);
+        const toSend = targets.slice(0, initialSendStatus.burstRemaining);
         const skippedDueToLimit = targets.length - toSend.length;
         if (toSend.length === 0) {
           throw new AdaptiveSendLimitError(initialSendStatus);
@@ -4923,6 +4958,33 @@ export const appRouter = router({
         .orderBy(desc(releaseParityRecords.recordedAt))
         .limit(1);
       return latest ?? null;
+    }),
+
+    /** Global maximum review-request bursts. Provider and account safety windows still apply. */
+    getAdaptiveSendBurstCaps: adminProcedure.query(() =>
+      getAdaptiveSendBurstCaps()
+    ),
+
+    updateAdaptiveSendBurstCaps: adminProcedure
+      .input(adaptiveSendBurstCapsInput)
+      .mutation(async ({ ctx, input }) =>
+        saveAdaptiveSendBurstCaps(input, ctx.user.id)
+      ),
+
+    /** Bounded, idempotent delivery of the current diagnostics snapshot to active administrators. */
+    generateMonthlyDiagnosticsSnapshot: adminProcedure.mutation(async () => {
+      try {
+        return await processManualMonthlyDiagnosticsSnapshot();
+      } catch (error) {
+        console.error("[MonthlyDiagnostics] Manual snapshot failed.", {
+          errorType: error instanceof Error ? error.name : "UnknownError",
+        });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "The diagnostics snapshot could not be prepared. No report was delivered.",
+        });
+      }
     }),
 
     /** Bounded administrator-only release lineage with stable filtering and sorting. */

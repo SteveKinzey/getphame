@@ -3316,7 +3316,20 @@
     "selectionGaugeLabel": "目前預估可傳送數量",
     "selectionAdvice": "依目前容量，已選取的 {{selected}} 位聯絡人中最多可立即傳送 {{ready}} 位。",
     "selectionOverCapacity": "另有 {{count}} 位可能需要等候下一個容量時段。",
-    "selectionEstimate": "這是目前預估。確認前容量可能變動，伺服器限制仍然有效。"
+    "selectionEstimate": "這是目前預估。確認前容量可能變動，伺服器限制仍然有效。",
+    "selectionBurstCap": "您的方案每次批量操作最多允許 {{count}} 個請求。",
+    "adminCaps": {
+      "eyebrow": "管理員控制",
+      "title": "批量傳送突發上限",
+      "description": "設定每個方案一次批量操作可發起的最大請求數。服務商預熱、每小時、每日和帳戶安全限制仍然優先適用。",
+      "requests": "請求/操作",
+      "range": "請選擇 {{min}} 到 {{max}} 之間的整數。",
+      "loadError": "無法載入目前上限。請重新整理後再試一次。",
+      "protected": "此全域設定無法提高服務商或帳戶的安全限制。",
+      "saved": "批量傳送上限已儲存。",
+      "saving": "正在儲存…",
+      "save": "儲存上限"
+    }
   },
   "developerEnrollment": {
     "loading": "正在載入開發者註冊",
@@ -4286,5 +4299,13 @@
       "exportCancel": "關閉",
       "exportDownload": "下載 CSV"
     }
+  },
+  "trialBanner": {
+    "title": "您的 Get Phame 試用期正在進行中",
+    "daysRemaining": "距離付費方案開始還有 {{count}} 天。",
+    "checkout": "選擇付費方案",
+    "openingCheckout": "正在開啟結帳頁面…",
+    "checkoutOpened": "安全結帳頁面已在新分頁中開啟。",
+    "dismiss": "關閉試用提醒"
   }
 }

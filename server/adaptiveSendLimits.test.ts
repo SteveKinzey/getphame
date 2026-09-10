@@ -248,6 +248,7 @@ describe("adaptive send velocity advice", () => {
       currentRemaining: 7,
       estimatedSendCount: 4,
       estimatedOverCapacityCount: 0,
+      maxBurstCap: null,
       isEstimate: true,
     });
     expect(getAdaptiveSendVelocityAdvice(10, current.remaining)).toEqual({
@@ -255,6 +256,7 @@ describe("adaptive send velocity advice", () => {
       currentRemaining: 7,
       estimatedSendCount: 7,
       estimatedOverCapacityCount: 3,
+      maxBurstCap: null,
       isEstimate: true,
     });
     expect(getAdaptiveSendVelocityAdvice(-2, -1)).toEqual({
@@ -262,6 +264,7 @@ describe("adaptive send velocity advice", () => {
       currentRemaining: 0,
       estimatedSendCount: 0,
       estimatedOverCapacityCount: 0,
+      maxBurstCap: null,
       isEstimate: true,
     });
     expect(current.remaining).toBe(7);

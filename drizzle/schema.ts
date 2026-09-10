@@ -638,6 +638,8 @@ export const monthlyDiagnosticExportRuns = pgTable(
     id: serial("id").primaryKey(),
     scheduleId: integer("schedule_id").notNull(),
     reportMonthKey: varchar("report_month_key", { length: 7 }).notNull(),
+    /** Idempotency key: one scheduled run/month or one admin run/UTC hour. */
+    snapshotKey: varchar("snapshot_key", { length: 96 }).notNull(),
     snapshotGeneratedAt: bigint("snapshot_generated_at", {
       mode: "number",
     }).notNull(),
@@ -660,9 +662,9 @@ export const monthlyDiagnosticExportRuns = pgTable(
     completedAt: bigint("completed_at", { mode: "number" }),
   },
   table => [
-    uniqueIndex("monthly_diagnostic_export_run_month_unique").on(
+    uniqueIndex("monthly_diagnostic_export_run_snapshot_unique").on(
       table.scheduleId,
-      table.reportMonthKey
+      table.snapshotKey
     ),
     index("monthly_diagnostic_export_run_status_idx").on(
       table.status,
@@ -1066,6 +1068,32 @@ export const businessProfiles = pgTable("business_profiles", {
 });
 export type BusinessProfile = typeof businessProfiles.$inferSelect;
 export type InsertBusinessProfile = typeof businessProfiles.$inferInsert;
+
+/**
+ * Global administrator-owned maximum batch sizes for the adaptive bulk-send
+ * workflow. These values can only narrow a provider's runtime allowance.
+ */
+export const adaptiveSendBurstPolicies = pgTable(
+  "adaptive_send_burst_policies",
+  {
+    id: serial("id").primaryKey(),
+    policyKey: varchar("policyKey", { length: 32 }).notNull(),
+    freeBurstCap: integer("freeBurstCap").notNull().default(10),
+    proBurstCap: integer("proBurstCap").notNull().default(25),
+    annualBurstCap: integer("annualBurstCap").notNull().default(50),
+    lifetimeBurstCap: integer("lifetimeBurstCap").notNull().default(100),
+    updatedByUserId: integer("updatedByUserId"),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("adaptive_send_burst_policy_key_unique").on(table.policyKey),
+  ]
+);
+
+export type AdaptiveSendBurstPolicy =
+  typeof adaptiveSendBurstPolicies.$inferSelect;
+export type InsertAdaptiveSendBurstPolicy =
+  typeof adaptiveSendBurstPolicies.$inferInsert;
 
 /** Each review request sent by a business owner to their customer */
 export const customerRequests = pgTable(
