@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
+import { getAdaptiveSendVelocityAdvice } from "@shared/adaptiveSendLimits";
 
 type AdaptiveStatus = {
   configured: boolean;
@@ -32,6 +33,7 @@ type AdaptiveStatus = {
 type Props = {
   status: AdaptiveStatus | null | undefined;
   compact?: boolean;
+  requestedCount?: number;
 };
 
 const toneByLevel = {
@@ -85,6 +87,7 @@ function UsageBar({
 export default function AdaptiveSendLimitStatus({
   status,
   compact = false,
+  requestedCount,
 }: Props) {
   const { t, i18n } = useTranslation();
 
@@ -188,6 +191,10 @@ export default function AdaptiveSendLimitStatus({
                 "Capacity is managed automatically. Consider sending the most important requests first.",
             })
           : null;
+  const velocityAdvice =
+    requestedCount === undefined
+      ? null
+      : getAdaptiveSendVelocityAdvice(requestedCount, status.remaining);
 
   return (
     <section
@@ -290,6 +297,75 @@ export default function AdaptiveSendLimitStatus({
           />
         </div>
       </div>
+
+      {velocityAdvice && velocityAdvice.requestedCount > 0 && (
+        <div
+          className="mt-3 rounded-xl border p-3"
+          style={{
+            borderColor: tone.border,
+            background: "oklch(1 0 0 / 0.62)",
+          }}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-black rr-text-navy">
+              {t("adaptiveSending.selectionTitle", {
+                defaultValue: "Current send capacity",
+              })}
+            </p>
+            <span className="text-xs font-black" style={{ color: tone.accent }}>
+              {velocityAdvice.estimatedSendCount}/
+              {velocityAdvice.requestedCount}
+            </span>
+          </div>
+          <div
+            className="mt-2 h-2 overflow-hidden rounded-full"
+            style={{ background: "oklch(0.91 0.015 260)" }}
+            role="progressbar"
+            aria-label={t("adaptiveSending.selectionGaugeLabel", {
+              defaultValue: "Estimated sends available now",
+            })}
+            aria-valuemin={0}
+            aria-valuemax={velocityAdvice.requestedCount}
+            aria-valuenow={velocityAdvice.estimatedSendCount}
+          >
+            <div
+              className="h-full rounded-full transition-[width] duration-200 motion-reduce:transition-none"
+              style={{
+                background: tone.accent,
+                width: `${Math.round((velocityAdvice.estimatedSendCount / velocityAdvice.requestedCount) * 100)}%`,
+              }}
+            />
+          </div>
+          <p className="mt-2 text-xs font-semibold rr-text-navy-mid">
+            {t("adaptiveSending.selectionAdvice", {
+              defaultValue:
+                "Based on current capacity, up to {{ready}} of {{selected}} selected contacts can send now.",
+              ready: velocityAdvice.estimatedSendCount,
+              selected: velocityAdvice.requestedCount,
+            })}
+          </p>
+          {velocityAdvice.estimatedOverCapacityCount > 0 && (
+            <p
+              className="mt-1 text-xs font-bold"
+              style={{ color: tone.accent }}
+            >
+              {t("adaptiveSending.selectionOverCapacity", {
+                defaultValue:
+                  "{{count}} may wait for the next capacity window.",
+                count: velocityAdvice.estimatedOverCapacityCount,
+              })}
+            </p>
+          )}
+          <p className="mt-1.5 text-xs font-semibold rr-text-navy-muted">
+            {t("adaptiveSending.selectionEstimate", {
+              defaultValue:
+                "This is a current estimate. Capacity can change before confirmation; server limits still apply.",
+            })}
+          </p>
+        </div>
+      )}
 
       <div
         className="mt-3 flex flex-col gap-2 border-t pt-3 text-xs font-semibold rr-text-navy-mid sm:flex-row sm:items-center sm:justify-between"

@@ -24,12 +24,14 @@ const BASE_PARAMS = {
   userName: "Get Phame Owner",
   stripeCustomerId: null as string | null,
   origin: "https://legacy-preview.invalid",
+  lifecycleLocale: "en" as const,
 };
 
 describe("Stripe Checkout and promotion safeguards", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     process.env.STRIPE_SECRET_KEY = "sk_test_dummy";
+    process.env.STRIPE_TRIAL_PERIOD_DAYS = "14";
     process.env.APP_BASE_URL = "https://legacy-preview.invalid";
     process.env.STRIPE_TEST_PRICE_ID_USD_MONTHLY = "price_test_usd_monthly";
     process.env.STRIPE_TEST_PRICE_ID_USD_ANNUAL = "price_test_usd_annual";

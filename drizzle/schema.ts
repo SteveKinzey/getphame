@@ -594,6 +594,123 @@ export const releaseHistoryExportRuns = pgTable(
   ]
 );
 
+/**
+ * Global monthly diagnostics schedule. The enabled flag is intentionally stored
+ * even though this first pass has no UI so a future administrator control can
+ * pause or resume the managed Heartbeat without changing the runtime contract.
+ */
+export const monthlyDiagnosticExportSchedules = pgTable(
+  "monthly_diagnostic_export_schedules",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("schedule_key", { length: 32 })
+      .notNull()
+      .default("global"),
+    scheduleCronTaskUid: varchar("schedule_cron_task_uid", {
+      length: 65,
+    }).unique(),
+    enabled: boolean("enabled").notNull().default(true),
+    cronExpression: varchar("cron_expression", { length: 64 })
+      .notNull()
+      .default("0 10 8 1 * *"),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("monthly_diagnostic_export_schedule_key_unique").on(
+      table.scheduleKey
+    ),
+    index("monthly_diagnostic_export_schedule_task_idx").on(
+      table.scheduleCronTaskUid
+    ),
+  ]
+);
+
+export type MonthlyDiagnosticExportSchedule =
+  typeof monthlyDiagnosticExportSchedules.$inferSelect;
+export type InsertMonthlyDiagnosticExportSchedule =
+  typeof monthlyDiagnosticExportSchedules.$inferInsert;
+
+/** Metadata-only monthly snapshots. CSV bytes, report text, and addresses are excluded. */
+export const monthlyDiagnosticExportRuns = pgTable(
+  "monthly_diagnostic_export_runs",
+  {
+    id: serial("id").primaryKey(),
+    scheduleId: integer("schedule_id").notNull(),
+    reportMonthKey: varchar("report_month_key", { length: 7 }).notNull(),
+    snapshotGeneratedAt: bigint("snapshot_generated_at", {
+      mode: "number",
+    }).notNull(),
+    status: varchar("status", { length: 24 }).notNull().default("preparing"),
+    savedContactsTotal: integer("saved_contacts_total").notNull().default(0),
+    explicitConsentTotal: integer("explicit_consent_total")
+      .notNull()
+      .default(0),
+    withoutExplicitConsentTotal: integer("without_explicit_consent_total")
+      .notNull()
+      .default(0),
+    optedOutTotal: integer("opted_out_total").notNull().default(0),
+    authTotalMatching: integer("auth_total_matching").notNull().default(0),
+    authExportedRows: integer("auth_exported_rows").notNull().default(0),
+    authTruncated: boolean("auth_truncated").notNull().default(false),
+    consentFilename: varchar("consent_filename", { length: 160 }),
+    authFilename: varchar("auth_filename", { length: 160 }),
+    errorCode: varchar("error_code", { length: 64 }),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    completedAt: bigint("completed_at", { mode: "number" }),
+  },
+  table => [
+    uniqueIndex("monthly_diagnostic_export_run_month_unique").on(
+      table.scheduleId,
+      table.reportMonthKey
+    ),
+    index("monthly_diagnostic_export_run_status_idx").on(
+      table.status,
+      table.createdAt
+    ),
+  ]
+);
+
+export type MonthlyDiagnosticExportRun =
+  typeof monthlyDiagnosticExportRuns.$inferSelect;
+export type InsertMonthlyDiagnosticExportRun =
+  typeof monthlyDiagnosticExportRuns.$inferInsert;
+
+/** Per-administrator at-most-once delivery state; recipient addresses are never stored. */
+export const monthlyDiagnosticExportDeliveries = pgTable(
+  "monthly_diagnostic_export_deliveries",
+  {
+    id: serial("id").primaryKey(),
+    runId: integer("run_id").notNull(),
+    recipientUserId: integer("recipient_user_id").notNull(),
+    state: varchar("state", { length: 24 }).notNull().default("pending"),
+    attemptCount: integer("attempt_count").notNull().default(0),
+    attemptedAt: bigint("attempted_at", { mode: "number" }),
+    sentAt: bigint("sent_at", { mode: "number" }),
+    errorCode: varchar("error_code", { length: 64 }),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("monthly_diagnostic_export_delivery_recipient_unique").on(
+      table.runId,
+      table.recipientUserId
+    ),
+    index("monthly_diagnostic_export_delivery_state_idx").on(
+      table.runId,
+      table.state
+    ),
+    index("monthly_diagnostic_export_delivery_recipient_idx").on(
+      table.recipientUserId
+    ),
+  ]
+);
+
+export type MonthlyDiagnosticExportDelivery =
+  typeof monthlyDiagnosticExportDeliveries.$inferSelect;
+export type InsertMonthlyDiagnosticExportDelivery =
+  typeof monthlyDiagnosticExportDeliveries.$inferInsert;
+
 /** Global acknowledgement of one sanitized repeat-renderer signature until newer evidence arrives. */
 export const rendererFailureAlertAcknowledgements = pgTable(
   "renderer_failure_alert_acknowledgements",
@@ -881,6 +998,9 @@ export const businessProfiles = pgTable("business_profiles", {
   reviewLink: text("reviewLink").notNull(),
   tier: tierEnum("tier").default("free").notNull(),
   planExpiresAt: bigint("planExpiresAt", { mode: "number" }), // Unix ms — null for lifetime, set for monthly/annual
+  lifecycleLocale: varchar("lifecycleLocale", { length: 16 })
+    .default("en")
+    .notNull(),
   monthlyCount: integer("monthlyCount").default(0).notNull(),
   monthlyResetDate: varchar("monthlyResetDate", { length: 7 }).notNull(), // "YYYY-MM"
   // Stripe customer ID — stored for creating checkout sessions and portal links
@@ -1026,22 +1146,128 @@ export type InsertQuietHoursQueuedSend =
 
 /**
  * Tracks active Stripe subscriptions.
- * We store only the Stripe IDs — all other data (amount, status, period)
- * is fetched from Stripe API on demand or updated via webhooks.
+ * Canonical status and access boundaries are refreshed from Stripe during
+ * every lifecycle event; no amount or raw provider payload is stored.
  */
-export const stripeSubscriptions = pgTable("stripe_subscriptions", {
-  id: serial("id").primaryKey(),
-  userId: integer("userId").notNull().unique(), // one active sub per user
-  stripeSubscriptionId: varchar("stripeSubscriptionId", {
-    length: 64,
-  }).notNull(),
-  status: varchar("status", { length: 32 }).notNull(), // active, canceled, past_due, etc.
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
+export const stripeSubscriptions = pgTable(
+  "stripe_subscriptions",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull().unique(), // one active sub per user
+    stripeSubscriptionId: varchar("stripeSubscriptionId", {
+      length: 64,
+    }).notNull(),
+    plan: varchar("plan", { length: 16 }).notNull().default("monthly"),
+    status: varchar("status", { length: 32 }).notNull(), // active, canceled, past_due, etc.
+    trialEndsAt: bigint("trialEndsAt", { mode: "number" }),
+    currentPeriodEndsAt: bigint("currentPeriodEndsAt", { mode: "number" }),
+    cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").notNull().default(false),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  table => [
+    uniqueIndex("stripe_subscriptions_stripe_id_unique").on(
+      table.stripeSubscriptionId
+    ),
+  ]
+);
 
 export type StripeSubscription = typeof stripeSubscriptions.$inferSelect;
 export type InsertStripeSubscription = typeof stripeSubscriptions.$inferInsert;
+
+/** Privacy-minimized idempotency ledger for verified Stripe lifecycle events. */
+export const stripeWebhookEvents = pgTable(
+  "stripe_webhook_events",
+  {
+    id: serial("id").primaryKey(),
+    stripeEventId: varchar("stripeEventId", { length: 191 }).notNull(),
+    eventType: varchar("eventType", { length: 80 }).notNull(),
+    objectId: varchar("objectId", { length: 191 }).notNull(),
+    status: varchar("status", { length: 20 }).notNull(),
+    claimExpiresAt: bigint("claimExpiresAt", { mode: "number" }),
+    errorCode: varchar("errorCode", { length: 64 }),
+    receivedAt: bigint("receivedAt", { mode: "number" }).notNull(),
+    processedAt: bigint("processedAt", { mode: "number" }),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("stripe_webhook_events_event_id_unique").on(
+      table.stripeEventId
+    ),
+    index("stripe_webhook_events_claim_idx").on(
+      table.status,
+      table.claimExpiresAt
+    ),
+  ]
+);
+
+export type StripeWebhookEvent = typeof stripeWebhookEvents.$inferSelect;
+export type InsertStripeWebhookEvent = typeof stripeWebhookEvents.$inferInsert;
+
+/** At-most-once outbox for transactional subscription lifecycle notices. */
+export const stripeLifecycleEmails = pgTable(
+  "stripe_lifecycle_emails",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull(),
+    stripeSubscriptionId: varchar("stripeSubscriptionId", {
+      length: 64,
+    }).notNull(),
+    stripeInvoiceId: varchar("stripeInvoiceId", { length: 191 }),
+    sequenceKey: varchar("sequenceKey", { length: 255 }).notNull(),
+    kind: varchar("kind", { length: 32 }).notNull(),
+    locale: varchar("locale", { length: 16 }).notNull().default("en"),
+    state: varchar("state", { length: 20 }).notNull().default("pending"),
+    scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(),
+    attemptedAt: bigint("attemptedAt", { mode: "number" }),
+    sentAt: bigint("sentAt", { mode: "number" }),
+    provider: varchar("provider", { length: 32 }),
+    providerMessageId: varchar("providerMessageId", { length: 191 }),
+    errorCode: varchar("errorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("stripe_lifecycle_emails_sequence_unique").on(
+      table.stripeSubscriptionId,
+      table.sequenceKey
+    ),
+    index("stripe_lifecycle_emails_due_idx").on(table.state, table.scheduledAt),
+    index("stripe_lifecycle_emails_user_idx").on(table.userId),
+  ]
+);
+
+export type StripeLifecycleEmail = typeof stripeLifecycleEmails.$inferSelect;
+export type InsertStripeLifecycleEmail =
+  typeof stripeLifecycleEmails.$inferInsert;
+
+/** Durable owned registration and overlap guard for lifecycle processing. */
+export const stripeLifecycleSchedulers = pgTable(
+  "stripe_lifecycle_schedulers",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("scheduleKey", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", {
+      length: 65,
+    }).unique(),
+    cronExpression: varchar("cronExpression", { length: 64 })
+      .notNull()
+      .default("0 */5 * * * *"),
+    lastRunAt: bigint("lastRunAt", { mode: "number" }),
+    lastRunStatus: varchar("lastRunStatus", { length: 20 }),
+    lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  }
+);
+
+export type StripeLifecycleScheduler =
+  typeof stripeLifecycleSchedulers.$inferSelect;
+export type InsertStripeLifecycleScheduler =
+  typeof stripeLifecycleSchedulers.$inferInsert;
 
 /**
  * Administrator-issued paid-access grants for registered or future users.

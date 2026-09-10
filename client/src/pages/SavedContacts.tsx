@@ -2042,7 +2042,11 @@ export default function SavedContacts() {
               </div>
             )}
             <div className="mt-3">
-              <AdaptiveSendLimitStatus status={dailyStatus} compact />
+              <AdaptiveSendLimitStatus
+                status={dailyStatus}
+                compact
+                requestedCount={selectedCount}
+              />
             </div>
           </AlertDialogHeader>
           {platforms.length > 0 && (

@@ -10,6 +10,7 @@
  */
 
 import Stripe from "stripe";
+import type { LifecycleLocale } from "@shared/lifecycleLocale";
 
 let _stripe: Stripe | null = null;
 
@@ -35,6 +36,42 @@ export const stripe: Stripe = new Proxy({} as Stripe, {
 
 /** Stripe Price IDs for each plan */
 export type StripePlan = "monthly" | "annual" | "lifetime";
+
+const DEVELOPMENT_TRIAL_PERIOD_DAYS = 14;
+
+export function getStripeTrialPeriodDays(
+  value = process.env.STRIPE_TRIAL_PERIOD_DAYS,
+  nodeEnv = process.env.NODE_ENV
+): number {
+  const normalized = value?.trim();
+  if (!normalized && nodeEnv !== "production") {
+    return DEVELOPMENT_TRIAL_PERIOD_DAYS;
+  }
+  if (!normalized || !/^\d+$/.test(normalized)) {
+    throw new Error(
+      "STRIPE_TRIAL_PERIOD_DAYS must be an integer between 1 and 730"
+    );
+  }
+  const trialDays = Number(normalized);
+  if (!Number.isSafeInteger(trialDays) || trialDays < 1 || trialDays > 730) {
+    throw new Error(
+      "STRIPE_TRIAL_PERIOD_DAYS must be an integer between 1 and 730"
+    );
+  }
+  return trialDays;
+}
+
+function checkoutLifecycleMetadata(input: {
+  userId: number;
+  plan: StripePlan;
+  lifecycleLocale: LifecycleLocale;
+}) {
+  return {
+    getphame_user_id: String(input.userId),
+    getphame_plan: input.plan,
+    getphame_locale: input.lifecycleLocale,
+  };
+}
 
 export function isStripeLiveMode(
   secretKey = process.env.STRIPE_SECRET_KEY
@@ -827,6 +864,7 @@ export async function createCheckoutSession({
   userName,
   stripeCustomerId,
   origin,
+  lifecycleLocale,
   plan = "monthly",
   promotionCode = null,
 }: {
@@ -835,6 +873,7 @@ export async function createCheckoutSession({
   userName: string | null;
   stripeCustomerId: string | null;
   origin: string;
+  lifecycleLocale: LifecycleLocale;
   plan?: StripePlan;
   promotionCode?: string | null;
 }): Promise<string> {
@@ -846,6 +885,11 @@ export async function createCheckoutSession({
     );
   }
   const isLifetime = plan === "lifetime";
+  const lifecycleMetadata = checkoutLifecycleMetadata({
+    userId,
+    plan,
+    lifecycleLocale,
+  });
   const returnOrigin = getStripeReturnOrigin(origin);
   const campaignPromotion = promotionCode
     ? await resolvePromotionCodeForCheckout({
@@ -865,12 +909,19 @@ export async function createCheckoutSession({
     branding_settings: GETPHAME_CHECKOUT_BRANDING,
     client_reference_id: String(userId),
     metadata: {
+      ...lifecycleMetadata,
       user_id: String(userId),
       plan,
-      customer_email: userEmail ?? "",
-      customer_name: userName ?? "",
       ...(campaignPromotion ? { promotion_code: campaignPromotion.code } : {}),
     },
+    ...(!isLifetime
+      ? {
+          subscription_data: {
+            trial_period_days: getStripeTrialPeriodDays(),
+            metadata: lifecycleMetadata,
+          },
+        }
+      : {}),
     line_items: [
       {
         price: priceId,
@@ -920,6 +971,7 @@ export async function createThbCheckoutSession({
   userName,
   stripeCustomerId,
   origin,
+  lifecycleLocale,
   plan = "monthly",
   promotionCode = null,
 }: {
@@ -928,6 +980,7 @@ export async function createThbCheckoutSession({
   userName: string | null;
   stripeCustomerId: string | null;
   origin: string;
+  lifecycleLocale: LifecycleLocale;
   plan?: StripePlan;
   promotionCode?: string | null;
 }): Promise<string> {
@@ -941,6 +994,11 @@ export async function createThbCheckoutSession({
     );
   }
   const isLifetime = plan === "lifetime";
+  const lifecycleMetadata = checkoutLifecycleMetadata({
+    userId,
+    plan,
+    lifecycleLocale,
+  });
   const returnOrigin = getStripeReturnOrigin(origin);
   const campaignPromotion = promotionCode
     ? await resolvePromotionCodeForCheckout({
@@ -961,12 +1019,19 @@ export async function createThbCheckoutSession({
     branding_settings: GETPHAME_CHECKOUT_BRANDING,
     client_reference_id: String(userId),
     metadata: {
+      ...lifecycleMetadata,
       user_id: String(userId),
       plan,
-      customer_email: userEmail ?? "",
-      customer_name: userName ?? "",
       ...(campaignPromotion ? { promotion_code: campaignPromotion.code } : {}),
     },
+    ...(!isLifetime
+      ? {
+          subscription_data: {
+            trial_period_days: getStripeTrialPeriodDays(),
+            metadata: lifecycleMetadata,
+          },
+        }
+      : {}),
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${returnOrigin}/payment-success?stripe=1&plan=${plan}`,
     cancel_url: cancelUrl,

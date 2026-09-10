@@ -42,6 +42,7 @@ import {
 } from "@shared/pricing";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import { useUpdateCriticalActivity } from "@/contexts/UpdateSafetyContext";
+import { normalizeLifecycleLocale } from "@shared/lifecycleLocale";
 import {
   Drawer,
   DrawerClose,
@@ -198,7 +199,7 @@ const PLANS: Record<
 };
 
 export default function UpgradePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery();
@@ -387,6 +388,7 @@ export default function UpgradePage() {
     createCheckout.mutate({
       origin: window.location.origin,
       plan,
+      locale: normalizeLifecycleLocale(i18n.language),
       ...(campaignPromotionCode
         ? { promotionCode: campaignPromotionCode }
         : {}),
@@ -851,6 +853,7 @@ export default function UpgradePage() {
                       createThbCheckout.mutate({
                         origin: window.location.origin,
                         plan: selectedPlan,
+                        locale: normalizeLifecycleLocale(i18n.language),
                         ...(campaignPromotionCode
                           ? { promotionCode: campaignPromotionCode }
                           : {}),
@@ -920,6 +923,7 @@ export default function UpgradePage() {
             createThbCheckout.mutate({
               origin: window.location.origin,
               plan: selectedPlan,
+              locale: normalizeLifecycleLocale(i18n.language),
               ...(campaignPromotionCode
                 ? { promotionCode: campaignPromotionCode }
                 : {}),

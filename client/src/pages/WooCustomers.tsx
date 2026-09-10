@@ -355,7 +355,11 @@ export default function WooCustomers() {
               </div>
             )}
             <div className="mt-3">
-              <AdaptiveSendLimitStatus status={dailyStatus} compact />
+              <AdaptiveSendLimitStatus
+                status={dailyStatus}
+                compact
+                requestedCount={selectedIds.size}
+              />
             </div>
           </AlertDialogHeader>
 

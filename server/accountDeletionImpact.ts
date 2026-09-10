@@ -41,6 +41,7 @@ import {
   sourceAutomationEvents,
   sourceConnections,
   sourceHealthHistory,
+  stripeLifecycleEmails,
   stripeSubscriptions,
   userIdentityAliases,
   users,
@@ -507,6 +508,9 @@ export async function deleteAccountOwnedData(userId: number) {
   await db
     .delete(accessCodeRedemptions)
     .where(eq(accessCodeRedemptions.userId, userId));
+  await db
+    .delete(stripeLifecycleEmails)
+    .where(eq(stripeLifecycleEmails.userId, userId));
   await db
     .delete(stripeSubscriptions)
     .where(eq(stripeSubscriptions.userId, userId));

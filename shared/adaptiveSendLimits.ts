@@ -19,6 +19,14 @@ export type AdaptiveSendRecommendedAction =
   | "connect_bulk_sender"
   | null;
 
+export type AdaptiveSendVelocityAdvice = {
+  requestedCount: number;
+  currentRemaining: number;
+  estimatedSendCount: number;
+  estimatedOverCapacityCount: number;
+  isEstimate: true;
+};
+
 export type AdaptiveSendChannelDescriptor = {
   key: string;
   type: AdaptiveSendChannelType;
@@ -133,6 +141,23 @@ export function getAdaptiveSendWarningLevel(
   if (utilization >= ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD) return "high";
   if (utilization >= ADAPTIVE_SEND_WARNING_THRESHOLD) return "approaching";
   return "normal";
+}
+
+export function getAdaptiveSendVelocityAdvice(
+  requestedCount: number,
+  remaining: number
+): AdaptiveSendVelocityAdvice {
+  const normalizedRequested = Math.max(0, Math.floor(requestedCount));
+  const normalizedRemaining = Math.max(0, Math.floor(remaining));
+  const estimatedSendCount = Math.min(normalizedRequested, normalizedRemaining);
+
+  return {
+    requestedCount: normalizedRequested,
+    currentRemaining: normalizedRemaining,
+    estimatedSendCount,
+    estimatedOverCapacityCount: normalizedRequested - estimatedSendCount,
+    isEstimate: true,
+  };
 }
 
 export function getAdaptiveSendRecommendedAction(
