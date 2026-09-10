@@ -4040,7 +4040,12 @@
       "warming": "Riscaldamento",
       "building": "Reputazione in crescita",
       "established": "Stabilita"
-    }
+    },
+    "selectionTitle": "Capacità di invio attuale",
+    "selectionGaugeLabel": "Invii stimati disponibili ora",
+    "selectionAdvice": "In base alla capacità attuale, fino a {{ready}} dei {{selected}} contatti selezionati possono essere inviati ora.",
+    "selectionOverCapacity": "{{count}} potrebbe dover attendere la prossima finestra di capacità.",
+    "selectionEstimate": "Questa è una stima attuale. La capacità può cambiare prima della conferma; i limiti del server restano applicati."
   },
   "developerEnrollment": {
     "loading": "Caricamento della registrazione sviluppatore",

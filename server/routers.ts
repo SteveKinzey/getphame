@@ -421,6 +421,7 @@ import {
   rotateKoalendarWebhook,
 } from "./koalendar";
 import crypto from "crypto";
+import { LIFECYCLE_LOCALES } from "@shared/lifecycleLocale";
 
 const smtpAuditFilterShape = {
   dateFrom: z.number().int().nonnegative().optional(),
@@ -2125,17 +2126,26 @@ export const appRouter = router({
         z.object({
           origin: z.string(),
           plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly"),
+          locale: z.enum(LIFECYCLE_LOCALES),
           promotionCode: z.string().trim().max(64).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
         const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new Error("Business profile not found.");
+        await db
+          .update(businessProfiles)
+          .set({ lifecycleLocale: input.locale, updatedAt: new Date() })
+          .where(eq(businessProfiles.userId, ctx.user.id));
         const url = await createCheckoutSession({
           userId: ctx.user.id,
           userEmail: ctx.user.email ?? null,
           userName: ctx.user.name ?? null,
           stripeCustomerId: profile?.stripeCustomerId ?? null,
           origin: input.origin,
+          lifecycleLocale: input.locale,
           plan: input.plan,
           promotionCode: input.promotionCode ?? null,
         });
@@ -2148,17 +2158,26 @@ export const appRouter = router({
         z.object({
           origin: z.string(),
           plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly"),
+          locale: z.enum(LIFECYCLE_LOCALES),
           promotionCode: z.string().trim().max(64).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
         const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new Error("Business profile not found.");
+        await db
+          .update(businessProfiles)
+          .set({ lifecycleLocale: input.locale, updatedAt: new Date() })
+          .where(eq(businessProfiles.userId, ctx.user.id));
         const url = await createThbCheckoutSession({
           userId: ctx.user.id,
           userEmail: ctx.user.email ?? null,
           userName: ctx.user.name ?? null,
           stripeCustomerId: profile?.stripeCustomerId ?? null,
           origin: input.origin,
+          lifecycleLocale: input.locale,
           plan: input.plan,
           promotionCode: input.promotionCode ?? null,
         });

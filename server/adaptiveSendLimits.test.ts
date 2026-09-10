@@ -8,6 +8,7 @@ import {
   ADAPTIVE_SEND_WARNING_THRESHOLD,
   buildAdaptiveSendPolicy,
   getAdaptiveSendRecommendedAction,
+  getAdaptiveSendVelocityAdvice,
   getAdaptiveSendWarningLevel,
   type AdaptiveSendChannelDescriptor,
 } from "../shared/adaptiveSendLimits";
@@ -238,6 +239,35 @@ describe("adaptive limit errors", () => {
   });
 });
 
+describe("adaptive send velocity advice", () => {
+  it("derives a non-mutating, bounded estimate from the current capacity snapshot", () => {
+    const current = status({ remaining: 7 });
+
+    expect(getAdaptiveSendVelocityAdvice(4, current.remaining)).toEqual({
+      requestedCount: 4,
+      currentRemaining: 7,
+      estimatedSendCount: 4,
+      estimatedOverCapacityCount: 0,
+      isEstimate: true,
+    });
+    expect(getAdaptiveSendVelocityAdvice(10, current.remaining)).toEqual({
+      requestedCount: 10,
+      currentRemaining: 7,
+      estimatedSendCount: 7,
+      estimatedOverCapacityCount: 3,
+      isEstimate: true,
+    });
+    expect(getAdaptiveSendVelocityAdvice(-2, -1)).toEqual({
+      requestedCount: 0,
+      currentRemaining: 0,
+      estimatedSendCount: 0,
+      estimatedOverCapacityCount: 0,
+      isEstimate: true,
+    });
+    expect(current.remaining).toBe(7);
+  });
+});
+
 describe("adaptive sending production contracts", () => {
   const read = (relativePath: string) =>
     readFileSync(join(PROJECT_ROOT, relativePath), "utf8");
@@ -286,8 +316,12 @@ describe("adaptive sending production contracts", () => {
     expect(settings).toContain(
       "<AdaptiveSendLimitStatus status={adaptiveSendStatus}"
     );
-    expect(contacts).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");
-    expect(woo).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");
+    expect(component).toContain("requestedCount?: number");
+    expect(component).toContain("getAdaptiveSendVelocityAdvice");
+    expect(component).toContain('role="progressbar"');
+    expect(component).toContain("server limits still apply");
+    expect(contacts).toContain("requestedCount={selectedCount}");
+    expect(woo).toContain("requestedCount={selectedIds.size}");
   });
 
   it("keeps every adaptive sending string complete in all seven maintained locales", () => {

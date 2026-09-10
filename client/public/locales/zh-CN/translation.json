@@ -3289,7 +3289,12 @@
       "warming": "正在预热",
       "building": "正在建立信誉",
       "established": "稳定连接"
-    }
+    },
+    "selectionTitle": "当前发送容量",
+    "selectionGaugeLabel": "当前预计可发送数量",
+    "selectionAdvice": "根据当前容量，已选择的 {{selected}} 位联系人中最多可立即发送 {{ready}} 位。",
+    "selectionOverCapacity": "另有 {{count}} 位可能需要等待下一次容量窗口。",
+    "selectionEstimate": "这是当前预估。确认前容量可能变化，服务器限制仍然有效。"
   },
   "developerEnrollment": {
     "loading": "正在加载开发者注册",

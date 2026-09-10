@@ -3746,7 +3746,12 @@
       "warming": "Warming up",
       "building": "Building reputation",
       "established": "Established"
-    }
+    },
+    "selectionTitle": "Current send capacity",
+    "selectionGaugeLabel": "Estimated sends available now",
+    "selectionAdvice": "Based on current capacity, up to {{ready}} of {{selected}} selected contacts can send now.",
+    "selectionOverCapacity": "{{count}} may wait for the next capacity window.",
+    "selectionEstimate": "This is a current estimate. Capacity can change before confirmation; server limits still apply."
   },
   "developerEnrollment": {
     "loading": "Loading developer enrollment",

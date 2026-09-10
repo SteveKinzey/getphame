@@ -24,6 +24,7 @@ import {
   reviewPlatforms,
   savedContacts,
   smtpCredentials,
+  stripeLifecycleEmails,
   stripeSubscriptions,
   userIdentityAliases,
   users,
@@ -174,6 +175,9 @@ async function deleteOwnedData(tx: any, userId: number, email: string | null) {
   await tx
     .delete(bulkSenderCredentials)
     .where(eq(bulkSenderCredentials.userId, userId));
+  await tx
+    .delete(stripeLifecycleEmails)
+    .where(eq(stripeLifecycleEmails.userId, userId));
   await tx
     .delete(stripeSubscriptions)
     .where(eq(stripeSubscriptions.userId, userId));
@@ -511,6 +515,10 @@ export async function combineAccountsAsAdmin(
       .update(bulkSenderCredentials)
       .set({ userId: targetUserId })
       .where(eq(bulkSenderCredentials.userId, sourceUserId));
+    await tx
+      .update(stripeLifecycleEmails)
+      .set({ userId: targetUserId })
+      .where(eq(stripeLifecycleEmails.userId, sourceUserId));
     await tx
       .update(stripeSubscriptions)
       .set({ userId: targetUserId })

@@ -3800,7 +3800,12 @@
       "warming": "Preparándose",
       "building": "Generando reputación",
       "established": "Establecida"
-    }
+    },
+    "selectionTitle": "Capacidad de envío actual",
+    "selectionGaugeLabel": "Envíos estimados disponibles ahora",
+    "selectionAdvice": "Según la capacidad actual, hasta {{ready}} de {{selected}} contactos seleccionados pueden enviarse ahora.",
+    "selectionOverCapacity": "{{count}} puede tener que esperar a la siguiente ventana de capacidad.",
+    "selectionEstimate": "Esta es una estimación actual. La capacidad puede cambiar antes de confirmar; los límites del servidor siguen aplicándose."
   },
   "developerEnrollment": {
     "loading": "Cargando registro de desarrollador",

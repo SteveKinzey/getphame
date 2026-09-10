@@ -3311,7 +3311,12 @@
       "warming": "正在預熱",
       "building": "正在建立信譽",
       "established": "穩定連線"
-    }
+    },
+    "selectionTitle": "目前傳送容量",
+    "selectionGaugeLabel": "目前預估可傳送數量",
+    "selectionAdvice": "依目前容量，已選取的 {{selected}} 位聯絡人中最多可立即傳送 {{ready}} 位。",
+    "selectionOverCapacity": "另有 {{count}} 位可能需要等候下一個容量時段。",
+    "selectionEstimate": "這是目前預估。確認前容量可能變動，伺服器限制仍然有效。"
   },
   "developerEnrollment": {
     "loading": "正在載入開發者註冊",
