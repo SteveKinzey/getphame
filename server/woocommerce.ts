@@ -9,7 +9,10 @@
 import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { getDb } from "./db";
 import { wooCredentials, wooCustomers } from "../drizzle/schema";
-import type { InsertWooCredentials, InsertWooCustomer } from "../drizzle/schema";
+import type {
+  InsertWooCredentials,
+  InsertWooCustomer,
+} from "../drizzle/schema";
 import { upsertContactsFromSource } from "./contacts";
 
 // ─── Credentials helpers ──────────────────────────────────────────────────────
@@ -70,7 +73,9 @@ export async function fetchWooOrders(
     order: "desc",
   });
 
-  const credentials = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64");
+  const credentials = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
+    "base64"
+  );
 
   const res = await fetch(`${base}/wp-json/wc/v3/orders?${params}`, {
     headers: {
@@ -121,7 +126,7 @@ export async function syncWooOrders(
   }
 
   // Get existing order IDs to avoid duplicates
-  const orderIds = orders.map((o) => String(o.id));
+  const orderIds = orders.map(o => String(o.id));
   const existing = await db
     .select({ wooOrderId: wooCustomers.wooOrderId })
     .from(wooCustomers)
@@ -131,14 +136,15 @@ export async function syncWooOrders(
         inArray(wooCustomers.wooOrderId, orderIds)
       )
     );
-  const existingIds = new Set(existing.map((r) => r.wooOrderId));
+  const existingIds = new Set(existing.map(r => r.wooOrderId));
 
   const toInsert: InsertWooCustomer[] = orders
-    .filter((o) => !existingIds.has(String(o.id)) && o.billing?.email)
-    .map((o) => ({
+    .filter(o => !existingIds.has(String(o.id)) && o.billing?.email)
+    .map(o => ({
       userId,
       wooOrderId: String(o.id),
-      customerName: `${o.billing.first_name} ${o.billing.last_name}`.trim() || "Customer",
+      customerName:
+        `${o.billing.first_name} ${o.billing.last_name}`.trim() || "Customer",
       customerEmail: o.billing.email,
       productName: o.line_items?.[0]?.name ?? null,
       orderDate: new Date(o.date_created).getTime(),
@@ -149,16 +155,19 @@ export async function syncWooOrders(
     await db.insert(wooCustomers).values(toInsert);
     // Also upsert into saved_contacts (deduped by email across all sources)
     const contactRows = toInsert
-      .filter((r) => r.customerEmail)
-      .map((r) => ({
+      .filter(r => r.customerEmail)
+      .map(r => ({
         name: r.customerName,
         email: r.customerEmail!,
         source: "woocommerce" as const,
         externalId: r.wooOrderId,
       }));
     if (contactRows.length > 0) {
-      await upsertContactsFromSource(userId, contactRows).catch((err) =>
-        console.warn("[WooCommerce] Failed to upsert contacts from source:", err)
+      await upsertContactsFromSource(userId, contactRows).catch(err =>
+        console.warn(
+          "[WooCommerce] Failed to upsert contacts from source:",
+          err
+        )
       );
     }
   }
@@ -222,10 +231,7 @@ export async function setWooCustomerStatus(
       lastStatusChangedAt: now,
     })
     .where(
-      and(
-        eq(wooCustomers.userId, userId),
-        eq(wooCustomers.id, customerId)
-      )
+      and(eq(wooCustomers.userId, userId), eq(wooCustomers.id, customerId))
     );
 }
 

@@ -14,17 +14,17 @@ A valid-shape unknown identifier (`wpb_` plus 12 characters) exercised the actua
 
 ## Completed Local Gates
 
-| Gate | Result |
-|---|---|
-| Get Phame focused pairing, shared-limiter, and cross-product regressions | 30 tests passed |
-| Get Phame full Vitest suite | 135 files passed; 797 tests passed; 6 skipped |
-| Strict TypeScript | Passed with no diagnostics |
-| Production dependency audit | No known high-severity production vulnerabilities |
-| Production client and server build | Passed |
-| Connector PHPUnit | 26 tests and 155 assertions passed |
-| Connector WordPress coding standards | 6 files passed PHP_CodeSniffer |
-| Connector PHP syntax and Composer metadata | Passed |
-| Whitespace, stale-cache, and changed-file scans | Passed |
+| Gate                                                                     | Result                                            |
+| ------------------------------------------------------------------------ | ------------------------------------------------- |
+| Get Phame focused pairing, shared-limiter, and cross-product regressions | 30 tests passed                                   |
+| Get Phame full Vitest suite                                              | 135 files passed; 797 tests passed; 6 skipped     |
+| Strict TypeScript                                                        | Passed with no diagnostics                        |
+| Production dependency audit                                              | No known high-severity production vulnerabilities |
+| Production client and server build                                       | Passed                                            |
+| Connector PHPUnit                                                        | 26 tests and 155 assertions passed                |
+| Connector WordPress coding standards                                     | 6 files passed PHP_CodeSniffer                    |
+| Connector PHP syntax and Composer metadata                               | Passed                                            |
+| Whitespace, stale-cache, and changed-file scans                          | Passed                                            |
 
 ## Managed Application Checkpoint
 

@@ -13,20 +13,20 @@ This runbook activates Get Phame passkeys and executes the separated-duty owner-
 
 The recovery control fails closed unless both deployment settings are present through managed secrets or environment configuration:
 
-| Setting | Required value |
-|---|---|
-| `RECOVERY_DRILL_MODE` | Exactly `staging` |
+| Setting                        | Required value                                                                 |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| `RECOVERY_DRILL_MODE`          | Exactly `staging`                                                              |
 | `RECOVERY_DRILL_ALLOWED_HOSTS` | Exact non-production host allowlist; never include a production Get Phame host |
 
 Do not put configuration values or credentials in tickets, source code, screenshots, evidence notes, or this document.
 
 ## 2. Roles and Separation of Duties
 
-| Role | Assigned operator | Allowed duties | Prohibited duties |
-|---|---|---|---|
-| **Recovery Custodian** | **Steve**, using the active platform-owner account | Prepare, start, record evidence, contain, complete, or abort the staging drill | Cannot approve the request |
-| **Independent Approver** | A different named lead engineer | Review and approve or reject; may abort an unsafe drill | Cannot prepare, start, record completion evidence, or complete recovery |
-| **Observer** | Optional security or operations reviewer | Review sanitized evidence outside the execution path | Cannot mutate the drill |
+| Role                     | Assigned operator                                  | Allowed duties                                                                 | Prohibited duties                                                       |
+| ------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| **Recovery Custodian**   | **Steve**, using the active platform-owner account | Prepare, start, record evidence, contain, complete, or abort the staging drill | Cannot approve the request                                              |
+| **Independent Approver** | A different named lead engineer                    | Review and approve or reject; may abort an unsafe drill                        | Cannot prepare, start, record completion evidence, or complete recovery |
+| **Observer**             | Optional security or operations reviewer           | Review sanitized evidence outside the execution path                           | Cannot mutate the drill                                                 |
 
 Get Phame enforces one actor per duty and prevents the same user from holding two duties in one drill through database uniqueness constraints. The approver receives only `recovery.drill.view` and `recovery.drill.approve`, for no more than four hours. Completion, rejection, or abort revokes temporary recovery assignments and overrides.
 
@@ -113,16 +113,16 @@ Get Phame changes the status to **In progress**, marks the dual-control action e
 
 Execute each test using synthetic staging identities and artifacts. A secure result is a denial or containment result, not successful unauthorized access.
 
-| Test | Expected result | Evidence type |
-|---|---|---|
-| Attempt email-only sensitive recovery | Denied; recent passkey A2 remains required | `step_up_verification` |
-| Reuse an expired or revoked session | Denied | `revoked_session_denial` |
-| Reuse a revoked passkey or credential | Denied | `revoked_credential_denial` |
-| Attempt access from the wrong synthetic tenant | Denied | `tenant_isolation` |
-| Attempt self-approval | Denied | `audit_verification` |
-| Attempt recovery from a support-only account | Denied; no owner impersonation or factor reset | `audit_verification` |
-| Enroll a new owner authenticator through the approved path | New authenticator works; old compromised access remains revoked | `replacement_enrollment` |
-| Verify containment controls without triggering a stop condition | Controls and rollback path are ready | `containment` |
+| Test                                                            | Expected result                                                 | Evidence type               |
+| --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------- |
+| Attempt email-only sensitive recovery                           | Denied; recent passkey A2 remains required                      | `step_up_verification`      |
+| Reuse an expired or revoked session                             | Denied                                                          | `revoked_session_denial`    |
+| Reuse a revoked passkey or credential                           | Denied                                                          | `revoked_credential_denial` |
+| Attempt access from the wrong synthetic tenant                  | Denied                                                          | `tenant_isolation`          |
+| Attempt self-approval                                           | Denied                                                          | `audit_verification`        |
+| Attempt recovery from a support-only account                    | Denied; no owner impersonation or factor reset                  | `audit_verification`        |
+| Enroll a new owner authenticator through the approved path      | New authenticator works; old compromised access remains revoked | `replacement_enrollment`    |
+| Verify containment controls without triggering a stop condition | Controls and rollback path are ready                            | `containment`               |
 
 ### 6.3 Record evidence
 
@@ -187,17 +187,17 @@ Completion atomically closes the drill and revokes temporary staging assignments
 
 ## 9. Troubleshooting
 
-| Message or condition | Action |
-|---|---|
-| **Unavailable on this host** | Verify `RECOVERY_DRILL_MODE=staging` and the exact non-production host allowlist. Never add a production host. |
-| **Recent passkey sign-in required** | Sign out, sign in with a passkey, and return within 15 minutes. |
-| Approver account not found | The lead engineer must sign in to Get Phame before assignment. |
-| Custodian needs two passkeys | Steve enrolls and verifies a second independent passkey. |
-| Approver needs a passkey | The lead engineer enrolls and verifies one passkey. |
-| Schedule rejected | Choose a time 5 minutes to 3 hours from now. |
-| Open-drill conflict | Complete or abort the current staging drill before preparing another. |
-| Narrow approver access expired | Abort the stale drill and prepare a new request; do not extend access manually. |
-| Completion reports missing evidence | Record a genuine passing or contained result for each named required type. |
+| Message or condition                | Action                                                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Unavailable on this host**        | Verify `RECOVERY_DRILL_MODE=staging` and the exact non-production host allowlist. Never add a production host. |
+| **Recent passkey sign-in required** | Sign out, sign in with a passkey, and return within 15 minutes.                                                |
+| Approver account not found          | The lead engineer must sign in to Get Phame before assignment.                                                 |
+| Custodian needs two passkeys        | Steve enrolls and verifies a second independent passkey.                                                       |
+| Approver needs a passkey            | The lead engineer enrolls and verifies one passkey.                                                            |
+| Schedule rejected                   | Choose a time 5 minutes to 3 hours from now.                                                                   |
+| Open-drill conflict                 | Complete or abort the current staging drill before preparing another.                                          |
+| Narrow approver access expired      | Abort the stale drill and prepare a new request; do not extend access manually.                                |
+| Completion reports missing evidence | Record a genuine passing or contained result for each named required type.                                     |
 
 ## 10. Operating Cadence
 

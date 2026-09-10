@@ -8,7 +8,7 @@ import {
 
 function createStorage(seenKeys: string[] = []) {
   return {
-    getItem: vi.fn((key: string) => seenKeys.includes(key) ? "1" : null),
+    getItem: vi.fn((key: string) => (seenKeys.includes(key) ? "1" : null)),
   };
 }
 
@@ -16,54 +16,104 @@ describe("onboarding guide eligibility", () => {
   it("waits for the authenticated account and server onboarding status", () => {
     const storage = createStorage();
 
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: false,
-      userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
-    }, storage)).toBe(false);
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: true,
-      userId: 42,
-      onboardingStatus: undefined,
-    }, storage)).toBe(false);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: false,
+          userId: 42,
+          onboardingStatus: {
+            dismissed: false,
+            allDone: false,
+            hasSentRequest: false,
+          },
+        },
+        storage
+      )
+    ).toBe(false);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: true,
+          userId: 42,
+          onboardingStatus: undefined,
+        },
+        storage
+      )
+    ).toBe(false);
     expect(storage.getItem).not.toHaveBeenCalled();
   });
 
   it("suppresses dismissed and completed returning accounts before consulting browser state", () => {
     const storage = createStorage();
 
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: true,
-      userId: 42,
-      onboardingStatus: { dismissed: true, allDone: false, hasSentRequest: false },
-    }, storage)).toBe(false);
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: true,
-      userId: 42,
-      onboardingStatus: { dismissed: false, allDone: true, hasSentRequest: false },
-    }, storage)).toBe(false);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: true,
+          userId: 42,
+          onboardingStatus: {
+            dismissed: true,
+            allDone: false,
+            hasSentRequest: false,
+          },
+        },
+        storage
+      )
+    ).toBe(false);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: true,
+          userId: 42,
+          onboardingStatus: {
+            dismissed: false,
+            allDone: true,
+            hasSentRequest: false,
+          },
+        },
+        storage
+      )
+    ).toBe(false);
     expect(storage.getItem).not.toHaveBeenCalled();
   });
 
   it("suppresses an established account with request history even when current setup is no longer strictly complete", () => {
     const storage = createStorage();
 
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: true,
-      userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: true },
-    }, storage)).toBe(false);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: true,
+          userId: 42,
+          onboardingStatus: {
+            dismissed: false,
+            allDone: false,
+            hasSentRequest: true,
+          },
+        },
+        storage
+      )
+    ).toBe(false);
     expect(storage.getItem).not.toHaveBeenCalled();
   });
 
   it("auto-shows for an incomplete account that has not seen its guide", () => {
     const storage = createStorage();
 
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: true,
-      userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
-    }, storage)).toBe(true);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: true,
+          userId: 42,
+          onboardingStatus: {
+            dismissed: false,
+            allDone: false,
+            hasSentRequest: false,
+          },
+        },
+        storage
+      )
+    ).toBe(true);
     expect(storage.getItem).toHaveBeenCalledWith("rl_guide_seen:42");
   });
 
@@ -71,25 +121,45 @@ describe("onboarding guide eligibility", () => {
     const key = getOnboardingGuideSeenKey(42);
     const storage = createStorage([key]);
 
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: true,
-      userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
-    }, storage)).toBe(false);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: true,
+          userId: 42,
+          onboardingStatus: {
+            dismissed: false,
+            allDone: false,
+            hasSentRequest: false,
+          },
+        },
+        storage
+      )
+    ).toBe(false);
   });
 
   it("does not let another account's browser flag suppress a genuine first login", () => {
     const storage = createStorage([getOnboardingGuideSeenKey(7)]);
 
-    expect(shouldAutoShowOnboardingGuide({
-      isAuthenticated: true,
-      userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
-    }, storage)).toBe(true);
+    expect(
+      shouldAutoShowOnboardingGuide(
+        {
+          isAuthenticated: true,
+          userId: 42,
+          onboardingStatus: {
+            dismissed: false,
+            allDone: false,
+            hasSentRequest: false,
+          },
+        },
+        storage
+      )
+    ).toBe(true);
   });
 
   it("wires server status into the app shell and prevents the wizard from flashing beneath an eligible guide", () => {
-    const appPath = fileURLToPath(new URL("../client/src/App.tsx", import.meta.url));
+    const appPath = fileURLToPath(
+      new URL("../client/src/App.tsx", import.meta.url)
+    );
     const app = readFileSync(appPath, "utf8");
 
     expect(app).toContain("useOnboardingGuide({");

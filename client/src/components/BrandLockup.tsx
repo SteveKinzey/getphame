@@ -19,7 +19,10 @@ export default function BrandLockup({
   const phameColor = tone === "white" ? "text-white" : "text-primary";
 
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`} aria-label="Get Phame">
+    <span
+      className={`inline-flex items-center gap-2.5 ${className}`}
+      aria-label="Get Phame"
+    >
       <img
         src={LOGO_URL}
         alt="Get Phame logo"

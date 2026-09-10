@@ -12,7 +12,8 @@ const REQUIRED_TEMPLATE_COLUMNS = [
 ];
 
 const backupArgumentIndex = process.argv.indexOf("--backup");
-const backupPath = backupArgumentIndex >= 0 ? process.argv[backupArgumentIndex + 1] : null;
+const backupPath =
+  backupArgumentIndex >= 0 ? process.argv[backupArgumentIndex + 1] : null;
 if (!backupPath) {
   throw new Error("Pass --backup <absolute-path-to-backup.json>.");
 }
@@ -21,7 +22,8 @@ if (!process.env.DATABASE_URL) {
 }
 
 const hash = value => createHash("sha256").update(value).digest("hex");
-const normalize = value => (value instanceof Date ? value.toISOString() : value ?? null);
+const normalize = value =>
+  value instanceof Date ? value.toISOString() : (value ?? null);
 const normalizedTemplate = record => ({
   id: Number(record.id),
   userId: Number(record.userId),
@@ -63,9 +65,13 @@ const duplicateNumericPrefixes = Object.entries(
 
 const connection = await mysql.createConnection(process.env.DATABASE_URL);
 try {
-  const [columnRows] = await connection.query("SHOW COLUMNS FROM email_templates");
+  const [columnRows] = await connection.query(
+    "SHOW COLUMNS FROM email_templates"
+  );
   const liveColumns = new Set(columnRows.map(row => row.Field));
-  const templateMissingColumns = REQUIRED_TEMPLATE_COLUMNS.filter(column => !liveColumns.has(column));
+  const templateMissingColumns = REQUIRED_TEMPLATE_COLUMNS.filter(
+    column => !liveColumns.has(column)
+  );
   const [ledgerRows] = await connection.query(
     "SELECT id, hash, created_at FROM __drizzle_migrations ORDER BY created_at ASC"
   );
@@ -74,7 +80,10 @@ try {
   );
 
   const liveTemplates = new Map(
-    liveTemplateRows.map(record => [Number(record.id), normalizedTemplate(record)])
+    liveTemplateRows.map(record => [
+      Number(record.id),
+      normalizedTemplate(record),
+    ])
   );
   const backupRecords = Array.isArray(backup.records) ? backup.records : [];
   const verifiedTemplates = backupRecords.map(record => {
@@ -89,7 +98,8 @@ try {
       subjectSha256: hash(normalized.subject),
       bodySha256: hash(normalized.body),
       presentInLiveDatabase: Boolean(live),
-      exactContentMatch: Boolean(live) && JSON.stringify(live) === JSON.stringify(normalized),
+      exactContentMatch:
+        Boolean(live) && JSON.stringify(live) === JSON.stringify(normalized),
     };
   });
 
@@ -99,7 +109,9 @@ try {
       format: backup.format,
       declaredRecordCount: backup.recordCount,
       inspectedRecordCount: verifiedTemplates.length,
-      verifiedRecordCount: verifiedTemplates.filter(record => record.presentInLiveDatabase && record.exactContentMatch).length,
+      verifiedRecordCount: verifiedTemplates.filter(
+        record => record.presentInLiveDatabase && record.exactContentMatch
+      ).length,
       templates: verifiedTemplates,
     },
     schemaAlignment: {
@@ -113,7 +125,9 @@ try {
       journalUntrackedSql,
       duplicateNumericPrefixes,
       lineageCollisionDetected:
-        journalMissingFiles.length > 0 || journalUntrackedSql.length > 0 || duplicateNumericPrefixes.length > 0,
+        journalMissingFiles.length > 0 ||
+        journalUntrackedSql.length > 0 ||
+        duplicateNumericPrefixes.length > 0,
     },
   };
   process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);

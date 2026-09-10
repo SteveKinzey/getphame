@@ -24,7 +24,8 @@ const REQUESTS_PER_WINDOW = 6;
 const requestTimesByUser = new Map<number, number[]>();
 const placeholderPattern = /\{\{[a-zA-Z][a-zA-Z0-9_]*\}\}/g;
 const urlPattern = /https?:\/\/[^\s<>"')\]]+/gi;
-const secretPattern = /\b(?:password|passcode|api[\s_-]?key|secret|access[\s_-]?token|refresh[\s_-]?token)\s*[:=]\s*[^\s,;]{6,}/i;
+const secretPattern =
+  /\b(?:password|passcode|api[\s_-]?key|secret|access[\s_-]?token|refresh[\s_-]?token)\s*[:=]\s*[^\s,;]{6,}/i;
 const placeholderDetectionPattern = /\{\{[a-zA-Z][a-zA-Z0-9_]*\}\}/;
 const urlDetectionPattern = /https?:\/\/[^\s<>"')\]]+/i;
 
@@ -39,14 +40,22 @@ export interface ToneAdjustmentResult {
   rationales: ToneAdjustmentRationale[];
 }
 
-type ToneAdjustmentInvoker = (request: Parameters<typeof invokeLLM>[0]) => ReturnType<typeof invokeLLM>;
+type ToneAdjustmentInvoker = (
+  request: Parameters<typeof invokeLLM>[0]
+) => ReturnType<typeof invokeLLM>;
 
 function extractCompletionText(content: unknown): string {
   if (typeof content === "string") return content;
   if (!Array.isArray(content)) return "";
   return content
-    .filter((part): part is { type: "text"; text: string } => Boolean(part) && typeof part === "object" && (part as { type?: unknown }).type === "text" && typeof (part as { text?: unknown }).text === "string")
-    .map((part) => part.text)
+    .filter(
+      (part): part is { type: "text"; text: string } =>
+        Boolean(part) &&
+        typeof part === "object" &&
+        (part as { type?: unknown }).type === "text" &&
+        typeof (part as { text?: unknown }).text === "string"
+    )
+    .map(part => part.text)
     .join("\n");
 }
 
@@ -54,10 +63,17 @@ function uniqueMatches(value: string, pattern: RegExp): string[] {
   return Array.from(new Set(value.match(pattern) ?? []));
 }
 
-function preservesRequiredFragments(source: string, rewritten: string, pattern: RegExp): boolean {
+function preservesRequiredFragments(
+  source: string,
+  rewritten: string,
+  pattern: RegExp
+): boolean {
   const original = uniqueMatches(source, pattern);
   const returned = uniqueMatches(rewritten, pattern);
-  return original.every((fragment) => returned.includes(fragment)) && returned.every((fragment) => original.includes(fragment));
+  return (
+    original.every(fragment => returned.includes(fragment)) &&
+    returned.every(fragment => original.includes(fragment))
+  );
 }
 
 function normalizeToneRationales(input: {
@@ -77,12 +93,12 @@ function normalizeToneRationales(input: {
   for (const entry of input.rationales) {
     const rationale = entry.rationale.trim();
     if (
-      !changedFields[entry.field]
-      || seenFields.has(entry.field)
-      || !rationale
-      || secretPattern.test(rationale)
-      || placeholderDetectionPattern.test(rationale)
-      || urlDetectionPattern.test(rationale)
+      !changedFields[entry.field] ||
+      seenFields.has(entry.field) ||
+      !rationale ||
+      secretPattern.test(rationale) ||
+      placeholderDetectionPattern.test(rationale) ||
+      urlDetectionPattern.test(rationale)
     ) {
       continue;
     }
@@ -94,8 +110,13 @@ function normalizeToneRationales(input: {
   return safeRationales;
 }
 
-export function enforceEmailToneAdjustmentRateLimit(userId: number, now = Date.now()): void {
-  const recent = (requestTimesByUser.get(userId) ?? []).filter((timestamp) => now - timestamp < REQUEST_WINDOW_MS);
+export function enforceEmailToneAdjustmentRateLimit(
+  userId: number,
+  now = Date.now()
+): void {
+  const recent = (requestTimesByUser.get(userId) ?? []).filter(
+    timestamp => now - timestamp < REQUEST_WINDOW_MS
+  );
   if (recent.length >= REQUESTS_PER_WINDOW) {
     throw new TRPCError({
       code: "TOO_MANY_REQUESTS",
@@ -107,7 +128,8 @@ export function enforceEmailToneAdjustmentRateLimit(userId: number, now = Date.n
 
   if (requestTimesByUser.size > 5_000) {
     requestTimesByUser.forEach((timestamps, id) => {
-      if (!timestamps.some((timestamp) => now - timestamp < REQUEST_WINDOW_MS)) requestTimesByUser.delete(id);
+      if (!timestamps.some(timestamp => now - timestamp < REQUEST_WINDOW_MS))
+        requestTimesByUser.delete(id);
     });
   }
 }
@@ -119,44 +141,85 @@ export function validateAdjustedReviewDraft(input: {
   adjustedBody: string;
   businessName: string;
 }): { subject: string; body: string } {
-  const sourceSubject = replaceDirectYelpLinksWithInstruction(input.sourceSubject.trim(), input.businessName);
-  const sourceBody = replaceDirectYelpLinksWithInstruction(input.sourceBody.trim(), input.businessName);
-  const subject = replaceDirectYelpLinksWithInstruction(input.adjustedSubject.trim(), input.businessName);
-  const body = replaceDirectYelpLinksWithInstruction(input.adjustedBody.trim(), input.businessName);
+  const sourceSubject = replaceDirectYelpLinksWithInstruction(
+    input.sourceSubject.trim(),
+    input.businessName
+  );
+  const sourceBody = replaceDirectYelpLinksWithInstruction(
+    input.sourceBody.trim(),
+    input.businessName
+  );
+  const subject = replaceDirectYelpLinksWithInstruction(
+    input.adjustedSubject.trim(),
+    input.businessName
+  );
+  const body = replaceDirectYelpLinksWithInstruction(
+    input.adjustedBody.trim(),
+    input.businessName
+  );
 
-  const parsed = emailToneAdjustmentInputSchema.pick({ subject: true, body: true }).safeParse({ subject, body });
+  const parsed = emailToneAdjustmentInputSchema
+    .pick({ subject: true, body: true })
+    .safeParse({ subject, body });
   if (!parsed.success) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "The adjusted draft exceeded the allowed email limits." });
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The adjusted draft exceeded the allowed email limits.",
+    });
   }
 
   if (secretPattern.test(subject) || secretPattern.test(body)) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "The adjusted draft contains a private value and was not applied." });
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message:
+        "The adjusted draft contains a private value and was not applied.",
+    });
   }
 
   const source = `${sourceSubject}\n${sourceBody}`;
   const adjusted = `${subject}\n${body}`;
   if (!preservesRequiredFragments(source, adjusted, placeholderPattern)) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "The adjusted draft did not preserve all required placeholders." });
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The adjusted draft did not preserve all required placeholders.",
+    });
   }
   if (!preservesRequiredFragments(source, adjusted, urlPattern)) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "The adjusted draft did not preserve all required links." });
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The adjusted draft did not preserve all required links.",
+    });
   }
 
   return { subject, body };
 }
 
-export async function adjustEmailTone(input: z.infer<typeof emailToneAdjustmentInputSchema> & {
-  userId: number;
-  invoke?: ToneAdjustmentInvoker;
-}): Promise<ToneAdjustmentResult> {
+export async function adjustEmailTone(
+  input: z.infer<typeof emailToneAdjustmentInputSchema> & {
+    userId: number;
+    invoke?: ToneAdjustmentInvoker;
+  }
+): Promise<ToneAdjustmentResult> {
   const validated = emailToneAdjustmentInputSchema.parse(input);
-  if (secretPattern.test(validated.subject) || secretPattern.test(validated.body)) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "Remove private values before using AI assistance." });
+  if (
+    secretPattern.test(validated.subject) ||
+    secretPattern.test(validated.body)
+  ) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Remove private values before using AI assistance.",
+    });
   }
 
   enforceEmailToneAdjustmentRateLimit(input.userId);
-  const sourceSubject = replaceDirectYelpLinksWithInstruction(validated.subject, validated.businessName);
-  const sourceBody = replaceDirectYelpLinksWithInstruction(validated.body, validated.businessName);
+  const sourceSubject = replaceDirectYelpLinksWithInstruction(
+    validated.subject,
+    validated.businessName
+  );
+  const sourceBody = replaceDirectYelpLinksWithInstruction(
+    validated.body,
+    validated.businessName
+  );
   const invoke = input.invoke ?? invokeLLM;
 
   try {
@@ -182,8 +245,16 @@ export async function adjustEmailTone(input: z.infer<typeof emailToneAdjustmentI
           additionalProperties: false,
           required: ["subject", "body", "rationales"],
           properties: {
-            subject: { type: "string", minLength: 1, maxLength: MAX_REVIEW_REQUEST_SUBJECT_CHARS },
-            body: { type: "string", minLength: 1, maxLength: MAX_REVIEW_REQUEST_BODY_CHARS },
+            subject: {
+              type: "string",
+              minLength: 1,
+              maxLength: MAX_REVIEW_REQUEST_SUBJECT_CHARS,
+            },
+            body: {
+              type: "string",
+              minLength: 1,
+              maxLength: MAX_REVIEW_REQUEST_BODY_CHARS,
+            },
             rationales: {
               type: "array",
               minItems: 0,
@@ -203,15 +274,23 @@ export async function adjustEmailTone(input: z.infer<typeof emailToneAdjustmentI
       },
     });
 
-    const content = extractCompletionText(response.choices[0]?.message?.content);
-    const result = z.object({
-      subject: z.string(),
-      body: z.string(),
-      rationales: z.array(z.object({
-        field: z.enum(["subject", "body"]),
-        rationale: z.string().trim().min(3).max(180),
-      })).max(2),
-    }).safeParse(JSON.parse(content));
+    const content = extractCompletionText(
+      response.choices[0]?.message?.content
+    );
+    const result = z
+      .object({
+        subject: z.string(),
+        body: z.string(),
+        rationales: z
+          .array(
+            z.object({
+              field: z.enum(["subject", "body"]),
+              rationale: z.string().trim().min(3).max(180),
+            })
+          )
+          .max(2),
+      })
+      .safeParse(JSON.parse(content));
     if (!result.success) throw new Error("Invalid structured response");
 
     const adjustedDraft = validateAdjustedReviewDraft({
@@ -228,19 +307,29 @@ export async function adjustEmailTone(input: z.infer<typeof emailToneAdjustmentI
       adjustedSubject: adjustedDraft.subject,
       adjustedBody: adjustedDraft.body,
     });
-    const changedFields = (["subject", "body"] as const).filter((field) => (
+    const changedFields = (["subject", "body"] as const).filter(field =>
       field === "subject"
         ? sourceSubject !== adjustedDraft.subject
         : sourceBody !== adjustedDraft.body
-    ));
-    if (!changedFields.every((field) => rationales.some((entry) => entry.field === field))) {
+    );
+    if (
+      !changedFields.every(field =>
+        rationales.some(entry => entry.field === field)
+      )
+    ) {
       throw new Error("Missing safe rationales for the adjusted fields");
     }
 
     return { ...adjustedDraft, rationales };
   } catch (error) {
     if (error instanceof TRPCError) throw error;
-    console.warn("[Email tone adjustment] Failed to produce a safe rewrite.", error instanceof Error ? error.message : error);
-    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "We could not adjust this email right now. Please try again." });
+    console.warn(
+      "[Email tone adjustment] Failed to produce a safe rewrite.",
+      error instanceof Error ? error.message : error
+    );
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "We could not adjust this email right now. Please try again.",
+    });
   }
 }

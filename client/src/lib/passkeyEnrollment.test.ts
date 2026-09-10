@@ -26,20 +26,43 @@ describe("passkey enrollment client decisions", () => {
   });
 
   it("recognizes only the typed neutral server transition", () => {
-    expect(isPasskeyEnrollmentRequiredResult({ state: "enrollment_required" })).toBe(true);
-    expect(isPasskeyEnrollmentRequiredResult({ state: "authentication_ready" })).toBe(false);
+    expect(
+      isPasskeyEnrollmentRequiredResult({ state: "enrollment_required" })
+    ).toBe(true);
+    expect(
+      isPasskeyEnrollmentRequiredResult({ state: "authentication_ready" })
+    ).toBe(false);
     expect(isPasskeyEnrollmentRequiredResult(null)).toBe(false);
   });
 
   it("supports only the exact legacy transition during mixed-version deployment", () => {
-    expect(isPasskeyEnrollmentRequiredError({ message: "Passkey sign-in is unavailable for this account", data: { code: "UNAUTHORIZED" } })).toBe(true);
-    expect(isPasskeyEnrollmentRequiredError({ message: "Passkey sign-in is unavailable for this account", data: { code: "FORBIDDEN" } })).toBe(false);
-    expect(isPasskeyEnrollmentRequiredError({ message: "Other failure", data: { code: "UNAUTHORIZED" } })).toBe(false);
+    expect(
+      isPasskeyEnrollmentRequiredError({
+        message: "Passkey sign-in is unavailable for this account",
+        data: { code: "UNAUTHORIZED" },
+      })
+    ).toBe(true);
+    expect(
+      isPasskeyEnrollmentRequiredError({
+        message: "Passkey sign-in is unavailable for this account",
+        data: { code: "FORBIDDEN" },
+      })
+    ).toBe(false);
+    expect(
+      isPasskeyEnrollmentRequiredError({
+        message: "Other failure",
+        data: { code: "UNAUTHORIZED" },
+      })
+    ).toBe(false);
   });
 
   it("accepts only bounded provider recovery codes", () => {
-    expect(isPasskeyEnrollmentReturnError("provider_email_mismatch")).toBe(true);
-    expect(isPasskeyEnrollmentReturnError("provider_verification_cancelled")).toBe(true);
+    expect(isPasskeyEnrollmentReturnError("provider_email_mismatch")).toBe(
+      true
+    );
+    expect(
+      isPasskeyEnrollmentReturnError("provider_verification_cancelled")
+    ).toBe(true);
     expect(isPasskeyEnrollmentReturnError("oauth_failed")).toBe(false);
     expect(isPasskeyEnrollmentReturnError(null)).toBe(false);
   });

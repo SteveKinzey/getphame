@@ -142,7 +142,10 @@ export async function getUnrewardedReferral(referredUserId: number) {
  * - Free-tier referrers: convertedAt is stamped but rewardedAt stays null.
  * - Lifetime referrers: excluded entirely (permanent access, no expiry to extend).
  */
-export async function rewardReferrer(referralId: number, referrerUserId: number): Promise<void> {
+export async function rewardReferrer(
+  referralId: number,
+  referrerUserId: number
+): Promise<void> {
   const db = await getDb();
   if (!db) return;
 
@@ -151,7 +154,10 @@ export async function rewardReferrer(referralId: number, referrerUserId: number)
 
   // Fetch referrer's current tier and plan expiry
   const [profile] = await db
-    .select({ tier: businessProfiles.tier, planExpiresAt: businessProfiles.planExpiresAt })
+    .select({
+      tier: businessProfiles.tier,
+      planExpiresAt: businessProfiles.planExpiresAt,
+    })
     .from(businessProfiles)
     .where(eq(businessProfiles.userId, referrerUserId))
     .limit(1);
@@ -165,7 +171,7 @@ export async function rewardReferrer(referralId: number, referrerUserId: number)
   if (!ELIGIBLE_TIERS.includes(profile.tier ?? "")) {
     console.log(
       `[Referral] User ${referrerUserId} (tier: '${profile.tier}') is not eligible for reward. ` +
-      `convertedAt stamped; rewardedAt left null until referrer upgrades to a paid plan.`
+        `convertedAt stamped; rewardedAt left null until referrer upgrades to a paid plan.`
     );
     // Mark as converted so the webhook doesn't retry, but leave rewardedAt null
     // so an admin can manually grant the reward if the referrer later upgrades.
@@ -192,6 +198,6 @@ export async function rewardReferrer(referralId: number, referrerUserId: number)
 
   console.log(
     `[Referral] User ${referrerUserId} (tier: ${profile.tier}) rewarded +30 days. ` +
-    `New expiry: ${new Date(newExpiry).toISOString()}`
+      `New expiry: ${new Date(newExpiry).toISOString()}`
   );
 }

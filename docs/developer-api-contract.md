@@ -12,19 +12,19 @@ Authentication accepts either `Authorization: Bearer gp_live_…` or `X-Get-Pham
 
 ## API-Key Contract
 
-| Concern | Contract |
-|---|---|
-| Secret storage | Show the raw key once; store only its SHA-256 hash and a non-secret display prefix |
-| Ownership | Every key belongs to exactly one signed-in Get Phame account |
-| Scopes | `contacts:write` and `review_requests:send`; new keys default to import-only |
-| Existing keys | Migration grants both legacy capabilities so existing integrations do not break |
-| Rotation | Create a replacement key, then revoke the old key; never reveal an existing raw secret |
-| Revocation | Immediate soft revocation with owner-scoped authorization |
-| Expiry | Optional earlier UTC expiry plus mandatory expiry after 12 months without a successful API request |
-| Inactivity warnings | Show in-app warnings at 30 days and 7 days before the inactivity date; keep expired keys visible for audit context and rotation |
-| Usage metadata | Update last-successful-use time and successful-use count only after a completed side effect or valid idempotent replay; never store the raw key or authorization header |
-| Rate limit | 60 authenticated requests per key per rolling minute, enforced by key identity rather than a raw-key fragment |
-| Abuse protection | Persist privacy-hashed key, account, trusted-proxy IP, and recipient velocity windows; temporarily suspend broad-limit offenders for 24 hours |
+| Concern             | Contract                                                                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Secret storage      | Show the raw key once; store only its SHA-256 hash and a non-secret display prefix                                                                                      |
+| Ownership           | Every key belongs to exactly one signed-in Get Phame account                                                                                                            |
+| Scopes              | `contacts:write` and `review_requests:send`; new keys default to import-only                                                                                            |
+| Existing keys       | Migration grants both legacy capabilities so existing integrations do not break                                                                                         |
+| Rotation            | Create a replacement key, then revoke the old key; never reveal an existing raw secret                                                                                  |
+| Revocation          | Immediate soft revocation with owner-scoped authorization                                                                                                               |
+| Expiry              | Optional earlier UTC expiry plus mandatory expiry after 12 months without a successful API request                                                                      |
+| Inactivity warnings | Show in-app warnings at 30 days and 7 days before the inactivity date; keep expired keys visible for audit context and rotation                                         |
+| Usage metadata      | Update last-successful-use time and successful-use count only after a completed side effect or valid idempotent replay; never store the raw key or authorization header |
+| Rate limit          | 60 authenticated requests per key per rolling minute, enforced by key identity rather than a raw-key fragment                                                           |
+| Abuse protection    | Persist privacy-hashed key, account, trusted-proxy IP, and recipient velocity windows; temporarily suspend broad-limit offenders for 24 hours                           |
 
 ## Contact Import Request
 
@@ -78,18 +78,18 @@ Limits are applied to successful and rejected attempts so repeated abusive retri
 
 ## Error Contract
 
-| HTTP status | Stable code | Meaning |
-|---:|---|---|
-| 400 | `INVALID_REQUEST` | Required or bounded fields failed validation |
-| 401 | `INVALID_API_KEY` | The key is missing, unknown, revoked, or expired |
-| 401 | `API_KEY_INACTIVE` | The key expired after 12 months without a successful request |
-| 403 | `INSUFFICIENT_SCOPE` | The authenticated key lacks the endpoint scope |
-| 409 | `IDEMPOTENCY_CONFLICT` | An idempotency key was reused with a different payload |
-| 422 | `CONSENT_REQUIRED` | The canonical import endpoint lacks affirmative consent attestation |
-| 429 | `RATE_LIMITED` | The per-key request limit was exceeded |
-| 429 | `API_KEY_SUSPENDED` | The key is inside an active abuse-protection suspension window |
-| 429 | `ABUSE_PROTECTION` | A key, account, IP, or recipient velocity safeguard blocked the request |
-| 500 | `INTERNAL_ERROR` | A safe, retryable server error occurred |
+| HTTP status | Stable code            | Meaning                                                                 |
+| ----------: | ---------------------- | ----------------------------------------------------------------------- |
+|         400 | `INVALID_REQUEST`      | Required or bounded fields failed validation                            |
+|         401 | `INVALID_API_KEY`      | The key is missing, unknown, revoked, or expired                        |
+|         401 | `API_KEY_INACTIVE`     | The key expired after 12 months without a successful request            |
+|         403 | `INSUFFICIENT_SCOPE`   | The authenticated key lacks the endpoint scope                          |
+|         409 | `IDEMPOTENCY_CONFLICT` | An idempotency key was reused with a different payload                  |
+|         422 | `CONSENT_REQUIRED`     | The canonical import endpoint lacks affirmative consent attestation     |
+|         429 | `RATE_LIMITED`         | The per-key request limit was exceeded                                  |
+|         429 | `API_KEY_SUSPENDED`    | The key is inside an active abuse-protection suspension window          |
+|         429 | `ABUSE_PROTECTION`     | A key, account, IP, or recipient velocity safeguard blocked the request |
+|         500 | `INTERNAL_ERROR`       | A safe, retryable server error occurred                                 |
 
 Responses never expose database errors, stack traces, credentials, hashes, or account existence beyond what the authenticated key already establishes.
 

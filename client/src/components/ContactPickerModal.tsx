@@ -11,9 +11,18 @@
  * Falls back gracefully to nothing on web (isNative=false).
  */
 
-import { useState, useEffect, useMemo } from 'react';
-import { Search, X, User, Loader2, AlertCircle, CheckCircle2, Circle, CheckSquare } from 'lucide-react';
-import { useContacts, ContactResult } from '@/hooks/useContacts';
+import { useState, useEffect, useMemo } from "react";
+import {
+  Search,
+  X,
+  User,
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
+  Circle,
+  CheckSquare,
+} from "lucide-react";
+import { useContacts, ContactResult } from "@/hooks/useContacts";
 
 interface ContactPickerModalProps {
   open: boolean;
@@ -22,9 +31,13 @@ interface ContactPickerModalProps {
   onImport: (contacts: ContactResult[]) => void;
 }
 
-export default function ContactPickerModal({ open, onClose, onImport }: ContactPickerModalProps) {
+export default function ContactPickerModal({
+  open,
+  onClose,
+  onImport,
+}: ContactPickerModalProps) {
   const { isNative } = useContacts();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [allContacts, setAllContacts] = useState<ContactResult[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loadingAll, setLoadingAll] = useState(false);
@@ -36,15 +49,15 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
     setLoadingAll(true);
     setPermissionError(null);
     setSelected(new Set());
-    setQuery('');
+    setQuery("");
 
     (async () => {
       try {
-        const { Contacts } = await import('@capacitor-community/contacts');
+        const { Contacts } = await import("@capacitor-community/contacts");
         const permission = await Contacts.requestPermissions();
-        if (permission.contacts !== 'granted') {
+        if (permission.contacts !== "granted") {
           setPermissionError(
-            'Contacts access denied. Go to Settings > Get Phame > Contacts to enable.'
+            "Contacts access denied. Go to Settings > Get Phame > Contacts to enable."
           );
           setLoadingAll(false);
           return;
@@ -53,16 +66,16 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
           projection: { name: true, emails: true },
         });
         const mapped: ContactResult[] = result.contacts
-          .filter((c) => c.emails && c.emails.length > 0)
-          .map((c) => ({
-            name: c.name?.display ?? c.name?.given ?? 'Unknown',
-            email: c.emails?.[0]?.address ?? '',
+          .filter(c => c.emails && c.emails.length > 0)
+          .map(c => ({
+            name: c.name?.display ?? c.name?.given ?? "Unknown",
+            email: c.emails?.[0]?.address ?? "",
           }))
-          .filter((c) => c.email.length > 0)
+          .filter(c => c.email.length > 0)
           .sort((a, b) => a.name.localeCompare(b.name));
         setAllContacts(mapped);
       } catch (err: any) {
-        setPermissionError(err?.message ?? 'Failed to load contacts.');
+        setPermissionError(err?.message ?? "Failed to load contacts.");
       } finally {
         setLoadingAll(false);
       }
@@ -72,7 +85,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
   // Reset when closed
   useEffect(() => {
     if (!open) {
-      setQuery('');
+      setQuery("");
       setAllContacts([]);
       setSelected(new Set());
       setPermissionError(null);
@@ -84,14 +97,15 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
     if (!query.trim()) return allContacts;
     const q = query.toLowerCase();
     return allContacts.filter(
-      (c) => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)
+      c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)
     );
   }, [query, allContacts]);
 
-  const allFilteredSelected = filtered.length > 0 && filtered.every((c) => selected.has(c.email));
+  const allFilteredSelected =
+    filtered.length > 0 && filtered.every(c => selected.has(c.email));
 
   function toggleContact(email: string) {
-    setSelected((prev) => {
+    setSelected(prev => {
       const next = new Set(prev);
       if (next.has(email)) next.delete(email);
       else next.add(email);
@@ -102,23 +116,23 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
   function toggleSelectAll() {
     if (allFilteredSelected) {
       // Deselect all filtered
-      setSelected((prev) => {
+      setSelected(prev => {
         const next = new Set(prev);
-        filtered.forEach((c) => next.delete(c.email));
+        filtered.forEach(c => next.delete(c.email));
         return next;
       });
     } else {
       // Select all filtered
-      setSelected((prev) => {
+      setSelected(prev => {
         const next = new Set(prev);
-        filtered.forEach((c) => next.add(c.email));
+        filtered.forEach(c => next.add(c.email));
         return next;
       });
     }
   }
 
   function handleImport() {
-    const toImport = allContacts.filter((c) => selected.has(c.email));
+    const toImport = allContacts.filter(c => selected.has(c.email));
     if (toImport.length === 0) return;
     onImport(toImport);
     onClose();
@@ -129,26 +143,28 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
   return (
     <div
       className="fixed inset-0 z-50 flex flex-col justify-end"
-      style={{ background: 'rgba(0,0,0,0.6)' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      style={{ background: "rgba(0,0,0,0.6)" }}
+      onClick={e => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       {/* Sheet */}
       <div
-        className="w-full flex flex-col rr-bg-cream-warm" style={{ borderRadius: "24px 24px 0 0", maxHeight: "92vh" }}
+        className="w-full flex flex-col rr-bg-cream-warm"
+        style={{ borderRadius: "24px 24px 0 0", maxHeight: "92vh" }}
       >
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-          <div className="w-10 h-1 rounded-full" style={{ background: 'oklch(0.82 0.02 260)' }} />
+          <div
+            className="w-10 h-1 rounded-full"
+            style={{ background: "oklch(0.82 0.02 260)" }}
+          />
         </div>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 flex-shrink-0">
           <div>
-            <h2
-              className="text-lg font-black rr-text-navy"
-            >
-              Import Contacts
-            </h2>
+            <h2 className="text-lg font-black rr-text-navy">Import Contacts</h2>
             {allContacts.length > 0 && (
               <p className="text-xs rr-text-navy-muted">
                 {allContacts.length} contacts with email addresses
@@ -158,7 +174,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ background: 'oklch(0.92 0.01 260)' }}
+            style={{ background: "oklch(0.92 0.01 260)" }}
           >
             <X size={16} className="rr-text-navy-mid" />
           </button>
@@ -168,18 +184,23 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
         <div className="px-4 pb-2 flex-shrink-0">
           <div
             className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
-            style={{ background: 'oklch(0.92 0.01 260)' }}
+            style={{ background: "oklch(0.92 0.01 260)" }}
           >
-            <Search size={16} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
+            <Search
+              size={16}
+              className="rr-text-navy-muted"
+              style={{ flexShrink: "0" }}
+            />
             <input
               type="text"
               placeholder="Search by name or email..."
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={e => setQuery(e.target.value)}
               className="flex-1 bg-transparent text-sm outline-none rr-text-navy"
-             name="rr-components-contact-picker-modal-query-174" />
+              name="rr-components-contact-picker-modal-query-174"
+            />
             {query && (
-              <button onClick={() => setQuery('')}>
+              <button onClick={() => setQuery("")}>
                 <X size={14} className="rr-text-navy-muted" />
               </button>
             )}
@@ -198,9 +219,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
                 ? `Deselect All (${filtered.length})`
                 : `Select All (${filtered.length})`}
               {selected.size > 0 && (
-                <span
-                  className="ml-auto text-xs font-black px-2 py-0.5 rounded-full rr-bg-gold rr-text-navy"
-                >
+                <span className="ml-auto text-xs font-black px-2 py-0.5 rounded-full rr-bg-gold rr-text-navy">
                   {selected.size} selected
                 </span>
               )}
@@ -213,14 +232,15 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
           {loadingAll ? (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
               <Loader2 size={28} className="animate-spin rr-text-gold" />
-              <p className="text-sm rr-text-navy-muted">
-                Loading contacts...
-              </p>
+              <p className="text-sm rr-text-navy-muted">Loading contacts...</p>
             </div>
           ) : permissionError ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-4">
-              <AlertCircle size={32} style={{ color: 'oklch(0.65 0.18 25)' }} />
-              <p className="text-sm font-semibold" style={{ color: 'oklch(0.35 0.04 260)' }}>
+              <AlertCircle size={32} style={{ color: "oklch(0.65 0.18 25)" }} />
+              <p
+                className="text-sm font-semibold"
+                style={{ color: "oklch(0.35 0.04 260)" }}
+              >
                 {permissionError}
               </p>
             </div>
@@ -228,7 +248,9 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
             <div className="flex flex-col items-center justify-center py-12 gap-2 text-center">
               <User size={28} className="rr-text-navy-faint" />
               <p className="text-sm rr-text-navy-muted">
-                {query ? 'No contacts match your search.' : 'No contacts with email addresses found.'}
+                {query
+                  ? "No contacts match your search."
+                  : "No contacts with email addresses found."}
               </p>
             </div>
           ) : (
@@ -241,32 +263,42 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
                     onClick={() => toggleContact(contact.email)}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all"
                     style={{
-                      background: isSelected ? 'oklch(0.22 0.09 260)' : 'white',
+                      background: isSelected ? "oklch(0.22 0.09 260)" : "white",
                     }}
                   >
                     {/* Avatar */}
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-black text-sm"
                       style={{
-                        background: isSelected ? 'oklch(0.80 0.18 80)' : 'oklch(0.92 0.01 260)',
-                        color: isSelected ? 'oklch(0.22 0.09 260)' : 'oklch(0.40 0.04 260)',
+                        background: isSelected
+                          ? "oklch(0.80 0.18 80)"
+                          : "oklch(0.92 0.01 260)",
+                        color: isSelected
+                          ? "oklch(0.22 0.09 260)"
+                          : "oklch(0.40 0.04 260)",
                         fontFamily: "'Poppins', sans-serif",
                       }}
                     >
-                      {contact.name.charAt(0).toUpperCase() || '?'}
+                      {contact.name.charAt(0).toUpperCase() || "?"}
                     </div>
 
                     {/* Name + email */}
                     <div className="flex-1 min-w-0">
                       <p
                         className="text-sm font-semibold truncate"
-                        style={{ color: isSelected ? 'white' : 'oklch(0.22 0.09 260)' }}
+                        style={{
+                          color: isSelected ? "white" : "oklch(0.22 0.09 260)",
+                        }}
                       >
                         {contact.name}
                       </p>
                       <p
                         className="text-xs truncate"
-                        style={{ color: isSelected ? 'oklch(0.80 0.18 80)' : 'oklch(0.55 0.03 260)' }}
+                        style={{
+                          color: isSelected
+                            ? "oklch(0.80 0.18 80)"
+                            : "oklch(0.55 0.03 260)",
+                        }}
                       >
                         {contact.email}
                       </p>
@@ -274,9 +306,16 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
 
                     {/* Checkbox */}
                     {isSelected ? (
-                      <CheckCircle2 size={20} className="rr-text-gold" style={{ flexShrink: "0" }} />
+                      <CheckCircle2
+                        size={20}
+                        className="rr-text-gold"
+                        style={{ flexShrink: "0" }}
+                      />
                     ) : (
-                      <Circle size={20} style={{ color: 'oklch(0.75 0.02 260)', flexShrink: 0 }} />
+                      <Circle
+                        size={20}
+                        style={{ color: "oklch(0.75 0.02 260)", flexShrink: 0 }}
+                      />
                     )}
                   </button>
                 );
@@ -289,14 +328,14 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
         {selected.size > 0 && (
           <div
             className="px-4 py-4 flex-shrink-0"
-            style={{ borderTop: '1px solid oklch(0.92 0.01 260)' }}
+            style={{ borderTop: "1px solid oklch(0.92 0.01 260)" }}
           >
             <button
               onClick={handleImport}
               className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 rr-bg-gold rr-text-navy"
             >
               <CheckCircle2 size={20} />
-              Import {selected.size} Contact{selected.size !== 1 ? 's' : ''}
+              Import {selected.size} Contact{selected.size !== 1 ? "s" : ""}
             </button>
           </div>
         )}

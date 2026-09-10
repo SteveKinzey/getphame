@@ -43,7 +43,9 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain("window.location.assign(destination)");
     expect(login).toContain("setFormError(message)");
     expect(login).toContain('const APPLE_AUTH_STATUS_ID = "apple-auth-status"');
-    expect(login).toContain('aria-describedby={\n                        isAppleSubmitting ? APPLE_AUTH_STATUS_ID : undefined');
+    expect(login).toMatch(
+      /aria-describedby=\{\s*isAppleSubmitting\s*\?\s*APPLE_AUTH_STATUS_ID\s*:\s*undefined/
+    );
     expect(login).toContain('t("login.appleSignInLoading"');
   });
 
@@ -54,7 +56,7 @@ describe("Google sign-in interaction feedback", () => {
       "client/src/components/security/PasskeySignIn.tsx"
     );
     const magicLinkPosition = login.indexOf("<MagicLinkForm");
-    const socialPosition = login.indexOf('data-testid="social-login"');
+    const socialPosition = login.search(/data-testid=["']social-login["']/);
     const passkeyPosition = login.indexOf("<PasskeySignIn />");
 
     expect(magicLinkPosition).toBeGreaterThan(-1);
@@ -93,8 +95,8 @@ describe("Google sign-in interaction feedback", () => {
     expect(feedback).toContain("google_state_mismatch");
     expect(feedback).toContain("google_no_id");
     expect(googleAuth).toContain('app.get("/api/auth/google/status"');
-    expect(googleAuth).toContain(
-      "res.json({ enabled: Boolean(ENV.googleClientId && ENV.googleClientSecret) })"
+    expect(googleAuth).toMatch(
+      /res\.json\(\s*\{\s*enabled:\s*Boolean\(\s*ENV\.googleClientId\s*&&\s*ENV\.googleClientSecret\s*\)\s*,?\s*\}\s*\)/
     );
     expect(googleAuth).toContain('"/?auth_error=google_missing_code"');
     expect(googleAuth).toContain('"/?auth_error=google_no_id"');
@@ -251,10 +253,12 @@ describe("authenticated account menus", () => {
     expect(bottomNav).toContain("profileMenu.account");
     expect(bottomNav).toContain("profileMenu.signedInAs");
     expect(bottomNav).toContain('data-testid="mobile-account-details"');
-    expect(bottomNav).toContain("navigate('/settings')");
+    expect(bottomNav).toMatch(/navigate\(\s*["']\/settings["']\s*\)/);
     expect(bottomNav).toContain("min-h-12");
     expect(bottomNav).toContain('data-testid="mobile-logout"');
-    expect(bottomNav).toContain("void logout().then(() => navigate('/'))");
+    expect(bottomNav).toMatch(
+      /void\s+logout\(\)\.then\(\(\)\s*=>\s*navigate\(\s*["']\/["']\s*\)\s*\)/
+    );
   });
 });
 

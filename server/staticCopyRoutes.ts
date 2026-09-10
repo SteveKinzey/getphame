@@ -5,27 +5,33 @@ const MAX_STATIC_COPY_BYTES = 512 * 1024;
 
 const STATIC_COPY_SOURCES = {
   es: {
-    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-es.json",
+    storageKey:
+      "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-es.json",
     fileName: "getphame-static-copy-es.json",
   },
   fr: {
-    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-fr.json",
+    storageKey:
+      "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-fr.json",
     fileName: "getphame-static-copy-fr.json",
   },
   it: {
-    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-it.json",
+    storageKey:
+      "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-it.json",
     fileName: "getphame-static-copy-it.json",
   },
   th: {
-    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-th.json",
+    storageKey:
+      "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-th.json",
     fileName: "getphame-static-copy-th.json",
   },
   "zh-CN": {
-    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-zh-CN.json",
+    storageKey:
+      "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-zh-CN.json",
     fileName: "getphame-static-copy-zh-CN.json",
   },
   "zh-TW": {
-    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-zh-TW.json",
+    storageKey:
+      "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-zh-TW.json",
     fileName: "getphame-static-copy-zh-TW.json",
   },
 } as const;
@@ -68,10 +74,12 @@ async function loadStaticCopy(locale: StaticCopyLocale) {
 
   const source = STATIC_COPY_SOURCES[locale];
   const pending = storageGet(source.storageKey)
-    .then(({ url }) => fetch(url, {
-      headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(10_000),
-    }))
+    .then(({ url }) =>
+      fetch(url, {
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(10_000),
+      })
+    )
     .then(async response => {
       if (!response.ok) {
         throw new Error(`Static copy upstream returned ${response.status}`);
@@ -99,7 +107,9 @@ export function registerStaticCopyRoutes(app: Express) {
     const locale = req.params.locale;
     const source = getStaticCopySource(locale);
     if (!source) {
-      return res.status(404).json({ error: "Static localization catalog not found" });
+      return res
+        .status(404)
+        .json({ error: "Static localization catalog not found" });
     }
 
     try {
@@ -113,12 +123,17 @@ export function registerStaticCopyRoutes(app: Express) {
       });
       return res.status(200).send(bytes);
     } catch (error) {
-      console.warn("[StaticCopy] Failed to load approved localization catalog", {
-        locale,
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
+      console.warn(
+        "[StaticCopy] Failed to load approved localization catalog",
+        {
+          locale,
+          error: error instanceof Error ? error.message : "Unknown error",
+        }
+      );
       res.set("Cache-Control", "no-store");
-      return res.status(502).json({ error: "Static localization catalog is temporarily unavailable" });
+      return res.status(502).json({
+        error: "Static localization catalog is temporarily unavailable",
+      });
     }
   });
 }

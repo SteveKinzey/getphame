@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import { evaluateOperationsAlertState } from "./systemHealth";
 import type { ReminderTimingPerformanceRow } from "./reminderPerformance";
 
-function reminderRow(sentCount: number, successCount: number): ReminderTimingPerformanceRow {
+function reminderRow(
+  sentCount: number,
+  successCount: number
+): ReminderTimingPerformanceRow {
   return {
     stage: 1,
     firstDelayDays: 3,
@@ -19,8 +22,16 @@ function reminderRow(sentCount: number, successCount: number): ReminderTimingPer
 describe("administrator operations alert thresholds", () => {
   it("does not infer failure when observations are missing", () => {
     const result = evaluateOperationsAlertState(null, []);
-    expect(result.smtp).toMatchObject({ status: "ok", value: null, hasData: false });
-    expect(result.reminders).toMatchObject({ status: "ok", value: null, hasData: false });
+    expect(result.smtp).toMatchObject({
+      status: "ok",
+      value: null,
+      hasData: false,
+    });
+    expect(result.reminders).toMatchObject({
+      status: "ok",
+      value: null,
+      hasData: false,
+    });
   });
 
   it("highlights SMTP below 95 percent and reminders below 20 percent after five sends", () => {
@@ -28,8 +39,17 @@ describe("administrator operations alert thresholds", () => {
       { checkedAt: 1234, totalAccounts: 10, healthyAccounts: 9 },
       [reminderRow(10, 1)]
     );
-    expect(result.smtp).toMatchObject({ status: "alert", value: 90, threshold: 95 });
-    expect(result.reminders).toMatchObject({ status: "alert", value: 10, threshold: 20, sampleSize: 10 });
+    expect(result.smtp).toMatchObject({
+      status: "alert",
+      value: 90,
+      threshold: 95,
+    });
+    expect(result.reminders).toMatchObject({
+      status: "alert",
+      value: 10,
+      threshold: 20,
+      sampleSize: 10,
+    });
   });
 
   it("waits for the reminder minimum sample and keeps acceptable performance healthy", () => {
@@ -38,7 +58,11 @@ describe("administrator operations alert thresholds", () => {
       [reminderRow(4, 0)]
     );
     expect(lowSample.smtp.status).toBe("ok");
-    expect(lowSample.reminders).toMatchObject({ status: "ok", sampleSize: 4, minimumSample: 5 });
+    expect(lowSample.reminders).toMatchObject({
+      status: "ok",
+      sampleSize: 4,
+      minimumSample: 5,
+    });
 
     const healthy = evaluateOperationsAlertState(
       { checkedAt: 1234, totalAccounts: 20, healthyAccounts: 19 },

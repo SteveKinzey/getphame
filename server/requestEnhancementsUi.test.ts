@@ -4,42 +4,51 @@ import { describe, expect, it } from "vitest";
 const read = (relativePath: string) =>
   readFileSync(new URL(relativePath, import.meta.url), "utf8");
 
+const translationCall = (key: string) =>
+  new RegExp(`t\\s*\\(\\s*["']${key}["']`);
+const testId = (value: string) =>
+  new RegExp(`data-testid\\s*=\\s*["']${value}["']`);
+
 describe("request enhancement UI contracts", () => {
   it("keeps the AI tone adjustment visible, accessible, and entitlement-aware in the send composer", () => {
     const source = read("../client/src/pages/SendRequest.tsx");
 
-    expect(source).toContain('t("mainForm.applyAiTone"');
-    expect(source).toContain('t("mainForm.unlockAiTone"');
-    expect(source).toContain("aria-label={hasPaidAiAccess");
-    expect(source).toContain("adjustTone.isPending");
-    expect(source).toContain('aria-live="polite"');
-    expect(source).toContain("openUpgradeModal");
-    expect(source).toContain("tonePreviewDraft");
-    expect(source).toContain('data-testid="ai-tone-preview-dialog"');
-    expect(source).toContain("handleApplyTonePreview");
-    expect(source).toContain('data-testid="ai-tone-preview-apply"');
-    expect(source).toContain('t("mainForm.keepCurrentDraft"');
-    expect(source).toContain("tonePreviewSourceDraft");
-    expect(source).toContain("getToneTextDiff");
-    expect(source).toContain('data-testid="ai-tone-preview-comparison"');
-    expect(source).toContain('data-testid="ai-tone-preview-original"');
-    expect(source).toContain('data-testid="ai-tone-preview-adjusted"');
-    expect(source).toContain('t("mainForm.tonePreviewOriginalDraft"');
-    expect(source).toContain('t("mainForm.tonePreviewAdjustedDraft"');
+    expect(source).toMatch(translationCall("mainForm.applyAiTone"));
+    expect(source).toMatch(translationCall("mainForm.unlockAiTone"));
+    expect(source).toMatch(/aria-label\s*=\s*\{\s*hasPaidAiAccess/);
+    expect(source).toMatch(/adjustTone\s*\.\s*isPending/);
+    expect(source).toMatch(/aria-live\s*=\s*["']polite["']/);
+    expect(source).toMatch(/openUpgradeModal/);
+    expect(source).toMatch(/tonePreviewDraft/);
+    expect(source).toMatch(testId("ai-tone-preview-dialog"));
+    expect(source).toMatch(/handleApplyTonePreview/);
+    expect(source).toMatch(testId("ai-tone-preview-apply"));
+    expect(source).toMatch(translationCall("mainForm.keepCurrentDraft"));
+    expect(source).toMatch(/tonePreviewSourceDraft/);
+    expect(source).toMatch(/getToneTextDiff/);
+    expect(source).toMatch(testId("ai-tone-preview-comparison"));
+    expect(source).toMatch(testId("ai-tone-preview-original"));
+    expect(source).toMatch(testId("ai-tone-preview-adjusted"));
+    expect(source).toMatch(
+      translationCall("mainForm.tonePreviewOriginalDraft")
+    );
+    expect(source).toMatch(
+      translationCall("mainForm.tonePreviewAdjustedDraft")
+    );
   });
 
   it("keeps CSV diagnostics privacy-safe and available at both preview and completion stages", () => {
     const source = read("../client/src/pages/ImportContacts.tsx");
 
-    expect(source).toContain("function CsvErrorSummary");
-    expect(source).toContain('role="status"');
-    expect(source).toContain('t("csvDiagnostics.privacyNote"');
-    expect(source).toContain('t("csvDiagnostics.preImportTitle"');
-    expect(source).toContain('t("csvDiagnostics.importResultTitle"');
-    expect(source).toContain("Only row numbers are shown here");
-    expect(source).toContain("serializeContactImportErrorReport");
-    expect(source).toContain('data-testid="csv-error-report-download"');
-    expect(source).toContain('t("csvDiagnostics.downloadReport"');
+    expect(source).toMatch(/function\s+CsvErrorSummary/);
+    expect(source).toMatch(/role\s*=\s*["']status["']/);
+    expect(source).toMatch(translationCall("csvDiagnostics.privacyNote"));
+    expect(source).toMatch(translationCall("csvDiagnostics.preImportTitle"));
+    expect(source).toMatch(translationCall("csvDiagnostics.importResultTitle"));
+    expect(source).toMatch(/Only\s+row\s+numbers\s+are\s+shown\s+here/);
+    expect(source).toMatch(/serializeContactImportErrorReport/);
+    expect(source).toMatch(testId("csv-error-report-download"));
+    expect(source).toMatch(translationCall("csvDiagnostics.downloadReport"));
   });
 
   it("keeps chart export reachable, data-aware, and format-specific", () => {
@@ -47,32 +56,34 @@ describe("request enhancement UI contracts", () => {
       "../client/src/components/dashboard/ActivityTrendCard.tsx"
     );
 
-    expect(source).toContain('setRangeMode("custom")');
-    expect(source).toContain("resolveActivityTrendCustomRange");
-    expect(source).toContain("MAX_ACTIVITY_TREND_CUSTOM_DAYS");
-    expect(source).toContain('rangeMode === "custom"');
-    expect(source).toContain("? appliedCustomRange");
-    expect(source).toContain("setAppliedCustomRange(customRange.query)");
-    expect(source).toContain(
-      "!customRange.query || !isCustomRangeDirty || trendFetching"
+    expect(source).toMatch(/setRangeMode\(\s*["']custom["']\s*\)/);
+    expect(source).toMatch(/resolveActivityTrendCustomRange/);
+    expect(source).toMatch(/MAX_ACTIVITY_TREND_CUSTOM_DAYS/);
+    expect(source).toMatch(/rangeMode\s*===\s*["']custom["']/);
+    expect(source).toMatch(/\?\s*appliedCustomRange/);
+    expect(source).toMatch(/setAppliedCustomRange\(\s*customRange\.query\s*\)/);
+    expect(source).toMatch(
+      /!customRange\.query\s*\|\|\s*!isCustomRangeDirty\s*\|\|\s*trendFetching/
     );
-    expect(source).toContain('type="date"');
-    expect(source).toContain("max={today}");
-    expect(source).toContain('exportTrend("csv")');
-    expect(source).toContain('exportTrend("png")');
-    expect(source).toContain('t("activityTrend.exportCsvAria"');
-    expect(source).toContain('t("activityTrend.exportPngAria"');
-    expect(source).toContain(
-      "disabled={!hasSelectedExportData || trendLoading || trendFetching}"
+    expect(source).toMatch(/type\s*=\s*["']date["']/);
+    expect(source).toMatch(/max\s*=\s*\{\s*today\s*\}/);
+    expect(source).toMatch(/exportTrend\(\s*["']csv["']\s*\)/);
+    expect(source).toMatch(/exportTrend\(\s*["']png["']\s*\)/);
+    expect(source).toMatch(translationCall("activityTrend.exportCsvAria"));
+    expect(source).toMatch(translationCall("activityTrend.exportPngAria"));
+    expect(source).toMatch(
+      /disabled\s*=\s*\{\s*!hasSelectedExportData\s*\|\|\s*trendLoading\s*\|\|\s*trendFetching\s*\}/
     );
-    expect(source).toContain('chart.toBase64Image("image/png", 1)');
-    expect(source).toContain("buildActivityTrendExportFilename(");
-    expect(source).toContain("selectedExportSeries");
-    expect(source).toContain("serializeActivityTrendCsv");
-    expect(source).toContain('t("activityTrend.csvDownloaded"');
-    expect(source).toContain('t("activityTrend.pngDownloaded"');
-    expect(source).toContain('t("activityTrend.activeRange"');
-    expect(source).toContain('t("activityTrend.emptyRange"');
-    expect(source).toContain('role="alert"');
+    expect(source).toMatch(
+      /chart\.toBase64Image\(\s*["']image\/png["']\s*,\s*1\s*\)/
+    );
+    expect(source).toMatch(/buildActivityTrendExportFilename/);
+    expect(source).toMatch(/selectedExportSeries/);
+    expect(source).toMatch(/serializeActivityTrendCsv/);
+    expect(source).toMatch(translationCall("activityTrend.csvDownloaded"));
+    expect(source).toMatch(translationCall("activityTrend.pngDownloaded"));
+    expect(source).toMatch(translationCall("activityTrend.activeRange"));
+    expect(source).toMatch(translationCall("activityTrend.emptyRange"));
+    expect(source).toMatch(/role\s*=\s*["']alert["']/);
   });
 });

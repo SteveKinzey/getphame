@@ -4,12 +4,17 @@ import { Monitor, Upload, TrendingUp, Maximize2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
-const EMAIL_PREVIEW_WEBP = "https://assets.getphame.app/phame-email-preview.webp";
+const EMAIL_PREVIEW_WEBP =
+  "https://assets.getphame.app/phame-email-preview.webp";
 const EMAIL_PREVIEW_PNG = "https://assets.getphame.app/phame-email-preview.png";
-const CUSTOMER_IMPORT_WEBP = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/pCdaXCzmWWOVhxVT.webp";
-const CUSTOMER_IMPORT_PNG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/PqrlbFzQDKfwKKdq.png";
-const REVIEW_TRACKING_WEBP = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/iMKazWeeJzbtaJOP.webp";
-const REVIEW_TRACKING_PNG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/AGpQkxLxqBlmXRos.png";
+const CUSTOMER_IMPORT_WEBP =
+  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/pCdaXCzmWWOVhxVT.webp";
+const CUSTOMER_IMPORT_PNG =
+  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/PqrlbFzQDKfwKKdq.png";
+const REVIEW_TRACKING_WEBP =
+  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/iMKazWeeJzbtaJOP.webp";
+const REVIEW_TRACKING_PNG =
+  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/AGpQkxLxqBlmXRos.png";
 
 // ── Lightbox ──────────────────────────────────────────────────────────────────
 
@@ -43,7 +48,9 @@ function Lightbox({ item, onClose }: LightboxProps) {
   // Prevent body scroll while open
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   return (
@@ -58,7 +65,9 @@ function Lightbox({ item, onClose }: LightboxProps) {
       <div
         className="absolute inset-0 bg-black/85 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
-        aria-label={t("landing.lightbox.closeLightboxAriaLabel", { defaultValue: "Close lightbox" })}
+        aria-label={t("landing.lightbox.closeLightboxAriaLabel", {
+          defaultValue: "Close lightbox",
+        })}
       />
 
       {/* Image container */}
@@ -73,9 +82,13 @@ function Lightbox({ item, onClose }: LightboxProps) {
         <button
           onClick={onClose}
           className="absolute -top-12 right-0 flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
-          aria-label={t("landing.lightbox.closeButtonAriaLabel", { defaultValue: "Close" })}
+          aria-label={t("landing.lightbox.closeButtonAriaLabel", {
+            defaultValue: "Close",
+          })}
         >
-          <span>{t("landing.lightbox.closeButtonLabel", { defaultValue: "Close" })}</span>
+          <span>
+            {t("landing.lightbox.closeButtonLabel", { defaultValue: "Close" })}
+          </span>
           <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
             <X size={16} />
           </div>
@@ -96,7 +109,9 @@ function Lightbox({ item, onClose }: LightboxProps) {
         </div>
 
         {/* Caption */}
-        <p className="text-center text-sm text-white/60 mt-4 font-medium">{item.title}</p>
+        <p className="text-center text-sm text-white/60 mt-4 font-medium">
+          {item.title}
+        </p>
       </motion.div>
     </motion.div>
   );
@@ -108,61 +123,102 @@ export default function ProductShowcase() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("email");
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  
 
   const tabs = [
     {
       id: "email",
-      label: t("landing.productShowcase.tabEmailLabel", { defaultValue: "Email Preview" }),
+      label: t("landing.productShowcase.tabEmailLabel", {
+        defaultValue: "Email Preview",
+      }),
       icon: Monitor,
-      title: t("landing.productShowcase.tabEmailTitle", { defaultValue: "Emails that feel handwritten" }),
-      description: t("landing.productShowcase.tabEmailDescription", { defaultValue: "Each review request uses the sender name, signature, and tone you configure in Get Phame." }),
+      title: t("landing.productShowcase.tabEmailTitle", {
+        defaultValue: "Emails that feel handwritten",
+      }),
+      description: t("landing.productShowcase.tabEmailDescription", {
+        defaultValue:
+          "Each review request uses the sender name, signature, and tone you configure in Get Phame.",
+      }),
       webp: EMAIL_PREVIEW_WEBP,
       png: EMAIL_PREVIEW_PNG,
-      alt: t("landing.productShowcase.tabEmailAlt", { defaultValue: "GetPhame personalized review request email preview showing customer name, business signature, and Google review link" }),
+      alt: t("landing.productShowcase.tabEmailAlt", {
+        defaultValue:
+          "GetPhame personalized review request email preview showing customer name, business signature, and Google review link",
+      }),
     },
     {
       id: "import",
-      label: t("landing.productShowcase.tabImportLabel", { defaultValue: "Customer Import" }),
+      label: t("landing.productShowcase.tabImportLabel", {
+        defaultValue: "Customer Import",
+      }),
       icon: Upload,
-      title: t("landing.productShowcase.tabImportTitle", { defaultValue: "Import customers from CSV or WooCommerce" }),
-      description: t("landing.productShowcase.tabImportDescription", { defaultValue: "Upload a CSV or sync WooCommerce, then review email validation and duplicate flags before sending." }),
+      title: t("landing.productShowcase.tabImportTitle", {
+        defaultValue: "Import customers from CSV or WooCommerce",
+      }),
+      description: t("landing.productShowcase.tabImportDescription", {
+        defaultValue:
+          "Upload a CSV or sync WooCommerce, then review email validation and duplicate flags before sending.",
+      }),
       webp: CUSTOMER_IMPORT_WEBP,
       png: CUSTOMER_IMPORT_PNG,
-      alt: t("landing.productShowcase.tabImportAlt", { defaultValue: "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal" }),
+      alt: t("landing.productShowcase.tabImportAlt", {
+        defaultValue:
+          "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal",
+      }),
     },
     {
       id: "tracking",
-      label: t("landing.productShowcase.tabTrackingLabel", { defaultValue: "Review Tracking" }),
+      label: t("landing.productShowcase.tabTrackingLabel", {
+        defaultValue: "Review Tracking",
+      }),
       icon: TrendingUp,
-      title: t("landing.productShowcase.tabTrackingTitle", { defaultValue: "Track request activity" }),
-      description: t("landing.productShowcase.tabTrackingDescription", { defaultValue: "Review sent, open, and click activity in the Get Phame dashboard." }),
+      title: t("landing.productShowcase.tabTrackingTitle", {
+        defaultValue: "Track request activity",
+      }),
+      description: t("landing.productShowcase.tabTrackingDescription", {
+        defaultValue:
+          "Review sent, open, and click activity in the Get Phame dashboard.",
+      }),
       webp: REVIEW_TRACKING_WEBP,
       png: REVIEW_TRACKING_PNG,
-      alt: t("landing.productShowcase.tabTrackingAlt", { defaultValue: "Get Phame request activity dashboard showing sent, open, and click tracking" }),
+      alt: t("landing.productShowcase.tabTrackingAlt", {
+        defaultValue:
+          "Get Phame request activity dashboard showing sent, open, and click tracking",
+      }),
     },
   ];
-  const activeItem = tabs.find((t) => t.id === activeTab)!;
+  const activeItem = tabs.find(t => t.id === activeTab)!;
 
   const openLightbox = useCallback(() => setLightboxOpen(true), []);
   const closeLightbox = useCallback(() => setLightboxOpen(false), []);
 
   return (
     <>
-      <section id="product" className="py-20 md:py-28 bg-[oklch(0.12_0.025_250)]">
+      <section
+        id="product"
+        className="py-20 md:py-28 bg-[oklch(0.12_0.025_250)]"
+      >
         <div className="container">
           <FadeUp className="max-w-2xl mb-12">
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">{t("landing.productShowcase.sectionSubtitle", { defaultValue: "The product" })}</p>
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
+              {t("landing.productShowcase.sectionSubtitle", {
+                defaultValue: "The product",
+              })}
+            </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              {t("landing.productShowcase.sectionTitle", { defaultValue: "Built to make review requests effortless" })}
+              {t("landing.productShowcase.sectionTitle", {
+                defaultValue: "Built to make review requests effortless",
+              })}
             </h2>
             <p className="text-lg text-slate-200 font-medium">
-              {t("landing.productShowcase.sectionDescription", { defaultValue: "One simple tool. Three powerful views. Everything you need to grow your reputation." })}
+              {t("landing.productShowcase.sectionDescription", {
+                defaultValue:
+                  "One simple tool. Three powerful views. Everything you need to grow your reputation.",
+              })}
             </p>
           </FadeUp>
 
           <FadeUp delay={0.1} className="flex flex-wrap gap-2 mb-10">
-            {tabs.map((tab) => (
+            {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -189,8 +245,12 @@ export default function ProductShowcase() {
                 exit={{ opacity: 0, y: -16 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                <h3 className="font-display font-bold text-2xl md:text-3xl text-white mb-4">{activeItem.title}</h3>
-                <p className="text-lg text-slate-200 font-medium leading-relaxed">{activeItem.description}</p>
+                <h3 className="font-display font-bold text-2xl md:text-3xl text-white mb-4">
+                  {activeItem.title}
+                </h3>
+                <p className="text-lg text-slate-200 font-medium leading-relaxed">
+                  {activeItem.description}
+                </p>
 
                 {/* Expand hint */}
                 <button
@@ -198,7 +258,9 @@ export default function ProductShowcase() {
                   className="inline-flex items-center gap-2 mt-5 text-sm text-primary/70 hover:text-primary transition-colors font-medium"
                 >
                   <Maximize2 size={14} />
-                  {t("landing.productShowcase.viewFullSizeButton", { defaultValue: "View full size" })}
+                  {t("landing.productShowcase.viewFullSizeButton", {
+                    defaultValue: "View full size",
+                  })}
                 </button>
               </motion.div>
             </AnimatePresence>
@@ -219,8 +281,14 @@ export default function ProductShowcase() {
                   onClick={openLightbox}
                   role="button"
                   tabIndex={0}
-                  aria-label={t("landing.productShowcase.viewFullSizeAriaLabel", { defaultValue: "View {{title}} in full size", replace: { title: activeItem.title } })}
-                  onKeyDown={(e) => e.key === "Enter" && openLightbox()}
+                  aria-label={t(
+                    "landing.productShowcase.viewFullSizeAriaLabel",
+                    {
+                      defaultValue: "View {{title}} in full size",
+                      replace: { title: activeItem.title },
+                    }
+                  )}
+                  onKeyDown={e => e.key === "Enter" && openLightbox()}
                 >
                   {/* Glow */}
                   <div className="absolute -inset-3 bg-primary/5 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

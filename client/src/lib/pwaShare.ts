@@ -42,7 +42,9 @@ export async function shareGetPhame(): Promise<GetPhameShareOutcome> {
   }
 
   try {
-    await navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url ?? "https://getphame.app/");
+    await navigator.clipboard.writeText(
+      GET_PHAME_SHARE_DATA.url ?? "https://getphame.app/"
+    );
     return "copied";
   } catch {
     return "failed";

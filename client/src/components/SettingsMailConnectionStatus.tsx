@@ -39,7 +39,9 @@ export function SettingsPersonalMailConnectionStatus({
   return (
     <MailDeliveryStateNotice
       state={state}
-      translate={(defaultValue) => translate(personalTranslationKeys[state], { defaultValue })}
+      translate={defaultValue =>
+        translate(personalTranslationKeys[state], { defaultValue })
+      }
     />
   );
 }
@@ -54,12 +56,18 @@ export function SettingsBulkMailConnectionStatus({
   const state: MailDeliveryNoticeState = status.legacyPlatformConnection
     ? "legacy_blocked"
     : status.selectedForOutreach
-    ? "active"
-    : "not_selected";
-  const key = state === "legacy_blocked"
-    ? "settings.bulkSender.legacyPlatformNotice"
-    : state === "active"
-    ? "settings.bulkSender.activeOutreach"
-    : "settings.bulkSender.notActive";
-  return <MailDeliveryStateNotice state={state} translate={(defaultValue) => translate(key, { defaultValue })} />;
+      ? "active"
+      : "not_selected";
+  const key =
+    state === "legacy_blocked"
+      ? "settings.bulkSender.legacyPlatformNotice"
+      : state === "active"
+        ? "settings.bulkSender.activeOutreach"
+        : "settings.bulkSender.notActive";
+  return (
+    <MailDeliveryStateNotice
+      state={state}
+      translate={defaultValue => translate(key, { defaultValue })}
+    />
+  );
 }

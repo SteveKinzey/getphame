@@ -10,7 +10,8 @@
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import { sendSystemEmail, HELLO_FROM } from "./sendgrid";
 
-export const GUIDE_PDF_URL = "https://assets.getphame.app/getphame-30-day-review-playbook.pdf";
+export const GUIDE_PDF_URL =
+  "https://assets.getphame.app/getphame-30-day-review-playbook.pdf";
 
 export interface LeadGuideDeliveryResult {
   sent: boolean;
@@ -116,7 +117,9 @@ No spam — we respect your inbox.`;
  * Send the lead guide email. Returns { sent: true } on success, { sent: false } if
  * system SMTP is not configured or the send fails.
  */
-export async function sendLeadGuideEmail(toEmail: string): Promise<LeadGuideDeliveryResult> {
+export async function sendLeadGuideEmail(
+  toEmail: string
+): Promise<LeadGuideDeliveryResult> {
   try {
     await sendSystemEmail({
       to: toEmail,

@@ -15,8 +15,12 @@ describe("administrator route-audit workflow contracts", () => {
     expect(router).toContain("listRouteAuditRuns: adminProcedure");
     expect(router).toContain("recordEmailPreviewRendererError: adminProcedure");
     expect(router).toContain("listEmailPreviewRendererErrors: adminProcedure");
-    expect(router).toContain('errorCode: z.literal("render_content_unavailable")');
-    expect(schema).not.toContain('emailPreviewRendererErrors = pgTable(\n  "email_preview_renderer_errors",\n  {\n    html:');
+    expect(router).toContain(
+      'errorCode: z.literal("render_content_unavailable")'
+    );
+    expect(schema).not.toContain(
+      'emailPreviewRendererErrors = pgTable(\n  "email_preview_renderer_errors",\n  {\n    html:'
+    );
   });
 
   it("renders a protected history page and resilient copy fallback without logging HTML", () => {

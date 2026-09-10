@@ -18,7 +18,9 @@ describe("admin GitHub cleanup showcase UI", () => {
     expect(app).toContain("AdminGithubCleanupShowcase");
     expect(page).toContain('const isAdmin = user?.role === "admin"');
     expect(page).toContain("enabled: isAdmin");
-    expect(page).toContain('if (!authLoading && user && !isAdmin) navigate("/")');
+    expect(page).toContain(
+      'if (!authLoading && user && !isAdmin) navigate("/")'
+    );
     expect(page).toContain("if (!isAdmin) return null");
     expect(page).toContain("trpc.githubCleanupShowcase.dashboard.useQuery");
     expect(page).toContain("data.snapshot.treeSha.slice(0, 7)");
@@ -32,15 +34,27 @@ describe("admin GitHub cleanup showcase UI", () => {
     const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"];
 
     for (const locale of locales) {
-      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+      const catalog = JSON.parse(
+        read(`client/public/locales/${locale}/translation.json`)
+      );
       expect(catalog.adminGithubCleanup?.title).toBeTypeOf("string");
-      expect(catalog.adminGithubCleanup?.metrics?.extraction?.title).toBeTypeOf("string");
+      expect(catalog.adminGithubCleanup?.metrics?.extraction?.title).toBeTypeOf(
+        "string"
+      );
       expect(catalog.adminGithubCleanup?.script?.copy).toBeTypeOf("string");
     }
 
-    const simplifiedChinese = JSON.parse(read("client/public/locales/zh-CN/translation.json"));
-    expect(simplifiedChinese.adminGithubCleanup.stats.openPrs).toBe("未关闭的拉取请求");
-    expect(simplifiedChinese.adminGithubCleanup.workstreams.helpAssistant.title).toBe("全局公开帮助助手");
-    expect(simplifiedChinese.adminGithubCleanup.workstreams.sourcesWoo.title).toBe("同意优先的来源与 WooCommerce");
+    const simplifiedChinese = JSON.parse(
+      read("client/public/locales/zh-CN/translation.json")
+    );
+    expect(simplifiedChinese.adminGithubCleanup.stats.openPrs).toBe(
+      "未关闭的拉取请求"
+    );
+    expect(
+      simplifiedChinese.adminGithubCleanup.workstreams.helpAssistant.title
+    ).toBe("全局公开帮助助手");
+    expect(
+      simplifiedChinese.adminGithubCleanup.workstreams.sourcesWoo.title
+    ).toBe("同意优先的来源与 WooCommerce");
   });
 });

@@ -43,13 +43,16 @@ export const THB_DISPLAY = {
 export const USD_ANNUAL_MONTHLY_EQUIVALENT = USD_PRICES.annual / 12;
 export const USD_ANNUAL_SAVINGS = USD_PRICES.monthly * 12 - USD_PRICES.annual;
 export const USD_ANNUAL_SAVINGS_PERCENT = Math.round(
-  (1 - USD_PRICES.annual / (USD_PRICES.monthly * 12)) * 100,
+  (1 - USD_PRICES.annual / (USD_PRICES.monthly * 12)) * 100
 );
-export const USD_LIFETIME_SAVINGS_BY_YEAR_TWO = USD_PRICES.monthly * 24 - USD_PRICES.lifetime;
-export const USD_LIFETIME_PAYBACK_MONTHS = Math.ceil(USD_PRICES.lifetime / USD_PRICES.monthly);
+export const USD_LIFETIME_SAVINGS_BY_YEAR_TWO =
+  USD_PRICES.monthly * 24 - USD_PRICES.lifetime;
+export const USD_LIFETIME_PAYBACK_MONTHS = Math.ceil(
+  USD_PRICES.lifetime / USD_PRICES.monthly
+);
 
 export const THB_ANNUAL_MONTHLY_EQUIVALENT = THB_PRICES.annual / 12;
 export const THB_ANNUAL_SAVINGS = THB_PRICES.monthly * 12 - THB_PRICES.annual;
 export const THB_ANNUAL_SAVINGS_PERCENT = Math.round(
-  (1 - THB_PRICES.annual / (THB_PRICES.monthly * 12)) * 100,
+  (1 - THB_PRICES.annual / (THB_PRICES.monthly * 12)) * 100
 );

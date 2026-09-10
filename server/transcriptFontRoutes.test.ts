@@ -24,8 +24,12 @@ describe("transcript font routes", () => {
     expect(thai?.fileName).toBe("noto-sans-thai-transcript-v2.ttf");
     expect(cjk?.sourceUrl).toMatch(/^https:\/\/files\.manuscdn\.com\//);
     expect(thai?.sourceUrl).toMatch(/^https:\/\/files\.manuscdn\.com\//);
-    expect(cjk?.sourceUrl).not.toMatch(/manus-storage|X-Amz-|Expires=|Signature=/i);
-    expect(thai?.sourceUrl).not.toMatch(/manus-storage|X-Amz-|Expires=|Signature=/i);
+    expect(cjk?.sourceUrl).not.toMatch(
+      /manus-storage|X-Amz-|Expires=|Signature=/i
+    );
+    expect(thai?.sourceUrl).not.toMatch(
+      /manus-storage|X-Amz-|Expires=|Signature=/i
+    );
     expect(getTranscriptFontSource("../../secret")).toBeNull();
   });
 
@@ -35,7 +39,7 @@ describe("transcript font routes", () => {
       new Response(fontBytes, {
         status: 200,
         headers: { "Content-Type": "font/ttf" },
-      }),
+      })
     );
     vi.stubGlobal("fetch", fetchMock);
 
@@ -45,8 +49,12 @@ describe("transcript font routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers["content-type"]).toContain("font/ttf");
-    expect(response.headers["cache-control"]).toBe("public, max-age=31536000, immutable");
-    expect(response.headers["content-disposition"]).toContain("noto-sans-tc-transcript.ttf");
+    expect(response.headers["cache-control"]).toBe(
+      "public, max-age=31536000, immutable"
+    );
+    expect(response.headers["content-disposition"]).toContain(
+      "noto-sans-tc-transcript.ttf"
+    );
     expect(Buffer.from(response.body)).toEqual(Buffer.from(fontBytes));
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -57,7 +65,9 @@ describe("transcript font routes", () => {
 
     const app = express();
     registerTranscriptFontRoutes(app);
-    const response = await request(app).get("/api/assets/transcript-font/unknown");
+    const response = await request(app).get(
+      "/api/assets/transcript-font/unknown"
+    );
 
     expect(response.status).toBe(404);
     expect(response.body).toEqual({ error: "Transcript font not found" });

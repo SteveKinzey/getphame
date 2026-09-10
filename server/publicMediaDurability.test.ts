@@ -3,17 +3,41 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 function readProjectFile(relativePath: string): string {
-  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+  return readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    "utf8"
+  );
 }
 
 const PUBLIC_STATIC_SOURCES = [
-  { path: "../client/src/components/landing/ProductShowcase.tsx", deliveryMarker: "https://files.manuscdn.com/" },
-  { path: "../client/src/lib/autoText.ts", deliveryMarker: "/api/assets/static-copy/" },
-  { path: "../client/src/pages/FeaturePage.tsx", deliveryMarker: "https://files.manuscdn.com/" },
-  { path: "../client/public/manifest.json", deliveryMarker: "https://files.manuscdn.com/" },
-  { path: "./publicFeaturePrerender.ts", deliveryMarker: "https://files.manuscdn.com/" },
-  { path: "./staticCopyRoutes.ts", deliveryMarker: "storageGet(source.storageKey)" },
-  { path: "./transcriptFontRoutes.ts", deliveryMarker: "https://files.manuscdn.com/" },
+  {
+    path: "../client/src/components/landing/ProductShowcase.tsx",
+    deliveryMarker: "https://files.manuscdn.com/",
+  },
+  {
+    path: "../client/src/lib/autoText.ts",
+    deliveryMarker: "/api/assets/static-copy/",
+  },
+  {
+    path: "../client/src/pages/FeaturePage.tsx",
+    deliveryMarker: "https://files.manuscdn.com/",
+  },
+  {
+    path: "../client/public/manifest.json",
+    deliveryMarker: "https://files.manuscdn.com/",
+  },
+  {
+    path: "./publicFeaturePrerender.ts",
+    deliveryMarker: "https://files.manuscdn.com/",
+  },
+  {
+    path: "./staticCopyRoutes.ts",
+    deliveryMarker: "storageGet(source.storageKey)",
+  },
+  {
+    path: "./transcriptFontRoutes.ts",
+    deliveryMarker: "https://files.manuscdn.com/",
+  },
 ] as const;
 
 describe("public media durability", () => {
@@ -29,13 +53,17 @@ describe("public media durability", () => {
     const storageProxy = readProjectFile("./_core/storageProxy.ts");
 
     expect(storageProxy).toContain('app.get("/manus-storage/*"');
-    expect(storageProxy).toContain("Authorization: `Bearer ${ENV.forgeApiKey}`");
+    expect(storageProxy).toContain(
+      "Authorization: `Bearer ${ENV.forgeApiKey}`"
+    );
     expect(storageProxy).toContain('res.set("Cache-Control", "no-store")');
     expect(storageProxy).toContain("res.redirect(307, url)");
   });
 
   it("uses MIME-correct durable WebP social cards in both client and crawler metadata", () => {
-    const clientFeaturePage = readProjectFile("../client/src/pages/FeaturePage.tsx");
+    const clientFeaturePage = readProjectFile(
+      "../client/src/pages/FeaturePage.tsx"
+    );
     const serverPrerender = readProjectFile("./publicFeaturePrerender.ts");
 
     for (const url of [

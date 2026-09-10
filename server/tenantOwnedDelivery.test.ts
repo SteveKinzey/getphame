@@ -14,9 +14,11 @@ describe("tenant-owned review delivery", () => {
       subject: "A review request",
       html: "<p>Thank you</p>",
     });
-    expect(mocks.sendMailViaSmtp).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 42,
-      safetyMode: "review_request",
-    }));
+    expect(mocks.sendMailViaSmtp).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 42,
+        safetyMode: "review_request",
+      })
+    );
   });
 });

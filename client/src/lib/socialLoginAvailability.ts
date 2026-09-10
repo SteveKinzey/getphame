@@ -27,5 +27,8 @@ export function isStagingSocialLoginHost(hostname: string): boolean {
 export function isGoogleSignInHost(hostname: string): boolean {
   const normalizedHost = normalizeHost(hostname);
 
-  return isStagingSocialLoginHost(normalizedHost) || PRODUCTION_GOOGLE_HOSTS.has(normalizedHost);
+  return (
+    isStagingSocialLoginHost(normalizedHost) ||
+    PRODUCTION_GOOGLE_HOSTS.has(normalizedHost)
+  );
 }

@@ -18,8 +18,13 @@ function workerPath(script: string | null): string {
 
 export default function ApplicationVersionDiagnosticsCard() {
   const { t } = useTranslation();
-  const { availableVersion, checkForUpdate, diagnostics, requestUpdate, state } =
-    useAppVersionUpdate();
+  const {
+    availableVersion,
+    checkForUpdate,
+    diagnostics,
+    requestUpdate,
+    state,
+  } = useAppVersionUpdate();
   const canRequestReload = Boolean(availableVersion) && state !== "reloading";
   const lastChecked = diagnostics.lastSuccessfulCheckAt
     ? new Date(diagnostics.lastSuccessfulCheckAt).toLocaleString()
@@ -36,8 +41,13 @@ export default function ApplicationVersionDiagnosticsCard() {
           <ShieldCheck size={18} className="rr-text-navy" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 id="application-version-heading" className="text-base font-black rr-text-navy">
-            {t("versionUpdate.adminTitle", { defaultValue: "Application Version" })}
+          <h2
+            id="application-version-heading"
+            className="text-base font-black rr-text-navy"
+          >
+            {t("versionUpdate.adminTitle", {
+              defaultValue: "Application Version",
+            })}
           </h2>
           <p className="mt-1 text-xs leading-5 rr-text-navy-muted">
             {t("versionUpdate.adminDescription", {
@@ -51,7 +61,9 @@ export default function ApplicationVersionDiagnosticsCard() {
       <dl className="mt-4 grid gap-2 text-sm">
         {[
           [
-            t("versionUpdate.deployedVersion", { defaultValue: "Deployed version" }),
+            t("versionUpdate.deployedVersion", {
+              defaultValue: "Deployed version",
+            }),
             shortVersion(diagnostics.detectedVersion),
           ],
           [
@@ -63,13 +75,17 @@ export default function ApplicationVersionDiagnosticsCard() {
             APP_WORKER_CACHE_NAME,
           ],
           [
-            t("versionUpdate.waitingWorker", { defaultValue: "Waiting worker" }),
+            t("versionUpdate.waitingWorker", {
+              defaultValue: "Waiting worker",
+            }),
             diagnostics.waitingWorker
               ? t("versionUpdate.yes", { defaultValue: "Yes" })
               : t("versionUpdate.no", { defaultValue: "No" }),
           ],
           [
-            t("versionUpdate.lastChecked", { defaultValue: "Last successful check" }),
+            t("versionUpdate.lastChecked", {
+              defaultValue: "Last successful check",
+            }),
             lastChecked,
           ],
         ].map(([label, value]) => (

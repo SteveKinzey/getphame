@@ -12,19 +12,35 @@ function compact(value: string) {
 }
 
 function escapeHtml(value: string) {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-export function sanitizeAdminMessage(input: { subject: string; bodyText: string }) {
+export function sanitizeAdminMessage(input: {
+  subject: string;
+  bodyText: string;
+}) {
   const subject = compact(input.subject);
   const bodyText = input.bodyText.trim();
-  if (!subject || subject.length > MAX_SUBJECT_CHARS) throw new Error(`Subject is required and must be ${MAX_SUBJECT_CHARS} characters or fewer.`);
-  if (!bodyText || bodyText.length > MAX_BODY_CHARS) throw new Error(`Message is required and must be ${MAX_BODY_CHARS.toLocaleString()} characters or fewer.`);
+  if (!subject || subject.length > MAX_SUBJECT_CHARS)
+    throw new Error(
+      `Subject is required and must be ${MAX_SUBJECT_CHARS} characters or fewer.`
+    );
+  if (!bodyText || bodyText.length > MAX_BODY_CHARS)
+    throw new Error(
+      `Message is required and must be ${MAX_BODY_CHARS.toLocaleString()} characters or fewer.`
+    );
   return { subject, bodyText };
 }
 
 export function buildSmtpOnboardingTemplate(recipientName?: string | null) {
-  const greeting = recipientName?.trim() ? `Hi ${recipientName.trim()},` : "Hi,";
+  const greeting = recipientName?.trim()
+    ? `Hi ${recipientName.trim()},`
+    : "Hi,";
   const subject = "Welcome to Get Phame — connect your sending email";
   const bodyText = `${greeting}
 
@@ -50,8 +66,13 @@ If you need help, reply to hello@getphame.app with your provider name. Do not in
   return { subject, bodyText, template: "smtp_onboarding" as const };
 }
 
-export async function sendAdminPlatformEmail(input: { to: string; subject: string; bodyText: string; replyTo?: string }) {
-  const hasSendGrid = !!(process.env.SENDGRID_API_KEY);
+export async function sendAdminPlatformEmail(input: {
+  to: string;
+  subject: string;
+  bodyText: string;
+  replyTo?: string;
+}) {
+  const hasSendGrid = !!process.env.SENDGRID_API_KEY;
   const smtpPort = Number.parseInt(process.env.SYSTEM_SMTP_PORT ?? "465", 10);
   const hasSystemSmtp = !!(
     process.env.SYSTEM_SMTP_HOST &&
@@ -59,7 +80,12 @@ export async function sendAdminPlatformEmail(input: { to: string; subject: strin
     process.env.SYSTEM_SMTP_PASS &&
     Number.isFinite(smtpPort)
   );
-  if (!hasSendGrid && !hasSystemSmtp) return { sent: false, providerMessageId: null, failureCode: "not_configured" };
+  if (!hasSendGrid && !hasSystemSmtp)
+    return {
+      sent: false,
+      providerMessageId: null,
+      failureCode: "not_configured",
+    };
   try {
     await sendSystemEmail({
       to: input.to,
@@ -71,7 +97,13 @@ export async function sendAdminPlatformEmail(input: { to: string; subject: strin
     });
     return { sent: true, providerMessageId: null, failureCode: null };
   } catch (error) {
-    console.warn("[AdminPlatformEmail] Provider delivery failed", { name: error instanceof Error ? error.name : "UnknownError" });
-    return { sent: false, providerMessageId: null, failureCode: "delivery_failed" };
+    console.warn("[AdminPlatformEmail] Provider delivery failed", {
+      name: error instanceof Error ? error.name : "UnknownError",
+    });
+    return {
+      sent: false,
+      providerMessageId: null,
+      failureCode: "delivery_failed",
+    };
   }
 }

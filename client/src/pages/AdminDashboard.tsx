@@ -98,17 +98,27 @@ function ConsentHealthBanner() {
   return (
     <div
       className="flex items-start gap-3 rounded-2xl px-4 py-3 mb-4"
-      style={{ background: "oklch(0.97 0.04 80)", border: "1px solid oklch(0.80 0.18 80)" }}
+      style={{
+        background: "oklch(0.97 0.04 80)",
+        border: "1px solid oklch(0.80 0.18 80)",
+      }}
       role="alert"
     >
-      <AlertTriangle size={18} style={{ color: "oklch(0.55 0.18 60)", flexShrink: 0, marginTop: 2 }} />
+      <AlertTriangle
+        size={18}
+        style={{ color: "oklch(0.55 0.18 60)", flexShrink: 0, marginTop: 2 }}
+      />
       <div className="min-w-0">
-        <p className="text-sm font-bold" style={{ color: "oklch(0.35 0.10 60)" }}>
+        <p
+          className="text-sm font-bold"
+          style={{ color: "oklch(0.35 0.10 60)" }}
+        >
           Low consent coverage — {Math.round(pct)}% of contacts have consented
         </p>
         <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.08 60)" }}>
-          {stats.consented} of {stats.total} contacts have given explicit consent.
-          Consider sending a bulk consent request to the remaining {stats.total - stats.consented} contacts.
+          {stats.consented} of {stats.total} contacts have given explicit
+          consent. Consider sending a bulk consent request to the remaining{" "}
+          {stats.total - stats.consented} contacts.
         </p>
       </div>
     </div>
@@ -117,15 +127,45 @@ function ConsentHealthBanner() {
 
 function ReleaseParityCard() {
   const { data, isLoading } = trpc.admin.releaseParity.useQuery();
-  const matched = data?.parityStatus === "matched" && data.protectedMainTree === data.managedTree;
+  const matched =
+    data?.parityStatus === "matched" &&
+    data.protectedMainTree === data.managedTree;
   return (
-    <section data-testid="release-parity-card" className="mb-4 rounded-2xl border p-4" style={{ borderColor: matched ? "oklch(0.76 0.12 145)" : "oklch(0.83 0.10 80)", background: matched ? "oklch(0.97 0.02 145)" : "oklch(0.98 0.02 80)" }}>
+    <section
+      data-testid="release-parity-card"
+      className="mb-4 rounded-2xl border p-4"
+      style={{
+        borderColor: matched ? "oklch(0.76 0.12 145)" : "oklch(0.83 0.10 80)",
+        background: matched ? "oklch(0.97 0.02 145)" : "oklch(0.98 0.02 80)",
+      }}
+    >
       <div className="flex items-start gap-3">
-        <GitBranch size={20} className={matched ? "rr-text-green" : "rr-text-gold"} aria-hidden="true" />
+        <GitBranch
+          size={20}
+          className={matched ? "rr-text-green" : "rr-text-gold"}
+          aria-hidden="true"
+        />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-black rr-text-navy">Release parity</p>
-          <p className="text-xs rr-text-navy-mid">{isLoading ? "Checking the latest release record…" : data ? matched ? "Main and live release match" : "Release record needs review" : "No verified release record yet"}</p>
-          {data && <div className="mt-2 grid gap-1 text-xs sm:grid-cols-2"><span className="font-mono rr-text-navy">Live: {data.checkpointId}</span><span className="font-mono rr-text-navy">Main: {data.protectedMainCommit.slice(0, 12)}</span></div>}
+          <p className="text-xs rr-text-navy-mid">
+            {isLoading
+              ? "Checking the latest release record…"
+              : data
+                ? matched
+                  ? "Main and live release match"
+                  : "Release record needs review"
+                : "No verified release record yet"}
+          </p>
+          {data && (
+            <div className="mt-2 grid gap-1 text-xs sm:grid-cols-2">
+              <span className="font-mono rr-text-navy">
+                Live: {data.checkpointId}
+              </span>
+              <span className="font-mono rr-text-navy">
+                Main: {data.protectedMainCommit.slice(0, 12)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -144,26 +184,106 @@ function RendererFailureTrendAlert() {
   const acknowledge = trpc.admin.acknowledgeRendererFailureAlert.useMutation({
     onSuccess: () => {
       void utils.admin.rendererFailureTrend.invalidate();
-      toast.success(t("adminRendererAcknowledgement.saved", { defaultValue: "Renderer alert acknowledged until newer evidence is recorded." }));
+      toast.success(
+        t("adminRendererAcknowledgement.saved", {
+          defaultValue:
+            "Renderer alert acknowledged until newer evidence is recorded.",
+        })
+      );
     },
-    onError: (error) => toast.error(error.message || t("adminRendererAcknowledgement.failed", { defaultValue: "The renderer alert could not be acknowledged." })),
+    onError: error =>
+      toast.error(
+        error.message ||
+          t("adminRendererAcknowledgement.failed", {
+            defaultValue: "The renderer alert could not be acknowledged.",
+          })
+      ),
   });
-  const leading = trend.data?.repeatSignals.find((signal) => !signal.acknowledged);
+  const leading = trend.data?.repeatSignals.find(
+    signal => !signal.acknowledged
+  );
   if (!leading) return null;
   return (
-    <section role="alert" className="rounded-2xl border px-4 py-4" style={{ borderColor: "oklch(0.76 0.12 27)", background: "oklch(0.98 0.025 27)" }} aria-labelledby="renderer-trend-alert-title">
+    <section
+      role="alert"
+      className="rounded-2xl border px-4 py-4"
+      style={{
+        borderColor: "oklch(0.76 0.12 27)",
+        background: "oklch(0.98 0.025 27)",
+      }}
+      aria-labelledby="renderer-trend-alert-title"
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-3">
-          <AlertTriangle size={20} className="mt-0.5 shrink-0" style={{ color: "oklch(0.48 0.17 27)" }} />
+          <AlertTriangle
+            size={20}
+            className="mt-0.5 shrink-0"
+            style={{ color: "oklch(0.48 0.17 27)" }}
+          />
           <div>
-            <h2 id="renderer-trend-alert-title" className="text-sm rr-fw-black rr-text-navy">{t("adminRendererTrend.title", { defaultValue: "Repeat email-preview renderer failures" })}</h2>
-            <p className="mt-1 text-sm font-bold rr-text-navy-muted">{t("adminRendererTrend.description", { defaultValue: "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.", count: leading.count, template: leading.templateKey, hours: trend.data?.windowHours ?? 168 })}</p>
-            <p className="mt-1 text-xs font-bold rr-text-navy-faint">{leading.viewportMode}{leading.darkMode ? " · dark" : ""} · {leading.errorCode}</p>
+            <h2
+              id="renderer-trend-alert-title"
+              className="text-sm rr-fw-black rr-text-navy"
+            >
+              {t("adminRendererTrend.title", {
+                defaultValue: "Repeat email-preview renderer failures",
+              })}
+            </h2>
+            <p className="mt-1 text-sm font-bold rr-text-navy-muted">
+              {t("adminRendererTrend.description", {
+                defaultValue:
+                  "{{count}} matching {{template}} failures occurred in the last {{hours}} hours. Review the sanitized history before the next release.",
+                count: leading.count,
+                template: leading.templateKey,
+                hours: trend.data?.windowHours ?? 168,
+              })}
+            </p>
+            <p className="mt-1 text-xs font-bold rr-text-navy-faint">
+              {leading.viewportMode}
+              {leading.darkMode ? " · dark" : ""} · {leading.errorCode}
+            </p>
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
-          <button type="button" onClick={() => navigate("/admin/audit-log")} className="inline-flex min-h-10 items-center justify-center rounded-lg bg-white px-3 text-xs font-black rr-text-navy" style={{ border: "1px solid oklch(0.82 0.10 27)" }}>{t("adminRendererTrend.review", { defaultValue: "Review history" })}</button>
-          <button type="button" disabled={acknowledge.isPending} onClick={() => acknowledge.mutate({ templateKey: leading.templateKey as "magic-link" | "welcome" | "upgrade-receipt-pro" | "upgrade-receipt-annual" | "upgrade-receipt-lifetime" | "account-deletion", viewportMode: leading.viewportMode as "desktop" | "mobile" | "split", darkMode: leading.darkMode, errorCode: "render_content_unavailable", latestOccurredAt: leading.latestOccurredAt })} className="inline-flex min-h-10 items-center justify-center rounded-lg rr-bg-navy px-3 text-xs font-black text-white disabled:opacity-60">{acknowledge.isPending ? <Loader2 size={14} className="animate-spin" /> : t("adminRendererAcknowledgement.action", { defaultValue: "Acknowledge" })}</button>
+          <button
+            type="button"
+            onClick={() => navigate("/admin/audit-log")}
+            className="inline-flex min-h-10 items-center justify-center rounded-lg bg-white px-3 text-xs font-black rr-text-navy"
+            style={{ border: "1px solid oklch(0.82 0.10 27)" }}
+          >
+            {t("adminRendererTrend.review", { defaultValue: "Review history" })}
+          </button>
+          <button
+            type="button"
+            disabled={acknowledge.isPending}
+            onClick={() =>
+              acknowledge.mutate({
+                templateKey: leading.templateKey as
+                  | "magic-link"
+                  | "welcome"
+                  | "upgrade-receipt-pro"
+                  | "upgrade-receipt-annual"
+                  | "upgrade-receipt-lifetime"
+                  | "account-deletion",
+                viewportMode: leading.viewportMode as
+                  | "desktop"
+                  | "mobile"
+                  | "split",
+                darkMode: leading.darkMode,
+                errorCode: "render_content_unavailable",
+                latestOccurredAt: leading.latestOccurredAt,
+              })
+            }
+            className="inline-flex min-h-10 items-center justify-center rounded-lg rr-bg-navy px-3 text-xs font-black text-white disabled:opacity-60"
+          >
+            {acknowledge.isPending ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              t("adminRendererAcknowledgement.action", {
+                defaultValue: "Acknowledge",
+              })
+            )}
+          </button>
         </div>
       </div>
     </section>
@@ -184,7 +304,12 @@ type RouteAuditDashboardResult = {
     evaluationError: boolean;
     consoleErrorCount: number;
     pageErrorCount: number;
-    rendered: { hasRoot: boolean; rootChildCount: number; textLength: number; title: string };
+    rendered: {
+      hasRoot: boolean;
+      rootChildCount: number;
+      textLength: number;
+      title: string;
+    };
   }>;
 };
 
@@ -198,78 +323,251 @@ function RouteAuditControl() {
       setResult(audit);
       void utils.admin.listRouteAuditRuns.invalidate();
       audit.failureCount === 0
-        ? toast.success(t("adminRouteAudit.passed", { defaultValue: "Production route audit passed." }))
-        : toast.error(t("adminRouteAudit.failed", { defaultValue: "Production route audit found issues." }));
+        ? toast.success(
+            t("adminRouteAudit.passed", {
+              defaultValue: "Production route audit passed.",
+            })
+          )
+        : toast.error(
+            t("adminRouteAudit.failed", {
+              defaultValue: "Production route audit found issues.",
+            })
+          );
     },
-    onError: error => toast.error(error.message || t("adminRouteAudit.runFailed", { defaultValue: "The production route audit could not run." })),
+    onError: error =>
+      toast.error(
+        error.message ||
+          t("adminRouteAudit.runFailed", {
+            defaultValue: "The production route audit could not run.",
+          })
+      ),
   });
   const hasFailures = (result?.failureCount ?? 0) > 0;
 
   return (
-    <section className="rounded-2xl border bg-white p-4 shadow-sm" style={{ borderColor: hasFailures ? "oklch(0.84 0.08 27)" : "oklch(0.88 0.03 260)" }} aria-labelledby="route-audit-title">
+    <section
+      className="rounded-2xl border bg-white p-4 shadow-sm"
+      style={{
+        borderColor: hasFailures
+          ? "oklch(0.84 0.08 27)"
+          : "oklch(0.88 0.03 260)",
+      }}
+      aria-labelledby="route-audit-title"
+    >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Activity size={21} /></span>
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+            <Activity size={21} />
+          </span>
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">{t("adminRouteAudit.eyebrow", { defaultValue: "Production assurance" })}</p>
-            <h2 id="route-audit-title" className="mt-0.5 text-xl font-black rr-text-navy">{t("adminRouteAudit.title", { defaultValue: "Production route audit" })}</h2>
-            <p className="mt-1 max-w-2xl text-sm font-semibold rr-text-navy-muted">{t("adminRouteAudit.description", { defaultValue: "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched." })}</p>
+            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">
+              {t("adminRouteAudit.eyebrow", {
+                defaultValue: "Production assurance",
+              })}
+            </p>
+            <h2
+              id="route-audit-title"
+              className="mt-0.5 text-xl font-black rr-text-navy"
+            >
+              {t("adminRouteAudit.title", {
+                defaultValue: "Production route audit",
+              })}
+            </h2>
+            <p className="mt-1 max-w-2xl text-sm font-semibold rr-text-navy-muted">
+              {t("adminRouteAudit.description", {
+                defaultValue:
+                  "Safely checks public sitemap routes for browser-rendering errors. No accounts, forms, or customer data are touched.",
+              })}
+            </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2 sm:justify-end">
-          <button type="button" onClick={() => runRouteAudit.mutate()} disabled={runRouteAudit.isPending} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:cursor-wait disabled:opacity-60">
-            {runRouteAudit.isPending ? <Loader2 size={16} className="animate-spin" /> : <Activity size={16} />}
-            {runRouteAudit.isPending ? t("adminRouteAudit.running", { defaultValue: "Auditing routes…" }) : t("adminRouteAudit.run", { defaultValue: "Run route audit" })}
+          <button
+            type="button"
+            onClick={() => runRouteAudit.mutate()}
+            disabled={runRouteAudit.isPending}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:cursor-wait disabled:opacity-60"
+          >
+            {runRouteAudit.isPending ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Activity size={16} />
+            )}
+            {runRouteAudit.isPending
+              ? t("adminRouteAudit.running", {
+                  defaultValue: "Auditing routes…",
+                })
+              : t("adminRouteAudit.run", { defaultValue: "Run route audit" })}
           </button>
-          <button type="button" onClick={() => navigate("/admin/audit-log")} className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-black rr-text-navy" style={{ borderColor: "oklch(0.84 0.04 260)" }}>
+          <button
+            type="button"
+            onClick={() => navigate("/admin/audit-log")}
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-black rr-text-navy"
+            style={{ borderColor: "oklch(0.84 0.04 260)" }}
+          >
             {t("adminRouteAudit.viewHistory", { defaultValue: "View history" })}
           </button>
-          <button type="button" onClick={() => navigate("/admin/audit-retention")} className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-black rr-text-navy" style={{ borderColor: "oklch(0.84 0.04 260)" }}>
-            {t("adminAuditLog.retention", { defaultValue: "Retention settings" })}
+          <button
+            type="button"
+            onClick={() => navigate("/admin/audit-retention")}
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-4 text-sm font-black rr-text-navy"
+            style={{ borderColor: "oklch(0.84 0.04 260)" }}
+          >
+            {t("adminAuditLog.retention", {
+              defaultValue: "Retention settings",
+            })}
           </button>
         </div>
       </div>
 
-      {(runRouteAudit.isPending || result) && <div role={hasFailures ? "alert" : "status"} aria-live="polite" className="mt-4 rounded-xl p-3" style={{ background: runRouteAudit.isPending ? "oklch(0.98 0.03 80)" : hasFailures ? "oklch(0.97 0.03 27)" : "oklch(0.95 0.04 145)" }}>
-        {runRouteAudit.isPending ? <p className="flex items-center gap-2 text-sm font-black rr-text-navy"><Loader2 size={16} className="animate-spin" />{t("adminRouteAudit.runningDescription", { defaultValue: "Launching a clean browser for the current public sitemap. This can take up to two minutes." })}</p> : result && <>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="flex items-center gap-2 text-sm font-black" style={{ color: hasFailures ? "oklch(0.46 0.12 27)" : "oklch(0.40 0.14 145)" }}>{hasFailures ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}{result.runnerErrorCode ? t("adminRouteAudit.unavailable", { defaultValue: "Audit runner unavailable" }) : hasFailures ? t("adminRouteAudit.completedWithIssues", { defaultValue: "Audit completed with issues" }) : t("adminRouteAudit.completed", { defaultValue: "Audit completed successfully" })}</p>
-            <span className="text-xs font-black rr-text-navy-muted">{result.durationMs.toLocaleString()} ms</span>
-          </div>
-          <p className="mt-1 text-xs font-bold rr-text-navy-muted">{result.runnerErrorCode ? `${t("adminRouteAudit.failureCode", { defaultValue: "Failure code" })}: ${result.runnerErrorCode}` : t("adminRouteAudit.summary", { defaultValue: "{{routes}} routes audited · {{failures}} failures", routes: result.auditedRoutes, failures: result.failureCount })}</p>
-          {result.findings.length > 0 && <ul className="mt-3 space-y-1.5" aria-label={t("adminRouteAudit.resultRoutes", { defaultValue: "Audited routes" })}>{result.findings.map(finding => {
-            const failed = finding.navigationError || finding.evaluationError || (finding.status ?? 0) >= 400 || finding.consoleErrorCount > 0 || finding.pageErrorCount > 0 || finding.rendered.textLength === 0;
-            return <li key={finding.route} className="flex items-center justify-between gap-3 rounded-lg bg-white/70 px-2.5 py-2 text-xs font-bold rr-text-navy"><span className="truncate">{finding.route}</span><span className={failed ? "text-red-700" : "text-emerald-700"}>{failed ? t("adminRouteAudit.issue", { defaultValue: "Needs review" }) : `${finding.status ?? 200} · ${t("adminRouteAudit.rendered", { defaultValue: "Rendered" })}`}</span></li>;
-          })}</ul>}
-        </>}
-      </div>}
+      {(runRouteAudit.isPending || result) && (
+        <div
+          role={hasFailures ? "alert" : "status"}
+          aria-live="polite"
+          className="mt-4 rounded-xl p-3"
+          style={{
+            background: runRouteAudit.isPending
+              ? "oklch(0.98 0.03 80)"
+              : hasFailures
+                ? "oklch(0.97 0.03 27)"
+                : "oklch(0.95 0.04 145)",
+          }}
+        >
+          {runRouteAudit.isPending ? (
+            <p className="flex items-center gap-2 text-sm font-black rr-text-navy">
+              <Loader2 size={16} className="animate-spin" />
+              {t("adminRouteAudit.runningDescription", {
+                defaultValue:
+                  "Launching a clean browser for the current public sitemap. This can take up to two minutes.",
+              })}
+            </p>
+          ) : (
+            result && (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p
+                    className="flex items-center gap-2 text-sm font-black"
+                    style={{
+                      color: hasFailures
+                        ? "oklch(0.46 0.12 27)"
+                        : "oklch(0.40 0.14 145)",
+                    }}
+                  >
+                    {hasFailures ? (
+                      <AlertTriangle size={16} />
+                    ) : (
+                      <CheckCircle2 size={16} />
+                    )}
+                    {result.runnerErrorCode
+                      ? t("adminRouteAudit.unavailable", {
+                          defaultValue: "Audit runner unavailable",
+                        })
+                      : hasFailures
+                        ? t("adminRouteAudit.completedWithIssues", {
+                            defaultValue: "Audit completed with issues",
+                          })
+                        : t("adminRouteAudit.completed", {
+                            defaultValue: "Audit completed successfully",
+                          })}
+                  </p>
+                  <span className="text-xs font-black rr-text-navy-muted">
+                    {result.durationMs.toLocaleString()} ms
+                  </span>
+                </div>
+                <p className="mt-1 text-xs font-bold rr-text-navy-muted">
+                  {result.runnerErrorCode
+                    ? `${t("adminRouteAudit.failureCode", { defaultValue: "Failure code" })}: ${result.runnerErrorCode}`
+                    : t("adminRouteAudit.summary", {
+                        defaultValue:
+                          "{{routes}} routes audited · {{failures}} failures",
+                        routes: result.auditedRoutes,
+                        failures: result.failureCount,
+                      })}
+                </p>
+                {result.findings.length > 0 && (
+                  <ul
+                    className="mt-3 space-y-1.5"
+                    aria-label={t("adminRouteAudit.resultRoutes", {
+                      defaultValue: "Audited routes",
+                    })}
+                  >
+                    {result.findings.map(finding => {
+                      const failed =
+                        finding.navigationError ||
+                        finding.evaluationError ||
+                        (finding.status ?? 0) >= 400 ||
+                        finding.consoleErrorCount > 0 ||
+                        finding.pageErrorCount > 0 ||
+                        finding.rendered.textLength === 0;
+                      return (
+                        <li
+                          key={finding.route}
+                          className="flex items-center justify-between gap-3 rounded-lg bg-white/70 px-2.5 py-2 text-xs font-bold rr-text-navy"
+                        >
+                          <span className="truncate">{finding.route}</span>
+                          <span
+                            className={
+                              failed ? "text-red-700" : "text-emerald-700"
+                            }
+                          >
+                            {failed
+                              ? t("adminRouteAudit.issue", {
+                                  defaultValue: "Needs review",
+                                })
+                              : `${finding.status ?? 200} · ${t("adminRouteAudit.rendered", { defaultValue: "Rendered" })}`}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
+            )
+          )}
+        </div>
+      )}
     </section>
   );
 }
 
-
 function LeadsSection() {
   const { data: leads, isLoading } = trpc.admin.listLeads.useQuery();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "consented" | "no-consent" | "unsubscribed">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "consented" | "no-consent" | "unsubscribed"
+  >("all");
 
   const total = leads?.length ?? 0;
-  const consented = leads?.filter((l) => l.consentGivenAt).length ?? 0;
+  const consented = leads?.filter(l => l.consentGivenAt).length ?? 0;
 
-  const filtered = (leads ?? []).filter((l) => {
-    const matchesSearch = !search || l.email.toLowerCase().includes(search.toLowerCase());
+  const filtered = (leads ?? []).filter(l => {
+    const matchesSearch =
+      !search || l.email.toLowerCase().includes(search.toLowerCase());
     const matchesStatus =
-      statusFilter === "all" ? true :
-      statusFilter === "consented" ? !!l.consentGivenAt :
-      statusFilter === "no-consent" ? !l.consentGivenAt && !l.unsubscribedAt :
-      statusFilter === "unsubscribed" ? !!l.unsubscribedAt : true;
+      statusFilter === "all"
+        ? true
+        : statusFilter === "consented"
+          ? !!l.consentGivenAt
+          : statusFilter === "no-consent"
+            ? !l.consentGivenAt && !l.unsubscribedAt
+            : statusFilter === "unsubscribed"
+              ? !!l.unsubscribedAt
+              : true;
     return matchesSearch && matchesStatus;
   });
 
   const handleExportCsv = () => {
     const rows = [
-      ["Email", "Consent Given", "Consent Date", "Unsubscribed", "Unsubscribed Date", "Unsub Reason", "Joined"],
-      ...filtered.map((l) => [
+      [
+        "Email",
+        "Consent Given",
+        "Consent Date",
+        "Unsubscribed",
+        "Unsubscribed Date",
+        "Unsub Reason",
+        "Joined",
+      ],
+      ...filtered.map(l => [
         l.email,
         l.consentGivenAt ? "Yes" : "No",
         l.consentGivenAt ? new Date(l.consentGivenAt).toLocaleDateString() : "",
@@ -279,7 +577,9 @@ function LeadsSection() {
         new Date(l.createdAt).toLocaleDateString(),
       ]),
     ];
-    const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = rows
+      .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -291,7 +591,10 @@ function LeadsSection() {
   };
 
   return (
-    <section className="rounded-2xl bg-white p-4 shadow-sm" aria-labelledby="leads-section-title">
+    <section
+      className="rounded-2xl bg-white p-4 shadow-sm"
+      aria-labelledby="leads-section-title"
+    >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-start gap-3">
@@ -299,9 +602,18 @@ function LeadsSection() {
             <Mail size={21} />
           </span>
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">Lead Capture</p>
-            <h2 id="leads-section-title" className="text-base font-black rr-text-navy">Email Subscribers</h2>
-            <p className="text-xs rr-text-navy-muted mt-0.5">{total} total · {consented} with consent · {filtered.length} shown</p>
+            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">
+              Lead Capture
+            </p>
+            <h2
+              id="leads-section-title"
+              className="text-base font-black rr-text-navy"
+            >
+              Email Subscribers
+            </h2>
+            <p className="text-xs rr-text-navy-muted mt-0.5">
+              {total} total · {consented} with consent · {filtered.length} shown
+            </p>
           </div>
         </div>
         {/* Export CSV button */}
@@ -321,24 +633,36 @@ function LeadsSection() {
       {/* Search + Filter row */}
       <div className="flex flex-wrap gap-2 mb-4">
         <div className="relative flex-1 min-w-[180px]">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 rr-text-navy-muted pointer-events-none" />
+          <Search
+            size={13}
+            className="absolute left-3 top-1/2 -translate-y-1/2 rr-text-navy-muted pointer-events-none"
+          />
           <input
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
             placeholder="Search by email…"
             className="w-full pl-8 pr-3 py-2 rounded-xl text-xs font-medium outline-none"
-            style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "oklch(0.975 0.003 100)" }}
-            onFocus={(e) => (e.target.style.borderColor = "oklch(0.22 0.09 260)")}
-            onBlur={(e) => (e.target.style.borderColor = "oklch(0.88 0.02 260)")}
-           name="rr-pages-admin-dashboard-search-324" />
+            style={{
+              border: "1.5px solid oklch(0.88 0.02 260)",
+              background: "oklch(0.975 0.003 100)",
+            }}
+            onFocus={e => (e.target.style.borderColor = "oklch(0.22 0.09 260)")}
+            onBlur={e => (e.target.style.borderColor = "oklch(0.88 0.02 260)")}
+            name="rr-pages-admin-dashboard-search-324"
+          />
         </div>
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+          onChange={e => setStatusFilter(e.target.value as typeof statusFilter)}
           className="px-3 py-2 rounded-xl text-xs font-bold outline-none cursor-pointer"
-          style={{ border: "1.5px solid oklch(0.88 0.02 260)", background: "oklch(0.975 0.003 100)", color: "oklch(0.22 0.09 260)" }}
-         name="rr-pages-admin-dashboard-status-filter-335">
+          style={{
+            border: "1.5px solid oklch(0.88 0.02 260)",
+            background: "oklch(0.975 0.003 100)",
+            color: "oklch(0.22 0.09 260)",
+          }}
+          name="rr-pages-admin-dashboard-status-filter-335"
+        >
           <option value="all">All statuses</option>
           <option value="consented">Consented</option>
           <option value="no-consent">No consent</option>
@@ -347,49 +671,100 @@ function LeadsSection() {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-8"><Loader2 size={20} className="animate-spin rr-text-navy-muted" /></div>
+        <div className="flex items-center justify-center py-8">
+          <Loader2 size={20} className="animate-spin rr-text-navy-muted" />
+        </div>
       ) : filtered.length === 0 ? (
-        <p className="text-sm rr-text-navy-muted text-center py-6">{total === 0 ? "No leads yet." : "No leads match your filter."}</p>
+        <p className="text-sm rr-text-navy-muted text-center py-6">
+          {total === 0 ? "No leads yet." : "No leads match your filter."}
+        </p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
-                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Email</th>
-                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Consent</th>
-                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Status</th>
-                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Reason</th>
-                <th className="text-left py-2 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Joined</th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+                  Email
+                </th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+                  Consent
+                </th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+                  Status
+                </th>
+                <th className="text-left py-2 pr-4 text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+                  Reason
+                </th>
+                <th className="text-left py-2 text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+                  Joined
+                </th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((lead) => (
-                <tr key={lead.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                  <td className="py-2 pr-4 font-medium rr-text-navy truncate max-w-[200px]">{lead.email}</td>
+              {filtered.map(lead => (
+                <tr
+                  key={lead.id}
+                  className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                >
+                  <td className="py-2 pr-4 font-medium rr-text-navy truncate max-w-[200px]">
+                    {lead.email}
+                  </td>
                   <td className="py-2 pr-4">
                     {lead.consentGivenAt ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.08 145)", color: "oklch(0.35 0.12 145)" }} title={`Consent given on ${new Date(lead.consentGivenAt).toLocaleString()}`}>
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
+                        style={{
+                          background: "oklch(0.94 0.08 145)",
+                          color: "oklch(0.35 0.12 145)",
+                        }}
+                        title={`Consent given on ${new Date(lead.consentGivenAt).toLocaleString()}`}
+                      >
                         <ShieldCheck size={11} /> Consented
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "oklch(0.94 0.02 260)", color: "oklch(0.55 0.04 260)" }}>
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
+                        style={{
+                          background: "oklch(0.94 0.02 260)",
+                          color: "oklch(0.55 0.04 260)",
+                        }}
+                      >
                         <ShieldOff size={11} /> No consent
                       </span>
                     )}
                   </td>
                   <td className="py-2 pr-4">
                     {lead.unsubscribedAt ? (
-                      <span className="text-xs font-semibold" style={{ color: "oklch(0.55 0.12 30)" }}>Unsubscribed</span>
+                      <span
+                        className="text-xs font-semibold"
+                        style={{ color: "oklch(0.55 0.12 30)" }}
+                      >
+                        Unsubscribed
+                      </span>
                     ) : (
-                      <span className="text-xs font-semibold" style={{ color: "oklch(0.45 0.15 145)" }}>Active</span>
+                      <span
+                        className="text-xs font-semibold"
+                        style={{ color: "oklch(0.45 0.15 145)" }}
+                      >
+                        Active
+                      </span>
                     )}
                   </td>
                   <td className="py-2 pr-4 text-xs rr-text-navy-muted">
-                    {(lead as any).unsubscribeReason
-                      ? <span className="italic">{String((lead as any).unsubscribeReason).replace(/_/g, ' ')}</span>
-                      : <span className="text-gray-300">—</span>}
+                    {(lead as any).unsubscribeReason ? (
+                      <span className="italic">
+                        {String((lead as any).unsubscribeReason).replace(
+                          /_/g,
+                          " "
+                        )}
+                      </span>
+                    ) : (
+                      <span className="text-gray-300">—</span>
+                    )}
                   </td>
-                  <td className="py-2 text-xs rr-text-navy-muted">{new Date(lead.createdAt).toLocaleDateString()}</td>
+                  <td className="py-2 text-xs rr-text-navy-muted">
+                    {new Date(lead.createdAt).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -940,19 +1315,19 @@ export default function AdminDashboard() {
                     Icon: TrendingUp,
                   },
                   {
-                   path: "/admin/smtp-stats",
-                   label: "SMTP health",
-                   detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
-                   Icon: Wifi,
-                 },
-                 {
-                   path: "/admin/stripe-status",
-                   label: "Stripe status",
-                   detail: stripeStatus?.configured
-                     ? `${stripeStatus.mode?.toUpperCase() ?? "?"} mode · webhook ${stripeStatus.webhookStatus ?? "unknown"}`
-                     : "Not configured",
-                   Icon: CreditCard,
-                 },
+                    path: "/admin/smtp-stats",
+                    label: "SMTP health",
+                    detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`,
+                    Icon: Wifi,
+                  },
+                  {
+                    path: "/admin/stripe-status",
+                    label: "Stripe status",
+                    detail: stripeStatus?.configured
+                      ? `${stripeStatus.mode?.toUpperCase() ?? "?"} mode · webhook ${stripeStatus.webhookStatus ?? "unknown"}`
+                      : "Not configured",
+                    Icon: CreditCard,
+                  },
                   {
                     path: "/admin/codes",
                     label: "System access codes",
@@ -1257,7 +1632,8 @@ export default function AdminDashboard() {
                           setOnboardingFunnelStartDate(event.target.value)
                         }
                         className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
-                       name="rr-pages-admin-dashboard-onboarding-funnel-start-date-1252" />
+                        name="rr-pages-admin-dashboard-onboarding-funnel-start-date-1252"
+                      />
                     </label>
                     <label className="text-xs font-semibold text-slate-700">
                       End date
@@ -1268,7 +1644,8 @@ export default function AdminDashboard() {
                           setOnboardingFunnelEndDate(event.target.value)
                         }
                         className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm"
-                       name="rr-pages-admin-dashboard-onboarding-funnel-end-date-1263" />
+                        name="rr-pages-admin-dashboard-onboarding-funnel-end-date-1263"
+                      />
                     </label>
                     {!onboardingFunnelRangeValid && (
                       <p className="sm:col-span-2 text-xs font-semibold text-rose-700">
@@ -1717,8 +2094,8 @@ export default function AdminDashboard() {
                 !stripeStatus?.configured
                   ? "border-gray-200 bg-gray-50"
                   : stripeStatus.webhookStatus === "enabled"
-                  ? "border-emerald-200 bg-emerald-50"
-                  : "border-amber-200 bg-amber-50"
+                    ? "border-emerald-200 bg-emerald-50"
+                    : "border-amber-200 bg-amber-50"
               }`}
               aria-labelledby="stripe-status-title"
             >
@@ -1728,8 +2105,8 @@ export default function AdminDashboard() {
                     !stripeStatus?.configured
                       ? "bg-gray-400"
                       : stripeStatus.webhookStatus === "enabled"
-                      ? "bg-emerald-700"
-                      : "bg-amber-600"
+                        ? "bg-emerald-700"
+                        : "bg-amber-600"
                   }`}
                 >
                   <CreditCard size={22} />
@@ -1741,8 +2118,8 @@ export default function AdminDashboard() {
                       !stripeStatus?.configured
                         ? "text-gray-500"
                         : stripeStatus.webhookStatus === "enabled"
-                        ? "text-emerald-800"
-                        : "text-amber-700"
+                          ? "text-emerald-800"
+                          : "text-amber-700"
                     }`}
                   >
                     Stripe payment integration
@@ -1751,36 +2128,50 @@ export default function AdminDashboard() {
                     <p className="mt-1 text-sm text-gray-400">Loading…</p>
                   ) : !stripeStatus.configured ? (
                     <p className="mt-1 text-sm font-semibold text-gray-600">
-                      No Stripe key configured. Add <code className="rounded bg-gray-200 px-1 text-xs">STRIPE_SECRET_KEY</code> to activate payments.
+                      No Stripe key configured. Add{" "}
+                      <code className="rounded bg-gray-200 px-1 text-xs">
+                        STRIPE_SECRET_KEY
+                      </code>{" "}
+                      to activate payments.
                     </p>
                   ) : (
                     <div className="mt-1 space-y-1">
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm font-semibold">
                         <span>
                           Mode:{" "}
-                          <span className={`font-black ${stripeStatus.mode === "live" ? "text-emerald-700" : "text-amber-700"}`}>
+                          <span
+                            className={`font-black ${stripeStatus.mode === "live" ? "text-emerald-700" : "text-amber-700"}`}
+                          >
                             {stripeStatus.mode?.toUpperCase() ?? "—"}
                           </span>
                         </span>
                         <span>
                           Webhook:{" "}
-                          <span className={`font-black ${stripeStatus.webhookStatus === "enabled" ? "text-emerald-700" : "text-red-600"}`}>
+                          <span
+                            className={`font-black ${stripeStatus.webhookStatus === "enabled" ? "text-emerald-700" : "text-red-600"}`}
+                          >
                             {stripeStatus.webhookStatus ?? "unknown"}
                           </span>
                         </span>
                         <span>
                           Secret:{" "}
-                          <span className={`font-black ${stripeStatus.webhookSecretSet ? "text-emerald-700" : "text-red-600"}`}>
+                          <span
+                            className={`font-black ${stripeStatus.webhookSecretSet ? "text-emerald-700" : "text-red-600"}`}
+                          >
                             {stripeStatus.webhookSecretSet ? "set" : "missing"}
                           </span>
                         </span>
                       </div>
                       {stripeStatus.webhookUrl && (
-                        <p className="truncate text-xs text-gray-500">{stripeStatus.webhookUrl}</p>
+                        <p className="truncate text-xs text-gray-500">
+                          {stripeStatus.webhookUrl}
+                        </p>
                       )}
                       {stripeStatus.events.length > 0 && (
                         <p className="text-xs text-gray-400">
-                          {stripeStatus.events.length} event{stripeStatus.events.length !== 1 ? "s" : ""} subscribed
+                          {stripeStatus.events.length} event
+                          {stripeStatus.events.length !== 1 ? "s" : ""}{" "}
+                          subscribed
                         </p>
                       )}
                     </div>
@@ -1947,7 +2338,8 @@ export default function AdminDashboard() {
                         setSupportReportEndDate("");
                       }}
                       className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-                     name="rr-pages-admin-dashboard-support-reporting-period-1938">
+                      name="rr-pages-admin-dashboard-support-reporting-period-1938"
+                    >
                       <option value="7">Last 7 days</option>
                       <option value="30">Last 30 days</option>
                       <option value="90">Last 90 days</option>
@@ -1967,7 +2359,8 @@ export default function AdminDashboard() {
                           setSupportReportStartDate(event.target.value)
                         }
                         className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-                       name="rr-pages-admin-dashboard-support-report-start-date-1960" />
+                        name="rr-pages-admin-dashboard-support-report-start-date-1960"
+                      />
                     </label>
                     <label className="text-xs font-black rr-text-navy">
                       <span className="mb-1 block">To</span>
@@ -1979,7 +2372,8 @@ export default function AdminDashboard() {
                           setSupportReportEndDate(event.target.value)
                         }
                         className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-                       name="rr-pages-admin-dashboard-support-report-end-date-1972" />
+                        name="rr-pages-admin-dashboard-support-report-end-date-1972"
+                      />
                     </label>
                   </div>
                   <p className="max-w-xs text-xs font-medium rr-text-navy-muted">
@@ -2250,7 +2644,8 @@ export default function AdminDashboard() {
                     background: "oklch(0.97 0.003 260)",
                     border: "1px solid oklch(0.88 0.02 260)",
                   }}
-                 name="rr-pages-admin-dashboard-search-input-2241" />
+                  name="rr-pages-admin-dashboard-search-input-2241"
+                />
                 {searchInput && (
                   <button
                     onClick={() => setSearchInput("")}

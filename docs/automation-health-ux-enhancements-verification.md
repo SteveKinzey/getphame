@@ -6,12 +6,12 @@ The enhanced Activity Trend dashboard and administrator Automation Health page w
 
 ## Confirmed findings
 
-| Surface | Desktop | Mobile |
-| --- | --- | --- |
-| Activity Trend export filters | Spanish rendered all three selected series, count text, CSV/PNG actions, and unchanged chart within the content width. | Simplified Chinese rendered the full control set in two compact rows with no horizontal overflow; touch targets remained distinct and the chart stayed contained. |
-| Automation Health filters | English rendered preset and custom date controls plus event/result selects in one responsive row. | English, Spanish, and Simplified Chinese stacked all filters without clipping or horizontal overflow. |
-| Automation Health charts | English rendered both charts, interaction guidance, legends, and adjacent range summaries in balanced columns. | All three locales stacked chart panels cleanly; interaction guidance, legends, and summaries remained readable below each chart. |
-| Localization | English, Spanish, and Simplified Chinese labels fit their controls and cards without truncation on the fully loaded captures. | Spanish and Simplified Chinese headings, filters, chart guidance, empty states, and summaries remained readable at 375 px. |
+| Surface                       | Desktop                                                                                                                       | Mobile                                                                                                                                                            |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Activity Trend export filters | Spanish rendered all three selected series, count text, CSV/PNG actions, and unchanged chart within the content width.        | Simplified Chinese rendered the full control set in two compact rows with no horizontal overflow; touch targets remained distinct and the chart stayed contained. |
+| Automation Health filters     | English rendered preset and custom date controls plus event/result selects in one responsive row.                             | English, Spanish, and Simplified Chinese stacked all filters without clipping or horizontal overflow.                                                             |
+| Automation Health charts      | English rendered both charts, interaction guidance, legends, and adjacent range summaries in balanced columns.                | All three locales stacked chart panels cleanly; interaction guidance, legends, and summaries remained readable below each chart.                                  |
+| Localization                  | English, Spanish, and Simplified Chinese labels fit their controls and cards without truncation on the fully loaded captures. | Spanish and Simplified Chinese headings, filters, chart guidance, empty states, and summaries remained readable at 375 px.                                        |
 
 ## Pending isolated recaptures
 

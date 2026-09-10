@@ -6,7 +6,7 @@ const claimWordPressPairingMock = vi.hoisted(() => vi.fn());
 const initiateWordPressPairingMock = vi.hoisted(() => vi.fn());
 const checkWordPressPairingStartRateLimitMock = vi.hoisted(() => vi.fn());
 
-vi.mock("./wordpressPairing", async (importOriginal) => {
+vi.mock("./wordpressPairing", async importOriginal => {
   const actual = await importOriginal<typeof import("./wordpressPairing")>();
   return {
     ...actual,
@@ -26,7 +26,10 @@ describe("WordPress pairing public API security", () => {
   beforeEach(() => {
     claimWordPressPairingMock.mockReset();
     claimWordPressPairingMock.mockRejectedValue(
-      new WordPressPairingError("NOT_FOUND", "This WordPress connection request was not found."),
+      new WordPressPairingError(
+        "NOT_FOUND",
+        "This WordPress connection request was not found."
+      )
     );
     initiateWordPressPairingMock.mockReset();
     checkWordPressPairingStartRateLimitMock.mockReset();
@@ -83,7 +86,10 @@ describe("WordPress pairing public API security", () => {
 
     const response = await request(app)
       .post("/api/v1/wordpress/pairings")
-      .send({ siteUrl: "https://rate-limit-smoke.invalid", siteLabel: "Release smoke" });
+      .send({
+        siteUrl: "https://rate-limit-smoke.invalid",
+        siteLabel: "Release smoke",
+      });
 
     expect(response.status).toBe(429);
     expect(response.headers["cache-control"]).toBe("no-store");
@@ -96,20 +102,26 @@ describe("WordPress pairing public API security", () => {
   });
 
   it("fails closed without creating a pairing when the shared limiter is unavailable", async () => {
-    checkWordPressPairingStartRateLimitMock.mockRejectedValue(new Error("Database unavailable"));
+    checkWordPressPairingStartRateLimitMock.mockRejectedValue(
+      new Error("Database unavailable")
+    );
     const app = express();
     app.use(express.json());
     registerPublicApiRoutes(app);
 
     const response = await request(app)
       .post("/api/v1/wordpress/pairings")
-      .send({ siteUrl: "https://limiter-unavailable.invalid", siteLabel: "Release smoke" });
+      .send({
+        siteUrl: "https://limiter-unavailable.invalid",
+        siteLabel: "Release smoke",
+      });
 
     expect(response.status).toBe(503);
     expect(response.headers["cache-control"]).toBe("no-store");
     expect(response.headers["retry-after"]).toBe("30");
     expect(response.body).toEqual({
-      error: "WordPress connections are temporarily unavailable. Try again shortly.",
+      error:
+        "WordPress connections are temporarily unavailable. Try again shortly.",
     });
     expect(initiateWordPressPairingMock).not.toHaveBeenCalled();
   });

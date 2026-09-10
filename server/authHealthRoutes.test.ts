@@ -9,11 +9,16 @@ const mocks = vi.hoisted(() => ({
   runAuthHealthCheck: vi.fn(),
 }));
 
-vi.mock("./_core/sdk", () => ({ sdk: { authenticateRequest: mocks.authenticateRequest } }));
+vi.mock("./_core/sdk", () => ({
+  sdk: { authenticateRequest: mocks.authenticateRequest },
+}));
 vi.mock("./_core/notification", () => ({ notifyOwner: mocks.notifyOwner }));
-vi.mock("./db", () => ({ listAuthHealthChecksByTaskUid: mocks.listAuthHealthChecksByTaskUid }));
+vi.mock("./db", () => ({
+  listAuthHealthChecksByTaskUid: mocks.listAuthHealthChecksByTaskUid,
+}));
 vi.mock("./authOperations", () => ({
-  redactAuthDiagnosticDetail: (error: unknown) => String(error).replace(/secret/gi, "[redacted]"),
+  redactAuthDiagnosticDetail: (error: unknown) =>
+    String(error).replace(/secret/gi, "[redacted]"),
   runAuthHealthCheck: mocks.runAuthHealthCheck,
 }));
 
@@ -32,7 +37,10 @@ describe("scheduled authentication health callback", () => {
   });
 
   it("rejects normal user sessions", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: false, taskUid: null });
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: false,
+      taskUid: null,
+    });
     const response = await request(buildApp()).post("/internal/auth-health");
     expect(response.status).toBe(403);
     expect(response.body).toEqual({ error: "cron-only" });
@@ -40,17 +48,29 @@ describe("scheduled authentication health callback", () => {
   });
 
   it("deduplicates platform retries for the same task identity", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "task-1" });
-    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([{ overallStatus: "ok", checkedAt: Date.now() }]);
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "task-1",
+    });
+    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([
+      { overallStatus: "ok", checkedAt: Date.now() },
+    ]);
     const response = await request(buildApp()).post("/internal/auth-health");
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({ ok: true, skipped: "recent-check-exists", status: "ok" });
+    expect(response.body).toMatchObject({
+      ok: true,
+      skipped: "recent-check-exists",
+      status: "ok",
+    });
     expect(mocks.runAuthHealthCheck).not.toHaveBeenCalled();
     expect(mocks.notifyOwner).not.toHaveBeenCalled();
   });
 
   it("runs the scheduled check with the authenticated cron task UID", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "task-2" });
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "task-2",
+    });
     mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([]);
     mocks.runAuthHealthCheck.mockResolvedValue({
       overallStatus: "ok",
@@ -66,7 +86,12 @@ describe("scheduled authentication health callback", () => {
     });
     const response = await request(buildApp()).post("/internal/auth-health");
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({ ok: true, status: "ok", checkedAt: 5678, durationMs: 42 });
+    expect(response.body).toMatchObject({
+      ok: true,
+      status: "ok",
+      checkedAt: 5678,
+      durationMs: 42,
+    });
     expect(mocks.runAuthHealthCheck).toHaveBeenCalledWith({
       triggerSource: "scheduled",
       scheduleCronTaskUid: "task-2",
@@ -75,8 +100,13 @@ describe("scheduled authentication health callback", () => {
   });
 
   it("sends one privacy-safe alert on the first failed scheduled run", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "task-fail" });
-    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([{ overallStatus: "ok", checkedAt: 1 }]);
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "task-fail",
+    });
+    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([
+      { overallStatus: "ok", checkedAt: 1 },
+    ]);
     mocks.runAuthHealthCheck.mockResolvedValue({
       overallStatus: "fail",
       configStatus: "ok",
@@ -93,7 +123,11 @@ describe("scheduled authentication health callback", () => {
     const response = await request(buildApp()).post("/internal/auth-health");
 
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({ ok: false, status: "fail", alert: "failure" });
+    expect(response.body).toMatchObject({
+      ok: false,
+      status: "fail",
+      alert: "failure",
+    });
     expect(mocks.notifyOwner).toHaveBeenCalledOnce();
     const notification = mocks.notifyOwner.mock.calls[0][0];
     expect(notification.title).toContain("health alert");
@@ -103,8 +137,13 @@ describe("scheduled authentication health callback", () => {
   });
 
   it("suppresses alerts while the same failure remains open", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "task-open-failure" });
-    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([{ overallStatus: "fail", checkedAt: 1 }]);
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "task-open-failure",
+    });
+    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([
+      { overallStatus: "fail", checkedAt: 1 },
+    ]);
     mocks.runAuthHealthCheck.mockResolvedValue({
       overallStatus: "fail",
       configStatus: "ok",
@@ -125,8 +164,13 @@ describe("scheduled authentication health callback", () => {
   });
 
   it("sends one recovery alert when a failed service returns to health", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "task-recovery" });
-    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([{ overallStatus: "fail", checkedAt: 1 }]);
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "task-recovery",
+    });
+    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([
+      { overallStatus: "fail", checkedAt: 1 },
+    ]);
     mocks.runAuthHealthCheck.mockResolvedValue({
       overallStatus: "ok",
       configStatus: "ok",
@@ -148,8 +192,13 @@ describe("scheduled authentication health callback", () => {
   });
 
   it("returns 500 when a required transition alert cannot be delivered so Heartbeat retries", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "task-retry-alert" });
-    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([{ overallStatus: "ok", checkedAt: 1 }]);
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "task-retry-alert",
+    });
+    mocks.listAuthHealthChecksByTaskUid.mockResolvedValue([
+      { overallStatus: "ok", checkedAt: 1 },
+    ]);
     mocks.runAuthHealthCheck.mockResolvedValue({
       overallStatus: "fail",
       configStatus: "fail",

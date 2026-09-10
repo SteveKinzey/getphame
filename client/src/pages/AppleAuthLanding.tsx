@@ -16,7 +16,12 @@ import { Loader2 } from "lucide-react";
 
 function safeAppleReturnPath(value: string | null): string {
   if (!value) return "/";
-  if (value === "/" || value === "/onboarding" || value === "/settings?passkey_enroll=1") return value;
+  if (
+    value === "/" ||
+    value === "/onboarding" ||
+    value === "/settings?passkey_enroll=1"
+  )
+    return value;
   return "/";
 }
 

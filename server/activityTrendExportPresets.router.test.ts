@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({
   reorder: vi.fn(),
 }));
 
-vi.mock("./db", async (importOriginal) => ({
+vi.mock("./db", async importOriginal => ({
   ...(await importOriginal<typeof import("./db")>()),
   getDb: mocks.getDb,
 }));

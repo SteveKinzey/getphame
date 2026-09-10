@@ -10,7 +10,9 @@ function getRequestPath(input: RequestInfo | URL): string {
           : input.url;
 
     const baseUrl =
-      typeof window !== "undefined" ? window.location.origin : "http://localhost";
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "http://localhost";
     return new URL(rawUrl, baseUrl).pathname;
   } catch {
     return "/api/trpc";

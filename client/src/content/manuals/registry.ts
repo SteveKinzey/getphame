@@ -37,14 +37,20 @@ const adminManuals: Record<string, ManualDocument> = {
 export function normalizeManualLocale(locale?: string | null) {
   if (!locale) return "en";
   const normalized = locale.replace("_", "-");
-  if (normalized.toLowerCase().startsWith("zh-tw") || normalized.toLowerCase().startsWith("zh-hant")) {
+  if (
+    normalized.toLowerCase().startsWith("zh-tw") ||
+    normalized.toLowerCase().startsWith("zh-hant")
+  ) {
     return "zh-TW";
   }
   if (normalized.toLowerCase().startsWith("zh")) return "zh-CN";
   return normalized.split("-")[0].toLowerCase();
 }
 
-export function getManualDocument(locale: string | undefined, role: ManualRole): ManualDocument {
+export function getManualDocument(
+  locale: string | undefined,
+  role: ManualRole
+): ManualDocument {
   const normalizedLocale = normalizeManualLocale(locale);
   const userManual = userManuals[normalizedLocale] ?? userManuals.en;
 
@@ -62,6 +68,9 @@ export function getManualDocument(locale: string | undefined, role: ManualRole):
   };
 }
 
-export function getManualSectionIds(locale: string | undefined, role: ManualRole) {
+export function getManualSectionIds(
+  locale: string | undefined,
+  role: ManualRole
+) {
   return getManualDocument(locale, role).sections.map(section => section.id);
 }

@@ -20,15 +20,21 @@ import {
 } from "./webhookHelpers";
 
 const secret = "webhook-test-secret";
-const payload = JSON.stringify({ event: "review.completed", data: { requestId: 91 } });
+const payload = JSON.stringify({
+  event: "review.completed",
+  data: { requestId: 91 },
+});
 
 describe("webhook HMAC signatures", () => {
   beforeEach(() => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-      ok: true,
-      status: 200,
-      text: vi.fn().mockResolvedValue("ok"),
-    }));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        text: vi.fn().mockResolvedValue("ok"),
+      })
+    );
   });
 
   afterEach(() => {
@@ -38,7 +44,9 @@ describe("webhook HMAC signatures", () => {
 
   it("matches a standard sha256-prefixed HMAC and not the retired concatenation hash", () => {
     const expected = `sha256=${createHmac("sha256", secret).update(payload).digest("hex")}`;
-    const retired = `sha256=${createHash("sha256").update(secret + payload).digest("hex")}`;
+    const retired = `sha256=${createHash("sha256")
+      .update(secret + payload)
+      .digest("hex")}`;
     expect(buildWebhookSignature(secret, payload)).toBe(expected);
     expect(buildWebhookSignature(secret, payload)).not.toBe(retired);
   });
@@ -49,15 +57,26 @@ describe("webhook HMAC signatures", () => {
     const [, options] = vi.mocked(fetch).mock.calls[0];
     const body = options?.body as string;
     const headers = options?.headers as Record<string, string>;
-    expect(headers["X-Phame-Signature"]).toBe(buildWebhookSignature(secret, body));
+    expect(headers["X-Phame-Signature"]).toBe(
+      buildWebhookSignature(secret, body)
+    );
   });
 
   it("signs the exact stored payload during a retry", async () => {
-    await retryWebhookDelivery(12, 4, "https://webhook.example.test/retry", secret, "review.completed", payload);
+    await retryWebhookDelivery(
+      12,
+      4,
+      "https://webhook.example.test/retry",
+      secret,
+      "review.completed",
+      payload
+    );
 
     const [, options] = vi.mocked(fetch).mock.calls[0];
     const headers = options?.headers as Record<string, string>;
     expect(options?.body).toBe(payload);
-    expect(headers["X-Phame-Signature"]).toBe(buildWebhookSignature(secret, payload));
+    expect(headers["X-Phame-Signature"]).toBe(
+      buildWebhookSignature(secret, payload)
+    );
   });
 });

@@ -400,8 +400,12 @@ export const emailRelayDiagnostics = pgTable(
     durationMs: integer("duration_ms").notNull(),
     alertType: varchar("alert_type", { length: 16 }),
     slackAlertSent: boolean("slack_alert_sent").notNull().default(false),
-    emailFallbackAttempted: boolean("email_fallback_attempted").notNull().default(false),
-    emailFallbackDelivered: boolean("email_fallback_delivered").notNull().default(false),
+    emailFallbackAttempted: boolean("email_fallback_attempted")
+      .notNull()
+      .default(false),
+    emailFallbackDelivered: boolean("email_fallback_delivered")
+      .notNull()
+      .default(false),
     diagnostic: varchar("diagnostic", { length: 300 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
@@ -409,7 +413,8 @@ export const emailRelayDiagnostics = pgTable(
 );
 
 export type EmailRelayDiagnostic = typeof emailRelayDiagnostics.$inferSelect;
-export type InsertEmailRelayDiagnostic = typeof emailRelayDiagnostics.$inferInsert;
+export type InsertEmailRelayDiagnostic =
+  typeof emailRelayDiagnostics.$inferInsert;
 
 /**
  * Sanitized production-route audit outcomes triggered by administrators. The
@@ -506,15 +511,24 @@ export const auditRetentionPolicyChanges = pgTable(
     id: serial("id").primaryKey(),
     policyKey: varchar("policy_key", { length: 32 }).notNull(),
     changedByUserId: integer("changed_by_user_id").notNull(),
-    previousRouteAuditRetentionDays: integer("previous_route_audit_retention_days").notNull(),
-    previousRendererErrorRetentionDays: integer("previous_renderer_error_retention_days").notNull(),
+    previousRouteAuditRetentionDays: integer(
+      "previous_route_audit_retention_days"
+    ).notNull(),
+    previousRendererErrorRetentionDays: integer(
+      "previous_renderer_error_retention_days"
+    ).notNull(),
     routeAuditRetentionDays: integer("route_audit_retention_days").notNull(),
-    rendererErrorRetentionDays: integer("renderer_error_retention_days").notNull(),
+    rendererErrorRetentionDays: integer(
+      "renderer_error_retention_days"
+    ).notNull(),
     changedAt: bigint("changed_at", { mode: "number" }).notNull(),
   },
   table => [
     index("audit_retention_policy_changes_changed_idx").on(table.changedAt),
-    index("audit_retention_policy_changes_actor_idx").on(table.changedByUserId, table.changedAt),
+    index("audit_retention_policy_changes_actor_idx").on(
+      table.changedByUserId,
+      table.changedAt
+    ),
   ]
 );
 
@@ -523,13 +537,24 @@ export const releaseHistoryExportSchedules = pgTable(
   "release_history_export_schedules",
   {
     id: serial("id").primaryKey(),
-    scheduleKey: varchar("schedule_key", { length: 32 }).notNull().default("global").unique(),
-    scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }).unique(),
-    cronExpression: varchar("cron_expression", { length: 64 }).notNull().default("0 0 9 * * 1"),
+    scheduleKey: varchar("schedule_key", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    scheduleCronTaskUid: varchar("schedule_cron_task_uid", {
+      length: 65,
+    }).unique(),
+    cronExpression: varchar("cron_expression", { length: 64 })
+      .notNull()
+      .default("0 0 9 * * 1"),
     enabled: boolean("enabled").notNull().default(false),
-    statusFilter: varchar("status_filter", { length: 16 }).notNull().default("all"),
+    statusFilter: varchar("status_filter", { length: 16 })
+      .notNull()
+      .default("all"),
     sortBy: varchar("sort_by", { length: 32 }).notNull().default("recordedAt"),
-    sortDirection: varchar("sort_direction", { length: 8 }).notNull().default("desc"),
+    sortDirection: varchar("sort_direction", { length: 8 })
+      .notNull()
+      .default("desc"),
     selectedColumns: text("selected_columns").notNull(),
     lastRunAt: bigint("last_run_at", { mode: "number" }),
     lastRunStatus: varchar("last_run_status", { length: 20 }),
@@ -538,7 +563,11 @@ export const releaseHistoryExportSchedules = pgTable(
     createdAt: bigint("created_at", { mode: "number" }).notNull(),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
   },
-  table => [index("release_history_export_schedule_task_idx").on(table.scheduleCronTaskUid)]
+  table => [
+    index("release_history_export_schedule_task_idx").on(
+      table.scheduleCronTaskUid
+    ),
+  ]
 );
 
 /** Bounded metadata for completed scheduled exports. CSV content and identities are never stored here. */
@@ -557,7 +586,10 @@ export const releaseHistoryExportRuns = pgTable(
     errorCode: varchar("error_code", { length: 64 }),
   },
   table => [
-    index("release_history_export_runs_schedule_idx").on(table.scheduleId, table.generatedAt),
+    index("release_history_export_runs_schedule_idx").on(
+      table.scheduleId,
+      table.generatedAt
+    ),
     index("release_history_export_runs_generated_idx").on(table.generatedAt),
   ]
 );
@@ -572,11 +604,15 @@ export const rendererFailureAlertAcknowledgements = pgTable(
     viewportMode: varchar("viewport_mode", { length: 16 }).notNull(),
     darkMode: boolean("dark_mode").notNull().default(false),
     errorCode: varchar("error_code", { length: 64 }).notNull(),
-    acknowledgedLatestOccurredAt: bigint("acknowledged_latest_occurred_at", { mode: "number" }).notNull(),
+    acknowledgedLatestOccurredAt: bigint("acknowledged_latest_occurred_at", {
+      mode: "number",
+    }).notNull(),
     acknowledgedByUserId: integer("acknowledged_by_user_id").notNull(),
     acknowledgedAt: bigint("acknowledged_at", { mode: "number" }).notNull(),
   },
-  table => [index("renderer_failure_alert_acknowledged_idx").on(table.acknowledgedAt)]
+  table => [
+    index("renderer_failure_alert_acknowledged_idx").on(table.acknowledgedAt),
+  ]
 );
 
 /**
@@ -880,7 +916,9 @@ export const businessProfiles = pgTable("business_profiles", {
   inactiveEmailSentAt: bigint("inactiveEmailSentAt", { mode: "number" }),
   // Physical location and derived IANA timezone are used for safe local-time delivery.
   physicalAddress: varchar("physicalAddress", { length: 500 }),
-  normalizedPhysicalAddress: varchar("normalizedPhysicalAddress", { length: 500 }),
+  normalizedPhysicalAddress: varchar("normalizedPhysicalAddress", {
+    length: 500,
+  }),
   businessTimeZone: varchar("businessTimeZone", { length: 100 }),
   // Business-local quiet period; default is 8:00 PM through 8:00 AM.
   quietHoursStartMinutes: integer("quietHoursStartMinutes")
@@ -910,34 +948,40 @@ export type BusinessProfile = typeof businessProfiles.$inferSelect;
 export type InsertBusinessProfile = typeof businessProfiles.$inferInsert;
 
 /** Each review request sent by a business owner to their customer */
-export const customerRequests = pgTable("customer_requests", {
-  id: serial("id").primaryKey(),
-  userId: integer("userId").notNull(),
-  customerName: varchar("customerName", { length: 255 }).notNull(),
-  customerEmail: varchar("customerEmail", { length: 320 }),
-  customerPhone: varchar("customerPhone", { length: 30 }),
-  method: methodEnum("method").notNull(),
-  status: requestStatusEnum("status").default("sent").notNull(),
-  respondedAt: bigint("respondedAt", { mode: "number" }), // Unix ms when customer left a review (null = not yet)
-  // Null while delivery is held in the quiet-hours queue; populated only after SMTP accepts it.
-  sentAt: timestamp("sentAt"),
-  followUpAt: timestamp("followUpAt"),
-  platformId: integer("platformId"), // FK to review_platforms.id — which platform was linked in this request
-  sourceConnectionId: integer("sourceConnectionId"),
-  sourceEventId: varchar("sourceEventId", { length: 191 }),
-  preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
-  templateRevisionId: integer("templateRevisionId"),
-  englishTemplateRevisionId: integer("englishTemplateRevisionId"),
-  emailSubject: varchar("emailSubject", { length: 500 }), // Subject line of the sent email
-  emailBody: text("emailBody"), // HTML body of the sent email (stored for client detail view)
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => [
-  uniqueIndex("customer_requests_source_event_unique").on(
-    table.userId,
-    table.sourceConnectionId,
-    table.sourceEventId,
-  ),
-]);
+export const customerRequests = pgTable(
+  "customer_requests",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull(),
+    customerName: varchar("customerName", { length: 255 }).notNull(),
+    customerEmail: varchar("customerEmail", { length: 320 }),
+    customerPhone: varchar("customerPhone", { length: 30 }),
+    method: methodEnum("method").notNull(),
+    status: requestStatusEnum("status").default("sent").notNull(),
+    respondedAt: bigint("respondedAt", { mode: "number" }), // Unix ms when customer left a review (null = not yet)
+    // Null while delivery is held in the quiet-hours queue; populated only after SMTP accepts it.
+    sentAt: timestamp("sentAt"),
+    followUpAt: timestamp("followUpAt"),
+    platformId: integer("platformId"), // FK to review_platforms.id — which platform was linked in this request
+    sourceConnectionId: integer("sourceConnectionId"),
+    sourceEventId: varchar("sourceEventId", { length: 191 }),
+    preferredLocale: varchar("preferredLocale", { length: 16 })
+      .default("en")
+      .notNull(),
+    templateRevisionId: integer("templateRevisionId"),
+    englishTemplateRevisionId: integer("englishTemplateRevisionId"),
+    emailSubject: varchar("emailSubject", { length: 500 }), // Subject line of the sent email
+    emailBody: text("emailBody"), // HTML body of the sent email (stored for client detail view)
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  table => [
+    uniqueIndex("customer_requests_source_event_unique").on(
+      table.userId,
+      table.sourceConnectionId,
+      table.sourceEventId
+    ),
+  ]
+);
 export type CustomerRequest = typeof customerRequests.$inferSelect;
 export type InsertCustomerRequest = typeof customerRequests.$inferInsert;
 
@@ -960,7 +1004,9 @@ export const quietHoursQueuedSends = pgTable(
     templateId: integer("templateId"),
     scheduleFollowUps: integer("scheduleFollowUps").default(0).notNull(),
     scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(),
-    status: quietHoursQueuedSendStatusEnum("status").default("pending").notNull(),
+    status: quietHoursQueuedSendStatusEnum("status")
+      .default("pending")
+      .notNull(),
     attemptCount: integer("attemptCount").default(0).notNull(),
     lastError: varchar("lastError", { length: 1000 }),
     claimedAt: bigint("claimedAt", { mode: "number" }),
@@ -1113,7 +1159,9 @@ export const savedContacts = pgTable("saved_contacts", {
   privacyPolicyUrl: text("privacyPolicyUrl"),
   sourceFormId: varchar("sourceFormId", { length: 191 }),
   sourceSubmissionId: varchar("sourceSubmissionId", { length: 191 }),
-  preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
+  preferredLocale: varchar("preferredLocale", { length: 16 })
+    .default("en")
+    .notNull(),
   // Opt-out / unsubscribe tracking
   optedOut: integer("optedOut").default(0).notNull(), // 1 = unsubscribed, suppress future sends
   optedOutAt: bigint("optedOutAt", { mode: "number" }), // Unix ms when opted out
@@ -1176,16 +1224,17 @@ export const emailTemplateRevisions = pgTable(
       table.userId,
       table.familyPublicId,
       table.locale,
-      table.version,
+      table.version
     ),
     index("email_template_revisions_template_status_idx").on(
       table.templateId,
-      table.status,
+      table.status
     ),
-  ],
+  ]
 );
 export type EmailTemplateRevision = typeof emailTemplateRevisions.$inferSelect;
-export type InsertEmailTemplateRevision = typeof emailTemplateRevisions.$inferInsert;
+export type InsertEmailTemplateRevision =
+  typeof emailTemplateRevisions.$inferInsert;
 
 /** Follow-up reminders — scheduled follow-ups with immutable timing snapshots for reporting */
 export const followUpReminders = pgTable("follow_up_reminders", {
@@ -1299,12 +1348,16 @@ export const smtpTestEmailAttempts = pgTable(
     attemptedAt: bigint("attempted_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("smtp_test_email_attempts_user_time_idx").on(table.userId, table.attemptedAt),
+    index("smtp_test_email_attempts_user_time_idx").on(
+      table.userId,
+      table.attemptedAt
+    ),
     index("smtp_test_email_attempts_time_idx").on(table.attemptedAt),
   ]
 );
 export type SmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferSelect;
-export type InsertSmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferInsert;
+export type InsertSmtpTestEmailAttempt =
+  typeof smtpTestEmailAttempts.$inferInsert;
 
 /**
  * Privacy-minimized, tenant-owned evidence of profile and preference downloads.
@@ -1315,16 +1368,23 @@ export const profilePreferenceExportHistory = pgTable(
   "profile_preference_export_history",
   {
     id: serial("id").primaryKey(),
-    userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
     format: varchar("format", { length: 8 }).notNull(),
     exportedAt: bigint("exported_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("profile_preference_export_history_user_time_idx").on(table.userId, table.exportedAt),
+    index("profile_preference_export_history_user_time_idx").on(
+      table.userId,
+      table.exportedAt
+    ),
   ]
 );
-export type ProfilePreferenceExportHistory = typeof profilePreferenceExportHistory.$inferSelect;
-export type InsertProfilePreferenceExportHistory = typeof profilePreferenceExportHistory.$inferInsert;
+export type ProfilePreferenceExportHistory =
+  typeof profilePreferenceExportHistory.$inferSelect;
+export type InsertProfilePreferenceExportHistory =
+  typeof profilePreferenceExportHistory.$inferInsert;
 
 /**
  * The user-selected, tenant-owned delivery channel for review outreach. Platform
@@ -1336,8 +1396,10 @@ export const outboundMailPreferences = pgTable("outbound_mail_preferences", {
   selectedChannel: outboundMailChannelEnum("selected_channel").notNull(),
   updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
 });
-export type OutboundMailPreference = typeof outboundMailPreferences.$inferSelect;
-export type InsertOutboundMailPreference = typeof outboundMailPreferences.$inferInsert;
+export type OutboundMailPreference =
+  typeof outboundMailPreferences.$inferSelect;
+export type InsertOutboundMailPreference =
+  typeof outboundMailPreferences.$inferInsert;
 
 /**
  * Durable snapshots of administrator-initiated SMTP removals. Identity fields
@@ -1382,13 +1444,21 @@ export const adminUserLifecycleAuditLogs = pgTable(
     occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("admin_user_lifecycle_target_time_idx").on(table.targetUserId, table.occurredAt),
-    index("admin_user_lifecycle_actor_time_idx").on(table.actorUserId, table.occurredAt),
+    index("admin_user_lifecycle_target_time_idx").on(
+      table.targetUserId,
+      table.occurredAt
+    ),
+    index("admin_user_lifecycle_actor_time_idx").on(
+      table.actorUserId,
+      table.occurredAt
+    ),
   ]
 );
 
-export type AdminUserLifecycleAuditLog = typeof adminUserLifecycleAuditLogs.$inferSelect;
-export type InsertAdminUserLifecycleAuditLog = typeof adminUserLifecycleAuditLogs.$inferInsert;
+export type AdminUserLifecycleAuditLog =
+  typeof adminUserLifecycleAuditLogs.$inferSelect;
+export type InsertAdminUserLifecycleAuditLog =
+  typeof adminUserLifecycleAuditLogs.$inferInsert;
 
 /**
  * Retention-bounded records for messages sent through the administrator-only
@@ -1414,13 +1484,18 @@ export const adminPlatformEmailMessages = pgTable(
     expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("admin_platform_email_recipient_time_idx").on(table.recipientUserId, table.createdAt),
+    index("admin_platform_email_recipient_time_idx").on(
+      table.recipientUserId,
+      table.createdAt
+    ),
     index("admin_platform_email_expiry_idx").on(table.expiresAt),
   ]
 );
 
-export type AdminPlatformEmailMessage = typeof adminPlatformEmailMessages.$inferSelect;
-export type InsertAdminPlatformEmailMessage = typeof adminPlatformEmailMessages.$inferInsert;
+export type AdminPlatformEmailMessage =
+  typeof adminPlatformEmailMessages.$inferSelect;
+export type InsertAdminPlatformEmailMessage =
+  typeof adminPlatformEmailMessages.$inferInsert;
 
 /**
  * Tracks email open and click events for review request emails.
@@ -1852,7 +1927,9 @@ export const sourceConnections = pgTable(
     sendDelayMinutes: integer("sendDelayMinutes").notNull().default(0),
     templateId: integer("templateId"),
     platformId: integer("platformId"),
-    preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
+    preferredLocale: varchar("preferredLocale", { length: 16 })
+      .default("en")
+      .notNull(),
     dryRunCompletedAt: bigint("dryRunCompletedAt", { mode: "number" }),
     pausedAt: bigint("pausedAt", { mode: "number" }),
     pauseReason: varchar("pauseReason", { length: 255 }),
@@ -1902,7 +1979,9 @@ export const contactConsentEvidence = pgTable(
     userId: integer("userId").notNull(),
     contactId: integer("contactId"),
     sourceConnectionId: integer("sourceConnectionId"),
-    sourceSubmissionId: varchar("sourceSubmissionId", { length: 191 }).notNull(),
+    sourceSubmissionId: varchar("sourceSubmissionId", {
+      length: 191,
+    }).notNull(),
     purpose: varchar("purpose", { length: 32 }).notNull(),
     channel: varchar("channel", { length: 16 }).notNull(),
     basis: varchar("basis", { length: 32 }).notNull(),
@@ -1921,13 +2000,17 @@ export const contactConsentEvidence = pgTable(
     uniqueIndex("contact_consent_evidence_source_unique").on(
       table.userId,
       table.sourceSubmissionId,
-      table.purpose,
+      table.purpose
     ),
-    index("contact_consent_evidence_contact_idx").on(table.userId, table.contactId),
-  ],
+    index("contact_consent_evidence_contact_idx").on(
+      table.userId,
+      table.contactId
+    ),
+  ]
 );
 export type ContactConsentEvidence = typeof contactConsentEvidence.$inferSelect;
-export type InsertContactConsentEvidence = typeof contactConsentEvidence.$inferInsert;
+export type InsertContactConsentEvidence =
+  typeof contactConsentEvidence.$inferInsert;
 
 /** Idempotency and audit ledger for source events that may create review outreach. */
 export const sourceAutomationEvents = pgTable(
@@ -1940,11 +2023,15 @@ export const sourceAutomationEvents = pgTable(
     apiKeyId: integer("apiKeyId").notNull(),
     sourceEventId: varchar("sourceEventId", { length: 191 }).notNull(),
     requestHash: varchar("requestHash", { length: 64 }).notNull(),
-    eventType: varchar("eventType", { length: 32 }).notNull().default("review_request"),
+    eventType: varchar("eventType", { length: 32 })
+      .notNull()
+      .default("review_request"),
     contactId: integer("contactId"),
     templateId: integer("templateId"),
     platformId: integer("platformId"),
-    preferredLocale: varchar("preferredLocale", { length: 16 }).notNull().default("en"),
+    preferredLocale: varchar("preferredLocale", { length: 16 })
+      .notNull()
+      .default("en"),
     customerRequestId: integer("customerRequestId"),
     status: varchar("status", { length: 24 }).notNull(),
     errorCode: varchar("errorCode", { length: 64 }),
@@ -1961,38 +2048,49 @@ export const sourceAutomationEvents = pgTable(
     uniqueIndex("source_automation_events_source_event_unique").on(
       table.userId,
       table.sourceConnectionId,
-      table.sourceEventId,
+      table.sourceEventId
     ),
     index("source_automation_events_status_idx").on(table.userId, table.status),
-    index("source_automation_events_due_idx").on(table.status, table.scheduledAt),
-  ],
+    index("source_automation_events_due_idx").on(
+      table.status,
+      table.scheduledAt
+    ),
+  ]
 );
 export type SourceAutomationEvent = typeof sourceAutomationEvents.$inferSelect;
-export type InsertSourceAutomationEvent = typeof sourceAutomationEvents.$inferInsert;
+export type InsertSourceAutomationEvent =
+  typeof sourceAutomationEvents.$inferInsert;
 
 /** Durable registration for the source-automation recurring job. */
-export const sourceAutomationSchedulers = pgTable("source_automation_schedulers", {
-  id: serial("id").primaryKey(),
-  scheduleKey: varchar("scheduleKey", { length: 32 })
-    .notNull()
-    .default("global")
-    .unique(),
-  scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).unique(),
-  cronExpression: varchar("cronExpression", { length: 64 })
-    .notNull()
-    .default("0 */5 * * * *"),
-  lastRunAt: bigint("lastRunAt", { mode: "number" }),
-  lastRunStatus: varchar("lastRunStatus", { length: 20 }),
-  lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
-  createdAt: bigint("createdAt", { mode: "number" })
-    .notNull()
-    .$defaultFn(() => Date.now()),
-  updatedAt: bigint("updatedAt", { mode: "number" })
-    .notNull()
-    .$defaultFn(() => Date.now()),
-});
-export type SourceAutomationScheduler = typeof sourceAutomationSchedulers.$inferSelect;
-export type InsertSourceAutomationScheduler = typeof sourceAutomationSchedulers.$inferInsert;
+export const sourceAutomationSchedulers = pgTable(
+  "source_automation_schedulers",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("scheduleKey", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", {
+      length: 65,
+    }).unique(),
+    cronExpression: varchar("cronExpression", { length: 64 })
+      .notNull()
+      .default("0 */5 * * * *"),
+    lastRunAt: bigint("lastRunAt", { mode: "number" }),
+    lastRunStatus: varchar("lastRunStatus", { length: 20 }),
+    lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+    updatedAt: bigint("updatedAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+  }
+);
+export type SourceAutomationScheduler =
+  typeof sourceAutomationSchedulers.$inferSelect;
+export type InsertSourceAutomationScheduler =
+  typeof sourceAutomationSchedulers.$inferInsert;
 
 /**
  * Short-lived device-style pairing requests used by the WordPress connector.
@@ -2136,7 +2234,9 @@ export const disposableDomainSchedulers = pgTable(
       .notNull()
       .default("global")
       .unique(),
-    scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", {
+      length: 65,
+    }).unique(),
     cronExpression: varchar("cronExpression", { length: 64 })
       .notNull()
       .default("0 0 9,10 * * *"),
@@ -2153,9 +2253,12 @@ export const disposableDomainSchedulers = pgTable(
       .notNull()
       .$defaultFn(() => Date.now()),
   },
-  table => [index("disposable_domain_scheduler_task_idx").on(table.scheduleCronTaskUid)]
+  table => [
+    index("disposable_domain_scheduler_task_idx").on(table.scheduleCronTaskUid),
+  ]
 );
-export type DisposableDomainScheduler = typeof disposableDomainSchedulers.$inferSelect;
+export type DisposableDomainScheduler =
+  typeof disposableDomainSchedulers.$inferSelect;
 export type InsertDisposableDomainScheduler =
   typeof disposableDomainSchedulers.$inferInsert;
 
@@ -2171,7 +2274,9 @@ export const disposableDomainAccountReviews = pgTable(
     userId: integer("userId").notNull().unique(),
     domain: varchar("domain", { length: 253 }).notNull(),
     confidenceScore: integer("confidenceScore").notNull(),
-    status: disposableDomainReviewStatusEnum("status").notNull().default("pending"),
+    status: disposableDomainReviewStatusEnum("status")
+      .notNull()
+      .default("pending"),
     detectedAt: bigint("detectedAt", { mode: "number" }).notNull(),
     lastDetectedAt: bigint("lastDetectedAt", { mode: "number" }).notNull(),
     resolvedAt: bigint("resolvedAt", { mode: "number" }),
@@ -3077,7 +3182,9 @@ export const releaseParityRecords = pgTable(
   {
     id: serial("id").primaryKey(),
     checkpointId: varchar("checkpoint_id", { length: 64 }).notNull(),
-    protectedMainCommit: varchar("protected_main_commit", { length: 64 }).notNull(),
+    protectedMainCommit: varchar("protected_main_commit", {
+      length: 64,
+    }).notNull(),
     protectedMainTree: varchar("protected_main_tree", { length: 64 }).notNull(),
     managedTree: varchar("managed_tree", { length: 64 }).notNull(),
     parityStatus: varchar("parity_status", { length: 16 }).notNull(),

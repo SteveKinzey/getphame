@@ -3,8 +3,22 @@ import { z } from "zod";
 import type { SavedContact } from "../drizzle/schema";
 import { invokeLLM } from "./_core/llm";
 
-export const CONTACT_SEARCH_LOCALES = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
-export const CONTACT_SEARCH_SOURCES = ["manual", "woocommerce", "stripe", "koalendar", "api"] as const;
+export const CONTACT_SEARCH_LOCALES = [
+  "en",
+  "zh-CN",
+  "es",
+  "fr",
+  "it",
+  "th",
+  "zh-TW",
+] as const;
+export const CONTACT_SEARCH_SOURCES = [
+  "manual",
+  "woocommerce",
+  "stripe",
+  "koalendar",
+  "api",
+] as const;
 export const CONTACT_SEARCH_RESULT_LIMIT = 200;
 
 const CONTACT_SEARCH_MODEL = "gpt-5-mini";
@@ -12,28 +26,56 @@ const REQUEST_WINDOW_MS = 60_000;
 const REQUESTS_PER_WINDOW = 10;
 const requestTimesByUser = new Map<number, number[]>();
 
-const nullableText = (maximum: number) => z.string().trim().min(1).max(maximum).nullable();
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => !Number.isNaN(Date.parse(`${value}T00:00:00.000Z`)), "Invalid date");
+const nullableText = (maximum: number) =>
+  z.string().trim().min(1).max(maximum).nullable();
+const isoDate = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .refine(
+    value => !Number.isNaN(Date.parse(`${value}T00:00:00.000Z`)),
+    "Invalid date"
+  );
 
-export const contactSearchFiltersSchema = z.object({
-  text: nullableText(120),
-  source: z.enum(CONTACT_SEARCH_SOURCES).nullable(),
-  tag: nullableText(50),
-  sentState: z.enum(["any", "never", "sent", "dormant"]),
-  dormantDays: z.number().int().min(1).max(3650).nullable(),
-  consent: z.enum(["any", "recorded", "missing"]),
-  suppression: z.enum(["any", "active", "opted_out"]),
-  createdFrom: isoDate.nullable(),
-  createdTo: isoDate.nullable(),
-  sort: z.enum(["relevance", "name_asc", "last_sent_oldest", "last_sent_newest", "created_newest"]),
-}).strict().superRefine((filters, context) => {
-  if (filters.sentState === "dormant" && filters.dormantDays === null) {
-    context.addIssue({ code: "custom", path: ["dormantDays"], message: "Dormant searches require a day count" });
-  }
-  if (filters.createdFrom && filters.createdTo && filters.createdFrom > filters.createdTo) {
-    context.addIssue({ code: "custom", path: ["createdTo"], message: "The end date must not precede the start date" });
-  }
-});
+export const contactSearchFiltersSchema = z
+  .object({
+    text: nullableText(120),
+    source: z.enum(CONTACT_SEARCH_SOURCES).nullable(),
+    tag: nullableText(50),
+    sentState: z.enum(["any", "never", "sent", "dormant"]),
+    dormantDays: z.number().int().min(1).max(3650).nullable(),
+    consent: z.enum(["any", "recorded", "missing"]),
+    suppression: z.enum(["any", "active", "opted_out"]),
+    createdFrom: isoDate.nullable(),
+    createdTo: isoDate.nullable(),
+    sort: z.enum([
+      "relevance",
+      "name_asc",
+      "last_sent_oldest",
+      "last_sent_newest",
+      "created_newest",
+    ]),
+  })
+  .strict()
+  .superRefine((filters, context) => {
+    if (filters.sentState === "dormant" && filters.dormantDays === null) {
+      context.addIssue({
+        code: "custom",
+        path: ["dormantDays"],
+        message: "Dormant searches require a day count",
+      });
+    }
+    if (
+      filters.createdFrom &&
+      filters.createdTo &&
+      filters.createdFrom > filters.createdTo
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["createdTo"],
+        message: "The end date must not precede the start date",
+      });
+    }
+  });
 
 export type ContactSearchFilters = z.infer<typeof contactSearchFiltersSchema>;
 
@@ -54,8 +96,14 @@ function extractCompletionText(content: unknown): string {
   if (typeof content === "string") return content;
   if (!Array.isArray(content)) return "";
   return content
-    .filter((part): part is { type: "text"; text: string } => Boolean(part) && typeof part === "object" && (part as { type?: unknown }).type === "text" && typeof (part as { text?: unknown }).text === "string")
-    .map((part) => part.text)
+    .filter(
+      (part): part is { type: "text"; text: string } =>
+        Boolean(part) &&
+        typeof part === "object" &&
+        (part as { type?: unknown }).type === "text" &&
+        typeof (part as { text?: unknown }).text === "string"
+    )
+    .map(part => part.text)
     .join("\n");
 }
 
@@ -65,24 +113,39 @@ const SEARCH_SECRET_PATTERNS = [
   /\b(?:sk|pk)_(?:live|test)_[a-z0-9._-]{8,}\b/gi,
 ];
 
-export function redactContactSearchSecrets(query: string): { text: string; redacted: boolean } {
+export function redactContactSearchSecrets(query: string): {
+  text: string;
+  redacted: boolean;
+} {
   let text = query;
-  for (const pattern of SEARCH_SECRET_PATTERNS) text = text.replace(pattern, "[private value removed]");
+  for (const pattern of SEARCH_SECRET_PATTERNS)
+    text = text.replace(pattern, "[private value removed]");
   return { text, redacted: text !== query };
 }
 
 export function enforceContactSearchRateLimit(userId: number): void {
   const now = Date.now();
-  const recent = (requestTimesByUser.get(userId) ?? []).filter((timestamp) => now - timestamp < REQUEST_WINDOW_MS);
+  const recent = (requestTimesByUser.get(userId) ?? []).filter(
+    timestamp => now - timestamp < REQUEST_WINDOW_MS
+  );
   if (recent.length >= REQUESTS_PER_WINDOW) {
-    throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Please wait a minute before running another conversational search." });
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message:
+        "Please wait a minute before running another conversational search.",
+    });
   }
   recent.push(now);
   requestTimesByUser.set(userId, recent);
 
   if (requestTimesByUser.size > 5_000) {
     requestTimesByUser.forEach((timestamps: number[], actor: number) => {
-      if (!timestamps.some((timestamp: number) => now - timestamp < REQUEST_WINDOW_MS)) requestTimesByUser.delete(actor);
+      if (
+        !timestamps.some(
+          (timestamp: number) => now - timestamp < REQUEST_WINDOW_MS
+        )
+      )
+        requestTimesByUser.delete(actor);
     });
   }
 }
@@ -93,7 +156,10 @@ function durationToDays(value: number, unit: string): number {
   return value;
 }
 
-function extractFallbackText(query: string, hasStructuredFilter: boolean): string | null {
+function extractFallbackText(
+  query: string,
+  hasStructuredFilter: boolean
+): string | null {
   const quoted = query.match(/["“”']([^"“”']{1,120})["“”']/)?.[1]?.trim();
   if (quoted) return quoted;
 
@@ -101,8 +167,14 @@ function extractFallbackText(query: string, hasStructuredFilter: boolean): strin
   if (email) return email;
 
   const cleaned = query
-    .replace(/\b(manual|woocommerce|woo\s*commerce|stripe|koalendar|api|unsubscribed|opted\s*out|active|consent(?:ed)?|never\s+(?:(?:been\s+)?(?:sent|contacted)|received\s+(?:a\s+)?(?:review\s+)?request)|sent|contacted|oldest|newest|alphabetical)\b/gi, " ")
-    .replace(/\b(show|find|search|give|list|display|me|all|contacts?|customers?|people|records?|who|that|are|were|have|has|been|with|without|from|source|imported|tagged|tag|and|or|please|not|in|for|during|last|past|at|least|once|recorded|confirmed|affirmative|missing|received|review|requests?|added|created|after|before|since|a|an|the)\b/gi, " ")
+    .replace(
+      /\b(manual|woocommerce|woo\s*commerce|stripe|koalendar|api|unsubscribed|opted\s*out|active|consent(?:ed)?|never\s+(?:(?:been\s+)?(?:sent|contacted)|received\s+(?:a\s+)?(?:review\s+)?request)|sent|contacted|oldest|newest|alphabetical)\b/gi,
+      " "
+    )
+    .replace(
+      /\b(show|find|search|give|list|display|me|all|contacts?|customers?|people|records?|who|that|are|were|have|has|been|with|without|from|source|imported|tagged|tag|and|or|please|not|in|for|during|last|past|at|least|once|recorded|confirmed|affirmative|missing|received|review|requests?|added|created|after|before|since|a|an|the)\b/gi,
+      " "
+    )
     .replace(/\b\d+\s*(?:d|day|days|week|weeks|month|months)\b/gi, " ")
     .replace(/\b\d{4}-\d{2}-\d{2}\b/g, " ")
     .replace(/\s+/g, " ")
@@ -112,19 +184,24 @@ function extractFallbackText(query: string, hasStructuredFilter: boolean): strin
   return hasStructuredFilter ? null : query.slice(0, 120);
 }
 
-export function parseContactSearchFallback(query: string): ContactSearchFilters {
+export function parseContactSearchFallback(
+  query: string
+): ContactSearchFilters {
   const normalized = query.toLocaleLowerCase();
   const filters = defaultFilters();
   let hasStructuredFilter = false;
 
   if (/\bstripe\b/.test(normalized)) filters.source = "stripe";
-  else if (/\bwoo\s*commerce\b|\bwoocommerce\b/.test(normalized)) filters.source = "woocommerce";
+  else if (/\bwoo\s*commerce\b|\bwoocommerce\b/.test(normalized))
+    filters.source = "woocommerce";
   else if (/\bkoalendar\b/.test(normalized)) filters.source = "koalendar";
   else if (/\bapi\b/.test(normalized)) filters.source = "api";
   else if (/\bmanual(?:ly)?\b/.test(normalized)) filters.source = "manual";
   if (filters.source) hasStructuredFilter = true;
 
-  const tagMatch = query.match(/\b(?:tagged|tag)\s+(?:as\s+)?["“”']?([^,"“”']{1,50})["“”']?/i)?.[1]?.trim();
+  const tagMatch = query
+    .match(/\b(?:tagged|tag)\s+(?:as\s+)?["“”']?([^,"“”']{1,50})["“”']?/i)?.[1]
+    ?.trim();
   if (tagMatch) {
     filters.tag = tagMatch.replace(/\s+(?:and|or)\s+.*$/i, "").trim();
     hasStructuredFilter = true;
@@ -133,7 +210,11 @@ export function parseContactSearchFallback(query: string): ContactSearchFilters 
   if (/\b(unsubscribed|opted\s*out|suppressed)\b/.test(normalized)) {
     filters.suppression = "opted_out";
     hasStructuredFilter = true;
-  } else if (/\bactive\s+(?:contacts?|customers?)\b|\bnot\s+(?:unsubscribed|opted\s*out)\b/.test(normalized)) {
+  } else if (
+    /\bactive\s+(?:contacts?|customers?)\b|\bnot\s+(?:unsubscribed|opted\s*out)\b/.test(
+      normalized
+    )
+  ) {
     filters.suppression = "active";
     hasStructuredFilter = true;
   }
@@ -141,28 +222,47 @@ export function parseContactSearchFallback(query: string): ContactSearchFilters 
   if (/\b(without|missing|no)\s+(?:recorded\s+)?consent\b/.test(normalized)) {
     filters.consent = "missing";
     hasStructuredFilter = true;
-  } else if (/\b(with|recorded|confirmed|affirmative)\s+consent\b|\bconsented\b/.test(normalized)) {
+  } else if (
+    /\b(with|recorded|confirmed|affirmative)\s+consent\b|\bconsented\b/.test(
+      normalized
+    )
+  ) {
     filters.consent = "recorded";
     hasStructuredFilter = true;
   }
 
-  if (/\bnever\s+(?:(?:been\s+)?(?:sent|contacted)|received\s+(?:a\s+)?(?:review\s+)?request)\b|\bnot\s+contacted\s+before\b/.test(normalized)) {
+  if (
+    /\bnever\s+(?:(?:been\s+)?(?:sent|contacted)|received\s+(?:a\s+)?(?:review\s+)?request)\b|\bnot\s+contacted\s+before\b/.test(
+      normalized
+    )
+  ) {
     filters.sentState = "never";
     hasStructuredFilter = true;
-  } else if (/\b(?:sent|contacted)\s+(?:at\s+least\s+once|before)\b/.test(normalized)) {
+  } else if (
+    /\b(?:sent|contacted)\s+(?:at\s+least\s+once|before)\b/.test(normalized)
+  ) {
     filters.sentState = "sent";
     hasStructuredFilter = true;
   }
 
-  const dormantMatch = normalized.match(/(?:not\s+(?:sent|contacted)|haven't\s+(?:sent|contacted)|hasn't\s+been\s+contacted|inactive|dormant).*?(\d{1,4})\s*(d|day|days|week|weeks|month|months)\b/);
+  const dormantMatch = normalized.match(
+    /(?:not\s+(?:sent|contacted)|haven't\s+(?:sent|contacted)|hasn't\s+been\s+contacted|inactive|dormant).*?(\d{1,4})\s*(d|day|days|week|weeks|month|months)\b/
+  );
   if (dormantMatch) {
     filters.sentState = "dormant";
-    filters.dormantDays = Math.min(3650, Math.max(1, durationToDays(Number(dormantMatch[1]), dormantMatch[2])));
+    filters.dormantDays = Math.min(
+      3650,
+      Math.max(1, durationToDays(Number(dormantMatch[1]), dormantMatch[2]))
+    );
     hasStructuredFilter = true;
   }
 
-  const afterDate = normalized.match(/\b(?:added|created)\s+(?:after|since)\s+(\d{4}-\d{2}-\d{2})\b/)?.[1];
-  const beforeDate = normalized.match(/\b(?:added|created)\s+before\s+(\d{4}-\d{2}-\d{2})\b/)?.[1];
+  const afterDate = normalized.match(
+    /\b(?:added|created)\s+(?:after|since)\s+(\d{4}-\d{2}-\d{2})\b/
+  )?.[1];
+  const beforeDate = normalized.match(
+    /\b(?:added|created)\s+before\s+(\d{4}-\d{2}-\d{2})\b/
+  )?.[1];
   if (afterDate && !Number.isNaN(Date.parse(`${afterDate}T00:00:00.000Z`))) {
     filters.createdFrom = afterDate;
     hasStructuredFilter = true;
@@ -172,23 +272,33 @@ export function parseContactSearchFallback(query: string): ContactSearchFilters 
     hasStructuredFilter = true;
   }
 
-  if (/\b(?:alphabetical|by\s+name)\b/.test(normalized)) filters.sort = "name_asc";
-  else if (/\boldest\s+(?:sent|contacted|contact)\b/.test(normalized)) filters.sort = "last_sent_oldest";
-  else if (/\bnewest\s+(?:sent|contacted|contact)\b/.test(normalized)) filters.sort = "last_sent_newest";
-  else if (/\bnewest\s+(?:added|created|contacts?)\b/.test(normalized)) filters.sort = "created_newest";
+  if (/\b(?:alphabetical|by\s+name)\b/.test(normalized))
+    filters.sort = "name_asc";
+  else if (/\boldest\s+(?:sent|contacted|contact)\b/.test(normalized))
+    filters.sort = "last_sent_oldest";
+  else if (/\bnewest\s+(?:sent|contacted|contact)\b/.test(normalized))
+    filters.sort = "last_sent_newest";
+  else if (/\bnewest\s+(?:added|created|contacts?)\b/.test(normalized))
+    filters.sort = "created_newest";
 
   filters.text = extractFallbackText(query, hasStructuredFilter);
   return contactSearchFiltersSchema.parse(filters);
 }
 
-type ContactSearchInvoker = (request: Parameters<typeof invokeLLM>[0]) => ReturnType<typeof invokeLLM>;
+type ContactSearchInvoker = (
+  request: Parameters<typeof invokeLLM>[0]
+) => ReturnType<typeof invokeLLM>;
 
 export async function interpretContactSearchQuery(input: {
   query: string;
-  locale: typeof CONTACT_SEARCH_LOCALES[number];
+  locale: (typeof CONTACT_SEARCH_LOCALES)[number];
   invoke?: ContactSearchInvoker;
   now?: Date;
-}): Promise<{ filters: ContactSearchFilters; source: "llm" | "fallback"; redacted: boolean }> {
+}): Promise<{
+  filters: ContactSearchFilters;
+  source: "llm" | "fallback";
+  redacted: boolean;
+}> {
   const sanitized = redactContactSearchSecrets(input.query.trim());
   const invoke = input.invoke ?? invokeLLM;
   const currentDate = (input.now ?? new Date()).toISOString().slice(0, 10);
@@ -211,18 +321,74 @@ export async function interpretContactSearchQuery(input: {
         schema: {
           type: "object",
           additionalProperties: false,
-          required: ["text", "source", "tag", "sentState", "dormantDays", "consent", "suppression", "createdFrom", "createdTo", "sort"],
+          required: [
+            "text",
+            "source",
+            "tag",
+            "sentState",
+            "dormantDays",
+            "consent",
+            "suppression",
+            "createdFrom",
+            "createdTo",
+            "sort",
+          ],
           properties: {
-            text: { anyOf: [{ type: "string", minLength: 1, maxLength: 120 }, { type: "null" }] },
-            source: { anyOf: [{ type: "string", enum: CONTACT_SEARCH_SOURCES }, { type: "null" }] },
-            tag: { anyOf: [{ type: "string", minLength: 1, maxLength: 50 }, { type: "null" }] },
-            sentState: { type: "string", enum: ["any", "never", "sent", "dormant"] },
-            dormantDays: { anyOf: [{ type: "integer", minimum: 1, maximum: 3650 }, { type: "null" }] },
+            text: {
+              anyOf: [
+                { type: "string", minLength: 1, maxLength: 120 },
+                { type: "null" },
+              ],
+            },
+            source: {
+              anyOf: [
+                { type: "string", enum: CONTACT_SEARCH_SOURCES },
+                { type: "null" },
+              ],
+            },
+            tag: {
+              anyOf: [
+                { type: "string", minLength: 1, maxLength: 50 },
+                { type: "null" },
+              ],
+            },
+            sentState: {
+              type: "string",
+              enum: ["any", "never", "sent", "dormant"],
+            },
+            dormantDays: {
+              anyOf: [
+                { type: "integer", minimum: 1, maximum: 3650 },
+                { type: "null" },
+              ],
+            },
             consent: { type: "string", enum: ["any", "recorded", "missing"] },
-            suppression: { type: "string", enum: ["any", "active", "opted_out"] },
-            createdFrom: { anyOf: [{ type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" }, { type: "null" }] },
-            createdTo: { anyOf: [{ type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" }, { type: "null" }] },
-            sort: { type: "string", enum: ["relevance", "name_asc", "last_sent_oldest", "last_sent_newest", "created_newest"] },
+            suppression: {
+              type: "string",
+              enum: ["any", "active", "opted_out"],
+            },
+            createdFrom: {
+              anyOf: [
+                { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
+                { type: "null" },
+              ],
+            },
+            createdTo: {
+              anyOf: [
+                { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$" },
+                { type: "null" },
+              ],
+            },
+            sort: {
+              type: "string",
+              enum: [
+                "relevance",
+                "name_asc",
+                "last_sent_oldest",
+                "last_sent_newest",
+                "created_newest",
+              ],
+            },
           },
         },
       },
@@ -230,19 +396,33 @@ export async function interpretContactSearchQuery(input: {
 
     const text = extractCompletionText(response.choices[0]?.message?.content);
     const parsed = contactSearchFiltersSchema.safeParse(JSON.parse(text));
-    if (parsed.success) return { filters: parsed.data, source: "llm", redacted: sanitized.redacted };
+    if (parsed.success)
+      return {
+        filters: parsed.data,
+        source: "llm",
+        redacted: sanitized.redacted,
+      };
   } catch (error) {
-    console.warn("[Contact search] Structured interpretation unavailable; using deterministic fallback.", error instanceof Error ? error.message : error);
+    console.warn(
+      "[Contact search] Structured interpretation unavailable; using deterministic fallback.",
+      error instanceof Error ? error.message : error
+    );
   }
 
-  return { filters: parseContactSearchFallback(sanitized.text), source: "fallback", redacted: sanitized.redacted };
+  return {
+    filters: parseContactSearchFallback(sanitized.text),
+    source: "fallback",
+    redacted: sanitized.redacted,
+  };
 }
 
 function parseTags(raw: string | null): string[] {
   if (!raw) return [];
   try {
     const value = JSON.parse(raw);
-    return Array.isArray(value) ? value.filter((tag): tag is string => typeof tag === "string") : [];
+    return Array.isArray(value)
+      ? value.filter((tag): tag is string => typeof tag === "string")
+      : [];
   } catch {
     return [];
   }
@@ -255,7 +435,14 @@ function epoch(value: Date | number | null): number | null {
 }
 
 function contactText(contact: SavedContact): string {
-  return [contact.name, contact.email, contact.phone, contact.notes, contact.sourceApp, ...parseTags(contact.tags)]
+  return [
+    contact.name,
+    contact.email,
+    contact.phone,
+    contact.notes,
+    contact.sourceApp,
+    ...parseTags(contact.tags),
+  ]
     .filter(Boolean)
     .join(" ")
     .toLocaleLowerCase();
@@ -264,49 +451,104 @@ function contactText(contact: SavedContact): string {
 function relevanceScore(contact: SavedContact, text: string | null): number {
   if (!text) return 0;
   const term = text.toLocaleLowerCase();
-  const tags = parseTags(contact.tags).map((tag) => tag.toLocaleLowerCase());
+  const tags = parseTags(contact.tags).map(tag => tag.toLocaleLowerCase());
   let score = 0;
   if (contact.name.toLocaleLowerCase() === term) score += 12;
   else if (contact.name.toLocaleLowerCase().includes(term)) score += 8;
   if (contact.email.toLocaleLowerCase() === term) score += 12;
   else if (contact.email.toLocaleLowerCase().includes(term)) score += 7;
-  if (tags.some((tag) => tag === term)) score += 6;
+  if (tags.some(tag => tag === term)) score += 6;
   if (contactText(contact).includes(term)) score += 2;
   return score;
 }
 
-export function filterContactsByNaturalQuery(contacts: SavedContact[], filters: ContactSearchFilters, nowMs = Date.now()) {
+export function filterContactsByNaturalQuery(
+  contacts: SavedContact[],
+  filters: ContactSearchFilters,
+  nowMs = Date.now()
+) {
   const term = filters.text?.toLocaleLowerCase() ?? null;
-  const createdFrom = filters.createdFrom ? Date.parse(`${filters.createdFrom}T00:00:00.000Z`) : null;
-  const createdTo = filters.createdTo ? Date.parse(`${filters.createdTo}T23:59:59.999Z`) : null;
-  const dormantCutoff = filters.sentState === "dormant" && filters.dormantDays ? nowMs - filters.dormantDays * 86_400_000 : null;
+  const createdFrom = filters.createdFrom
+    ? Date.parse(`${filters.createdFrom}T00:00:00.000Z`)
+    : null;
+  const createdTo = filters.createdTo
+    ? Date.parse(`${filters.createdTo}T23:59:59.999Z`)
+    : null;
+  const dormantCutoff =
+    filters.sentState === "dormant" && filters.dormantDays
+      ? nowMs - filters.dormantDays * 86_400_000
+      : null;
 
-  const matches = contacts.filter((contact) => {
+  const matches = contacts.filter(contact => {
     if (term && !contactText(contact).includes(term)) return false;
     if (filters.source && contact.source !== filters.source) return false;
-    if (filters.tag && !parseTags(contact.tags).some((tag) => tag.toLocaleLowerCase() === filters.tag!.toLocaleLowerCase())) return false;
-    if (filters.sentState === "never" && !(contact.lastSentAt === null || contact.totalSent === 0)) return false;
-    if (filters.sentState === "sent" && contact.lastSentAt === null && contact.totalSent === 0) return false;
-    if (filters.sentState === "dormant" && !(contact.lastSentAt === null || contact.lastSentAt < dormantCutoff!)) return false;
-    const hasRecordedConsent = Boolean(contact.consentBasis?.trim()) && contact.consentCapturedAt !== null;
+    if (
+      filters.tag &&
+      !parseTags(contact.tags).some(
+        tag => tag.toLocaleLowerCase() === filters.tag!.toLocaleLowerCase()
+      )
+    )
+      return false;
+    if (
+      filters.sentState === "never" &&
+      !(contact.lastSentAt === null || contact.totalSent === 0)
+    )
+      return false;
+    if (
+      filters.sentState === "sent" &&
+      contact.lastSentAt === null &&
+      contact.totalSent === 0
+    )
+      return false;
+    if (
+      filters.sentState === "dormant" &&
+      !(contact.lastSentAt === null || contact.lastSentAt < dormantCutoff!)
+    )
+      return false;
+    const hasRecordedConsent =
+      Boolean(contact.consentBasis?.trim()) &&
+      contact.consentCapturedAt !== null;
     if (filters.consent === "recorded" && !hasRecordedConsent) return false;
     if (filters.consent === "missing" && hasRecordedConsent) return false;
-    if (filters.suppression === "active" && Boolean(contact.optedOut)) return false;
+    if (filters.suppression === "active" && Boolean(contact.optedOut))
+      return false;
     if (filters.suppression === "opted_out" && !contact.optedOut) return false;
     const createdAt = epoch(contact.createdAt);
-    if (createdFrom !== null && (createdAt === null || createdAt < createdFrom)) return false;
-    if (createdTo !== null && (createdAt === null || createdAt > createdTo)) return false;
+    if (createdFrom !== null && (createdAt === null || createdAt < createdFrom))
+      return false;
+    if (createdTo !== null && (createdAt === null || createdAt > createdTo))
+      return false;
     return true;
   });
 
   matches.sort((left, right) => {
-    if (filters.sort === "name_asc") return left.name.localeCompare(right.name, undefined, { sensitivity: "base" }) || left.id - right.id;
-    if (filters.sort === "last_sent_oldest") return (left.lastSentAt ?? Number.NEGATIVE_INFINITY) - (right.lastSentAt ?? Number.NEGATIVE_INFINITY) || left.id - right.id;
-    if (filters.sort === "last_sent_newest") return (right.lastSentAt ?? Number.NEGATIVE_INFINITY) - (left.lastSentAt ?? Number.NEGATIVE_INFINITY) || left.id - right.id;
-    if (filters.sort === "created_newest") return (epoch(right.createdAt) ?? 0) - (epoch(left.createdAt) ?? 0) || right.id - left.id;
-    return relevanceScore(right, filters.text) - relevanceScore(left, filters.text)
-      || (epoch(right.updatedAt) ?? 0) - (epoch(left.updatedAt) ?? 0)
-      || right.id - left.id;
+    if (filters.sort === "name_asc")
+      return (
+        left.name.localeCompare(right.name, undefined, {
+          sensitivity: "base",
+        }) || left.id - right.id
+      );
+    if (filters.sort === "last_sent_oldest")
+      return (
+        (left.lastSentAt ?? Number.NEGATIVE_INFINITY) -
+          (right.lastSentAt ?? Number.NEGATIVE_INFINITY) || left.id - right.id
+      );
+    if (filters.sort === "last_sent_newest")
+      return (
+        (right.lastSentAt ?? Number.NEGATIVE_INFINITY) -
+          (left.lastSentAt ?? Number.NEGATIVE_INFINITY) || left.id - right.id
+      );
+    if (filters.sort === "created_newest")
+      return (
+        (epoch(right.createdAt) ?? 0) - (epoch(left.createdAt) ?? 0) ||
+        right.id - left.id
+      );
+    return (
+      relevanceScore(right, filters.text) -
+        relevanceScore(left, filters.text) ||
+      (epoch(right.updatedAt) ?? 0) - (epoch(left.updatedAt) ?? 0) ||
+      right.id - left.id
+    );
   });
 
   return matches;
@@ -333,18 +575,24 @@ export function toContactSearchResult(contact: SavedContact) {
 
 export async function runNaturalContactSearch(input: {
   query: string;
-  locale: typeof CONTACT_SEARCH_LOCALES[number];
+  locale: (typeof CONTACT_SEARCH_LOCALES)[number];
   contacts: SavedContact[];
   invoke?: ContactSearchInvoker;
   now?: Date;
 }) {
   const interpretation = await interpretContactSearchQuery(input);
-  const matches = filterContactsByNaturalQuery(input.contacts, interpretation.filters, input.now?.getTime());
+  const matches = filterContactsByNaturalQuery(
+    input.contacts,
+    interpretation.filters,
+    input.now?.getTime()
+  );
   return {
     ...interpretation,
     totalContacts: input.contacts.length,
     matchedCount: matches.length,
     truncated: matches.length > CONTACT_SEARCH_RESULT_LIMIT,
-    results: matches.slice(0, CONTACT_SEARCH_RESULT_LIMIT).map(toContactSearchResult),
+    results: matches
+      .slice(0, CONTACT_SEARCH_RESULT_LIMIT)
+      .map(toContactSearchResult),
   };
 }

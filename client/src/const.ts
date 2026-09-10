@@ -5,7 +5,11 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 // Preserve an internal deep link so authenticated users return to the protected page
 // they intentionally opened (for example, /admin/email-preview).
 export const getLoginUrl = (returnPath?: string) => {
-  if (!returnPath || !returnPath.startsWith("/") || returnPath.startsWith("//")) {
+  if (
+    !returnPath ||
+    !returnPath.startsWith("/") ||
+    returnPath.startsWith("//")
+  ) {
     return "/onboarding";
   }
 

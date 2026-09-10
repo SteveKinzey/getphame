@@ -6,7 +6,10 @@ interface DeferredDashboardSectionProps {
   minHeightClassName?: string;
 }
 
-function DashboardAnalyticsSkeleton({ loadingLabel, minHeightClassName = "min-h-[148px]" }: Pick<DeferredDashboardSectionProps, "loadingLabel" | "minHeightClassName">) {
+function DashboardAnalyticsSkeleton({
+  loadingLabel,
+  minHeightClassName = "min-h-[148px]",
+}: Pick<DeferredDashboardSectionProps, "loadingLabel" | "minHeightClassName">) {
   return (
     <div
       className={`rounded-2xl bg-white p-4 shadow-sm ${minHeightClassName}`}
@@ -19,7 +22,7 @@ function DashboardAnalyticsSkeleton({ loadingLabel, minHeightClassName = "min-h-
         <div className="h-3 w-32 rounded rr-bg-surface animate-pulse" />
       </div>
       <div className="mt-4 grid grid-cols-3 gap-3">
-        {[0, 1, 2].map((index) => (
+        {[0, 1, 2].map(index => (
           <div key={index} className="rounded-xl px-2 py-3 rr-bg-white-card">
             <div className="mx-auto h-3 w-3 rounded-full rr-bg-surface animate-pulse" />
             <div className="mx-auto mt-2 h-5 w-9 rounded rr-bg-surface animate-pulse" />
@@ -60,7 +63,7 @@ export default function DeferredDashboardSection({
         setShouldRender(true);
         observer.disconnect();
       },
-      { rootMargin: "280px 0px" },
+      { rootMargin: "280px 0px" }
     );
 
     observer.observe(element);
@@ -70,11 +73,21 @@ export default function DeferredDashboardSection({
   return (
     <div ref={containerRef} aria-busy={!shouldRender}>
       {shouldRender ? (
-        <Suspense fallback={<DashboardAnalyticsSkeleton loadingLabel={loadingLabel} minHeightClassName={minHeightClassName} />}>
+        <Suspense
+          fallback={
+            <DashboardAnalyticsSkeleton
+              loadingLabel={loadingLabel}
+              minHeightClassName={minHeightClassName}
+            />
+          }
+        >
           {children}
         </Suspense>
       ) : (
-        <DashboardAnalyticsSkeleton loadingLabel={loadingLabel} minHeightClassName={minHeightClassName} />
+        <DashboardAnalyticsSkeleton
+          loadingLabel={loadingLabel}
+          minHeightClassName={minHeightClassName}
+        />
       )}
     </div>
   );

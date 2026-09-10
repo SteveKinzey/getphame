@@ -27,7 +27,7 @@ export type ReminderTimingPerformanceAggregateRow = {
 export function shapeReminderTimingPerformanceRows(
   rows: ReminderTimingPerformanceAggregateRow[]
 ): ReminderTimingPerformanceRow[] {
-  return rows.map((row) => {
+  return rows.map(row => {
     const sentCount = Number(row.sentCount ?? 0);
     const successCount = Number(row.successCount ?? 0);
     return {
@@ -38,7 +38,10 @@ export function shapeReminderTimingPerformanceRows(
       secondStageEnabled: Number(row.secondStageEnabled ?? 0) === 1,
       sentCount,
       successCount,
-      successRate: sentCount > 0 ? Math.round((successCount / sentCount) * 1000) / 10 : null,
+      successRate:
+        sentCount > 0
+          ? Math.round((successCount / sentCount) * 1000) / 10
+          : null,
       isLowSample: sentCount < 5,
     };
   });

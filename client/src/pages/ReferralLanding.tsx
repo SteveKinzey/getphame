@@ -27,7 +27,7 @@ export default function ReferralLanding() {
       navigate("/");
       return;
     }
-    const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    const t = setTimeout(() => setCountdown(c => c - 1), 1000);
     return () => clearTimeout(t);
   }, [countdown]);
 
@@ -39,9 +39,16 @@ export default function ReferralLanding() {
       {/* Logo */}
       <div className="mb-8">
         <div className="flex items-center gap-2">
-          <img src="https://assets.getphame.app/getphame-logo.svg" alt="Get Phame logo" className="w-8 h-8 rounded-xl" loading="eager" decoding="async" />
+          <img
+            src="https://assets.getphame.app/getphame-logo.svg"
+            alt="Get Phame logo"
+            className="w-8 h-8 rounded-xl"
+            loading="eager"
+            decoding="async"
+          />
           <span className="font-display font-extrabold text-xl tracking-tight">
-            <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+            <span className="text-white">GET</span>
+            <span style={{ color: "oklch(0.80 0.18 80)" }}>PHAME</span>
           </span>
         </div>
       </div>
@@ -49,7 +56,10 @@ export default function ReferralLanding() {
       {/* Card */}
       <div
         className="w-full max-w-sm rounded-2xl p-8 text-center"
-        style={{ background: "oklch(0.28 0.09 260)", border: "1px solid oklch(0.35 0.09 260)" }}
+        style={{
+          background: "oklch(0.28 0.09 260)",
+          border: "1px solid oklch(0.35 0.09 260)",
+        }}
       >
         {/* Gift icon */}
         <div
@@ -66,7 +76,8 @@ export default function ReferralLanding() {
           You've been invited!
         </h1>
         <p className="text-sm mb-6" style={{ color: "oklch(0.75 0.05 260)" }}>
-          A friend thinks Get Phame can help your business send clear, personal review requests.
+          A friend thinks Get Phame can help your business send clear, personal
+          review requests.
         </p>
 
         {/* Perks */}
@@ -75,7 +86,7 @@ export default function ReferralLanding() {
             "Send personalised review requests from your own email",
             "Automated follow-up reminders — set it and forget it",
             "Works with Google, Yelp, TripAdvisor, Facebook & more",
-          ].map((perk) => (
+          ].map(perk => (
             <div key={perk} className="flex items-start gap-3">
               <CheckCircle2
                 size={16}
@@ -119,7 +130,11 @@ export default function ReferralLanding() {
       {code && (
         <div
           className="mt-4 px-3 py-1.5 rounded-full text-xs font-mono"
-          style={{ background: "oklch(0.28 0.09 260)", color: "oklch(0.65 0.05 260)", border: "1px solid oklch(0.35 0.09 260)" }}
+          style={{
+            background: "oklch(0.28 0.09 260)",
+            color: "oklch(0.65 0.05 260)",
+            border: "1px solid oklch(0.35 0.09 260)",
+          }}
         >
           Referral code: {code}
         </div>

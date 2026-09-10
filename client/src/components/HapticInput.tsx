@@ -55,8 +55,11 @@ const HapticInput = React.forwardRef<
       <textarea
         {...rest}
         ref={ref as React.Ref<HTMLTextAreaElement>}
-        onKeyDown={handleKeyDown as React.KeyboardEventHandler<HTMLTextAreaElement>}
-       name="rr-components-haptic-input-field-55" />
+        onKeyDown={
+          handleKeyDown as React.KeyboardEventHandler<HTMLTextAreaElement>
+        }
+        name="rr-components-haptic-input-field-55"
+      />
     );
   }
 
@@ -66,7 +69,8 @@ const HapticInput = React.forwardRef<
       {...rest}
       ref={ref as React.Ref<HTMLInputElement>}
       onKeyDown={handleKeyDown as React.KeyboardEventHandler<HTMLInputElement>}
-     name="rr-components-haptic-input-field-65" />
+      name="rr-components-haptic-input-field-65"
+    />
   );
 });
 

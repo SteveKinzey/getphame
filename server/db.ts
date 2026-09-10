@@ -1,4 +1,18 @@
-import { and, asc, desc, eq, gt, gte, isNotNull, isNull, lt, lte, or, sql, type SQL } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gt,
+  gte,
+  isNotNull,
+  isNull,
+  lt,
+  lte,
+  or,
+  sql,
+  type SQL,
+} from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { createHash, randomBytes } from "crypto";
@@ -41,7 +55,10 @@ export async function getDb() {
 export async function upsertUser(user: InsertUser): Promise<void> {
   if (!user.openId) throw new Error("User openId is required for upsert");
   const db = await getDb();
-  if (!db) { console.warn("[Database] Cannot upsert user: database not available"); return; }
+  if (!db) {
+    console.warn("[Database] Cannot upsert user: database not available");
+    return;
+  }
 
   const [identityAlias] = await db
     .select({ userId: userIdentityAliases.userId })
@@ -51,10 +68,16 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   if (identityAlias) {
     const aliasUpdates: Record<string, unknown> = { updatedAt: new Date() };
     if (user.name !== undefined) aliasUpdates.name = user.name ?? null;
-    if (user.email !== undefined) aliasUpdates.email = user.email?.trim().toLowerCase() ?? null;
-    if (user.loginMethod !== undefined) aliasUpdates.loginMethod = user.loginMethod ?? null;
-    if (user.lastSignedIn !== undefined) aliasUpdates.lastSignedIn = user.lastSignedIn;
-    await db.update(users).set(aliasUpdates).where(eq(users.id, identityAlias.userId));
+    if (user.email !== undefined)
+      aliasUpdates.email = user.email?.trim().toLowerCase() ?? null;
+    if (user.loginMethod !== undefined)
+      aliasUpdates.loginMethod = user.loginMethod ?? null;
+    if (user.lastSignedIn !== undefined)
+      aliasUpdates.lastSignedIn = user.lastSignedIn;
+    await db
+      .update(users)
+      .set(aliasUpdates)
+      .where(eq(users.id, identityAlias.userId));
     return;
   }
 
@@ -87,13 +110,23 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   if (!values.lastSignedIn) values.lastSignedIn = new Date();
   if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
   updateSet.updatedAt = new Date();
-  await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
+  await db
+    .insert(users)
+    .values(values)
+    .onDuplicateKeyUpdate({ set: updateSet });
 }
 
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
-  if (!db) { console.warn("[Database] Cannot get user: database not available"); return undefined; }
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  if (!db) {
+    console.warn("[Database] Cannot get user: database not available");
+    return undefined;
+  }
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
   if (result.length > 0) return result[0];
   const aliased = await db
     .select({ user: users })
@@ -118,7 +151,7 @@ export async function linkUserIdentity(input: {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  await db.transaction(async (tx) => {
+  await db.transaction(async tx => {
     const [directIdentity] = await tx
       .select({ id: users.id })
       .from(users)
@@ -134,7 +167,9 @@ export async function linkUserIdentity(input: {
       .where(eq(userIdentityAliases.openId, input.openId))
       .limit(1);
     if (existingAlias && existingAlias.userId !== input.userId) {
-      throw new Error("OAuth identity alias already belongs to another account");
+      throw new Error(
+        "OAuth identity alias already belongs to another account"
+      );
     }
 
     if (!directIdentity && !existingAlias) {
@@ -157,7 +192,10 @@ export async function linkUserIdentity(input: {
 
 export async function getUserByEmail(email: string) {
   const db = await getDb();
-  if (!db) { console.warn("[Database] Cannot get user by email: database not available"); return undefined; }
+  if (!db) {
+    console.warn("[Database] Cannot get user by email: database not available");
+    return undefined;
+  }
   const normalizedEmail = email.trim().toLowerCase();
   const candidates = await db
     .select({
@@ -177,7 +215,7 @@ export async function getUserByEmail(email: string) {
   // and onboarding data; use the oldest account only as a deterministic tie-break.
   const tierWeight = { free: 0, pro: 200, annual: 300, lifetime: 400 } as const;
   const normalizedTier = (tier: string | null): keyof typeof tierWeight =>
-    tier && tier in tierWeight ? tier as keyof typeof tierWeight : "free";
+    tier && tier in tierWeight ? (tier as keyof typeof tierWeight) : "free";
   candidates.sort((a, b) => {
     const score = (candidate: typeof a) =>
       (candidate.user.role === "admin" ? 1_000 : 0) +
@@ -196,7 +234,10 @@ export async function getUserByEmail(email: string) {
 export async function updateUserLastSignedIn(openId: string, timestamp: Date) {
   const db = await getDb();
   if (!db) return;
-  await db.update(users).set({ lastSignedIn: timestamp, updatedAt: new Date() }).where(eq(users.openId, openId));
+  await db
+    .update(users)
+    .set({ lastSignedIn: timestamp, updatedAt: new Date() })
+    .where(eq(users.openId, openId));
 }
 
 export async function getAccountProfile(userId: number) {
@@ -224,7 +265,7 @@ export async function updateAccountProfile(
     avatarKey?: string | null;
     avatarMimeType?: string | null;
     avatarUpdatedAt?: Date | null;
-  },
+  }
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -236,14 +277,18 @@ export async function updateAccountProfile(
 
 // ─── Authentication diagnostics ───────────────────────────────────────────────
 
-export async function createAuthDiagnosticEvent(event: InsertAuthDiagnosticEvent) {
+export async function createAuthDiagnosticEvent(
+  event: InsertAuthDiagnosticEvent
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const [result] = await db.insert(authDiagnosticEvents).values(event);
   return Number((result as unknown as { insertId: number }).insertId);
 }
 
-export async function getLatestAuthDiagnosticByTokenFingerprint(tokenFingerprint: string) {
+export async function getLatestAuthDiagnosticByTokenFingerprint(
+  tokenFingerprint: string
+) {
   const db = await getDb();
   if (!db) return null;
   const rows = await db
@@ -265,10 +310,16 @@ export async function listAuthDiagnosticEvents(input?: {
   const db = await getDb();
   if (!db) return [];
   const filters: SQL[] = [];
-  if (input?.emailFingerprint) filters.push(eq(authDiagnosticEvents.emailFingerprint, input.emailFingerprint));
-  if (input?.outcome) filters.push(eq(authDiagnosticEvents.outcome, input.outcome));
-  if (input?.requestId) filters.push(eq(authDiagnosticEvents.requestId, input.requestId));
-  if (input?.sinceMs) filters.push(gte(authDiagnosticEvents.occurredAt, input.sinceMs));
+  if (input?.emailFingerprint)
+    filters.push(
+      eq(authDiagnosticEvents.emailFingerprint, input.emailFingerprint)
+    );
+  if (input?.outcome)
+    filters.push(eq(authDiagnosticEvents.outcome, input.outcome));
+  if (input?.requestId)
+    filters.push(eq(authDiagnosticEvents.requestId, input.requestId));
+  if (input?.sinceMs)
+    filters.push(gte(authDiagnosticEvents.occurredAt, input.sinceMs));
   return db
     .select()
     .from(authDiagnosticEvents)
@@ -315,16 +366,22 @@ export type AuthHealthHistoryFilters = {
   toMs?: number;
 };
 
-export function normalizeAuthHealthHistoryQuery(input: AuthHealthHistoryFilters & {
-  page?: number;
-  pageSize?: number;
-  limit?: number;
-}) {
+export function normalizeAuthHealthHistoryQuery(
+  input: AuthHealthHistoryFilters & {
+    page?: number;
+    pageSize?: number;
+    limit?: number;
+  }
+) {
   return {
     status: input.status,
     triggerSource: input.triggerSource,
-    fromMs: Number.isFinite(input.fromMs) ? Math.max(0, Math.trunc(input.fromMs!)) : undefined,
-    toMs: Number.isFinite(input.toMs) ? Math.max(0, Math.trunc(input.toMs!)) : undefined,
+    fromMs: Number.isFinite(input.fromMs)
+      ? Math.max(0, Math.trunc(input.fromMs!))
+      : undefined,
+    toMs: Number.isFinite(input.toMs)
+      ? Math.max(0, Math.trunc(input.toMs!))
+      : undefined,
     page: Math.max(1, Math.trunc(input.page ?? 1)),
     pageSize: Math.min(50, Math.max(10, Math.trunc(input.pageSize ?? 20))),
     limit: Math.min(10_000, Math.max(1, Math.trunc(input.limit ?? 10_000))),
@@ -334,22 +391,38 @@ export function normalizeAuthHealthHistoryQuery(input: AuthHealthHistoryFilters 
 function buildAuthHealthHistoryWhere(filters: AuthHealthHistoryFilters) {
   const normalized = normalizeAuthHealthHistoryQuery(filters);
   const conditions: SQL[] = [];
-  if (normalized.status) conditions.push(eq(authHealthChecks.overallStatus, normalized.status));
-  if (normalized.triggerSource) conditions.push(eq(authHealthChecks.triggerSource, normalized.triggerSource));
-  if (normalized.fromMs !== undefined) conditions.push(gte(authHealthChecks.checkedAt, normalized.fromMs));
-  if (normalized.toMs !== undefined) conditions.push(lte(authHealthChecks.checkedAt, normalized.toMs));
+  if (normalized.status)
+    conditions.push(eq(authHealthChecks.overallStatus, normalized.status));
+  if (normalized.triggerSource)
+    conditions.push(
+      eq(authHealthChecks.triggerSource, normalized.triggerSource)
+    );
+  if (normalized.fromMs !== undefined)
+    conditions.push(gte(authHealthChecks.checkedAt, normalized.fromMs));
+  if (normalized.toMs !== undefined)
+    conditions.push(lte(authHealthChecks.checkedAt, normalized.toMs));
   return conditions.length ? and(...conditions) : undefined;
 }
 
-export async function listAuthHealthChecksPage(input: AuthHealthHistoryFilters & {
-  page?: number;
-  pageSize?: number;
-}, database?: Awaited<ReturnType<typeof getDb>>) {
+export async function listAuthHealthChecksPage(
+  input: AuthHealthHistoryFilters & {
+    page?: number;
+    pageSize?: number;
+  },
+  database?: Awaited<ReturnType<typeof getDb>>
+) {
   const normalized = normalizeAuthHealthHistoryQuery(input);
   const safePage = normalized.page;
   const safePageSize = normalized.pageSize;
-  const db = database ?? await getDb();
-  if (!db) return { rows: [], page: safePage, pageSize: safePageSize, total: 0, pageCount: 1 };
+  const db = database ?? (await getDb());
+  if (!db)
+    return {
+      rows: [],
+      page: safePage,
+      pageSize: safePageSize,
+      total: 0,
+      pageCount: 1,
+    };
 
   const where = buildAuthHealthHistoryWhere(input);
   const [totalRow] = await db
@@ -370,16 +443,18 @@ export async function listAuthHealthChecksPage(input: AuthHealthHistoryFilters &
   return { rows, page: boundedPage, pageSize: safePageSize, total, pageCount };
 }
 
-export async function listAuthHealthChecksForExport(input: AuthHealthHistoryFilters & { limit?: number }) {
+export async function listAuthHealthChecksForExport(
+  input: AuthHealthHistoryFilters & { limit?: number }
+) {
   return listAuthHealthChecksForExportWithDb(input);
 }
 
 export async function listAuthHealthChecksForExportWithDb(
   input: AuthHealthHistoryFilters & { limit?: number },
-  database?: Awaited<ReturnType<typeof getDb>>,
+  database?: Awaited<ReturnType<typeof getDb>>
 ) {
   const safeLimit = normalizeAuthHealthHistoryQuery(input).limit;
-  const db = database ?? await getDb();
+  const db = database ?? (await getDb());
   if (!db) return { rows: [], total: 0, truncated: false };
 
   const where = buildAuthHealthHistoryWhere(input);
@@ -398,22 +473,30 @@ export async function listAuthHealthChecksForExportWithDb(
   return { rows, total, truncated: total > rows.length };
 }
 
-export async function getRecentAuthHealthCheckByTaskUid(taskUid: string, sinceMs: number) {
+export async function getRecentAuthHealthCheckByTaskUid(
+  taskUid: string,
+  sinceMs: number
+) {
   const db = await getDb();
   if (!db) return null;
   const rows = await db
     .select()
     .from(authHealthChecks)
-    .where(and(
-      eq(authHealthChecks.scheduleCronTaskUid, taskUid),
-      gte(authHealthChecks.checkedAt, sinceMs),
-    ))
+    .where(
+      and(
+        eq(authHealthChecks.scheduleCronTaskUid, taskUid),
+        gte(authHealthChecks.checkedAt, sinceMs)
+      )
+    )
     .orderBy(desc(authHealthChecks.checkedAt))
     .limit(1);
   return rows[0] ?? null;
 }
 
-export async function listAuthHealthChecksByTaskUid(taskUid: string, limit = 2) {
+export async function listAuthHealthChecksByTaskUid(
+  taskUid: string,
+  limit = 2
+) {
   const db = await getDb();
   if (!db) return [];
   return db
@@ -439,8 +522,12 @@ export type AuthHealthUptimeRow = {
   checkedAt: number;
 };
 
-export function calculateAuthHealthUptimeSummary(inputRows: AuthHealthUptimeRow[]) {
-  const expectedRuns = Math.floor(AUTH_HEALTH_WINDOW_MS / AUTH_HEALTH_INTERVAL_MS);
+export function calculateAuthHealthUptimeSummary(
+  inputRows: AuthHealthUptimeRow[]
+) {
+  const expectedRuns = Math.floor(
+    AUTH_HEALTH_WINDOW_MS / AUTH_HEALTH_INTERVAL_MS
+  );
   const emptySummary = {
     windowHours: 24,
     expectedRuns,
@@ -470,14 +557,15 @@ export function calculateAuthHealthUptimeSummary(inputRows: AuthHealthUptimeRow[
   const rows = [...inputRows].sort((a, b) => b.checkedAt - a.checkedAt);
   if (!rows.length) return emptySummary;
 
-  const successfulRuns = rows.filter((row) => row.overallStatus === "ok").length;
+  const successfulRuns = rows.filter(row => row.overallStatus === "ok").length;
   const failedRuns = rows.length - successfulRuns;
   const chronological = [...rows].reverse();
   let incidentCount = 0;
   let previousStatus: "ok" | "fail" | null = null;
   for (const row of chronological) {
     const currentStatus = row.overallStatus === "ok" ? "ok" : "fail";
-    if (currentStatus === "fail" && previousStatus !== "fail") incidentCount += 1;
+    if (currentStatus === "fail" && previousStatus !== "fail")
+      incidentCount += 1;
     previousStatus = currentStatus;
   }
 
@@ -490,14 +578,15 @@ export function calculateAuthHealthUptimeSummary(inputRows: AuthHealthUptimeRow[
     ["emailProviderStatus", "Email provider"],
   ] as const;
   const components = componentFields.map(([key, label]) => {
-    const componentSuccesses = rows.filter((row) => row[key] === "ok").length;
+    const componentSuccesses = rows.filter(row => row[key] === "ok").length;
     return {
       key,
       label,
-      latestStatus: rows[0][key] === "ok" ? "ok" as const : "fail" as const,
+      latestStatus: rows[0][key] === "ok" ? ("ok" as const) : ("fail" as const),
       successfulRuns: componentSuccesses,
       failedRuns: rows.length - componentSuccesses,
-      uptimePercent: Math.round((componentSuccesses / rows.length) * 10_000) / 100,
+      uptimePercent:
+        Math.round((componentSuccesses / rows.length) * 10_000) / 100,
     };
   });
 
@@ -507,13 +596,19 @@ export function calculateAuthHealthUptimeSummary(inputRows: AuthHealthUptimeRow[
     successfulRuns,
     failedRuns,
     uptimePercent: Math.round((successfulRuns / rows.length) * 10_000) / 100,
-    coveragePercent: Math.min(100, Math.round((rows.length / expectedRuns) * 10_000) / 100),
+    coveragePercent: Math.min(
+      100,
+      Math.round((rows.length / expectedRuns) * 10_000) / 100
+    ),
     remainingRuns: Math.max(0, expectedRuns - rows.length),
     observationComplete: rows.length >= expectedRuns,
     incidentCount,
     currentIncidentOpen: rows[0].overallStatus === "fail",
-    averageDurationMs: Math.round(rows.reduce((sum, row) => sum + row.durationMs, 0) / rows.length),
-    latestStatus: rows[0].overallStatus === "ok" ? "ok" as const : "fail" as const,
+    averageDurationMs: Math.round(
+      rows.reduce((sum, row) => sum + row.durationMs, 0) / rows.length
+    ),
+    latestStatus:
+      rows[0].overallStatus === "ok" ? ("ok" as const) : ("fail" as const),
     latestCheckedAt: rows[0].checkedAt,
     firstObservedAt: rows[rows.length - 1].checkedAt,
     nextExpectedAt: rows[0].checkedAt + AUTH_HEALTH_INTERVAL_MS,
@@ -528,10 +623,12 @@ export async function getAuthHealthUptimeSummary(nowMs = Date.now()) {
   const rows = await db
     .select()
     .from(authHealthChecks)
-    .where(and(
-      eq(authHealthChecks.triggerSource, "scheduled"),
-      gte(authHealthChecks.checkedAt, nowMs - AUTH_HEALTH_WINDOW_MS),
-    ))
+    .where(
+      and(
+        eq(authHealthChecks.triggerSource, "scheduled"),
+        gte(authHealthChecks.checkedAt, nowMs - AUTH_HEALTH_WINDOW_MS)
+      )
+    )
     .orderBy(desc(authHealthChecks.checkedAt));
   return calculateAuthHealthUptimeSummary(rows);
 }
@@ -548,8 +645,13 @@ export async function pruneAuthOperationsData(nowMs = Date.now()) {
     .delete(authHealthChecks)
     .where(lt(authHealthChecks.checkedAt, healthCutoff));
   return {
-    diagnosticEventsDeleted: Number((diagnosticsResult as unknown as { affectedRows?: number }).affectedRows ?? 0),
-    healthChecksDeleted: Number((healthResult as unknown as { affectedRows?: number }).affectedRows ?? 0),
+    diagnosticEventsDeleted: Number(
+      (diagnosticsResult as unknown as { affectedRows?: number })
+        .affectedRows ?? 0
+    ),
+    healthChecksDeleted: Number(
+      (healthResult as unknown as { affectedRows?: number }).affectedRows ?? 0
+    ),
   };
 }
 
@@ -578,7 +680,9 @@ export async function upsertBusinessProfile(profile: InsertBusinessProfile) {
 
 // ─── Customer request helpers ─────────────────────────────────────────────────
 
-export async function createCustomerRequest(req: InsertCustomerRequest): Promise<number> {
+export async function createCustomerRequest(
+  req: InsertCustomerRequest
+): Promise<number> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const [result] = await db.insert(customerRequests).values(req);
@@ -588,9 +692,9 @@ export async function createCustomerRequest(req: InsertCustomerRequest): Promise
 export async function getCustomerRequests(
   userId: number,
   limit = 50,
-  database?: Awaited<ReturnType<typeof getDb>>,
+  database?: Awaited<ReturnType<typeof getDb>>
 ) {
-  const db = database ?? await getDb();
+  const db = database ?? (await getDb());
   if (!db) return [];
   return db
     .select()
@@ -600,7 +704,10 @@ export async function getCustomerRequests(
     .limit(limit);
 }
 
-export async function getMonthlyRequestCount(userId: number, yearMonth: string) {
+export async function getMonthlyRequestCount(
+  userId: number,
+  yearMonth: string
+) {
   const db = await getDb();
   if (!db) return 0;
   const [year, month] = yearMonth.split("-");
@@ -670,7 +777,7 @@ export async function getFreeQuotaSummary(userId: number) {
 export async function getFreeQuotaSummaryFromDb(
   userId: number,
   db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
-  nowMs = Date.now(),
+  nowMs = Date.now()
 ) {
   const countRows = await db
     .select({ count: sql<number>`count(*)` })
@@ -705,10 +812,15 @@ export async function getFreeQuotaSummaryFromDb(
   }
 
   const tenthSentAt = tenthRequest.sentAt;
-  const cutoff = new Date(nowMs - FREE_ROLLING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const cutoff = new Date(
+    nowMs - FREE_ROLLING_WINDOW_DAYS * 24 * 60 * 60 * 1000
+  );
   const postInitial = or(
     gt(customerRequests.sentAt, tenthSentAt),
-    and(eq(customerRequests.sentAt, tenthSentAt), gt(customerRequests.id, tenthRequest.id)),
+    and(
+      eq(customerRequests.sentAt, tenthSentAt),
+      gt(customerRequests.id, tenthRequest.id)
+    )
   );
   const rollingRows = await db
     .select({ sentAt: customerRequests.sentAt })
@@ -716,7 +828,8 @@ export async function getFreeQuotaSummaryFromDb(
     .where(
       and(
         eq(customerRequests.userId, userId),
-        gte(customerRequests.sentAt, cutoff), postInitial,
+        gte(customerRequests.sentAt, cutoff),
+        postInitial,
         isNotNull(customerRequests.sentAt)
       )
     )
@@ -732,7 +845,10 @@ export async function getFreeQuotaSummaryFromDb(
 // ─── API Key helpers ─────────────────────────────────────────────────────────────────────────────────
 
 /** Generate a new raw API key, store its SHA-256 hash, return the raw key (shown once). */
-export async function generateApiKey(userId: number, label: string): Promise<{ raw: string; id: number }> {
+export async function generateApiKey(
+  userId: number,
+  label: string
+): Promise<{ raw: string; id: number }> {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   const raw = "rl_" + randomBytes(32).toString("hex");
@@ -745,7 +861,10 @@ export async function generateApiKey(userId: number, label: string): Promise<{ r
     label,
     scopes: JSON.stringify(["contacts:write", "review_requests:send"]),
   });
-  return { raw, id: Number((result as unknown as { insertId: number }).insertId) };
+  return {
+    raw,
+    id: Number((result as unknown as { insertId: number }).insertId),
+  };
 }
 
 /** List active (non-revoked) API keys for a user — never returns the raw key. */
@@ -760,7 +879,10 @@ export async function listApiKeys(userId: number) {
 }
 
 /** Revoke an API key by id (soft-delete). */
-export async function revokeApiKey(userId: number, keyId: number): Promise<void> {
+export async function revokeApiKey(
+  userId: number,
+  keyId: number
+): Promise<void> {
   const db = await getDb();
   if (!db) return;
   await db
@@ -781,7 +903,10 @@ export async function getUserByApiKey(rawKey: string): Promise<number | null> {
     .limit(1);
   if (!row) return null;
   // Update lastUsedAt asynchronously — don't block the request
-  db.update(apiKeys).set({ lastUsedAt: Date.now() }).where(eq(apiKeys.id, row.id)).catch(() => {});
+  db.update(apiKeys)
+    .set({ lastUsedAt: Date.now() })
+    .where(eq(apiKeys.id, row.id))
+    .catch(() => {});
   return row.userId;
 }
 
@@ -831,7 +956,7 @@ export async function getRecentApiImports(userId: number, limit = 10) {
     .where(eq(apiImportEvents.userId, userId))
     .orderBy(desc(apiImportEvents.createdAt))
     .limit(limit);
-  return rows.map((row) => ({
+  return rows.map(row => ({
     ...row,
     email: row.emailMasked ?? "Not available",
   }));
@@ -873,7 +998,10 @@ export async function createWebhookConfig(params: {
 }
 
 /** Delete a webhook config by id. */
-export async function deleteWebhookConfig(userId: number, id: number): Promise<void> {
+export async function deleteWebhookConfig(
+  userId: number,
+  id: number
+): Promise<void> {
   const db = await getDb();
   if (!db) return;
   await db
@@ -882,7 +1010,10 @@ export async function deleteWebhookConfig(userId: number, id: number): Promise<v
 }
 
 /** Update lastFiredAt and lastStatus on a webhook config. */
-export async function updateWebhookStatus(id: number, status: number): Promise<void> {
+export async function updateWebhookStatus(
+  id: number,
+  status: number
+): Promise<void> {
   const db = await getDb();
   if (!db) return;
   await db
@@ -892,10 +1023,16 @@ export async function updateWebhookStatus(id: number, status: number): Promise<v
 }
 
 // ── Webhook delivery logs ─────────────────────────────────────────────────────
-import { webhookDeliveryLogs, notificationPrefs, type InsertWebhookDeliveryLog } from "../drizzle/schema";
+import {
+  webhookDeliveryLogs,
+  notificationPrefs,
+  type InsertWebhookDeliveryLog,
+} from "../drizzle/schema";
 
 /** Log a webhook delivery attempt. */
-export async function logWebhookDelivery(entry: InsertWebhookDeliveryLog): Promise<void> {
+export async function logWebhookDelivery(
+  entry: InsertWebhookDeliveryLog
+): Promise<void> {
   const db = await getDb();
   if (!db) return;
   await db.insert(webhookDeliveryLogs).values(entry);
@@ -906,9 +1043,11 @@ export async function logWebhookDelivery(entry: InsertWebhookDeliveryLog): Promi
     .where(eq(webhookDeliveryLogs.webhookId, entry.webhookId))
     .orderBy(desc(webhookDeliveryLogs.createdAt));
   if (rows.length > 50) {
-    const idsToDelete = rows.slice(50).map((r) => r.id);
+    const idsToDelete = rows.slice(50).map(r => r.id);
     for (const id of idsToDelete) {
-      await db.delete(webhookDeliveryLogs).where(eq(webhookDeliveryLogs.id, id));
+      await db
+        .delete(webhookDeliveryLogs)
+        .where(eq(webhookDeliveryLogs.id, id));
     }
   }
 }
@@ -946,11 +1085,14 @@ export async function getNotificationPrefs(userId: number) {
 }
 
 /** Update notification prefs for a user. */
-export async function updateNotificationPrefs(userId: number, prefs: {
-  wooAutoImportNotify?: boolean;
-  notifyOnEmailOpen?: boolean;
-  onboardingTipsEnabled?: boolean;
-}) {
+export async function updateNotificationPrefs(
+  userId: number,
+  prefs: {
+    wooAutoImportNotify?: boolean;
+    notifyOnEmailOpen?: boolean;
+    onboardingTipsEnabled?: boolean;
+  }
+) {
   const db = await getDb();
   if (!db) return;
   await db

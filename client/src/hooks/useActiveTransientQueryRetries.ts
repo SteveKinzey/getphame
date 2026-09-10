@@ -12,12 +12,13 @@ import { getActiveTransientRetryCount } from "@/lib/apiRecoveryState";
 export function useActiveTransientQueryRetries(): number {
   const queryClient = useQueryClient();
   const subscribe = useCallback(
-    (onStoreChange: () => void) => queryClient.getQueryCache().subscribe(onStoreChange),
-    [queryClient],
+    (onStoreChange: () => void) =>
+      queryClient.getQueryCache().subscribe(onStoreChange),
+    [queryClient]
   );
   const getSnapshot = useCallback(
     () => getActiveTransientRetryCount(queryClient),
-    [queryClient],
+    [queryClient]
   );
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);

@@ -33,7 +33,9 @@ export async function createContext(
       };
     }
   } catch (error) {
-    console.warn("[Auth] Revocable session resolution failed; continuing with legacy session validation");
+    console.warn(
+      "[Auth] Revocable session resolution failed; continuing with legacy session validation"
+    );
   }
 
   try {

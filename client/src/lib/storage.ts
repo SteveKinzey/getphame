@@ -8,7 +8,7 @@ export interface BusinessProfile {
   emailjsServiceId?: string;
   emailjsTemplateId?: string;
   emailjsPublicKey?: string;
-  tier: 'free' | 'pro';
+  tier: "free" | "pro";
   onboardingComplete: boolean;
 }
 
@@ -18,8 +18,8 @@ export interface ReviewRequest {
   customerEmail?: string;
   customerPhone?: string;
   sentAt: string; // ISO date string
-  method: 'email' | 'sms' | 'both';
-  status: 'sent' | 'reminded' | 'completed';
+  method: "email" | "sms" | "both";
+  status: "sent" | "reminded" | "completed";
   reminderScheduledAt?: string;
   reminderSentAt?: string;
 }
@@ -30,7 +30,7 @@ export interface AppData {
   lastUpdated: string;
 }
 
-const STORAGE_KEY = 'review-link-data';
+const STORAGE_KEY = "review-link-data";
 
 const DEFAULT_DATA: AppData = {
   profile: null,
@@ -53,7 +53,7 @@ export function saveData(data: AppData): void {
     data.lastUpdated = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (e) {
-    console.error('Failed to save data:', e);
+    console.error("Failed to save data:", e);
   }
 }
 
@@ -77,9 +77,12 @@ export function addRequest(req: ReviewRequest): void {
   saveData(data);
 }
 
-export function updateRequest(id: string, updates: Partial<ReviewRequest>): void {
+export function updateRequest(
+  id: string,
+  updates: Partial<ReviewRequest>
+): void {
   const data = loadData();
-  const idx = data.requests.findIndex((r) => r.id === id);
+  const idx = data.requests.findIndex(r => r.id === id);
   if (idx !== -1) {
     data.requests[idx] = { ...data.requests[idx], ...updates };
     saveData(data);
@@ -90,7 +93,7 @@ export function getMonthlyCount(): number {
   const requests = getRequests();
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  return requests.filter((r) => new Date(r.sentAt) >= startOfMonth).length;
+  return requests.filter(r => new Date(r.sentAt) >= startOfMonth).length;
 }
 
 export function getTotalCount(): number {
@@ -101,13 +104,13 @@ export const FREE_TIER_LIMIT = 10;
 
 export function isAtFreeLimit(): boolean {
   const profile = getProfile();
-  if (profile?.tier === 'pro') return false;
+  if (profile?.tier === "pro") return false;
   return getMonthlyCount() >= FREE_TIER_LIMIT;
 }
 
 export function getRemainingFreeRequests(): number {
   const profile = getProfile();
-  if (profile?.tier === 'pro') return Infinity;
+  if (profile?.tier === "pro") return Infinity;
   return Math.max(0, FREE_TIER_LIMIT - getMonthlyCount());
 }
 
@@ -116,8 +119,8 @@ export function getPendingReminders(): ReviewRequest[] {
   const requests = getRequests();
   const now = new Date();
   const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
-  return requests.filter((r) => {
-    if (r.status !== 'sent') return false;
+  return requests.filter(r => {
+    if (r.status !== "sent") return false;
     if (!r.reminderScheduledAt) return false;
     return new Date(r.reminderScheduledAt) <= now;
   });

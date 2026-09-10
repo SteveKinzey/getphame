@@ -18,7 +18,7 @@ describe("administrator SMTP audit export", () => {
       },
       {
         occurredAt: Date.parse("2026-07-15T11:00:00.000Z"),
-        actorName: "=IMPORTXML(\"https://bad.test\")",
+        actorName: '=IMPORTXML("https://bad.test")',
         actorEmail: "admin@example.test",
         targetName: "Second Account",
         targetEmail: "second@example.test",
@@ -30,7 +30,9 @@ describe("administrator SMTP audit export", () => {
 
     expect(csv.startsWith("\uFEFF")).toBe(true);
     expect(csv.split("\r\n")).toHaveLength(3);
-    expect(csv).toContain('"Occurred at","Administrator","Administrator email","Target account","Target email","SMTP user","Action","Outcome"');
+    expect(csv).toContain(
+      '"Occurred at","Administrator","Administrator email","Target account","Target email","SMTP user","Action","Outcome"'
+    );
     expect(csv).toContain('"First Account"');
     expect(csv).toContain('"Second Account"');
     expect(csv).toContain('"\'=IMPORTXML(""https://bad.test"")"');
@@ -39,7 +41,10 @@ describe("administrator SMTP audit export", () => {
   });
 
   it("uses one shared filter builder for paginated listing and complete export", () => {
-    const routerSource = fs.readFileSync(path.join(process.cwd(), "server/routers.ts"), "utf8");
+    const routerSource = fs.readFileSync(
+      path.join(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
     expect(routerSource.match(/buildSmtpAuditWhere\(input\)/g)).toHaveLength(2);
     expect(routerSource).toContain("exportSmtpAuditLogs: adminProcedure");
     expect(routerSource).toContain("buildSmtpAuditCsv(entries)");
@@ -47,7 +52,8 @@ describe("administrator SMTP audit export", () => {
   });
 
   it("creates a stable dated filename", () => {
-    expect(buildSmtpAuditCsvFilename(new Date("2026-07-15T23:59:59.000Z")))
-      .toBe("getphame-smtp-removal-audit-2026-07-15.csv");
+    expect(
+      buildSmtpAuditCsvFilename(new Date("2026-07-15T23:59:59.000Z"))
+    ).toBe("getphame-smtp-removal-audit-2026-07-15.csv");
   });
 });

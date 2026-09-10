@@ -38,7 +38,9 @@ export function isPremiumFeatureKey(value: string): value is PremiumFeatureKey {
   return PREMIUM_FEATURE_KEYS.includes(value as PremiumFeatureKey);
 }
 
-export function normalizePremiumFeatureKey(value: string | null | undefined): PremiumFeatureKey {
+export function normalizePremiumFeatureKey(
+  value: string | null | undefined
+): PremiumFeatureKey {
   return value && isPremiumFeatureKey(value) ? value : "plans";
 }
 

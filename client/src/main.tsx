@@ -1,6 +1,6 @@
 import { trpc } from "@/lib/trpc";
 import i18n, { i18nReady } from "@/lib/i18n"; // Initialize i18next before app renders
-import { UNAUTHED_ERR_MSG } from '@shared/const';
+import { UNAUTHED_ERR_MSG } from "@shared/const";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
@@ -94,42 +94,57 @@ const trpcClient = trpc.createClient({
 // ── Service worker ────────────────────────────────────────────────────────────
 const SERVICE_WORKER_URL = "/sw-v28.js";
 
-function syncLanguageToServiceWorker(registration: ServiceWorkerRegistration, language: string) {
-  const worker = registration.active ?? registration.waiting ?? registration.installing;
+function syncLanguageToServiceWorker(
+  registration: ServiceWorkerRegistration,
+  language: string
+) {
+  const worker =
+    registration.active ?? registration.waiting ?? registration.installing;
   worker?.postMessage({ type: "SET_LANGUAGE", language });
 }
 
-function syncDocumentLanguage(language = i18n.resolvedLanguage ?? i18n.language ?? "en") {
+function syncDocumentLanguage(
+  language = i18n.resolvedLanguage ?? i18n.language ?? "en"
+) {
   document.documentElement.lang = language;
 }
 
 i18n.on("languageChanged", syncDocumentLanguage);
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register(SERVICE_WORKER_URL).then((registration) => {
-      const syncCurrentLanguage = (language = i18n.resolvedLanguage ?? i18n.language ?? "en") => {
-        syncLanguageToServiceWorker(registration, language);
-      };
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register(SERVICE_WORKER_URL)
+      .then(registration => {
+        const syncCurrentLanguage = (
+          language = i18n.resolvedLanguage ?? i18n.language ?? "en"
+        ) => {
+          syncLanguageToServiceWorker(registration, language);
+        };
 
-      syncCurrentLanguage();
-      i18n.on("languageChanged", syncCurrentLanguage);
-      navigator.serviceWorker.addEventListener("controllerchange", () => syncCurrentLanguage());
-    }).catch(console.error);
+        syncCurrentLanguage();
+        i18n.on("languageChanged", syncCurrentLanguage);
+        navigator.serviceWorker.addEventListener("controllerchange", () =>
+          syncCurrentLanguage()
+        );
+      })
+      .catch(console.error);
   });
 }
 
 // The initial locale is known only after i18n initializes. Await the matching
 // compact catalog before mount so legacy literals cannot briefly flash English.
-void i18nReady.then(() => {
-  syncDocumentLanguage();
-  return loadStaticLocalizationSupplement();
-}).finally(() => {
-  createRoot(document.getElementById("root")!).render(
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </trpc.Provider>,
-  );
-});
+void i18nReady
+  .then(() => {
+    syncDocumentLanguage();
+    return loadStaticLocalizationSupplement();
+  })
+  .finally(() => {
+    createRoot(document.getElementById("root")!).render(
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </trpc.Provider>
+    );
+  });

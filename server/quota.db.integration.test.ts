@@ -3,7 +3,10 @@ import mysql, { type Connection } from "mysql2/promise";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { getFreeQuotaSummaryFromDb } from "./db";
-import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
+import {
+  evaluateFreeQuotaAccess,
+  formatFreeQuotaBlockedMessage,
+} from "./quotaEnforcement";
 import { FREE_LIMIT_ERR_MSG } from "@shared/const";
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -35,7 +38,7 @@ integration("Free-plan quota through isolated persisted rows", () => {
   async function seed(sentAtMs: number) {
     await seeded.query(
       "INSERT INTO customer_requests (userId, sentAt) VALUES (?, ?)",
-      [userId, new Date(sentAtMs)],
+      [userId, new Date(sentAtMs)]
     );
   }
 
@@ -50,27 +53,47 @@ integration("Free-plan quota through isolated persisted rows", () => {
     const old = nowMs - 60 * 24 * 60 * 60 * 1000;
     for (let index = 0; index < 9; index += 1) await seed(old + index * 1_000);
 
-    expect(await decision()).toMatchObject({ allowed: true, quota: { phase: "initial", remaining: 1 } });
+    expect(await decision()).toMatchObject({
+      allowed: true,
+      quota: { phase: "initial", remaining: 1 },
+    });
 
     await seed(old + 9_000);
-    expect(await decision()).toMatchObject({ allowed: true, quota: { phase: "rolling", remaining: 5 } });
+    expect(await decision()).toMatchObject({
+      allowed: true,
+      quota: { phase: "rolling", remaining: 5 },
+    });
 
     await seed(nowMs - 29 * 24 * 60 * 60 * 1000);
-    expect(await decision()).toMatchObject({ allowed: true, quota: { phase: "rolling", used: 1, remaining: 4 } });
+    expect(await decision()).toMatchObject({
+      allowed: true,
+      quota: { phase: "rolling", used: 1, remaining: 4 },
+    });
 
-    for (let index = 0; index < 4; index += 1) await seed(nowMs - (4 - index) * 24 * 60 * 60 * 1000);
+    for (let index = 0; index < 4; index += 1)
+      await seed(nowMs - (4 - index) * 24 * 60 * 60 * 1000);
     const blocked = await decision();
-    expect(blocked).toMatchObject({ allowed: false, quota: { phase: "rolling", used: 5, remaining: 0, blocked: true } });
-    expect(formatFreeQuotaBlockedMessage(blocked.quota, FREE_LIMIT_ERR_MSG)).toContain("Next send available");
+    expect(blocked).toMatchObject({
+      allowed: false,
+      quota: { phase: "rolling", used: 5, remaining: 0, blocked: true },
+    });
+    expect(
+      formatFreeQuotaBlockedMessage(blocked.quota, FREE_LIMIT_ERR_MSG)
+    ).toContain("Next send available");
 
-    const [rows] = await seeded.query<Array<{ id: number }> & mysql.RowDataPacket[]>(
+    const [rows] = await seeded.query<
+      Array<{ id: number }> & mysql.RowDataPacket[]
+    >(
       "SELECT id FROM customer_requests WHERE userId = ? ORDER BY sentAt ASC, id ASC LIMIT 1 OFFSET 10",
-      [userId],
+      [userId]
     );
-    await seeded.query(
-      "UPDATE customer_requests SET sentAt = ? WHERE id = ?",
-      [new Date(nowMs - 31 * 24 * 60 * 60 * 1000), rows[0].id],
-    );
-    expect(await decision()).toMatchObject({ allowed: true, quota: { phase: "rolling", used: 4, remaining: 1, blocked: false } });
+    await seeded.query("UPDATE customer_requests SET sentAt = ? WHERE id = ?", [
+      new Date(nowMs - 31 * 24 * 60 * 60 * 1000),
+      rows[0].id,
+    ]);
+    expect(await decision()).toMatchObject({
+      allowed: true,
+      quota: { phase: "rolling", used: 4, remaining: 1, blocked: false },
+    });
   }, 30_000);
 });

@@ -3,7 +3,13 @@ import fs from "node:fs";
 import path from "node:path";
 
 describe("SmtpTestEmailHistory", () => {
-  const source = fs.readFileSync(path.resolve(process.cwd(), "client/src/components/SmtpTestEmailHistory.tsx"), "utf8");
+  const source = fs.readFileSync(
+    path.resolve(
+      process.cwd(),
+      "client/src/components/SmtpTestEmailHistory.tsx"
+    ),
+    "utf8"
+  );
 
   it("renders a privacy note, bounded history, and only the masked recipient field", () => {
     expect(source).toContain("smtp.testEmailHistoryPrivacy");

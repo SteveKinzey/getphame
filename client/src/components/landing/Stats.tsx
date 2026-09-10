@@ -5,19 +5,47 @@ export default function Stats() {
   const { t } = useTranslation();
 
   const stats = [
-    { value: t("landing.stats.individualOutreachValue", { defaultValue: "Individual" }), label: t("landing.stats.moreReviewsLabel", { defaultValue: "customer outreach" }) },
-    { value: t("landing.stats.setupValue", { defaultValue: "Guided" }), label: t("landing.stats.averageSetupTimeLabel", { defaultValue: "setup and onboarding" }) },
-    { value: t("landing.stats.emailsSentValue", { defaultValue: "Your inbox" }), label: t("landing.stats.emailsSentLabel", { defaultValue: "emails sent from your own address" }) },
-    { value: t("landing.stats.followUpValue", { defaultValue: "Automatic" }), label: t("landing.stats.averageResponseRateLabel", { defaultValue: "reminders stop after customer action" }) },
+    {
+      value: t("landing.stats.individualOutreachValue", {
+        defaultValue: "Individual",
+      }),
+      label: t("landing.stats.moreReviewsLabel", {
+        defaultValue: "customer outreach",
+      }),
+    },
+    {
+      value: t("landing.stats.setupValue", { defaultValue: "Guided" }),
+      label: t("landing.stats.averageSetupTimeLabel", {
+        defaultValue: "setup and onboarding",
+      }),
+    },
+    {
+      value: t("landing.stats.emailsSentValue", { defaultValue: "Your inbox" }),
+      label: t("landing.stats.emailsSentLabel", {
+        defaultValue: "emails sent from your own address",
+      }),
+    },
+    {
+      value: t("landing.stats.followUpValue", { defaultValue: "Automatic" }),
+      label: t("landing.stats.averageResponseRateLabel", {
+        defaultValue: "reminders stop after customer action",
+      }),
+    },
   ];
 
   const industries = [
     t("landing.stats.industryPhotographers", { defaultValue: "Photographers" }),
-    t("landing.stats.industryCafesRestaurants", { defaultValue: "Cafés & Restaurants" }),
+    t("landing.stats.industryCafesRestaurants", {
+      defaultValue: "Cafés & Restaurants",
+    }),
     t("landing.stats.industryHomeServices", { defaultValue: "Home Services" }),
-    t("landing.stats.industryClinicsSalons", { defaultValue: "Clinics & Salons" }),
+    t("landing.stats.industryClinicsSalons", {
+      defaultValue: "Clinics & Salons",
+    }),
     t("landing.stats.industryAgencies", { defaultValue: "Agencies" }),
-    t("landing.stats.industryWooCommerceStores", { defaultValue: "WooCommerce Stores" }),
+    t("landing.stats.industryWooCommerceStores", {
+      defaultValue: "WooCommerce Stores",
+    }),
   ];
 
   return (
@@ -27,7 +55,9 @@ export default function Stats() {
       <div className="container relative z-10">
         <FadeUp className="text-center mb-10">
           <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-3">
-            {t("landing.stats.heading", { defaultValue: "Built for businesses that run on reputation" })}
+            {t("landing.stats.heading", {
+              defaultValue: "Built for businesses that run on reputation",
+            })}
           </h2>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-200 font-bold">
             {industries.map((ind, i) => (
@@ -39,9 +69,15 @@ export default function Stats() {
           </div>
         </FadeUp>
 
-        <StaggerChildren className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6" staggerDelay={0.1}>
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center p-6 md:p-8 rounded-2xl bg-[#0f1d32] border border-[#1e3050] hover:border-primary/20 transition-colors duration-300">
+        <StaggerChildren
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6"
+          staggerDelay={0.1}
+        >
+          {stats.map(stat => (
+            <div
+              key={stat.label}
+              className="text-center p-6 md:p-8 rounded-2xl bg-[#0f1d32] border border-[#1e3050] hover:border-primary/20 transition-colors duration-300"
+            >
               <div className="font-display max-w-full break-words font-extrabold text-base leading-tight text-primary mb-2 min-[350px]:text-lg lg:text-2xl xl:text-3xl">
                 {stat.value}
               </div>

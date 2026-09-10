@@ -10,10 +10,10 @@ The current application already separates personal SMTP credentials from Pro bul
 
 The Settings page should present one **Email delivery** area with two clearly separate connection paths. Both paths begin in a disconnected state; no provider, credential, or sender address is prefilled from platform configuration.
 
-| Path | Intended use | Inputs | Connection result |
-| --- | --- | --- | --- |
-| Business email | Everyday, lower-volume individual outreach | Email address, app password or SMTP password, optional advanced host/port/TLS, sender name, reply-to | Authenticated SMTP connection owned by the current user |
-| Bulk mail service | Higher-volume delivery through a user-owned Pro provider account | Provider preset or custom relay, provider SMTP username and secret, verified sender address, sender name | Authenticated external relay owned by the current user |
+| Path              | Intended use                                                     | Inputs                                                                                                   | Connection result                                       |
+| ----------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Business email    | Everyday, lower-volume individual outreach                       | Email address, app password or SMTP password, optional advanced host/port/TLS, sender name, reply-to     | Authenticated SMTP connection owned by the current user |
+| Bulk mail service | Higher-volume delivery through a user-owned Pro provider account | Provider preset or custom relay, provider SMTP username and secret, verified sender address, sender name | Authenticated external relay owned by the current user  |
 
 The user first chooses a path, then chooses a provider. The bulk-provider list excludes **SendGrid** because the platform’s SendGrid integration is administrative-only. The choices retain user-owned providers such as Amazon SES, Mailgun, Mailjet, MailerSend, SMTP2GO, Brevo, Postmark, SparkPost, Elastic Email, Zoho ZeptoMail, SocketLabs, and Custom SMTP.
 
@@ -25,12 +25,12 @@ The connection form must preserve keyboard navigation, visible focus, a password
 
 The existing `smtp_credentials` and `bulk_sender_credentials` records remain the credential stores during the initial migration. This avoids unnecessarily moving encrypted tenant secrets while the behavior change is introduced.
 
-| Record | Required additions | Purpose |
-| --- | --- | --- |
-| `smtp_credentials` | `provider_id`, `verification_status`, `last_verified_at`, `last_error_code`, `last_error_at` | Distinguishes a provider type from raw host data and gives a safe, tenant-visible validation state without exposing a secret or raw provider response. |
-| `bulk_sender_credentials` | `verification_status`, `last_verified_at`, `last_error_code`, `last_error_at`, `sender_verification_attested_at` | Separates connection authentication from the user’s confirmation that the configured From address/domain is verified in their own bulk provider. `apiKey` remains encrypted legacy storage until a later, carefully migrated rename to `encrypted_secret`. |
-| `outbound_mail_preferences` | `user_id` unique, `selected_channel` (`personal` or `bulk`), `updated_at` | Makes the customer-outreach route an explicit per-user choice. It prevents a bulk connection from silently taking precedence over personal SMTP. |
-| `mail_connection_events` | `user_id`, `channel`, `event_type`, `outcome`, `reason_code`, `occurred_at` | Optional privacy-bounded audit history for connect, validation, disconnect, and selection events. It contains no credential, raw provider response, recipient, or message content. |
+| Record                      | Required additions                                                                                               | Purpose                                                                                                                                                                                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `smtp_credentials`          | `provider_id`, `verification_status`, `last_verified_at`, `last_error_code`, `last_error_at`                     | Distinguishes a provider type from raw host data and gives a safe, tenant-visible validation state without exposing a secret or raw provider response.                                                                                                     |
+| `bulk_sender_credentials`   | `verification_status`, `last_verified_at`, `last_error_code`, `last_error_at`, `sender_verification_attested_at` | Separates connection authentication from the user’s confirmation that the configured From address/domain is verified in their own bulk provider. `apiKey` remains encrypted legacy storage until a later, carefully migrated rename to `encrypted_secret`. |
+| `outbound_mail_preferences` | `user_id` unique, `selected_channel` (`personal` or `bulk`), `updated_at`                                        | Makes the customer-outreach route an explicit per-user choice. It prevents a bulk connection from silently taking precedence over personal SMTP.                                                                                                           |
+| `mail_connection_events`    | `user_id`, `channel`, `event_type`, `outcome`, `reason_code`, `occurred_at`                                      | Optional privacy-bounded audit history for connect, validation, disconnect, and selection events. It contains no credential, raw provider response, recipient, or message content.                                                                         |
 
 All connection lookups, updates, tests, and disconnects must be scoped to `ctx.user.id`. Encrypted secrets stay in their current AES-256-GCM fields, are decrypted only at the point of a connection test or delivery attempt, and are never returned through a procedure, log, UI payload, or audit record.
 
@@ -38,29 +38,29 @@ All connection lookups, updates, tests, and disconnects must be scoped to `ctx.u
 
 The server owns all validation. The browser can preflight form completeness but cannot establish a connection or authorize a delivery channel.
 
-| Boundary | Required behavior |
-| --- | --- |
-| Provider eligibility | Reject `sendgrid` from every user-owned bulk connection procedure. Existing legacy rows are surfaced only as a migration-needed state and cannot be used for customer outreach. |
-| Sender routing | Resolve only the current user’s selected, successfully verified connection. Fail closed with a setup prompt if the preference is missing, disconnected, or needs attention. Platform system email bypasses this resolver through a separate administrator-only function. |
-| Custom hosts | Canonicalize hostnames; reject schemes, paths, localhost, private, link-local, loopback, multicast, and reserved IP addresses; resolve DNS before connecting; restrict ports to the supported submission ports (465, 587, or 2525). Apply the same protection to personal SMTP and bulk SMTP. |
-| Transport checks | Use a TLS-verified SMTP `verify()` call with bounded connection, greeting, and socket timeouts. A test does not send mail. Use strict certificate validation and never allow a user request to downgrade TLS validation. |
-| Credential updates | Verify before persisting. A failed candidate connection cannot overwrite a working saved connection. Successful updates atomically save the encrypted replacement, validation state, and timestamp. |
-| Error reporting | Return a stable, actionable reason code and user-safe message. Do not return raw SMTP, TLS, DNS, or authentication provider messages. |
-| Abuse controls | Preserve consent, suppression, quiet hours, adaptive per-provider send limits, idempotency, and stop-after-completion controls after a connection is selected. |
+| Boundary             | Required behavior                                                                                                                                                                                                                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Provider eligibility | Reject `sendgrid` from every user-owned bulk connection procedure. Existing legacy rows are surfaced only as a migration-needed state and cannot be used for customer outreach.                                                                                                               |
+| Sender routing       | Resolve only the current user’s selected, successfully verified connection. Fail closed with a setup prompt if the preference is missing, disconnected, or needs attention. Platform system email bypasses this resolver through a separate administrator-only function.                      |
+| Custom hosts         | Canonicalize hostnames; reject schemes, paths, localhost, private, link-local, loopback, multicast, and reserved IP addresses; resolve DNS before connecting; restrict ports to the supported submission ports (465, 587, or 2525). Apply the same protection to personal SMTP and bulk SMTP. |
+| Transport checks     | Use a TLS-verified SMTP `verify()` call with bounded connection, greeting, and socket timeouts. A test does not send mail. Use strict certificate validation and never allow a user request to downgrade TLS validation.                                                                      |
+| Credential updates   | Verify before persisting. A failed candidate connection cannot overwrite a working saved connection. Successful updates atomically save the encrypted replacement, validation state, and timestamp.                                                                                           |
+| Error reporting      | Return a stable, actionable reason code and user-safe message. Do not return raw SMTP, TLS, DNS, or authentication provider messages.                                                                                                                                                         |
+| Abuse controls       | Preserve consent, suppression, quiet hours, adaptive per-provider send limits, idempotency, and stop-after-completion controls after a connection is selected.                                                                                                                                |
 
 ## Validation reason codes
 
-| Code | User-facing recovery |
-| --- | --- |
-| `SMTP_AUTH_FAILED` | Check the provider username and app password or SMTP password, then try again. |
-| `GOOGLE_APP_PASSWORD_REQUIRED` | Use a newly created Google App Password rather than the regular account password. |
+| Code                              | User-facing recovery                                                                                                                                                                         |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SMTP_AUTH_FAILED`                | Check the provider username and app password or SMTP password, then try again.                                                                                                               |
+| `GOOGLE_APP_PASSWORD_REQUIRED`    | Use a newly created Google App Password rather than the regular account password.                                                                                                            |
 | `GOOGLE_APP_PASSWORD_UNAVAILABLE` | Confirm that 2-Step Verification is enabled. If the option is still unavailable, use the account’s approved OAuth option or ask the Workspace administrator about the organisation’s policy. |
-| `SMTP_AUTH_DISABLED` | Ask the provider or business email administrator to enable authenticated SMTP for this mailbox. |
-| `SMTP_HOST_UNRESOLVABLE` | Recheck the provider host or selected region. |
-| `SMTP_CONNECTION_REFUSED` | Recheck the host, supported port, and TLS mode. |
-| `SMTP_TLS_FAILED` | Use the provider’s TLS-enabled endpoint and current certificate chain. |
-| `SENDER_NOT_VERIFIED` | Verify the From address or domain inside the user’s own bulk-mail provider, then retry delivery. |
-| `CONNECTION_RATE_LIMITED` | Wait briefly, then retry. Repeated connection attempts are throttled per user and destination. |
+| `SMTP_AUTH_DISABLED`              | Ask the provider or business email administrator to enable authenticated SMTP for this mailbox.                                                                                              |
+| `SMTP_HOST_UNRESOLVABLE`          | Recheck the provider host or selected region.                                                                                                                                                |
+| `SMTP_CONNECTION_REFUSED`         | Recheck the host, supported port, and TLS mode.                                                                                                                                              |
+| `SMTP_TLS_FAILED`                 | Use the provider’s TLS-enabled endpoint and current certificate chain.                                                                                                                       |
+| `SENDER_NOT_VERIFIED`             | Verify the From address or domain inside the user’s own bulk-mail provider, then retry delivery.                                                                                             |
+| `CONNECTION_RATE_LIMITED`         | Wait briefly, then retry. Repeated connection attempts are throttled per user and destination.                                                                                               |
 
 ## Gmail App Password guidance
 

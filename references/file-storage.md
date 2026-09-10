@@ -6,7 +6,7 @@ Use the preconfigured storage helpers in `server/storage.ts`. Credentials are in
 import { storagePut } from "./server/storage";
 
 // Upload bytes to storage
-const fileKey = `${userId}-files/${fileName}.png`
+const fileKey = `${userId}-files/${fileName}.png`;
 const { key, url } = await storagePut(
   fileKey,
   fileBuffer, // Buffer | Uint8Array | string
@@ -17,6 +17,7 @@ const { key, url } = await storagePut(
 ```
 
 Tips
+
 - Save the `key` or `url` in your database; use storage for the actual file bytes. This applies to all files including images, documents, and media.
 - For file uploads, have the client POST to your server, then call `storagePut` from your backend.
 - The returned `url` (e.g. `/manus-storage/...`) is automatically served via signed redirect — no manual URL signing needed.

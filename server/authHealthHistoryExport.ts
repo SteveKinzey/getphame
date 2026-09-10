@@ -21,11 +21,18 @@ export const AUTH_HEALTH_HISTORY_EXPORT_COLUMNS = [
   { key: "durationMs", csvHeader: "duration_ms" },
 ] as const;
 
-export type AuthHealthHistoryExportColumnKey = (typeof AUTH_HEALTH_HISTORY_EXPORT_COLUMNS)[number]["key"];
-export type AuthHealthHistoryExportRow = Record<AuthHealthHistoryExportColumnKey, string>;
+export type AuthHealthHistoryExportColumnKey =
+  (typeof AUTH_HEALTH_HISTORY_EXPORT_COLUMNS)[number]["key"];
+export type AuthHealthHistoryExportRow = Record<
+  AuthHealthHistoryExportColumnKey,
+  string
+>;
 
-export const AUTH_HEALTH_HISTORY_EXPORT_COLUMN_KEYS = AUTH_HEALTH_HISTORY_EXPORT_COLUMNS
-  .map((column) => column.key) as [AuthHealthHistoryExportColumnKey, ...AuthHealthHistoryExportColumnKey[]];
+export const AUTH_HEALTH_HISTORY_EXPORT_COLUMN_KEYS =
+  AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map(column => column.key) as [
+    AuthHealthHistoryExportColumnKey,
+    ...AuthHealthHistoryExportColumnKey[],
+  ];
 
 function safeText(value: string | null | undefined, maxLength: number) {
   if (!value) return "";
@@ -37,8 +44,10 @@ function formulaSafeCell(value: string | number) {
   return /^[=+\-@]/.test(raw.trimStart()) ? `'${raw}` : raw;
 }
 
-export function buildAuthHealthHistoryExportRows(rows: AuthHealthCheck[]): AuthHealthHistoryExportRow[] {
-  return rows.map((row) => ({
+export function buildAuthHealthHistoryExportRows(
+  rows: AuthHealthCheck[]
+): AuthHealthHistoryExportRow[] {
+  return rows.map(row => ({
     recordId: formulaSafeCell(row.id),
     checkedAtUtc: formulaSafeCell(new Date(row.checkedAt).toISOString()),
     triggerSource: formulaSafeCell(row.triggerSource),
@@ -56,23 +65,33 @@ export function buildAuthHealthHistoryExportRows(rows: AuthHealthCheck[]): AuthH
   }));
 }
 
-function getAuthHealthHistoryExportColumns(selectedColumns?: readonly AuthHealthHistoryExportColumnKey[]) {
+function getAuthHealthHistoryExportColumns(
+  selectedColumns?: readonly AuthHealthHistoryExportColumnKey[]
+) {
   if (!selectedColumns) return AUTH_HEALTH_HISTORY_EXPORT_COLUMNS;
   const selected = new Set(selectedColumns);
-  return AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.filter((column) => selected.has(column.key));
+  return AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.filter(column =>
+    selected.has(column.key)
+  );
 }
 
 function serializeAuthHealthHistoryExportRows(
   rows: AuthHealthHistoryExportRow[],
   selectedColumns?: readonly AuthHealthHistoryExportColumnKey[],
-  includeBom = true,
+  includeBom = true
 ) {
   const columns = getAuthHealthHistoryExportColumns(selectedColumns);
-  return serializePreparedCsvRows<AuthHealthHistoryExportColumnKey>(rows, columns, includeBom);
+  return serializePreparedCsvRows<AuthHealthHistoryExportColumnKey>(
+    rows,
+    columns,
+    includeBom
+  );
 }
 
 export function serializeAuthHealthHistoryCsv(rows: AuthHealthCheck[]) {
-  return serializeAuthHealthHistoryExportRows(buildAuthHealthHistoryExportRows(rows));
+  return serializeAuthHealthHistoryExportRows(
+    buildAuthHealthHistoryExportRows(rows)
+  );
 }
 
 export function buildAuthHealthHistoryCsvExport(input: {
@@ -91,23 +110,37 @@ export function buildAuthHealthHistoryCsvExport(input: {
 }) {
   const generatedAt = input.generatedAt ?? Date.now();
   const exportRows = buildAuthHealthHistoryExportRows(input.rows);
-  const previewRows = exportRows.slice(0, AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT);
-  const selectedColumns = getAuthHealthHistoryExportColumns(input.selectedColumns);
-  const selectedColumnKeys = selectedColumns.map((column) => column.key);
+  const previewRows = exportRows.slice(
+    0,
+    AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT
+  );
+  const selectedColumns = getAuthHealthHistoryExportColumns(
+    input.selectedColumns
+  );
+  const selectedColumnKeys = selectedColumns.map(column => column.key);
   return {
     filename: buildAuthHealthHistoryCsvFilename(input, generatedAt),
     mimeType: "text/csv;charset=utf-8",
     csv: serializeAuthHealthHistoryExportRows(exportRows, selectedColumnKeys),
-    clipboardText: serializeAuthHealthHistoryExportRows(exportRows, selectedColumnKeys, false),
+    clipboardText: serializeAuthHealthHistoryExportRows(
+      exportRows,
+      selectedColumnKeys,
+      false
+    ),
     generatedAt,
     snapshotToMs: input.snapshotToMs ?? generatedAt,
     rowCount: input.rows.length,
     totalMatching: input.total,
     truncated: input.truncated,
-    availableColumns: AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader })),
+    availableColumns: AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map(
+      ({ key, csvHeader }) => ({ key, csvHeader })
+    ),
     searchRows: exportRows,
     preview: {
-      columns: selectedColumns.map(({ key, csvHeader }) => ({ key, csvHeader })),
+      columns: selectedColumns.map(({ key, csvHeader }) => ({
+        key,
+        csvHeader,
+      })),
       rows: previewRows,
       rowCount: previewRows.length,
       limit: AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT,
@@ -126,17 +159,23 @@ function normalizeCsvDateLabel(value?: string) {
   if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
   const [year, month, day] = value.split("-").map(Number);
   const parsed = new Date(Date.UTC(year, month - 1, day));
-  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) return undefined;
+  if (
+    parsed.getUTCFullYear() !== year ||
+    parsed.getUTCMonth() !== month - 1 ||
+    parsed.getUTCDate() !== day
+  )
+    return undefined;
   return value;
 }
 
 export function buildAuthHealthHistoryCsvFilename(
   input: { fromDate?: string; toDate?: string },
-  generatedAt = Date.now(),
+  generatedAt = Date.now()
 ) {
   const fromDate = normalizeCsvDateLabel(input.fromDate);
   const toDate = normalizeCsvDateLabel(input.toDate);
-  if (fromDate && toDate) return `getphame-auth-health-history-${fromDate}-to-${toDate}.csv`;
+  if (fromDate && toDate)
+    return `getphame-auth-health-history-${fromDate}-to-${toDate}.csv`;
   if (fromDate) return `getphame-auth-health-history-from-${fromDate}.csv`;
   if (toDate) return `getphame-auth-health-history-through-${toDate}.csv`;
   return `getphame-auth-health-history-${new Date(generatedAt).toISOString().slice(0, 10)}.csv`;

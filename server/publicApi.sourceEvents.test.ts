@@ -26,7 +26,8 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("./developerApiKeys", () => ({
-  authenticateDeveloperApiKeyWithStatus: mocks.authenticateDeveloperApiKeyWithStatus,
+  authenticateDeveloperApiKeyWithStatus:
+    mocks.authenticateDeveloperApiKeyWithStatus,
   developerApiKeyHasScope: mocks.developerApiKeyHasScope,
   recordDeveloperApiKeySuccessfulUse: mocks.recordDeveloperApiKeySuccessfulUse,
 }));
@@ -37,9 +38,12 @@ vi.mock("./developerApiImports", () => ({
   logDeveloperApiImport: mocks.logDeveloperApiImport,
   saveDeveloperApiIdempotency: mocks.saveDeveloperApiIdempotency,
 }));
-vi.mock("./developerApiAbuse", () => ({ checkDeveloperApiAbuse: mocks.checkDeveloperApiAbuse }));
+vi.mock("./developerApiAbuse", () => ({
+  checkDeveloperApiAbuse: mocks.checkDeveloperApiAbuse,
+}));
 vi.mock("./sourceConnections", () => ({
-  resolveSourceConnectionForPrincipal: mocks.resolveSourceConnectionForPrincipal,
+  resolveSourceConnectionForPrincipal:
+    mocks.resolveSourceConnectionForPrincipal,
 }));
 vi.mock("./contacts", () => ({
   upsertApiContact: mocks.upsertApiContact,
@@ -51,7 +55,8 @@ vi.mock("./reviewRequestDelivery", () => ({
   validateReviewRequestDelivery: mocks.validateReviewRequestDelivery,
 }));
 vi.mock("./sourceAutomation", () => ({
-  attachContactToSourceAutomationEvent: mocks.attachContactToSourceAutomationEvent,
+  attachContactToSourceAutomationEvent:
+    mocks.attachContactToSourceAutomationEvent,
   claimSourceAutomationEvent: mocks.claimSourceAutomationEvent,
   completeSourceAutomationEvent: mocks.completeSourceAutomationEvent,
   recordConsentEvidence: mocks.recordConsentEvidence,
@@ -130,14 +135,30 @@ function postSourceEvent(app = buildApp()) {
 describe("public source-event review-request automation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.authenticateDeveloperApiKeyWithStatus.mockResolvedValue({ kind: "ok", principal });
+    mocks.authenticateDeveloperApiKeyWithStatus.mockResolvedValue({
+      kind: "ok",
+      principal,
+    });
     mocks.developerApiKeyHasScope.mockReturnValue(true);
-    mocks.checkDeveloperApiRateLimit.mockResolvedValue({ allowed: true, remaining: 59, retryAfterSeconds: 0 });
+    mocks.checkDeveloperApiRateLimit.mockResolvedValue({
+      allowed: true,
+      remaining: 59,
+      retryAfterSeconds: 0,
+    });
     mocks.checkDeveloperApiAbuse.mockResolvedValue({ allowed: true });
-    mocks.resolveSourceConnectionForPrincipal.mockResolvedValue(sourceConnection());
+    mocks.resolveSourceConnectionForPrincipal.mockResolvedValue(
+      sourceConnection()
+    );
     mocks.hashDeveloperApiRequest.mockReturnValue("request-hash");
-    mocks.claimSourceAutomationEvent.mockResolvedValue({ kind: "claimed", eventId: 55 });
-    mocks.upsertApiContact.mockResolvedValue({ id: 77, created: true, optedOut: 0 });
+    mocks.claimSourceAutomationEvent.mockResolvedValue({
+      kind: "claimed",
+      eventId: 55,
+    });
+    mocks.upsertApiContact.mockResolvedValue({
+      id: 77,
+      created: true,
+      optedOut: 0,
+    });
     mocks.attachContactToSourceAutomationEvent.mockResolvedValue(undefined);
     mocks.recordConsentEvidence.mockResolvedValue({ id: 88 });
     mocks.completeSourceAutomationEvent.mockResolvedValue(undefined);
@@ -153,7 +174,10 @@ describe("public source-event review-request automation", () => {
       platformId: 2,
       sendLimitStatus: null,
     });
-    mocks.retryOrFailSourceAutomationEvent.mockResolvedValue({ failed: false, scheduledAt: 1_785_665_100_000 });
+    mocks.retryOrFailSourceAutomationEvent.mockResolvedValue({
+      failed: false,
+      scheduledAt: 1_785_665_100_000,
+    });
   });
 
   it("rejects a source identifier that is not bound to the authenticated key", async () => {
@@ -184,7 +208,10 @@ describe("public source-event review-request automation", () => {
   });
 
   it("rejects reuse of a source submission ID with a different payload", async () => {
-    mocks.claimSourceAutomationEvent.mockResolvedValue({ kind: "conflict", event: { status: "sent" } });
+    mocks.claimSourceAutomationEvent.mockResolvedValue({
+      kind: "conflict",
+      event: { status: "sent" },
+    });
     const response = await postSourceEvent();
     expect(response.status).toBe(409);
     expect(response.body.error.code).toBe("IDEMPOTENCY_CONFLICT");
@@ -194,55 +221,87 @@ describe("public source-event review-request automation", () => {
   it("persists consent and completes a direct delivery with source snapshots", async () => {
     const response = await postSourceEvent();
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({ success: true, status: "sent", contactId: 77, requestId: expect.any(String) });
-    expect(mocks.upsertApiContact).toHaveBeenCalledWith(principal.userId, expect.objectContaining({
-      email: "customer@example.com",
-      consentPurpose: "review_outreach",
-      consentChannel: "email",
-      sourceSubmissionId: "order-1001",
-    }));
-    expect(mocks.recordConsentEvidence).toHaveBeenCalledWith(expect.objectContaining({
-      sourceConnectionId: 42,
-      sourceSubmissionId: "order-1001",
-      contactId: 77,
-    }));
-    expect(mocks.deliverReviewRequest).toHaveBeenCalledWith(expect.objectContaining({
-      sourceConnectionId: 42,
-      sourceEventId: "order-1001",
-      contactId: 77,
-      templateId: 3,
-      platformId: 2,
-    }));
-    expect(mocks.completeSourceAutomationEvent).toHaveBeenCalledWith(expect.objectContaining({
+    expect(response.body).toMatchObject({
+      success: true,
       status: "sent",
-      customerRequestId: 99,
-    }));
+      contactId: 77,
+      requestId: expect.any(String),
+    });
+    expect(mocks.upsertApiContact).toHaveBeenCalledWith(
+      principal.userId,
+      expect.objectContaining({
+        email: "customer@example.com",
+        consentPurpose: "review_outreach",
+        consentChannel: "email",
+        sourceSubmissionId: "order-1001",
+      })
+    );
+    expect(mocks.recordConsentEvidence).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sourceConnectionId: 42,
+        sourceSubmissionId: "order-1001",
+        contactId: 77,
+      })
+    );
+    expect(mocks.deliverReviewRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sourceConnectionId: 42,
+        sourceEventId: "order-1001",
+        contactId: 77,
+        templateId: 3,
+        platformId: 2,
+      })
+    );
+    expect(mocks.completeSourceAutomationEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: "sent",
+        customerRequestId: 99,
+      })
+    );
   });
 
   it("honors source dry-run mode without sending", async () => {
-    mocks.resolveSourceConnectionForPrincipal.mockResolvedValue(sourceConnection({ dryRun: true }));
+    mocks.resolveSourceConnectionForPrincipal.mockResolvedValue(
+      sourceConnection({ dryRun: true })
+    );
     const response = await postSourceEvent();
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({ success: true, status: "dry_run", contactId: 77 });
+    expect(response.body).toMatchObject({
+      success: true,
+      status: "dry_run",
+      contactId: 77,
+    });
     expect(mocks.deliverReviewRequest).not.toHaveBeenCalled();
-    expect(mocks.completeSourceAutomationEvent).toHaveBeenCalledWith(expect.objectContaining({ status: "dry_run" }));
+    expect(mocks.completeSourceAutomationEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ status: "dry_run" })
+    );
   });
 
   it("schedules a configured delayed send without delivering in the request", async () => {
-    mocks.resolveSourceConnectionForPrincipal.mockResolvedValue(sourceConnection({ sendDelayMinutes: 15 }));
+    mocks.resolveSourceConnectionForPrincipal.mockResolvedValue(
+      sourceConnection({ sendDelayMinutes: 15 })
+    );
     const response = await postSourceEvent();
     expect(response.status).toBe(202);
-    expect(response.body).toMatchObject({ success: true, status: "scheduled", contactId: 77 });
+    expect(response.body).toMatchObject({
+      success: true,
+      status: "scheduled",
+      contactId: 77,
+    });
     expect(response.body.scheduledAt).toEqual(expect.any(Number));
     expect(mocks.deliverReviewRequest).not.toHaveBeenCalled();
-    expect(mocks.completeSourceAutomationEvent).toHaveBeenCalledWith(expect.objectContaining({
-      status: "scheduled",
-      scheduledAt: expect.any(Number),
-    }));
+    expect(mocks.completeSourceAutomationEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: "scheduled",
+        scheduledAt: expect.any(Number),
+      })
+    );
   });
 
   it("moves a recoverable SMTP failure into the bounded retry ledger", async () => {
-    mocks.deliverReviewRequest.mockRejectedValue(new Error("SMTP not configured. Connect email."));
+    mocks.deliverReviewRequest.mockRejectedValue(
+      new Error("SMTP not configured. Connect email.")
+    );
     const response = await postSourceEvent();
     expect(response.status).toBe(202);
     expect(response.body).toMatchObject({
@@ -252,11 +311,13 @@ describe("public source-event review-request automation", () => {
       reasonCode: "SMTP_NOT_READY",
       retryAt: expect.any(String),
     });
-    expect(mocks.retryOrFailSourceAutomationEvent).toHaveBeenCalledWith(expect.objectContaining({
-      userId: principal.userId,
-      eventId: 55,
-      attemptCount: 1,
-      errorCode: "SMTP_NOT_READY",
-    }));
+    expect(mocks.retryOrFailSourceAutomationEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: principal.userId,
+        eventId: 55,
+        attemptCount: 1,
+        errorCode: "SMTP_NOT_READY",
+      })
+    );
   });
 });

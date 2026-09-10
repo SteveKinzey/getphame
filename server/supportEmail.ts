@@ -36,21 +36,29 @@ function topicLabel(topic: SupportMessageInput["topic"]): string {
   return "Technical issue";
 }
 
-export async function sendSupportMessage(input: SupportMessageInput): Promise<{ sent: boolean }> {
+export async function sendSupportMessage(
+  input: SupportMessageInput
+): Promise<{ sent: boolean }> {
   const safeName = compact(input.name || "Not provided");
   const safeEmail = compact(input.email);
   const safeTopic = topicLabel(input.topic);
   const safeSubject = compact(input.subject);
   const safeMessage = input.message.trim();
-  const safeAttachmentName = input.attachment ? compact(input.attachment.filename) : null;
+  const safeAttachmentName = input.attachment
+    ? compact(input.attachment.filename)
+    : null;
   const safeAttachmentUrl = input.attachment?.url ?? null;
-  const reference = input.submissionId ? `#${input.submissionId}` : "Pending record ID";
-  const attachmentText = safeAttachmentName && safeAttachmentUrl
-    ? `\nScreenshot: ${safeAttachmentName}\n${safeAttachmentUrl}`
-    : "";
-  const attachmentHtml = safeAttachmentName && safeAttachmentUrl
-    ? `<dt style="font-weight:700;margin-top:12px;">Screenshot</dt><dd style="margin:4px 0 0;"><a href="${escapeHtml(safeAttachmentUrl)}">${escapeHtml(safeAttachmentName)}</a></dd>`
-    : "";
+  const reference = input.submissionId
+    ? `#${input.submissionId}`
+    : "Pending record ID";
+  const attachmentText =
+    safeAttachmentName && safeAttachmentUrl
+      ? `\nScreenshot: ${safeAttachmentName}\n${safeAttachmentUrl}`
+      : "";
+  const attachmentHtml =
+    safeAttachmentName && safeAttachmentUrl
+      ? `<dt style="font-weight:700;margin-top:12px;">Screenshot</dt><dd style="margin:4px 0 0;"><a href="${escapeHtml(safeAttachmentUrl)}">${escapeHtml(safeAttachmentName)}</a></dd>`
+      : "";
 
   try {
     await sendSystemEmail({

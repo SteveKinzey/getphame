@@ -86,11 +86,17 @@ describe("email magic-link verification", () => {
     };
 
     mocks.getDb.mockResolvedValue(database);
-    mocks.getUserByOpenId.mockResolvedValue({ id: 12, openId: `email_${record.email}` });
+    mocks.getUserByOpenId.mockResolvedValue({
+      id: 12,
+      openId: `email_${record.email}`,
+    });
     mocks.upsertUser.mockResolvedValue(undefined);
     mocks.issueSecuritySession
       .mockRejectedValueOnce(new Error("session signer unavailable"))
-      .mockResolvedValueOnce({ token: "signed-session-token", maxAge: 30 * 24 * 60 * 60 * 1000 });
+      .mockResolvedValueOnce({
+        token: "signed-session-token",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
 
     const app = express();
     app.use(express.json());
@@ -101,7 +107,9 @@ describe("email magic-link verification", () => {
       .query({ token: record.token });
 
     expect(failedAttempt.status).toBe(302);
-    expect(failedAttempt.headers.location).toBe("/login?auth_error=verification_failed");
+    expect(failedAttempt.headers.location).toBe(
+      "/login?auth_error=verification_failed"
+    );
     expect(database.update).not.toHaveBeenCalled();
 
     const successfulRetry = await request(app)
@@ -111,25 +119,29 @@ describe("email magic-link verification", () => {
     expect(successfulRetry.status).toBe(302);
     expect(successfulRetry.headers.location).toBe("/");
     expect(database.update).toHaveBeenCalledTimes(1);
-    expect(successfulRetry.headers["set-cookie"]?.[0]).toContain("signed-session-token");
-    expect(mocks.issueSecuritySession).toHaveBeenLastCalledWith(expect.objectContaining({
-      userId: 12,
-      authMethod: "magic_link",
-      assurance: "a1",
-    }));
+    expect(successfulRetry.headers["set-cookie"]?.[0]).toContain(
+      "signed-session-token"
+    );
+    expect(mocks.issueSecuritySession).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        userId: 12,
+        authMethod: "magic_link",
+        assurance: "a1",
+      })
+    );
     expect(mocks.recordAuthLifecycleEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         eventType: "verification_failed",
         outcome: "fail",
         token: record.token,
-      }),
+      })
     );
     expect(mocks.recordAuthLifecycleEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         eventType: "verification_succeeded",
         outcome: "ok",
         token: record.token,
-      }),
+      })
     );
   });
 
@@ -191,17 +203,23 @@ describe("email magic-link verification", () => {
     expect(response.headers.location).toBe(
       "/admin/email-preview?template=welcome"
     );
-    expect(mocks.upsertUser).toHaveBeenCalledWith(expect.objectContaining({
-      openId: existingAccount.openId,
-      email: record.email,
-    }));
-    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
-      userId: existingAccount.id,
-      authMethod: "magic_link",
-      assurance: "a1",
-    }));
+    expect(mocks.upsertUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        openId: existingAccount.openId,
+        email: record.email,
+      })
+    );
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: existingAccount.id,
+        authMethod: "magic_link",
+        assurance: "a1",
+      })
+    );
     expect(mocks.getUserByOpenId).toHaveBeenCalledWith(existingAccount.openId);
-    expect(mocks.getUserByOpenId).not.toHaveBeenCalledWith(staleEmailAccount.openId);
+    expect(mocks.getUserByOpenId).not.toHaveBeenCalledWith(
+      staleEmailAccount.openId
+    );
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
   });
 
@@ -236,7 +254,9 @@ describe("email magic-link verification", () => {
       .query({ token: record.token });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/login?auth_error=human_verification_required");
+    expect(response.headers.location).toBe(
+      "/login?auth_error=human_verification_required"
+    );
     expect(mocks.upsertUser).not.toHaveBeenCalled();
     expect(mocks.issueSecuritySession).not.toHaveBeenCalled();
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
@@ -275,7 +295,9 @@ describe("email magic-link verification", () => {
       .query({ token: record.token });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/login?auth_error=disposable_email");
+    expect(response.headers.location).toBe(
+      "/login?auth_error=disposable_email"
+    );
     expect(mocks.upsertUser).not.toHaveBeenCalled();
     expect(mocks.issueSecuritySession).not.toHaveBeenCalled();
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
@@ -328,11 +350,15 @@ describe("email magic-link verification", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/");
-    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
-      userId: existingAccount.id,
-      authMethod: "magic_link",
-      assurance: "a1",
-    }));
-    expect(response.headers["set-cookie"]?.[0]).toContain("valid-named-session");
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: existingAccount.id,
+        authMethod: "magic_link",
+        assurance: "a1",
+      })
+    );
+    expect(response.headers["set-cookie"]?.[0]).toContain(
+      "valid-named-session"
+    );
   });
 });

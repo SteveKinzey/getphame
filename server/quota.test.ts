@@ -11,7 +11,7 @@ type PersistedRequest = { id: number; sentAt: Date };
 function seededQuotaDataSource(
   rows: PersistedRequest[],
   now: Date,
-  role = "user",
+  role = "user"
 ): FreeQuotaDataSource {
   return {
     async getUserRole() {
@@ -19,12 +19,12 @@ function seededQuotaDataSource(
     },
     async getQuota() {
       const orderedRows = [...rows].sort(
-        (a, b) => a.sentAt.getTime() - b.sentAt.getTime() || a.id - b.id,
+        (a, b) => a.sentAt.getTime() - b.sentAt.getTime() || a.id - b.id
       );
       const rollingCutoff = now.getTime() - 30 * 24 * 60 * 60 * 1000;
       const rollingRows = orderedRows
         .slice(10)
-        .filter((row) => row.sentAt.getTime() >= rollingCutoff);
+        .filter(row => row.sentAt.getTime() >= rollingCutoff);
 
       return buildFreeQuotaSummary({
         totalSent: orderedRows.length,
@@ -83,7 +83,9 @@ describe("buildFreeQuotaSummary", () => {
     expect(quota.phase).toBe("rolling");
     expect(quota.remaining).toBe(0);
     expect(quota.blocked).toBe(true);
-    expect(quota.nextAvailableAt).toBe(new Date("2026-07-01T12:00:00.000Z").getTime());
+    expect(quota.nextAvailableAt).toBe(
+      new Date("2026-07-01T12:00:00.000Z").getTime()
+    );
   });
 
   it("restores capacity when an old post-initial request leaves the window", () => {
@@ -102,22 +104,31 @@ describe("Free quota send enforcement integration", () => {
     const decision = await evaluateFreeQuotaAccess(
       101,
       "free",
-      seededQuotaDataSource(persistedRows(Array(9).fill(60)), now),
+      seededQuotaDataSource(persistedRows(Array(9).fill(60)), now)
     );
 
     expect(decision.allowed).toBe(true);
-    expect(decision.quota).toMatchObject({ phase: "initial", remaining: 1, blocked: false });
+    expect(decision.quota).toMatchObject({
+      phase: "initial",
+      remaining: 1,
+      blocked: false,
+    });
   });
 
   it("allows the eleventh request from a fresh five-send rolling allowance", async () => {
     const decision = await evaluateFreeQuotaAccess(
       101,
       "free",
-      seededQuotaDataSource(persistedRows(Array(10).fill(60)), now),
+      seededQuotaDataSource(persistedRows(Array(10).fill(60)), now)
     );
 
     expect(decision.allowed).toBe(true);
-    expect(decision.quota).toMatchObject({ phase: "rolling", used: 0, remaining: 5, blocked: false });
+    expect(decision.quota).toMatchObject({
+      phase: "rolling",
+      used: 0,
+      remaining: 5,
+      blocked: false,
+    });
   });
 
   it("blocks the sixteenth request and includes the rolling-window reset time", async () => {
@@ -126,14 +137,19 @@ describe("Free quota send enforcement integration", () => {
       "free",
       seededQuotaDataSource(
         persistedRows([...Array(10).fill(60), 5, 4, 3, 2, 1]),
-        now,
-      ),
+        now
+      )
     );
 
     expect(decision.allowed).toBe(false);
-    expect(decision.quota).toMatchObject({ phase: "rolling", used: 5, remaining: 0, blocked: true });
+    expect(decision.quota).toMatchObject({
+      phase: "rolling",
+      used: 5,
+      remaining: 0,
+      blocked: true,
+    });
     expect(formatFreeQuotaBlockedMessage(decision.quota, "Blocked.")).toContain(
-      "Next send available",
+      "Next send available"
     );
   });
 
@@ -143,12 +159,17 @@ describe("Free quota send enforcement integration", () => {
       "free",
       seededQuotaDataSource(
         persistedRows([...Array(10).fill(60), 31, 4, 3, 2, 1]),
-        now,
-      ),
+        now
+      )
     );
 
     expect(decision.allowed).toBe(true);
-    expect(decision.quota).toMatchObject({ phase: "rolling", used: 4, remaining: 1, blocked: false });
+    expect(decision.quota).toMatchObject({
+      phase: "rolling",
+      used: 4,
+      remaining: 1,
+      blocked: false,
+    });
   });
 
   it("bypasses the allowance for administrators on every send channel", async () => {
@@ -158,8 +179,8 @@ describe("Free quota send enforcement integration", () => {
       seededQuotaDataSource(
         persistedRows([...Array(10).fill(60), 5, 4, 3, 2, 1]),
         now,
-        "admin",
-      ),
+        "admin"
+      )
     );
 
     expect(decision).toEqual({ allowed: true, bypassed: true, quota: null });

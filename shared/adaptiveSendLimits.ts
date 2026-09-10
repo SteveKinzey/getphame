@@ -4,9 +4,20 @@ export const ACCOUNT_HARD_DAILY_SEND_CEILING = 2_000;
 export const ACCOUNT_HARD_HOURLY_SEND_CEILING = 300;
 
 export type AdaptiveSendChannelType = "personal" | "bulk";
-export type AdaptiveSendRampStage = "new" | "warming" | "building" | "established";
-export type AdaptiveSendWarningLevel = "normal" | "approaching" | "high" | "blocked";
-export type AdaptiveSendRecommendedAction = "upgrade_plan" | "connect_bulk_sender" | null;
+export type AdaptiveSendRampStage =
+  | "new"
+  | "warming"
+  | "building"
+  | "established";
+export type AdaptiveSendWarningLevel =
+  | "normal"
+  | "approaching"
+  | "high"
+  | "blocked";
+export type AdaptiveSendRecommendedAction =
+  | "upgrade_plan"
+  | "connect_bulk_sender"
+  | null;
 
 export type AdaptiveSendChannelDescriptor = {
   key: string;
@@ -63,7 +74,10 @@ function getRampStage(connectionAgeDays: number): AdaptiveSendRampStage {
   return "established";
 }
 
-function getRampMultiplier(type: AdaptiveSendChannelType, stage: AdaptiveSendRampStage): number {
+function getRampMultiplier(
+  type: AdaptiveSendChannelType,
+  stage: AdaptiveSendRampStage
+): number {
   if (type === "bulk") {
     if (stage === "new") return 0.1;
     if (stage === "warming") return 0.25;
@@ -78,13 +92,19 @@ function getRampMultiplier(type: AdaptiveSendChannelType, stage: AdaptiveSendRam
 
 export function buildAdaptiveSendPolicy(
   channel: AdaptiveSendChannelDescriptor,
-  now = Date.now(),
+  now = Date.now()
 ): AdaptiveSendPolicy {
-  const connectionAgeDays = Math.max(0, Math.floor((now - channel.connectedAt) / 86_400_000));
+  const connectionAgeDays = Math.max(
+    0,
+    Math.floor((now - channel.connectedAt) / 86_400_000)
+  );
   const rampStage = getRampStage(connectionAgeDays);
-  const base = channel.type === "bulk"
-    ? BULK_PROVIDER_LIMITS[channel.providerId] ?? BULK_PROVIDER_LIMITS.custom_smtp
-    : PERSONAL_PROVIDER_LIMITS[channel.providerId] ?? PERSONAL_PROVIDER_LIMITS.custom_smtp;
+  const base =
+    channel.type === "bulk"
+      ? (BULK_PROVIDER_LIMITS[channel.providerId] ??
+        BULK_PROVIDER_LIMITS.custom_smtp)
+      : (PERSONAL_PROVIDER_LIMITS[channel.providerId] ??
+        PERSONAL_PROVIDER_LIMITS.custom_smtp);
   const multiplier = getRampMultiplier(channel.type, rampStage);
   const minimumDaily = channel.type === "bulk" ? 50 : 10;
   const minimumHourly = channel.type === "bulk" ? 10 : 5;
@@ -94,18 +114,21 @@ export function buildAdaptiveSendPolicy(
     connectionAgeDays,
     hourlyLimit: Math.min(
       ACCOUNT_HARD_HOURLY_SEND_CEILING,
-      Math.max(minimumHourly, Math.floor(base.hourly * multiplier)),
+      Math.max(minimumHourly, Math.floor(base.hourly * multiplier))
     ),
     dailyLimit: Math.min(
       ACCOUNT_HARD_DAILY_SEND_CEILING,
-      Math.max(minimumDaily, Math.floor(base.daily * multiplier)),
+      Math.max(minimumDaily, Math.floor(base.daily * multiplier))
     ),
     hardHourlyCeiling: ACCOUNT_HARD_HOURLY_SEND_CEILING,
     hardDailyCeiling: ACCOUNT_HARD_DAILY_SEND_CEILING,
   };
 }
 
-export function getAdaptiveSendWarningLevel(utilization: number, remaining: number): AdaptiveSendWarningLevel {
+export function getAdaptiveSendWarningLevel(
+  utilization: number,
+  remaining: number
+): AdaptiveSendWarningLevel {
   if (remaining <= 0 || utilization >= 1) return "blocked";
   if (utilization >= ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD) return "high";
   if (utilization >= ADAPTIVE_SEND_WARNING_THRESHOLD) return "approaching";
@@ -113,7 +136,7 @@ export function getAdaptiveSendWarningLevel(utilization: number, remaining: numb
 }
 
 export function getAdaptiveSendRecommendedAction(
-  channel: AdaptiveSendChannelDescriptor,
+  channel: AdaptiveSendChannelDescriptor
 ): AdaptiveSendRecommendedAction {
   if (channel.type === "bulk") return null;
   return channel.tier === "free" ? "upgrade_plan" : "connect_bulk_sender";

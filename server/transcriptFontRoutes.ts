@@ -82,7 +82,9 @@ export function registerTranscriptFontRoutes(app: Express) {
         error: error instanceof Error ? error.message : "Unknown error",
       });
       res.set("Cache-Control", "no-store");
-      return res.status(502).json({ error: "Transcript font is temporarily unavailable" });
+      return res
+        .status(502)
+        .json({ error: "Transcript font is temporarily unavailable" });
     }
   });
 }

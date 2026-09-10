@@ -9,6 +9,62 @@ import {
 import { buildOnboardingFunnelInsightFallback } from "./onboardingFunnelInsight";
 import { claimOnboardingChecklistTelemetryEvent } from "../client/src/lib/onboardingChecklistTelemetry";
 
+function sourceContractPattern(expected: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&");
+  const hasClosingQuote = (start: number, quote: string) => {
+    for (let index = start + 1; index < expected.length; index += 1) {
+      if (expected[index] === "\\") {
+        index += 1;
+      } else if (expected[index] === quote) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  let pattern = "";
+  let quote: "'" | '"' | "`" | null = null;
+  for (let index = 0; index < expected.length; index += 1) {
+    const character = expected[index];
+    if (quote) {
+      if (character === "\\" && index + 1 < expected.length) {
+        pattern += escape(character + expected[index + 1]);
+        index += 1;
+      } else if (character === quote) {
+        pattern += quote === "`" ? "`" : "[\"']";
+        quote = null;
+      } else {
+        pattern += escape(character);
+      }
+      continue;
+    }
+    if (/\s/.test(character)) {
+      while (index + 1 < expected.length && /\s/.test(expected[index + 1])) {
+        index += 1;
+      }
+      pattern += "\\s*";
+    } else if (
+      (character === "'" || character === '"' || character === "`") &&
+      hasClosingQuote(index, character)
+    ) {
+      pattern += character === "`" ? "`" : "[\"']";
+      quote = character;
+    } else {
+      pattern += escape(character);
+    }
+  }
+  return new RegExp(pattern, "s");
+}
+
+function expectSourceContract(source: string) {
+  return {
+    toContain(expected: string) {
+      expect(source).toMatch(sourceContractPattern(expected));
+    },
+  };
+}
+
 const LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 const SETUP_KEYS = [
   "setupProgressEyebrow",
@@ -149,66 +205,70 @@ describe("dashboard onboarding and security release", () => {
       "../client/src/components/dashboard/SetupProgressCard.tsx"
     );
 
-    expect(home).toContain(
-      'const TrackingSummaryCard = lazy(() => import("@/components/dashboard/TrackingSummaryCard"))'
+    expect(home).toMatch(
+      /const\s+TrackingSummaryCard\s*=\s*lazy\s*\(\s*\(\s*\)\s*=>\s*import\s*\(\s*["']@\/components\/dashboard\/TrackingSummaryCard["']\s*\)\s*\)/
     );
-    expect(home).toContain(
-      'const PlatformBreakdownChart = lazy(() => import("@/components/dashboard/PlatformBreakdownChart"))'
+    expect(home).toMatch(
+      /const\s+PlatformBreakdownChart\s*=\s*lazy\s*\(\s*\(\s*\)\s*=>\s*import\s*\(\s*["']@\/components\/dashboard\/PlatformBreakdownChart["']\s*\)\s*\)/
     );
-    expect(home).toContain(
+    expectSourceContract(home).toContain(
       "<SetupProgressCard status={onboardingStatus} userId={user?.id} onNavigate={navigate} />"
     );
-    expect(home).toContain(
+    expectSourceContract(home).toContain(
       '<DeferredDashboardSection loadingLabel={t("homePage.loadingAnalytics")}'
     );
     expect(home).not.toContain("trpc.tracking.overallStats.useQuery");
-    expect(dashboard).toContain(
-      'const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"))'
+    expect(dashboard).toMatch(
+      /const\s+ActivityTrendCard\s*=\s*lazy\s*\(\s*\(\s*\)\s*=>\s*import\s*\(\s*["']@\/components\/dashboard\/ActivityTrendCard["']\s*\)\s*\)/s
     );
-    expect(dashboard).toContain(
+    expectSourceContract(dashboard).toContain(
       "<ActivityTrendCard total={stats?.total ?? 0} velocity={velocity} />"
     );
     expect(dashboard).not.toContain("trpc.tracking.dailyTrend.useQuery");
-    expect(deferredSection).toContain("IntersectionObserver");
-    expect(deferredSection).toContain('rootMargin: "280px 0px"');
-    expect(deferredSection).toContain("<Suspense fallback=");
-    expect(setupProgress).toContain('path: "/settings"');
-    expect(setupProgress).toContain('path: "/import"');
-    expect(setupProgress).toContain('path: "/send"');
-    expect(setupProgress).toContain('role="progressbar"');
+    expectSourceContract(deferredSection).toContain("IntersectionObserver");
+    expectSourceContract(deferredSection).toContain('rootMargin: "280px 0px"');
+    expectSourceContract(deferredSection).toContain("<Suspense fallback=");
+    expectSourceContract(setupProgress).toContain('path: "/settings"');
+    expectSourceContract(setupProgress).toContain('path: "/import"');
+    expectSourceContract(setupProgress).toContain('path: "/send"');
+    expectSourceContract(setupProgress).toContain('role="progressbar"');
   });
 
   it("persists Skip Tour state locally and lets users re-enable contextual tips", () => {
     const wizard = readSource("../client/src/components/OnboardingWizard.tsx");
     const settings = readSource("../client/src/pages/Settings.tsx");
 
-    expect(wizard).toContain('const TOUR_SKIP_STORAGE_KEY = "rr_skip_tour"');
-    expect(wizard).toContain(
+    expectSourceContract(wizard).toContain(
+      'const TOUR_SKIP_STORAGE_KEY = "rr_skip_tour"'
+    );
+    expectSourceContract(wizard).toContain(
       'window.localStorage.getItem(TOUR_SKIP_STORAGE_KEY) === "1"'
     );
-    expect(wizard).toContain(
+    expectSourceContract(wizard).toContain(
       'window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1")'
     );
-    expect(wizard).toContain(
+    expectSourceContract(wizard).toContain(
       "window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY)"
     );
-    expect(wizard).toContain("if (tipsHidden) return null;");
-    expect(wizard).toContain(
+    expectSourceContract(wizard).toContain("if (tipsHidden) return null;");
+    expectSourceContract(wizard).toContain(
       "<OnboardingTourContext.Provider value={{ tipsHidden }}>"
     );
-    expect(wizard).toContain('t("onboardingWizard.tour.skip")');
-    expect(wizard).toContain('t("onboardingWizard.tour.show")');
-    expect(wizard).toContain("onboardingTipsEnabled");
-    expect(wizard).toContain(
+    expectSourceContract(wizard).toContain('t("onboardingWizard.tour.skip")');
+    expectSourceContract(wizard).toContain('t("onboardingWizard.tour.show")');
+    expectSourceContract(wizard).toContain("onboardingTipsEnabled");
+    expectSourceContract(wizard).toContain(
       'const ONBOARDING_TIPS_CHANGE_EVENT = "rr:onboarding-tips-change"'
     );
-    expect(wizard).toContain("new CustomEvent(ONBOARDING_TIPS_CHANGE_EVENT");
-    expect(settings).toContain("settings.onboardingTips.title");
-    expect(settings).toContain(
+    expectSourceContract(wizard).toContain(
+      "new CustomEvent(ONBOARDING_TIPS_CHANGE_EVENT"
+    );
+    expectSourceContract(settings).toContain("settings.onboardingTips.title");
+    expectSourceContract(settings).toContain(
       "aria-pressed={notifPrefs?.onboardingTipsEnabled ?? true}"
     );
-    expect(settings).toContain("const toggleOnboardingTips");
-    expect(settings).toContain("rr:onboarding-tips-change");
+    expectSourceContract(settings).toContain("const toggleOnboardingTips");
+    expectSourceContract(settings).toContain("rr:onboarding-tips-change");
   });
 
   it("records only allowlisted checklist events and reports anonymized, deduplicated drop-off totals", () => {
@@ -264,26 +324,38 @@ describe("dashboard onboarding and security release", () => {
     const admin = readSource("../client/src/pages/AdminDashboard.tsx");
     const rateLimiter = readSource("../server/rateLimiter.ts");
 
-    expect(routers).toContain(
+    expectSourceContract(routers).toContain(
       "trackOnboardingChecklistEvent: protectedProcedure"
     );
-    expect(routers).toContain("z.enum(ONBOARDING_CHECKLIST_EVENT_NAMES)");
-    expect(routers).toContain("utmSource: ONBOARDING_CHECKLIST_EVENT_SOURCE");
-    expect(routers).toContain("referrer: null");
-    expect(routers).toContain("userAgent: null");
+    expectSourceContract(routers).toContain(
+      "z.enum(ONBOARDING_CHECKLIST_EVENT_NAMES)"
+    );
+    expectSourceContract(routers).toContain(
+      "utmSource: ONBOARDING_CHECKLIST_EVENT_SOURCE"
+    );
+    expectSourceContract(routers).toContain("referrer: null");
+    expectSourceContract(routers).toContain("userAgent: null");
     expect(routers).toMatch(
       /onboardingChecklistFunnel:\s*adminProcedure\s*\.input/
     );
-    expect(routers).toContain(
+    expectSourceContract(routers).toContain(
       "checkOnboardingChecklistEventRateLimit(ctx.user.id)"
     );
-    expect(rateLimiter).toContain("MAX_ONBOARDING_EVENTS_PER_WINDOW = 60");
-    expect(rateLimiter).toContain("checkOnboardingChecklistEventRateLimit");
-    expect(setupProgress).toContain("claimOnboardingChecklistTelemetryEvent");
-    expect(setupProgress).toContain("trackedEvents");
-    expect(setupProgress).toContain("_step_actioned");
-    expect(admin).toContain('data-testid="admin-setup-funnel"');
-    expect(admin).toContain("Aggregate account-level events only");
+    expectSourceContract(rateLimiter).toContain(
+      "MAX_ONBOARDING_EVENTS_PER_WINDOW = 60"
+    );
+    expectSourceContract(rateLimiter).toContain(
+      "checkOnboardingChecklistEventRateLimit"
+    );
+    expectSourceContract(setupProgress).toContain(
+      "claimOnboardingChecklistTelemetryEvent"
+    );
+    expectSourceContract(setupProgress).toContain("trackedEvents");
+    expectSourceContract(setupProgress).toContain("_step_actioned");
+    expectSourceContract(admin).toContain('data-testid="admin-setup-funnel"');
+    expectSourceContract(admin).toContain(
+      "Aggregate account-level events only"
+    );
   });
 
   it("claims each checklist telemetry event once per account across routine component remounts", () => {
@@ -333,37 +405,49 @@ describe("dashboard onboarding and security release", () => {
     const routers = readSource("../server/routers.ts");
     const admin = readSource("../client/src/pages/AdminDashboard.tsx");
 
-    expect(routers).toContain("MAX_ONBOARDING_FUNNEL_RANGE_DAYS = 366");
-    expect(routers).toContain("onboardingChecklistFunnelInputSchema");
-    expect(routers).toContain(
+    expectSourceContract(routers).toContain(
+      "MAX_ONBOARDING_FUNNEL_RANGE_DAYS = 366"
+    );
+    expectSourceContract(routers).toContain(
+      "onboardingChecklistFunnelInputSchema"
+    );
+    expectSourceContract(routers).toContain(
       "Choose either a preset period or a custom date range."
     );
-    expect(routers).toContain(
+    expectSourceContract(routers).toContain(
       "onboardingChecklistFunnelExport: adminProcedure"
     );
-    expect(routers).toContain("serializeAdminOperationsCsv(rows)");
-    expect(routers).toContain(
+    expectSourceContract(routers).toContain(
+      "serializeAdminOperationsCsv(rows)"
+    );
+    expectSourceContract(routers).toContain(
       "contains no raw event, identity, or customer data"
     );
-    expect(admin).toContain("onboardingFunnelRangeValid");
-    expect(admin).toContain("onboardingChecklistFunnelExport.useQuery");
-    expect(admin).toContain("downloadOnboardingFunnelCsv");
-    expect(admin).toContain("URL.revokeObjectURL(url)");
-    expect(admin).toContain('data-testid="admin-setup-funnel"');
+    expectSourceContract(admin).toContain("onboardingFunnelRangeValid");
+    expectSourceContract(admin).toContain(
+      "onboardingChecklistFunnelExport.useQuery"
+    );
+    expectSourceContract(admin).toContain("downloadOnboardingFunnelCsv");
+    expectSourceContract(admin).toContain("URL.revokeObjectURL(url)");
+    expectSourceContract(admin).toContain('data-testid="admin-setup-funnel"');
   });
 
   it("offers reusable presets and compares adjacent aggregate periods without exposing event rows", () => {
     const routers = readSource("../server/routers.ts");
     const admin = readSource("../client/src/pages/AdminDashboard.tsx");
 
-    expect(routers).toContain("comparison: {");
-    expect(routers).toContain("previousPeriodStart");
-    expect(routers).toContain("previousPeriodEnd");
-    expect(admin).toContain("Last 7 Days");
-    expect(admin).toContain("Last 30 Days");
-    expect(admin).toContain("data-testid={`setup-funnel-preset-${period}`}");
-    expect(admin).toContain('data-testid="setup-funnel-comparison-chart"');
-    expect(admin).toContain("Current period vs. previous period");
+    expectSourceContract(routers).toContain("comparison: {");
+    expectSourceContract(routers).toContain("previousPeriodStart");
+    expectSourceContract(routers).toContain("previousPeriodEnd");
+    expectSourceContract(admin).toContain("Last 7 Days");
+    expectSourceContract(admin).toContain("Last 30 Days");
+    expectSourceContract(admin).toContain(
+      "data-testid={`setup-funnel-preset-${period}`}"
+    );
+    expectSourceContract(admin).toContain(
+      'data-testid="setup-funnel-comparison-chart"'
+    );
+    expectSourceContract(admin).toContain("Current period vs. previous period");
   });
 
   it("builds a deterministic aggregate-only fallback insight around the highest drop-off step", () => {
@@ -408,35 +492,47 @@ describe("dashboard onboarding and security release", () => {
     const insight = readSource("../server/onboardingFunnelInsight.ts");
     const rateLimiter = readSource("../server/rateLimiter.ts");
 
-    expect(routers).toContain(
+    expectSourceContract(routers).toContain(
       "onboardingChecklistFunnelInsight: adminProcedure"
     );
-    expect(routers).toContain(
+    expectSourceContract(routers).toContain(
       "checkOnboardingFunnelInsightRateLimit(ctx.user.id)"
     );
-    expect(routers).toContain("generateOnboardingFunnelInsight");
-    expect(admin).toContain('data-testid="setup-funnel-ai-insight"');
-    expect(admin).toContain("staleTime: 5 * 60_000");
-    expect(admin).toContain("refetchOnWindowFocus: false");
-    expect(insight).toContain(
+    expectSourceContract(routers).toContain("generateOnboardingFunnelInsight");
+    expectSourceContract(admin).toContain(
+      'data-testid="setup-funnel-ai-insight"'
+    );
+    expectSourceContract(admin).toContain("staleTime: 5 * 60_000");
+    expectSourceContract(admin).toContain("refetchOnWindowFocus: false");
+    expectSourceContract(insight).toContain(
       "Use only the aggregate numbers supplied by the user."
     );
-    expect(insight).toContain("Do not infer causation");
-    expect(insight).toContain("buildOnboardingFunnelInsightFallback");
-    expect(rateLimiter).toContain("MAX_ONBOARDING_INSIGHTS_PER_WINDOW = 12");
-    expect(rateLimiter).toContain("checkOnboardingFunnelInsightRateLimit");
+    expectSourceContract(insight).toContain("Do not infer causation");
+    expectSourceContract(insight).toContain(
+      "buildOnboardingFunnelInsightFallback"
+    );
+    expectSourceContract(rateLimiter).toContain(
+      "MAX_ONBOARDING_INSIGHTS_PER_WINDOW = 12"
+    );
+    expectSourceContract(rateLimiter).toContain(
+      "checkOnboardingFunnelInsightRateLimit"
+    );
   });
 
   it("animates visible onboarding tips accessibly and communicates the remaining localized tip count", () => {
     const wizard = readSource("../client/src/components/OnboardingWizard.tsx");
     const styles = readSource("../client/src/index.css");
 
-    expect(wizard).toContain("onboarding-tip-fade");
-    expect(wizard).toContain("remainingTipCount");
-    expect(wizard).toContain('t("onboardingWizard.tour.tipsRemaining"');
-    expect(wizard).toContain('aria-live="polite"');
-    expect(styles).toContain(".onboarding-tip-fade");
-    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
+    expectSourceContract(wizard).toContain("onboarding-tip-fade");
+    expectSourceContract(wizard).toContain("remainingTipCount");
+    expectSourceContract(wizard).toContain(
+      't("onboardingWizard.tour.tipsRemaining"'
+    );
+    expectSourceContract(wizard).toContain('aria-live="polite"');
+    expectSourceContract(styles).toContain(".onboarding-tip-fade");
+    expectSourceContract(styles).toContain(
+      "@media (prefers-reduced-motion: reduce)"
+    );
   });
 
   it("localizes every chart label, axis date, tooltip rate, and empty state", () => {
@@ -444,13 +540,19 @@ describe("dashboard onboarding and security release", () => {
       "../client/src/components/dashboard/ActivityTrendCard.tsx"
     );
 
-    expect(activityTrend).toContain('useTranslation("translation")');
-    expect(activityTrend).toContain("i18n.resolvedLanguage || i18n.language");
-    expect(activityTrend).toContain('t("activityTrend.empty"');
-    expect(activityTrend).toContain('t("activityTrend.openRate"');
-    expect(activityTrend).toContain('t("activityTrend.clickRate"');
-    expect(activityTrend).toContain('t("activityTrend.thisWeek"');
-    expect(activityTrend).toContain('t("activityTrend.allTime"');
+    expectSourceContract(activityTrend).toContain(
+      'useTranslation("translation")'
+    );
+    expectSourceContract(activityTrend).toContain(
+      "i18n.resolvedLanguage || i18n.language"
+    );
+    expectSourceContract(activityTrend).toContain('t("activityTrend.empty"');
+    expectSourceContract(activityTrend).toContain('t("activityTrend.openRate"');
+    expectSourceContract(activityTrend).toContain(
+      't("activityTrend.clickRate"'
+    );
+    expectSourceContract(activityTrend).toContain('t("activityTrend.thisWeek"');
+    expectSourceContract(activityTrend).toContain('t("activityTrend.allTime"');
   });
 
   it("uses a fixed canonical redirect target and isolates external popups from their opener", () => {
@@ -458,18 +560,20 @@ describe("dashboard onboarding and security release", () => {
     const home = readSource("../client/src/pages/Home.tsx");
     const settings = readSource("../client/src/pages/Settings.tsx");
 
-    expect(serverBootstrap).toContain(
+    expectSourceContract(serverBootstrap).toContain(
       'req.hostname.toLowerCase() === "www.getphame.app"'
     );
-    expect(serverBootstrap).toContain(
+    expectSourceContract(serverBootstrap).toContain(
       "res.redirect(301, `https://getphame.app${req.originalUrl}`)"
     );
     expect(serverBootstrap).not.toContain("const apexHost = host.slice(4)");
-    expect(home).toContain(
-      'window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer")'
+    expect(home).toMatch(
+      /window\.open\s*\(\s*`https:\/\/wa\.me\/\?text=\$\{text\}`\s*,\s*["']_blank["']\s*,\s*["']noopener,noreferrer["']\s*\)/
     );
-    expect(home).toContain("window.location.assign(`sms:?&body=${text}`)");
-    expect(settings).toContain(
+    expectSourceContract(home).toContain(
+      "window.location.assign(`sms:?&body=${text}`)"
+    );
+    expectSourceContract(settings).toContain(
       'window.open(url, "_blank", "noopener,noreferrer")'
     );
   });

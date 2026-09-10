@@ -25,7 +25,10 @@ import { issueSecuritySession } from "./security/passkeySessions";
 // ─── Google ──────────────────────────────────────────────────────────────────
 
 async function handleMobileGoogleAuth(req: Request, res: Response) {
-  const { code, redirectUri } = req.body as { code?: string; redirectUri?: string };
+  const { code, redirectUri } = req.body as {
+    code?: string;
+    redirectUri?: string;
+  };
 
   if (!code || !redirectUri) {
     return res.status(400).json({ error: "Missing code or redirectUri" });
@@ -54,7 +57,7 @@ async function handleMobileGoogleAuth(req: Request, res: Response) {
 
     const existingUser = await db.getUserByOpenId(openId);
     const isNewUser = !existingUser;
-    if (isNewUser && await isHighConfidenceDisposableEmail(email)) {
+    if (isNewUser && (await isHighConfidenceDisposableEmail(email))) {
       return res.status(409).json({ error: "disposable_email" });
     }
 
@@ -74,14 +77,18 @@ async function handleMobileGoogleAuth(req: Request, res: Response) {
           toEmail: email,
           toName: name,
         }).catch((err: unknown) => {
-          console.warn("[MobileAuth/Google] Welcome email failed (non-fatal):", err);
+          console.warn(
+            "[MobileAuth/Google] Welcome email failed (non-fatal):",
+            err
+          );
         });
       }
     }
 
     // Fetch user to get tier from DB
     const user = await db.getUserByOpenId(openId);
-    if (!user) throw new Error("Session user unavailable after Google account update");
+    if (!user)
+      throw new Error("Session user unavailable after Google account update");
     const { token: sessionToken } = await issueSecuritySession({
       userId: user.id,
       authMethod: "oauth",
@@ -107,7 +114,11 @@ async function handleMobileGoogleAuth(req: Request, res: Response) {
 // ─── Apple ───────────────────────────────────────────────────────────────────
 
 async function handleMobileAppleAuth(req: Request, res: Response) {
-  const { identityToken, fullName, email: appleEmail } = req.body as {
+  const {
+    identityToken,
+    fullName,
+    email: appleEmail,
+  } = req.body as {
     identityToken?: string;
     fullName?: { givenName?: string; familyName?: string } | null;
     email?: string | null;
@@ -143,7 +154,7 @@ async function handleMobileAppleAuth(req: Request, res: Response) {
     }
 
     const email = (isNewUser ? appleEmail : existingUser?.email) ?? null;
-    if (isNewUser && await isHighConfidenceDisposableEmail(email)) {
+    if (isNewUser && (await isHighConfidenceDisposableEmail(email))) {
       return res.status(409).json({ error: "disposable_email" });
     }
 
@@ -163,13 +174,17 @@ async function handleMobileAppleAuth(req: Request, res: Response) {
           toEmail: email,
           toName: name,
         }).catch((err: unknown) => {
-          console.warn("[MobileAuth/Apple] Welcome email failed (non-fatal):", err);
+          console.warn(
+            "[MobileAuth/Apple] Welcome email failed (non-fatal):",
+            err
+          );
         });
       }
     }
 
     const user = await db.getUserByOpenId(openId);
-    if (!user) throw new Error("Session user unavailable after Apple account update");
+    if (!user)
+      throw new Error("Session user unavailable after Apple account update");
     const { token: sessionToken } = await issueSecuritySession({
       userId: user.id,
       authMethod: "oauth",

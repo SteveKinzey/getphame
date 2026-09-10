@@ -22,7 +22,9 @@ export async function getDefaultTemplate(userId: number) {
   const [tmpl] = await db
     .select()
     .from(emailTemplates)
-    .where(and(eq(emailTemplates.userId, userId), eq(emailTemplates.isDefault, 1)));
+    .where(
+      and(eq(emailTemplates.userId, userId), eq(emailTemplates.isDefault, 1))
+    );
   return tmpl ?? null;
 }
 
@@ -63,8 +65,15 @@ export async function updateTemplate(
   }
   await db
     .update(emailTemplates)
-    .set({ name: data.name, subject: data.subject, body: data.body, isDefault: data.isDefault ? 1 : 0 })
-    .where(and(eq(emailTemplates.userId, userId), eq(emailTemplates.id, templateId)));
+    .set({
+      name: data.name,
+      subject: data.subject,
+      body: data.body,
+      isDefault: data.isDefault ? 1 : 0,
+    })
+    .where(
+      and(eq(emailTemplates.userId, userId), eq(emailTemplates.id, templateId))
+    );
 }
 
 export async function deleteTemplate(userId: number, templateId: number) {
@@ -72,7 +81,9 @@ export async function deleteTemplate(userId: number, templateId: number) {
   if (!db) throw new Error("Database not available");
   await db
     .delete(emailTemplates)
-    .where(and(eq(emailTemplates.userId, userId), eq(emailTemplates.id, templateId)));
+    .where(
+      and(eq(emailTemplates.userId, userId), eq(emailTemplates.id, templateId))
+    );
 }
 
 /** Seed the 3 default starter templates for a user (only if those specific templates don't exist yet).
@@ -90,7 +101,7 @@ export async function seedDefaultTemplates(userId: number) {
     .select({ name: emailTemplates.name })
     .from(emailTemplates)
     .where(eq(emailTemplates.userId, userId));
-  const existingNames = new Set(existing.map((e) => e.name));
+  const existingNames = new Set(existing.map(e => e.name));
 
   const defaults = [
     {

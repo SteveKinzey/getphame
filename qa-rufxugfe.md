@@ -6,11 +6,11 @@ The full Vitest suite passed with **142 files**, **817 passing tests**, and **6 
 
 ## Route-specific visual review
 
-| Route | Desktop review | Mobile review at 375 px |
-|---|---|---|
-| `/send` | The composer displayed the AI tone-adjustment action, current draft controls, live email preview, and compliance notice without overlap. | The AI action wrapped cleanly beside the tone selector, retained a usable target size, and did not create horizontal overflow. |
-| `/import` | The staged Import Clients upload flow displayed correctly with its template action and CSV drop zone. | The step indicators, template control, and upload target remained readable and vertically spaced for touch use. |
-| `/dashboard` | The Activity Trend card displayed 30/60/90-day filters plus visible CSV and PNG export actions. | The focused dashboard capture showed the trend chart with both export buttons visible and reachable above the mobile navigation. |
+| Route        | Desktop review                                                                                                                           | Mobile review at 375 px                                                                                                          |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `/send`      | The composer displayed the AI tone-adjustment action, current draft controls, live email preview, and compliance notice without overlap. | The AI action wrapped cleanly beside the tone selector, retained a usable target size, and did not create horizontal overflow.   |
+| `/import`    | The staged Import Clients upload flow displayed correctly with its template action and CSV drop zone.                                    | The step indicators, template control, and upload target remained readable and vertically spaced for touch use.                  |
+| `/dashboard` | The Activity Trend card displayed 30/60/90-day filters plus visible CSV and PNG export actions.                                          | The focused dashboard capture showed the trend chart with both export buttons visible and reachable above the mobile navigation. |
 
 ## Regression evidence
 

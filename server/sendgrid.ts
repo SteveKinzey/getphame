@@ -22,7 +22,13 @@
 import sgMail from "@sendgrid/mail";
 import nodemailer from "nodemailer";
 import { ENV } from "./_core/env";
-import { recordRelayEvent, reserveRelayAlert, sanitizeRelayDiagnostic, sendSlackWebhookNotification, startRelayOutage } from "./relayHealth";
+import {
+  recordRelayEvent,
+  reserveRelayAlert,
+  sanitizeRelayDiagnostic,
+  sendSlackWebhookNotification,
+  startRelayOutage,
+} from "./relayHealth";
 import { sendRelayAlertEmailFallback } from "./relayAlertEmail";
 
 export interface SystemEmailOptions {
@@ -30,24 +36,25 @@ export interface SystemEmailOptions {
   subject: string;
   html: string;
   text?: string;
-  from?: string;   // explicit override; prefer the helpers below
+  from?: string; // explicit override; prefer the helpers below
   replyTo?: string;
   /** Internal incident fallback delivery only; prevents recursive alert escalation. */
   suppressRelayAlert?: boolean;
 }
 
 /** Transactional sender — magic links, auth, account deletion, welcome. */
-export const NOREPLY_FROM = process.env.SYSTEM_NOREPLY_EMAIL?.trim() ?? "no-reply@getphame.app";
+export const NOREPLY_FROM =
+  process.env.SYSTEM_NOREPLY_EMAIL?.trim() ?? "no-reply@getphame.app";
 /** Conversational sender — admin messages, lead guide, support. */
-export const HELLO_FROM = process.env.SYSTEM_HELLO_EMAIL?.trim() ?? "hello@getphame.app";
+export const HELLO_FROM =
+  process.env.SYSTEM_HELLO_EMAIL?.trim() ?? "hello@getphame.app";
 
 /**
  * Send a system email.
  * Prefers verified managed SYSTEM_SMTP_*; uses SendGrid API as a backup failover when configured.
  */
 export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
-  const fromEmail = opts.from
-    ?? NOREPLY_FROM;
+  const fromEmail = opts.from ?? NOREPLY_FROM;
   const fromDisplay = `"Get Phame" <${fromEmail}>`;
 
   // ── 1. Primary path: Managed SYSTEM_SMTP_* transport ───────────────────
@@ -64,7 +71,9 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
         port,
         secure: port === 465,
         auth: { user, pass },
-        tls: { rejectUnauthorized: process.env.ALLOW_INSECURE_SMTP_TLS !== "true" },
+        tls: {
+          rejectUnauthorized: process.env.ALLOW_INSECURE_SMTP_TLS !== "true",
+        },
       });
 
       await transporter.sendMail({
@@ -77,14 +86,23 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
       });
       return;
     } catch (primaryError) {
-      const hasSendgrid = Boolean(process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey);
-      const errorMessage = primaryError instanceof Error ? primaryError.message : "Primary SMTP send failed";
+      const hasSendgrid = Boolean(
+        process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey
+      );
+      const errorMessage =
+        primaryError instanceof Error
+          ? primaryError.message
+          : "Primary SMTP send failed";
       const safeError = sanitizeRelayDiagnostic(errorMessage);
       const recipientDomainMatch = opts.to.match(/@([^>\s,]+)/);
-      console.warn("[SystemEmail] Primary SYSTEM_SMTP delivery failed; evaluating configured SendGrid failover", {
-        errorType: primaryError instanceof Error ? primaryError.name : "UnknownError",
-        backupConfigured: hasSendgrid,
-      });
+      console.warn(
+        "[SystemEmail] Primary SYSTEM_SMTP delivery failed; evaluating configured SendGrid failover",
+        {
+          errorType:
+            primaryError instanceof Error ? primaryError.name : "UnknownError",
+          backupConfigured: hasSendgrid,
+        }
+      );
       recordRelayEvent({
         fromProvider: "system_smtp",
         toProvider: hasSendgrid ? "sendgrid" : "none",
@@ -94,7 +112,11 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
 
       if (!opts.suppressRelayAlert) {
         const checkedAt = Date.now();
-        const outage = await startRelayOutage(safeError, "outbound_send", checkedAt);
+        const outage = await startRelayOutage(
+          safeError,
+          "outbound_send",
+          checkedAt
+        );
         const alertReservation = await reserveRelayAlert(outage.id, checkedAt);
         if (alertReservation.permitted) {
           const slackDelivered = await sendSlackWebhookNotification({
@@ -104,7 +126,10 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
             color: hasSendgrid ? "#f59e0b" : "#e11d48",
             fields: [
               { title: "Event", value: "Runtime Outbound Send Error" },
-              { title: "Recipient Domain", value: recipientDomainMatch?.[1] ?? "unknown" },
+              {
+                title: "Recipient Domain",
+                value: recipientDomainMatch?.[1] ?? "unknown",
+              },
               { title: "Error", value: safeError.slice(0, 150) },
               { title: "Timestamp", value: new Date(checkedAt).toUTCString() },
             ],
@@ -130,7 +155,8 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
   }
 
   // ── 2. Backup path: SendGrid API failover ──────────────────────────────
-  const sendgridKey = process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey;
+  const sendgridKey =
+    process.env.SENDGRID_API_KEY?.trim() || ENV.sendgridApiKey;
   if (sendgridKey) {
     sgMail.setApiKey(sendgridKey);
     await sgMail.send({
@@ -144,7 +170,9 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
     return;
   }
 
-  console.warn("[SystemEmail] Skipped — neither primary SYSTEM_SMTP_* nor backup SENDGRID_API_KEY are configured");
+  console.warn(
+    "[SystemEmail] Skipped — neither primary SYSTEM_SMTP_* nor backup SENDGRID_API_KEY are configured"
+  );
 }
 
 /** Minimal HTML → plain-text fallback (strips tags, collapses whitespace). */

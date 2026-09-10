@@ -35,9 +35,12 @@ class ErrorBoundary extends Component<Props, State> {
               className="text-destructive mb-6 flex-shrink-0"
             />
 
-            <h2 className="mb-3 text-2xl font-black">We couldn’t load this screen.</h2>
+            <h2 className="mb-3 text-2xl font-black">
+              We couldn’t load this screen.
+            </h2>
             <p className="mb-6 text-sm leading-6 text-muted-foreground">
-              Your work is safe. Try again to reconnect, or reload the page if the problem continues.
+              Your work is safe. Try again to reconnect, or reload the page if
+              the problem continues.
             </p>
 
             <button

@@ -6,7 +6,10 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useActiveTransientQueryRetries } from "@/hooks/useActiveTransientQueryRetries";
 import { useHaptics } from "@/hooks/useHaptics";
-import { recheckNetworkStatus, useNetworkStatus } from "@/hooks/useNetworkStatus";
+import {
+  recheckNetworkStatus,
+  useNetworkStatus,
+} from "@/hooks/useNetworkStatus";
 import { queryRetryDelay, shouldRetryQuery } from "@/lib/queryRetry";
 
 const API_READINESS_QUERY_KEY = ["system", "api-readiness"] as const;
@@ -22,9 +25,12 @@ type ApiReadinessError = Error & {
 };
 
 function createTransientReadinessError(httpStatus = 503): ApiReadinessError {
-  return Object.assign(new Error("The API is temporarily unavailable. Please try again."), {
-    data: { code: "INTERNAL_SERVER_ERROR", httpStatus },
-  }) as ApiReadinessError;
+  return Object.assign(
+    new Error("The API is temporarily unavailable. Please try again."),
+    {
+      data: { code: "INTERNAL_SERVER_ERROR", httpStatus },
+    }
+  ) as ApiReadinessError;
 }
 
 async function fetchApiReadiness(): Promise<ApiReadiness> {
@@ -45,7 +51,7 @@ async function fetchApiReadiness(): Promise<ApiReadiness> {
 
   let payload: Partial<ApiReadiness>;
   try {
-    payload = await response.json() as Partial<ApiReadiness>;
+    payload = (await response.json()) as Partial<ApiReadiness>;
   } catch {
     throw createTransientReadinessError();
   }
@@ -63,7 +69,7 @@ type ReadinessOptions = {
 
 export function useDashboardReadiness(
   enabled: boolean,
-  options: ReadinessOptions = {},
+  options: ReadinessOptions = {}
 ): UseQueryResult<ApiReadiness, Error> {
   return useQuery<ApiReadiness, Error>({
     queryKey: API_READINESS_QUERY_KEY,
@@ -107,7 +113,9 @@ type DashboardReadinessGateProps = {
   children: ReactNode;
 };
 
-function RecoveryToast({ readiness }: Pick<DashboardReadinessGateProps, "readiness">) {
+function RecoveryToast({
+  readiness,
+}: Pick<DashboardReadinessGateProps, "readiness">) {
   const { t } = useTranslation();
   const { recoverySuccessHaptic } = useHaptics();
   const hadUnavailableState = useRef(false);
@@ -121,20 +129,27 @@ function RecoveryToast({ readiness }: Pick<DashboardReadinessGateProps, "readine
   }
 
   useEffect(() => {
-    if (!readiness.isSuccess || readiness.dataUpdatedAt === lastHandledSuccess.current) return;
+    if (
+      !readiness.isSuccess ||
+      readiness.dataUpdatedAt === lastHandledSuccess.current
+    )
+      return;
 
     lastHandledSuccess.current = readiness.dataUpdatedAt;
     if (!hadUnavailableState.current) return;
 
     hadUnavailableState.current = false;
-    toast.success(t("apiRecovery.reconnected", { defaultValue: "You’re back online." }), {
-      id: API_RECOVERY_TOAST_ID,
-      duration: 8_000,
-      className: "api-recovery-reconnect-toast",
-      description: t("apiRecovery.reconnectedDescription", {
-        defaultValue: "Get Phame is connected and ready to use.",
-      }),
-    });
+    toast.success(
+      t("apiRecovery.reconnected", { defaultValue: "You’re back online." }),
+      {
+        id: API_RECOVERY_TOAST_ID,
+        duration: 8_000,
+        className: "api-recovery-reconnect-toast",
+        description: t("apiRecovery.reconnectedDescription", {
+          defaultValue: "Get Phame is connected and ready to use.",
+        }),
+      }
+    );
     recoverySuccessHaptic();
   }, [readiness.dataUpdatedAt, readiness.isSuccess, recoverySuccessHaptic, t]);
 
@@ -162,7 +177,10 @@ function OfflineRecoveryIllustration() {
  * is still returning a non-ready response. Exhausted automatic retries receive
  * a manual retry action rather than an opaque query error.
  */
-export function DashboardReadinessGate({ readiness, children }: DashboardReadinessGateProps) {
+export function DashboardReadinessGate({
+  readiness,
+  children,
+}: DashboardReadinessGateProps) {
   const { t } = useTranslation();
   const isOnline = useNetworkStatus();
   const wasOnline = useRef(isOnline);
@@ -185,15 +203,26 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
     return (
       <>
         {recoveryToast}
-        <div className="flex min-h-screen items-center justify-center rr-bg-navy px-6" role="status" aria-live="polite">
+        <div
+          className="flex min-h-screen items-center justify-center rr-bg-navy px-6"
+          role="status"
+          aria-live="polite"
+        >
           <div className="flex max-w-sm flex-col items-center text-center">
-            <Loader2 size={28} className="animate-spin text-[#D4A017]" aria-hidden="true" />
+            <Loader2
+              size={28}
+              className="animate-spin text-[#D4A017]"
+              aria-hidden="true"
+            />
             <p className="mt-4 text-sm font-semibold text-white">
-              {t("apiRecovery.preparing", { defaultValue: "Preparing your workspace…" })}
+              {t("apiRecovery.preparing", {
+                defaultValue: "Preparing your workspace…",
+              })}
             </p>
             <p className="mt-1 text-xs text-white/65">
               {t("apiRecovery.preparingDescription", {
-                defaultValue: "We’ll reconnect automatically when the service is ready.",
+                defaultValue:
+                  "We’ll reconnect automatically when the service is ready.",
               })}
             </p>
           </div>
@@ -204,29 +233,54 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
 
   if (readiness.isError) {
     const title = isOnline
-      ? t("apiRecovery.unavailableTitle", { defaultValue: "We’re reconnecting Get Phame." })
-      : t("apiRecovery.offlineTitle", { defaultValue: "You’re offline right now." });
+      ? t("apiRecovery.unavailableTitle", {
+          defaultValue: "We’re reconnecting Get Phame.",
+        })
+      : t("apiRecovery.offlineTitle", {
+          defaultValue: "You’re offline right now.",
+        });
     const description = isOnline
       ? t("apiRecovery.unavailableDescription", {
-          defaultValue: "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
+          defaultValue:
+            "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
         })
       : t("apiRecovery.offlineDescription", {
-          defaultValue: "Check your Wi-Fi or mobile data, then try again. Your work stays safe on this device.",
+          defaultValue:
+            "Check your Wi-Fi or mobile data, then try again. Your work stays safe on this device.",
         });
 
     return (
       <>
         {recoveryToast}
-        <div className="flex min-h-screen items-center justify-center rr-bg-navy px-6" role="alert">
+        <div
+          className="flex min-h-screen items-center justify-center rr-bg-navy px-6"
+          role="alert"
+        >
           <div className="w-full max-w-md rounded-2xl border border-[#D4A017]/30 bg-white/[0.06] p-7 text-center shadow-2xl">
             <OfflineRecoveryIllustration />
             <h1 className="mt-4 text-xl font-black text-white">{title}</h1>
-            <p className="mt-2 text-sm leading-6 text-white/70">{description}</p>
+            <p className="mt-2 text-sm leading-6 text-white/70">
+              {description}
+            </p>
             {!isOnline && (
               <>
-                <ol id="api-recovery-offline-guidance" data-testid="api-recovery-offline-guidance" className="mt-5 space-y-2 text-left text-xs leading-5 text-white/75">
-                  <li className="flex gap-2"><span className="font-black text-[#D4A017]">1.</span>{t("apiRecovery.offlineStepOne", { defaultValue: "Turn on Wi-Fi or mobile data." })}</li>
-                  <li className="flex gap-2"><span className="font-black text-[#D4A017]">2.</span>{t("apiRecovery.offlineStepTwo", { defaultValue: "Return here and tap Retry Connection." })}</li>
+                <ol
+                  id="api-recovery-offline-guidance"
+                  data-testid="api-recovery-offline-guidance"
+                  className="mt-5 space-y-2 text-left text-xs leading-5 text-white/75"
+                >
+                  <li className="flex gap-2">
+                    <span className="font-black text-[#D4A017]">1.</span>
+                    {t("apiRecovery.offlineStepOne", {
+                      defaultValue: "Turn on Wi-Fi or mobile data.",
+                    })}
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-black text-[#D4A017]">2.</span>
+                    {t("apiRecovery.offlineStepTwo", {
+                      defaultValue: "Return here and tap Retry Connection.",
+                    })}
+                  </li>
                 </ol>
                 <button
                   type="button"
@@ -236,10 +290,22 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
                   aria-describedby="api-recovery-offline-guidance"
                   className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#D4A017]/50 bg-white/[0.06] px-4 py-2.5 text-sm font-black text-white transition active:scale-[0.97] hover:bg-white/[0.12] disabled:cursor-wait disabled:opacity-70"
                 >
-                  {readiness.isFetching ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <RefreshCw size={16} aria-hidden="true" />}
+                  {readiness.isFetching ? (
+                    <Loader2
+                      size={16}
+                      className="animate-spin"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <RefreshCw size={16} aria-hidden="true" />
+                  )}
                   {readiness.isFetching
-                    ? t("apiRecovery.retrying", { defaultValue: "Trying again…" })
-                    : t("apiRecovery.retryConnection", { defaultValue: "Retry Connection" })}
+                    ? t("apiRecovery.retrying", {
+                        defaultValue: "Trying again…",
+                      })
+                    : t("apiRecovery.retryConnection", {
+                        defaultValue: "Retry Connection",
+                      })}
                 </button>
               </>
             )}
@@ -250,7 +316,15 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
               disabled={readiness.isFetching}
               className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#D4A017] px-4 py-2.5 text-sm font-black text-[#08172b] transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-70"
             >
-              {readiness.isFetching ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <RefreshCw size={16} aria-hidden="true" />}
+              {readiness.isFetching ? (
+                <Loader2
+                  size={16}
+                  className="animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                <RefreshCw size={16} aria-hidden="true" />
+              )}
               {readiness.isFetching
                 ? t("apiRecovery.retrying", { defaultValue: "Trying again…" })
                 : t("apiRecovery.retry", { defaultValue: "Try again" })}
@@ -261,5 +335,10 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
     );
   }
 
-  return <>{recoveryToast}{children}</>;
+  return (
+    <>
+      {recoveryToast}
+      {children}
+    </>
+  );
 }

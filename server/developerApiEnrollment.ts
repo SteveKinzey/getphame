@@ -22,9 +22,13 @@ async function findDeveloperApiEnrollment(userId: number) {
   return row ?? null;
 }
 
-function toDeveloperEnrollmentStatus(row: Awaited<ReturnType<typeof findDeveloperApiEnrollment>>) {
+function toDeveloperEnrollmentStatus(
+  row: Awaited<ReturnType<typeof findDeveloperApiEnrollment>>
+) {
   const termsAccepted = row ? isCurrentDeveloperApiTermsAcceptance(row) : false;
-  const sendScopeStatus = normalizeDeveloperSendScopeStatus(row?.sendScopeStatus);
+  const sendScopeStatus = normalizeDeveloperSendScopeStatus(
+    row?.sendScopeStatus
+  );
   return {
     termsVersion: DEVELOPER_API_TERMS_VERSION,
     acceptableUseVersion: DEVELOPER_API_ACCEPTABLE_USE_VERSION,
@@ -32,13 +36,15 @@ function toDeveloperEnrollmentStatus(row: Awaited<ReturnType<typeof findDevelope
     termsAcceptedAt: row?.termsAcceptedAt ?? null,
     sendScopeStatus,
     sendScopeApproved: sendScopeStatus === "approved",
-    businessUse: row?.businessName ? {
-      businessName: row.businessName,
-      websiteUrl: row.websiteUrl ?? "",
-      useCase: row.useCase ?? "",
-      expectedMonthlySendVolume: row.expectedMonthlySendVolume ?? 0,
-      consentProcess: row.consentProcess ?? "",
-    } : null,
+    businessUse: row?.businessName
+      ? {
+          businessName: row.businessName,
+          websiteUrl: row.websiteUrl ?? "",
+          useCase: row.useCase ?? "",
+          expectedMonthlySendVolume: row.expectedMonthlySendVolume ?? 0,
+          consentProcess: row.consentProcess ?? "",
+        }
+      : null,
     sendScopeRequestedAt: row?.sendScopeRequestedAt ?? null,
     sendScopeReviewedAt: row?.sendScopeReviewedAt ?? null,
     sendScopeReviewNote: row?.sendScopeReviewNote ?? null,
@@ -92,15 +98,21 @@ export async function requestDeveloperSendScope(params: {
   if (!db) throw new Error("Database unavailable");
   const existing = await findDeveloperApiEnrollment(params.userId);
   if (!existing || !isCurrentDeveloperApiTermsAcceptance(existing)) {
-    throw new Error("Accept the current API Terms and Acceptable Use Policy before requesting sending access.");
+    throw new Error(
+      "Accept the current API Terms and Acceptable Use Policy before requesting sending access."
+    );
   }
 
   const now = params.now ?? Date.now();
-  const riskClass = classifyDeveloperSendScopeRequest(params.expectedMonthlySendVolume);
-  const sendScopeStatus: DeveloperSendScopeStatus = riskClass === "standard" ? "approved" : "pending_review";
-  const reviewNote = riskClass === "standard"
-    ? "self_service_standard_volume"
-    : "high_volume_manual_review_required";
+  const riskClass = classifyDeveloperSendScopeRequest(
+    params.expectedMonthlySendVolume
+  );
+  const sendScopeStatus: DeveloperSendScopeStatus =
+    riskClass === "standard" ? "approved" : "pending_review";
+  const reviewNote =
+    riskClass === "standard"
+      ? "self_service_standard_volume"
+      : "high_volume_manual_review_required";
   await db
     .insert(developerApiEnrollments)
     .values({
@@ -149,7 +161,8 @@ export async function reviewDeveloperSendScope(params: {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   const existing = await findDeveloperApiEnrollment(params.userId);
-  if (!existing?.sendScopeRequestedAt) throw new Error("Developer send-scope request not found.");
+  if (!existing?.sendScopeRequestedAt)
+    throw new Error("Developer send-scope request not found.");
   const now = params.now ?? Date.now();
   await db
     .update(developerApiEnrollments)
@@ -164,21 +177,31 @@ export async function reviewDeveloperSendScope(params: {
   return getDeveloperApiEnrollmentStatus(params.userId);
 }
 
-export async function assertDeveloperApiKeyScopesAllowed(userId: number, scopes: readonly DeveloperApiScope[]) {
+export async function assertDeveloperApiKeyScopesAllowed(
+  userId: number,
+  scopes: readonly DeveloperApiScope[]
+) {
   const status = await getDeveloperApiEnrollmentStatus(userId);
   if (!status.termsAccepted) {
-    throw new Error("Accept the current API Terms and Acceptable Use Policy before creating or rotating an API key.");
+    throw new Error(
+      "Accept the current API Terms and Acceptable Use Policy before creating or rotating an API key."
+    );
   }
   if (scopes.includes("review_requests:send") && !status.sendScopeApproved) {
-    throw new Error("Complete business-use enrollment before adding review_requests:send permission.");
+    throw new Error(
+      "Complete business-use enrollment before adding review_requests:send permission."
+    );
   }
   return status;
 }
 
-export async function removeUnapprovedDeveloperSendScope(userId: number, scopes: readonly DeveloperApiScope[]) {
+export async function removeUnapprovedDeveloperSendScope(
+  userId: number,
+  scopes: readonly DeveloperApiScope[]
+) {
   if (!scopes.includes("review_requests:send")) return [...scopes];
   const status = await getDeveloperApiEnrollmentStatus(userId);
   return status.sendScopeApproved
     ? [...scopes]
-    : scopes.filter((scope) => scope !== "review_requests:send");
+    : scopes.filter(scope => scope !== "review_requests:send");
 }

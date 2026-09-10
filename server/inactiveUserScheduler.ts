@@ -53,7 +53,9 @@ export async function runInactiveUserCheck(): Promise<void> {
     return;
   }
 
-  console.log(`[InactiveUsers] ${eligible.length} candidate(s) in the 7-day window.`);
+  console.log(
+    `[InactiveUsers] ${eligible.length} candidate(s) in the 7-day window.`
+  );
 
   for (const profile of eligible) {
     try {
@@ -65,7 +67,9 @@ export async function runInactiveUserCheck(): Promise<void> {
         .limit(1);
 
       if (userRows.length === 0) {
-        console.log(`[InactiveUsers] userId=${profile.userId} not found — skipping.`);
+        console.log(
+          `[InactiveUsers] userId=${profile.userId} not found — skipping.`
+        );
         await db
           .update(businessProfiles)
           .set({ inactiveEmailSentAt: now })
@@ -75,7 +79,9 @@ export async function runInactiveUserCheck(): Promise<void> {
 
       const { email, name } = userRows[0];
       if (!email) {
-        console.log(`[InactiveUsers] userId=${profile.userId} has no email — skipping.`);
+        console.log(
+          `[InactiveUsers] userId=${profile.userId} has no email — skipping.`
+        );
         await db
           .update(businessProfiles)
           .set({ inactiveEmailSentAt: now })
@@ -102,9 +108,14 @@ export async function runInactiveUserCheck(): Promise<void> {
         .set({ inactiveEmailSentAt: now })
         .where(eq(businessProfiles.userId, profile.userId));
 
-      console.log(`[InactiveUsers] Sent to ${email} (userId=${profile.userId}).`);
+      console.log(
+        `[InactiveUsers] Sent to ${email} (userId=${profile.userId}).`
+      );
     } catch (err) {
-      console.error(`[InactiveUsers] Failed for userId=${profile.userId}:`, err);
+      console.error(
+        `[InactiveUsers] Failed for userId=${profile.userId}:`,
+        err
+      );
     }
   }
 }
@@ -112,11 +123,11 @@ export async function runInactiveUserCheck(): Promise<void> {
 export function startInactiveUserScheduler(): void {
   console.log("[InactiveUsers] Scheduler started — checking every 6 hours.");
   // Run immediately on start, then every 6 hours
-  runInactiveUserCheck().catch((err) =>
+  runInactiveUserCheck().catch(err =>
     console.error("[InactiveUsers] Initial check failed:", err)
   );
   setInterval(() => {
-    runInactiveUserCheck().catch((err) =>
+    runInactiveUserCheck().catch(err =>
       console.error("[InactiveUsers] Periodic check failed:", err)
     );
   }, SIX_HOURS_MS);

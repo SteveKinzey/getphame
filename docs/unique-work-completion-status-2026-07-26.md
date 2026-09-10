@@ -12,25 +12,25 @@ The historical graphic is still accurate as a record of what existed when it was
 
 The current outcome is:
 
-| Area | Current status | Decision |
-|---|---|---|
-| Mailjet Bulk Sender preset | **Open — not on current main** | Selectively port or explicitly retire. |
-| Global public Help Assistant | **Partially superseded** | Authenticated product implementation exists; decide whether public/anonymous coverage is still wanted. |
-| Consent-first Sources + WooCommerce | **Complete through a newer reimplementation** | Do not port the stale branch files. |
-| WooCommerce paid entitlement | **Complete through a current-pattern rebuild** | Do not port the non-compiling branch patch. |
-| Five backlog items | **Four complete; one scope ambiguity** | Clarify whether “administrator template deletion” means cross-user admin deletion. |
-| Retain `push-safe` | **Still required for now** | Keep it until Mailjet and the two scope decisions are resolved and preservation evidence is recorded. |
+| Area                                | Current status                                 | Decision                                                                                               |
+| ----------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Mailjet Bulk Sender preset          | **Open — not on current main**                 | Selectively port or explicitly retire.                                                                 |
+| Global public Help Assistant        | **Partially superseded**                       | Authenticated product implementation exists; decide whether public/anonymous coverage is still wanted. |
+| Consent-first Sources + WooCommerce | **Complete through a newer reimplementation**  | Do not port the stale branch files.                                                                    |
+| WooCommerce paid entitlement        | **Complete through a current-pattern rebuild** | Do not port the non-compiling branch patch.                                                            |
+| Five backlog items                  | **Four complete; one scope ambiguity**         | Clarify whether “administrator template deletion” means cross-user admin deletion.                     |
+| Retain `push-safe`                  | **Still required for now**                     | Keep it until Mailjet and the two scope decisions are resolved and preservation evidence is recorded.  |
 
 > **Bottom line:** do not merge `consolidation/push-safe`. Extract only the still-desired behavior onto fresh branches from current `main`, then archive and retire the stale branch through a protected pull-request workflow.
 
 ## Baseline reconciliation
 
-| Metric | Historical graphic | Fresh audit | Change | Interpretation |
-|---|---:|---:|---:|---|
-| Commits ahead of `main` | 27 | 27 | 0 | The same unique commit set remains preserved. |
-| Commits behind `main` | 96 | 109 | +13 | Rebase/cherry-pick risk has increased. |
-| Final-tree files changed | 183 | 273 | +90 | The old branch tree has become materially staler. |
-| Branch-only files | 20 | 20 | 0 | Unique artifacts remain available for selective extraction. |
+| Metric                   | Historical graphic | Fresh audit | Change | Interpretation                                              |
+| ------------------------ | -----------------: | ----------: | -----: | ----------------------------------------------------------- |
+| Commits ahead of `main`  |                 27 |          27 |      0 | The same unique commit set remains preserved.               |
+| Commits behind `main`    |                 96 |         109 |    +13 | Rebase/cherry-pick risk has increased.                      |
+| Final-tree files changed |                183 |         273 |    +90 | The old branch tree has become materially staler.           |
+| Branch-only files        |                 20 |          20 |      0 | Unique artifacts remain available for selective extraction. |
 
 The fresh audit classifies `consolidation/push-safe` as **`UNIQUE_REVIEW_REQUIRED`**, not a safe deletion candidate. Protection/check-run API visibility was unavailable to the audit integration, so no protection state is inferred from missing API data.
 
@@ -38,14 +38,14 @@ The fresh audit classifies `consolidation/push-safe` as **`UNIQUE_REVIEW_REQUIRE
 
 ### 1. Mailjet Bulk Sender preset
 
-| Field | Assessment |
-|---|---|
-| Historical disposition | Portable after rebase and revalidation. |
-| Historical action | Port selectively on a fresh branch from `main`. |
-| Current completion | **Not completed.** Current `main` intentionally omits Mailjet from the approved preset matrix.[1] |
-| Preserved evidence | The stale branch contains a `mailjet` provider definition, source-backed relay research, tests, documentation, and seven locale updates.[2] |
-| Risk | Copying the old locale files or whole preset registry would overwrite substantial current localization and provider work. Provider documentation may also have changed. |
-| Final disposition | **Open / selectively portable.** |
+| Field                  | Assessment                                                                                                                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Historical disposition | Portable after rebase and revalidation.                                                                                                                                 |
+| Historical action      | Port selectively on a fresh branch from `main`.                                                                                                                         |
+| Current completion     | **Not completed.** Current `main` intentionally omits Mailjet from the approved preset matrix.[1]                                                                       |
+| Preserved evidence     | The stale branch contains a `mailjet` provider definition, source-backed relay research, tests, documentation, and seven locale updates.[2]                             |
+| Risk                   | Copying the old locale files or whole preset registry would overwrite substantial current localization and provider work. Provider documentation may also have changed. |
+| Final disposition      | **Open / selectively portable.**                                                                                                                                        |
 
 **Execution plan**
 
@@ -69,14 +69,14 @@ The fresh audit classifies `consolidation/push-safe` as **`UNIQUE_REVIEW_REQUIRE
 
 ### 2. Global public Help Assistant
 
-| Field | Assessment |
-|---|---|
-| Historical disposition | Specification only. |
-| Historical action | Convert the requirements into a dedicated issue. |
-| Current completion | **Substantially implemented, with a safer authenticated scope.** Current `main` ships a localized Help Assistant UI, grounded source categories, privacy guidance, citations, escalation, per-user rate limiting, a protected backend procedure, and tests.[3][4] |
-| Scope gap | The historical title and requirements said “global public” and “anonymous-safe.” The current implementation is attached to authenticated application layout and uses a protected procedure; it is not an anonymous landing-page assistant. |
-| Issue status | No dedicated GitHub issue for the historical public/anonymous scope was found during the audit. |
-| Final disposition | **Original build action superseded; public scope remains a product decision.** |
+| Field                  | Assessment                                                                                                                                                                                                                                                        |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Historical disposition | Specification only.                                                                                                                                                                                                                                               |
+| Historical action      | Convert the requirements into a dedicated issue.                                                                                                                                                                                                                  |
+| Current completion     | **Substantially implemented, with a safer authenticated scope.** Current `main` ships a localized Help Assistant UI, grounded source categories, privacy guidance, citations, escalation, per-user rate limiting, a protected backend procedure, and tests.[3][4] |
+| Scope gap              | The historical title and requirements said “global public” and “anonymous-safe.” The current implementation is attached to authenticated application layout and uses a protected procedure; it is not an anonymous landing-page assistant.                        |
+| Issue status           | No dedicated GitHub issue for the historical public/anonymous scope was found during the audit.                                                                                                                                                                   |
+| Final disposition      | **Original build action superseded; public scope remains a product decision.**                                                                                                                                                                                    |
 
 **Execution plan**
 
@@ -95,12 +95,12 @@ The fresh audit classifies `consolidation/push-safe` as **`UNIQUE_REVIEW_REQUIRE
 
 ### 3. Consent-first Sources + WooCommerce
 
-| Field | Assessment |
-|---|---|
-| Historical disposition | Architecturally stale; rework behavior and contracts rather than old files. |
-| Historical action | Rebuild against current Sources and WooCommerce infrastructure. |
-| Current completion | **Completed through a newer architecture.** Current `main` includes source attribution, source filters, external IDs for deduplication, WooCommerce credential handling, staged pending imports, import/dismiss flows, sync history, API-key-linked Sources, consent-aware setup, and connection-health history.[5][6] |
-| Final disposition | **Superseded / do not port old files.** |
+| Field                  | Assessment                                                                                                                                                                                                                                                                                                             |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Historical disposition | Architecturally stale; rework behavior and contracts rather than old files.                                                                                                                                                                                                                                            |
+| Historical action      | Rebuild against current Sources and WooCommerce infrastructure.                                                                                                                                                                                                                                                        |
+| Current completion     | **Completed through a newer architecture.** Current `main` includes source attribution, source filters, external IDs for deduplication, WooCommerce credential handling, staged pending imports, import/dismiss flows, sync history, API-key-linked Sources, consent-aware setup, and connection-health history.[5][6] |
+| Final disposition      | **Superseded / do not port old files.**                                                                                                                                                                                                                                                                                |
 
 The historical recommendation has been executed in substance. The correct follow-up is regression maintenance, not code extraction from `push-safe`.
 
@@ -112,24 +112,24 @@ The historical recommendation has been executed in substance. The correct follow
 
 ### 4. WooCommerce paid entitlement
 
-| Field | Assessment |
-|---|---|
-| Historical disposition | Blocked because the stale branch patch did not compile. |
-| Historical action | Rebuild against current entitlement patterns. |
-| Current completion | **Completed through the current paid-access pattern.** `paidProcedure` is established, WooCommerce sync and bulk-send mutations use it, and the client presents the existing `PaywallModal` instead of relying on the stale broken import.[7] |
-| Final disposition | **Rebuilt / do not port old patch.** |
+| Field                  | Assessment                                                                                                                                                                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Historical disposition | Blocked because the stale branch patch did not compile.                                                                                                                                                                                       |
+| Historical action      | Rebuild against current entitlement patterns.                                                                                                                                                                                                 |
+| Current completion     | **Completed through the current paid-access pattern.** `paidProcedure` is established, WooCommerce sync and bulk-send mutations use it, and the client presents the existing `PaywallModal` instead of relying on the stale broken import.[7] |
+| Final disposition      | **Rebuilt / do not port old patch.**                                                                                                                                                                                                          |
 
 The current pattern gates revenue-impacting actions while allowing safe configuration and explanatory UI. If product policy changes to gate the entire route, that should be a separate pricing decision rather than a recovery task.
 
 ## Backlog triage
 
-| Backlog action from graphic | Current status | Evidence and conclusion | Next action |
-|---|---|---|---|
-| Send-request editor | **Complete** | Request subject/body editing, save, resend, and campaign restart are implemented through `ClientDetailSheet` and `requests.updateEmail`.[8] | Keep focused editor/resend tests; no branch port required. |
-| Administrator template deletion | **Partially complete / ambiguous** | User-owned template deletion exists, and account deletion removes templates. No dedicated cross-user administrator template-deletion workflow was found.[9] | Decide whether admins truly need cross-user deletion. If no, retire the item. If yes, implement an audited `adminProcedure` with explicit confirmation and ownership checks. |
-| Developer/API Keys enrollment | **Complete** | Current `main` includes scoped creation, optional expiry, one-time secret display, rotation, revocation, suspension/usage metadata, UI, Sources linkage, and focused tests.[10] | Maintain abuse, enrollment, and lifecycle tests; no branch port required. |
-| Locale completion | **Complete for the supported catalog set** | Seven locale directories are present; full-app key parity plus landing and Settings locale-coverage tests pass.[11] | Continue native-speaker linguistic QA as maintenance; structural completion is met. |
-| Connector verification | **Complete across current connector surfaces** | SMTP connection testing, WooCommerce connect/save guidance, Source health checks/history, and onboarding verification paths are implemented.[6][12] | Preserve non-destructive verification and production smoke checks after connector changes. |
+| Backlog action from graphic     | Current status                                 | Evidence and conclusion                                                                                                                                                         | Next action                                                                                                                                                                  |
+| ------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Send-request editor             | **Complete**                                   | Request subject/body editing, save, resend, and campaign restart are implemented through `ClientDetailSheet` and `requests.updateEmail`.[8]                                     | Keep focused editor/resend tests; no branch port required.                                                                                                                   |
+| Administrator template deletion | **Partially complete / ambiguous**             | User-owned template deletion exists, and account deletion removes templates. No dedicated cross-user administrator template-deletion workflow was found.[9]                     | Decide whether admins truly need cross-user deletion. If no, retire the item. If yes, implement an audited `adminProcedure` with explicit confirmation and ownership checks. |
+| Developer/API Keys enrollment   | **Complete**                                   | Current `main` includes scoped creation, optional expiry, one-time secret display, rotation, revocation, suspension/usage metadata, UI, Sources linkage, and focused tests.[10] | Maintain abuse, enrollment, and lifecycle tests; no branch port required.                                                                                                    |
+| Locale completion               | **Complete for the supported catalog set**     | Seven locale directories are present; full-app key parity plus landing and Settings locale-coverage tests pass.[11]                                                             | Continue native-speaker linguistic QA as maintenance; structural completion is met.                                                                                          |
+| Connector verification          | **Complete across current connector surfaces** | SMTP connection testing, WooCommerce connect/save guidance, Source health checks/history, and onboarding verification paths are implemented.[6][12]                             | Preserve non-destructive verification and production smoke checks after connector changes.                                                                                   |
 
 ### Administrator template deletion: safe implementation if approved
 
@@ -160,26 +160,26 @@ The graphic’s retention instruction remains active:
 
 ## Prioritized execution sequence
 
-| Priority | Action | Why it comes next | Completion evidence |
-|---:|---|---|---|
-| 1 | Decide Mailjet: port or retire | It is the only clearly portable product capability still absent from current `main`. | Written decision; issue/PR or retirement record. |
-| 2 | Decide public Help Assistant scope | Current authenticated implementation makes the old full-build action obsolete, but the anonymous scope remains unresolved. | Closed decision record or narrow issue with abuse/privacy acceptance criteria. |
-| 3 | Clarify administrator template deletion | Current user deletion may already satisfy the business need; cross-user deletion adds security and audit risk. | Retired requirement or approved implementation spec. |
-| 4 | Build only approved gaps on fresh branches | Prevents stale branch code from overwriting newer architecture. | Focused tests, full gates, checkpoint, protected PR, tree verification. |
-| 5 | Archive and retire `push-safe` | Removes maintenance ambiguity only after unique work is preserved or explicitly declined. | Archive hash, 27-commit disposition map, fresh SHA check, approved branch deletion. |
+| Priority | Action                                     | Why it comes next                                                                                                          | Completion evidence                                                                 |
+| -------: | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+|        1 | Decide Mailjet: port or retire             | It is the only clearly portable product capability still absent from current `main`.                                       | Written decision; issue/PR or retirement record.                                    |
+|        2 | Decide public Help Assistant scope         | Current authenticated implementation makes the old full-build action obsolete, but the anonymous scope remains unresolved. | Closed decision record or narrow issue with abuse/privacy acceptance criteria.      |
+|        3 | Clarify administrator template deletion    | Current user deletion may already satisfy the business need; cross-user deletion adds security and audit risk.             | Retired requirement or approved implementation spec.                                |
+|        4 | Build only approved gaps on fresh branches | Prevents stale branch code from overwriting newer architecture.                                                            | Focused tests, full gates, checkpoint, protected PR, tree verification.             |
+|        5 | Archive and retire `push-safe`             | Removes maintenance ambiguity only after unique work is preserved or explicitly declined.                                  | Archive hash, 27-commit disposition map, fresh SHA check, approved branch deletion. |
 
 ## Evidence and confidence
 
 This assessment is based on the historical graphic, a fresh remote audit, exact branch-only commit/file evidence, current-main source contracts, GitHub issue/PR inventory, and a passing full release gate for the active website tree. The audit found only one unrelated repository issue; it found no dedicated Mailjet, public Help Assistant, or administrator-template-deletion issue.
 
-| Conclusion | Confidence |
-|---|---|
-| Mailjet is absent from current main but preserved on `push-safe` | High |
-| Sources/WooCommerce was reimplemented and old files should not be ported | High |
-| WooCommerce paid entitlement was rebuilt using current patterns | High |
-| Help Assistant exists but does not implement the old anonymous/public scope | High |
-| Send-request editor, Developer/API Keys, locales, and connector verification are implemented | High |
-| “Administrator template deletion” requires clarification | High |
+| Conclusion                                                                                   | Confidence |
+| -------------------------------------------------------------------------------------------- | ---------- |
+| Mailjet is absent from current main but preserved on `push-safe`                             | High       |
+| Sources/WooCommerce was reimplemented and old files should not be ported                     | High       |
+| WooCommerce paid entitlement was rebuilt using current patterns                              | High       |
+| Help Assistant exists but does not implement the old anonymous/public scope                  | High       |
+| Send-request editor, Developer/API Keys, locales, and connector verification are implemented | High       |
+| “Administrator template deletion” requires clarification                                     | High       |
 
 ## References
 

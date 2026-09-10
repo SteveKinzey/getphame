@@ -37,10 +37,13 @@ const PDF_UNICODE_FONTS = {
 
 const pdfFontDataCache = new Map<string, Promise<string>>();
 
-export function detectTranscriptPdfUnicodeFont(values: readonly string[]): PdfUnicodeFont | null {
+export function detectTranscriptPdfUnicodeFont(
+  values: readonly string[]
+): PdfUnicodeFont | null {
   const content = values.join("\n");
   if (/[\u0e00-\u0e7f]/.test(content)) return PDF_UNICODE_FONTS.thai;
-  if (/[\u3400-\u9fff\uf900-\ufaff]/.test(content)) return PDF_UNICODE_FONTS.cjk;
+  if (/[\u3400-\u9fff\uf900-\ufaff]/.test(content))
+    return PDF_UNICODE_FONTS.cjk;
   return null;
 }
 
@@ -48,20 +51,24 @@ export async function fetchPdfFontAsBase64(url: string) {
   const cached = pdfFontDataCache.get(url);
   if (cached) return cached;
 
-  const request = fetch(url, { credentials: "same-origin" }).then(async (response) => {
-    if (!response.ok) {
-      throw new Error(`Transcript PDF font request failed with status ${response.status}`);
-    }
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    let binary = "";
-    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
-      const limit = Math.min(offset + 0x8000, bytes.length);
-      for (let index = offset; index < limit; index += 1) {
-        binary += String.fromCharCode(bytes[index]);
+  const request = fetch(url, { credentials: "same-origin" }).then(
+    async response => {
+      if (!response.ok) {
+        throw new Error(
+          `Transcript PDF font request failed with status ${response.status}`
+        );
       }
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      let binary = "";
+      for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+        const limit = Math.min(offset + 0x8000, bytes.length);
+        for (let index = offset; index < limit; index += 1) {
+          binary += String.fromCharCode(bytes[index]);
+        }
+      }
+      return window.btoa(binary);
     }
-    return window.btoa(binary);
-  });
+  );
 
   pdfFontDataCache.set(url, request);
   try {
@@ -85,7 +92,7 @@ export function formatTranscriptTimestamp(seconds: number) {
 
 export function buildTranscriptDocument(
   cues: readonly ExportTranscriptCue[],
-  metadata: TranscriptExportMetadata,
+  metadata: TranscriptExportMetadata
 ) {
   const header = [
     metadata.brand,
@@ -98,13 +105,15 @@ export function buildTranscriptDocument(
     "—".repeat(36),
     "",
   ];
-  const body = cues.map((cue) => `[${formatTranscriptTimestamp(cue.startTime)}] ${cue.text}`);
+  const body = cues.map(
+    cue => `[${formatTranscriptTimestamp(cue.startTime)}] ${cue.text}`
+  );
   return [...header, ...body, ""].join("\n");
 }
 
 export function createTranscriptTextBlob(
   cues: readonly ExportTranscriptCue[],
-  metadata: TranscriptExportMetadata,
+  metadata: TranscriptExportMetadata
 ) {
   return new Blob(["\uFEFF", buildTranscriptDocument(cues, metadata)], {
     type: "text/plain;charset=utf-8",
@@ -122,7 +131,7 @@ export function normalizePdfText(value: string) {
 
 export async function createTranscriptPdfBlob(
   cues: readonly ExportTranscriptCue[],
-  metadata: TranscriptExportMetadata,
+  metadata: TranscriptExportMetadata
 ) {
   const { jsPDF } = await import("jspdf");
   const document = new jsPDF({ format: "a4", unit: "pt", compress: true });
@@ -182,7 +191,7 @@ export async function createTranscriptPdfBlob(
       unicodeFont && valueUnicodeFont?.family === unicodeFont.family
         ? unicodeFont.family
         : "helvetica",
-      "normal",
+      "normal"
     );
     document.text(value, valueX, cursorY);
     cursorY += 13;
@@ -200,9 +209,15 @@ export async function createTranscriptPdfBlob(
   const lineHeight = 14;
 
   for (const cue of cues) {
-    const cueText = normalizePdfText(`[${formatTranscriptTimestamp(cue.startTime)}] ${cue.text}`);
-    const wrappedLines = document.splitTextToSize(cueText, contentWidth) as string[];
-    const requiredHeight = Math.max(lineHeight, wrappedLines.length * lineHeight) + 6;
+    const cueText = normalizePdfText(
+      `[${formatTranscriptTimestamp(cue.startTime)}] ${cue.text}`
+    );
+    const wrappedLines = document.splitTextToSize(
+      cueText,
+      contentWidth
+    ) as string[];
+    const requiredHeight =
+      Math.max(lineHeight, wrappedLines.length * lineHeight) + 6;
     if (cursorY + requiredHeight > footerY) {
       document.addPage();
       cursorY = 52;
@@ -217,14 +232,20 @@ export async function createTranscriptPdfBlob(
     document.setFont("helvetica", "normal");
     document.setFontSize(8);
     document.setTextColor(110, 120, 135);
-    document.text(`${pageNumber} / ${pageCount}`, pageWidth - margin, footerY, { align: "right" });
+    document.text(`${pageNumber} / ${pageCount}`, pageWidth - margin, footerY, {
+      align: "right",
+    });
   }
 
   return document.output("blob");
 }
 
-export function buildTranscriptFilename(language: string, format: TranscriptExportFormat) {
-  const safeLanguage = language.toLowerCase().replace(/[^a-z0-9-]/g, "") || "en";
+export function buildTranscriptFilename(
+  language: string,
+  format: TranscriptExportFormat
+) {
+  const safeLanguage =
+    language.toLowerCase().replace(/[^a-z0-9-]/g, "") || "en";
   const extension = format === "text" ? "txt" : "pdf";
   return `get-phame-walkthrough-transcript-${safeLanguage}.${extension}`;
 }

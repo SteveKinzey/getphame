@@ -11,7 +11,9 @@ export async function relayHeartbeatHandler(req: Request, res: Response) {
     }
     taskUid = user.taskUid;
 
-    const result = await runRelayHeartbeatCheck({ source: "scheduled_heartbeat" });
+    const result = await runRelayHeartbeatCheck({
+      source: "scheduled_heartbeat",
+    });
     return res.json({
       ok: result.status === "healthy",
       taskUid,
@@ -19,7 +21,10 @@ export async function relayHeartbeatHandler(req: Request, res: Response) {
     });
   } catch (error) {
     const errorType = error instanceof Error ? error.name : "UnknownError";
-    console.error("[RelayHeartbeat] Scheduled callback failed", { errorType, taskUid: taskUid ?? null });
+    console.error("[RelayHeartbeat] Scheduled callback failed", {
+      errorType,
+      taskUid: taskUid ?? null,
+    });
     return res.status(500).json({
       error: "Relay heartbeat check failed",
       context: { url: req.originalUrl, taskUid: taskUid ?? null },

@@ -23,9 +23,11 @@ function userContext(): TrpcContext {
 describe("administrator platform email preview authorization", () => {
   it("rejects a regular user before a manually initiated platform email can be sent", async () => {
     const caller = appRouter.createCaller(userContext());
-    await expect(caller.admin.sendTestEmail({
-      template: "welcome",
-      to: "recipient@example.test",
-    })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.admin.sendTestEmail({
+        template: "welcome",
+        to: "recipient@example.test",
+      })
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });

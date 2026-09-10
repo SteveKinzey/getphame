@@ -6,7 +6,12 @@
       "method": "POST",
       "path": "/api/v1/wordpress/pairings",
       "successStatus": 201,
-      "successFields": ["pairingId", "pairingSecret", "approvalUrl", "expiresAt"],
+      "successFields": [
+        "pairingId",
+        "pairingSecret",
+        "approvalUrl",
+        "expiresAt"
+      ],
       "cacheControl": "no-store",
       "rateLimit": {
         "status": 429,
@@ -27,7 +32,12 @@
         "code": "NOT_FOUND"
       },
       "cacheControl": "no-store",
-      "forbiddenFailureFields": ["apiKey", "sourceId", "pairingSecret", "pairing_secret"]
+      "forbiddenFailureFields": [
+        "apiKey",
+        "sourceId",
+        "pairingSecret",
+        "pairing_secret"
+      ]
     }
   },
   "applicationUi": {
@@ -55,11 +65,23 @@
     "rateLimitRetryField": "retry_after",
     "retryCountdownMaximumSeconds": 300,
     "claimFailureCode": "PAIRING_CLAIM_FAILED",
-    "transientCredentialKeys": ["pairing_id", "pairing_secret", "approval_url", "expires_at"]
+    "transientCredentialKeys": [
+      "pairing_id",
+      "pairing_secret",
+      "approval_url",
+      "expires_at"
+    ]
   },
   "safety": {
     "syntheticSiteSuffix": ".invalid",
-    "neverPrintFields": ["pairingSecret", "pairing_secret", "apiKey", "api_key", "sourceId", "source_id"],
+    "neverPrintFields": [
+      "pairingSecret",
+      "pairing_secret",
+      "apiKey",
+      "api_key",
+      "sourceId",
+      "source_id"
+    ],
     "liveBurstRequiresConfirmation": true,
     "liveBurstMaximumAttempts": 25
   }

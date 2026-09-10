@@ -7,7 +7,7 @@ const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
 }));
 
-vi.mock("./db", async (importOriginal) => ({
+vi.mock("./db", async importOriginal => ({
   ...(await importOriginal<typeof import("./db")>()),
   getDb: mocks.getDb,
 }));
@@ -95,8 +95,12 @@ describe("administrator security-audit release verification", () => {
     expect(first.schema.indexes).not.toBe(second.schema.indexes);
     expect(first.evidence).not.toBe(second.evidence);
     expect(first.evidence[0]).not.toBe(second.evidence[0]);
-    expect(first.nextOperationalConfirmation).not.toBe(second.nextOperationalConfirmation);
-    expect(first.nextOperationalConfirmation.steps).not.toBe(second.nextOperationalConfirmation.steps);
+    expect(first.nextOperationalConfirmation).not.toBe(
+      second.nextOperationalConfirmation
+    );
+    expect(first.nextOperationalConfirmation.steps).not.toBe(
+      second.nextOperationalConfirmation.steps
+    );
     expect(first.privacy).not.toBe(second.privacy);
   });
 

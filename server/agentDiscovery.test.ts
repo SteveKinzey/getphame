@@ -36,15 +36,20 @@ describe("Get Phame agent discovery", () => {
 
   it("publishes public metadata but limits MCP to the read-only product-information tool", async () => {
     const app = buildDiscoveryApp();
-    const [catalog, openApi, protectedResource, skills, tools] = await Promise.all([
-      request(app).get("/.well-known/api-catalog"),
-      request(app).get("/openapi.json"),
-      request(app).get("/.well-known/oauth-protected-resource"),
-      request(app).get("/.well-known/agent-skills/index.json"),
-      request(app).post("/mcp").send({ jsonrpc: "2.0", id: 1, method: "tools/list" }),
-    ]);
+    const [catalog, openApi, protectedResource, skills, tools] =
+      await Promise.all([
+        request(app).get("/.well-known/api-catalog"),
+        request(app).get("/openapi.json"),
+        request(app).get("/.well-known/oauth-protected-resource"),
+        request(app).get("/.well-known/agent-skills/index.json"),
+        request(app)
+          .post("/mcp")
+          .send({ jsonrpc: "2.0", id: 1, method: "tools/list" }),
+      ]);
 
-    expect(catalog.headers["content-type"]).toContain("application/linkset+json");
+    expect(catalog.headers["content-type"]).toContain(
+      "application/linkset+json"
+    );
     expect(openApi.body.openapi).toBe("3.1.0");
     expect(protectedResource.body.scopes_supported).toEqual(
       expect.arrayContaining(["contacts:write", "review_requests:send"])
@@ -66,7 +71,9 @@ describe("Get Phame agent discovery", () => {
         .set("Accept", "text/markdown"),
     ]);
 
-    expect(openApi.headers["content-type"]).toContain("application/vnd.oai.openapi+json");
+    expect(openApi.headers["content-type"]).toContain(
+      "application/vnd.oai.openapi+json"
+    );
     expect(openApi.body).toMatchObject({
       openapi: "3.1.0",
       info: { title: "Get Phame Developer API", version: "1.0.0" },
@@ -78,7 +85,9 @@ describe("Get Phame agent discovery", () => {
     });
     expect(Object.keys(openApi.body)).toContain("info");
     expect(Object.keys(openApi.body)).toContain("components");
-    expect(authorizationServer.headers["content-type"]).toContain("application/json");
+    expect(authorizationServer.headers["content-type"]).toContain(
+      "application/json"
+    );
     expect(authorizationServer.body.agent_auth).toMatchObject({
       credential_types_supported: ["api_key"],
       claim_uri: "https://getphame.app/docs/api",
@@ -90,7 +99,9 @@ describe("Get Phame agent discovery", () => {
     registerSitemapRoutes(app);
     const robots = await request(app).get("/robots.txt");
 
-    expect(robots.text).toContain("Content-Signal: ai-train=no, search=yes, ai-input=no");
+    expect(robots.text).toContain(
+      "Content-Signal: ai-train=no, search=yes, ai-input=no"
+    );
     expect(robots.text).toContain("Disallow: /dashboard");
     expect(robots.text).toContain("Disallow: /api/");
   });

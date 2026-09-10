@@ -44,40 +44,69 @@ describe("source automation Heartbeat reconciliation", () => {
   });
 
   it("skips all external calls when disabled", async () => {
-    await expect(reconcileSourceAutomationHeartbeat({ enabled: false, deps })).resolves.toEqual({ status: "skipped" });
+    await expect(
+      reconcileSourceAutomationHeartbeat({ enabled: false, deps })
+    ).resolves.toEqual({ status: "skipped" });
     expect(deps.list).not.toHaveBeenCalled();
   });
 
   it("creates the single project-owned five-minute job", async () => {
-    await expect(reconcileSourceAutomationHeartbeat({ enabled: true, deps })).resolves.toEqual({ status: "created" });
-    expect(deps.create).toHaveBeenCalledWith(expect.objectContaining({
-      name: SOURCE_AUTOMATION_HEARTBEAT_NAME,
-      cron: SOURCE_AUTOMATION_CRON,
-      path: SOURCE_AUTOMATION_CALLBACK_PATH,
-      method: "POST",
-    }), "");
+    await expect(
+      reconcileSourceAutomationHeartbeat({ enabled: true, deps })
+    ).resolves.toEqual({ status: "created" });
+    expect(deps.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: SOURCE_AUTOMATION_HEARTBEAT_NAME,
+        cron: SOURCE_AUTOMATION_CRON,
+        path: SOURCE_AUTOMATION_CALLBACK_PATH,
+        method: "POST",
+      }),
+      ""
+    );
     expect(deps.saveTaskUid).toHaveBeenCalledWith("task_source_automation_1");
   });
 
   it("repairs schedule drift on the matching owned job", async () => {
-    deps.getScheduler.mockResolvedValue({ scheduleCronTaskUid: "task_source_automation_1" });
-    deps.list.mockResolvedValue({ total: 1, actorUserId: "owner", jobs: [heartbeatJob()] });
-    await expect(reconcileSourceAutomationHeartbeat({ enabled: true, deps })).resolves.toEqual({ status: "reconciled" });
-    expect(deps.update).toHaveBeenCalledWith("task_source_automation_1", expect.objectContaining({
-      cron: SOURCE_AUTOMATION_CRON,
-      path: SOURCE_AUTOMATION_CALLBACK_PATH,
-      enable: true,
-    }), "");
+    deps.getScheduler.mockResolvedValue({
+      scheduleCronTaskUid: "task_source_automation_1",
+    });
+    deps.list.mockResolvedValue({
+      total: 1,
+      actorUserId: "owner",
+      jobs: [heartbeatJob()],
+    });
+    await expect(
+      reconcileSourceAutomationHeartbeat({ enabled: true, deps })
+    ).resolves.toEqual({ status: "reconciled" });
+    expect(deps.update).toHaveBeenCalledWith(
+      "task_source_automation_1",
+      expect.objectContaining({
+        cron: SOURCE_AUTOMATION_CRON,
+        path: SOURCE_AUTOMATION_CALLBACK_PATH,
+        enable: true,
+      }),
+      ""
+    );
     expect(deps.saveTaskUid).toHaveBeenCalledWith("task_source_automation_1");
   });
 
   it("adopts the job created by a concurrent cold start", async () => {
     deps.list
       .mockResolvedValueOnce({ total: 0, actorUserId: "owner", jobs: [] })
-      .mockResolvedValueOnce({ total: 1, actorUserId: "owner", jobs: [heartbeatJob("task_raced")] });
+      .mockResolvedValueOnce({
+        total: 1,
+        actorUserId: "owner",
+        jobs: [heartbeatJob("task_raced")],
+      });
     deps.create.mockRejectedValue(new Error("duplicate name"));
-    await expect(reconcileSourceAutomationHeartbeat({ enabled: true, deps })).resolves.toEqual({ status: "reconciled" });
-    expect(deps.update).toHaveBeenCalledWith("task_raced", expect.objectContaining({ enable: true }), "");
+    await expect(
+      reconcileSourceAutomationHeartbeat({ enabled: true, deps })
+    ).resolves.toEqual({ status: "reconciled" });
+    expect(deps.update).toHaveBeenCalledWith(
+      "task_raced",
+      expect.objectContaining({ enable: true }),
+      ""
+    );
     expect(deps.saveTaskUid).toHaveBeenCalledWith("task_raced");
   });
 });

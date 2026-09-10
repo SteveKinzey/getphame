@@ -8,7 +8,9 @@ import {
 
 describe("landing guide capture helpers", () => {
   it("normalizes addresses before validation and submission", () => {
-    expect(normalizeLeadEmail("  Owner@Example.COM  ")).toBe("owner@example.com");
+    expect(normalizeLeadEmail("  Owner@Example.COM  ")).toBe(
+      "owner@example.com"
+    );
     expect(validateLeadEmail("  Owner@Example.COM  ")).toEqual({
       normalized: "owner@example.com",
       error: null,
@@ -29,10 +31,14 @@ describe("landing guide capture helpers", () => {
     const twitter = new URL(urls.twitter);
     const linkedin = new URL(urls.linkedin);
 
-    expect(twitter.origin + twitter.pathname).toBe("https://twitter.com/intent/tweet");
+    expect(twitter.origin + twitter.pathname).toBe(
+      "https://twitter.com/intent/tweet"
+    );
     expect(twitter.searchParams.get("url")).toBe(GUIDE_LANDING_URL);
     expect(twitter.searchParams.get("text")).toContain("Get Phame");
-    expect(linkedin.origin + linkedin.pathname).toBe("https://www.linkedin.com/sharing/share-offsite/");
+    expect(linkedin.origin + linkedin.pathname).toBe(
+      "https://www.linkedin.com/sharing/share-offsite/"
+    );
     expect(linkedin.searchParams.get("url")).toBe(GUIDE_LANDING_URL);
     expect(urls.twitter + urls.linkedin).not.toMatch(/@|email|recipient/i);
   });

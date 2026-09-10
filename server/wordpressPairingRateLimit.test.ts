@@ -52,10 +52,12 @@ describe("shared WordPress pairing start limiter", () => {
     const { db, onDuplicateKeyUpdate } = createDbReturning(12, 20_000);
     getDbMock.mockResolvedValue(db);
 
-    await expect(checkWordPressPairingStartRateLimit("198.51.100.10", 12_345, {
-      windowMs: 10_000,
-      maxStarts: 12,
-    })).resolves.toEqual({ allowed: true, remaining: 0, retryAfterSeconds: 0 });
+    await expect(
+      checkWordPressPairingStartRateLimit("198.51.100.10", 12_345, {
+        windowMs: 10_000,
+        maxStarts: 12,
+      })
+    ).resolves.toEqual({ allowed: true, remaining: 0, retryAfterSeconds: 0 });
     expect(onDuplicateKeyUpdate).toHaveBeenCalledTimes(1);
   });
 
@@ -63,10 +65,12 @@ describe("shared WordPress pairing start limiter", () => {
     const { db } = createDbReturning(13, 20_000);
     getDbMock.mockResolvedValue(db);
 
-    await expect(checkWordPressPairingStartRateLimit("198.51.100.10", 12_345, {
-      windowMs: 10_000,
-      maxStarts: 12,
-    })).resolves.toEqual({ allowed: false, remaining: 0, retryAfterSeconds: 8 });
+    await expect(
+      checkWordPressPairingStartRateLimit("198.51.100.10", 12_345, {
+        windowMs: 10_000,
+        maxStarts: 12,
+      })
+    ).resolves.toEqual({ allowed: false, remaining: 0, retryAfterSeconds: 8 });
   });
 
   it("cleans expired windows at most once per cleanup interval in one process", async () => {

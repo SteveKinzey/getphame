@@ -9,7 +9,11 @@
  */
 
 import { getDb, getNotificationPrefs } from "./db";
-import { wooPendingImports, wooCustomers, savedContacts } from "../drizzle/schema";
+import {
+  wooPendingImports,
+  wooCustomers,
+  savedContacts,
+} from "../drizzle/schema";
 import { eq, lt, and, inArray } from "drizzle-orm";
 import { upsertContactsFromSource } from "./contacts";
 import { notifyOwner } from "./_core/notification";
@@ -24,7 +28,12 @@ export async function stageWooOrders(
   userId: number,
   orders: Array<{
     id: number | string;
-    billing: { email: string; first_name: string; last_name: string; phone?: string };
+    billing: {
+      email: string;
+      first_name: string;
+      last_name: string;
+      phone?: string;
+    };
     date_created: string;
   }>
 ): Promise<{ staged: number; skipped: number }> {
@@ -36,17 +45,17 @@ export async function stageWooOrders(
     .select({ email: wooPendingImports.email })
     .from(wooPendingImports)
     .where(eq(wooPendingImports.userId, userId));
-  const existingEmails = new Set(existing.map((r) => r.email.toLowerCase()));
+  const existingEmails = new Set(existing.map(r => r.email.toLowerCase()));
 
   // Also check woo_customers to avoid re-staging already-imported orders
   const existingOrderIds = await db
     .select({ wooOrderId: wooCustomers.wooOrderId })
     .from(wooCustomers)
     .where(eq(wooCustomers.userId, userId));
-  const existingOrderIdSet = new Set(existingOrderIds.map((r) => r.wooOrderId));
+  const existingOrderIdSet = new Set(existingOrderIds.map(r => r.wooOrderId));
 
   const toStage = orders.filter(
-    (o) =>
+    o =>
       o.billing?.email &&
       !existingEmails.has(o.billing.email.toLowerCase()) &&
       !existingOrderIdSet.has(String(o.id))
@@ -55,10 +64,11 @@ export async function stageWooOrders(
   if (toStage.length === 0) return { staged: 0, skipped: orders.length };
 
   await db.insert(wooPendingImports).values(
-    toStage.map((o) => ({
+    toStage.map(o => ({
       userId,
       email: o.billing.email.toLowerCase(),
-      name: `${o.billing.first_name} ${o.billing.last_name}`.trim() || "Customer",
+      name:
+        `${o.billing.first_name} ${o.billing.last_name}`.trim() || "Customer",
       phone: o.billing.phone ?? null,
       orderId: String(o.id),
       orderDate: new Date(o.date_created).getTime(),
@@ -73,7 +83,9 @@ export async function stageWooOrders(
  * Import all pending records for a user into woo_customers and saved_contacts.
  * Clears the pending queue after import.
  */
-export async function importPendingWooOrders(userId: number): Promise<{ imported: number }> {
+export async function importPendingWooOrders(
+  userId: number
+): Promise<{ imported: number }> {
   const db = await getDb();
   if (!db) return { imported: 0 };
 
@@ -89,13 +101,15 @@ export async function importPendingWooOrders(userId: number): Promise<{ imported
     .select({ wooOrderId: wooCustomers.wooOrderId })
     .from(wooCustomers)
     .where(eq(wooCustomers.userId, userId));
-  const existingOrderIdSet = new Set(existingOrderIds.map((r) => r.wooOrderId));
+  const existingOrderIdSet = new Set(existingOrderIds.map(r => r.wooOrderId));
 
-  const toInsert = pending.filter((p) => p.orderId && !existingOrderIdSet.has(p.orderId));
+  const toInsert = pending.filter(
+    p => p.orderId && !existingOrderIdSet.has(p.orderId)
+  );
 
   if (toInsert.length > 0) {
     await db.insert(wooCustomers).values(
-      toInsert.map((p) => ({
+      toInsert.map(p => ({
         userId,
         wooOrderId: p.orderId ?? `pending-${p.id}`,
         customerName: p.name ?? "Customer",
@@ -109,17 +123,19 @@ export async function importPendingWooOrders(userId: number): Promise<{ imported
     // Also upsert into saved_contacts
     await upsertContactsFromSource(
       userId,
-      toInsert.map((p) => ({
+      toInsert.map(p => ({
         name: p.name ?? "Customer",
         email: p.email,
         source: "woocommerce" as const,
         externalId: p.orderId ?? undefined,
       }))
-    ).catch((err) => console.warn("[WooImport] Failed to upsert contacts:", err));
+    ).catch(err => console.warn("[WooImport] Failed to upsert contacts:", err));
   }
 
   // Clear the pending queue for this user
-  await db.delete(wooPendingImports).where(eq(wooPendingImports.userId, userId));
+  await db
+    .delete(wooPendingImports)
+    .where(eq(wooPendingImports.userId, userId));
 
   return { imported: toInsert.length };
 }
@@ -127,7 +143,9 @@ export async function importPendingWooOrders(userId: number): Promise<{ imported
 /**
  * Get count of pending WooCommerce imports for a user.
  */
-export async function getPendingWooImportCount(userId: number): Promise<number> {
+export async function getPendingWooImportCount(
+  userId: number
+): Promise<number> {
   const db = await getDb();
   if (!db) return 0;
   const rows = await db
@@ -143,7 +161,9 @@ export async function getPendingWooImportCount(userId: number): Promise<number> 
 export async function dismissPendingWooOrders(userId: number): Promise<void> {
   const db = await getDb();
   if (!db) return;
-  await db.delete(wooPendingImports).where(eq(wooPendingImports.userId, userId));
+  await db
+    .delete(wooPendingImports)
+    .where(eq(wooPendingImports.userId, userId));
 }
 
 /**
@@ -151,7 +171,9 @@ export async function dismissPendingWooOrders(userId: number): Promise<void> {
  * Imports any pending records older than 7 days for all users.
  */
 export function startWooAutoImportScheduler(): void {
-  console.log("[WooAutoImport] Scheduler started — checks every Monday at 03:00 GMT.");
+  console.log(
+    "[WooAutoImport] Scheduler started — checks every Monday at 03:00 GMT."
+  );
 
   const scheduleNextRun = () => {
     const now = new Date();
@@ -193,13 +215,17 @@ async function runAutoImport(): Promise<void> {
     .from(wooPendingImports)
     .where(lt(wooPendingImports.fetchedAt, cutoff));
 
-  const userIds = Array.from(new Set(stale.map((r) => r.userId)));
-  console.log(`[WooAutoImport] Found ${userIds.length} user(s) with stale pending imports.`);
+  const userIds = Array.from(new Set(stale.map(r => r.userId)));
+  console.log(
+    `[WooAutoImport] Found ${userIds.length} user(s) with stale pending imports.`
+  );
 
   for (const userId of userIds) {
     try {
       const result = await importPendingWooOrders(userId);
-      console.log(`[WooAutoImport] User ${userId}: imported ${result.imported} contacts.`);
+      console.log(
+        `[WooAutoImport] User ${userId}: imported ${result.imported} contacts.`
+      );
       // Notify the user if they have the notify-on-import preference enabled
       try {
         const prefs = await getNotificationPrefs(userId);
@@ -210,7 +236,10 @@ async function runAutoImport(): Promise<void> {
           });
         }
       } catch (notifyErr) {
-        console.warn(`[WooAutoImport] Notify failed for user ${userId}:`, notifyErr);
+        console.warn(
+          `[WooAutoImport] Notify failed for user ${userId}:`,
+          notifyErr
+        );
       }
     } catch (err) {
       console.error(`[WooAutoImport] User ${userId} failed:`, err);

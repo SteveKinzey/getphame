@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { BULK_PROVIDER_VERIFICATION_HELP, getProviderDiscoveryGuidance } from "./BulkProviderDiscoveryControls";
+import {
+  BULK_PROVIDER_VERIFICATION_HELP,
+  getProviderDiscoveryGuidance,
+} from "./BulkProviderDiscoveryControls";
 
 describe("tenant-owned bulk provider setup guidance", () => {
   it("keeps provider-specific credentials, sender verification, and documentation distinct", () => {
@@ -17,6 +20,8 @@ describe("tenant-owned bulk provider setup guidance", () => {
 
   it("provides verification guidance for every selectable tenant-owned provider", () => {
     expect(Object.values(BULK_PROVIDER_VERIFICATION_HELP)).toHaveLength(13);
-    expect(Object.values(BULK_PROVIDER_VERIFICATION_HELP).every(Boolean)).toBe(true);
+    expect(Object.values(BULK_PROVIDER_VERIFICATION_HELP).every(Boolean)).toBe(
+      true
+    );
   });
 });

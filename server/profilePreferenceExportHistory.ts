@@ -4,10 +4,15 @@ import { getDb } from "./db";
 
 const MAX_PROFILE_PREFERENCE_EXPORT_HISTORY_ROWS = 20;
 export const PROFILE_PREFERENCE_EXPORT_FORMATS = ["json", "csv"] as const;
-export type ProfilePreferenceExportFormat = typeof PROFILE_PREFERENCE_EXPORT_FORMATS[number];
+export type ProfilePreferenceExportFormat =
+  (typeof PROFILE_PREFERENCE_EXPORT_FORMATS)[number];
 
-export function isProfilePreferenceExportFormat(value: string): value is ProfilePreferenceExportFormat {
-  return (PROFILE_PREFERENCE_EXPORT_FORMATS as readonly string[]).includes(value);
+export function isProfilePreferenceExportFormat(
+  value: string
+): value is ProfilePreferenceExportFormat {
+  return (PROFILE_PREFERENCE_EXPORT_FORMATS as readonly string[]).includes(
+    value
+  );
 }
 
 export async function recordProfilePreferenceExport(input: {
@@ -44,8 +49,20 @@ export async function listProfilePreferenceExportHistory(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const conditions = [eq(profilePreferenceExportHistory.userId, userId)];
-  if (filter.startDate) conditions.push(gte(profilePreferenceExportHistory.exportedAt, toUtcStartOfDay(filter.startDate)));
-  if (filter.endDate) conditions.push(lte(profilePreferenceExportHistory.exportedAt, toUtcEndOfDay(filter.endDate)));
+  if (filter.startDate)
+    conditions.push(
+      gte(
+        profilePreferenceExportHistory.exportedAt,
+        toUtcStartOfDay(filter.startDate)
+      )
+    );
+  if (filter.endDate)
+    conditions.push(
+      lte(
+        profilePreferenceExportHistory.exportedAt,
+        toUtcEndOfDay(filter.endDate)
+      )
+    );
   return db
     .select({
       id: profilePreferenceExportHistory.id,

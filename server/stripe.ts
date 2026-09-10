@@ -36,7 +36,9 @@ export const stripe: Stripe = new Proxy({} as Stripe, {
 /** Stripe Price IDs for each plan */
 export type StripePlan = "monthly" | "annual" | "lifetime";
 
-export function isStripeLiveMode(secretKey = process.env.STRIPE_SECRET_KEY): boolean {
+export function isStripeLiveMode(
+  secretKey = process.env.STRIPE_SECRET_KEY
+): boolean {
   return secretKey?.trim().startsWith("sk_live_") ?? false;
 }
 
@@ -63,11 +65,15 @@ async function fetchLivePricesFromStripe(): Promise<PriceCache> {
 
   for (const product of products.data) {
     const plan = product.metadata?.getphame_plan as StripePlan | undefined;
-    const currency = product.metadata?.getphame_currency as "usd" | "thb" | undefined;
+    const currency = product.metadata?.getphame_currency as
+      | "usd"
+      | "thb"
+      | undefined;
     if (!plan || !currency) continue;
-    const priceId = typeof product.default_price === "string"
-      ? product.default_price
-      : product.default_price?.id;
+    const priceId =
+      typeof product.default_price === "string"
+        ? product.default_price
+        : product.default_price?.id;
     if (!priceId) continue;
     if (currency === "usd") usd[plan] = priceId;
     if (currency === "thb") thb[plan] = priceId;
@@ -118,7 +124,11 @@ const PROMOTION_CODE_CREATE_PATTERN = /^[A-Z0-9][A-Z0-9-]{2,63}$/;
 export const STRIPE_PROMOTION_MAX_REDEMPTIONS = 100_000;
 export const STRIPE_PROMOTION_MAX_EXPIRY_MS = 5 * 365 * 24 * 60 * 60 * 1000;
 
-export type StripePromotionStatus = "active" | "inactive" | "expired" | "redeemed";
+export type StripePromotionStatus =
+  | "active"
+  | "inactive"
+  | "expired"
+  | "redeemed";
 
 export type StripePromotionSnapshot = {
   id: string;
@@ -166,9 +176,13 @@ export function normalizePromotionCode(value?: string | null): string | null {
   return PROMOTION_CODE_PATTERN.test(normalized) ? normalized : null;
 }
 
-async function getPromotionCoupon(promotionCode: PromotionCodeDetails): Promise<PromotionCoupon> {
-  const couponReference = promotionCode.promotion?.coupon ?? promotionCode.coupon;
-  if (!couponReference) throw new Error("Stripe promotion code does not reference a coupon.");
+async function getPromotionCoupon(
+  promotionCode: PromotionCodeDetails
+): Promise<PromotionCoupon> {
+  const couponReference =
+    promotionCode.promotion?.coupon ?? promotionCode.coupon;
+  if (!couponReference)
+    throw new Error("Stripe promotion code does not reference a coupon.");
   if (typeof couponReference !== "string") return couponReference;
   return stripe.coupons.retrieve(couponReference) as Promise<PromotionCoupon>;
 }
@@ -182,11 +196,17 @@ function promotionDiscountLabel(coupon: PromotionCoupon): string {
   return "Discount";
 }
 
-function promotionStatus(promotionCode: PromotionCodeDetails): StripePromotionStatus {
+function promotionStatus(
+  promotionCode: PromotionCodeDetails
+): StripePromotionStatus {
   const nowSeconds = Math.floor(Date.now() / 1000);
   if (!promotionCode.active) return "inactive";
-  if (promotionCode.expires_at && promotionCode.expires_at <= nowSeconds) return "expired";
-  if (promotionCode.max_redemptions != null && promotionCode.times_redeemed >= promotionCode.max_redemptions) {
+  if (promotionCode.expires_at && promotionCode.expires_at <= nowSeconds)
+    return "expired";
+  if (
+    promotionCode.max_redemptions != null &&
+    promotionCode.times_redeemed >= promotionCode.max_redemptions
+  ) {
     return "redeemed";
   }
   return "active";
@@ -195,17 +215,25 @@ function promotionStatus(promotionCode: PromotionCodeDetails): StripePromotionSt
 async function getPlanProductIds(): Promise<Record<StripePlan, string | null>> {
   const priceIds = await getStripePriceIds();
   const plans = Object.keys(priceIds) as StripePlan[];
-  const prices = await Promise.all(plans.map((plan) => stripe.prices.retrieve(priceIds[plan])));
+  const prices = await Promise.all(
+    plans.map(plan => stripe.prices.retrieve(priceIds[plan]))
+  );
   return Object.fromEntries(
-    prices.map((price, index) => [plans[index], stripeResourceId(price.product)]),
+    prices.map((price, index) => [
+      plans[index],
+      stripeResourceId(price.product),
+    ])
   ) as Record<StripePlan, string | null>;
 }
 
-function getApplicablePlans(coupon: PromotionCoupon, planProductIds: Record<StripePlan, string | null>): StripePlan[] {
+function getApplicablePlans(
+  coupon: PromotionCoupon,
+  planProductIds: Record<StripePlan, string | null>
+): StripePlan[] {
   const allowedProductIds = coupon.applies_to?.products ?? [];
   const plans: StripePlan[] = ["monthly", "annual", "lifetime"];
   if (allowedProductIds.length === 0) return plans;
-  return plans.filter((plan) => {
+  return plans.filter(plan => {
     const productId = planProductIds[plan];
     return productId !== null && allowedProductIds.includes(productId);
   });
@@ -223,7 +251,7 @@ export async function listStripePromotionCodes(): Promise<{
   ]);
 
   const promotions = await Promise.all(
-    result.data.map(async (rawPromotionCode) => {
+    result.data.map(async rawPromotionCode => {
       const promotionCode = rawPromotionCode as unknown as PromotionCodeDetails;
       const coupon = await getPromotionCoupon(promotionCode);
       return {
@@ -233,13 +261,17 @@ export async function listStripePromotionCodes(): Promise<{
         discountLabel: promotionDiscountLabel(coupon),
         timesRedeemed: promotionCode.times_redeemed,
         maxRedemptions: promotionCode.max_redemptions ?? null,
-        expiresAt: promotionCode.expires_at ? promotionCode.expires_at * 1000 : null,
+        expiresAt: promotionCode.expires_at
+          ? promotionCode.expires_at * 1000
+          : null,
         applicablePlans: getApplicablePlans(coupon, planProductIds),
-        firstTimeTransaction: Boolean(promotionCode.restrictions?.first_time_transaction),
+        firstTimeTransaction: Boolean(
+          promotionCode.restrictions?.first_time_transaction
+        ),
         customerId: stripeResourceId(promotionCode.customer),
         createdAt: promotionCode.created * 1000,
       } satisfies StripePromotionSnapshot;
-    }),
+    })
   );
 
   return { promotions, hasMore: result.has_more, refreshedAt: Date.now() };
@@ -260,52 +292,73 @@ export type CreateStripePromotionCodeInput = {
  * products. Stripe remains the sole source of truth; no coupon mirror is stored.
  */
 export async function createStripePromotionCode(
-  input: CreateStripePromotionCodeInput,
+  input: CreateStripePromotionCodeInput
 ): Promise<StripePromotionSnapshot> {
   const code = input.code.trim().toUpperCase();
   if (!PROMOTION_CODE_CREATE_PATTERN.test(code)) {
-    throw new Error("Promotion codes must contain 3–64 letters, numbers, or dashes and begin with a letter or number.");
+    throw new Error(
+      "Promotion codes must contain 3–64 letters, numbers, or dashes and begin with a letter or number."
+    );
   }
-  if (!Number.isFinite(input.percentOff) || input.percentOff <= 0 || input.percentOff > 100) {
-    throw new Error("Percentage off must be greater than 0 and no more than 100.");
+  if (
+    !Number.isFinite(input.percentOff) ||
+    input.percentOff <= 0 ||
+    input.percentOff > 100
+  ) {
+    throw new Error(
+      "Percentage off must be greater than 0 and no more than 100."
+    );
   }
 
   const applicablePlans = Array.from(new Set(input.applicablePlans));
-  const validPlans = new Set<StripePlan>(["monthly", "annual", "lifetime"] as StripePlan[]);
-  if (applicablePlans.length === 0 || applicablePlans.some((plan) => !validPlans.has(plan))) {
+  const validPlans = new Set<StripePlan>([
+    "monthly",
+    "annual",
+    "lifetime",
+  ] as StripePlan[]);
+  if (
+    applicablePlans.length === 0 ||
+    applicablePlans.some(plan => !validPlans.has(plan))
+  ) {
     throw new Error("Select at least one valid Get Phame plan.");
   }
-  if (input.maxRedemptions != null && (
-    !Number.isInteger(input.maxRedemptions)
-    || input.maxRedemptions < 1
-    || input.maxRedemptions > STRIPE_PROMOTION_MAX_REDEMPTIONS
-  )) {
-    throw new Error(`Maximum redemptions must be between 1 and ${STRIPE_PROMOTION_MAX_REDEMPTIONS}.`);
+  if (
+    input.maxRedemptions != null &&
+    (!Number.isInteger(input.maxRedemptions) ||
+      input.maxRedemptions < 1 ||
+      input.maxRedemptions > STRIPE_PROMOTION_MAX_REDEMPTIONS)
+  ) {
+    throw new Error(
+      `Maximum redemptions must be between 1 and ${STRIPE_PROMOTION_MAX_REDEMPTIONS}.`
+    );
   }
 
   const now = Date.now();
-  if (input.expiresAt != null && (
-    !Number.isFinite(input.expiresAt)
-    || input.expiresAt < now + 5 * 60 * 1000
-    || input.expiresAt > now + STRIPE_PROMOTION_MAX_EXPIRY_MS
-  )) {
-    throw new Error("Expiration must be at least 5 minutes and no more than 5 years in the future.");
+  if (
+    input.expiresAt != null &&
+    (!Number.isFinite(input.expiresAt) ||
+      input.expiresAt < now + 5 * 60 * 1000 ||
+      input.expiresAt > now + STRIPE_PROMOTION_MAX_EXPIRY_MS)
+  ) {
+    throw new Error(
+      "Expiration must be at least 5 minutes and no more than 5 years in the future."
+    );
   }
 
   const duplicateCheck = await stripe.promotionCodes.list({ code, limit: 100 });
-  if (duplicateCheck.data.some((item) => item.code.toUpperCase() === code)) {
+  if (duplicateCheck.data.some(item => item.code.toUpperCase() === code)) {
     throw new Error("A Stripe promotion code with this code already exists.");
   }
 
   const planProductIds = await getPlanProductIds();
-  const productIds = applicablePlans.map((plan) => planProductIds[plan]);
-  if (productIds.some((productId) => !productId)) {
+  const productIds = applicablePlans.map(plan => planProductIds[plan]);
+  if (productIds.some(productId => !productId)) {
     throw new Error("A selected Stripe plan is not linked to a valid product.");
   }
 
   let coupon: PromotionCoupon | null = null;
   try {
-    coupon = await stripe.coupons.create({
+    coupon = (await stripe.coupons.create({
       percent_off: input.percentOff,
       duration: "once",
       applies_to: { products: productIds as string[] },
@@ -316,7 +369,7 @@ export async function createStripePromotionCode(
         applicable_plans: applicablePlans.join(","),
         discount_duration: "once",
       },
-    }) as PromotionCoupon;
+    })) as PromotionCoupon;
 
     // This project intentionally pins Stripe's 2025-01-27 Acacia API, whose
     // promotion-code request uses the legacy top-level coupon parameter.
@@ -324,16 +377,24 @@ export async function createStripePromotionCode(
       coupon: coupon.id,
       code,
       active: true,
-      ...(input.expiresAt != null ? { expires_at: Math.floor(input.expiresAt / 1000) } : {}),
-      ...(input.maxRedemptions != null ? { max_redemptions: input.maxRedemptions } : {}),
-      ...(input.firstTimeTransaction ? { restrictions: { first_time_transaction: true } } : {}),
+      ...(input.expiresAt != null
+        ? { expires_at: Math.floor(input.expiresAt / 1000) }
+        : {}),
+      ...(input.maxRedemptions != null
+        ? { max_redemptions: input.maxRedemptions }
+        : {}),
+      ...(input.firstTimeTransaction
+        ? { restrictions: { first_time_transaction: true } }
+        : {}),
       metadata: {
         source: "get_phame_admin",
         created_by_user_id: String(input.createdByUserId),
         applicable_plans: applicablePlans.join(","),
       },
     } as unknown as Stripe.PromotionCodeCreateParams;
-    const created = await stripe.promotionCodes.create(createParams) as unknown as PromotionCodeDetails;
+    const created = (await stripe.promotionCodes.create(
+      createParams
+    )) as unknown as PromotionCodeDetails;
 
     return {
       id: created.id,
@@ -344,14 +405,18 @@ export async function createStripePromotionCode(
       maxRedemptions: created.max_redemptions ?? null,
       expiresAt: created.expires_at ? created.expires_at * 1000 : null,
       applicablePlans,
-      firstTimeTransaction: Boolean(created.restrictions?.first_time_transaction),
+      firstTimeTransaction: Boolean(
+        created.restrictions?.first_time_transaction
+      ),
       customerId: stripeResourceId(created.customer),
       createdAt: created.created * 1000,
     };
   } catch (error) {
     if (coupon) {
       await stripe.coupons.del(coupon.id).catch(() => {
-        console.warn(`[Stripe] Could not clean up unused coupon ${coupon?.id}.`);
+        console.warn(
+          `[Stripe] Could not clean up unused coupon ${coupon?.id}.`
+        );
       });
     }
     throw error;
@@ -382,11 +447,17 @@ export async function resolvePromotionCodeForCheckout({
     limit: 10,
   });
   const promotionCode = result.data
-    .map((item) => item as unknown as PromotionCodeDetails)
-    .find((item) => item.code?.toUpperCase() === normalizedCode && promotionStatus(item) === "active");
+    .map(item => item as unknown as PromotionCodeDetails)
+    .find(
+      item =>
+        item.code?.toUpperCase() === normalizedCode &&
+        promotionStatus(item) === "active"
+    );
 
   if (!promotionCode) {
-    throw new Error("This promotion code is invalid, expired, or fully redeemed.");
+    throw new Error(
+      "This promotion code is invalid, expired, or fully redeemed."
+    );
   }
 
   const restrictedCustomerId = stripeResourceId(promotionCode.customer);
@@ -400,7 +471,10 @@ export async function resolvePromotionCodeForCheckout({
   ]);
   const allowedProductIds = coupon.applies_to?.products ?? [];
   const productId = stripeResourceId(price.product);
-  if (allowedProductIds.length > 0 && (!productId || !allowedProductIds.includes(productId))) {
+  if (
+    allowedProductIds.length > 0 &&
+    (!productId || !allowedProductIds.includes(productId))
+  ) {
     throw new Error("This promotion code does not apply to the selected plan.");
   }
 
@@ -408,7 +482,10 @@ export async function resolvePromotionCodeForCheckout({
 }
 
 const CANONICAL_STRIPE_RETURN_ORIGIN = "https://getphame.app";
-const CANONICAL_STRIPE_RETURN_HOSTS = new Set(["getphame.app", "www.getphame.app"]);
+const CANONICAL_STRIPE_RETURN_HOSTS = new Set([
+  "getphame.app",
+  "www.getphame.app",
+]);
 const GETPHAME_CHECKOUT_ICON_URL =
   "https://assets.getphame.app/getphame-logo-mark.webp";
 const GETPHAME_CHECKOUT_BRANDING = {
@@ -430,13 +507,16 @@ const GETPHAME_CHECKOUT_BRANDING = {
  */
 export function getStripeReturnOrigin(origin?: string): string {
   const candidates = [process.env.APP_BASE_URL, origin].filter(
-    (candidate): candidate is string => Boolean(candidate?.trim()),
+    (candidate): candidate is string => Boolean(candidate?.trim())
   );
 
   for (const candidate of candidates) {
     try {
       const url = new URL(candidate);
-      if (url.protocol === "https:" && CANONICAL_STRIPE_RETURN_HOSTS.has(url.hostname.toLowerCase())) {
+      if (
+        url.protocol === "https:" &&
+        CANONICAL_STRIPE_RETURN_HOSTS.has(url.hostname.toLowerCase())
+      ) {
         return CANONICAL_STRIPE_RETURN_ORIGIN;
       }
     } catch {
@@ -481,7 +561,12 @@ type SubscriptionPaymentDetails = {
 
 function stripeResourceId(resource: unknown): string | null {
   if (typeof resource === "string") return resource;
-  if (resource && typeof resource === "object" && "id" in resource && typeof resource.id === "string") {
+  if (
+    resource &&
+    typeof resource === "object" &&
+    "id" in resource &&
+    typeof resource.id === "string"
+  ) {
     return resource.id;
   }
   return null;
@@ -489,13 +574,16 @@ function stripeResourceId(resource: unknown): string | null {
 
 async function getOwnedSubscriptionPayment(
   stripeCustomerId: string,
-  stripeSubscriptionId: string,
+  stripeSubscriptionId: string
 ): Promise<SubscriptionPaymentDetails | null> {
   if (stripeSubscriptionId.startsWith("lifetime_")) return null;
 
-  const subscription = await stripe.subscriptions.retrieve(stripeSubscriptionId, {
-    expand: ["latest_invoice.payment_intent.latest_charge"],
-  });
+  const subscription = await stripe.subscriptions.retrieve(
+    stripeSubscriptionId,
+    {
+      expand: ["latest_invoice.payment_intent.latest_charge"],
+    }
+  );
   const subscriptionCustomerId = stripeResourceId(subscription.customer);
   if (!subscriptionCustomerId || subscriptionCustomerId !== stripeCustomerId) {
     throw new Error("The Stripe subscription does not belong to this account.");
@@ -505,21 +593,28 @@ async function getOwnedSubscriptionPayment(
     id: string;
     status: string;
     created: number;
-    latest_invoice?: string | {
-      payment_intent?: string | {
-        id: string;
-        latest_charge?: string | Stripe.Charge | null;
-      } | null;
-    } | null;
+    latest_invoice?:
+      | string
+      | {
+          payment_intent?:
+            | string
+            | {
+                id: string;
+                latest_charge?: string | Stripe.Charge | null;
+              }
+            | null;
+        }
+      | null;
   };
   let invoice = rawSubscription.latest_invoice;
   if (typeof invoice === "string") {
-    invoice = await stripe.invoices.retrieve(invoice, {
+    invoice = (await stripe.invoices.retrieve(invoice, {
       expand: ["payment_intent.latest_charge"],
-    }) as unknown as typeof invoice;
+    })) as unknown as typeof invoice;
   }
 
-  const paymentIntent = typeof invoice === "object" && invoice ? invoice.payment_intent : null;
+  const paymentIntent =
+    typeof invoice === "object" && invoice ? invoice.payment_intent : null;
   const paymentIntentId = stripeResourceId(paymentIntent);
   let chargeId =
     typeof paymentIntent === "object" && paymentIntent
@@ -527,8 +622,13 @@ async function getOwnedSubscriptionPayment(
       : null;
 
   if (!chargeId && paymentIntentId) {
-    const charges = await stripe.charges.list({ payment_intent: paymentIntentId, limit: 10 });
-    chargeId = charges.data.find((charge) => charge.paid && !charge.failure_code)?.id ?? null;
+    const charges = await stripe.charges.list({
+      payment_intent: paymentIntentId,
+      limit: 10,
+    });
+    chargeId =
+      charges.data.find(charge => charge.paid && !charge.failure_code)?.id ??
+      null;
   }
   if (!chargeId) return null;
 
@@ -582,7 +682,10 @@ export async function getMoneyBackGuaranteeStatus({
     };
   }
 
-  const payment = await getOwnedSubscriptionPayment(stripeCustomerId, stripeSubscriptionId);
+  const payment = await getOwnedSubscriptionPayment(
+    stripeCustomerId,
+    stripeSubscriptionId
+  );
   if (!payment) {
     return {
       eligible: false,
@@ -600,7 +703,11 @@ export async function getMoneyBackGuaranteeStatus({
   const eligible = !alreadyRefunded && now <= deadlineAt;
   return {
     eligible,
-    reason: alreadyRefunded ? "already_refunded" : eligible ? "eligible" : "expired",
+    reason: alreadyRefunded
+      ? "already_refunded"
+      : eligible
+        ? "eligible"
+        : "expired",
     purchasedAt: payment.purchasedAt,
     deadlineAt,
     amount: payment.amount,
@@ -621,15 +728,24 @@ export async function claimMoneyBackGuarantee({
   now?: number;
 }) {
   if (stripeSubscriptionId.startsWith("lifetime_")) {
-    throw new Error("Lifetime purchases are not subscriptions and cannot use subscription cancellation.");
+    throw new Error(
+      "Lifetime purchases are not subscriptions and cannot use subscription cancellation."
+    );
   }
 
-  const payment = await getOwnedSubscriptionPayment(stripeCustomerId, stripeSubscriptionId);
-  if (!payment) throw new Error("No refundable Stripe payment was found for this subscription.");
+  const payment = await getOwnedSubscriptionPayment(
+    stripeCustomerId,
+    stripeSubscriptionId
+  );
+  if (!payment)
+    throw new Error(
+      "No refundable Stripe payment was found for this subscription."
+    );
   const deadlineAt = payment.purchasedAt + MONEY_BACK_GUARANTEE_MS;
   if (payment.amountRefunded >= payment.amount) {
     const needsCancellation = payment.subscriptionStatus !== "canceled";
-    if (needsCancellation) await stripe.subscriptions.cancel(stripeSubscriptionId);
+    if (needsCancellation)
+      await stripe.subscriptions.cancel(stripeSubscriptionId);
     return {
       refunded: true,
       alreadyRefunded: true,
@@ -653,7 +769,9 @@ export async function claimMoneyBackGuarantee({
         guarantee: "seven_day_money_back",
       },
     },
-    { idempotencyKey: `getphame-guarantee-${stripeSubscriptionId}-${payment.chargeId}` },
+    {
+      idempotencyKey: `getphame-guarantee-${stripeSubscriptionId}-${payment.chargeId}`,
+    }
   );
 
   // Money moves first. The subscription is canceled only after Stripe accepts the refund.
@@ -675,12 +793,15 @@ export async function claimMoneyBackGuarantee({
 
 export async function cancelSubscriptionRenewal(
   stripeCustomerId: string,
-  stripeSubscriptionId: string,
+  stripeSubscriptionId: string
 ) {
   if (stripeSubscriptionId.startsWith("lifetime_")) {
-    throw new Error("Lifetime access does not renew and cannot be canceled as a subscription.");
+    throw new Error(
+      "Lifetime access does not renew and cannot be canceled as a subscription."
+    );
   }
-  const subscription = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+  const subscription =
+    await stripe.subscriptions.retrieve(stripeSubscriptionId);
   if (stripeResourceId(subscription.customer) !== stripeCustomerId) {
     throw new Error("The Stripe subscription does not belong to this account.");
   }
@@ -691,7 +812,8 @@ export async function cancelSubscriptionRenewal(
     current_period_end?: number;
     items?: { data?: Array<{ current_period_end?: number }> };
   };
-  const periodEnd = raw.current_period_end ?? raw.items?.data?.[0]?.current_period_end ?? null;
+  const periodEnd =
+    raw.current_period_end ?? raw.items?.data?.[0]?.current_period_end ?? null;
   return {
     canceledAtPeriodEnd: true,
     currentPeriodEnd: periodEnd ? periodEnd * 1000 : null,
@@ -719,12 +841,18 @@ export async function createCheckoutSession({
   const priceIds = await getStripePriceIds();
   const priceId = priceIds[plan];
   if (!priceId) {
-    throw new Error(`USD price ID not configured for plan: ${plan}. Set STRIPE_TEST_PRICE_ID_USD_${plan.toUpperCase()} for test mode.`);
+    throw new Error(
+      `USD price ID not configured for plan: ${plan}. Set STRIPE_TEST_PRICE_ID_USD_${plan.toUpperCase()} for test mode.`
+    );
   }
   const isLifetime = plan === "lifetime";
   const returnOrigin = getStripeReturnOrigin(origin);
   const campaignPromotion = promotionCode
-    ? await resolvePromotionCodeForCheckout({ code: promotionCode, priceId, stripeCustomerId })
+    ? await resolvePromotionCodeForCheckout({
+        code: promotionCode,
+        priceId,
+        stripeCustomerId,
+      })
     : null;
   const cancelUrl = `${returnOrigin}/upgrade${campaignPromotion ? `?promo=${encodeURIComponent(campaignPromotion.code)}` : ""}`;
 
@@ -771,10 +899,12 @@ export async function createCheckoutSession({
 // Read at call time (not module load) so tests can override env vars per-test
 // THB price IDs are always read from env vars (live: STRIPE_PRICE_ID_THB_*, test: STRIPE_TEST_PRICE_ID_THB_*)
 export function getThbPriceIds(): Record<StripePlan, string> {
-  const prefix = isStripeLiveMode() ? "STRIPE_PRICE_ID_THB" : "STRIPE_TEST_PRICE_ID_THB";
+  const prefix = isStripeLiveMode()
+    ? "STRIPE_PRICE_ID_THB"
+    : "STRIPE_TEST_PRICE_ID_THB";
   return {
-    monthly:  process.env[`${prefix}_MONTHLY`] ?? "",
-    annual:   process.env[`${prefix}_ANNUAL`] ?? "",
+    monthly: process.env[`${prefix}_MONTHLY`] ?? "",
+    annual: process.env[`${prefix}_ANNUAL`] ?? "",
     lifetime: process.env[`${prefix}_LIFETIME`] ?? "",
   };
 }
@@ -803,13 +933,21 @@ export async function createThbCheckoutSession({
 }): Promise<string> {
   const priceId = getThbPriceIds()[plan];
   if (!priceId) {
-    const prefix = isStripeLiveMode() ? "STRIPE_PRICE_ID_THB" : "STRIPE_TEST_PRICE_ID_THB";
-    throw new Error(`THB price ID not configured for plan: ${plan}. Set ${prefix}_${plan.toUpperCase()} env var.`);
+    const prefix = isStripeLiveMode()
+      ? "STRIPE_PRICE_ID_THB"
+      : "STRIPE_TEST_PRICE_ID_THB";
+    throw new Error(
+      `THB price ID not configured for plan: ${plan}. Set ${prefix}_${plan.toUpperCase()} env var.`
+    );
   }
   const isLifetime = plan === "lifetime";
   const returnOrigin = getStripeReturnOrigin(origin);
   const campaignPromotion = promotionCode
-    ? await resolvePromotionCodeForCheckout({ code: promotionCode, priceId, stripeCustomerId })
+    ? await resolvePromotionCodeForCheckout({
+        code: promotionCode,
+        priceId,
+        stripeCustomerId,
+      })
     : null;
   const cancelUrl = `${returnOrigin}/upgrade${campaignPromotion ? `?promo=${encodeURIComponent(campaignPromotion.code)}` : ""}`;
 
@@ -859,7 +997,11 @@ export async function createPortalSession(
 /** Fetch current billing state directly from Stripe for account-status UI. */
 export async function getSubscriptionSnapshot(subscriptionId: string) {
   if (subscriptionId.startsWith("lifetime_")) {
-    return { status: "lifetime", currentPeriodEnd: null, cancelAtPeriodEnd: false };
+    return {
+      status: "lifetime",
+      currentPeriodEnd: null,
+      cancelAtPeriodEnd: false,
+    };
   }
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const raw = subscription as unknown as {
@@ -868,7 +1010,8 @@ export async function getSubscriptionSnapshot(subscriptionId: string) {
     cancel_at_period_end?: boolean;
     items?: { data?: Array<{ current_period_end?: number }> };
   };
-  const periodEnd = raw.current_period_end ?? raw.items?.data?.[0]?.current_period_end ?? null;
+  const periodEnd =
+    raw.current_period_end ?? raw.items?.data?.[0]?.current_period_end ?? null;
   return {
     status: raw.status,
     currentPeriodEnd: periodEnd ? periodEnd * 1000 : null,

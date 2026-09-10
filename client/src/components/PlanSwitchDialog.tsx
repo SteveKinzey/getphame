@@ -21,7 +21,10 @@ interface PlanSwitchDialogProps {
   isPending?: boolean;
 }
 
-const PLAN_DETAILS: Record<RecurringPlan, { label: string; price: string; cadence: string }> = {
+const PLAN_DETAILS: Record<
+  RecurringPlan,
+  { label: string; price: string; cadence: string }
+> = {
   monthly: { label: "Monthly", price: "$29", cadence: "per month" },
   annual: { label: "Annual", price: "$290", cadence: "per year" },
 };
@@ -34,7 +37,8 @@ export default function PlanSwitchDialog({
   isPending = false,
 }: PlanSwitchDialogProps) {
   const { t } = useTranslation();
-  const targetPlan: RecurringPlan = currentPlan === "monthly" ? "annual" : "monthly";
+  const targetPlan: RecurringPlan =
+    currentPlan === "monthly" ? "annual" : "monthly";
   const current = PLAN_DETAILS[currentPlan];
   const target = PLAN_DETAILS[targetPlan];
 
@@ -59,49 +63,81 @@ export default function PlanSwitchDialog({
           </AlertDialogTitle>
           <AlertDialogDescription className="rr-text-navy-mid">
             {t("paidUser.switchConfirm.description", {
-              defaultValue: "Review the billing-cycle change before continuing to Stripe.",
+              defaultValue:
+                "Review the billing-cycle change before continuing to Stripe.",
             })}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className="my-2 rounded-xl border p-4" style={{ borderColor: "oklch(0.88 0.03 260)", background: "oklch(0.975 0.004 100)" }}>
+        <div
+          className="my-2 rounded-xl border p-4"
+          style={{
+            borderColor: "oklch(0.88 0.03 260)",
+            background: "oklch(0.975 0.004 100)",
+          }}
+        >
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-wider rr-text-navy-muted">
-                {t("paidUser.switchConfirm.currentPlan", { defaultValue: "Current plan" })}
+                {t("paidUser.switchConfirm.currentPlan", {
+                  defaultValue: "Current plan",
+                })}
               </p>
               <p className="mt-1 font-black rr-text-navy">{current.label}</p>
-              <p className="text-xs font-semibold rr-text-navy-mid">{current.price} {current.cadence}</p>
+              <p className="text-xs font-semibold rr-text-navy-mid">
+                {current.price} {current.cadence}
+              </p>
             </div>
             <ArrowRight size={18} className="rr-text-gold" aria-hidden="true" />
             <div className="text-right">
               <p className="text-xs font-bold uppercase tracking-wider rr-text-navy-muted">
-                {t("paidUser.switchConfirm.newPlan", { defaultValue: "New plan" })}
+                {t("paidUser.switchConfirm.newPlan", {
+                  defaultValue: "New plan",
+                })}
               </p>
               <p className="mt-1 font-black rr-text-navy">{target.label}</p>
-              <p className="text-xs font-semibold rr-text-navy-mid">{target.price} {target.cadence}</p>
+              <p className="text-xs font-semibold rr-text-navy-mid">
+                {target.price} {target.cadence}
+              </p>
             </div>
           </div>
         </div>
 
         {targetPlan === "annual" && (
-          <p className="rounded-xl px-3 py-2 text-sm font-bold rr-text-navy" style={{ background: "oklch(0.96 0.06 145)" }}>
-            {t("paidUser.switchConfirm.savings", { defaultValue: "Annual billing saves $58 per year compared with Monthly." })}
+          <p
+            className="rounded-xl px-3 py-2 text-sm font-bold rr-text-navy"
+            style={{ background: "oklch(0.96 0.06 145)" }}
+          >
+            {t("paidUser.switchConfirm.savings", {
+              defaultValue:
+                "Annual billing saves $58 per year compared with Monthly.",
+            })}
           </p>
         )}
 
-        <div className="flex items-start gap-2 rounded-xl px-3 py-3" style={{ background: "oklch(0.96 0.025 260)" }}>
-          <CalendarClock size={16} className="mt-0.5 shrink-0 rr-text-gold" aria-hidden="true" />
+        <div
+          className="flex items-start gap-2 rounded-xl px-3 py-3"
+          style={{ background: "oklch(0.96 0.025 260)" }}
+        >
+          <CalendarClock
+            size={16}
+            className="mt-0.5 shrink-0 rr-text-gold"
+            aria-hidden="true"
+          />
           <p className="text-xs font-semibold leading-relaxed rr-text-navy-mid">
             {t("paidUser.switchConfirm.timing", {
-              defaultValue: "Stripe will show the exact effective date and any prorated charge or credit before you approve the change.",
+              defaultValue:
+                "Stripe will show the exact effective date and any prorated charge or credit before you approve the change.",
             })}
           </p>
         </div>
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>
-            {t("paidUser.switchConfirm.cancel", { defaultValue: "Keep {{plan}}", plan: current.label })}
+            {t("paidUser.switchConfirm.cancel", {
+              defaultValue: "Keep {{plan}}",
+              plan: current.label,
+            })}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
@@ -109,7 +145,9 @@ export default function PlanSwitchDialog({
             className="rr-bg-gold rr-text-navy font-black"
           >
             {isPending ? <Loader2 size={16} className="animate-spin" /> : null}
-            {t("paidUser.switchConfirm.continue", { defaultValue: "Continue to Stripe" })}
+            {t("paidUser.switchConfirm.continue", {
+              defaultValue: "Continue to Stripe",
+            })}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

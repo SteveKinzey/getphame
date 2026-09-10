@@ -1,7 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "include": ["client/src/**/*", "shared/**/*"],
-  "exclude": ["node_modules", "build", "dist", "server/**/*", "drizzle/**/*", "**/*.test.ts"],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "server/**/*",
+    "drizzle/**/*",
+    "**/*.test.ts"
+  ],
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo.client"

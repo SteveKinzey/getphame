@@ -22,6 +22,57 @@ import {
 } from "./manualSearchAnalytics";
 import { checkManualSearchEventRateLimit } from "./rateLimiter";
 
+function toFormattedSourcePattern(snippet: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let pattern = "";
+
+  for (let index = 0; index < snippet.length; ) {
+    const character = snippet[index];
+    if (character === '"' || character === "'") {
+      let closingIndex = index + 1;
+      while (closingIndex < snippet.length) {
+        if (
+          snippet[closingIndex] === character &&
+          snippet[closingIndex - 1] !== "\\"
+        )
+          break;
+        closingIndex += 1;
+      }
+      if (closingIndex < snippet.length) {
+        pattern += `["']${escape(snippet.slice(index + 1, closingIndex))}["']`;
+        index = closingIndex + 1;
+        continue;
+      }
+    }
+
+    if (/\s/.test(character)) {
+      while (index < snippet.length && /\s/.test(snippet[index])) index += 1;
+      pattern += "\\s*";
+      continue;
+    }
+
+    pattern += escape(character);
+    if ("().,=:?{}[]<>".includes(character)) pattern += "\\s*";
+    index += 1;
+  }
+
+  return new RegExp(pattern);
+}
+
+function expectFormattedSource(source: string) {
+  return {
+    toContain(snippet: string) {
+      expect(source).toMatch(toFormattedSourcePattern(snippet));
+    },
+    not: {
+      toContain(snippet: string) {
+        expect(source).not.toMatch(toFormattedSourcePattern(snippet));
+      },
+    },
+  };
+}
+
 const SUPPORTED_LOCALES = [
   "en",
   "es",
@@ -330,25 +381,37 @@ describe("Manual zero-result analytics", () => {
     const page = readProjectFile("../client/src/pages/Manual.tsx");
     const schema = readProjectFile("../drizzle/schema.ts");
 
-    expect(routers).toContain(
+    expectFormattedSource(routers).toContain(
       "trackManualZeroResultSearch: protectedProcedure"
     );
-    expect(routers).toContain("resultCount: z.literal(0)");
-    expect(routers).toContain("locale: z.enum(MANUAL_SEARCH_LOCALES)");
-    expect(routers).toContain("manualRole: z.enum(MANUAL_SEARCH_ROLES)");
-    expect(routers).toContain("if (input.manualRole !== sessionRole)");
-    expect(routers).toContain("checkManualSearchEventRateLimit(ctx.user.id)");
-    expect(routers).toContain("manualSearchInsights: adminProcedure");
-    expect(routers).toContain("max(50)");
+    expectFormattedSource(routers).toContain("resultCount: z.literal(0)");
+    expectFormattedSource(routers).toContain(
+      "locale: z.enum(MANUAL_SEARCH_LOCALES)"
+    );
+    expectFormattedSource(routers).toContain(
+      "manualRole: z.enum(MANUAL_SEARCH_ROLES)"
+    );
+    expectFormattedSource(routers).toContain(
+      "if (input.manualRole !== sessionRole)"
+    );
+    expectFormattedSource(routers).toContain(
+      "checkManualSearchEventRateLimit(ctx.user.id)"
+    );
+    expectFormattedSource(routers).toContain(
+      "manualSearchInsights: adminProcedure"
+    );
+    expectFormattedSource(routers).toContain("max(50)");
 
-    expect(page).toContain(
+    expectFormattedSource(page).toContain(
       "normalizedQuery.length < 2 || normalizedQuery.length > 100 || resultCount !== 0"
     );
-    expect(page).toContain("trackedSearchesRef.current.has(trackingKey)");
-    expect(page).toContain("window.setTimeout");
-    expect(page).toContain("}, 800)");
-    expect(page).toContain("resultCount: 0");
-    expect(page).toContain(
+    expectFormattedSource(page).toContain(
+      "trackedSearchesRef.current.has(trackingKey)"
+    );
+    expectFormattedSource(page).toContain("window.setTimeout");
+    expectFormattedSource(page).toContain("}, 800)");
+    expectFormattedSource(page).toContain("resultCount: 0");
+    expectFormattedSource(page).toContain(
       'role === "admin" ? <ManualSearchInsightsPanel /> : null'
     );
 
@@ -455,19 +518,21 @@ describe("role-safe Manual PDF export", () => {
     const page = readProjectFile("../client/src/pages/Manual.tsx");
     const exporter = readProjectFile("../client/src/lib/manualPdfExport.ts");
 
-    expect(page).toContain("createManualPdfBlob(manual");
-    expect(page).toContain(
+    expectFormattedSource(page).toContain("createManualPdfBlob(manual");
+    expectFormattedSource(page).toContain(
       "buildManualPdfFilename({ role, locale: manualLocale"
     );
-    expect(page).toContain('aria-describedby="manual-export-help"');
-    expect(page).toContain("manual.export.fullButton");
-    expect(page).toContain("manual.export.sectionButton");
-    expect(page).toContain("manual.export.sectionAria");
-    expect(page).toContain("disabled={exportingScope !== null}");
-    expect(page).toContain("min-h-11");
-    expect(exporter).toContain('pdf.text("GET PHAME"');
-    expect(exporter).toContain("detectTranscriptPdfUnicodeFont");
-    expect(exporter).toContain("URL.revokeObjectURL(objectUrl)");
+    expectFormattedSource(page).toContain(
+      'aria-describedby="manual-export-help"'
+    );
+    expectFormattedSource(page).toContain("manual.export.fullButton");
+    expectFormattedSource(page).toContain("manual.export.sectionButton");
+    expectFormattedSource(page).toContain("manual.export.sectionAria");
+    expectFormattedSource(page).toContain("disabled={exportingScope !== null}");
+    expectFormattedSource(page).toContain("min-h-11");
+    expectFormattedSource(exporter).toContain('pdf.text("GET PHAME"');
+    expectFormattedSource(exporter).toContain("detectTranscriptPdfUnicodeFont");
+    expectFormattedSource(exporter).toContain("URL.revokeObjectURL(objectUrl)");
   });
 });
 
@@ -518,8 +583,8 @@ describe("Manual analytics and PDF localization", () => {
     expect(readProjectFile("../client/src/lib/i18n.ts")).toContain(
       "/locales/{{lng}}/{{ns}}.json?v=phame61"
     );
-    expect(readProjectFile("../client/public/sw.js")).toContain(
-      "const CACHE_NAME = 'getphame-v29'"
+    expect(readProjectFile("../client/public/sw.js")).toMatch(
+      /const\s+CACHE_NAME\s*=\s*["']getphame-v29["']/
     );
   });
 });

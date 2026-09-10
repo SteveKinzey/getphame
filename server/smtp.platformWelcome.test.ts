@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-const sendSystemEmailMock = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
+const sendSystemEmailMock = vi.hoisted(() =>
+  vi.fn().mockResolvedValue(undefined)
+);
 vi.mock("./sendgrid", () => ({
   sendSystemEmail: sendSystemEmailMock,
   HELLO_FROM: "hello@getphame.app",
@@ -19,11 +21,13 @@ describe("platform first-account welcome delivery", () => {
       toEmail: "new-account@example.com",
       toName: "New Account",
     });
-    expect(sendSystemEmailMock).toHaveBeenCalledWith(expect.objectContaining({
-      to: "new-account@example.com",
-      subject: "Welcome to Get Phame! 🚀",
-      from: "no-reply@getphame.app",
-    }));
+    expect(sendSystemEmailMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: "new-account@example.com",
+        subject: "Welcome to Get Phame! 🚀",
+        from: "no-reply@getphame.app",
+      })
+    );
     const callArgs = sendSystemEmailMock.mock.calls[0]?.[0];
     expect(callArgs?.to).toBe("new-account@example.com");
     expect(callArgs?.from).toBe("no-reply@getphame.app");

@@ -35,9 +35,19 @@ import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type RawRow = Record<string, string>;
-type MappedRow = { name: string; email: string; phone?: string; notes?: string; rowNumber?: number };
+type MappedRow = {
+  name: string;
+  email: string;
+  phone?: string;
+  notes?: string;
+  rowNumber?: number;
+};
 type ColumnKey = "name" | "email" | "phone" | "notes" | "skip";
-type ImportResult = { imported: number; skipped: number; errorSummary: ContactImportErrorSummary };
+type ImportResult = {
+  imported: number;
+  skipped: number;
+  errorSummary: ContactImportErrorSummary;
+};
 
 const COLUMN_LABELS: Record<ColumnKey, string> = {
   name: "Full Name",
@@ -94,7 +104,9 @@ function CsvErrorSummary({
         duplicate_email: labels.duplicateEmail,
       },
     });
-    const url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
+    const url = URL.createObjectURL(
+      new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" })
+    );
     const link = document.createElement("a");
     link.href = url;
     link.download = buildContactImportErrorReportFilename();
@@ -110,15 +122,28 @@ function CsvErrorSummary({
       role="status"
     >
       <div className="flex items-start gap-2">
-        <AlertCircle size={17} className="mt-0.5 shrink-0" style={{ color: "oklch(0.56 0.16 38)" }} aria-hidden="true" />
+        <AlertCircle
+          size={17}
+          className="mt-0.5 shrink-0"
+          style={{ color: "oklch(0.56 0.16 38)" }}
+          aria-hidden="true"
+        />
         <div>
-          <h3 id={titleId} className="text-sm font-black rr-text-navy">{title}</h3>
-          <p className="mt-0.5 text-xs font-bold rr-text-navy-mid">{labels.summary(summary.totalRejected)}</p>
+          <h3 id={titleId} className="text-sm font-black rr-text-navy">
+            {title}
+          </h3>
+          <p className="mt-0.5 text-xs font-bold rr-text-navy-mid">
+            {labels.summary(summary.totalRejected)}
+          </p>
         </div>
       </div>
       <ul className="mt-3 space-y-2" aria-label={labels.errorList}>
-        {summary.reasons.map((item) => (
-          <li key={item.reason} className="rounded-xl px-3 py-2" style={{ background: "oklch(0.98 0.015 65)" }}>
+        {summary.reasons.map(item => (
+          <li
+            key={item.reason}
+            className="rounded-xl px-3 py-2"
+            style={{ background: "oklch(0.98 0.015 65)" }}
+          >
             <p className="text-xs font-black rr-text-navy">
               {item.count} {reasonLabel[item.reason] ?? item.reason}
             </p>
@@ -140,7 +165,9 @@ function CsvErrorSummary({
         <Download size={14} aria-hidden="true" />
         {labels.downloadReport}
       </button>
-      <p className="mt-3 text-[11px] font-semibold rr-text-navy-muted">{labels.privacyNote}</p>
+      <p className="mt-3 text-[11px] font-semibold rr-text-navy-muted">
+        {labels.privacyNote}
+      </p>
     </section>
   );
 }
@@ -148,7 +175,7 @@ function CsvErrorSummary({
 // ── CSV parser (no external dep) ──────────────────────────────────────────────
 function parseCSV(text: string): { headers: string[]; rows: RawRow[] } {
   const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
-  const nonEmpty = lines.filter((l) => l.trim().length > 0);
+  const nonEmpty = lines.filter(l => l.trim().length > 0);
   if (nonEmpty.length < 2) return { headers: [], rows: [] };
 
   const parseRow = (line: string): string[] => {
@@ -158,8 +185,10 @@ function parseCSV(text: string): { headers: string[]; rows: RawRow[] } {
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
       if (ch === '"') {
-        if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
-        else inQuotes = !inQuotes;
+        if (inQuotes && line[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else inQuotes = !inQuotes;
       } else if (ch === "," && !inQuotes) {
         result.push(current.trim());
         current = "";
@@ -176,7 +205,9 @@ function parseCSV(text: string): { headers: string[]; rows: RawRow[] } {
   for (let i = 1; i < nonEmpty.length; i++) {
     const vals = parseRow(nonEmpty[i]);
     const row: RawRow = {};
-    headers.forEach((h, idx) => { row[h] = vals[idx] ?? ""; });
+    headers.forEach((h, idx) => {
+      row[h] = vals[idx] ?? "";
+    });
     rows.push(row);
   }
   return { headers, rows };
@@ -210,7 +241,8 @@ function autoDetect(headers: string[]): Record<string, ColumnKey> {
 
 // ── Template CSV ──────────────────────────────────────────────────────────────
 function downloadTemplate() {
-  const csv = "first_name,last_name,email,phone,notes\nJane,Smith,jane@example.com,555-1234,Regular customer\nJohn,Doe,john@example.com,,";
+  const csv =
+    "first_name,last_name,email,phone,notes\nJane,Smith,jane@example.com,555-1234,Regular customer\nJohn,Doe,john@example.com,,";
   const blob = new Blob([csv], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -237,93 +269,149 @@ export default function ImportContactsPage() {
   const [mapping, setMapping] = useState<Record<string, ColumnKey>>({});
   const [mappedRows, setMappedRows] = useState<MappedRow[]>([]);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
-  const [preImportSummary, setPreImportSummary] = useState<ContactImportErrorSummary>({ totalRejected: 0, reasons: [], reportIssues: [] });
+  const [preImportSummary, setPreImportSummary] =
+    useState<ContactImportErrorSummary>({
+      totalRejected: 0,
+      reasons: [],
+      reportIssues: [],
+    });
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [contactPickerOpen, setContactPickerOpen] = useState(false);
   const { isNative } = useContacts();
   const csvLabels: CsvDiagnosticsLabels = {
-    summary: (count) => t("csvDiagnostics.summary", { count, defaultValue: "{{count}} rejected row(s) need attention." }),
-    errorList: t("csvDiagnostics.errorList", { defaultValue: "CSV import errors" }),
-    missingEmail: t("csvDiagnostics.missingEmail", { defaultValue: "Missing email" }),
-    invalidEmail: t("csvDiagnostics.invalidEmail", { defaultValue: "Invalid email" }),
-    duplicateEmail: t("csvDiagnostics.duplicateEmail", { defaultValue: "Duplicate email" }),
-    rows: (rows) => t("csvDiagnostics.rows", { rows, defaultValue: "CSV rows: {{rows}}" }),
+    summary: count =>
+      t("csvDiagnostics.summary", {
+        count,
+        defaultValue: "{{count}} rejected row(s) need attention.",
+      }),
+    errorList: t("csvDiagnostics.errorList", {
+      defaultValue: "CSV import errors",
+    }),
+    missingEmail: t("csvDiagnostics.missingEmail", {
+      defaultValue: "Missing email",
+    }),
+    invalidEmail: t("csvDiagnostics.invalidEmail", {
+      defaultValue: "Invalid email",
+    }),
+    duplicateEmail: t("csvDiagnostics.duplicateEmail", {
+      defaultValue: "Duplicate email",
+    }),
+    rows: rows =>
+      t("csvDiagnostics.rows", { rows, defaultValue: "CSV rows: {{rows}}" }),
     moreRows: t("csvDiagnostics.moreRows", { defaultValue: "and more" }),
-    privacyNote: t("csvDiagnostics.privacyNote", { defaultValue: "Only row numbers are shown here; client details stay in your CSV file." }),
-    downloadReport: t("csvDiagnostics.downloadReport", { defaultValue: "Download failed-row report" }),
-    reportRowNumber: t("csvDiagnostics.reportRowNumber", { defaultValue: "CSV row" }),
+    privacyNote: t("csvDiagnostics.privacyNote", {
+      defaultValue:
+        "Only row numbers are shown here; client details stay in your CSV file.",
+    }),
+    downloadReport: t("csvDiagnostics.downloadReport", {
+      defaultValue: "Download failed-row report",
+    }),
+    reportRowNumber: t("csvDiagnostics.reportRowNumber", {
+      defaultValue: "CSV row",
+    }),
     reportReason: t("csvDiagnostics.reportReason", { defaultValue: "Reason" }),
-    reportUnavailableRow: t("csvDiagnostics.reportUnavailableRow", { defaultValue: "Unavailable" }),
+    reportUnavailableRow: t("csvDiagnostics.reportUnavailableRow", {
+      defaultValue: "Unavailable",
+    }),
   };
 
   const importMutation = trpc.contacts.importCSV.useMutation({
-    onSuccess: (result) => {
+    onSuccess: result => {
       setImportResult(result);
       setStep(3);
       utils.contacts.list.invalidate();
-      track("csv_import", { imported: result.imported, skipped: result.skipped });
+      track("csv_import", {
+        imported: result.imported,
+        skipped: result.skipped,
+      });
     },
-    onError: (err) => {
+    onError: err => {
       toast.error(err.message);
     },
   });
 
-  const hasUnsavedImportWork = step > 0 && step < 3 && (
-    fileName.length > 0
-    || rawRows.length > 0
-    || Object.keys(mapping).length > 0
-    || mappedRows.length > 0
-  );
+  const hasUnsavedImportWork =
+    step > 0 &&
+    step < 3 &&
+    (fileName.length > 0 ||
+      rawRows.length > 0 ||
+      Object.keys(mapping).length > 0 ||
+      mappedRows.length > 0);
   useUpdateDirtySource("contact-import-wizard", hasUnsavedImportWork);
 
   // ── File handling ────────────────────────────────────────────────────────────
-  const handleFile = useCallback((file: File) => {
-    if (!file.name.endsWith(".csv") && file.type !== "text/csv") {
-      toast.error("Please upload a .csv file.");
-      return;
-    }
-    setFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
-      const { headers: h, rows: r } = parseCSV(text);
-      if (h.length === 0) {
-        toast.error("The CSV has no data.");
+  const handleFile = useCallback(
+    (file: File) => {
+      if (!file.name.endsWith(".csv") && file.type !== "text/csv") {
+        toast.error("Please upload a .csv file.");
         return;
       }
-      setHeaders(h);
-      setRawRows(r);
-      setMapping(autoDetect(h));
-      setPreImportSummary({ totalRejected: 0, reasons: [], reportIssues: [] });
-      setImportResult(null);
-      setStep(1);
-    };
-    reader.readAsText(file);
-  }, [toast]);
+      setFileName(file.name);
+      const reader = new FileReader();
+      reader.onload = e => {
+        const text = e.target?.result as string;
+        const { headers: h, rows: r } = parseCSV(text);
+        if (h.length === 0) {
+          toast.error("The CSV has no data.");
+          return;
+        }
+        setHeaders(h);
+        setRawRows(r);
+        setMapping(autoDetect(h));
+        setPreImportSummary({
+          totalRejected: 0,
+          reasons: [],
+          reportIssues: [],
+        });
+        setImportResult(null);
+        setStep(1);
+      };
+      reader.readAsText(file);
+    },
+    [toast]
+  );
 
-  const onDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  }, [handleFile]);
+  const onDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    },
+    [handleFile]
+  );
 
   // ── Build mapped rows ────────────────────────────────────────────────────────
-  const buildMappedRows = (): { rows: MappedRow[]; errorSummary: ContactImportErrorSummary } => {
+  const buildMappedRows = (): {
+    rows: MappedRow[];
+    errorSummary: ContactImportErrorSummary;
+  } => {
     const nameCol = Object.entries(mapping).find(([, v]) => v === "name")?.[0];
-    const emailCol = Object.entries(mapping).find(([, v]) => v === "email")?.[0];
-    const phoneCol = Object.entries(mapping).find(([, v]) => v === "phone")?.[0];
-    const notesCol = Object.entries(mapping).find(([, v]) => v === "notes")?.[0];
+    const emailCol = Object.entries(mapping).find(
+      ([, v]) => v === "email"
+    )?.[0];
+    const phoneCol = Object.entries(mapping).find(
+      ([, v]) => v === "phone"
+    )?.[0];
+    const notesCol = Object.entries(mapping).find(
+      ([, v]) => v === "notes"
+    )?.[0];
 
-    if (!emailCol) return { rows: [], errorSummary: { totalRejected: 0, reasons: [], reportIssues: [] } };
+    if (!emailCol)
+      return {
+        rows: [],
+        errorSummary: { totalRejected: 0, reasons: [], reportIssues: [] },
+      };
 
     const issues: ContactImportIssue[] = [];
     const rows = rawRows
       .map((row, index) => {
         const rowNumber = index + 2;
         const email = row[emailCol]?.trim() ?? "";
-        const name = nameCol ? (row[nameCol]?.trim() ?? "") : email.split("@")[0];
+        const name = nameCol
+          ? (row[nameCol]?.trim() ?? "")
+          : email.split("@")[0];
         if (!email) {
           issues.push({ reason: "missing_email", rowNumber });
           return null;
@@ -359,364 +447,476 @@ export default function ImportContactsPage() {
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
     <>
-    <div className="min-h-screen pb-40 rr-bg-cream-warm">
-      {/* Header */}
-      <div className="px-5 pt-14 pb-6 rr-bg-navy">
-        <button
-          onClick={() => navigate("/contacts")}
-          className="flex items-center gap-1.5 mb-4 text-sm font-bold rr-text-gold"
-        >
-          <ArrowLeft size={14} /> Back to Contacts
-        </button>
-        <div className="flex items-center gap-2 mb-1">
-          <Upload size={16} className="rr-text-gold" />
-          <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
-            Import
-          </span>
-        </div>
-        <h1 className="text-2xl text-white rr-fw-black">
-          Import Clients
-        </h1>
+      <div className="min-h-screen pb-40 rr-bg-cream-warm">
+        {/* Header */}
+        <div className="px-5 pt-14 pb-6 rr-bg-navy">
+          <button
+            onClick={() => navigate("/contacts")}
+            className="flex items-center gap-1.5 mb-4 text-sm font-bold rr-text-gold"
+          >
+            <ArrowLeft size={14} /> Back to Contacts
+          </button>
+          <div className="flex items-center gap-2 mb-1">
+            <Upload size={16} className="rr-text-gold" />
+            <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
+              Import
+            </span>
+          </div>
+          <h1 className="text-2xl text-white rr-fw-black">Import Clients</h1>
 
-        {/* Step bar */}
-        <div className="flex items-center gap-0 mt-5">
-          {STEPS.map((label, i) => (
-            <div key={label} className="flex items-center">
-              <div className="flex flex-col items-center">
+          {/* Step bar */}
+          <div className="flex items-center gap-0 mt-5">
+            {STEPS.map((label, i) => (
+              <div key={label} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
+                    style={{
+                      background:
+                        i <= step
+                          ? "oklch(0.80 0.18 80)"
+                          : "oklch(0.35 0.06 260)",
+                      color:
+                        i <= step
+                          ? "oklch(0.22 0.09 260)"
+                          : "var(--text-on-dark-muted)",
+                    }}
+                  >
+                    {i < step ? <CheckCircle2 size={12} /> : i + 1}
+                  </div>
+                  <span
+                    className="text-sm font-bold mt-1"
+                    style={{
+                      color:
+                        i <= step
+                          ? "oklch(0.80 0.18 80)"
+                          : "var(--text-on-dark-muted)",
+                    }}
+                  >
+                    {label}
+                  </span>
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div
+                    className="w-8 h-px mb-4 mx-1"
+                    style={{
+                      background:
+                        i < step
+                          ? "oklch(0.80 0.18 80)"
+                          : "oklch(0.35 0.06 260)",
+                    }}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-4 py-4">
+          {/* Step 0: Upload */}
+          {step === 0 && (
+            <div className="flex flex-col gap-4">
+              {/* Native contacts import - only shown in Capacitor app */}
+              {isNative && (
+                <button
+                  onClick={() => setContactPickerOpen(true)}
+                  className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-sm rr-bg-navy rr-text-gold"
+                >
+                  <BookUser size={18} />
+                  Import from Phone Contacts
+                </button>
+              )}
+
+              {isNative && (
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex-1 h-px"
+                    style={{ background: "oklch(0.88 0.02 260)" }}
+                  />
+                  <span className="text-sm font-bold rr-text-navy-mid">
+                    or upload a CSV file
+                  </span>
+                  <div
+                    className="flex-1 h-px"
+                    style={{ background: "oklch(0.88 0.02 260)" }}
+                  />
+                </div>
+              )}
+
+              {/* Template download */}
+              <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-base font-black rr-text-navy">
+                    Need a template?
+                  </p>
+                  <p className="text-sm font-bold mt-0.5 rr-text-navy-mid">
+                    Download our pre-formatted CSV
+                  </p>
+                </div>
+                <button
+                  onClick={downloadTemplate}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black rr-bg-navy rr-text-gold"
+                >
+                  <Download size={12} /> Template
+                </button>
+              </div>
+
+              {/* Drop zone */}
+              <div
+                className="bg-white rounded-2xl shadow-sm flex flex-col items-center justify-center gap-4 cursor-pointer transition-all"
+                style={{
+                  minHeight: "220px",
+                  border: isDragging
+                    ? "2px dashed oklch(0.80 0.18 80)"
+                    : "2px dashed oklch(0.85 0.02 260)",
+                  background: isDragging ? "oklch(0.97 0.01 80)" : "white",
+                }}
+                onDragOver={e => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={onDrop}
+                onClick={() => fileRef.current?.click()}
+              >
                 <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                  style={{ background: "oklch(0.96 0.02 260)" }}
+                >
+                  <FileText size={28} className="rr-text-navy" />
+                </div>
+                <div className="text-center px-4">
+                  <p className="text-base font-black rr-text-navy">
+                    Drop your CSV here
+                  </p>
+                  <p className="text-sm font-bold mt-1 rr-text-navy-mid">
+                    or tap to browse files
+                  </p>
+                  <p
+                    className="text-sm font-bold mt-2"
+                    style={{ color: "oklch(0.40 0.02 260)" }}
+                  >
+                    Supports exports from Square, HoneyBook, Jobber,
+                    <br />
+                    QuickBooks, Acuity, Mindbody, and any spreadsheet
+                  </p>
+                </div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept=".csv,text/csv"
+                  className="hidden"
+                  onChange={e => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFile(f);
+                  }}
+                  name="rr-pages-import-contacts-field-479"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 1: Column Mapper */}
+          {step === 1 && (
+            <div className="flex flex-col gap-4">
+              <div className="bg-white rounded-2xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-base font-black rr-text-navy">
+                    Map Your Columns
+                  </p>
+                  <span className="text-sm font-bold rr-text-navy-mid">
+                    {rawRows.length} rows in <strong>{fileName}</strong>
+                  </span>
+                </div>
+                <p className="text-sm font-bold mb-4 rr-text-navy-mid">
+                  Tell us what each column in your file represents. We've
+                  auto-detected where we can.
+                </p>
+
+                <div className="flex flex-col gap-3">
+                  {headers.map(h => (
+                    <div
+                      key={h}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <div
+                        className="flex-1 px-3 py-2 rounded-xl text-xs font-bold truncate rr-bg-surface"
+                        style={{ color: "oklch(0.35 0.05 260)" }}
+                      >
+                        {h}
+                      </div>
+                      <ChevronRight
+                        size={14}
+                        style={{ color: "oklch(0.70 0.02 260)", flexShrink: 0 }}
+                      />
+                      <select
+                        className="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-0 outline-none rr-bg-navy rr-text-gold"
+                        value={mapping[h] ?? "skip"}
+                        onChange={e =>
+                          setMapping(m => ({
+                            ...m,
+                            [h]: e.target.value as ColumnKey,
+                          }))
+                        }
+                        name="rr-pages-import-contacts-mapping-515"
+                      >
+                        {(Object.keys(COLUMN_LABELS) as ColumnKey[]).map(k => (
+                          <option key={k} value={k}>
+                            {COLUMN_LABELS[k]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+
+                {!Object.values(mapping).includes("email") && (
+                  <div
+                    className="mt-3 flex items-center gap-2 px-3 py-2 rounded-xl"
+                    style={{ background: "oklch(0.97 0.04 27)" }}
+                  >
+                    <AlertCircle
+                      size={14}
+                      style={{ color: "oklch(0.55 0.18 27)" }}
+                    />
+                    <p
+                      className="text-xs font-bold"
+                      style={{ color: "oklch(0.45 0.14 27)" }}
+                    >
+                      You must map at least one column to Email
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setStep(0)}
+                  className="flex-1 py-3 rounded-xl text-sm font-black"
                   style={{
-                    background: i <= step ? "oklch(0.80 0.18 80)" : "oklch(0.35 0.06 260)",
-                    color: i <= step ? "oklch(0.22 0.09 260)" : "var(--text-on-dark-muted)",
+                    background: "oklch(0.93 0.01 260)",
+                    color: "oklch(0.35 0.05 260)",
                   }}
                 >
-                  {i < step ? <CheckCircle2 size={12} /> : i + 1}
-                </div>
-                <span className="text-sm font-bold mt-1" style={{ color: i <= step ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-muted)" }}>
-                  {label}
-                </span>
+                  Back
+                </button>
+                <button
+                  onClick={goToPreview}
+                  disabled={!Object.values(mapping).includes("email")}
+                  className="flex-1 py-3 rounded-xl text-sm font-black disabled:opacity-40 rr-bg-gold rr-text-navy"
+                >
+                  Preview →
+                </button>
               </div>
-              {i < STEPS.length - 1 && (
-                <div className="w-8 h-px mb-4 mx-1" style={{ background: i < step ? "oklch(0.80 0.18 80)" : "oklch(0.35 0.06 260)" }} />
-              )}
             </div>
-          ))}
+          )}
+
+          {/* Step 2: Preview */}
+          {step === 2 && (
+            <div className="flex flex-col gap-4">
+              <div className="bg-white rounded-2xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-base font-black rr-text-navy">
+                    Review Before Import
+                  </p>
+                  <span
+                    className="text-xs font-bold px-2 py-0.5 rounded-full rr-bg-green-pale"
+                    style={{ color: "oklch(0.45 0.12 145)" }}
+                  >
+                    {mappedRows.length} valid contact
+                    {mappedRows.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+
+                <CsvErrorSummary
+                  summary={preImportSummary}
+                  title={t("csvDiagnostics.preImportTitle", {
+                    defaultValue: "Fix these rows before importing",
+                  })}
+                  titleId="csv-pre-import-errors-title"
+                  labels={csvLabels}
+                />
+
+                {mappedRows.length > 0 ? (
+                  <div className="flex flex-col gap-0 max-h-72 overflow-y-auto">
+                    {mappedRows.slice(0, 100).map((row, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between py-2.5"
+                        style={{
+                          borderBottom:
+                            idx < Math.min(mappedRows.length, 100) - 1
+                              ? "1px solid oklch(0.94 0.01 260)"
+                              : "none",
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 rr-bg-navy rr-text-gold">
+                            {row.name[0]?.toUpperCase() ?? "?"}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold rr-text-navy">
+                              {row.name}
+                            </p>
+                            <p className="text-sm font-bold rr-text-navy-mid">
+                              {row.email}
+                            </p>
+                          </div>
+                        </div>
+                        {row.phone && (
+                          <span className="text-xs rr-text-navy-faint">
+                            {row.phone}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                    {mappedRows.length > 100 && (
+                      <p className="text-xs text-center py-3 rr-text-navy-muted">
+                        …and {mappedRows.length - 100} more
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="py-6 text-center text-sm font-bold rr-text-navy-mid">
+                    {t("csvDiagnostics.noValidRows", {
+                      defaultValue:
+                        "No valid contacts are ready to import yet. Correct the listed rows, then upload the file again.",
+                    })}
+                  </p>
+                )}
+              </div>
+
+              <div
+                className="bg-white rounded-2xl p-3 flex items-center gap-2 shadow-sm"
+                style={{ border: "1px solid oklch(0.92 0.02 260)" }}
+              >
+                <AlertCircle size={14} className="rr-text-navy-muted" />
+                <p className="text-sm font-bold rr-text-navy-mid">
+                  Duplicate emails already in your contacts will be skipped
+                  automatically.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setStep(1)}
+                  className="flex-1 py-3 rounded-xl text-sm font-black"
+                  style={{
+                    background: "oklch(0.93 0.01 260)",
+                    color: "oklch(0.35 0.05 260)",
+                  }}
+                >
+                  Back
+                </button>
+                <button
+                  onClick={confirmImport}
+                  disabled={importMutation.isPending || mappedRows.length === 0}
+                  className="flex-1 py-3 rounded-xl text-sm font-black flex items-center justify-center gap-2 disabled:opacity-60 rr-bg-navy rr-text-gold"
+                >
+                  {importMutation.isPending ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Importing…
+                    </>
+                  ) : (
+                    <>Import {mappedRows.length} Contacts</>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Done */}
+          {step === 3 && importResult && (
+            <div className="flex flex-col items-center gap-4 pt-8">
+              <div className="w-20 h-20 rounded-full flex items-center justify-center rr-bg-green-pale">
+                <CheckCircle2
+                  size={40}
+                  style={{ color: "oklch(0.45 0.12 145)" }}
+                />
+              </div>
+              <div className="text-center">
+                <h2 className="text-2xl font-black rr-text-navy">
+                  Import Complete!
+                </h2>
+                <p className="text-sm mt-2 rr-text-navy-muted">
+                  {importResult.imported} contact
+                  {importResult.imported !== 1 ? "s" : ""} added
+                  {importResult.skipped > 0 &&
+                    `, ${importResult.skipped} duplicate${importResult.skipped !== 1 ? "s" : ""} skipped`}
+                  .
+                </p>
+              </div>
+
+              <div className="w-full flex flex-col gap-3">
+                <CsvErrorSummary
+                  summary={preImportSummary}
+                  title={t("csvDiagnostics.preImportTitle", {
+                    defaultValue: "Rows to correct in your CSV",
+                  })}
+                  titleId="csv-client-errors-title"
+                  labels={csvLabels}
+                />
+                <CsvErrorSummary
+                  summary={importResult.errorSummary}
+                  title={t("csvDiagnostics.importResultTitle", {
+                    defaultValue: "Rows skipped during import",
+                  })}
+                  titleId="csv-server-errors-title"
+                  labels={csvLabels}
+                />
+              </div>
+
+              <div className="w-full flex flex-col gap-3 mt-4">
+                <button
+                  onClick={() => navigate("/contacts")}
+                  className="w-full py-3.5 rounded-2xl text-sm font-black flex items-center justify-center gap-2 rr-bg-navy rr-text-gold"
+                >
+                  <Users size={16} /> View Contacts & Send Requests
+                </button>
+                <button
+                  onClick={() => {
+                    setStep(0);
+                    setFileName("");
+                    setHeaders([]);
+                    setRawRows([]);
+                    setMappedRows([]);
+                    setPreImportSummary({
+                      totalRejected: 0,
+                      reasons: [],
+                      reportIssues: [],
+                    });
+                    setImportResult(null);
+                  }}
+                  className="w-full py-3 rounded-2xl text-sm font-black"
+                  style={{
+                    background: "oklch(0.93 0.01 260)",
+                    color: "oklch(0.35 0.05 260)",
+                  }}
+                >
+                  Import Another File
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="px-4 py-4">
-
-        {/* Step 0: Upload */}
-        {step === 0 && (
-          <div className="flex flex-col gap-4">
-            {/* Native contacts import - only shown in Capacitor app */}
-            {isNative && (
-              <button
-                onClick={() => setContactPickerOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-sm rr-bg-navy rr-text-gold"
-              >
-                <BookUser size={18} />
-                Import from Phone Contacts
-              </button>
-            )}
-
-            {isNative && (
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
-                <span className="text-sm font-bold rr-text-navy-mid">or upload a CSV file</span>
-                <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
-              </div>
-            )}
-
-            {/* Template download */}
-            <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
-              <div>
-                <p className="text-base font-black rr-text-navy">
-                  Need a template?
-                </p>
-                <p className="text-sm font-bold mt-0.5 rr-text-navy-mid">
-                  Download our pre-formatted CSV
-                </p>
-              </div>
-              <button
-                onClick={downloadTemplate}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black rr-bg-navy rr-text-gold"
-              >
-                <Download size={12} /> Template
-              </button>
-            </div>
-
-            {/* Drop zone */}
-            <div
-              className="bg-white rounded-2xl shadow-sm flex flex-col items-center justify-center gap-4 cursor-pointer transition-all"
-              style={{
-                minHeight: "220px",
-                border: isDragging ? "2px dashed oklch(0.80 0.18 80)" : "2px dashed oklch(0.85 0.02 260)",
-                background: isDragging ? "oklch(0.97 0.01 80)" : "white",
-              }}
-              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={onDrop}
-              onClick={() => fileRef.current?.click()}
-            >
-              <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                style={{ background: "oklch(0.96 0.02 260)" }}
-              >
-                <FileText size={28} className="rr-text-navy" />
-              </div>
-              <div className="text-center px-4">
-                <p className="text-base font-black rr-text-navy">
-                  Drop your CSV here
-                </p>
-                <p className="text-sm font-bold mt-1 rr-text-navy-mid">
-                  or tap to browse files
-                </p>
-                <p className="text-sm font-bold mt-2" style={{ color: "oklch(0.40 0.02 260)" }}>
-                  Supports exports from Square, HoneyBook, Jobber,<br />QuickBooks, Acuity, Mindbody, and any spreadsheet
-                </p>
-              </div>
-              <input
-                ref={fileRef}
-                type="file"
-                accept=".csv,text/csv"
-                className="hidden"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
-               name="rr-pages-import-contacts-field-479" />
-            </div>
-          </div>
-        )}
-
-        {/* Step 1: Column Mapper */}
-        {step === 1 && (
-          <div className="flex flex-col gap-4">
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-base font-black rr-text-navy">
-                  Map Your Columns
-                </p>
-                <span className="text-sm font-bold rr-text-navy-mid">
-                  {rawRows.length} rows in <strong>{fileName}</strong>
-                </span>
-              </div>
-              <p className="text-sm font-bold mb-4 rr-text-navy-mid">
-                Tell us what each column in your file represents. We've auto-detected where we can.
-              </p>
-
-              <div className="flex flex-col gap-3">
-                {headers.map((h) => (
-                  <div key={h} className="flex items-center justify-between gap-3">
-                    <div
-                      className="flex-1 px-3 py-2 rounded-xl text-xs font-bold truncate rr-bg-surface" style={{ color: "oklch(0.35 0.05 260)" }}
-                    >
-                      {h}
-                    </div>
-                    <ChevronRight size={14} style={{ color: "oklch(0.70 0.02 260)", flexShrink: 0 }} />
-                    <select
-                      className="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-0 outline-none rr-bg-navy rr-text-gold"
-                      value={mapping[h] ?? "skip"}
-                      onChange={(e) => setMapping((m) => ({ ...m, [h]: e.target.value as ColumnKey }))}
-                     name="rr-pages-import-contacts-mapping-515">
-                      {(Object.keys(COLUMN_LABELS) as ColumnKey[]).map((k) => (
-                        <option key={k} value={k}>{COLUMN_LABELS[k]}</option>
-                      ))}
-                    </select>
-                  </div>
-                ))}
-              </div>
-
-              {!Object.values(mapping).includes("email") && (
-                <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "oklch(0.97 0.04 27)" }}>
-                  <AlertCircle size={14} style={{ color: "oklch(0.55 0.18 27)" }} />
-                  <p className="text-xs font-bold" style={{ color: "oklch(0.45 0.14 27)" }}>
-                    You must map at least one column to Email
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setStep(0)}
-                className="flex-1 py-3 rounded-xl text-sm font-black"
-                style={{ background: "oklch(0.93 0.01 260)", color: "oklch(0.35 0.05 260)" }}
-              >
-                Back
-              </button>
-              <button
-                onClick={goToPreview}
-                disabled={!Object.values(mapping).includes("email")}
-                className="flex-1 py-3 rounded-xl text-sm font-black disabled:opacity-40 rr-bg-gold rr-text-navy"
-              >
-                Preview →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 2: Preview */}
-        {step === 2 && (
-          <div className="flex flex-col gap-4">
-            <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-base font-black rr-text-navy">
-                  Review Before Import
-                </p>
-                <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full rr-bg-green-pale" style={{ color: "oklch(0.45 0.12 145)" }}
-                >
-                  {mappedRows.length} valid contact{mappedRows.length !== 1 ? "s" : ""}
-                </span>
-              </div>
-
-              <CsvErrorSummary
-                summary={preImportSummary}
-                title={t("csvDiagnostics.preImportTitle", { defaultValue: "Fix these rows before importing" })}
-                titleId="csv-pre-import-errors-title"
-                labels={csvLabels}
-              />
-
-              {mappedRows.length > 0 ? <div className="flex flex-col gap-0 max-h-72 overflow-y-auto">
-                {mappedRows.slice(0, 100).map((row, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between py-2.5"
-                    style={{ borderBottom: idx < Math.min(mappedRows.length, 100) - 1 ? "1px solid oklch(0.94 0.01 260)" : "none" }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 rr-bg-navy rr-text-gold"
-                      >
-                        {row.name[0]?.toUpperCase() ?? "?"}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold rr-text-navy">{row.name}</p>
-                        <p className="text-sm font-bold rr-text-navy-mid">{row.email}</p>
-                      </div>
-                    </div>
-                    {row.phone && (
-                      <span className="text-xs rr-text-navy-faint">{row.phone}</span>
-                    )}
-                  </div>
-                ))}
-                {mappedRows.length > 100 && (
-                  <p className="text-xs text-center py-3 rr-text-navy-muted">
-                    …and {mappedRows.length - 100} more
-                  </p>
-                )}
-              </div> : (
-                <p className="py-6 text-center text-sm font-bold rr-text-navy-mid">
-                  {t("csvDiagnostics.noValidRows", { defaultValue: "No valid contacts are ready to import yet. Correct the listed rows, then upload the file again." })}
-                </p>
-              )}
-            </div>
-
-            <div
-              className="bg-white rounded-2xl p-3 flex items-center gap-2 shadow-sm"
-              style={{ border: "1px solid oklch(0.92 0.02 260)" }}
-            >
-              <AlertCircle size={14} className="rr-text-navy-muted" />
-              <p className="text-sm font-bold rr-text-navy-mid">
-                Duplicate emails already in your contacts will be skipped automatically.
-              </p>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setStep(1)}
-                className="flex-1 py-3 rounded-xl text-sm font-black"
-                style={{ background: "oklch(0.93 0.01 260)", color: "oklch(0.35 0.05 260)" }}
-              >
-                Back
-              </button>
-              <button
-                onClick={confirmImport}
-                disabled={importMutation.isPending || mappedRows.length === 0}
-                className="flex-1 py-3 rounded-xl text-sm font-black flex items-center justify-center gap-2 disabled:opacity-60 rr-bg-navy rr-text-gold"
-              >
-                {importMutation.isPending ? (
-                  <><Loader2 size={14} className="animate-spin" /> Importing…</>
-                ) : (
-                  <>Import {mappedRows.length} Contacts</>
-                )}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Done */}
-        {step === 3 && importResult && (
-          <div className="flex flex-col items-center gap-4 pt-8">
-            <div
-              className="w-20 h-20 rounded-full flex items-center justify-center rr-bg-green-pale"
-            >
-              <CheckCircle2 size={40} style={{ color: "oklch(0.45 0.12 145)" }} />
-            </div>
-            <div className="text-center">
-              <h2 className="text-2xl font-black rr-text-navy">
-                Import Complete!
-              </h2>
-              <p className="text-sm mt-2 rr-text-navy-muted">
-                {importResult.imported} contact{importResult.imported !== 1 ? "s" : ""} added
-                {importResult.skipped > 0 && `, ${importResult.skipped} duplicate${importResult.skipped !== 1 ? "s" : ""} skipped`}.
-              </p>
-            </div>
-
-            <div className="w-full flex flex-col gap-3">
-              <CsvErrorSummary
-                summary={preImportSummary}
-                title={t("csvDiagnostics.preImportTitle", { defaultValue: "Rows to correct in your CSV" })}
-                titleId="csv-client-errors-title"
-                labels={csvLabels}
-              />
-              <CsvErrorSummary
-                summary={importResult.errorSummary}
-                title={t("csvDiagnostics.importResultTitle", { defaultValue: "Rows skipped during import" })}
-                titleId="csv-server-errors-title"
-                labels={csvLabels}
-              />
-            </div>
-
-            <div className="w-full flex flex-col gap-3 mt-4">
-              <button
-                onClick={() => navigate("/contacts")}
-                className="w-full py-3.5 rounded-2xl text-sm font-black flex items-center justify-center gap-2 rr-bg-navy rr-text-gold"
-              >
-                <Users size={16} /> View Contacts & Send Requests
-              </button>
-              <button
-                onClick={() => {
-                  setStep(0);
-                  setFileName("");
-                  setHeaders([]);
-                  setRawRows([]);
-                  setMappedRows([]);
-                  setPreImportSummary({ totalRejected: 0, reasons: [], reportIssues: [] });
-                  setImportResult(null);
-                }}
-                className="w-full py-3 rounded-2xl text-sm font-black"
-                style={{ background: "oklch(0.93 0.01 260)", color: "oklch(0.35 0.05 260)" }}
-              >
-                Import Another File
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-
-    {/* Native contacts picker - only rendered in Capacitor app */}
-    <ContactPickerModal
-      open={contactPickerOpen}
-      onClose={() => setContactPickerOpen(false)}
-      onImport={(contacts) => {
-        // Map native contacts directly into the importCSV mutation format
-        const rows = contacts.map((c) => ({ name: c.name, email: c.email }));
-        setPreImportSummary({ totalRejected: 0, reasons: [], reportIssues: [] });
-        importMutation.mutate({ rows });
-        setContactPickerOpen(false);
-      }}
-    />
+      {/* Native contacts picker - only rendered in Capacitor app */}
+      <ContactPickerModal
+        open={contactPickerOpen}
+        onClose={() => setContactPickerOpen(false)}
+        onImport={contacts => {
+          // Map native contacts directly into the importCSV mutation format
+          const rows = contacts.map(c => ({ name: c.name, email: c.email }));
+          setPreImportSummary({
+            totalRejected: 0,
+            reasons: [],
+            reportIssues: [],
+          });
+          importMutation.mutate({ rows });
+          setContactPickerOpen(false);
+        }}
+      />
     </>
   );
 }

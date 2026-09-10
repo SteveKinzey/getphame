@@ -57,7 +57,9 @@ function isSensitiveUpdateRoute(pathname: string, search: string): boolean {
   }
 
   const params = new URLSearchParams(search);
-  return Boolean(params.get("token") || params.get("magic") || params.get("code"));
+  return Boolean(
+    params.get("token") || params.get("magic") || params.get("code")
+  );
 }
 
 function readDeferredUntil(version: string): number | null {
@@ -80,7 +82,9 @@ function markNoticeShown(version: string): void {
 
 function wasNoticeShown(version: string): boolean {
   try {
-    return window.sessionStorage.getItem(`${NOTIFIED_PREFIX}${version}`) === "1";
+    return (
+      window.sessionStorage.getItem(`${NOTIFIED_PREFIX}${version}`) === "1"
+    );
   } catch {
     return false;
   }
@@ -153,10 +157,7 @@ export function useAppVersionCheck() {
   );
 
   const recordUpdateEvent = useCallback(
-    (
-      event: PwaUpdateTelemetryEvent,
-      version = availableVersionRef.current
-    ) => {
+    (event: PwaUpdateTelemetryEvent, version = availableVersionRef.current) => {
       if (!version) return;
       const key = `${version}:${event}`;
       if (recordedUpdateEventsRef.current.has(key)) return;
@@ -173,10 +174,13 @@ export function useAppVersionCheck() {
         if (deferredTimerRef.current !== null) {
           window.clearTimeout(deferredTimerRef.current);
         }
-        deferredTimerRef.current = window.setTimeout(() => {
-          deferredTimerRef.current = null;
-          setNoticeVisible(true);
-        }, Math.max(0, deferredUntil - Date.now()));
+        deferredTimerRef.current = window.setTimeout(
+          () => {
+            deferredTimerRef.current = null;
+            setNoticeVisible(true);
+          },
+          Math.max(0, deferredUntil - Date.now())
+        );
         return;
       }
 
@@ -192,9 +196,18 @@ export function useAppVersionCheck() {
   );
 
   const checkForUpdate = useCallback(
-    async (source: "initial" | "timer" | "focus" | "visibility" | "worker" | "manual" = "manual") => {
+    async (
+      source:
+        | "initial"
+        | "timer"
+        | "focus"
+        | "visibility"
+        | "worker"
+        | "manual" = "manual"
+    ) => {
       if (typeof window === "undefined" || inFlightRef.current) return null;
-      if (source === "timer" && document.visibilityState !== "visible") return null;
+      if (source === "timer" && document.visibilityState !== "visible")
+        return null;
 
       inFlightRef.current = true;
       try {
@@ -230,7 +243,12 @@ export function useAppVersionCheck() {
           availableVersionRef.current = version;
           setAvailableVersion(version);
           recordState("available");
-          if (!isSensitiveUpdateRoute(window.location.pathname, window.location.search)) {
+          if (
+            !isSensitiveUpdateRoute(
+              window.location.pathname,
+              window.location.search
+            )
+          ) {
             showAvailableNotice(version);
           }
         }
@@ -248,7 +266,10 @@ export function useAppVersionCheck() {
     reloadingRef.current = true;
     // Let the non-modal applying-update status paint before this intentional,
     // user-approved current-tab reload. Peer tabs are never affected.
-    window.setTimeout(() => window.location.reload(), APPLYING_UPDATE_FEEDBACK_MS);
+    window.setTimeout(
+      () => window.location.reload(),
+      APPLYING_UPDATE_FEEDBACK_MS
+    );
   }, []);
 
   const reloadCurrentTab = useCallback(async () => {
@@ -294,7 +315,10 @@ export function useAppVersionCheck() {
       };
       const timeout = window.setTimeout(() => {
         if (!completed) {
-          navigator.serviceWorker.removeEventListener("controllerchange", finish);
+          navigator.serviceWorker.removeEventListener(
+            "controllerchange",
+            finish
+          );
           completed = true;
           recordState("failed", { failure: "worker-timeout" });
           completeReload();
@@ -303,7 +327,9 @@ export function useAppVersionCheck() {
 
       // Listener first; message only the actual waiting worker. The worker
       // independently refuses activation if another window client is present.
-      navigator.serviceWorker.addEventListener("controllerchange", finish, { once: true });
+      navigator.serviceWorker.addEventListener("controllerchange", finish, {
+        once: true,
+      });
       registration.waiting.postMessage({ type: "SKIP_WAITING" });
     } catch {
       // A worker diagnostic failure must not block a deliberate safe reload.
@@ -315,7 +341,9 @@ export function useAppVersionCheck() {
     if (!availableVersionRef.current || typeof window === "undefined") return;
     recordUpdateEvent("update_requested");
 
-    if (isSensitiveUpdateRoute(window.location.pathname, window.location.search)) {
+    if (
+      isSensitiveUpdateRoute(window.location.pathname, window.location.search)
+    ) {
       setBlocker("sensitive-flow");
       recordState("blocked");
       recordUpdateEvent("update_blocked");
@@ -353,7 +381,9 @@ export function useAppVersionCheck() {
   ]);
 
   const confirmDiscardAndUpdate = useCallback(() => {
-    if (isSensitiveUpdateRoute(window.location.pathname, window.location.search)) {
+    if (
+      isSensitiveUpdateRoute(window.location.pathname, window.location.search)
+    ) {
       setBlocker("sensitive-flow");
       recordState("blocked");
       recordUpdateEvent("update_blocked");
@@ -396,7 +426,10 @@ export function useAppVersionCheck() {
 
     const until = Date.now() + UPDATE_DEFER_DURATION_MS;
     try {
-      window.sessionStorage.setItem(`${DEFERRED_PREFIX}${version}`, String(until));
+      window.sessionStorage.setItem(
+        `${DEFERRED_PREFIX}${version}`,
+        String(until)
+      );
     } catch {
       // In-memory hiding still prevents a repeated toast in the current render.
     }

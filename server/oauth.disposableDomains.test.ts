@@ -37,7 +37,9 @@ import { registerOAuthRoutes } from "./_core/oauth";
 describe("framework OAuth disposable-domain enforcement", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.exchangeCodeForToken.mockResolvedValue({ accessToken: "oauth-access-token" });
+    mocks.exchangeCodeForToken.mockResolvedValue({
+      accessToken: "oauth-access-token",
+    });
     mocks.getUserInfo.mockResolvedValue({
       openId: "framework-user-123",
       email: "member@example.test",

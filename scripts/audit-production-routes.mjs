@@ -1,8 +1,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { chromium } from "playwright-core";
 
-const sitemapPath = process.env.ROUTE_AUDIT_SITEMAP_PATH ?? "/tmp/getphame-production-routes.txt";
-const outputPath = process.env.ROUTE_AUDIT_OUTPUT_PATH ?? "/tmp/getphame-production-route-audit.json";
+const sitemapPath =
+  process.env.ROUTE_AUDIT_SITEMAP_PATH ?? "/tmp/getphame-production-routes.txt";
+const outputPath =
+  process.env.ROUTE_AUDIT_OUTPUT_PATH ??
+  "/tmp/getphame-production-route-audit.json";
 let routes;
 try {
   routes = (await readFile(sitemapPath, "utf8"))
@@ -10,7 +13,9 @@ try {
     .map(route => route.trim())
     .filter(Boolean);
 } catch (error) {
-  console.error(`Unable to read route list at ${sitemapPath}: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(
+    `Unable to read route list at ${sitemapPath}: ${error instanceof Error ? error.message : String(error)}`
+  );
   process.exit(1);
 }
 
@@ -27,7 +32,9 @@ const browser = await chromium.launch({
 const findings = [];
 
 for (const url of routes) {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const page = await browser.newPage({
+    viewport: { width: 1440, height: 900 },
+  });
   const consoleErrors = [];
   const pageErrors = [];
   const failedRequests = [];
@@ -38,12 +45,21 @@ for (const url of routes) {
   });
   page.on("pageerror", error => pageErrors.push(error.message));
   page.on("requestfailed", request => {
-    failedRequests.push({ url: request.url(), error: request.failure()?.errorText ?? "unknown" });
+    failedRequests.push({
+      url: request.url(),
+      error: request.failure()?.errorText ?? "unknown",
+    });
   });
   page.on("response", response => {
     try {
-      if (response.status() >= 400 && new URL(response.url()).origin === new URL(url).origin) {
-        failedResponses.push({ url: response.url(), status: response.status() });
+      if (
+        response.status() >= 400 &&
+        new URL(response.url()).origin === new URL(url).origin
+      ) {
+        failedResponses.push({
+          url: response.url(),
+          status: response.status(),
+        });
       }
     } catch {
       // Ignore malformed response URLs in diagnostics.
@@ -60,11 +76,19 @@ for (const url of routes) {
     failedRequests.length = 0;
     failedResponses.length = 0;
     try {
-      const response = await page.goto(url, { waitUntil: "commit", timeout: 45_000 });
+      const response = await page.goto(url, {
+        waitUntil: "commit",
+        timeout: 45_000,
+      });
       status = response?.status() ?? null;
-      await page.waitForLoadState("domcontentloaded", { timeout: 15_000 }).catch(() => undefined);
       await page
-        .waitForFunction(() => document.querySelector("#root")?.children.length > 0, { timeout: 15_000 })
+        .waitForLoadState("domcontentloaded", { timeout: 15_000 })
+        .catch(() => undefined);
+      await page
+        .waitForFunction(
+          () => document.querySelector("#root")?.children.length > 0,
+          { timeout: 15_000 }
+        )
         .catch(() => undefined);
       await page.waitForTimeout(500);
       navigationError = null;
@@ -76,7 +100,12 @@ for (const url of routes) {
   }
 
   let evaluationError = null;
-  let rendered = { hasRoot: false, rootChildCount: 0, textLength: 0, title: "" };
+  let rendered = {
+    hasRoot: false,
+    rootChildCount: 0,
+    textLength: 0,
+    title: "",
+  };
   if (!navigationError) {
     try {
       rendered = await page.evaluate(() => ({
@@ -90,10 +119,14 @@ for (const url of routes) {
     }
   }
 
-  const externalCspWarnings = consoleErrors.filter(message =>
-    message.includes("static.cloudflareinsights.com") && message.includes("Content Security Policy")
+  const externalCspWarnings = consoleErrors.filter(
+    message =>
+      message.includes("static.cloudflareinsights.com") &&
+      message.includes("Content Security Policy")
   );
-  const renderingErrors = consoleErrors.filter(message => !externalCspWarnings.includes(message));
+  const renderingErrors = consoleErrors.filter(
+    message => !externalCspWarnings.includes(message)
+  );
 
   findings.push({
     url,
@@ -114,14 +147,21 @@ for (const url of routes) {
 await browser.close();
 await writeFile(outputPath, `${JSON.stringify(findings, null, 2)}\n`);
 
-const failures = findings.filter(finding =>
-  finding.navigationError ||
-  finding.evaluationError ||
-  (finding.status !== null && finding.status >= 400) ||
-  finding.pageErrors.length > 0 ||
-  finding.consoleErrors.length > 0 ||
-  finding.rendered.textLength === 0
+const failures = findings.filter(
+  finding =>
+    finding.navigationError ||
+    finding.evaluationError ||
+    (finding.status !== null && finding.status >= 400) ||
+    finding.pageErrors.length > 0 ||
+    finding.consoleErrors.length > 0 ||
+    finding.rendered.textLength === 0
 );
 
-console.log(JSON.stringify({ auditedRoutes: routes.length, failureCount: failures.length, outputPath }, null, 2));
+console.log(
+  JSON.stringify(
+    { auditedRoutes: routes.length, failureCount: failures.length, outputPath },
+    null,
+    2
+  )
+);
 if (failures.length > 0) process.exitCode = 1;

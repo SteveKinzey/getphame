@@ -55,18 +55,27 @@ function requirePro(tier: string) {
   if (tier === "free") {
     throw new TRPCError({
       code: "FORBIDDEN",
-      message: "Bulk Sender is a Pro feature. Upgrade to connect an external email service.",
+      message:
+        "Bulk Sender is a Pro feature. Upgrade to connect an external email service.",
     });
   }
 }
 
 function isPrivateOrReservedIp(address: string): boolean {
   const normalized = address.toLowerCase();
-  if (normalized === "::1" || normalized === "::" || normalized.startsWith("fe80:") || normalized.startsWith("fc") || normalized.startsWith("fd")) {
+  if (
+    normalized === "::1" ||
+    normalized === "::" ||
+    normalized.startsWith("fe80:") ||
+    normalized.startsWith("fc") ||
+    normalized.startsWith("fd")
+  ) {
     return true;
   }
 
-  const mappedIpv4 = normalized.startsWith("::ffff:") ? normalized.slice(7) : normalized;
+  const mappedIpv4 = normalized.startsWith("::ffff:")
+    ? normalized.slice(7)
+    : normalized;
   if (isIP(mappedIpv4) !== 4) return false;
   const octets = mappedIpv4.split(".").map(Number);
   const [a, b] = octets;
@@ -84,22 +93,47 @@ function isPrivateOrReservedIp(address: string): boolean {
 
 export async function resolveSafeCustomSmtpHost(host: string): Promise<string> {
   const normalized = host.trim().toLowerCase().replace(/\.$/, "");
-  if (!normalized || normalized.includes("://") || /[\s/\\?#]/.test(normalized)) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "Enter a valid SMTP hostname or public IP address." });
+  if (
+    !normalized ||
+    normalized.includes("://") ||
+    /[\s/\\?#]/.test(normalized)
+  ) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Enter a valid SMTP hostname or public IP address.",
+    });
   }
-  if (normalized === "localhost" || normalized.endsWith(".localhost") || normalized.endsWith(".local")) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "Private or local SMTP hosts are not allowed." });
+  if (
+    normalized === "localhost" ||
+    normalized.endsWith(".localhost") ||
+    normalized.endsWith(".local")
+  ) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Private or local SMTP hosts are not allowed.",
+    });
   }
 
-  let addresses: Awaited<ReturnType<typeof lookup>>[] | { address: string; family: number }[];
+  let addresses:
+    | Awaited<ReturnType<typeof lookup>>[]
+    | { address: string; family: number }[];
   try {
     addresses = await lookup(normalized, { all: true, verbatim: true });
   } catch {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "The custom SMTP host could not be resolved." });
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The custom SMTP host could not be resolved.",
+    });
   }
 
-  if (!addresses.length || addresses.some((entry) => isPrivateOrReservedIp(entry.address))) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "Private or reserved SMTP destinations are not allowed." });
+  if (
+    !addresses.length ||
+    addresses.some(entry => isPrivateOrReservedIp(entry.address))
+  ) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Private or reserved SMTP destinations are not allowed.",
+    });
   }
   return addresses[0].address;
 }
@@ -126,12 +160,13 @@ function describeConnectionError(error: unknown): string {
 
 export async function verifyBulkSenderSmtpConnection(
   provider: BulkSenderProvider,
-  config: SmtpConnectionConfig,
+  config: SmtpConnectionConfig
 ): Promise<{ ok: boolean; error?: string }> {
   try {
-    const connectionHost = provider === "custom_smtp"
-      ? await resolveSafeCustomSmtpHost(config.host)
-      : config.host;
+    const connectionHost =
+      provider === "custom_smtp"
+        ? await resolveSafeCustomSmtpHost(config.host)
+        : config.host;
     const implicitTls = config.security === "tls";
     const transporter = nodemailer.createTransport({
       host: connectionHost,
@@ -159,7 +194,7 @@ async function testLegacyApiConnection(
   provider: "sendgrid" | "mailgun" | "postmark",
   apiKey: string,
   mailgunDomain?: string | null,
-  mailgunRegion?: "us" | "eu" | null,
+  mailgunRegion?: "us" | "eu" | null
 ): Promise<{ ok: boolean; error?: string }> {
   try {
     if (provider === "sendgrid") {
@@ -172,9 +207,10 @@ async function testLegacyApiConnection(
     }
 
     if (provider === "mailgun") {
-      const domainsUrl = mailgunRegion === "eu"
-        ? "https://api.eu.mailgun.net/v3/domains"
-        : "https://api.mailgun.net/v3/domains";
+      const domainsUrl =
+        mailgunRegion === "eu"
+          ? "https://api.eu.mailgun.net/v3/domains"
+          : "https://api.mailgun.net/v3/domains";
       const credentials = Buffer.from(`api:${apiKey}`).toString("base64");
       const response = await fetch(domainsUrl, {
         headers: { Authorization: `Basic ${credentials}` },
@@ -195,57 +231,91 @@ async function testLegacyApiConnection(
       ? { ok: true }
       : { ok: false, error: "Postmark rejected the Server API Token." };
   } catch {
-    return { ok: false, error: "The provider could not be reached. Try again shortly." };
+    return {
+      ok: false,
+      error: "The provider could not be reached. Try again shortly.",
+    };
   }
 }
 
-const connectInput = z.object({
-  provider: z.enum(BULK_SENDER_PROVIDER_IDS),
-  secret: z.string().min(1).max(4096).optional(),
-  // Backward-compatible alias for clients built against the original three-provider UI.
-  apiKey: z.string().min(1).max(4096).optional(),
-  smtpUsername: z.string().trim().max(320).optional(),
-  smtpHost: z.string().trim().max(255).optional(),
-  smtpPort: z.number().int().min(1).max(65_535).optional(),
-  smtpSecurity: z.enum(["starttls", "tls"]).optional(),
-  providerRegion: z.string().trim().max(64).optional(),
-  fromEmail: z.string().email().max(320),
-  fromName: z.string().trim().max(255).optional(),
-  mailgunDomain: z.string().trim().max(255).optional(),
-  mailgunRegion: z.enum(["us", "eu"]).optional(),
-}).superRefine((value, ctx) => {
-  const suppliedSecret = value.secret ?? value.apiKey ?? "";
-  if (!suppliedSecret.trim()) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["secret"], message: "Enter the provider secret." });
-  }
-  if (value.provider === "mailjet" && !value.smtpUsername?.trim()) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["smtpUsername"], message: "Enter the Mailjet API key." });
-  }
-});
+const connectInput = z
+  .object({
+    provider: z.enum(BULK_SENDER_PROVIDER_IDS),
+    secret: z.string().min(1).max(4096).optional(),
+    // Backward-compatible alias for clients built against the original three-provider UI.
+    apiKey: z.string().min(1).max(4096).optional(),
+    smtpUsername: z.string().trim().max(320).optional(),
+    smtpHost: z.string().trim().max(255).optional(),
+    smtpPort: z.number().int().min(1).max(65_535).optional(),
+    smtpSecurity: z.enum(["starttls", "tls"]).optional(),
+    providerRegion: z.string().trim().max(64).optional(),
+    fromEmail: z.string().email().max(320),
+    fromName: z.string().trim().max(255).optional(),
+    mailgunDomain: z.string().trim().max(255).optional(),
+    mailgunRegion: z.enum(["us", "eu"]).optional(),
+  })
+  .superRefine((value, ctx) => {
+    const suppliedSecret = value.secret ?? value.apiKey ?? "";
+    if (!suppliedSecret.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["secret"],
+        message: "Enter the provider secret.",
+      });
+    }
+    if (value.provider === "mailjet" && !value.smtpUsername?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["smtpUsername"],
+        message: "Enter the Mailjet API key.",
+      });
+    }
+  });
 
 function buildSmtpConfig(
   input: z.infer<typeof connectInput>,
-  secret: string,
+  secret: string
 ): SmtpConnectionConfig & { region: string | null } {
   const preset = getBulkSenderPreset(input.provider);
   const region = input.providerRegion ?? preset.defaultRegion ?? null;
-  if (preset.regions?.length && !preset.regions.some((option) => option.id === region)) {
-    throw new TRPCError({ code: "BAD_REQUEST", message: "Choose a valid provider region." });
+  if (
+    preset.regions?.length &&
+    !preset.regions.some(option => option.id === region)
+  ) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Choose a valid provider region.",
+    });
   }
 
-  const host = input.provider === "custom_smtp"
-    ? input.smtpHost?.trim() ?? ""
-    : resolveBulkSenderHost(input.provider, region);
-  const port = input.provider === "custom_smtp"
-    ? input.smtpPort ?? preset.defaultPort
-    : preset.defaultPort;
-  const security = input.provider === "custom_smtp"
-    ? input.smtpSecurity ?? preset.defaultSecurity
-    : preset.defaultSecurity;
-  const username = resolveBulkSenderUsername(input.provider, input.smtpUsername ?? "", secret);
+  const host =
+    input.provider === "custom_smtp"
+      ? (input.smtpHost?.trim() ?? "")
+      : resolveBulkSenderHost(input.provider, region);
+  const port =
+    input.provider === "custom_smtp"
+      ? (input.smtpPort ?? preset.defaultPort)
+      : preset.defaultPort;
+  const security =
+    input.provider === "custom_smtp"
+      ? (input.smtpSecurity ?? preset.defaultSecurity)
+      : preset.defaultSecurity;
+  const username = resolveBulkSenderUsername(
+    input.provider,
+    input.smtpUsername ?? "",
+    secret
+  );
 
-  if (!host) throw new TRPCError({ code: "BAD_REQUEST", message: "Enter the SMTP host." });
-  if (!username) throw new TRPCError({ code: "BAD_REQUEST", message: `Enter the ${preset.usernameLabel}.` });
+  if (!host)
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Enter the SMTP host.",
+    });
+  if (!username)
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: `Enter the ${preset.usernameLabel}.`,
+    });
 
   return { host, port, security, username, secret, region };
 }
@@ -256,12 +326,20 @@ export const bulkSenderRouter = router({
       getBulkSenderCreds(ctx.user.id),
       resolveOutboundDeliveryChannel(ctx.user.id),
     ]);
-    if (!credentials) return {
-      connected: false as const,
-      legacyPlatformConnection: false as const,
-      selectedForOutreach: false as const,
-    };
-    if (credentials.provider === "sendgrid" && !(credentials.smtpHost && credentials.smtpPort && credentials.smtpUsername)) {
+    if (!credentials)
+      return {
+        connected: false as const,
+        legacyPlatformConnection: false as const,
+        selectedForOutreach: false as const,
+      };
+    if (
+      credentials.provider === "sendgrid" &&
+      !(
+        credentials.smtpHost &&
+        credentials.smtpPort &&
+        credentials.smtpUsername
+      )
+    ) {
       return {
         connected: false as const,
         legacyPlatformConnection: true as const,
@@ -278,8 +356,11 @@ export const bulkSenderRouter = router({
       providerRegion: credentials.providerRegion,
       smtpHost: credentials.smtpHost,
       smtpPort: credentials.smtpPort,
-      smtpSecurity: credentials.smtpSecure === 1 ? "tls" as const : "starttls" as const,
-      connectionMode: credentials.smtpHost ? "smtp" as const : "legacy_api" as const,
+      smtpSecurity:
+        credentials.smtpSecure === 1 ? ("tls" as const) : ("starttls" as const),
+      connectionMode: credentials.smtpHost
+        ? ("smtp" as const)
+        : ("legacy_api" as const),
       mailgunDomain: credentials.mailgunDomain,
       mailgunRegion: credentials.mailgunRegion,
     };
@@ -289,7 +370,11 @@ export const bulkSenderRouter = router({
     .input(connectInput)
     .mutation(async ({ ctx, input }) => {
       const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
+      if (!db)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database unavailable",
+        });
       const [profile] = await db
         .select({ tier: businessProfiles.tier })
         .from(businessProfiles)
@@ -298,13 +383,27 @@ export const bulkSenderRouter = router({
       requirePro(profile?.tier ?? "free");
 
       const secret = input.secret ?? input.apiKey ?? "";
-      const legacyMailgunApiMode = input.provider === "mailgun" && Boolean(input.apiKey) && !input.secret && !input.smtpUsername;
-      const smtpConfig = legacyMailgunApiMode ? null : buildSmtpConfig(input, secret);
+      const legacyMailgunApiMode =
+        input.provider === "mailgun" &&
+        Boolean(input.apiKey) &&
+        !input.secret &&
+        !input.smtpUsername;
+      const smtpConfig = legacyMailgunApiMode
+        ? null
+        : buildSmtpConfig(input, secret);
       const test = legacyMailgunApiMode
-        ? await testLegacyApiConnection("mailgun", secret, input.mailgunDomain, input.mailgunRegion)
+        ? await testLegacyApiConnection(
+            "mailgun",
+            secret,
+            input.mailgunDomain,
+            input.mailgunRegion
+          )
         : await verifyBulkSenderSmtpConnection(input.provider, smtpConfig!);
       if (!test.ok) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: test.error ?? "Connection test failed" });
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: test.error ?? "Connection test failed",
+        });
       }
 
       const now = Date.now();
@@ -313,8 +412,12 @@ export const bulkSenderRouter = router({
         apiKey: encryptPassword(secret),
         fromEmail: input.fromEmail,
         fromName: input.fromName ?? null,
-        mailgunDomain: legacyMailgunApiMode ? input.mailgunDomain ?? null : null,
-        mailgunRegion: legacyMailgunApiMode ? input.mailgunRegion ?? "us" as const : "us" as const,
+        mailgunDomain: legacyMailgunApiMode
+          ? (input.mailgunDomain ?? null)
+          : null,
+        mailgunRegion: legacyMailgunApiMode
+          ? (input.mailgunRegion ?? ("us" as const))
+          : ("us" as const),
         smtpHost: smtpConfig?.host ?? null,
         smtpPort: smtpConfig?.port ?? null,
         smtpSecure: smtpConfig?.security === "tls" ? 1 : 0,
@@ -345,7 +448,11 @@ export const bulkSenderRouter = router({
 
   disconnect: protectedProcedure.mutation(async ({ ctx }) => {
     const db = await getDb();
-    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
+    if (!db)
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Database unavailable",
+      });
     await db
       .delete(bulkSenderCredentials)
       .where(eq(bulkSenderCredentials.userId, ctx.user.id));
@@ -355,28 +462,46 @@ export const bulkSenderRouter = router({
 
   test: protectedProcedure.mutation(async ({ ctx }) => {
     const credentials = await getBulkSenderCreds(ctx.user.id);
-    if (!credentials) throw new TRPCError({ code: "NOT_FOUND", message: "No Bulk Sender connection is configured." });
+    if (!credentials)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "No Bulk Sender connection is configured.",
+      });
     const secret = decryptPassword(credentials.apiKey);
 
-    if (credentials.smtpHost && credentials.smtpPort && credentials.smtpUsername) {
-      return verifyBulkSenderSmtpConnection(credentials.provider as BulkSenderProvider, {
-        host: credentials.smtpHost,
-        port: credentials.smtpPort,
-        security: credentials.smtpSecure === 1 ? "tls" : "starttls",
-        username: credentials.smtpUsername,
-        secret,
-      });
+    if (
+      credentials.smtpHost &&
+      credentials.smtpPort &&
+      credentials.smtpUsername
+    ) {
+      return verifyBulkSenderSmtpConnection(
+        credentials.provider as BulkSenderProvider,
+        {
+          host: credentials.smtpHost,
+          port: credentials.smtpPort,
+          security: credentials.smtpSecure === 1 ? "tls" : "starttls",
+          username: credentials.smtpUsername,
+          secret,
+        }
+      );
     }
 
-    if (credentials.provider === "mailgun" || credentials.provider === "postmark") {
+    if (
+      credentials.provider === "mailgun" ||
+      credentials.provider === "postmark"
+    ) {
       return testLegacyApiConnection(
         credentials.provider,
         secret,
         credentials.mailgunDomain,
-        credentials.mailgunRegion as "us" | "eu" | null,
+        credentials.mailgunRegion as "us" | "eu" | null
       );
     }
 
-    return { ok: false, error: "This connection is missing SMTP metadata. Update it to reconnect safely." };
+    return {
+      ok: false,
+      error:
+        "This connection is missing SMTP metadata. Update it to reconnect safely.",
+    };
   }),
 });

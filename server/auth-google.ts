@@ -401,7 +401,7 @@ export function registerGoogleAuthRoutes(app: Express) {
 
       // Existing users resume only to a same-origin path signed into the OAuth
       // state before leaving the app. New accounts continue through onboarding.
-      res.redirect(302, isNewUser ? "/onboarding" : returnTo ?? "/");
+      res.redirect(302, isNewUser ? "/onboarding" : (returnTo ?? "/"));
     } catch (err) {
       console.error("[GoogleAuth] Callback failed:", err);
       res.redirect(302, "/?auth_error=google_failed");

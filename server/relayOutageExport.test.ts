@@ -15,7 +15,8 @@ describe("relay outage CSV export", () => {
         startedAt: Date.UTC(2026, 8, 9, 10, 0, 0),
         resolvedAt: Date.UTC(2026, 8, 9, 10, 45, 0),
         durationMinutes: 45,
-        cause: "=HYPERLINK(\"https://attacker.test\") Connection refused for owner@getphame.app password=secret-token",
+        cause:
+          '=HYPERLINK("https://attacker.test") Connection refused for owner@getphame.app password=secret-token',
         status: "resolved",
         triggerSource: "scheduled_heartbeat",
       },
@@ -32,8 +33,12 @@ describe("relay outage CSV export", () => {
 
     const exportRows = buildRelayOutageExportRows(outages);
     expect(exportRows).toHaveLength(2);
-    expect(exportRows[0]?.causeSanitized).toBe("'=HYPERLINK(\"[redacted-url]\") Connection refused for [redacted-email] password: [redacted]");
-    expect(exportRows[1]?.causeSanitized).toBe("'@temporary failure on primary relay");
+    expect(exportRows[0]?.causeSanitized).toBe(
+      '\'=HYPERLINK("[redacted-url]") Connection refused for [redacted-email] password: [redacted]'
+    );
+    expect(exportRows[1]?.causeSanitized).toBe(
+      "'@temporary failure on primary relay"
+    );
 
     const snapshot = buildRelayOutageCsvExport({
       outages,
@@ -43,11 +48,18 @@ describe("relay outage CSV export", () => {
       generatedAt: Date.UTC(2026, 8, 9, 12, 15, 0),
     });
 
-    expect(snapshot.filename).toBe("getphame-email-relay-outages-2026-09-09.csv");
-    expect(snapshot.availableColumns).toEqual(
-      RELAY_OUTAGE_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader }))
+    expect(snapshot.filename).toBe(
+      "getphame-email-relay-outages-2026-09-09.csv"
     );
-    expect(snapshot.csv).toContain("outage_id,started_at_utc,resolved_at_utc,status,duration_minutes,trigger_source,cause_sanitized");
+    expect(snapshot.availableColumns).toEqual(
+      RELAY_OUTAGE_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({
+        key,
+        csvHeader,
+      }))
+    );
+    expect(snapshot.csv).toContain(
+      "outage_id,started_at_utc,resolved_at_utc,status,duration_minutes,trigger_source,cause_sanitized"
+    );
     expect(snapshot.csv).toContain("2026-09-09T10:00:00.000Z");
     expect(snapshot.csv).toContain("[redacted-email]");
     expect(snapshot.clipboardText).toBe(snapshot.csv.slice(1));

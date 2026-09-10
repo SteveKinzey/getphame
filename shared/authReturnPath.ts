@@ -24,7 +24,10 @@ export function getSafeAuthReturnPath(value: unknown): string | null {
   }
 }
 
-export function appendAuthReturnPath(path: string, returnPath: string | null): string {
+export function appendAuthReturnPath(
+  path: string,
+  returnPath: string | null
+): string {
   if (!returnPath) return path;
   const separator = path.includes("?") ? "&" : "?";
   return `${path}${separator}returnTo=${encodeURIComponent(returnPath)}`;
