@@ -5,7 +5,10 @@ import {
   outboundMailPreferences,
   smtpCredentials,
 } from "../drizzle/schema";
-import { BULK_SENDER_PRESETS, type BulkSenderProvider } from "../shared/bulkSenderPresets";
+import {
+  BULK_SENDER_PRESETS,
+  type BulkSenderProvider,
+} from "../shared/bulkSenderPresets";
 import type { AdaptiveSendChannelDescriptor } from "../shared/adaptiveSendLimits";
 import { getDb } from "./db";
 
@@ -24,7 +27,7 @@ export type UserOwnedMailChannel = "personal" | "bulk";
 
 export async function selectOutboundDeliveryChannel(
   userId: number,
-  selectedChannel: UserOwnedMailChannel,
+  selectedChannel: UserOwnedMailChannel
 ): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
@@ -50,16 +53,18 @@ export async function selectOutboundDeliveryChannel(
 
 export async function clearOutboundDeliveryChannel(
   userId: number,
-  selectedChannel: UserOwnedMailChannel,
+  selectedChannel: UserOwnedMailChannel
 ): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   await db
     .delete(outboundMailPreferences)
-    .where(and(
-      eq(outboundMailPreferences.userId, userId),
-      eq(outboundMailPreferences.selectedChannel, selectedChannel),
-    ));
+    .where(
+      and(
+        eq(outboundMailPreferences.userId, userId),
+        eq(outboundMailPreferences.selectedChannel, selectedChannel)
+      )
+    );
 }
 
 function asTimestamp(value: Date | number | null | undefined): number {
@@ -68,49 +73,101 @@ function asTimestamp(value: Date | number | null | undefined): number {
   return Date.now();
 }
 
-export function classifyPersonalSmtpProvider(host: string, email: string): { id: string; label: string } {
+export function classifyPersonalSmtpProvider(
+  host: string,
+  email: string
+): { id: string; label: string } {
   const normalizedHost = host.trim().toLowerCase();
   const domain = email.split("@")[1]?.toLowerCase() ?? "";
-  if (normalizedHost.includes("gmail") || normalizedHost.includes("google") || domain === "gmail.com" || domain === "googlemail.com") {
+  if (
+    normalizedHost.includes("gmail") ||
+    normalizedHost.includes("google") ||
+    domain === "gmail.com" ||
+    domain === "googlemail.com"
+  ) {
     const personal = domain === "gmail.com" || domain === "googlemail.com";
-    return { id: personal ? "gmail" : "google_workspace", label: personal ? "Gmail" : "Google Workspace" };
+    return {
+      id: personal ? "gmail" : "google_workspace",
+      label: personal ? "Gmail" : "Google Workspace",
+    };
   }
-  if (normalizedHost.includes("outlook") || normalizedHost.includes("office365") || normalizedHost.includes("microsoft") || ["outlook.com", "hotmail.com", "live.com"].includes(domain)) {
+  if (
+    normalizedHost.includes("outlook") ||
+    normalizedHost.includes("office365") ||
+    normalizedHost.includes("microsoft") ||
+    ["outlook.com", "hotmail.com", "live.com"].includes(domain)
+  ) {
     return { id: "microsoft", label: "Outlook / Microsoft 365" };
   }
-  if (normalizedHost.includes("yahoo") || domain.startsWith("yahoo.")) return { id: "yahoo", label: "Yahoo Mail" };
-  if (normalizedHost.includes("icloud") || normalizedHost.includes("mail.me.com") || ["icloud.com", "me.com"].includes(domain)) return { id: "icloud", label: "iCloud Mail" };
-  if (normalizedHost.includes("zoho") || domain.includes("zoho")) return { id: "zoho", label: "Zoho Mail" };
-  if (normalizedHost.includes("aol") || domain === "aol.com") return { id: "aol", label: "AOL Mail" };
-  if (normalizedHost.includes("proton") || domain.startsWith("proton")) return { id: "proton", label: "Proton Mail" };
-  if (normalizedHost.includes("fastmail") || domain === "fastmail.com") return { id: "fastmail", label: "Fastmail" };
+  if (normalizedHost.includes("yahoo") || domain.startsWith("yahoo."))
+    return { id: "yahoo", label: "Yahoo Mail" };
+  if (
+    normalizedHost.includes("icloud") ||
+    normalizedHost.includes("mail.me.com") ||
+    ["icloud.com", "me.com"].includes(domain)
+  )
+    return { id: "icloud", label: "iCloud Mail" };
+  if (normalizedHost.includes("zoho") || domain.includes("zoho"))
+    return { id: "zoho", label: "Zoho Mail" };
+  if (normalizedHost.includes("aol") || domain === "aol.com")
+    return { id: "aol", label: "AOL Mail" };
+  if (normalizedHost.includes("proton") || domain.startsWith("proton"))
+    return { id: "proton", label: "Proton Mail" };
+  if (normalizedHost.includes("fastmail") || domain === "fastmail.com")
+    return { id: "fastmail", label: "Fastmail" };
   return { id: "custom_smtp", label: "Connected SMTP" };
 }
 
-export async function resolveOutboundDeliveryChannel(userId: number): Promise<ResolvedOutboundDeliveryChannel | null> {
+export async function resolveOutboundDeliveryChannel(
+  userId: number
+): Promise<ResolvedOutboundDeliveryChannel | null> {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
 
   const [[profile], [preference], [bulk], [personal]] = await Promise.all([
-    db.select({ tier: businessProfiles.tier }).from(businessProfiles).where(eq(businessProfiles.userId, userId)).limit(1),
-    db.select({ selectedChannel: outboundMailPreferences.selectedChannel }).from(outboundMailPreferences).where(eq(outboundMailPreferences.userId, userId)).limit(1),
-    db.select().from(bulkSenderCredentials).where(and(
-      eq(bulkSenderCredentials.userId, userId),
-      eq(bulkSenderCredentials.connected, 1),
-    )).limit(1),
-    db.select().from(smtpCredentials).where(eq(smtpCredentials.userId, userId)).limit(1),
+    db
+      .select({ tier: businessProfiles.tier })
+      .from(businessProfiles)
+      .where(eq(businessProfiles.userId, userId))
+      .limit(1),
+    db
+      .select({ selectedChannel: outboundMailPreferences.selectedChannel })
+      .from(outboundMailPreferences)
+      .where(eq(outboundMailPreferences.userId, userId))
+      .limit(1),
+    db
+      .select()
+      .from(bulkSenderCredentials)
+      .where(
+        and(
+          eq(bulkSenderCredentials.userId, userId),
+          eq(bulkSenderCredentials.connected, 1)
+        )
+      )
+      .limit(1),
+    db
+      .select()
+      .from(smtpCredentials)
+      .where(eq(smtpCredentials.userId, userId))
+      .limit(1),
   ]);
 
   const tier = profile?.tier ?? "free";
-  const userOwnedBulk = bulk && !(bulk.provider === "sendgrid" && !(bulk.smtpHost && bulk.smtpPort && bulk.smtpUsername))
-    ? bulk
-    : null;
-  if (preference?.selectedChannel === "bulk" &&
-    tier !== "free"
-    && userOwnedBulk
-    && userOwnedBulk.smtpHost
-    && userOwnedBulk.smtpPort
-    && userOwnedBulk.smtpUsername
+  const userOwnedBulk =
+    bulk &&
+    !(
+      bulk.provider === "sendgrid" &&
+      !(bulk.smtpHost && bulk.smtpPort && bulk.smtpUsername)
+    )
+      ? bulk
+      : null;
+  if (
+    preference?.selectedChannel === "bulk" &&
+    tier !== "free" &&
+    userOwnedBulk &&
+    userOwnedBulk.smtpHost &&
+    userOwnedBulk.smtpPort &&
+    userOwnedBulk.smtpUsername
   ) {
     const provider = userOwnedBulk.provider as BulkSenderProvider;
     return {

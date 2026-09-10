@@ -36,12 +36,14 @@ describe("home-page customer request query", () => {
     expect(database.select).toHaveBeenCalledOnce();
     expect(from).toHaveBeenCalledWith(customerRequests);
     expect(limit).toHaveBeenCalledWith(1000);
-    expect(rows).toEqual([expect.objectContaining({
-      sourceConnectionId: 12,
-      sourceEventId: "source-event-17",
-      preferredLocale: "en",
-      templateRevisionId: 9,
-      englishTemplateRevisionId: 8,
-    })]);
+    expect(rows).toEqual([
+      expect.objectContaining({
+        sourceConnectionId: 12,
+        sourceEventId: "source-event-17",
+        preferredLocale: "en",
+        templateRevisionId: 9,
+        englishTemplateRevisionId: 8,
+      }),
+    ]);
   });
 });

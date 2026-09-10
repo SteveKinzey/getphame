@@ -31,22 +31,22 @@ export function useHapticEvents(enabled: boolean) {
     if (!hapticEnabled) return;
 
     // On first load, just record the current max ID — don't buzz for historical events
-    const maxId = Math.max(...events.map((e) => e.id));
+    const maxId = Math.max(...events.map(e => e.id));
     if (lastSeenIdRef.current === null) {
       lastSeenIdRef.current = maxId;
       return;
     }
 
     // Find events newer than what we've seen
-    const newEvents = events.filter((e) => e.id > lastSeenIdRef.current!);
+    const newEvents = events.filter(e => e.id > lastSeenIdRef.current!);
     if (newEvents.length === 0) return;
 
     // Update the watermark
     lastSeenIdRef.current = maxId;
 
     // Determine the "most significant" new event type
-    const hasClick = newEvents.some((e) => e.type === "click");
-    const hasOpen = newEvents.some((e) => e.type === "open");
+    const hasClick = newEvents.some(e => e.type === "click");
+    const hasOpen = newEvents.some(e => e.type === "open");
 
     if (hasClick) {
       // Triple-burst: review link clicked (likely posted a review)

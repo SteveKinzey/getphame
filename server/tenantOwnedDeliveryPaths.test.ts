@@ -37,7 +37,10 @@ function createDb(selectResults: unknown[], updateResults: unknown[] = []) {
     const query = {
       where: vi.fn(() => query),
       limit: vi.fn(run),
-      then: (resolve: (value: unknown) => unknown, reject?: (reason: unknown) => unknown) => run().then(resolve, reject),
+      then: (
+        resolve: (value: unknown) => unknown,
+        reject?: (reason: unknown) => unknown
+      ) => run().then(resolve, reject),
     };
     return query;
   });
@@ -54,11 +57,20 @@ function createDb(selectResults: unknown[], updateResults: unknown[] = []) {
 describe("tenant-owned queued and reminder delivery paths", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(Date, "now").mockReturnValue(Date.parse("2026-08-14T12:00:00.000Z"));
-    vi.stubEnv("EMAIL_TRACKING_SECRET", "tenant-owned-delivery-test-secret-that-is-long-enough");
-    mocks.getDefaultReviewPlatform.mockResolvedValue({ url: "https://reviews.example.test" });
+    vi.spyOn(Date, "now").mockReturnValue(
+      Date.parse("2026-08-14T12:00:00.000Z")
+    );
+    vi.stubEnv(
+      "EMAIL_TRACKING_SECRET",
+      "tenant-owned-delivery-test-secret-that-is-long-enough"
+    );
+    mocks.getDefaultReviewPlatform.mockResolvedValue({
+      url: "https://reviews.example.test",
+    });
     mocks.sendTenantOwnedReviewEmail.mockRejectedValue(
-      new Error("No email account connected. Please connect your email in Settings."),
+      new Error(
+        "No email account connected. Please connect your email in Settings."
+      )
     );
   });
 
@@ -84,17 +96,21 @@ describe("tenant-owned queued and reminder delivery paths", () => {
       claimedAt: null,
       attemptCount: 0,
     };
-    mocks.getDb.mockResolvedValue(createDb(
-      [[queued], [profile], [{ customerName: "Customer" }]],
-      [undefined, [{ affectedRows: 1 }], undefined],
-    ));
+    mocks.getDb.mockResolvedValue(
+      createDb(
+        [[queued], [profile], [{ customerName: "Customer" }]],
+        [undefined, [{ affectedRows: 1 }], undefined]
+      )
+    );
 
     const result = await processDueQuietHoursQueuedSends();
 
-    expect(mocks.sendTenantOwnedReviewEmail).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 7,
-      to: "customer@example.test",
-    }));
+    expect(mocks.sendTenantOwnedReviewEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 7,
+        to: "customer@example.test",
+      })
+    );
     expect(result).toMatchObject({ checked: 1, sent: 0, failed: 1 });
   });
 
@@ -110,17 +126,18 @@ describe("tenant-owned queued and reminder delivery paths", () => {
       sequenceStep: 1,
       attemptCount: 0,
     };
-    mocks.getDb.mockResolvedValue(createDb(
-      [[reminder], [profile]],
-      [[{ affectedRows: 1 }], undefined],
-    ));
+    mocks.getDb.mockResolvedValue(
+      createDb([[reminder], [profile]], [[{ affectedRows: 1 }], undefined])
+    );
 
     const result = await processDueReminders();
 
-    expect(mocks.sendTenantOwnedReviewEmail).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 7,
-      to: "customer@example.test",
-    }));
+    expect(mocks.sendTenantOwnedReviewEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 7,
+        to: "customer@example.test",
+      })
+    );
     expect(result).toMatchObject({ checked: 1, sent: 0, failed: 1 });
   });
 
@@ -136,10 +153,14 @@ describe("tenant-owned queued and reminder delivery paths", () => {
     };
     mocks.getDb.mockResolvedValue(createDb([[reminder], [profile]]));
 
-    await expect(sendReminderNow(7, 103)).rejects.toThrow("No email account connected. Please connect your email in Settings.");
-    expect(mocks.sendTenantOwnedReviewEmail).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 7,
-      to: "customer@example.test",
-    }));
+    await expect(sendReminderNow(7, 103)).rejects.toThrow(
+      "No email account connected. Please connect your email in Settings."
+    );
+    expect(mocks.sendTenantOwnedReviewEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 7,
+        to: "customer@example.test",
+      })
+    );
   });
 });

@@ -8,13 +8,13 @@ function listProductionPackages() {
   const result = spawnSync(
     "pnpm",
     ["list", "--prod", "--json", "--depth", "Infinity"],
-    { encoding: "utf8", maxBuffer: 100 * 1024 * 1024 },
+    { encoding: "utf8", maxBuffer: 100 * 1024 * 1024 }
   );
 
   if (result.error || result.status !== 0) {
     const detail = result.error?.message || result.stderr.trim();
     throw new Error(
-      `Unable to enumerate production dependencies.${detail ? ` ${detail}` : ""}`,
+      `Unable to enumerate production dependencies.${detail ? ` ${detail}` : ""}`
     );
   }
 
@@ -37,7 +37,7 @@ function listProductionPackages() {
 
     if (node.dependencies && typeof node.dependencies === "object") {
       for (const [dependencyName, dependency] of Object.entries(
-        node.dependencies,
+        node.dependencies
       )) {
         visit(dependency, dependencyName);
       }
@@ -76,7 +76,7 @@ async function queryOsv(queries) {
   }
 
   throw new Error(
-    `The OSV dependency audit could not complete after ${MAX_ATTEMPTS} attempts: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+    `The OSV dependency audit could not complete after ${MAX_ATTEMPTS} attempts: ${lastError instanceof Error ? lastError.message : String(lastError)}`
   );
 }
 
@@ -102,14 +102,16 @@ async function main() {
   if (findings.length > 0) {
     console.error("Production dependency audit failed. OSV reported:");
     for (const finding of findings) {
-      console.error(`- ${finding.dependency}: ${finding.id} — ${finding.summary}`);
+      console.error(
+        `- ${finding.dependency}: ${finding.id} — ${finding.summary}`
+      );
     }
     process.exitCode = 1;
     return;
   }
 
   console.log(
-    `Production dependency audit passed: ${packages.length} unique npm package versions checked against OSV.`,
+    `Production dependency audit passed: ${packages.length} unique npm package versions checked against OSV.`
   );
 }
 

@@ -1,7 +1,15 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
 
-export const OUTREACH_LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+export const OUTREACH_LOCALES = [
+  "en",
+  "es",
+  "fr",
+  "it",
+  "th",
+  "zh-CN",
+  "zh-TW",
+] as const;
 export type OutreachLocale = (typeof OUTREACH_LOCALES)[number];
 
 export const outreachLocaleSchema = z.enum(OUTREACH_LOCALES);
@@ -44,7 +52,8 @@ const FACEBOOK: RecommendedPlatform = {
   platform: "facebook",
   label: "Facebook Recommendations",
   mode: "link",
-  reason: "Useful when the business already serves an active Facebook audience.",
+  reason:
+    "Useful when the business already serves an active Facebook audience.",
   evidenceLabel: "Audience-fit guidance — not a popularity guarantee.",
 };
 
@@ -52,29 +61,100 @@ const YELP: RecommendedPlatform = {
   platform: "yelp",
   label: "Yelp",
   mode: "instructions",
-  reason: "Commonly considered for local discovery in the United States and Canada.",
-  evidenceLabel: "Instruction-only: Yelp discourages direct review solicitation.",
+  reason:
+    "Commonly considered for local discovery in the United States and Canada.",
+  evidenceLabel:
+    "Instruction-only: Yelp discourages direct review solicitation.",
 };
 
 const TRIPADVISOR: RecommendedPlatform = {
   platform: "tripadvisor",
   label: "Tripadvisor",
   mode: "link",
-  reason: "Relevant to hospitality, travel, attractions, and visitor-facing businesses.",
-  evidenceLabel: "Category-fit guidance — confirm the listing and platform terms.",
+  reason:
+    "Relevant to hospitality, travel, attractions, and visitor-facing businesses.",
+  evidenceLabel:
+    "Category-fit guidance — confirm the listing and platform terms.",
 };
 
 const CUSTOM_BY_MARKET: Record<string, RecommendedPlatform[]> = {
-  GB: [{ platform: "other", label: "Trustpilot", mode: "link", reason: "A recognized consumer-review option in the United Kingdom.", evidenceLabel: "Regional guidance — confirm current customer usage and terms." }],
-  IE: [{ platform: "other", label: "Trustpilot", mode: "link", reason: "A recognized consumer-review option in Ireland and the United Kingdom.", evidenceLabel: "Regional guidance — confirm current customer usage and terms." }],
-  AU: [{ platform: "other", label: "ProductReview.com.au", mode: "link", reason: "An Australia-focused consumer-review destination.", evidenceLabel: "Regional guidance — confirm category coverage and terms." }],
-  TH: [{ platform: "other", label: "Wongnai", mode: "link", reason: "A Thailand-focused option for restaurants and local lifestyle businesses.", evidenceLabel: "Category-specific regional guidance — verify current fit and terms." }],
-  CN: [{ platform: "other", label: "Dianping / Meituan", mode: "link", reason: "A mainland-China local discovery option for supported business categories.", evidenceLabel: "Regional guidance — configure the exact verified listing manually." }],
+  GB: [
+    {
+      platform: "other",
+      label: "Trustpilot",
+      mode: "link",
+      reason: "A recognized consumer-review option in the United Kingdom.",
+      evidenceLabel:
+        "Regional guidance — confirm current customer usage and terms.",
+    },
+  ],
+  IE: [
+    {
+      platform: "other",
+      label: "Trustpilot",
+      mode: "link",
+      reason:
+        "A recognized consumer-review option in Ireland and the United Kingdom.",
+      evidenceLabel:
+        "Regional guidance — confirm current customer usage and terms.",
+    },
+  ],
+  AU: [
+    {
+      platform: "other",
+      label: "ProductReview.com.au",
+      mode: "link",
+      reason: "An Australia-focused consumer-review destination.",
+      evidenceLabel: "Regional guidance — confirm category coverage and terms.",
+    },
+  ],
+  TH: [
+    {
+      platform: "other",
+      label: "Wongnai",
+      mode: "link",
+      reason:
+        "A Thailand-focused option for restaurants and local lifestyle businesses.",
+      evidenceLabel:
+        "Category-specific regional guidance — verify current fit and terms.",
+    },
+  ],
+  CN: [
+    {
+      platform: "other",
+      label: "Dianping / Meituan",
+      mode: "link",
+      reason:
+        "A mainland-China local discovery option for supported business categories.",
+      evidenceLabel:
+        "Regional guidance — configure the exact verified listing manually.",
+    },
+  ],
 };
 
 const YELP_MARKETS = new Set(["US", "CA"]);
-const FACEBOOK_MARKETS = new Set(["US", "CA", "GB", "IE", "AU", "NZ", "FR", "IT", "ES", "DE", "TH", "TW"]);
-const TRAVEL_CATEGORIES = new Set(["hospitality", "hotel", "restaurant", "travel", "tourism", "attraction"]);
+const FACEBOOK_MARKETS = new Set([
+  "US",
+  "CA",
+  "GB",
+  "IE",
+  "AU",
+  "NZ",
+  "FR",
+  "IT",
+  "ES",
+  "DE",
+  "TH",
+  "TW",
+]);
+const TRAVEL_CATEGORIES = new Set([
+  "hospitality",
+  "hotel",
+  "restaurant",
+  "travel",
+  "tourism",
+  "attraction",
+]);
 
 export function getRegionalPlatformRecommendations(params: {
   countryCode?: string | null;
@@ -106,8 +186,11 @@ export function getRegionalPlatformRecommendations(params: {
 export const businessContextSchema = z.object({
   description: z.string().trim().min(20).max(2_000),
   category: z.string().trim().min(2).max(100),
-  countryCode: z.string().trim().regex(/^[A-Za-z]{2}$/).transform(value => value.toUpperCase()),
+  countryCode: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z]{2}$/)
+    .transform(value => value.toUpperCase()),
   regionCode: z.string().trim().max(16).optional(),
   preferredLocale: outreachLocaleSchema.default("en"),
 });
-

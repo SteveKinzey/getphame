@@ -17,7 +17,11 @@ function tokenize(value: string): string[] {
   return value.match(/\s+|[^\s]+/g) ?? [];
 }
 
-function appendSegment(segments: ToneDiffSegment[], kind: ToneDiffKind, text: string) {
+function appendSegment(
+  segments: ToneDiffSegment[],
+  kind: ToneDiffKind,
+  text: string
+) {
   if (!text) return;
   const previous = segments.at(-1);
   if (previous?.kind === kind) {
@@ -41,7 +45,9 @@ function buildReplacementDiff(before: string, after: string): ToneTextDiff {
  */
 export function getToneTextDiff(before: string, after: string): ToneTextDiff {
   if (before === after) {
-    const unchanged = before ? [{ kind: "unchanged" as const, text: before }] : [];
+    const unchanged = before
+      ? [{ kind: "unchanged" as const, text: before }]
+      : [];
     return { before: unchanged, after: unchanged, hasChanges: false };
   }
 
@@ -55,13 +61,26 @@ export function getToneTextDiff(before: string, after: string): ToneTextDiff {
   }
 
   const matrix = new Uint16Array(rows * columns);
-  const at = (row: number, column: number) => matrix[row * columns + column] ?? 0;
+  const at = (row: number, column: number) =>
+    matrix[row * columns + column] ?? 0;
 
-  for (let beforeIndex = beforeTokens.length - 1; beforeIndex >= 0; beforeIndex -= 1) {
-    for (let afterIndex = afterTokens.length - 1; afterIndex >= 0; afterIndex -= 1) {
-      const value = beforeTokens[beforeIndex] === afterTokens[afterIndex]
-        ? at(beforeIndex + 1, afterIndex + 1) + 1
-        : Math.max(at(beforeIndex + 1, afterIndex), at(beforeIndex, afterIndex + 1));
+  for (
+    let beforeIndex = beforeTokens.length - 1;
+    beforeIndex >= 0;
+    beforeIndex -= 1
+  ) {
+    for (
+      let afterIndex = afterTokens.length - 1;
+      afterIndex >= 0;
+      afterIndex -= 1
+    ) {
+      const value =
+        beforeTokens[beforeIndex] === afterTokens[afterIndex]
+          ? at(beforeIndex + 1, afterIndex + 1) + 1
+          : Math.max(
+              at(beforeIndex + 1, afterIndex),
+              at(beforeIndex, afterIndex + 1)
+            );
       matrix[beforeIndex * columns + afterIndex] = value;
     }
   }
@@ -109,7 +128,7 @@ export function getToneTextDiff(before: string, after: string): ToneTextDiff {
  */
 export function getChangedToneLineSegments(
   segments: ToneDiffSegment[],
-  changedKind: Extract<ToneDiffKind, "removed" | "added">,
+  changedKind: Extract<ToneDiffKind, "removed" | "added">
 ): ToneDiffSegment[] {
   const lines: ToneDiffSegment[][] = [[]];
 
@@ -124,11 +143,14 @@ export function getChangedToneLineSegments(
     }
   }
 
-  const changedLines = lines.filter((line) => line.some((segment) => segment.kind === changedKind));
+  const changedLines = lines.filter(line =>
+    line.some(segment => segment.kind === changedKind)
+  );
   const result: ToneDiffSegment[] = [];
   changedLines.forEach((line, index) => {
-    line.forEach((segment) => appendSegment(result, segment.kind, segment.text));
-    if (index < changedLines.length - 1) appendSegment(result, "unchanged", "\n");
+    line.forEach(segment => appendSegment(result, segment.kind, segment.text));
+    if (index < changedLines.length - 1)
+      appendSegment(result, "unchanged", "\n");
   });
   return result;
 }

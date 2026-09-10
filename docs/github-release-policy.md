@@ -6,16 +6,16 @@ The managed Get Phame project and `SteveKinzey/getphame` are separate Git remote
 
 ## Required release sequence
 
-| Stage | Required evidence | Stop condition |
-|---|---|---|
-| Validate | Focused tests, full Vitest, TypeScript, production audit, production build, and responsive checks pass on the exact releasable tree. | Any gate fails. |
-| Checkpoint | Save the validated managed checkpoint and record its version, commit, and tree hash. | The checkpoint differs from the validated tree. |
-| Reconcile | Fetch current GitHub `main`; create a new history-preserving `release/checkpoint-<version>` branch; merge the managed release history without force-pushing. | GitHub changed unexpectedly, conflicts are ambiguous, or unrelated work would be overwritten. |
-| Prove parity | The release branch must satisfy `git diff --exit-code <managed-release-commit>` and its tree hash must equal the managed checkpoint tree hash. | Any file or tree mismatch remains. |
-| Review | Push the branch and open or update a pull request containing checkpoint identity, tree hash, validation results, and production status. | The pull request is conflicted or evidence is incomplete. |
-| Check | GitHub Quality Gate and API Recovery Browser Check pass. Security scanners must be investigated; false-positive credential examples must use unmistakably non-secret placeholders. | A required check fails or is skipped. |
-| Merge | Merge through the pull request with history preserved. Never force-push `main`. Delete only the merged release branch. | Required checks are incomplete. |
-| Verify | Fetch remote `main`, confirm the merged pull request, and prove `git diff --exit-code <managed-release-commit> origin/main`. | Remote `main` differs from the released checkpoint. |
+| Stage        | Required evidence                                                                                                                                                                  | Stop condition                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Validate     | Focused tests, full Vitest, TypeScript, production audit, production build, and responsive checks pass on the exact releasable tree.                                               | Any gate fails.                                                                               |
+| Checkpoint   | Save the validated managed checkpoint and record its version, commit, and tree hash.                                                                                               | The checkpoint differs from the validated tree.                                               |
+| Reconcile    | Fetch current GitHub `main`; create a new history-preserving `release/checkpoint-<version>` branch; merge the managed release history without force-pushing.                       | GitHub changed unexpectedly, conflicts are ambiguous, or unrelated work would be overwritten. |
+| Prove parity | The release branch must satisfy `git diff --exit-code <managed-release-commit>` and its tree hash must equal the managed checkpoint tree hash.                                     | Any file or tree mismatch remains.                                                            |
+| Review       | Push the branch and open or update a pull request containing checkpoint identity, tree hash, validation results, and production status.                                            | The pull request is conflicted or evidence is incomplete.                                     |
+| Check        | GitHub Quality Gate and API Recovery Browser Check pass. Security scanners must be investigated; false-positive credential examples must use unmistakably non-secret placeholders. | A required check fails or is skipped.                                                         |
+| Merge        | Merge through the pull request with history preserved. Never force-push `main`. Delete only the merged release branch.                                                             | Required checks are incomplete.                                                               |
+| Verify       | Fetch remote `main`, confirm the merged pull request, and prove `git diff --exit-code <managed-release-commit> origin/main`.                                                       | Remote `main` differs from the released checkpoint.                                           |
 
 ## Branch and pull-request rules
 

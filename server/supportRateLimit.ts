@@ -12,7 +12,12 @@ interface RateWindow {
 const submissionWindows = new Map<string, RateWindow>();
 const attachmentWindows = new Map<string, RateWindow>();
 
-function checkRateWindow(windows: Map<string, RateWindow>, requestKey: string, maximum: number, message: string): void {
+function checkRateWindow(
+  windows: Map<string, RateWindow>,
+  requestKey: string,
+  maximum: number,
+  message: string
+): void {
   const key = requestKey.slice(0, 160) || "anonymous";
   const now = Date.now();
   const existing = windows.get(key);
@@ -34,12 +39,22 @@ function checkRateWindow(windows: Map<string, RateWindow>, requestKey: string, m
  * customer messages or identities. The caller supplies a short-lived request key.
  */
 export function checkSupportSubmissionRateLimit(requestKey: string): void {
-  checkRateWindow(submissionWindows, requestKey, MAX_SUBMISSIONS_PER_WINDOW, "Please wait before sending another support request.");
+  checkRateWindow(
+    submissionWindows,
+    requestKey,
+    MAX_SUBMISSIONS_PER_WINDOW,
+    "Please wait before sending another support request."
+  );
 }
 
 /** Limits public screenshot uploads independently from final form submissions. */
 export function checkSupportAttachmentRateLimit(requestKey: string): void {
-  checkRateWindow(attachmentWindows, requestKey, MAX_ATTACHMENTS_PER_WINDOW, "Please wait before uploading another screenshot.");
+  checkRateWindow(
+    attachmentWindows,
+    requestKey,
+    MAX_ATTACHMENTS_PER_WINDOW,
+    "Please wait before uploading another screenshot."
+  );
 }
 
 export function resetSupportSubmissionRateLimitForTests(): void {

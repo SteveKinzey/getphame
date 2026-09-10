@@ -15,15 +15,23 @@ export const RELEASE_HISTORY_EXPORT_COLUMNS = [
   { key: "parityStatus", csvHeader: "parity_status" },
 ] as const;
 
-export type ReleaseHistoryExportColumnKey = (typeof RELEASE_HISTORY_EXPORT_COLUMNS)[number]["key"];
-export type ReleaseHistoryExportRow = Record<ReleaseHistoryExportColumnKey, string>;
+export type ReleaseHistoryExportColumnKey =
+  (typeof RELEASE_HISTORY_EXPORT_COLUMNS)[number]["key"];
+export type ReleaseHistoryExportRow = Record<
+  ReleaseHistoryExportColumnKey,
+  string
+>;
 
-export const RELEASE_HISTORY_EXPORT_COLUMN_KEYS = RELEASE_HISTORY_EXPORT_COLUMNS.map(
-  (column) => column.key
-) as [ReleaseHistoryExportColumnKey, ...ReleaseHistoryExportColumnKey[]];
+export const RELEASE_HISTORY_EXPORT_COLUMN_KEYS =
+  RELEASE_HISTORY_EXPORT_COLUMNS.map(column => column.key) as [
+    ReleaseHistoryExportColumnKey,
+    ...ReleaseHistoryExportColumnKey[],
+  ];
 
-export function buildReleaseHistoryExportRows(rows: ReleaseParityRecord[]): ReleaseHistoryExportRow[] {
-  return rows.map((row) => ({
+export function buildReleaseHistoryExportRows(
+  rows: ReleaseParityRecord[]
+): ReleaseHistoryExportRow[] {
+  return rows.map(row => ({
     recordedAtUtc: new Date(row.recordedAt).toISOString(),
     checkpointId: row.checkpointId.slice(0, 64),
     protectedMainCommit: row.protectedMainCommit.slice(0, 64),
@@ -36,7 +44,9 @@ export function buildReleaseHistoryExportRows(rows: ReleaseParityRecord[]): Rele
 function selectedColumns(keys?: readonly ReleaseHistoryExportColumnKey[]) {
   if (!keys) return RELEASE_HISTORY_EXPORT_COLUMNS;
   const selected = new Set(keys);
-  return RELEASE_HISTORY_EXPORT_COLUMNS.filter((column) => selected.has(column.key));
+  return RELEASE_HISTORY_EXPORT_COLUMNS.filter(column =>
+    selected.has(column.key)
+  );
 }
 
 export function buildReleaseHistoryCsvExport(input: {
@@ -64,7 +74,9 @@ export function buildReleaseHistoryCsvExport(input: {
     rowCount: rows.length,
     totalMatching: input.total,
     truncated: input.truncated,
-    availableColumns: RELEASE_HISTORY_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader })),
+    availableColumns: RELEASE_HISTORY_EXPORT_COLUMNS.map(
+      ({ key, csvHeader }) => ({ key, csvHeader })
+    ),
     searchRows: rows,
     preview: {
       columns,

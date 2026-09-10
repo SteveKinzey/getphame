@@ -5,26 +5,26 @@
 
 ## Production availability
 
-| Endpoint | Observation |
-|---|---|
-| `https://getphame.app/` | Returned HTTP 200 and rendered the Get Phame landing experience. |
-| `https://www.getphame.app/` | Returned HTTP 200 after canonical redirect to `https://getphame.app/`. |
-| `https://getphame.manus.space/` | Returned HTTP 200. |
-| `https://revrocket-j5ynazte.manus.space/` | Returned HTTP 200. |
-| `https://getphame.app/api/health` | Returned HTTP 200 with the expected JSON content type. |
-| `https://revrocket-j5ynazte.manus.space/api/health` | Returned HTTP 200 with the expected JSON content type. |
+| Endpoint                                            | Observation                                                            |
+| --------------------------------------------------- | ---------------------------------------------------------------------- |
+| `https://getphame.app/`                             | Returned HTTP 200 and rendered the Get Phame landing experience.       |
+| `https://www.getphame.app/`                         | Returned HTTP 200 after canonical redirect to `https://getphame.app/`. |
+| `https://getphame.manus.space/`                     | Returned HTTP 200.                                                     |
+| `https://revrocket-j5ynazte.manus.space/`           | Returned HTTP 200.                                                     |
+| `https://getphame.app/api/health`                   | Returned HTTP 200 with the expected JSON content type.                 |
+| `https://revrocket-j5ynazte.manus.space/api/health` | Returned HTTP 200 with the expected JSON content type.                 |
 
 The managed runtime’s recent records showed a successful SMTP health sweep and ordinary unauthenticated health/browser requests. No production application crash, HTTP 5xx response, or failed/cancelled recent GitHub workflow was observed during this audit.
 
 ## Release and repository evidence
 
-| Check | Observed result |
-|---|---|
-| Protected `main` | Commit `e63eed9374f26e14d848582ee082c53a87e15db7`; tree `515fd38953d0e79ce2c0352f284ef60d9e6c30d3`. |
-| Expected tree comparison | Exact match. |
-| Recent Quality Gate and API Recovery Browser Check | Successful on protected `main`. |
-| Open pull requests | None at audit time. |
-| Recent failed or cancelled workflow runs | None in the audited window. |
+| Check                                              | Observed result                                                                                     |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Protected `main`                                   | Commit `e63eed9374f26e14d848582ee082c53a87e15db7`; tree `515fd38953d0e79ce2c0352f284ef60d9e6c30d3`. |
+| Expected tree comparison                           | Exact match.                                                                                        |
+| Recent Quality Gate and API Recovery Browser Check | Successful on protected `main`.                                                                     |
+| Open pull requests                                 | None at audit time.                                                                                 |
+| Recent failed or cancelled workflow runs           | None in the audited window.                                                                         |
 
 The repository’s scheduled API-health workflow currently probes the legacy Manus deployment hostname rather than the canonical `https://getphame.app/api/health` endpoint. This is an observability gap: it can report the platform deployment as healthy while missing a canonical-domain routing, certificate, or edge failure. The remediation will repoint the monitor to the canonical endpoint while retaining its minimal incident-state behavior.
 

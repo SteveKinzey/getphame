@@ -12,11 +12,19 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock("nodemailer", () => ({ default: { createTransport: mocks.createTransport } }));
+vi.mock("nodemailer", () => ({
+  default: { createTransport: mocks.createTransport },
+}));
 vi.mock("node:dns/promises", () => ({ lookup: mocks.lookup }));
-vi.mock("./signupRisk", () => ({ assertReviewOutreachAllowed: mocks.assertReviewOutreachAllowed }));
-vi.mock("./outboundDeliveryChannel", () => ({ resolveOutboundDeliveryChannel: mocks.resolveOutboundDeliveryChannel }));
-vi.mock("./adaptiveSendLimits", () => ({ reserveAdaptiveSendCapacity: mocks.reserveAdaptiveSendCapacity }));
+vi.mock("./signupRisk", () => ({
+  assertReviewOutreachAllowed: mocks.assertReviewOutreachAllowed,
+}));
+vi.mock("./outboundDeliveryChannel", () => ({
+  resolveOutboundDeliveryChannel: mocks.resolveOutboundDeliveryChannel,
+}));
+vi.mock("./adaptiveSendLimits", () => ({
+  reserveAdaptiveSendCapacity: mocks.reserveAdaptiveSendCapacity,
+}));
 
 import { encryptPassword, sendMailViaSmtp } from "./smtp";
 
@@ -24,7 +32,8 @@ describe("review outreach sender routing", () => {
   const previousEncryptionKey = process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY;
 
   beforeEach(() => {
-    process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY = "test-smtp-encryption-key-that-is-long-enough";
+    process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY =
+      "test-smtp-encryption-key-that-is-long-enough";
     mocks.assertReviewOutreachAllowed.mockReset();
     mocks.assertReviewOutreachAllowed.mockResolvedValue(undefined);
     mocks.resolveOutboundDeliveryChannel.mockReset();
@@ -36,20 +45,25 @@ describe("review outreach sender routing", () => {
   });
 
   afterEach(() => {
-    if (previousEncryptionKey === undefined) delete process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY;
+    if (previousEncryptionKey === undefined)
+      delete process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY;
     else process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY = previousEncryptionKey;
   });
 
   it("blocks restricted accounts before resolving any sender or attempting a platform fallback", async () => {
-    mocks.assertReviewOutreachAllowed.mockRejectedValue(new Error("Review outreach is temporarily unavailable for this account."));
+    mocks.assertReviewOutreachAllowed.mockRejectedValue(
+      new Error("Review outreach is temporarily unavailable for this account.")
+    );
 
-    await expect(sendMailViaSmtp({
-      userId: 71,
-      to: "customer@example.test",
-      subject: "A review request",
-      html: "<p>Thank you</p>",
-      safetyMode: "review_request",
-    })).rejects.toThrow("Review outreach is temporarily unavailable");
+    await expect(
+      sendMailViaSmtp({
+        userId: 71,
+        to: "customer@example.test",
+        subject: "A review request",
+        html: "<p>Thank you</p>",
+        safetyMode: "review_request",
+      })
+    ).rejects.toThrow("Review outreach is temporarily unavailable");
 
     expect(mocks.resolveOutboundDeliveryChannel).not.toHaveBeenCalled();
     expect(mocks.createTransport).not.toHaveBeenCalled();
@@ -83,28 +97,36 @@ describe("review outreach sender routing", () => {
     });
 
     expect(mocks.assertReviewOutreachAllowed).toHaveBeenCalledWith(72);
-    expect(mocks.createTransport).toHaveBeenCalledWith(expect.objectContaining({
-      host: "93.184.216.34",
-      tls: expect.objectContaining({ servername: "smtp.owner.example" }),
-      auth: { user: "owner@example.test", pass: "owner-mailbox-password" },
-    }));
-    expect(mocks.sendMail).toHaveBeenCalledWith(expect.objectContaining({
-      from: '"Owner Business" <owner@example.test>',
-      replyTo: "owner@example.test",
-      to: "customer@example.test",
-    }));
+    expect(mocks.createTransport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        host: "93.184.216.34",
+        tls: expect.objectContaining({ servername: "smtp.owner.example" }),
+        auth: { user: "owner@example.test", pass: "owner-mailbox-password" },
+      })
+    );
+    expect(mocks.sendMail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        from: '"Owner Business" <owner@example.test>',
+        replyTo: "owner@example.test",
+        to: "customer@example.test",
+      })
+    );
   });
 
   it("fails closed when the user has no active tenant-owned delivery channel", async () => {
     mocks.resolveOutboundDeliveryChannel.mockResolvedValue(null);
 
-    await expect(sendMailViaSmtp({
-      userId: 73,
-      to: "customer@example.test",
-      subject: "A review request",
-      html: "<p>Thank you</p>",
-      safetyMode: "review_request",
-    })).rejects.toThrow("No email account connected. Please connect your email in Settings.");
+    await expect(
+      sendMailViaSmtp({
+        userId: 73,
+        to: "customer@example.test",
+        subject: "A review request",
+        html: "<p>Thank you</p>",
+        safetyMode: "review_request",
+      })
+    ).rejects.toThrow(
+      "No email account connected. Please connect your email in Settings."
+    );
 
     expect(mocks.reserveAdaptiveSendCapacity).not.toHaveBeenCalled();
     expect(mocks.createTransport).not.toHaveBeenCalled();

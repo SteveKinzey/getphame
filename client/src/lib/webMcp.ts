@@ -8,7 +8,10 @@ export type WebMcpToolDefinition = {
 };
 
 export type BrowserModelContext = {
-  registerTool: (tool: WebMcpToolDefinition, options?: { signal?: AbortSignal }) => Promise<void> | void;
+  registerTool: (
+    tool: WebMcpToolDefinition,
+    options?: { signal?: AbortSignal }
+  ) => Promise<void> | void;
 };
 
 declare global {
@@ -36,7 +39,8 @@ export function getPublicProductInformation(): Record<string, unknown> {
     safety: {
       customerData: "Not available through this public browser tool.",
       consequentialActions: "Not available through this public browser tool.",
-      protectedApi: "Requires an account-owner-provisioned, scoped developer API key.",
+      protectedApi:
+        "Requires an account-owner-provisioned, scoped developer API key.",
     },
   };
 }
@@ -47,7 +51,11 @@ export function createPublicDiscoveryTool(): WebMcpToolDefinition {
     title: "Get Phame public product information",
     description:
       "Returns public Get Phame product, developer documentation, authentication, privacy, and security resources. It does not access customer data or perform actions.",
-    inputSchema: { type: "object", additionalProperties: false, properties: {} },
+    inputSchema: {
+      type: "object",
+      additionalProperties: false,
+      properties: {},
+    },
     annotations: { readOnlyHint: true, openWorldHint: false },
     execute: async () => getPublicProductInformation(),
   };
@@ -58,6 +66,9 @@ export function getBrowserModelContext(): BrowserModelContext | undefined {
   return navigator.modelContext ?? document.modelContext;
 }
 
-export function registerPublicDiscoveryTool(context: BrowserModelContext, signal: AbortSignal) {
+export function registerPublicDiscoveryTool(
+  context: BrowserModelContext,
+  signal: AbortSignal
+) {
   return context.registerTool(createPublicDiscoveryTool(), { signal });
 }

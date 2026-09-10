@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import { getBrowserModelContext, registerPublicDiscoveryTool } from "../lib/webMcp";
+import {
+  getBrowserModelContext,
+  registerPublicDiscoveryTool,
+} from "../lib/webMcp";
 
 /**
  * Registers one safe WebMCP tool whenever the browser implements the
@@ -11,7 +14,9 @@ export default function WebMcpPublicDiscovery() {
     if (!context) return;
 
     const controller = new AbortController();
-    void Promise.resolve(registerPublicDiscoveryTool(context, controller.signal)).catch(() => {
+    void Promise.resolve(
+      registerPublicDiscoveryTool(context, controller.signal)
+    ).catch(() => {
       // Experimental browser support must never affect the customer experience.
     });
 

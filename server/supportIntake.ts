@@ -6,26 +6,54 @@ export const SUPPORT_TOPICS = [
 ] as const;
 export type SupportTopic = (typeof SUPPORT_TOPICS)[number];
 
-export const SUPPORT_SUBMISSION_STATUSES = ["open", "in_progress", "resolved"] as const;
-export type SupportSubmissionStatus = (typeof SUPPORT_SUBMISSION_STATUSES)[number];
+export const SUPPORT_SUBMISSION_STATUSES = [
+  "open",
+  "in_progress",
+  "resolved",
+] as const;
+export type SupportSubmissionStatus =
+  (typeof SUPPORT_SUBMISSION_STATUSES)[number];
 
 export const SUPPORT_PRIORITIES = ["low", "normal", "high", "urgent"] as const;
 export type SupportPriority = (typeof SUPPORT_PRIORITIES)[number];
 
-export const SUPPORT_TICKET_ALERT_TYPES = ["assignment", "escalation", "mention", "sla_breach"] as const;
-export type SupportTicketAlertType = (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
+export const SUPPORT_TICKET_ALERT_TYPES = [
+  "assignment",
+  "escalation",
+  "mention",
+  "sla_breach",
+] as const;
+export type SupportTicketAlertType =
+  (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
 
-export const SUPPORT_QUEUE_ASSIGNEE_SCOPES = ["any", "unassigned", "specific"] as const;
-export type SupportQueueAssigneeScope = (typeof SUPPORT_QUEUE_ASSIGNEE_SCOPES)[number];
+export const SUPPORT_QUEUE_ASSIGNEE_SCOPES = [
+  "any",
+  "unassigned",
+  "specific",
+] as const;
+export type SupportQueueAssigneeScope =
+  (typeof SUPPORT_QUEUE_ASSIGNEE_SCOPES)[number];
 
-export const SUPPORT_QUEUE_SLA_WINDOWS = ["overdue", "next_4_hours", "next_24_hours"] as const;
+export const SUPPORT_QUEUE_SLA_WINDOWS = [
+  "overdue",
+  "next_4_hours",
+  "next_24_hours",
+] as const;
 export type SupportQueueSlaWindow = (typeof SUPPORT_QUEUE_SLA_WINDOWS)[number];
 
-export const SUPPORT_QUEUE_SORTS = ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"] as const;
+export const SUPPORT_QUEUE_SORTS = [
+  "newest",
+  "oldest",
+  "priority",
+  "assignee",
+  "sla_soonest",
+  "due_soonest",
+] as const;
 export type SupportQueueSort = (typeof SUPPORT_QUEUE_SORTS)[number];
 
 export const SUPPORT_QUEUE_VIEW_VISIBILITIES = ["private", "team"] as const;
-export type SupportQueueViewVisibility = (typeof SUPPORT_QUEUE_VIEW_VISIBILITIES)[number];
+export type SupportQueueViewVisibility =
+  (typeof SUPPORT_QUEUE_VIEW_VISIBILITIES)[number];
 
 export const MAX_SUPPORT_SAVED_QUEUE_VIEWS = 20;
 export const MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS = 80;
@@ -49,17 +77,30 @@ export const MAX_SUPPORT_INTERNAL_NOTE_MENTIONS = 12;
 export const MAX_SUPPORT_DUE_DATE_FUTURE_DAYS = 365;
 export const SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS = 5 * 60 * 1000;
 
-export const SUPPORT_ATTACHMENT_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
-export type SupportAttachmentMimeType = (typeof SUPPORT_ATTACHMENT_MIME_TYPES)[number];
+export const SUPPORT_ATTACHMENT_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+] as const;
+export type SupportAttachmentMimeType =
+  (typeof SUPPORT_ATTACHMENT_MIME_TYPES)[number];
 
 export const MAX_SUPPORT_ATTACHMENT_BYTES = 8 * 1024 * 1024;
 
-export function getSupportSlaTargetAt(priority: SupportPriority, startedAt = new Date()): Date {
+export function getSupportSlaTargetAt(
+  priority: SupportPriority,
+  startedAt = new Date()
+): Date {
   return new Date(startedAt.getTime() + SUPPORT_SLA_DURATION_MS[priority]);
 }
 
-export function isSupportEscalation(previous: SupportPriority, next: SupportPriority): boolean {
-  return SUPPORT_PRIORITIES.indexOf(next) > SUPPORT_PRIORITIES.indexOf(previous);
+export function isSupportEscalation(
+  previous: SupportPriority,
+  next: SupportPriority
+): boolean {
+  return (
+    SUPPORT_PRIORITIES.indexOf(next) > SUPPORT_PRIORITIES.indexOf(previous)
+  );
 }
 
 function escapeSupportNoteHtml(value: string): string {
@@ -75,7 +116,10 @@ function renderSupportNoteInline(value: string): string {
   let rendered = escapeSupportNoteHtml(value);
   // Only tags generated after escaping are rendered, so user-provided HTML never becomes executable markup.
   rendered = rendered.replace(/`([^`\n]{1,500})`/g, "<code>$1</code>");
-  rendered = rendered.replace(/\*\*([^*\n]{1,1500})\*\*/g, "<strong>$1</strong>");
+  rendered = rendered.replace(
+    /\*\*([^*\n]{1,1500})\*\*/g,
+    "<strong>$1</strong>"
+  );
   rendered = rendered.replace(/_([^_\n]{1,1500})_/g, "<em>$1</em>");
   rendered = rendered.replace(/~~([^~\n]{1,1500})~~/g, "<s>$1</s>");
   return rendered;
@@ -133,17 +177,36 @@ const attachmentExtensions: Record<SupportAttachmentMimeType, string> = {
   "image/webp": "webp",
 };
 
-export function isValidSupportScreenshot(data: Buffer, mimeType: SupportAttachmentMimeType): boolean {
+export function isValidSupportScreenshot(
+  data: Buffer,
+  mimeType: SupportAttachmentMimeType
+): boolean {
   if (mimeType === "image/jpeg") {
-    return data.length >= 3 && data[0] === 0xff && data[1] === 0xd8 && data[2] === 0xff;
+    return (
+      data.length >= 3 &&
+      data[0] === 0xff &&
+      data[1] === 0xd8 &&
+      data[2] === 0xff
+    );
   }
   if (mimeType === "image/png") {
-    return data.length >= 8 && data.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    return (
+      data.length >= 8 &&
+      data
+        .subarray(0, 8)
+        .equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+    );
   }
-  return data.length >= 12 && data.subarray(0, 4).toString("ascii") === "RIFF" && data.subarray(8, 12).toString("ascii") === "WEBP";
+  return (
+    data.length >= 12 &&
+    data.subarray(0, 4).toString("ascii") === "RIFF" &&
+    data.subarray(8, 12).toString("ascii") === "WEBP"
+  );
 }
 
-export function getSupportAttachmentExtension(mimeType: SupportAttachmentMimeType): string {
+export function getSupportAttachmentExtension(
+  mimeType: SupportAttachmentMimeType
+): string {
   return attachmentExtensions[mimeType];
 }
 

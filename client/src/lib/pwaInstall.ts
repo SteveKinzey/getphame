@@ -37,7 +37,9 @@ export function subscribeToPwaInstall(listener: () => void): () => void {
   return () => listeners.delete(listener);
 }
 
-export function updatePwaInstallSnapshot(next: Partial<PwaInstallSnapshot>): void {
+export function updatePwaInstallSnapshot(
+  next: Partial<PwaInstallSnapshot>
+): void {
   const coordinatedNext = { ...next };
   if (coordinatedNext.upgradeVisible === true) {
     coordinatedNext.installGuideVisible = false;
@@ -50,10 +52,12 @@ export function updatePwaInstallSnapshot(next: Partial<PwaInstallSnapshot>): voi
     coordinatedNext.upgradeVisible = false;
   }
   snapshot = { ...snapshot, ...coordinatedNext };
-  listeners.forEach((listener) => listener());
+  listeners.forEach(listener => listener());
 }
 
-export function registerPwaInstallRequest(handler: () => Promise<void>): () => void {
+export function registerPwaInstallRequest(
+  handler: () => Promise<void>
+): () => void {
   installRequestHandler = handler;
   return () => {
     if (installRequestHandler === handler) installRequestHandler = null;

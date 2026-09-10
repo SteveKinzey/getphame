@@ -1,7 +1,10 @@
 import type { Request, Response } from "express";
 import { sdk } from "./_core/sdk";
 import { runSmtpHealthChecks } from "./smtp";
-import { createSmtpHealthSnapshot, getRecentSmtpSnapshotForTask } from "./systemHealth";
+import {
+  createSmtpHealthSnapshot,
+  getRecentSmtpSnapshotForTask,
+} from "./systemHealth";
 
 const RETRY_DEDUP_WINDOW_MS = 5 * 60 * 1000;
 
@@ -16,7 +19,7 @@ export async function smtpHealthHandler(req: Request, res: Response) {
 
     const duplicate = await getRecentSmtpSnapshotForTask(
       taskUid,
-      Date.now() - RETRY_DEDUP_WINDOW_MS,
+      Date.now() - RETRY_DEDUP_WINDOW_MS
     );
     if (duplicate) {
       return res.json({
@@ -38,7 +41,10 @@ export async function smtpHealthHandler(req: Request, res: Response) {
     return res.json({ ok: summary.failedAccounts === 0, ...summary });
   } catch (error) {
     const errorType = error instanceof Error ? error.name : "UnknownError";
-    console.error("[SmtpHealth] Scheduled callback failed", { errorType, taskUid: taskUid ?? null });
+    console.error("[SmtpHealth] Scheduled callback failed", {
+      errorType,
+      taskUid: taskUid ?? null,
+    });
     return res.status(500).json({
       error: "SMTP health check failed",
       context: { url: req.originalUrl, taskUid: taskUid ?? null },

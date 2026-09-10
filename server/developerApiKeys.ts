@@ -7,7 +7,10 @@ import {
   removeUnapprovedDeveloperSendScope,
 } from "./developerApiEnrollment";
 
-export const DEVELOPER_API_SCOPES = ["contacts:write", "review_requests:send"] as const;
+export const DEVELOPER_API_SCOPES = [
+  "contacts:write",
+  "review_requests:send",
+] as const;
 export type DeveloperApiScope = (typeof DEVELOPER_API_SCOPES)[number];
 
 export type DeveloperApiPrincipal = {
@@ -32,53 +35,85 @@ export function buildDeveloperApiKeyHint(rawKey: string): string {
   return `${rawKey.slice(0, 8)}…${rawKey.slice(-4)}`;
 }
 
-export function parseDeveloperApiScopes(value: string | null | undefined): DeveloperApiScope[] {
+export function parseDeveloperApiScopes(
+  value: string | null | undefined
+): DeveloperApiScope[] {
   if (!value) return [];
   try {
     const parsed = JSON.parse(value);
     if (!Array.isArray(parsed)) return [];
-    return DEVELOPER_API_SCOPES.filter((scope) => parsed.includes(scope));
+    return DEVELOPER_API_SCOPES.filter(scope => parsed.includes(scope));
   } catch {
     return [];
   }
 }
 
-function normalizeScopes(scopes: readonly DeveloperApiScope[]): DeveloperApiScope[] {
-  return DEVELOPER_API_SCOPES.filter((scope) => scopes.includes(scope));
+function normalizeScopes(
+  scopes: readonly DeveloperApiScope[]
+): DeveloperApiScope[] {
+  return DEVELOPER_API_SCOPES.filter(scope => scopes.includes(scope));
 }
 
 function toTimestamp(value: Date | number | string): number {
-  return value instanceof Date ? value.getTime() : typeof value === "number" ? value : Date.parse(value);
+  return value instanceof Date
+    ? value.getTime()
+    : typeof value === "number"
+      ? value
+      : Date.parse(value);
 }
 
 export function getDeveloperApiKeyInactivityExpiresAt(params: {
   createdAt: Date | number | string;
   lastUsedAt: number | null;
 }) {
-  return (params.lastUsedAt ?? toTimestamp(params.createdAt)) + DEVELOPER_API_KEY_INACTIVITY_MS;
+  return (
+    (params.lastUsedAt ?? toTimestamp(params.createdAt)) +
+    DEVELOPER_API_KEY_INACTIVITY_MS
+  );
 }
 
-export function describeDeveloperApiKeyLifecycle(params: {
-  createdAt: Date | number | string;
-  lastUsedAt: number | null;
-  revokedAt: number | null;
-  expiresAt: number | null;
-  suspendedAt?: number | null;
-  suspensionExpiresAt?: number | null;
-  suspensionReason?: string | null;
-}, now = Date.now()) {
+export function describeDeveloperApiKeyLifecycle(
+  params: {
+    createdAt: Date | number | string;
+    lastUsedAt: number | null;
+    revokedAt: number | null;
+    expiresAt: number | null;
+    suspendedAt?: number | null;
+    suspensionExpiresAt?: number | null;
+    suspensionReason?: string | null;
+  },
+  now = Date.now()
+) {
   const inactivityExpiresAt = getDeveloperApiKeyInactivityExpiresAt(params);
   const inactivityRemainingMs = Math.max(0, inactivityExpiresAt - now);
-  const suspensionActive = Boolean(params.suspendedAt && (!params.suspensionExpiresAt || params.suspensionExpiresAt > now));
+  const suspensionActive = Boolean(
+    params.suspendedAt &&
+      (!params.suspensionExpiresAt || params.suspensionExpiresAt > now)
+  );
 
   if (params.revokedAt) {
-    return { status: "revoked" as const, statusReason: "revoked" as const, inactivityExpiresAt, warningLevel: null };
+    return {
+      status: "revoked" as const,
+      statusReason: "revoked" as const,
+      inactivityExpiresAt,
+      warningLevel: null,
+    };
   }
   if (params.expiresAt && params.expiresAt <= now) {
-    return { status: "expired" as const, statusReason: "manual_expiry" as const, inactivityExpiresAt, warningLevel: null };
+    return {
+      status: "expired" as const,
+      statusReason: "manual_expiry" as const,
+      inactivityExpiresAt,
+      warningLevel: null,
+    };
   }
   if (inactivityExpiresAt <= now) {
-    return { status: "expired" as const, statusReason: "inactivity" as const, inactivityExpiresAt, warningLevel: null };
+    return {
+      status: "expired" as const,
+      statusReason: "inactivity" as const,
+      inactivityExpiresAt,
+      warningLevel: null,
+    };
   }
   if (suspensionActive) {
     return {
@@ -93,11 +128,12 @@ export function describeDeveloperApiKeyLifecycle(params: {
     status: "active" as const,
     statusReason: "active" as const,
     inactivityExpiresAt,
-    warningLevel: inactivityRemainingMs <= DEVELOPER_API_KEY_URGENT_WARNING_MS
-      ? "urgent" as const
-      : inactivityRemainingMs <= DEVELOPER_API_KEY_WARNING_MS
-        ? "warning" as const
-        : null,
+    warningLevel:
+      inactivityRemainingMs <= DEVELOPER_API_KEY_URGENT_WARNING_MS
+        ? ("urgent" as const)
+        : inactivityRemainingMs <= DEVELOPER_API_KEY_WARNING_MS
+          ? ("warning" as const)
+          : null,
   };
 }
 
@@ -126,7 +162,7 @@ export async function listDeveloperApiKeys(userId: number) {
     .orderBy(desc(apiKeys.createdAt))
     .limit(50);
 
-  return rows.map((row) => ({
+  return rows.map(row => ({
     ...row,
     scopes: parseDeveloperApiScopes(row.scopes),
     ...describeDeveloperApiKeyLifecycle(row),
@@ -144,7 +180,8 @@ export async function createDeveloperApiKey(params: {
   if (!db) throw new Error("Database unavailable");
 
   const scopes = normalizeScopes(params.scopes);
-  if (scopes.length === 0) throw new Error("At least one API scope is required.");
+  if (scopes.length === 0)
+    throw new Error("At least one API scope is required.");
   await assertDeveloperApiKeyScopesAllowed(params.userId, scopes);
 
   if (!params.rotatedFromId) {
@@ -161,7 +198,9 @@ export async function createDeveloperApiKey(params: {
       })
       .from(apiKeys)
       .where(and(eq(apiKeys.userId, params.userId), isNull(apiKeys.revokedAt)));
-    const activeCount = activeRows.filter((row) => describeDeveloperApiKeyLifecycle(row).status !== "expired").length;
+    const activeCount = activeRows.filter(
+      row => describeDeveloperApiKeyLifecycle(row).status !== "expired"
+    ).length;
     if (activeCount >= MAX_ACTIVE_KEYS) {
       throw new Error(`Maximum ${MAX_ACTIVE_KEYS} active API keys allowed.`);
     }
@@ -191,7 +230,10 @@ export async function createDeveloperApiKey(params: {
   };
 }
 
-export async function revokeDeveloperApiKey(userId: number, keyId: number): Promise<boolean> {
+export async function revokeDeveloperApiKey(
+  userId: number,
+  keyId: number
+): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
   const [row] = await db
@@ -200,7 +242,10 @@ export async function revokeDeveloperApiKey(userId: number, keyId: number): Prom
     .where(and(eq(apiKeys.id, keyId), eq(apiKeys.userId, userId)))
     .limit(1);
   if (!row || row.revokedAt) return false;
-  await db.update(apiKeys).set({ revokedAt: Date.now() }).where(eq(apiKeys.id, row.id));
+  await db
+    .update(apiKeys)
+    .set({ revokedAt: Date.now() })
+    .where(eq(apiKeys.id, row.id));
   return true;
 }
 
@@ -214,13 +259,22 @@ export async function rotateDeveloperApiKey(params: {
   const [current] = await db
     .select()
     .from(apiKeys)
-    .where(and(eq(apiKeys.id, params.keyId), eq(apiKeys.userId, params.userId), isNull(apiKeys.revokedAt)))
+    .where(
+      and(
+        eq(apiKeys.id, params.keyId),
+        eq(apiKeys.userId, params.userId),
+        isNull(apiKeys.revokedAt)
+      )
+    )
     .limit(1);
   if (!current) throw new Error("Active API key not found.");
-  if (current.expiresAt && current.expiresAt <= Date.now()) throw new Error("Expired API keys cannot be rotated.");
+  if (current.expiresAt && current.expiresAt <= Date.now())
+    throw new Error("Expired API keys cannot be rotated.");
   const lifecycle = describeDeveloperApiKeyLifecycle(current);
   if (lifecycle.status === "suspended") {
-    throw new Error("Suspended API keys cannot be rotated until the protection window ends.");
+    throw new Error(
+      "Suspended API keys cannot be rotated until the protection window ends."
+    );
   }
 
   const replacement = await createDeveloperApiKey({
@@ -230,16 +284,25 @@ export async function rotateDeveloperApiKey(params: {
     expiresAt: current.expiresAt,
     rotatedFromId: current.id,
   });
-  await db.update(apiKeys).set({ revokedAt: Date.now() }).where(eq(apiKeys.id, current.id));
+  await db
+    .update(apiKeys)
+    .set({ revokedAt: Date.now() })
+    .where(eq(apiKeys.id, current.id));
   return replacement;
 }
 
 export type DeveloperApiAuthentication =
   | { kind: "ok"; principal: DeveloperApiPrincipal }
-  | { kind: "invalid" | "expired" | "inactive" | "suspended"; retryAfterSeconds?: number };
+  | {
+      kind: "invalid" | "expired" | "inactive" | "suspended";
+      retryAfterSeconds?: number;
+    };
 
-export async function authenticateDeveloperApiKeyWithStatus(rawKey: string): Promise<DeveloperApiAuthentication> {
-  if (!rawKey || rawKey.length < 20 || rawKey.length > 256) return { kind: "invalid" };
+export async function authenticateDeveloperApiKeyWithStatus(
+  rawKey: string
+): Promise<DeveloperApiAuthentication> {
+  if (!rawKey || rawKey.length < 20 || rawKey.length > 256)
+    return { kind: "invalid" };
   const db = await getDb();
   if (!db) return { kind: "invalid" };
   const keyHash = hashDeveloperApiKey(rawKey);
@@ -253,7 +316,9 @@ export async function authenticateDeveloperApiKeyWithStatus(rawKey: string): Pro
   const now = Date.now();
   const lifecycle = describeDeveloperApiKeyLifecycle(row, now);
   if (lifecycle.status === "expired") {
-    return { kind: lifecycle.statusReason === "inactivity" ? "inactive" : "expired" };
+    return {
+      kind: lifecycle.statusReason === "inactivity" ? "inactive" : "expired",
+    };
   }
   if (lifecycle.status === "suspended") {
     return {
@@ -264,23 +329,34 @@ export async function authenticateDeveloperApiKeyWithStatus(rawKey: string): Pro
     };
   }
 
-  const scopes = await removeUnapprovedDeveloperSendScope(row.userId, parseDeveloperApiScopes(row.scopes));
-  return { kind: "ok", principal: {
-    apiKeyId: row.id,
-    userId: row.userId,
-    label: row.label,
-    scopes,
-    expiresAt: row.expiresAt,
-    inactivityExpiresAt: lifecycle.inactivityExpiresAt,
-  } };
+  const scopes = await removeUnapprovedDeveloperSendScope(
+    row.userId,
+    parseDeveloperApiScopes(row.scopes)
+  );
+  return {
+    kind: "ok",
+    principal: {
+      apiKeyId: row.id,
+      userId: row.userId,
+      label: row.label,
+      scopes,
+      expiresAt: row.expiresAt,
+      inactivityExpiresAt: lifecycle.inactivityExpiresAt,
+    },
+  };
 }
 
-export async function authenticateDeveloperApiKey(rawKey: string): Promise<DeveloperApiPrincipal | null> {
+export async function authenticateDeveloperApiKey(
+  rawKey: string
+): Promise<DeveloperApiPrincipal | null> {
   const result = await authenticateDeveloperApiKeyWithStatus(rawKey);
   return result.kind === "ok" ? result.principal : null;
 }
 
-export async function recordDeveloperApiKeySuccessfulUse(principal: DeveloperApiPrincipal, now = Date.now()) {
+export async function recordDeveloperApiKeySuccessfulUse(
+  principal: DeveloperApiPrincipal,
+  now = Date.now()
+) {
   const db = await getDb();
   if (!db) return;
   await db
@@ -311,9 +387,14 @@ export async function suspendDeveloperApiKey(params: {
       suspensionExpiresAt: now + params.durationMs,
       suspensionReason: params.reason.slice(0, 64),
     })
-    .where(and(eq(apiKeys.id, params.principal.apiKeyId), isNull(apiKeys.revokedAt)));
+    .where(
+      and(eq(apiKeys.id, params.principal.apiKeyId), isNull(apiKeys.revokedAt))
+    );
 }
 
-export function developerApiKeyHasScope(principal: DeveloperApiPrincipal, scope: DeveloperApiScope): boolean {
+export function developerApiKeyHasScope(
+  principal: DeveloperApiPrincipal,
+  scope: DeveloperApiScope
+): boolean {
   return principal.scopes.includes(scope);
 }

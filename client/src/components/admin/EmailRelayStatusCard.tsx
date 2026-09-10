@@ -1,9 +1,28 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
-import { Mail, CheckCircle2, AlertTriangle, RefreshCw, ArrowRight, Clock, Bell, BellRing, Activity, FileText, Download } from "lucide-react";
+import {
+  Mail,
+  CheckCircle2,
+  AlertTriangle,
+  RefreshCw,
+  ArrowRight,
+  Clock,
+  Bell,
+  BellRing,
+  Activity,
+  FileText,
+  Download,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   BarChart,
   Bar,
@@ -44,30 +63,40 @@ function downloadCsvFile(csv: string, mimeType: string, filename: string) {
 
 export function EmailRelayStatusCard() {
   const { t } = useTranslation("translation");
-  const [outageExport, setOutageExport] = useState<RelayOutageCsvExport | null>(null);
+  const [outageExport, setOutageExport] = useState<RelayOutageCsvExport | null>(
+    null
+  );
   const [outageExportOpen, setOutageExportOpen] = useState(false);
-  const { data: relayStatus, isLoading, refetch } = trpc.admin.relayHealthStatus.useQuery(undefined, {
+  const {
+    data: relayStatus,
+    isLoading,
+    refetch,
+  } = trpc.admin.relayHealthStatus.useQuery(undefined, {
     refetchInterval: 30_000,
   });
 
   const triggerHeartbeat = trpc.admin.triggerRelayHeartbeat.useMutation({
-    onSuccess: (res) => {
+    onSuccess: res => {
       if (res.status === "healthy") {
         toast.success(t("admin.emailRelay.primaryHealthyToast"));
       } else if (res.status === "failover") {
         toast.warning(t("admin.emailRelay.primaryUnreachableToast"));
       } else {
-        toast.error(t("admin.emailRelay.diagnosticFailureToast", { message: res.status }));
+        toast.error(
+          t("admin.emailRelay.diagnosticFailureToast", { message: res.status })
+        );
       }
       refetch();
     },
-    onError: (err) => {
-      toast.error(t("admin.emailRelay.diagnosticFailureToast", { message: err.message }));
+    onError: err => {
+      toast.error(
+        t("admin.emailRelay.diagnosticFailureToast", { message: err.message })
+      );
     },
   });
 
   const testSlackWebhook = trpc.admin.testRelaySlackWebhook.useMutation({
-    onSuccess: (res) => {
+    onSuccess: res => {
       if (res.slackDelivered) {
         toast.success(t("admin.emailRelay.slackTestSuccess"));
       } else if (res.emailFallbackDelivered) {
@@ -77,39 +106,51 @@ export function EmailRelayStatusCard() {
       }
       refetch();
     },
-    onError: (err) => {
-      toast.error(t("admin.emailRelay.diagnosticFailureToast", { message: err.message }));
+    onError: err => {
+      toast.error(
+        t("admin.emailRelay.diagnosticFailureToast", { message: err.message })
+      );
     },
   });
 
   const prepareOutageExport = trpc.admin.exportRelayOutageCsv.useMutation({
-    onSuccess: (result) => {
+    onSuccess: result => {
       setOutageExport(result);
       setOutageExportOpen(true);
     },
-    onError: (error) => {
-      toast.error(t("admin.emailRelay.exportFailure", { message: error.message }));
+    onError: error => {
+      toast.error(
+        t("admin.emailRelay.exportFailure", { message: error.message })
+      );
     },
   });
 
   const downloadOutageExport = () => {
     if (!outageExport || outageExport.rowCount === 0) return;
-    downloadCsvFile(outageExport.csv, outageExport.mimeType, outageExport.filename);
-    toast.success(t("admin.emailRelay.exportDownloaded", { count: outageExport.rowCount }));
+    downloadCsvFile(
+      outageExport.csv,
+      outageExport.mimeType,
+      outageExport.filename
+    );
+    toast.success(
+      t("admin.emailRelay.exportDownloaded", { count: outageExport.rowCount })
+    );
     setOutageExportOpen(false);
   };
 
   const isHealthy = relayStatus?.lastKnownStatus === "healthy";
-  const isFailover = relayStatus?.lastKnownStatus === "failover" || relayStatus?.activeFailoverIncident;
+  const isFailover =
+    relayStatus?.lastKnownStatus === "failover" ||
+    relayStatus?.activeFailoverIncident;
   const isUnconfigured = relayStatus?.lastKnownStatus === "unconfigured";
 
   const borderColor = isHealthy
     ? "border-emerald-200 bg-emerald-50/50"
     : isFailover
-    ? "border-amber-300 bg-amber-50/60"
-    : isUnconfigured
-    ? "border-red-200 bg-red-50/50"
-    : "border-slate-200 bg-white";
+      ? "border-amber-300 bg-amber-50/60"
+      : isUnconfigured
+        ? "border-red-200 bg-red-50/50"
+        : "border-slate-200 bg-white";
 
   // Prepare chart data for failover outages
   const outageChartData = useMemo(() => {
@@ -121,7 +162,10 @@ export function EmailRelayStatusCard() {
       .reverse()
       .map((item, idx) => ({
         id: item.id,
-        label: new Date(item.startedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        label: new Date(item.startedAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         duration: item.durationMinutes,
         status: item.status,
         cause: item.cause,
@@ -141,8 +185,8 @@ export function EmailRelayStatusCard() {
               isHealthy
                 ? "bg-emerald-600"
                 : isFailover
-                ? "bg-amber-600"
-                : "bg-slate-600"
+                  ? "bg-amber-600"
+                  : "bg-slate-600"
             }`}
           >
             <Mail size={22} />
@@ -154,12 +198,14 @@ export function EmailRelayStatusCard() {
               </p>
               {isHealthy && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
-                  <CheckCircle2 size={12} /> {t("admin.emailRelay.primaryActive")}
+                  <CheckCircle2 size={12} />{" "}
+                  {t("admin.emailRelay.primaryActive")}
                 </span>
               )}
               {isFailover && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-900">
-                  <AlertTriangle size={12} /> {t("admin.emailRelay.failoverActive")}
+                  <AlertTriangle size={12} />{" "}
+                  {t("admin.emailRelay.failoverActive")}
                 </span>
               )}
               <span
@@ -168,10 +214,16 @@ export function EmailRelayStatusCard() {
                     ? "bg-purple-100 text-purple-800"
                     : "bg-slate-100 text-slate-600"
                 }`}
-                title={relayStatus?.slackWebhookConfigured ? t("admin.emailRelay.slackActiveHint") : t("admin.emailRelay.slackStandbyHint")}
+                title={
+                  relayStatus?.slackWebhookConfigured
+                    ? t("admin.emailRelay.slackActiveHint")
+                    : t("admin.emailRelay.slackStandbyHint")
+                }
               >
                 <Bell size={11} />
-                {relayStatus?.slackWebhookConfigured ? t("admin.emailRelay.slackConnected") : t("admin.emailRelay.slackStandby")}
+                {relayStatus?.slackWebhookConfigured
+                  ? t("admin.emailRelay.slackConnected")
+                  : t("admin.emailRelay.slackStandby")}
               </span>
             </div>
             <h2
@@ -185,7 +237,9 @@ export function EmailRelayStatusCard() {
             </p>
             {relayStatus?.alertCooldownMinutes && (
               <p className="mt-1 text-[11px] font-semibold text-slate-500">
-                {t("admin.emailRelay.alertCooldown", { minutes: relayStatus.alertCooldownMinutes })}
+                {t("admin.emailRelay.alertCooldown", {
+                  minutes: relayStatus.alertCooldownMinutes,
+                })}
               </p>
             )}
           </div>
@@ -198,8 +252,13 @@ export function EmailRelayStatusCard() {
             disabled={prepareOutageExport.isPending || isLoading}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95 disabled:opacity-50"
           >
-            <Download size={14} className={prepareOutageExport.isPending ? "animate-pulse" : ""} />
-            {prepareOutageExport.isPending ? t("admin.emailRelay.exportPreparing") : t("admin.emailRelay.exportOutages")}
+            <Download
+              size={14}
+              className={prepareOutageExport.isPending ? "animate-pulse" : ""}
+            />
+            {prepareOutageExport.isPending
+              ? t("admin.emailRelay.exportPreparing")
+              : t("admin.emailRelay.exportOutages")}
           </button>
           <button
             type="button"
@@ -207,8 +266,13 @@ export function EmailRelayStatusCard() {
             disabled={testSlackWebhook.isPending || isLoading}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-2 text-xs font-bold text-purple-800 shadow-sm transition hover:bg-purple-100 active:scale-95 disabled:opacity-50"
           >
-            <BellRing size={14} className={testSlackWebhook.isPending ? "animate-pulse" : ""} />
-            {testSlackWebhook.isPending ? t("admin.emailRelay.slackTesting") : t("admin.emailRelay.slackTest")}
+            <BellRing
+              size={14}
+              className={testSlackWebhook.isPending ? "animate-pulse" : ""}
+            />
+            {testSlackWebhook.isPending
+              ? t("admin.emailRelay.slackTesting")
+              : t("admin.emailRelay.slackTest")}
           </button>
           <button
             type="button"
@@ -216,8 +280,13 @@ export function EmailRelayStatusCard() {
             disabled={triggerHeartbeat.isPending || isLoading}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95 disabled:opacity-50"
           >
-            <RefreshCw size={14} className={triggerHeartbeat.isPending ? "animate-spin" : ""} />
-            {triggerHeartbeat.isPending ? t("admin.emailRelay.testing") : t("admin.emailRelay.check")}
+            <RefreshCw
+              size={14}
+              className={triggerHeartbeat.isPending ? "animate-spin" : ""}
+            />
+            {triggerHeartbeat.isPending
+              ? t("admin.emailRelay.testing")
+              : t("admin.emailRelay.check")}
           </button>
         </div>
       </div>
@@ -242,9 +311,15 @@ export function EmailRelayStatusCard() {
                   }`}
                 />
                 <div>
-                  <p className="text-xs font-bold rr-text-navy">{t("admin.emailRelay.primary")}</p>
+                  <p className="text-xs font-bold rr-text-navy">
+                    {t("admin.emailRelay.primary")}
+                  </p>
                   <p className="text-[11px] font-semibold text-slate-500">
-                    {relayStatus?.primaryHost ? t("admin.emailRelay.host", { host: relayStatus.primaryHost }) : t("admin.emailRelay.notConfigured")}
+                    {relayStatus?.primaryHost
+                      ? t("admin.emailRelay.host", {
+                          host: relayStatus.primaryHost,
+                        })
+                      : t("admin.emailRelay.notConfigured")}
                   </p>
                 </div>
               </div>
@@ -257,7 +332,11 @@ export function EmailRelayStatusCard() {
                     : "bg-slate-100 text-slate-600"
                 }`}
               >
-                {relayStatus?.primaryConfigured ? (isFailover ? t("admin.emailRelay.offline") : t("admin.emailRelay.healthy")) : t("admin.emailRelay.missing")}
+                {relayStatus?.primaryConfigured
+                  ? isFailover
+                    ? t("admin.emailRelay.offline")
+                    : t("admin.emailRelay.healthy")
+                  : t("admin.emailRelay.missing")}
               </span>
             </div>
 
@@ -265,13 +344,19 @@ export function EmailRelayStatusCard() {
               <div className="flex items-center gap-2.5">
                 <span
                   className={`size-2.5 rounded-full ${
-                    relayStatus?.backupConfigured ? "bg-emerald-500" : "bg-slate-300"
+                    relayStatus?.backupConfigured
+                      ? "bg-emerald-500"
+                      : "bg-slate-300"
                   }`}
                 />
                 <div>
-                  <p className="text-xs font-bold rr-text-navy">{t("admin.emailRelay.backup")}</p>
+                  <p className="text-xs font-bold rr-text-navy">
+                    {t("admin.emailRelay.backup")}
+                  </p>
                   <p className="text-[11px] font-semibold text-slate-500">
-                    {relayStatus?.backupConfigured ? t("admin.emailRelay.backupReady") : t("admin.emailRelay.backupMissing")}
+                    {relayStatus?.backupConfigured
+                      ? t("admin.emailRelay.backupReady")
+                      : t("admin.emailRelay.backupMissing")}
                   </p>
                 </div>
               </div>
@@ -284,7 +369,11 @@ export function EmailRelayStatusCard() {
                     : "bg-slate-100 text-slate-500"
                 }`}
               >
-                {relayStatus?.backupConfigured ? (isFailover ? t("admin.emailRelay.servingTraffic") : t("admin.emailRelay.standby")) : t("admin.emailRelay.missing")}
+                {relayStatus?.backupConfigured
+                  ? isFailover
+                    ? t("admin.emailRelay.servingTraffic")
+                    : t("admin.emailRelay.standby")
+                  : t("admin.emailRelay.missing")}
               </span>
             </div>
           </div>
@@ -299,7 +388,9 @@ export function EmailRelayStatusCard() {
                 </p>
               </div>
               <span className="text-[11px] font-medium text-slate-400">
-                {t("admin.emailRelay.incidents", { count: outageChartData.length })}
+                {t("admin.emailRelay.incidents", {
+                  count: outageChartData.length,
+                })}
               </span>
             </div>
 
@@ -312,14 +403,33 @@ export function EmailRelayStatusCard() {
             ) : (
               <div className="mt-3 h-36 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={outageChartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="label" tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} unit="m" />
+                  <BarChart
+                    data={outageChartData}
+                    margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f1f5f9"
+                    />
+                    <XAxis
+                      dataKey="label"
+                      tick={{ fontSize: 10, fill: "#64748b" }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: "#64748b" }}
+                      axisLine={false}
+                      tickLine={false}
+                      unit="m"
+                    />
                     <Tooltip
                       formatter={(value: any, _name: any, item: any) => [
                         `${value} ${t(value === 1 ? "admin.emailRelay.minute" : "admin.emailRelay.minutes")}`,
-                        item?.payload?.status === "ongoing" ? t("admin.emailRelay.durationOngoing") : t("admin.emailRelay.durationResolved"),
+                        item?.payload?.status === "ongoing"
+                          ? t("admin.emailRelay.durationOngoing")
+                          : t("admin.emailRelay.durationResolved"),
                       ]}
                       labelFormatter={(label, items) => {
                         const cause = items?.[0]?.payload?.cause;
@@ -336,7 +446,9 @@ export function EmailRelayStatusCard() {
                       {outageChartData.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
-                          fill={entry.status === "ongoing" ? "#f59e0b" : "#64748b"}
+                          fill={
+                            entry.status === "ongoing" ? "#f59e0b" : "#64748b"
+                          }
                         />
                       ))}
                     </Bar>
@@ -354,29 +466,42 @@ export function EmailRelayStatusCard() {
               </p>
               {relayStatus?.lastCheckedAt && (
                 <span className="flex items-center gap-1 text-[11px] font-medium text-slate-400">
-                  <Clock size={11} /> {t("admin.emailRelay.lastChecked", { time: new Date(relayStatus.lastCheckedAt).toLocaleTimeString() })}
+                  <Clock size={11} />{" "}
+                  {t("admin.emailRelay.lastChecked", {
+                    time: new Date(
+                      relayStatus.lastCheckedAt
+                    ).toLocaleTimeString(),
+                  })}
                 </span>
               )}
             </div>
 
-            {(!relayStatus?.recentEvents || relayStatus.recentEvents.length === 0) ? (
+            {!relayStatus?.recentEvents ||
+            relayStatus.recentEvents.length === 0 ? (
               <p className="mt-2 text-xs font-semibold text-slate-500">
                 {t("admin.emailRelay.noEvents")}
               </p>
             ) : (
               <div className="mt-2 divide-y divide-slate-100">
-                {relayStatus.recentEvents.map((evt) => (
-                  <div key={evt.id} className="flex items-start justify-between py-1.5 text-xs">
+                {relayStatus.recentEvents.map(evt => (
+                  <div
+                    key={evt.id}
+                    className="flex items-start justify-between py-1.5 text-xs"
+                  >
                     <div className="min-w-0 pr-2">
                       <div className="flex items-center gap-1.5 font-bold text-slate-800">
                         <span>{evt.fromProvider.toUpperCase()}</span>
                         <ArrowRight size={12} className="text-slate-400" />
-                        <span className="text-amber-800">{evt.toProvider.toUpperCase()}</span>
+                        <span className="text-amber-800">
+                          {evt.toProvider.toUpperCase()}
+                        </span>
                         <span className="rounded bg-slate-100 px-1.5 py-0.2 text-[10px] text-slate-600">
                           {evt.source}
                         </span>
                       </div>
-                      <p className="truncate text-[11px] text-slate-500">{evt.reason}</p>
+                      <p className="truncate text-[11px] text-slate-500">
+                        {evt.reason}
+                      </p>
                     </div>
                     <span className="shrink-0 text-[11px] text-slate-400">
                       {new Date(evt.timestamp).toLocaleTimeString()}
@@ -402,23 +527,26 @@ export function EmailRelayStatusCard() {
               {t("admin.emailRelay.diagnosticsCaption")}
             </p>
 
-            {(!relayStatus?.recentDiagnostics || relayStatus.recentDiagnostics.length === 0) ? (
+            {!relayStatus?.recentDiagnostics ||
+            relayStatus.recentDiagnostics.length === 0 ? (
               <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-500">
                 {t("admin.emailRelay.diagnosticsEmpty")}
               </p>
             ) : (
               <ol className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-100 bg-white">
-                {relayStatus.recentDiagnostics.map((item) => {
-                  const sourceLabel = item.source === "scheduled_heartbeat"
-                    ? t("admin.emailRelay.sourceScheduled")
-                    : t("admin.emailRelay.sourceManual");
-                  const statusLabel = item.status === "healthy"
-                    ? t("admin.emailRelay.statusHealthy")
-                    : item.status === "failover"
-                      ? t("admin.emailRelay.statusFailover")
-                      : item.status === "degraded"
-                        ? t("admin.emailRelay.statusDegraded")
-                        : t("admin.emailRelay.statusUnconfigured");
+                {relayStatus.recentDiagnostics.map(item => {
+                  const sourceLabel =
+                    item.source === "scheduled_heartbeat"
+                      ? t("admin.emailRelay.sourceScheduled")
+                      : t("admin.emailRelay.sourceManual");
+                  const statusLabel =
+                    item.status === "healthy"
+                      ? t("admin.emailRelay.statusHealthy")
+                      : item.status === "failover"
+                        ? t("admin.emailRelay.statusFailover")
+                        : item.status === "degraded"
+                          ? t("admin.emailRelay.statusDegraded")
+                          : t("admin.emailRelay.statusUnconfigured");
                   const alertLabel = item.slackAlertSent
                     ? t("admin.emailRelay.alertDelivered")
                     : item.emailFallbackDelivered
@@ -427,19 +555,43 @@ export function EmailRelayStatusCard() {
                   return (
                     <li key={item.id} className="p-3 text-xs">
                       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                        <span className="font-bold text-slate-800">{statusLabel}</span>
+                        <span className="font-bold text-slate-800">
+                          {statusLabel}
+                        </span>
                         <time className="text-[11px] font-medium text-slate-400">
                           {new Date(item.checkedAt).toLocaleString()}
                         </time>
                       </div>
                       <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-slate-600 sm:grid-cols-4">
-                        <div><dt className="sr-only">{t("admin.emailRelay.source")}</dt><dd>{sourceLabel}</dd></div>
-                        <div><dt className="sr-only">{t("admin.emailRelay.relay")}</dt><dd>{item.activeRelay.toUpperCase()}</dd></div>
-                        <div><dt className="sr-only">{t("admin.emailRelay.duration")}</dt><dd>{item.durationMs} ms</dd></div>
-                        <div><dt className="sr-only">{t("admin.emailRelay.alertDelivery")}</dt><dd>{alertLabel}</dd></div>
+                        <div>
+                          <dt className="sr-only">
+                            {t("admin.emailRelay.source")}
+                          </dt>
+                          <dd>{sourceLabel}</dd>
+                        </div>
+                        <div>
+                          <dt className="sr-only">
+                            {t("admin.emailRelay.relay")}
+                          </dt>
+                          <dd>{item.activeRelay.toUpperCase()}</dd>
+                        </div>
+                        <div>
+                          <dt className="sr-only">
+                            {t("admin.emailRelay.duration")}
+                          </dt>
+                          <dd>{item.durationMs} ms</dd>
+                        </div>
+                        <div>
+                          <dt className="sr-only">
+                            {t("admin.emailRelay.alertDelivery")}
+                          </dt>
+                          <dd>{alertLabel}</dd>
+                        </div>
                       </dl>
                       <p className="mt-2 break-words rounded-md bg-slate-50 px-2.5 py-2 font-mono text-[11px] leading-5 text-slate-600">
-                        <span className="font-sans font-semibold text-slate-500">{t("admin.emailRelay.sanitizedDiagnostic")}: </span>
+                        <span className="font-sans font-semibold text-slate-500">
+                          {t("admin.emailRelay.sanitizedDiagnostic")}:{" "}
+                        </span>
                         {item.diagnostic}
                       </p>
                     </li>
@@ -454,7 +606,9 @@ export function EmailRelayStatusCard() {
       <Dialog open={outageExportOpen} onOpenChange={setOutageExportOpen}>
         <DialogContent className="max-h-[calc(100vh-2rem)] max-w-3xl overflow-y-auto rounded-2xl border-slate-200 p-5 sm:p-6">
           <DialogHeader>
-            <DialogTitle className="rr-text-navy">{t("admin.emailRelay.exportDialogTitle")}</DialogTitle>
+            <DialogTitle className="rr-text-navy">
+              {t("admin.emailRelay.exportDialogTitle")}
+            </DialogTitle>
             <DialogDescription className="text-sm font-medium rr-text-navy-muted">
               {t("admin.emailRelay.exportDialogDescription")}
             </DialogDescription>
@@ -462,9 +616,17 @@ export function EmailRelayStatusCard() {
 
           {outageExport && (
             <div className="space-y-3">
-              <div role="status" className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-                {t("admin.emailRelay.exportSummary", { count: outageExport.rowCount, total: outageExport.totalMatching })}
-                {outageExport.truncated ? ` ${t("admin.emailRelay.exportTruncated")}` : ""}
+              <div
+                role="status"
+                className="rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600"
+              >
+                {t("admin.emailRelay.exportSummary", {
+                  count: outageExport.rowCount,
+                  total: outageExport.totalMatching,
+                })}
+                {outageExport.truncated
+                  ? ` ${t("admin.emailRelay.exportTruncated")}`
+                  : ""}
               </div>
               {outageExport.rowCount === 0 ? (
                 <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm font-semibold text-slate-600">
@@ -475,19 +637,39 @@ export function EmailRelayStatusCard() {
                   <table className="w-full min-w-[620px] text-left text-xs">
                     <thead className="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-500">
                       <tr>
-                        <th className="px-3 py-2">{t("admin.emailRelay.exportStarted")}</th>
-                        <th className="px-3 py-2">{t("admin.emailRelay.exportStatus")}</th>
-                        <th className="px-3 py-2">{t("admin.emailRelay.exportDuration")}</th>
-                        <th className="px-3 py-2">{t("admin.emailRelay.exportCause")}</th>
+                        <th className="px-3 py-2">
+                          {t("admin.emailRelay.exportStarted")}
+                        </th>
+                        <th className="px-3 py-2">
+                          {t("admin.emailRelay.exportStatus")}
+                        </th>
+                        <th className="px-3 py-2">
+                          {t("admin.emailRelay.exportDuration")}
+                        </th>
+                        <th className="px-3 py-2">
+                          {t("admin.emailRelay.exportCause")}
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 bg-white text-slate-700">
-                      {outageExport.preview.rows.map((row) => (
+                      {outageExport.preview.rows.map(row => (
                         <tr key={row.outageId}>
-                          <td className="whitespace-nowrap px-3 py-2.5">{new Date(row.startedAtUtc).toLocaleString()}</td>
-                          <td className="px-3 py-2.5 font-semibold">{row.status}</td>
-                          <td className="px-3 py-2.5">{row.durationMinutes} {t("admin.emailRelay.minutes")}</td>
-                          <td className="max-w-80 truncate px-3 py-2.5 font-mono text-[11px]" title={row.causeSanitized}>{row.causeSanitized}</td>
+                          <td className="whitespace-nowrap px-3 py-2.5">
+                            {new Date(row.startedAtUtc).toLocaleString()}
+                          </td>
+                          <td className="px-3 py-2.5 font-semibold">
+                            {row.status}
+                          </td>
+                          <td className="px-3 py-2.5">
+                            {row.durationMinutes}{" "}
+                            {t("admin.emailRelay.minutes")}
+                          </td>
+                          <td
+                            className="max-w-80 truncate px-3 py-2.5 font-mono text-[11px]"
+                            title={row.causeSanitized}
+                          >
+                            {row.causeSanitized}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

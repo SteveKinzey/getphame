@@ -10,16 +10,16 @@ The server receives a trimmed query of 3–300 characters and the active support
 
 The model may return only these structured filters:
 
-| Filter | Allowed values |
-| --- | --- |
-| Text | Bounded free text for name, email, phone, notes, tags, or source application |
-| Source | `manual`, `woocommerce`, `stripe`, `koalendar`, `api`, or no restriction |
-| Tag | One bounded tag value or no restriction |
-| Send state | Any, never sent, sent at least once, or not sent within a bounded number of days |
-| Consent state | Any, consent recorded, or consent not recorded |
-| Suppression state | Any, active, or opted out |
-| Created range | Optional valid `YYYY-MM-DD` lower and upper bounds |
-| Sort | Relevance, name, oldest/newest last send, or newest creation |
+| Filter            | Allowed values                                                                   |
+| ----------------- | -------------------------------------------------------------------------------- |
+| Text              | Bounded free text for name, email, phone, notes, tags, or source application     |
+| Source            | `manual`, `woocommerce`, `stripe`, `koalendar`, `api`, or no restriction         |
+| Tag               | One bounded tag value or no restriction                                          |
+| Send state        | Any, never sent, sent at least once, or not sent within a bounded number of days |
+| Consent state     | Any, consent recorded, or consent not recorded                                   |
+| Suppression state | Any, active, or opted out                                                        |
+| Created range     | Optional valid `YYYY-MM-DD` lower and upper bounds                               |
+| Sort              | Relevance, name, oldest/newest last send, or newest creation                     |
 
 The response is validated again with Zod. Invalid or unavailable model output falls back to deterministic text search, never to an unrestricted model-generated database query. The server loads contacts through the existing `listSavedContacts(ctx.user.id)` tenant boundary, applies only allowlisted predicates, caps returned rows at 200, and returns the parsed filters, matched count, total count, truncation state, and safe result records.
 

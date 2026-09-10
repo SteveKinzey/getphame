@@ -14,7 +14,11 @@
 import crypto from "crypto";
 import type { Request, Response } from "express";
 import { getDb } from "./db";
-import { businessProfiles, emailEvents, reviewPlatforms } from "../drizzle/schema";
+import {
+  businessProfiles,
+  emailEvents,
+  reviewPlatforms,
+} from "../drizzle/schema";
 import { and, eq } from "drizzle-orm";
 
 // ── Token helpers ─────────────────────────────────────────────────────────────
@@ -40,26 +44,38 @@ const SAFE_REDIRECT_FALLBACK = "https://getphame.app";
 function getTrackingSecret(): string {
   const secret = process.env.EMAIL_TRACKING_SECRET;
   if (!secret || secret.length < 32) {
-    throw new Error("EMAIL_TRACKING_SECRET must contain at least 32 characters");
+    throw new Error(
+      "EMAIL_TRACKING_SECRET must contain at least 32 characters"
+    );
   }
   return secret;
 }
 
-function signTrackingPayload(payload: string, secret = getTrackingSecret()): string {
-  return crypto.createHmac("sha256", secret).update(payload).digest("base64url");
+function signTrackingPayload(
+  payload: string,
+  secret = getTrackingSecret()
+): string {
+  return crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("base64url");
 }
 
 function timingSafeSignatureEqual(left: string, right: string): boolean {
   const leftBuffer = Buffer.from(left);
   const rightBuffer = Buffer.from(right);
-  return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer);
+  return (
+    leftBuffer.length === rightBuffer.length &&
+    crypto.timingSafeEqual(leftBuffer, rightBuffer)
+  );
 }
 
 function normalizeRedirectDestination(value: string): string | null {
   if (value.length > 2048) return null;
   try {
     const parsed = new URL(value);
-    if (!(["http:", "https:"] as string[]).includes(parsed.protocol)) return null;
+    if (!(["http:", "https:"] as string[]).includes(parsed.protocol))
+      return null;
     if (parsed.username || parsed.password) return null;
     return parsed.toString();
   } catch {
@@ -75,7 +91,7 @@ function encodeVersionTwoToken(
   requestId: number,
   userId: number,
   templateId: number | null,
-  destination?: string,
+  destination?: string
 ): string {
   const payload: TrackingTokenPayload = {
     v: 2,
@@ -84,7 +100,9 @@ function encodeVersionTwoToken(
     templateId,
     ...(destination ? { destinationHash: destinationDigest(destination) } : {}),
   };
-  const payloadSegment = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const payloadSegment = Buffer.from(JSON.stringify(payload)).toString(
+    "base64url"
+  );
   return `${payloadSegment}.${signTrackingPayload(payloadSegment)}`;
 }
 
@@ -97,20 +115,32 @@ export function encodeTrackingToken(
   return encodeVersionTwoToken(requestId, userId, templateId);
 }
 
-function decodeTrackingTokenDetailed(token: string): DecodedTrackingToken | null {
+function decodeTrackingTokenDetailed(
+  token: string
+): DecodedTrackingToken | null {
   try {
     const [payloadSegment, signature, extra] = token.split(".");
     if (payloadSegment && signature && !extra) {
       const expected = signTrackingPayload(payloadSegment);
       if (!timingSafeSignatureEqual(signature, expected)) return null;
-      const payload = JSON.parse(Buffer.from(payloadSegment, "base64url").toString("utf8")) as TrackingTokenPayload;
+      const payload = JSON.parse(
+        Buffer.from(payloadSegment, "base64url").toString("utf8")
+      ) as TrackingTokenPayload;
       if (
         payload.v !== 2 ||
-        !Number.isInteger(payload.requestId) || payload.requestId <= 0 ||
-        !Number.isInteger(payload.userId) || payload.userId <= 0 ||
-        !(payload.templateId === null || Number.isInteger(payload.templateId)) ||
-        !(payload.destinationHash === undefined || typeof payload.destinationHash === "string")
-      ) return null;
+        !Number.isInteger(payload.requestId) ||
+        payload.requestId <= 0 ||
+        !Number.isInteger(payload.userId) ||
+        payload.userId <= 0 ||
+        !(
+          payload.templateId === null || Number.isInteger(payload.templateId)
+        ) ||
+        !(
+          payload.destinationHash === undefined ||
+          typeof payload.destinationHash === "string"
+        )
+      )
+        return null;
       return {
         requestId: payload.requestId,
         userId: payload.userId,
@@ -129,12 +159,22 @@ function decodeTrackingTokenDetailed(token: string): DecodedTrackingToken | null
     const payload = `${requestIdStr}:${userIdStr}:${templateIdStr}`;
     const legacySecret = process.env.JWT_SECRET;
     if (!legacySecret) return null;
-    const expected = crypto.createHmac("sha256", legacySecret).update(payload).digest("hex").slice(0, 16);
+    const expected = crypto
+      .createHmac("sha256", legacySecret)
+      .update(payload)
+      .digest("hex")
+      .slice(0, 16);
     if (!timingSafeSignatureEqual(sig, expected)) return null;
     const requestId = Number.parseInt(requestIdStr, 10);
     const userId = Number.parseInt(userIdStr, 10);
     const templateId = Number.parseInt(templateIdStr, 10) || null;
-    if (!Number.isInteger(requestId) || requestId <= 0 || !Number.isInteger(userId) || userId <= 0) return null;
+    if (
+      !Number.isInteger(requestId) ||
+      requestId <= 0 ||
+      !Number.isInteger(userId) ||
+      userId <= 0
+    )
+      return null;
     return {
       requestId,
       userId,
@@ -160,17 +200,29 @@ export function decodeTrackingToken(
   };
 }
 
-async function isAllowlistedLegacyDestination(userId: number, destination: string): Promise<boolean> {
+async function isAllowlistedLegacyDestination(
+  userId: number,
+  destination: string
+): Promise<boolean> {
   const db = await getDb();
   if (!db) return false;
-  const [platform] = await db.select({ id: reviewPlatforms.id }).from(reviewPlatforms).where(and(
-    eq(reviewPlatforms.userId, userId),
-    eq(reviewPlatforms.url, destination),
-  )).limit(1);
+  const [platform] = await db
+    .select({ id: reviewPlatforms.id })
+    .from(reviewPlatforms)
+    .where(
+      and(
+        eq(reviewPlatforms.userId, userId),
+        eq(reviewPlatforms.url, destination)
+      )
+    )
+    .limit(1);
   if (platform) return true;
 
-  const [profile] = await db.select({ reviewLink: businessProfiles.reviewLink }).from(businessProfiles)
-    .where(eq(businessProfiles.userId, userId)).limit(1);
+  const [profile] = await db
+    .select({ reviewLink: businessProfiles.reviewLink })
+    .from(businessProfiles)
+    .where(eq(businessProfiles.userId, userId))
+    .limit(1);
   return profile?.reviewLink === destination;
 }
 
@@ -201,11 +253,14 @@ async function recordEvent(
       type,
       url: url ?? undefined,
       userAgent: (req.headers["user-agent"] ?? "").slice(0, 512) || undefined,
-      ip: (
-        (req.headers["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim() ??
-        req.socket.remoteAddress ??
-        ""
-      ).slice(0, 64) || undefined,
+      ip:
+        (
+          (req.headers["x-forwarded-for"] as string | undefined)
+            ?.split(",")[0]
+            ?.trim() ??
+          req.socket.remoteAddress ??
+          ""
+        ).slice(0, 64) || undefined,
     });
   } catch (err) {
     // Non-fatal — tracking failures must never break the user experience
@@ -232,11 +287,21 @@ function markOpenNotifySent(userId: number): void {
 // ── Express route handlers ────────────────────────────────────────────────────
 
 /** GET /api/track/open/:token — serve 1×1 GIF and record open event */
-export async function handleOpenPixel(req: Request, res: Response): Promise<void> {
+export async function handleOpenPixel(
+  req: Request,
+  res: Response
+): Promise<void> {
   const decoded = decodeTrackingToken(req.params.token ?? "");
   if (decoded) {
     // Fire-and-forget — do not await so the image is served immediately
-    void recordEvent(decoded.requestId, decoded.userId, decoded.templateId, "open", null, req);
+    void recordEvent(
+      decoded.requestId,
+      decoded.userId,
+      decoded.templateId,
+      "open",
+      null,
+      req
+    );
     // Notify the business owner if they have the open-tracking notification pref enabled,
     // subject to a 30-minute per-user throttle to prevent notification spam.
     void (async () => {
@@ -268,9 +333,15 @@ export async function handleOpenPixel(req: Request, res: Response): Promise<void
 }
 
 /** GET /api/track/click/:token?url=<encoded_destination> — record click and redirect */
-export async function handleClickRedirect(req: Request, res: Response): Promise<void> {
-  const requestedDestination = typeof req.query.url === "string" ? req.query.url : null;
-  const destination = requestedDestination ? normalizeRedirectDestination(requestedDestination) : null;
+export async function handleClickRedirect(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const requestedDestination =
+    typeof req.query.url === "string" ? req.query.url : null;
+  const destination = requestedDestination
+    ? normalizeRedirectDestination(requestedDestination)
+    : null;
   const decoded = decodeTrackingTokenDetailed(req.params.token ?? "");
 
   let isAuthorizedDestination = false;
@@ -278,10 +349,13 @@ export async function handleClickRedirect(req: Request, res: Response): Promise<
     if (decoded.version === 2 && decoded.destinationHash) {
       isAuthorizedDestination = timingSafeSignatureEqual(
         decoded.destinationHash,
-        destinationDigest(destination),
+        destinationDigest(destination)
       );
     } else if (decoded.version === 1) {
-      isAuthorizedDestination = await isAllowlistedLegacyDestination(decoded.userId, destination);
+      isAuthorizedDestination = await isAllowlistedLegacyDestination(
+        decoded.userId,
+        destination
+      );
     }
   }
 
@@ -290,7 +364,14 @@ export async function handleClickRedirect(req: Request, res: Response): Promise<
     return;
   }
 
-  void recordEvent(decoded.requestId, decoded.userId, decoded.templateId, "click", destination, req);
+  void recordEvent(
+    decoded.requestId,
+    decoded.userId,
+    decoded.templateId,
+    "click",
+    destination,
+    req
+  );
   res.redirect(302, destination);
 }
 
@@ -307,12 +388,15 @@ export function wrapClickUrl(
 ): string {
   const destination = normalizeRedirectDestination(reviewUrl);
   const decoded = decodeTrackingTokenDetailed(token);
-  if (!destination || !decoded) throw new Error("Cannot create tracking URL for an invalid destination or token");
+  if (!destination || !decoded)
+    throw new Error(
+      "Cannot create tracking URL for an invalid destination or token"
+    );
   const clickToken = encodeVersionTwoToken(
     decoded.requestId,
     decoded.userId,
     decoded.templateId,
-    destination,
+    destination
   );
   return `${baseUrl}/api/track/click/${clickToken}?url=${encodeURIComponent(destination)}`;
 }

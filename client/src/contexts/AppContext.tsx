@@ -1,7 +1,7 @@
 // Phame — Global App Context
 // Manages business profile, requests, and reminder state across all screens
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from "react";
 import {
   BusinessProfile,
   ReviewRequest,
@@ -12,7 +12,7 @@ import {
   getMonthlyCount,
   getTotalCount,
   getPendingReminders,
-} from '@/lib/storage';
+} from "@/lib/storage";
 
 interface AppContextValue {
   profile: BusinessProfile | null;
@@ -35,23 +35,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setData(loadData());
   }, []);
 
-  const updateProfile = useCallback((profile: BusinessProfile) => {
-    saveProfile(profile);
-    refreshData();
-  }, [refreshData]);
+  const updateProfile = useCallback(
+    (profile: BusinessProfile) => {
+      saveProfile(profile);
+      refreshData();
+    },
+    [refreshData]
+  );
 
-  const addReviewRequest = useCallback((req: ReviewRequest) => {
-    addRequest(req);
-    refreshData();
-  }, [refreshData]);
+  const addReviewRequest = useCallback(
+    (req: ReviewRequest) => {
+      addRequest(req);
+      refreshData();
+    },
+    [refreshData]
+  );
 
-  const markReminderSent = useCallback((id: string) => {
-    updateRequest(id, {
-      status: 'reminded',
-      reminderSentAt: new Date().toISOString(),
-    });
-    refreshData();
-  }, [refreshData]);
+  const markReminderSent = useCallback(
+    (id: string) => {
+      updateRequest(id, {
+        status: "reminded",
+        reminderSentAt: new Date().toISOString(),
+      });
+      refreshData();
+    },
+    [refreshData]
+  );
 
   const profile = data.profile;
   const requests = data.requests;
@@ -80,6 +89,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
 export function useApp() {
   const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useApp must be used within AppProvider');
+  if (!ctx) throw new Error("useApp must be used within AppProvider");
   return ctx;
 }

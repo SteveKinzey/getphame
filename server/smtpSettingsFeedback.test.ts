@@ -2,7 +2,10 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const settingsSource = readFileSync(resolve(process.cwd(), "client/src/pages/Settings.tsx"), "utf8");
+const settingsSource = readFileSync(
+  resolve(process.cwd(), "client/src/pages/Settings.tsx"),
+  "utf8"
+);
 
 describe("SMTP settings connection feedback", () => {
   it("wires candidate credential testing into the actual rendered personal SMTP controls", () => {
@@ -14,7 +17,9 @@ describe("SMTP settings connection feedback", () => {
 
   it("wires the actual App Password tooltip beside Gmail and Workspace credential labels", () => {
     expect(settingsSource).toContain("<SmtpAppPasswordHelpTooltip");
-    expect(settingsSource).toContain('provider={isGmail ? "gmail" : "workspace"}');
+    expect(settingsSource).toContain(
+      'provider={isGmail ? "gmail" : "workspace"}'
+    );
   });
 
   it("provides explicit busy and saved feedback for personal SMTP and bulk-provider submissions", () => {

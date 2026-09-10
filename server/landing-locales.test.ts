@@ -5,15 +5,30 @@ import { describe, expect, it } from "vitest";
 
 const localeRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../client/public/locales",
+  "../client/public/locales"
 );
 
-const authoredLandingLocales = ["en", "th", "zh-TW", "zh-CN", "fr", "es"] as const;
-const supportedLandingLocales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+const authoredLandingLocales = [
+  "en",
+  "th",
+  "zh-TW",
+  "zh-CN",
+  "fr",
+  "es",
+] as const;
+const supportedLandingLocales = [
+  "en",
+  "es",
+  "fr",
+  "it",
+  "th",
+  "zh-CN",
+  "zh-TW",
+] as const;
 
 function readLanding(locale: string): Record<string, unknown> {
   return JSON.parse(
-    fs.readFileSync(path.join(localeRoot, locale, "landing.json"), "utf8"),
+    fs.readFileSync(path.join(localeRoot, locale, "landing.json"), "utf8")
   ) as Record<string, unknown>;
 }
 
@@ -26,7 +41,10 @@ function flattenStrings(value: unknown, prefix = ""): Map<string, string> {
     if (typeof child === "string") {
       result.set(childPath, child);
     } else {
-      for (const [nestedPath, nestedValue] of flattenStrings(child, childPath)) {
+      for (const [nestedPath, nestedValue] of flattenStrings(
+        child,
+        childPath
+      )) {
         result.set(nestedPath, nestedValue);
       }
     }
@@ -71,7 +89,10 @@ describe("landing locale coverage", () => {
       const localized = landingStrings(locale);
 
       for (const key of requiredPurposeKeys) {
-        expect(localized.get(key)?.trim().length, `${locale}:${key}`).toBeGreaterThan(0);
+        expect(
+          localized.get(key)?.trim().length,
+          `${locale}:${key}`
+        ).toBeGreaterThan(0);
       }
     });
   }
@@ -109,7 +130,10 @@ describe("landing locale coverage", () => {
         const value = localized.get(key)?.trim() ?? "";
         expect(value.length, `${locale}:${key}`).toBeGreaterThan(0);
         if (locale !== "en") {
-          expect(value, `${locale}:${key} must not fall back to English`).not.toBe(english.get(key));
+          expect(
+            value,
+            `${locale}:${key} must not fall back to English`
+          ).not.toBe(english.get(key));
         }
       }
     });
@@ -118,11 +142,15 @@ describe("landing locale coverage", () => {
   it("renders every public footer feature link through the landing namespace", () => {
     const footerSource = fs.readFileSync(
       path.resolve(localeRoot, "../../src/components/landing/Footer.tsx"),
-      "utf8",
+      "utf8"
     );
 
     expect(footerSource).toContain('useTranslation("landing")');
-    for (const key of ["reviewRequests", "emailCampaigns", "reputationManagement"] as const) {
+    for (const key of [
+      "reviewRequests",
+      "emailCampaigns",
+      "reputationManagement",
+    ] as const) {
       expect(footerSource).toContain(`t("landing.footer.${key}"`);
     }
     expect(footerSource).not.toMatch(/>\s*Review Requests\s*</);
@@ -131,8 +159,12 @@ describe("landing locale coverage", () => {
   });
 
   it("keeps Italian application translations with a localized purpose disclosure and English fallback for other landing copy", () => {
-    expect(fs.existsSync(path.join(localeRoot, "it", "translation.json"))).toBe(true);
-    expect(fs.existsSync(path.join(localeRoot, "it", "landing.json"))).toBe(true);
+    expect(fs.existsSync(path.join(localeRoot, "it", "translation.json"))).toBe(
+      true
+    );
+    expect(fs.existsSync(path.join(localeRoot, "it", "landing.json"))).toBe(
+      true
+    );
 
     const italian = landingStrings("it");
     for (const key of requiredPurposeKeys) {
@@ -142,7 +174,7 @@ describe("landing locale coverage", () => {
 
     const i18nSource = fs.readFileSync(
       path.resolve(localeRoot, "../../src/lib/i18n.ts"),
-      "utf8",
+      "utf8"
     );
     expect(i18nSource).toContain('fallbackLng: "en"');
   });
@@ -150,20 +182,24 @@ describe("landing locale coverage", () => {
   it("renders the purpose disclosure directly after the public hero", () => {
     const landingPageSource = fs.readFileSync(
       path.resolve(localeRoot, "../../src/pages/LandingPage.tsx"),
-      "utf8",
+      "utf8"
     );
 
     expect(landingPageSource).toContain(
-      'import AppPurpose from "@/components/landing/AppPurpose"',
+      'import AppPurpose from "@/components/landing/AppPurpose"'
     );
     expect(landingPageSource.indexOf("<AppPurpose />")).toBeGreaterThan(
-      landingPageSource.indexOf("<Hero />"),
+      landingPageSource.indexOf("<Hero />")
     );
   });
 
   it("uses the configured landing namespace in every translated landing component", () => {
-    const componentsRoot = path.resolve(localeRoot, "../../src/components/landing");
-    const componentSources = fs.readdirSync(componentsRoot)
+    const componentsRoot = path.resolve(
+      localeRoot,
+      "../../src/components/landing"
+    );
+    const componentSources = fs
+      .readdirSync(componentsRoot)
       .filter(file => file.endsWith(".tsx"))
       .map(file => ({
         file,
@@ -171,11 +207,12 @@ describe("landing locale coverage", () => {
       }));
 
     for (const { file, source } of componentSources) {
-      const explicitNamespaces = [...source.matchAll(/useTranslation\(\s*["']([^"']+)["']\s*\)/g)]
-        .map(match => match[1]);
+      const explicitNamespaces = [
+        ...source.matchAll(/useTranslation\(\s*["']([^"']+)["']\s*\)/g),
+      ].map(match => match[1]);
       expect(
         explicitNamespaces.every(namespace => namespace === "landing"),
-        `${file} requests an unconfigured landing namespace: ${explicitNamespaces.join(", ")}`,
+        `${file} requests an unconfigured landing namespace: ${explicitNamespaces.join(", ")}`
       ).toBe(true);
     }
   });

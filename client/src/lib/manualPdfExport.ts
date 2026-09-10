@@ -1,4 +1,9 @@
-import type { ManualAccess, ManualDocument, ManualRole, ManualSection } from "@/content/manuals/types";
+import type {
+  ManualAccess,
+  ManualDocument,
+  ManualRole,
+  ManualSection,
+} from "@/content/manuals/types";
 import {
   detectTranscriptPdfUnicodeFont,
   fetchPdfFontAsBase64,
@@ -30,30 +35,46 @@ export type ManualPdfOptions = {
 };
 
 function safeSlug(value: string, fallback: string) {
-  return value
-    .normalize("NFKD")
-    .toLocaleLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "") || fallback;
+  return (
+    value
+      .normalize("NFKD")
+      .toLocaleLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || fallback
+  );
 }
 
-export function buildManualPdfFilename(input: { role: ManualRole; locale: string; sectionId?: string }) {
+export function buildManualPdfFilename(input: {
+  role: ManualRole;
+  locale: string;
+  sectionId?: string;
+}) {
   const role = input.role === "admin" ? "admin-manual" : "user-manual";
   const locale = safeSlug(input.locale, "en");
-  const section = input.sectionId ? `-${safeSlug(input.sectionId, "section")}` : "";
+  const section = input.sectionId
+    ? `-${safeSlug(input.sectionId, "section")}`
+    : "";
   return `get-phame-${role}-${locale}${section}.pdf`;
 }
 
-export function getManualPdfSections(manual: ManualDocument, sectionId?: string): ManualSection[] {
+export function getManualPdfSections(
+  manual: ManualDocument,
+  sectionId?: string
+): ManualSection[] {
   if (!sectionId) return manual.sections;
   const section = manual.sections.find(candidate => candidate.id === sectionId);
   if (!section) throw new Error("The selected Manual section is unavailable.");
   return [section];
 }
 
-export async function createManualPdfBlob(manual: ManualDocument, options: ManualPdfOptions) {
+export async function createManualPdfBlob(
+  manual: ManualDocument,
+  options: ManualPdfOptions
+) {
   const sections = getManualPdfSections(manual, options.sectionId);
-  const scopeTitle = options.sectionId ? sections[0].title : options.labels.fullScope;
+  const scopeTitle = options.sectionId
+    ? sections[0].title
+    : options.labels.fullScope;
   const unicodeFont = detectTranscriptPdfUnicodeFont([
     manual.title,
     manual.introduction,
@@ -62,7 +83,12 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
     ...sections.flatMap(section => [
       section.title,
       section.summary,
-      ...section.topics.flatMap(topic => [topic.title, topic.body, ...topic.steps, ...(topic.notes ?? [])]),
+      ...section.topics.flatMap(topic => [
+        topic.title,
+        topic.body,
+        ...topic.steps,
+        ...(topic.notes ?? []),
+      ]),
     ]),
   ]);
   const { jsPDF } = await import("jspdf");
@@ -82,7 +108,10 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
   let cursorY = 52;
 
   const setFont = (weight: "normal" | "bold" = "normal") => {
-    pdf.setFont(unicodeFont?.family ?? "helvetica", unicodeFont ? "normal" : weight);
+    pdf.setFont(
+      unicodeFont?.family ?? "helvetica",
+      unicodeFont ? "normal" : weight
+    );
   };
   const addPage = () => {
     pdf.addPage();
@@ -91,14 +120,17 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
   const ensureSpace = (height: number) => {
     if (cursorY + height > footerY - 12) addPage();
   };
-  const write = (value: string, options?: {
-    size?: number;
-    color?: [number, number, number];
-    weight?: "normal" | "bold";
-    lineHeight?: number;
-    indent?: number;
-    gapAfter?: number;
-  }) => {
+  const write = (
+    value: string,
+    options?: {
+      size?: number;
+      color?: [number, number, number];
+      weight?: "normal" | "bold";
+      lineHeight?: number;
+      indent?: number;
+      gapAfter?: number;
+    }
+  ) => {
     const size = options?.size ?? 10.5;
     const lineHeight = options?.lineHeight ?? 1.35;
     const indent = options?.indent ?? 0;
@@ -107,7 +139,10 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
     pdf.setFontSize(size);
     pdf.setTextColor(...(options?.color ?? [20, 30, 46]));
     const lines = pdf.splitTextToSize(text, contentWidth - indent) as string[];
-    const height = Math.max(size * lineHeight, lines.length * size * lineHeight);
+    const height = Math.max(
+      size * lineHeight,
+      lines.length * size * lineHeight
+    );
     ensureSpace(height + (options?.gapAfter ?? 8));
     pdf.text(lines, margin + indent, cursorY, { lineHeightFactor: lineHeight });
     cursorY += height + (options?.gapAfter ?? 8);
@@ -128,8 +163,14 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
   write(manual.title, { size: 15, weight: "bold", gapAfter: 7 });
   write(manual.introduction, { size: 9.5, color: [70, 82, 101], gapAfter: 14 });
 
-  const generated = new Intl.DateTimeFormat(options.locale, { dateStyle: "long", timeStyle: "short" }).format(options.generatedAt);
-  const updated = new Intl.DateTimeFormat(options.locale, { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${manual.lastUpdated}T00:00:00Z`));
+  const generated = new Intl.DateTimeFormat(options.locale, {
+    dateStyle: "long",
+    timeStyle: "short",
+  }).format(options.generatedAt);
+  const updated = new Intl.DateTimeFormat(options.locale, {
+    dateStyle: "long",
+    timeZone: "UTC",
+  }).format(new Date(`${manual.lastUpdated}T00:00:00Z`));
   const metadataRows = [
     `${options.labels.scope}: ${options.sectionId ? options.labels.sectionScope : options.labels.fullScope} - ${scopeTitle}`,
     `${options.labels.language}: ${options.languageLabel}`,
@@ -137,7 +178,8 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
     `${options.labels.lastUpdated}: ${updated}`,
     `${options.labels.version}: ${manual.version}`,
   ];
-  for (const row of metadataRows) write(row, { size: 8.5, color: [70, 82, 101], gapAfter: 3 });
+  for (const row of metadataRows)
+    write(row, { size: 8.5, color: [70, 82, 101], gapAfter: 3 });
   cursorY += 10;
   pdf.setDrawColor(212, 166, 54);
   pdf.setLineWidth(1.5);
@@ -149,24 +191,68 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
       ensureSpace(88);
       cursorY += 10;
     }
-    write(section.title, { size: 16, weight: "bold", color: [6, 17, 31], gapAfter: 6 });
+    write(section.title, {
+      size: 16,
+      weight: "bold",
+      color: [6, 17, 31],
+      gapAfter: 6,
+    });
     if (section.access === "admin") {
-      write(options.labels.access.admin, { size: 8.5, weight: "bold", color: [47, 65, 105], gapAfter: 6 });
+      write(options.labels.access.admin, {
+        size: 8.5,
+        weight: "bold",
+        color: [47, 65, 105],
+        gapAfter: 6,
+      });
     }
     write(section.summary, { size: 10, color: [70, 82, 101], gapAfter: 17 });
 
     section.topics.forEach((topic, topicIndex) => {
       ensureSpace(92);
-      write(`${topicIndex + 1}. ${topic.title}`, { size: 12.5, weight: "bold", color: [6, 17, 31], gapAfter: 5 });
-      write(options.labels.access[topic.access], { size: 8.5, weight: "bold", color: topic.access === "paid" ? [102, 77, 0] : topic.access === "admin" ? [47, 65, 105] : [21, 94, 63], gapAfter: 7 });
+      write(`${topicIndex + 1}. ${topic.title}`, {
+        size: 12.5,
+        weight: "bold",
+        color: [6, 17, 31],
+        gapAfter: 5,
+      });
+      write(options.labels.access[topic.access], {
+        size: 8.5,
+        weight: "bold",
+        color:
+          topic.access === "paid"
+            ? [102, 77, 0]
+            : topic.access === "admin"
+              ? [47, 65, 105]
+              : [21, 94, 63],
+        gapAfter: 7,
+      });
       write(topic.body, { gapAfter: 8 });
-      write(options.labels.steps, { size: 9, weight: "bold", color: [70, 82, 101], gapAfter: 5 });
-      topic.steps.forEach((step, stepIndex) => write(`${stepIndex + 1}. ${step}`, { indent: 12, gapAfter: 5 }));
+      write(options.labels.steps, {
+        size: 9,
+        weight: "bold",
+        color: [70, 82, 101],
+        gapAfter: 5,
+      });
+      topic.steps.forEach((step, stepIndex) =>
+        write(`${stepIndex + 1}. ${step}`, { indent: 12, gapAfter: 5 })
+      );
       if (topic.notes?.length) {
-        write(options.labels.notes, { size: 9, weight: "bold", color: [102, 77, 0], gapAfter: 4 });
-        topic.notes.forEach(note => write(note, { indent: 12, color: [77, 59, 0], gapAfter: 5 }));
+        write(options.labels.notes, {
+          size: 9,
+          weight: "bold",
+          color: [102, 77, 0],
+          gapAfter: 4,
+        });
+        topic.notes.forEach(note =>
+          write(note, { indent: 12, color: [77, 59, 0], gapAfter: 5 })
+        );
       }
-      if (topic.route) write(`${options.labels.featurePath}: ${topic.route}`, { size: 8.5, color: [70, 82, 101], gapAfter: 13 });
+      if (topic.route)
+        write(`${options.labels.featurePath}: ${topic.route}`, {
+          size: 8.5,
+          color: [70, 82, 101],
+          gapAfter: 13,
+        });
       cursorY += 5;
     });
   });
@@ -178,10 +264,12 @@ export async function createManualPdfBlob(manual: ManualDocument, options: Manua
     pdf.setFontSize(8);
     pdf.setTextColor(110, 120, 135);
     pdf.text(
-      options.labels.page.replace("{{current}}", String(pageNumber)).replace("{{total}}", String(pageCount)),
+      options.labels.page
+        .replace("{{current}}", String(pageNumber))
+        .replace("{{total}}", String(pageCount)),
       pageWidth - margin,
       footerY,
-      { align: "right" },
+      { align: "right" }
     );
   }
 

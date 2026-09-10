@@ -10,6 +10,62 @@ import {
   normalizeDeveloperSendScopeStatus,
 } from "../shared/developerApiEnrollment";
 
+function sourceContractPattern(expected: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&");
+  const hasClosingQuote = (start: number, quote: string) => {
+    for (let index = start + 1; index < expected.length; index += 1) {
+      if (expected[index] === "\\") {
+        index += 1;
+      } else if (expected[index] === quote) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  let pattern = "";
+  let quote: "'" | '"' | "`" | null = null;
+  for (let index = 0; index < expected.length; index += 1) {
+    const character = expected[index];
+    if (quote) {
+      if (character === "\\" && index + 1 < expected.length) {
+        pattern += escape(character + expected[index + 1]);
+        index += 1;
+      } else if (character === quote) {
+        pattern += quote === "`" ? "`" : "[\"']";
+        quote = null;
+      } else {
+        pattern += escape(character);
+      }
+      continue;
+    }
+    if (/\s/.test(character)) {
+      while (index + 1 < expected.length && /\s/.test(expected[index + 1])) {
+        index += 1;
+      }
+      pattern += "\\s*";
+    } else if (
+      (character === "'" || character === '"' || character === "`") &&
+      hasClosingQuote(index, character)
+    ) {
+      pattern += character === "`" ? "`" : "[\"']";
+      quote = character;
+    } else {
+      pattern += escape(character);
+    }
+  }
+  return new RegExp(pattern, "s");
+}
+
+function expectSourceContract(source: string) {
+  return {
+    toContain(expected: string) {
+      expect(source).toMatch(sourceContractPattern(expected));
+    },
+  };
+}
+
 function readProjectFile(relativePath: string) {
   return readFileSync(
     fileURLToPath(new URL(relativePath, import.meta.url)),
@@ -74,19 +130,25 @@ describe("developer API enrollment persistence and authorization", () => {
     const schema = readProjectFile("../drizzle/schema.ts");
     const migration = readProjectFile("../drizzle/0025_old_morgan_stark.sql");
 
-    expect(schema).toContain("export const developerApiEnrollments");
-    expect(schema).toContain('userId: integer("userId").notNull().unique()');
-    expect(schema).toContain('termsVersion: varchar("termsVersion"');
-    expect(schema).toContain(
+    expectSourceContract(schema).toContain(
+      "export const developerApiEnrollments"
+    );
+    expectSourceContract(schema).toContain(
+      'userId: integer("userId").notNull().unique()'
+    );
+    expectSourceContract(schema).toContain(
+      'termsVersion: varchar("termsVersion"'
+    );
+    expectSourceContract(schema).toContain(
       'acceptableUseVersion: varchar("acceptableUseVersion"'
     );
-    expect(schema).toContain(
+    expectSourceContract(schema).toContain(
       'acceptanceFingerprint: varchar("acceptanceFingerprint"'
     );
-    expect(schema).toContain(
+    expectSourceContract(schema).toContain(
       'sendScopeReviewedByUserId: integer("sendScopeReviewedByUserId")'
     );
-    expect(migration).toContain("developer_api_enrollments");
+    expectSourceContract(migration).toContain("developer_api_enrollments");
     expect(migration.toUpperCase()).not.toContain("DROP TABLE");
     expect(migration.toUpperCase()).not.toContain("DROP COLUMN");
   });
@@ -95,18 +157,22 @@ describe("developer API enrollment persistence and authorization", () => {
     const keys = readProjectFile("./developerApiKeys.ts");
     const enrollment = readProjectFile("./developerApiEnrollment.ts");
 
-    expect(keys).toContain(
+    expectSourceContract(keys).toContain(
       "assertDeveloperApiKeyScopesAllowed(params.userId, scopes)"
     );
-    expect(keys).toContain(
-      "removeUnapprovedDeveloperSendScope(row.userId, parseDeveloperApiScopes(row.scopes))"
+    expect(keys).toMatch(
+      /removeUnapprovedDeveloperSendScope\s*\(\s*row\.userId\s*,\s*parseDeveloperApiScopes\s*\(\s*row\.scopes\s*\)\s*\)/s
     );
-    expect(enrollment).toContain('scopes.includes("review_requests:send")');
-    expect(enrollment).toContain(
-      'scopes.filter((scope) => scope !== "review_requests:send")'
+    expectSourceContract(enrollment).toContain(
+      'scopes.includes("review_requests:send")'
     );
-    expect(enrollment).toContain('sendScopeStatus === "approved"');
-    expect(enrollment).toContain(
+    expectSourceContract(enrollment).toContain(
+      'scopes.filter(scope => scope !== "review_requests:send")'
+    );
+    expectSourceContract(enrollment).toContain(
+      'sendScopeStatus === "approved"'
+    );
+    expectSourceContract(enrollment).toContain(
       'riskClass === "standard" ? "approved" : "pending_review"'
     );
   });
@@ -114,19 +180,25 @@ describe("developer API enrollment persistence and authorization", () => {
   it("records privacy-safe acceptance evidence and reserves high-volume decisions for administrators", () => {
     const router = readProjectFile("./routers.ts");
 
-    expect(router).toContain("acceptTerms: protectedProcedure");
-    expect(router).toContain("termsAccepted: z.literal(true)");
-    expect(router).toContain("acceptableUseAccepted: z.literal(true)");
+    expectSourceContract(router).toContain("acceptTerms: protectedProcedure");
+    expectSourceContract(router).toContain("termsAccepted: z.literal(true)");
+    expectSourceContract(router).toContain(
+      "acceptableUseAccepted: z.literal(true)"
+    );
     expect(router).toMatch(
       /fingerprintAuthValue\(\s*`developer-api-enrollment:\$\{clientIp\}:\$\{userAgent\}`\s*\)/
     );
-    expect(router).toContain("reviewSendScope: adminProcedure");
-    expect(router).toContain('status: z.enum(["approved", "denied"])');
-    expect(router).toContain("confirmsExistingCustomersOnly: z.literal(true)");
-    expect(router).toContain(
+    expectSourceContract(router).toContain("reviewSendScope: adminProcedure");
+    expectSourceContract(router).toContain(
+      'status: z.enum(["approved", "denied"])'
+    );
+    expectSourceContract(router).toContain(
+      "confirmsExistingCustomersOnly: z.literal(true)"
+    );
+    expectSourceContract(router).toContain(
       "confirmsNoPurchasedOrScrapedLists: z.literal(true)"
     );
-    expect(router).toContain(
+    expectSourceContract(router).toContain(
       "confirmsIndividualCustomerActions: z.literal(true)"
     );
     expect(router).not.toContain("acceptanceIp:");
@@ -146,19 +218,29 @@ describe("developer API enrollment customer experience", () => {
       "../client/src/components/OnboardingWizard.tsx"
     );
 
-    expect(page).toContain("<DeveloperApiEnrollmentPanel />");
-    expect(page).toContain(
+    expectSourceContract(page).toContain("<DeveloperApiEnrollmentPanel />");
+    expectSourceContract(page).toContain(
       'scope === "review_requests:send" && !enrollmentQuery.data?.sendScopeApproved'
     );
-    expect(page).toContain("!enrollmentQuery.data?.termsAccepted");
-    expect(page).toContain('data-testid="revealed-api-key"');
-    expect(panel).toContain('href="/terms-of-service"');
-    expect(panel).toContain('href="/compliance"');
-    expect(panel).toContain("confirmsNoPurchasedOrScrapedLists: true");
-    expect(panel).toContain("DEVELOPER_SEND_SCOPE_SELF_SERVICE_MAX_MONTHLY");
-    expect(onboarding).toContain("trpc.apiKey.acceptTerms.useMutation");
-    expect(onboarding).toContain("trpc.apiKey.enrollment.useQuery");
-    expect(onboarding).toContain('scopes: ["contacts:write"]');
+    expectSourceContract(page).toContain(
+      "!enrollmentQuery.data?.termsAccepted"
+    );
+    expectSourceContract(page).toContain('data-testid="revealed-api-key"');
+    expectSourceContract(panel).toContain('href="/terms-of-service"');
+    expectSourceContract(panel).toContain('href="/compliance"');
+    expectSourceContract(panel).toContain(
+      "confirmsNoPurchasedOrScrapedLists: true"
+    );
+    expectSourceContract(panel).toContain(
+      "DEVELOPER_SEND_SCOPE_SELF_SERVICE_MAX_MONTHLY"
+    );
+    expectSourceContract(onboarding).toContain(
+      "trpc.apiKey.acceptTerms.useMutation"
+    );
+    expectSourceContract(onboarding).toContain(
+      "trpc.apiKey.enrollment.useQuery"
+    );
+    expectSourceContract(onboarding).toContain('scopes: ["contacts:write"]');
     expect(onboarding).not.toContain('scopes: ["review_requests:send"]');
   });
 

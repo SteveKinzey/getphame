@@ -59,9 +59,15 @@ describe("native disposable-domain enforcement", () => {
     mocks.OAuth2.mockImplementation(function OAuth2Mock() {
       return { getToken: mocks.getToken, setCredentials: mocks.setCredentials };
     });
-    mocks.getToken.mockResolvedValue({ tokens: { access_token: "access-token" } });
+    mocks.getToken.mockResolvedValue({
+      tokens: { access_token: "access-token" },
+    });
     mocks.getUserInfo.mockResolvedValue({
-      data: { id: "google-native-123", email: "member@example.test", name: "Member" },
+      data: {
+        id: "google-native-123",
+        email: "member@example.test",
+        name: "Member",
+      },
     });
     mocks.verifyIdToken.mockResolvedValue({ sub: "apple-native-123" });
     mocks.getUserByOpenId.mockResolvedValue(undefined);

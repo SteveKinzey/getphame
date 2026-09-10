@@ -84,7 +84,14 @@ const requiredSecurityKeys = [
 describe("passkey locale bundles", () => {
   for (const locale of locales) {
     it(`${locale} contains every passkey UI key and position-independent fallback guidance`, () => {
-      const path = join(process.cwd(), "client", "public", "locales", locale, "translation.json");
+      const path = join(
+        process.cwd(),
+        "client",
+        "public",
+        "locales",
+        locale,
+        "translation.json"
+      );
       const bundle = JSON.parse(readFileSync(path, "utf8")) as {
         passkeys?: {
           signIn?: Record<string, unknown>;
@@ -98,20 +105,34 @@ describe("passkey locale bundles", () => {
       expect(bundle.passkeys?.security).toBeDefined();
 
       for (const key of requiredSignInKeys) {
-        expect(bundle.passkeys?.signIn?.[key], `${locale}.passkeys.signIn.${key}`).toEqual(expect.any(String));
+        expect(
+          bundle.passkeys?.signIn?.[key],
+          `${locale}.passkeys.signIn.${key}`
+        ).toEqual(expect.any(String));
       }
 
-      const unavailable = String(bundle.passkeys?.signIn?.unavailable ?? "").toLowerCase();
+      const unavailable = String(
+        bundle.passkeys?.signIn?.unavailable ?? ""
+      ).toLowerCase();
       for (const positionalTerm of positionalUnavailableTerms[locale]) {
-        expect(unavailable, `${locale}.passkeys.signIn.unavailable`).not.toContain(positionalTerm);
+        expect(
+          unavailable,
+          `${locale}.passkeys.signIn.unavailable`
+        ).not.toContain(positionalTerm);
       }
 
       for (const key of requiredEnrollmentKeys) {
-        expect(bundle.passkeys?.enrollment?.[key], `${locale}.passkeys.enrollment.${key}`).toEqual(expect.any(String));
+        expect(
+          bundle.passkeys?.enrollment?.[key],
+          `${locale}.passkeys.enrollment.${key}`
+        ).toEqual(expect.any(String));
       }
 
       for (const key of requiredSecurityKeys) {
-        expect(bundle.passkeys?.security?.[key], `${locale}.passkeys.security.${key}`).toEqual(expect.any(String));
+        expect(
+          bundle.passkeys?.security?.[key],
+          `${locale}.passkeys.security.${key}`
+        ).toEqual(expect.any(String));
       }
     });
   }

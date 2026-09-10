@@ -37,15 +37,26 @@ describe("production route audit boundaries", () => {
 
   it("defers browser-backed audits unless a Chromium-capable runtime explicitly enables them", () => {
     expect(isProductionRouteAuditEnabled({})).toBe(false);
-    expect(isProductionRouteAuditEnabled({ ROUTE_AUDIT_ENABLED: "true" })).toBe(true);
-    expect(new RouteAuditError(ROUTE_AUDIT_DEFERRED_CODE).code).toBe("route_audit_deferred");
+    expect(isProductionRouteAuditEnabled({ ROUTE_AUDIT_ENABLED: "true" })).toBe(
+      true
+    );
+    expect(new RouteAuditError(ROUTE_AUDIT_DEFERRED_CODE).code).toBe(
+      "route_audit_deferred"
+    );
   });
 
   it("retries transient browser console and page errors before persisting a route failure", () => {
-    const source = readFileSync(resolve(import.meta.dirname, "routeAudit.ts"), "utf8");
-    expect(source).toContain("for (let attempt = 1; attempt <= 3; attempt += 1)");
+    const source = readFileSync(
+      resolve(import.meta.dirname, "routeAudit.ts"),
+      "utf8"
+    );
+    expect(source).toContain(
+      "for (let attempt = 1; attempt <= 3; attempt += 1)"
+    );
     expect(source).toContain("consoleErrorCount = 0;");
-    expect(source).toContain("if (consoleErrorCount === 0 && pageErrorCount === 0) break;");
+    expect(source).toContain(
+      "if (consoleErrorCount === 0 && pageErrorCount === 0) break;"
+    );
   });
 
   it("keeps the standalone audit diagnostic runnable with one Chromium import and same-origin HTTP failure capture", () => {
@@ -55,6 +66,8 @@ describe("production route audit boundaries", () => {
     );
     expect(script.match(/import \{ chromium \}/g)).toHaveLength(1);
     expect(script).toContain("const failedResponses = [];");
-    expect(script).toContain("new URL(response.url()).origin === new URL(url).origin");
+    expect(script).toContain(
+      "new URL(response.url()).origin === new URL(url).origin"
+    );
   });
 });

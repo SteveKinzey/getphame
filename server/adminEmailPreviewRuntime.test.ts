@@ -2,6 +2,62 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+function sourceContractPattern(expected: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&");
+  const hasClosingQuote = (start: number, quote: string) => {
+    for (let index = start + 1; index < expected.length; index += 1) {
+      if (expected[index] === "\\") {
+        index += 1;
+      } else if (expected[index] === quote) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  let pattern = "";
+  let quote: "'" | '"' | "`" | null = null;
+  for (let index = 0; index < expected.length; index += 1) {
+    const character = expected[index];
+    if (quote) {
+      if (character === "\\" && index + 1 < expected.length) {
+        pattern += escape(character + expected[index + 1]);
+        index += 1;
+      } else if (character === quote) {
+        pattern += quote === "`" ? "`" : "[\"']";
+        quote = null;
+      } else {
+        pattern += escape(character);
+      }
+      continue;
+    }
+    if (/\s/.test(character)) {
+      while (index + 1 < expected.length && /\s/.test(expected[index + 1])) {
+        index += 1;
+      }
+      pattern += "\\s*";
+    } else if (
+      (character === "'" || character === '"' || character === "`") &&
+      hasClosingQuote(index, character)
+    ) {
+      pattern += character === "`" ? "`" : "[\"']";
+      quote = character;
+    } else {
+      pattern += escape(character);
+    }
+  }
+  return new RegExp(pattern, "s");
+}
+
+function expectSourceContract(source: string) {
+  return {
+    toContain(expected: string) {
+      expect(source).toMatch(sourceContractPattern(expected));
+    },
+  };
+}
+
 describe("admin email preview runtime contract", () => {
   it("imports every React hook used by the signed-in preview page", () => {
     const source = readFileSync(
@@ -9,14 +65,26 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(source).toMatch(/import\s*\{[^}]*useState[^}]*\}\s*from\s*["']react["']/s);
-    expect(source).toMatch(/import\s*\{[^}]*useEffect[^}]*\}\s*from\s*["']react["']/s);
-    expect(source).toMatch(/import\s*\{[^}]*useCallback[^}]*\}\s*from\s*["']react["']/s);
-    expect(source).toContain("trpc.admin.emailPreview.useQuery");
-    expect(source).toContain("trpc.admin.sendTestEmail.useMutation");
-    expect(source).toContain("function getInitialTemplate");
-    expect(source).toContain('new URLSearchParams(window.location.search).get("template")');
-    expect(source).toContain("TEMPLATES.some(template => template.value === requested)");
+    expect(source).toMatch(
+      /import\s*\{[^}]*useState[^}]*\}\s*from\s*["']react["']/s
+    );
+    expect(source).toMatch(
+      /import\s*\{[^}]*useEffect[^}]*\}\s*from\s*["']react["']/s
+    );
+    expect(source).toMatch(
+      /import\s*\{[^}]*useCallback[^}]*\}\s*from\s*["']react["']/s
+    );
+    expectSourceContract(source).toContain("trpc.admin.emailPreview.useQuery");
+    expectSourceContract(source).toContain(
+      "trpc.admin.sendTestEmail.useMutation"
+    );
+    expectSourceContract(source).toContain("function getInitialTemplate");
+    expectSourceContract(source).toContain(
+      'new URLSearchParams(window.location.search).get("template")'
+    );
+    expectSourceContract(source).toContain(
+      "TEMPLATES.some(template => template.value === requested)"
+    );
   });
 
   it("provides a public read-only preview while keeping email delivery administrative", () => {
@@ -34,14 +102,26 @@ describe("admin email preview runtime contract", () => {
       appSource.indexOf("// ── Authenticated app shell")
     );
 
-    expect(authUrlSource).toContain("returnTo=");
-    expect(unauthenticatedRoute).toContain('path === "/admin/email-preview"');
-    expect(unauthenticatedRoute).toContain("<AdminEmailPreviewPage readOnly />");
+    expectSourceContract(authUrlSource).toContain("returnTo=");
+    expectSourceContract(unauthenticatedRoute).toContain(
+      'path === "/admin/email-preview"'
+    );
+    expectSourceContract(unauthenticatedRoute).toContain(
+      "<AdminEmailPreviewPage readOnly />"
+    );
     expect(unauthenticatedRoute).not.toContain("<AuthRequiredRedirect");
-    expect(appSource).toContain('path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage}');
-    expect(appSource).toContain("const isDevelopmentPreviewBypass");
-    expect(appSource).toContain('import.meta.env.DEV && path === "/admin/email-preview"');
-    expect(appSource).toContain("if (loading && !isDevelopmentPreviewBypass)");
+    expectSourceContract(appSource).toContain(
+      'path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage}'
+    );
+    expectSourceContract(appSource).toContain(
+      "const isDevelopmentPreviewBypass"
+    );
+    expectSourceContract(appSource).toContain(
+      'import.meta.env.DEV && path === "/admin/email-preview"'
+    );
+    expectSourceContract(appSource).toContain(
+      "if (loading && !isDevelopmentPreviewBypass)"
+    );
   });
 
   it("uses a sanitized Shadow DOM surface instead of a policy-sensitive nested document", () => {
@@ -50,11 +130,21 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(previewSource).toContain("function sanitizeEmailPreviewHtml");
-    expect(previewSource).toContain("function EmailPreviewSurface");
-    expect(previewSource).toContain("attachShadow({ mode: \"open\" })");
-    expect(previewSource).toContain("[data-email-preview-content]");
-    expect(previewSource).toContain("Email preview contains no rendered content");
+    expectSourceContract(previewSource).toContain(
+      "function sanitizeEmailPreviewHtml"
+    );
+    expectSourceContract(previewSource).toContain(
+      "function EmailPreviewSurface"
+    );
+    expectSourceContract(previewSource).toContain(
+      'attachShadow({ mode: "open" })'
+    );
+    expectSourceContract(previewSource).toContain(
+      "[data-email-preview-content]"
+    );
+    expectSourceContract(previewSource).toContain(
+      "Email preview contains no rendered content"
+    );
     expect(previewSource).not.toContain("srcDoc={previewHtml");
     expect(previewSource).not.toContain("previewDocumentUrl");
   });
@@ -69,13 +159,19 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(previewSource).toContain("enabled: true");
-    expect(previewSource).toContain("renderedText");
-    expect(previewSource).toContain("const [previewReadyKey");
-    expect(previewSource).toContain("const [previewErrorKey");
-    expect(previewSource).toContain("previewReadyKey === previewKey");
-    expect(previewSource).toContain("previewErrorKey === previewKey");
-    expect(routerSource).toContain("emailPreview: publicProcedure");
+    expectSourceContract(previewSource).toContain("enabled: true");
+    expectSourceContract(previewSource).toContain("renderedText");
+    expectSourceContract(previewSource).toContain("const [previewReadyKey");
+    expectSourceContract(previewSource).toContain("const [previewErrorKey");
+    expectSourceContract(previewSource).toContain(
+      "previewReadyKey === previewKey"
+    );
+    expectSourceContract(previewSource).toContain(
+      "previewErrorKey === previewKey"
+    );
+    expectSourceContract(routerSource).toContain(
+      "emailPreview: publicProcedure"
+    );
   });
 
   it("hides preview editing and test-email delivery controls in the public read-only view", () => {
@@ -88,10 +184,14 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(previewSource).toContain("{ readOnly = false }");
-    expect(previewSource).toContain("!readOnly && (");
-    expect(previewSource).toContain("!readOnly && showVars");
-    expect(routerSource).toContain("sendTestEmail: adminProcedure");
+    expect(previewSource).toMatch(
+      /function\s+AdminEmailPreview\s*\(\s*\{\s*readOnly\s*=\s*false\s*,?\s*\}\s*:\s*\{/s
+    );
+    expectSourceContract(previewSource).toContain("!readOnly && (");
+    expectSourceContract(previewSource).toContain("!readOnly && showVars");
+    expectSourceContract(routerSource).toContain(
+      "sendTestEmail: adminProcedure"
+    );
   });
 
   it("shows an accessible email-shaped loading skeleton and exports resolved HTML safely", () => {
@@ -100,14 +200,18 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(previewSource).toContain("renderPreviewSkeleton");
-    expect(previewSource).toContain('role="status"');
-    expect(previewSource).toContain('aria-live="polite"');
-    expect(previewSource).toContain("handleExportHtml");
-    expect(previewSource).toContain('type: "text/html;charset=utf-8"');
-    expect(previewSource).toContain("get-phame-${templateSlug}-email-preview.html");
-    expect(previewSource).toContain("anchor.download");
-    expect(previewSource).toContain("URL.revokeObjectURL(url)");
+    expectSourceContract(previewSource).toContain("renderPreviewSkeleton");
+    expectSourceContract(previewSource).toContain('role="status"');
+    expectSourceContract(previewSource).toContain('aria-live="polite"');
+    expectSourceContract(previewSource).toContain("handleExportHtml");
+    expectSourceContract(previewSource).toContain(
+      'type: "text/html;charset=utf-8"'
+    );
+    expectSourceContract(previewSource).toContain(
+      "get-phame-${templateSlug}-email-preview.html"
+    );
+    expectSourceContract(previewSource).toContain("anchor.download");
+    expectSourceContract(previewSource).toContain("URL.revokeObjectURL(url)");
   });
 
   it("keeps email body and footer text legible in dark-mode preview rendering", () => {
@@ -116,9 +220,15 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(previewSource).toContain(".email-body,.email-body *{color:#f8fafc!important}");
-    expect(previewSource).toContain(".email-body a{color:#f6d56e!important}");
-    expect(previewSource).toContain(".email-footer,.email-footer *{color:#cbd5e1!important}");
+    expectSourceContract(previewSource).toContain(
+      ".email-body,.email-body *{color:#f8fafc!important}"
+    );
+    expectSourceContract(previewSource).toContain(
+      ".email-body a{color:#f6d56e!important}"
+    );
+    expectSourceContract(previewSource).toContain(
+      ".email-footer,.email-footer *{color:#cbd5e1!important}"
+    );
   });
 
   it("does not nest the branded header row inside a second table row", () => {
@@ -127,9 +237,15 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(routerSource).toContain("${headerHtml}<tr><td class=\"email-body\"");
-    expect(routerSource).not.toContain("<tr>${headerHtml}</tr><tr><td class=\"email-body\"");
-    expect(routerSource).not.toContain("<tr>${headerHtml}</tr><tr><td style=\"padding:40px;\"");
+    expectSourceContract(routerSource).toContain(
+      '${headerHtml}<tr><td class="email-body"'
+    );
+    expect(routerSource).not.toContain(
+      '<tr>${headerHtml}</tr><tr><td class="email-body"'
+    );
+    expect(routerSource).not.toContain(
+      '<tr>${headerHtml}</tr><tr><td style="padding:40px;"'
+    );
   });
 
   it("makes Magic Link previews safe to click without fabricating a live authentication token", () => {
@@ -149,14 +265,14 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(sendTestSource).toContain(
+    expectSourceContract(sendTestSource).toContain(
       "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview"
     );
     expect(sendTestSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
-    expect(templateSource).toContain(
+    expectSourceContract(templateSource).toContain(
       "https://getphame.app/login?returnTo=%2Fadmin%2Femail-preview"
     );
-    expect(templateSource).toContain("Open Get Phame sign-in");
+    expectSourceContract(templateSource).toContain("Open Get Phame sign-in");
     expect(browserPreviewSource).not.toContain("PREVIEW_TOKEN_SAMPLE");
   });
 
@@ -166,10 +282,18 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(routerSource).toContain('from "./adminEmailPreviewTemplates"');
-    expect(routerSource.match(/buildAdminEmailPreviewTemplate\(/g)).toHaveLength(2);
-    expect(routerSource).toContain("const testMessageId = Date.now().toString(36)");
-    expect(routerSource).toContain("[Test Preview ${testMessageId}]");
+    expectSourceContract(routerSource).toContain(
+      'from "./adminEmailPreviewTemplates"'
+    );
+    expect(
+      routerSource.match(/buildAdminEmailPreviewTemplate\(/g)
+    ).toHaveLength(2);
+    expectSourceContract(routerSource).toContain(
+      "const testMessageId = Date.now().toString(36)"
+    );
+    expectSourceContract(routerSource).toContain(
+      "[Test Preview ${testMessageId}]"
+    );
   });
 
   it("keeps an email-preview shortcut in both administrator dashboard access surfaces", () => {
@@ -178,10 +302,12 @@ describe("admin email preview runtime contract", () => {
       "utf8"
     );
 
-    expect(dashboardSource).toContain('path: "/admin/email-preview"');
-    expect(dashboardSource).toContain(
+    expectSourceContract(dashboardSource).toContain(
+      'path: "/admin/email-preview"'
+    );
+    expectSourceContract(dashboardSource).toContain(
       'onClick={() => navigate("/admin/email-preview")}'
     );
-    expect(dashboardSource).toContain("Email Template Preview");
+    expectSourceContract(dashboardSource).toContain("Email Template Preview");
   });
 });

@@ -51,6 +51,7 @@ const response = await invokeLLM({
 ```
 
 Tips
+
 - Always call llm functions from server-side code (e.g., inside tRPC procedures), to avoid exposing your API key.
 - LLM calls deduct from this project's credit balance.
 - All models support streaming, but `invokeLLM()` doesn't expose `stream` — modify the helper to pass `stream: true` and parse the SSE response if you need it. When proxying SSE, listen on `res` close (not `req`) and guard with a `finished` flag, or the upstream gets aborted after the first event.
@@ -114,8 +115,15 @@ import { invokeLLM } from "./server/_core/llm";
 
 const structured = await invokeLLM({
   messages: [
-    { role: "system", content: "You are a helpful assistant designed to output JSON." },
-    { role: "user", content: "Extract the name and age from the following text: \"My name is Alice and I am 30 years old.\"" },
+    {
+      role: "system",
+      content: "You are a helpful assistant designed to output JSON.",
+    },
+    {
+      role: "user",
+      content:
+        'Extract the name and age from the following text: "My name is Alice and I am 30 years old."',
+    },
   ],
   response_format: {
     type: "json_schema",
@@ -138,4 +146,5 @@ const structured = await invokeLLM({
 // The model responds with JSON content matching the schema.
 // Access via `structured.choices[0].message.content` and JSON.parse if needed.
 ```
+
 The helpers mirror the Python SDK semantics but produce JavaScript-first code, keeping credentials inside the server and ensuring every environment has access to the same token.

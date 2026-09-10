@@ -9,16 +9,29 @@ import { registerEmailAuthRoutes } from "./auth-email";
 
 describe("email magic-link route wiring", () => {
   it("is registered and used by every public email-auth screen", () => {
-    const entrypointPath = fileURLToPath(new URL("./_core/index.ts", import.meta.url));
-    const loginPath = fileURLToPath(new URL("../client/src/pages/Login.tsx", import.meta.url));
-    const onboardingPath = fileURLToPath(new URL("../client/src/pages/Onboarding.tsx", import.meta.url));
-    const magicLinkFormPath = fileURLToPath(new URL("../client/src/components/auth/MagicLinkForm.tsx", import.meta.url));
+    const entrypointPath = fileURLToPath(
+      new URL("./_core/index.ts", import.meta.url)
+    );
+    const loginPath = fileURLToPath(
+      new URL("../client/src/pages/Login.tsx", import.meta.url)
+    );
+    const onboardingPath = fileURLToPath(
+      new URL("../client/src/pages/Onboarding.tsx", import.meta.url)
+    );
+    const magicLinkFormPath = fileURLToPath(
+      new URL(
+        "../client/src/components/auth/MagicLinkForm.tsx",
+        import.meta.url
+      )
+    );
     const entrypoint = readFileSync(entrypointPath, "utf8");
     const login = readFileSync(loginPath, "utf8");
     const onboarding = readFileSync(onboardingPath, "utf8");
     const magicLinkForm = readFileSync(magicLinkFormPath, "utf8");
 
-    expect(entrypoint).toContain('import { registerEmailAuthRoutes } from "../auth-email";');
+    expect(entrypoint).toContain(
+      'import { registerEmailAuthRoutes } from "../auth-email";'
+    );
     expect(entrypoint).toContain("registerEmailAuthRoutes(app);");
     expect(login).toContain("<MagicLinkForm");
     expect(onboarding).toContain("<MagicLinkForm");
@@ -37,7 +50,9 @@ describe("email magic-link route wiring", () => {
 
     expect(response.status).toBe(400);
     expect(response.headers["content-type"]).toMatch(/application\/json/);
-    expect(response.body).toEqual({ error: "A valid email address is required." });
+    expect(response.body).toEqual({
+      error: "A valid email address is required.",
+    });
   });
 
   it("keeps the required email-auth columns in the canonical users schema and migration", () => {

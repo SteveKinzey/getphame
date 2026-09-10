@@ -10,6 +10,57 @@ import type {
   ManualRole,
 } from "../client/src/content/manuals/types";
 
+function toFormattedSourcePattern(snippet: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let pattern = "";
+
+  for (let index = 0; index < snippet.length; ) {
+    const character = snippet[index];
+    if (character === '"' || character === "'") {
+      let closingIndex = index + 1;
+      while (closingIndex < snippet.length) {
+        if (
+          snippet[closingIndex] === character &&
+          snippet[closingIndex - 1] !== "\\"
+        )
+          break;
+        closingIndex += 1;
+      }
+      if (closingIndex < snippet.length) {
+        pattern += `["']${escape(snippet.slice(index + 1, closingIndex))}["']`;
+        index = closingIndex + 1;
+        continue;
+      }
+    }
+
+    if (/\s/.test(character)) {
+      while (index < snippet.length && /\s/.test(snippet[index])) index += 1;
+      pattern += "\\s*";
+      continue;
+    }
+
+    pattern += escape(character);
+    if ("().,=:?{}[]<>".includes(character)) pattern += "\\s*";
+    index += 1;
+  }
+
+  return new RegExp(pattern);
+}
+
+function expectFormattedSource(source: string) {
+  return {
+    toContain(snippet: string) {
+      expect(source).toMatch(toFormattedSourcePattern(snippet));
+    },
+    not: {
+      toContain(snippet: string) {
+        expect(source).not.toMatch(toFormattedSourcePattern(snippet));
+      },
+    },
+  };
+}
+
 const SUPPORTED_LOCALES = [
   "en",
   "es",
@@ -394,8 +445,8 @@ describe("role-aware Get Phame manuals", () => {
     const bottomNav = readProjectFile("../client/src/components/BottomNav.tsx");
 
     expect(app.match(/<Route path="\/manual"/g)).toHaveLength(1);
-    expect(app).not.toContain("/user-manual");
-    expect(app).not.toContain("/admin-manual");
+    expectFormattedSource(app).not.toContain("/user-manual");
+    expectFormattedSource(app).not.toContain("/admin-manual");
     expect(app.indexOf("if (!user) {")).toBeLessThan(
       app.indexOf('<Route path="/manual"')
     );
@@ -421,29 +472,33 @@ describe("role-aware Get Phame manuals", () => {
   it("keeps the Manual interface searchable, deep-linkable, responsive, and keyboard accessible", () => {
     const page = readProjectFile("../client/src/pages/Manual.tsx");
 
-    expect(page).toContain(
+    expectFormattedSource(page).toContain(
       'const role: ManualRole = user?.role === "admin" ? "admin" : "user"'
     );
-    expect(page).toContain(
+    expectFormattedSource(page).toContain(
       "getManualDocument(i18n.resolvedLanguage ?? i18n.language, role)"
     );
-    expect(page).toContain('type="search"');
-    expect(page).toContain('aria-live="polite"');
-    expect(page).toContain("href={`#manual-section-${section.id}`}");
-    expect(page).toContain("href={`#manual-topic-${topic.id}`}");
-    expect(page).toContain("id={`manual-section-${section.id}`}");
-    expect(page).toContain("id={`manual-topic-${topic.id}`}");
-    expect(page).toContain("manual.badges.paid");
-    expect(page).toContain("manual.badges.admin");
-    expect(page).toContain("manual.badges.all");
-    expect(page).toContain("manual.noResultsTitle");
-    expect(page).toContain("manual.clearSearch");
-    expect(page).toContain("lg:hidden");
-    expect(page).toContain("hidden lg:block");
-    expect(page).toContain("min-h-11");
-    expect(page).toContain("min-h-12");
-    expect(page).toContain("<ol");
-    expect(page).toContain("<article");
+    expectFormattedSource(page).toContain('type="search"');
+    expectFormattedSource(page).toContain('aria-live="polite"');
+    expectFormattedSource(page).toContain(
+      "href={`#manual-section-${section.id}`}"
+    );
+    expectFormattedSource(page).toContain("href={`#manual-topic-${topic.id}`}");
+    expectFormattedSource(page).toContain(
+      "id={`manual-section-${section.id}`}"
+    );
+    expectFormattedSource(page).toContain("id={`manual-topic-${topic.id}`}");
+    expectFormattedSource(page).toContain("manual.badges.paid");
+    expectFormattedSource(page).toContain("manual.badges.admin");
+    expectFormattedSource(page).toContain("manual.badges.all");
+    expectFormattedSource(page).toContain("manual.noResultsTitle");
+    expectFormattedSource(page).toContain("manual.clearSearch");
+    expectFormattedSource(page).toContain("lg:hidden");
+    expectFormattedSource(page).toContain("hidden lg:block");
+    expectFormattedSource(page).toContain("min-h-11");
+    expectFormattedSource(page).toContain("min-h-12");
+    expectFormattedSource(page).toContain("<ol");
+    expectFormattedSource(page).toContain("<article");
   });
 
   it("ships complete Manual UI labels in catalogs and runtime fallbacks for all seven locales", () => {
@@ -490,10 +545,16 @@ describe("role-aware Get Phame manuals", () => {
     const i18n = readProjectFile("../client/src/lib/i18n.ts");
     const serviceWorker = readProjectFile("../client/public/sw.js");
 
-    expect(i18n).toContain("/locales/{{lng}}/{{ns}}.json?v=phame61");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
+    expectFormattedSource(i18n).toContain(
+      "/locales/{{lng}}/{{ns}}.json?v=phame61"
+    );
+    expectFormattedSource(serviceWorker).toContain(
+      "const CACHE_NAME = 'getphame-v29'"
+    );
     for (const locale of SUPPORTED_LOCALES) {
-      expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);
+      expectFormattedSource(serviceWorker).toContain(
+        `/locales/${locale}/translation.json`
+      );
     }
   });
 });

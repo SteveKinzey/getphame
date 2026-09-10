@@ -1,8 +1,21 @@
 import { Loader2 } from "lucide-react";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type DashboardApiErrorDetails = {
   category: "dashboard-data" | "dashboard-update";
@@ -19,42 +32,69 @@ type DashboardApiErrorFeedbackContextValue = {
   openDetails: (details: DashboardApiErrorDetails) => void;
 };
 
-const DashboardApiErrorFeedbackContext = createContext<DashboardApiErrorFeedbackContextValue | null>(null);
+const DashboardApiErrorFeedbackContext =
+  createContext<DashboardApiErrorFeedbackContextValue | null>(null);
 
-export function DashboardApiErrorFeedbackBoundary({ children }: { children: React.ReactNode }) {
+export function DashboardApiErrorFeedbackBoundary({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { t } = useTranslation();
   const [details, setDetails] = useState<DashboardApiErrorDetails | null>(null);
   const isRecoverable = Boolean(details?.recoverable && details?.onRetry);
 
   return (
-    <DashboardApiErrorFeedbackContext.Provider value={{ openDetails: setDetails }}>
+    <DashboardApiErrorFeedbackContext.Provider
+      value={{ openDetails: setDetails }}
+    >
       {children}
-      <Dialog open={Boolean(details)} onOpenChange={(open) => !open && setDetails(null)}>
-        <DialogContent data-testid="dashboard-api-error-details" className="max-w-md">
+      <Dialog
+        open={Boolean(details)}
+        onOpenChange={open => !open && setDetails(null)}
+      >
+        <DialogContent
+          data-testid="dashboard-api-error-details"
+          className="max-w-md"
+        >
           <DialogHeader>
             <DialogTitle>
-              {t("apiRecovery.details.title", { defaultValue: "Connection details" })}
+              {t("apiRecovery.details.title", {
+                defaultValue: "Connection details",
+              })}
             </DialogTitle>
             <DialogDescription>
               {isRecoverable
                 ? t("apiRecovery.details.recoverableDescription", {
-                    defaultValue: "Get Phame could not refresh the latest dashboard information. No changes were sent, and it is safe to try again.",
+                    defaultValue:
+                      "Get Phame could not refresh the latest dashboard information. No changes were sent, and it is safe to try again.",
                   })
                 : t("apiRecovery.details.updateDescription", {
-                    defaultValue: "Get Phame could not complete the requested update. Your change was not replayed automatically, so you can review it and submit again when ready.",
+                    defaultValue:
+                      "Get Phame could not complete the requested update. Your change was not replayed automatically, so you can review it and submit again when ready.",
                   })}
             </DialogDescription>
           </DialogHeader>
           <div className="rounded-xl border border-border bg-muted/60 p-3 text-sm text-muted-foreground">
             <p className="font-semibold text-foreground">
               {isRecoverable
-                ? t("apiRecovery.details.readLabel", { defaultValue: "Dashboard data refresh" })
-                : t("apiRecovery.details.updateLabel", { defaultValue: "Dashboard update" })}
+                ? t("apiRecovery.details.readLabel", {
+                    defaultValue: "Dashboard data refresh",
+                  })
+                : t("apiRecovery.details.updateLabel", {
+                    defaultValue: "Dashboard update",
+                  })}
             </p>
             <p className="mt-1">
               {isRecoverable
-                ? t("apiRecovery.details.readNextStep", { defaultValue: "Use Try again to refresh only your dashboard data." })
-                : t("apiRecovery.details.updateNextStep", { defaultValue: "Review your information, then submit the update again." })}
+                ? t("apiRecovery.details.readNextStep", {
+                    defaultValue:
+                      "Use Try again to refresh only your dashboard data.",
+                  })
+                : t("apiRecovery.details.updateNextStep", {
+                    defaultValue:
+                      "Review your information, then submit the update again.",
+                  })}
             </p>
           </div>
           {isRecoverable ? (
@@ -80,38 +120,48 @@ export function useDashboardApiErrorToast() {
   const { t } = useTranslation();
   const feedback = useContext(DashboardApiErrorFeedbackContext);
 
-  return useCallback((options: DashboardApiErrorToastOptions = {}) => {
-    toast.error(
-      t("apiRecovery.unavailableTitle", {
-        defaultValue: "We’re reconnecting Get Phame.",
-      }),
-      {
-        description: t("apiRecovery.unavailableDescription", {
-          defaultValue:
-            "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
+  return useCallback(
+    (options: DashboardApiErrorToastOptions = {}) => {
+      toast.error(
+        t("apiRecovery.unavailableTitle", {
+          defaultValue: "We’re reconnecting Get Phame.",
         }),
-        duration: 8_000,
-        action: options.onRetry
-          ? {
-              label: t("apiRecovery.retry", { defaultValue: "Try again" }),
-              onClick: () => {
-                void options.onRetry?.();
-              },
-            }
-          : undefined,
-        cancel: feedback
-          ? {
-              label: t("apiRecovery.viewDetails", { defaultValue: "View details" }),
-              onClick: () => feedback.openDetails(options.details ?? {
-                category: options.onRetry ? "dashboard-data" : "dashboard-update",
-                recoverable: Boolean(options.onRetry),
-                onRetry: options.onRetry,
-              }),
-            }
-          : undefined,
-      }
-    );
-  }, [feedback, t]);
+        {
+          description: t("apiRecovery.unavailableDescription", {
+            defaultValue:
+              "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
+          }),
+          duration: 8_000,
+          action: options.onRetry
+            ? {
+                label: t("apiRecovery.retry", { defaultValue: "Try again" }),
+                onClick: () => {
+                  void options.onRetry?.();
+                },
+              }
+            : undefined,
+          cancel: feedback
+            ? {
+                label: t("apiRecovery.viewDetails", {
+                  defaultValue: "View details",
+                }),
+                onClick: () =>
+                  feedback.openDetails(
+                    options.details ?? {
+                      category: options.onRetry
+                        ? "dashboard-data"
+                        : "dashboard-update",
+                      recoverable: Boolean(options.onRetry),
+                      onRetry: options.onRetry,
+                    }
+                  ),
+              }
+            : undefined,
+        }
+      );
+    },
+    [feedback, t]
+  );
 }
 
 export function useRecoverableDashboardQueryError(
@@ -153,11 +203,14 @@ export function DashboardLoadingState() {
         </div>
         <div>
           <p className="text-base font-black rr-text-navy">
-            {t("dashboard.loading.title", { defaultValue: "Loading your dashboard…" })}
+            {t("dashboard.loading.title", {
+              defaultValue: "Loading your dashboard…",
+            })}
           </p>
           <p className="mt-1 text-sm rr-text-navy-muted">
             {t("dashboard.loading.description", {
-              defaultValue: "Getting your latest review-request activity ready.",
+              defaultValue:
+                "Getting your latest review-request activity ready.",
             })}
           </p>
         </div>
@@ -185,14 +238,20 @@ function DashboardFeedbackPreviewContent() {
         <button
           type="button"
           data-testid="dashboard-feedback-preview-trigger"
-          onClick={() => showApiError({ onRetry: () => setRetryCount(count => count + 1) })}
+          onClick={() =>
+            showApiError({ onRetry: () => setRetryCount(count => count + 1) })
+          }
           className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-md"
         >
           Show recovery message
         </button>
       </div>
       {retryCount > 0 ? (
-        <p data-testid="dashboard-feedback-preview-retried" role="status" className="sr-only">
+        <p
+          data-testid="dashboard-feedback-preview-retried"
+          role="status"
+          className="sr-only"
+        >
           Retry requested
         </p>
       ) : null}
@@ -238,7 +297,11 @@ function DashboardQueryRecoveryPreviewContent() {
         Simulate dashboard update failure
       </button>
       {retryCount > 0 ? (
-        <p data-testid="dashboard-query-recovery-retried" role="status" className="mt-4">
+        <p
+          data-testid="dashboard-query-recovery-retried"
+          role="status"
+          className="mt-4"
+        >
           Safe dashboard reads refreshed
         </p>
       ) : null}

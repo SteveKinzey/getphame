@@ -17,7 +17,12 @@ import { toast } from "sonner";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
-import SettingsPage, { DeleteAccountSection, ProfilePreferencesExportCard, SettingsBulkSenderTestFixture, ThemePreferenceCard } from "./pages/Settings";
+import SettingsPage, {
+  DeleteAccountSection,
+  ProfilePreferencesExportCard,
+  SettingsBulkSenderTestFixture,
+  ThemePreferenceCard,
+} from "./pages/Settings";
 import MagicLinkForm from "./components/auth/MagicLinkForm";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, {
@@ -32,7 +37,10 @@ import {
   DashboardReadinessGate,
   useDashboardReadiness,
 } from "./components/ApiRecoveryExperience";
-import { DashboardFeedbackPreviewHarness, DashboardQueryRecoveryPreviewHarness } from "./components/dashboard/DashboardFeedbackExperience";
+import {
+  DashboardFeedbackPreviewHarness,
+  DashboardQueryRecoveryPreviewHarness,
+} from "./components/dashboard/DashboardFeedbackExperience";
 import {
   ConnectionSavedNotice,
   SmtpAppPasswordHelpTooltip,
@@ -157,7 +165,9 @@ const AdminSecurityAuditReleaseVerificationPage = lazy(
 );
 const AdminEmailPreviewPage = lazy(() => import("./pages/AdminEmailPreview"));
 const AdminAuditLogPage = lazy(() => import("./pages/AdminAuditLog"));
-const AdminAuditRetentionPage = lazy(() => import("./pages/AdminAuditRetention"));
+const AdminAuditRetentionPage = lazy(
+  () => import("./pages/AdminAuditRetention")
+);
 const AuthenticatedAdminEmailPreviewPage = () => <AdminEmailPreviewPage />;
 const AuthenticatedDashboardPage = () => <DashboardPage />;
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
@@ -276,7 +286,9 @@ function AppShell() {
 
     let rememberedReturnPath: string | null = null;
     try {
-      rememberedReturnPath = window.sessionStorage.getItem(authReturnPathStorageKey);
+      rememberedReturnPath = window.sessionStorage.getItem(
+        authReturnPathStorageKey
+      );
       window.sessionStorage.removeItem(authReturnPathStorageKey);
     } catch {
       // The query-string return path remains available when storage is blocked.
@@ -284,9 +296,15 @@ function AppShell() {
 
     const returnPath =
       getSafeReturnPath(window.location.search) ??
-      (rememberedReturnPath && getSafeReturnPath(`?returnTo=${encodeURIComponent(rememberedReturnPath)}`));
+      (rememberedReturnPath &&
+        getSafeReturnPath(
+          `?returnTo=${encodeURIComponent(rememberedReturnPath)}`
+        ));
 
-    if (returnPath && returnPath !== `${window.location.pathname}${window.location.search}`) {
+    if (
+      returnPath &&
+      returnPath !== `${window.location.pathname}${window.location.search}`
+    ) {
       navigate(returnPath, { replace: true });
     }
   }, [loading, navigate, user]);
@@ -507,7 +525,10 @@ function AppShell() {
                 <Switch>
                   <Route path="/" component={HomePage} />
                   <Route path="/send" component={SendRequestPage} />
-                  <Route path="/dashboard" component={AuthenticatedDashboardPage} />
+                  <Route
+                    path="/dashboard"
+                    component={AuthenticatedDashboardPage}
+                  />
                   <Route
                     path="/developer"
                     component={DeveloperIntegrationsPage}
@@ -550,7 +571,10 @@ function AppShell() {
                     path="/admin/auth-diagnostics"
                     component={AdminAuthDiagnosticsPage}
                   />
-                  <Route path="/admin/signup-risk" component={AdminSignupRiskPage} />
+                  <Route
+                    path="/admin/signup-risk"
+                    component={AdminSignupRiskPage}
+                  />
                   <Route path="/admin/churn" component={AdminChurnPage} />
                   <Route path="/admin/revenue" component={AdminRevenuePage} />
                   <Route
@@ -585,9 +609,18 @@ function AppShell() {
                     path="/admin/security-audit-release"
                     component={AdminSecurityAuditReleaseVerificationPage}
                   />
-                  <Route path="/admin/audit-log" component={AdminAuditLogPage} />
-                  <Route path="/admin/audit-retention" component={AdminAuditRetentionPage} />
-                  <Route path="/admin/email-preview" component={AuthenticatedAdminEmailPreviewPage} />
+                  <Route
+                    path="/admin/audit-log"
+                    component={AdminAuditLogPage}
+                  />
+                  <Route
+                    path="/admin/audit-retention"
+                    component={AdminAuditRetentionPage}
+                  />
+                  <Route
+                    path="/admin/email-preview"
+                    component={AuthenticatedAdminEmailPreviewPage}
+                  />
                   <Route path="/compliance" component={CompliancePage} />
                   <Route path="/reviews" component={ClientReviewsPage} />
                   <Route path="/ref/:code" component={ReferralLandingPage} />
@@ -620,17 +653,26 @@ function SmtpConnectionFeedbackTestHarness() {
   const [connecting, setConnecting] = useState(false);
   const [testResult, setTestResult] = useState<{ ok: boolean } | null>(null);
   const [smtpSaved, setSmtpSaved] = useState(false);
-  const translate = (_key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? _key;
+  const translate = (_key: string, options?: { defaultValue?: string }) =>
+    options?.defaultValue ?? _key;
 
   return (
-    <div className="mx-auto max-w-xl space-y-5 p-6" data-testid="smtp-feedback-test-harness">
+    <div
+      className="mx-auto max-w-xl space-y-5 p-6"
+      data-testid="smtp-feedback-test-harness"
+    >
       <div className="flex items-center gap-2">
         <label className="text-sm font-bold">Gmail App Password</label>
         <SmtpAppPasswordHelpTooltip provider="gmail" translate={translate} />
       </div>
       <div className="flex items-center gap-2">
-        <label className="text-sm font-bold">Google Workspace App Password</label>
-        <SmtpAppPasswordHelpTooltip provider="workspace" translate={translate} />
+        <label className="text-sm font-bold">
+          Google Workspace App Password
+        </label>
+        <SmtpAppPasswordHelpTooltip
+          provider="workspace"
+          translate={translate}
+        />
       </div>
       <SmtpCandidateConnectionActions
         result={testResult}
@@ -652,8 +694,14 @@ function SmtpConnectionFeedbackTestHarness() {
           }, 40);
         }}
       />
-      {smtpSaved && <div data-testid="smtp-saved-notice"><ConnectionSavedNotice message="Your email server is connected and ready for customer outreach." /></div>}
-      <div data-testid="bulk-saved-notice"><ConnectionSavedNotice message="Your bulk mail server is connected and ready to use." /></div>
+      {smtpSaved && (
+        <div data-testid="smtp-saved-notice">
+          <ConnectionSavedNotice message="Your email server is connected and ready for customer outreach." />
+        </div>
+      )}
+      <div data-testid="bulk-saved-notice">
+        <ConnectionSavedNotice message="Your bulk mail server is connected and ready to use." />
+      </div>
     </div>
   );
 }
@@ -682,52 +730,157 @@ function FormAutofillTestHarness() {
         : "invalid"
       : "idle";
   const smtpUsernameState = smtpUsernameTouched
-    ? smtpUsername.trim().length > 0 ? "valid" : "invalid"
+    ? smtpUsername.trim().length > 0
+      ? "valid"
+      : "invalid"
     : "idle";
   const smtpPasswordState = smtpPasswordTouched
-    ? smtpPassword.trim().length > 0 ? "valid" : "invalid"
+    ? smtpPassword.trim().length > 0
+      ? "valid"
+      : "invalid"
     : "idle";
 
   return (
-    <main className="min-h-screen bg-[#0F1B2D] px-6 py-10 text-white" data-testid="form-autofill-test-harness">
+    <main
+      className="min-h-screen bg-[#0F1B2D] px-6 py-10 text-white"
+      data-testid="form-autofill-test-harness"
+    >
       <div className="mx-auto max-w-xl space-y-8">
-      <section>
-        <h1 className="mb-3 text-lg font-bold">Login email</h1>
-        <MagicLinkForm idPrefix="autofill-login" />
-      </section>
-      <section aria-labelledby="autofill-smtp-title" className="rounded-2xl bg-white p-6 text-[#0F1B2D]">
-        <h2 id="autofill-smtp-title" className="mb-3 text-lg font-bold">SMTP identity</h2>
-        <label htmlFor="autofill-smtp-email" className="mb-1 block text-sm font-semibold">SMTP email</label>
-        <input
-          id="autofill-smtp-email"
-          name="autofill-smtp-email"
-          type="email"
-          autoComplete="email"
-          value={smtpEmail}
-          onChange={(event) => {
-            setSmtpEmail(event.target.value);
-            setSmtpTouched(true);
-          }}
-          onBlur={() => setSmtpTouched(true)}
-          aria-invalid={smtpState === "invalid"}
-          aria-describedby={smtpState === "idle" ? undefined : "autofill-smtp-feedback"}
-          className="w-full rounded-md border px-3 py-2"
-        />
-        {smtpState !== "idle" && (
-          <p id="autofill-smtp-feedback" data-testid="autofill-smtp-feedback" role="status" aria-live="polite" className="mt-2 text-sm">
-            {smtpState === "valid" ? "Email format looks good." : "Enter a valid email address."}
-          </p>
-        )}
-        <label htmlFor="autofill-smtp-username" className="mb-1 mt-4 block text-sm font-semibold">SMTP username</label>
-        <input id="autofill-smtp-username" name="autofill-smtp-username" autoComplete="username" value={smtpUsername} onChange={(event) => { setSmtpUsername(event.target.value); setSmtpUsernameTouched(true); }} onBlur={() => setSmtpUsernameTouched(true)} aria-invalid={smtpUsernameState === "invalid"} aria-describedby={smtpUsernameState === "idle" ? undefined : "autofill-smtp-username-feedback"} className="w-full rounded-md border px-3 py-2" />
-        {smtpUsernameState !== "idle" && <p id="autofill-smtp-username-feedback" data-testid="autofill-smtp-username-feedback" role="status" aria-live="polite" className="mt-2 text-sm">{smtpUsernameState === "valid" ? "Looks good." : "This field is required."}</p>}
-        <label htmlFor="autofill-smtp-password" className="mb-1 mt-4 block text-sm font-semibold">SMTP password</label>
-        <div className="relative">
-          <input id="autofill-smtp-password" name="autofill-smtp-password" type={showSmtpPassword ? "text" : "password"} autoComplete="current-password" value={smtpPassword} onChange={(event) => { setSmtpPassword(event.target.value); setSmtpPasswordTouched(true); }} onBlur={() => setSmtpPasswordTouched(true)} aria-invalid={smtpPasswordState === "invalid"} aria-describedby={smtpPasswordState === "idle" ? undefined : "autofill-smtp-password-feedback"} className="w-full rounded-md border px-3 py-2 pr-20" />
-          <button type="button" data-testid="autofill-smtp-password-toggle" onClick={() => setShowSmtpPassword((value) => !value)} aria-label={showSmtpPassword ? "Hide password" : "Show password"} aria-pressed={showSmtpPassword} className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-semibold">{showSmtpPassword ? "Hide" : "Show"}</button>
-        </div>
-        {smtpPasswordState !== "idle" && <p id="autofill-smtp-password-feedback" data-testid="autofill-smtp-password-feedback" role="status" aria-live="polite" className="mt-2 text-sm">{smtpPasswordState === "valid" ? "Password entered. Test before saving." : "Password is required."}</p>}
-      </section>
+        <section>
+          <h1 className="mb-3 text-lg font-bold">Login email</h1>
+          <MagicLinkForm idPrefix="autofill-login" />
+        </section>
+        <section
+          aria-labelledby="autofill-smtp-title"
+          className="rounded-2xl bg-white p-6 text-[#0F1B2D]"
+        >
+          <h2 id="autofill-smtp-title" className="mb-3 text-lg font-bold">
+            SMTP identity
+          </h2>
+          <label
+            htmlFor="autofill-smtp-email"
+            className="mb-1 block text-sm font-semibold"
+          >
+            SMTP email
+          </label>
+          <input
+            id="autofill-smtp-email"
+            name="autofill-smtp-email"
+            type="email"
+            autoComplete="email"
+            value={smtpEmail}
+            onChange={event => {
+              setSmtpEmail(event.target.value);
+              setSmtpTouched(true);
+            }}
+            onBlur={() => setSmtpTouched(true)}
+            aria-invalid={smtpState === "invalid"}
+            aria-describedby={
+              smtpState === "idle" ? undefined : "autofill-smtp-feedback"
+            }
+            className="w-full rounded-md border px-3 py-2"
+          />
+          {smtpState !== "idle" && (
+            <p
+              id="autofill-smtp-feedback"
+              data-testid="autofill-smtp-feedback"
+              role="status"
+              aria-live="polite"
+              className="mt-2 text-sm"
+            >
+              {smtpState === "valid"
+                ? "Email format looks good."
+                : "Enter a valid email address."}
+            </p>
+          )}
+          <label
+            htmlFor="autofill-smtp-username"
+            className="mb-1 mt-4 block text-sm font-semibold"
+          >
+            SMTP username
+          </label>
+          <input
+            id="autofill-smtp-username"
+            name="autofill-smtp-username"
+            autoComplete="username"
+            value={smtpUsername}
+            onChange={event => {
+              setSmtpUsername(event.target.value);
+              setSmtpUsernameTouched(true);
+            }}
+            onBlur={() => setSmtpUsernameTouched(true)}
+            aria-invalid={smtpUsernameState === "invalid"}
+            aria-describedby={
+              smtpUsernameState === "idle"
+                ? undefined
+                : "autofill-smtp-username-feedback"
+            }
+            className="w-full rounded-md border px-3 py-2"
+          />
+          {smtpUsernameState !== "idle" && (
+            <p
+              id="autofill-smtp-username-feedback"
+              data-testid="autofill-smtp-username-feedback"
+              role="status"
+              aria-live="polite"
+              className="mt-2 text-sm"
+            >
+              {smtpUsernameState === "valid"
+                ? "Looks good."
+                : "This field is required."}
+            </p>
+          )}
+          <label
+            htmlFor="autofill-smtp-password"
+            className="mb-1 mt-4 block text-sm font-semibold"
+          >
+            SMTP password
+          </label>
+          <div className="relative">
+            <input
+              id="autofill-smtp-password"
+              name="autofill-smtp-password"
+              type={showSmtpPassword ? "text" : "password"}
+              autoComplete="current-password"
+              value={smtpPassword}
+              onChange={event => {
+                setSmtpPassword(event.target.value);
+                setSmtpPasswordTouched(true);
+              }}
+              onBlur={() => setSmtpPasswordTouched(true)}
+              aria-invalid={smtpPasswordState === "invalid"}
+              aria-describedby={
+                smtpPasswordState === "idle"
+                  ? undefined
+                  : "autofill-smtp-password-feedback"
+              }
+              className="w-full rounded-md border px-3 py-2 pr-20"
+            />
+            <button
+              type="button"
+              data-testid="autofill-smtp-password-toggle"
+              onClick={() => setShowSmtpPassword(value => !value)}
+              aria-label={showSmtpPassword ? "Hide password" : "Show password"}
+              aria-pressed={showSmtpPassword}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-sm font-semibold"
+            >
+              {showSmtpPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+          {smtpPasswordState !== "idle" && (
+            <p
+              id="autofill-smtp-password-feedback"
+              data-testid="autofill-smtp-password-feedback"
+              role="status"
+              aria-live="polite"
+              className="mt-2 text-sm"
+            >
+              {smtpPasswordState === "valid"
+                ? "Password entered. Test before saving."
+                : "Password is required."}
+            </p>
+          )}
+        </section>
       </div>
     </main>
   );
@@ -748,7 +901,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-feedback") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/dashboard-feedback"
+  ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -759,7 +915,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-query-recovery") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/dashboard-query-recovery"
+  ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -770,7 +929,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/settings-theme-preference") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/settings-theme-preference"
+  ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -789,7 +951,8 @@ function App() {
     (window.location.pathname === "/__test/settings-data-export" ||
       window.location.pathname === "/__test/settings-data-export-history-error")
   ) {
-    const historyError = window.location.pathname === "/__test/settings-data-export-history-error";
+    const historyError =
+      window.location.pathname === "/__test/settings-data-export-history-error";
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -807,10 +970,21 @@ function App() {
                   physicalAddress: "1 Preview Lane",
                 }}
                 testOverride={{
-                  account: { name: "Preview Owner", email: "owner@example.test" },
+                  account: {
+                    name: "Preview Owner",
+                    email: "owner@example.test",
+                  },
                   history: [
-                    { id: 801, format: "json", exportedAt: Date.UTC(2026, 7, 12, 12) },
-                    { id: 802, format: "csv", exportedAt: Date.UTC(2026, 8, 14, 12) },
+                    {
+                      id: 801,
+                      format: "json",
+                      exportedAt: Date.UTC(2026, 7, 12, 12),
+                    },
+                    {
+                      id: 802,
+                      format: "csv",
+                      exportedAt: Date.UTC(2026, 8, 14, 12),
+                    },
                   ],
                   historyError,
                 }}
@@ -825,7 +999,8 @@ function App() {
   if (
     import.meta.env.DEV &&
     (window.location.pathname === "/__test/settings-account-deletion-preview" ||
-      window.location.pathname === "/__test/settings-account-deletion-preview-open")
+      window.location.pathname ===
+        "/__test/settings-account-deletion-preview-open")
   ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
@@ -835,7 +1010,9 @@ function App() {
             <div className="mx-auto max-w-xl">
               <DeleteAccountSection
                 testOverride={{
-                  startOpen: window.location.pathname === "/__test/settings-account-deletion-preview-open",
+                  startOpen:
+                    window.location.pathname ===
+                    "/__test/settings-account-deletion-preview-open",
                   preview: {
                     totalRecords: 19,
                     categories: [
@@ -853,7 +1030,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-page-query-recovery") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/dashboard-page-query-recovery"
+  ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -866,7 +1046,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/dashboard-page-mutation-recovery") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/dashboard-page-mutation-recovery"
+  ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -879,7 +1062,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/smtp-connection-feedback") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/smtp-connection-feedback"
+  ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -889,7 +1075,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/provider-discovery") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/provider-discovery"
+  ) {
     return (
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
@@ -899,7 +1088,10 @@ function App() {
     );
   }
 
-  if (import.meta.env.DEV && window.location.pathname === "/__test/form-autofill") {
+  if (
+    import.meta.env.DEV &&
+    window.location.pathname === "/__test/form-autofill"
+  ) {
     return (
       <ThemeProvider defaultTheme="dark" switchable={true}>
         <TooltipProvider>

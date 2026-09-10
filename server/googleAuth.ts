@@ -37,14 +37,20 @@ function buildRedirectUri(req: Request): string {
   if (process.env.APP_BASE_URL) {
     return `${process.env.APP_BASE_URL.replace(/\/$/, "")}/api/auth/google/callback`;
   }
-  const proto = (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
-  const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "phame.app";
+  const proto =
+    (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
+  const host =
+    (req.headers["x-forwarded-host"] as string) ??
+    req.headers.host ??
+    "phame.app";
   return `${proto}://${host}/api/auth/google/callback`;
 }
 
 export function registerGoogleAuthRoutes(app: Express) {
   app.get("/api/auth/google/status", (_req: Request, res: Response) => {
-    res.json({ enabled: Boolean(ENV.googleClientId && ENV.googleClientSecret) });
+    res.json({
+      enabled: Boolean(ENV.googleClientId && ENV.googleClientSecret),
+    });
   });
 
   // Step 1: Redirect user to Google consent screen
@@ -131,7 +137,8 @@ export function registerGoogleAuthRoutes(app: Express) {
       }
 
       const sessionUser = await db.getUserByOpenId(openId);
-      if (!sessionUser) throw new Error("Session user unavailable after Google account update");
+      if (!sessionUser)
+        throw new Error("Session user unavailable after Google account update");
       await issueSecuritySession({
         userId: sessionUser.id,
         authMethod: "oauth",

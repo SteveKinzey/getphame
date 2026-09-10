@@ -6,7 +6,7 @@ import { sendMailViaSmtp, type SendMailOptions } from "./smtp";
  * fails closed when none is selected; platform operational email is excluded.
  */
 export async function sendTenantOwnedReviewEmail(
-  input: Pick<SendMailOptions, "userId" | "to" | "subject" | "html" | "text">,
+  input: Pick<SendMailOptions, "userId" | "to" | "subject" | "html" | "text">
 ) {
   return sendMailViaSmtp({
     ...input,

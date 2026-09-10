@@ -66,10 +66,10 @@ Sources:
 
 Resend accepted the configured API key and created `getphame.com` as domain ID `d3fc9886-6107-4658-96a8-ca935a55d534`. Its initial state is `not_started`. The required Cloudflare DNS records are:
 
-| Purpose | Type | Name | Value | Priority |
-|---|---|---|---|---|
-| DKIM | TXT | `resend._domainkey` | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7RWXTMdtxUnC8nklsSproBQDg9ZkxdnNWtR4wdTEDchuWtBuz8UyzopQG3wrgPTlmX06jqh3weObV6yvWInqDSWwNhZ+cS07ne5Dy/y2rS4R1vngK/ahIbRvwW4h4xa6Jabs0FJwDcUP11ZaIvnryrRIg9JMyihMh8+vXWLfNnQIDAQAB` | — |
-| SPF feedback | MX | `send` | `feedback-smtp.us-east-1.amazonses.com` | `10` |
-| SPF policy | TXT | `send` | `v=spf1 include:amazonses.com ~all` | — |
+| Purpose      | Type | Name                | Value                                                                                                                                                                                                                        | Priority |
+| ------------ | ---- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| DKIM         | TXT  | `resend._domainkey` | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC7RWXTMdtxUnC8nklsSproBQDg9ZkxdnNWtR4wdTEDchuWtBuz8UyzopQG3wrgPTlmX06jqh3weObV6yvWInqDSWwNhZ+cS07ne5Dy/y2rS4R1vngK/ahIbRvwW4h4xa6Jabs0FJwDcUP11ZaIvnryrRIg9JMyihMh8+vXWLfNnQIDAQAB` | —        |
+| SPF feedback | MX   | `send`              | `feedback-smtp.us-east-1.amazonses.com`                                                                                                                                                                                      | `10`     |
+| SPF policy   | TXT  | `send`              | `v=spf1 include:amazonses.com ~all`                                                                                                                                                                                          | —        |
 
 The connected Cloudflare integration does not expose DNS-record write operations. The Cloudflare dashboard was opened at `https://dash.cloudflare.com/?to=/:account/getphame.com/dns/records`, but the browser session requires the account owner to sign in before the records can be created.

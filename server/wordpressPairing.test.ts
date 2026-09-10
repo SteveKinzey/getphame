@@ -17,7 +17,9 @@ vi.mock("./developerApiKeys", () => ({
   createDeveloperApiKey: mocks.createDeveloperApiKey,
   revokeDeveloperApiKey: mocks.revokeDeveloperApiKey,
 }));
-vi.mock("./developerApiEnrollment", () => ({ getDeveloperApiEnrollmentStatus: mocks.getDeveloperApiEnrollmentStatus }));
+vi.mock("./developerApiEnrollment", () => ({
+  getDeveloperApiEnrollmentStatus: mocks.getDeveloperApiEnrollmentStatus,
+}));
 vi.mock("./sourceConnections", () => ({
   createSourceConnection: mocks.createSourceConnection,
   archiveSourceConnection: mocks.archiveSourceConnection,
@@ -51,11 +53,18 @@ function createDb(state: State) {
     select: vi.fn(() => {
       let table: unknown;
       const chain: any = {
-        from(value: unknown) { table = value; return chain; },
-        where() { return chain; },
+        from(value: unknown) {
+          table = value;
+          return chain;
+        },
+        where() {
+          return chain;
+        },
         limit() {
-          if (table === wordpressPairings) return Promise.resolve(state.pairing ? [state.pairing] : []);
-          if (table === sourceConnections) return Promise.resolve([{ publicId: "src_wordpress_test" }]);
+          if (table === wordpressPairings)
+            return Promise.resolve(state.pairing ? [state.pairing] : []);
+          if (table === sourceConnections)
+            return Promise.resolve([{ publicId: "src_wordpress_test" }]);
           return Promise.resolve([]);
         },
       };
@@ -70,8 +79,14 @@ function createDb(state: State) {
           }
           return chain;
         },
-        then(resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) {
-          return Promise.resolve([{ insertId: 42, affectedRows: 1 }]).then(resolve, reject);
+        then(
+          resolve: (value: unknown) => unknown,
+          reject: (reason: unknown) => unknown
+        ) {
+          return Promise.resolve([{ insertId: 42, affectedRows: 1 }]).then(
+            resolve,
+            reject
+          );
         },
       };
       return chain;
@@ -79,14 +94,30 @@ function createDb(state: State) {
     update: vi.fn((table: unknown) => {
       let patch: Pairing = {};
       const chain: any = {
-        set(value: Pairing) { patch = value; return chain; },
-        where() { return chain; },
-        then(resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) {
-          const isCredentialClaim = table === wordpressPairings && patch.status === "claimed";
-          const affectedRows = isCredentialClaim && state.claimAffectedRows !== undefined
-            ? state.claimAffectedRows
-            : state.pairing ? 1 : 0;
-          if (table === wordpressPairings && state.pairing && affectedRows === 1) {
+        set(value: Pairing) {
+          patch = value;
+          return chain;
+        },
+        where() {
+          return chain;
+        },
+        then(
+          resolve: (value: unknown) => unknown,
+          reject: (reason: unknown) => unknown
+        ) {
+          const isCredentialClaim =
+            table === wordpressPairings && patch.status === "claimed";
+          const affectedRows =
+            isCredentialClaim && state.claimAffectedRows !== undefined
+              ? state.claimAffectedRows
+              : state.pairing
+                ? 1
+                : 0;
+          if (
+            table === wordpressPairings &&
+            state.pairing &&
+            affectedRows === 1
+          ) {
             Object.assign(state.pairing, patch);
           }
           return Promise.resolve([{ affectedRows }]).then(resolve, reject);
@@ -126,11 +157,20 @@ describe("WordPress self-service pairing", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-07-29T00:00:00.000Z"));
     vi.clearAllMocks();
-    mocks.getDeveloperApiEnrollmentStatus.mockResolvedValue({ termsAccepted: true });
-    mocks.createDeveloperApiKey.mockResolvedValue({ id: 71, rawKey: "gp_live_test_wordpress_key" });
+    mocks.getDeveloperApiEnrollmentStatus.mockResolvedValue({
+      termsAccepted: true,
+    });
+    mocks.createDeveloperApiKey.mockResolvedValue({
+      id: 71,
+      rawKey: "gp_live_test_wordpress_key",
+    });
     mocks.createSourceConnection.mockResolvedValue({ id: 81 });
-    mocks.encryptPassword.mockImplementation((value: string) => `encrypted:${value}`);
-    mocks.decryptPassword.mockImplementation((value: string) => value.replace("encrypted:", ""));
+    mocks.encryptPassword.mockImplementation(
+      (value: string) => `encrypted:${value}`
+    );
+    mocks.decryptPassword.mockImplementation((value: string) =>
+      value.replace("encrypted:", "")
+    );
   });
 
   afterEach(() => vi.useRealTimers());
@@ -139,7 +179,10 @@ describe("WordPress self-service pairing", () => {
     const state: State = { pairing: null, inserted: null };
     mocks.getDb.mockResolvedValue(createDb(state));
 
-    const result = await initiateWordPressPairing({ siteUrl: "HTTPS://Store.Example/path/", siteLabel: "  Main Store  " });
+    const result = await initiateWordPressPairing({
+      siteUrl: "HTTPS://Store.Example/path/",
+      siteLabel: "  Main Store  ",
+    });
 
     expect(result).toMatchObject({
       pairingId: expect.stringMatching(/^wpb_/),
@@ -160,10 +203,15 @@ describe("WordPress self-service pairing", () => {
   it("requires API terms before authorizing a WordPress site", async () => {
     const state: State = { pairing: pendingPairing(), inserted: null };
     mocks.getDb.mockResolvedValue(createDb(state));
-    mocks.getDeveloperApiEnrollmentStatus.mockResolvedValue({ termsAccepted: false });
+    mocks.getDeveloperApiEnrollmentStatus.mockResolvedValue({
+      termsAccepted: false,
+    });
 
-    await expect(approveWordPressPairing({ userId: 9, pairingId: state.pairing!.publicId }))
-      .rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "TERMS_REQUIRED" });
+    await expect(
+      approveWordPressPairing({ userId: 9, pairingId: state.pairing!.publicId })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "TERMS_REQUIRED",
+    });
     expect(mocks.createDeveloperApiKey).not.toHaveBeenCalled();
     expect(state.pairing?.status).toBe("pending");
   });
@@ -172,17 +220,27 @@ describe("WordPress self-service pairing", () => {
     const state: State = { pairing: pendingPairing(), inserted: null };
     mocks.getDb.mockResolvedValue(createDb(state));
 
-    const approved = await approveWordPressPairing({ userId: 9, pairingId: state.pairing!.publicId });
-    expect(approved).toMatchObject({ status: "approved", siteHost: "store.example" });
-    expect(mocks.createDeveloperApiKey).toHaveBeenCalledWith(expect.objectContaining({
+    const approved = await approveWordPressPairing({
       userId: 9,
-      scopes: ["contacts:write"],
-    }));
-    expect(mocks.createSourceConnection).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 9,
-      apiKeyId: 71,
-      provider: "woocommerce",
-    }));
+      pairingId: state.pairing!.publicId,
+    });
+    expect(approved).toMatchObject({
+      status: "approved",
+      siteHost: "store.example",
+    });
+    expect(mocks.createDeveloperApiKey).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 9,
+        scopes: ["contacts:write"],
+      })
+    );
+    expect(mocks.createSourceConnection).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 9,
+        apiKeyId: 71,
+        provider: "woocommerce",
+      })
+    );
     expect(state.pairing).toMatchObject({
       status: "approved",
       userId: 9,
@@ -200,46 +258,65 @@ describe("WordPress self-service pairing", () => {
       sourceId: "src_wordpress_test",
       siteHost: "store.example",
     });
-    expect(state.pairing).toMatchObject({ status: "claimed", encryptedApiKey: null });
+    expect(state.pairing).toMatchObject({
+      status: "claimed",
+      encryptedApiKey: null,
+    });
 
-    await expect(claimWordPressPairing({
-      pairingId: state.pairing!.publicId,
-      pairingSecret: state.pairing!.pairingSecret,
-    })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "ALREADY_CLAIMED" });
+    await expect(
+      claimWordPressPairing({
+        pairingId: state.pairing!.publicId,
+        pairingSecret: state.pairing!.pairingSecret,
+      })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "ALREADY_CLAIMED",
+    });
   });
 
   it("does not reveal connection state for a wrong pairing secret", async () => {
     const state: State = { pairing: pendingPairing(), inserted: null };
     mocks.getDb.mockResolvedValue(createDb(state));
 
-    await expect(claimWordPressPairing({
-      pairingId: state.pairing!.publicId,
-      pairingSecret: "wps_" + "z".repeat(43),
-    })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "NOT_FOUND" });
+    await expect(
+      claimWordPressPairing({
+        pairingId: state.pairing!.publicId,
+        pairingSecret: "wps_" + "z".repeat(43),
+      })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "NOT_FOUND",
+    });
   });
 
   it.each(["", "not-a-pairing-secret"])(
     "returns the same generic failure for malformed candidate secret %j",
-    async (pairingSecret) => {
+    async pairingSecret => {
       const state: State = { pairing: pendingPairing(), inserted: null };
       mocks.getDb.mockResolvedValue(createDb(state));
 
-      await expect(claimWordPressPairing({
-        pairingId: state.pairing!.publicId,
-        pairingSecret,
-      })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "NOT_FOUND" });
+      await expect(
+        claimWordPressPairing({
+          pairingId: state.pairing!.publicId,
+          pairingSecret,
+        })
+      ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+        code: "NOT_FOUND",
+      });
       expect(mocks.decryptPassword).not.toHaveBeenCalled();
-    },
+    }
   );
 
   it("returns the same generic failure for a missing pairing ID", async () => {
     const state: State = { pairing: null, inserted: null };
     mocks.getDb.mockResolvedValue(createDb(state));
 
-    await expect(claimWordPressPairing({
-      pairingId: "wpb_missing",
-      pairingSecret: "wps_" + "a".repeat(43),
-    })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "NOT_FOUND" });
+    await expect(
+      claimWordPressPairing({
+        pairingId: "wpb_missing",
+        pairingSecret: "wps_" + "a".repeat(43),
+      })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "NOT_FOUND",
+    });
     expect(mocks.decryptPassword).not.toHaveBeenCalled();
   });
 
@@ -250,10 +327,14 @@ describe("WordPress self-service pairing", () => {
     };
     mocks.getDb.mockResolvedValue(createDb(state));
 
-    await expect(claimWordPressPairing({
-      pairingId: state.pairing!.publicId,
-      pairingSecret: state.pairing!.pairingSecret,
-    })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "NOT_FOUND" });
+    await expect(
+      claimWordPressPairing({
+        pairingId: state.pairing!.publicId,
+        pairingSecret: state.pairing!.pairingSecret,
+      })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "NOT_FOUND",
+    });
     expect(mocks.decryptPassword).not.toHaveBeenCalled();
   });
 
@@ -262,19 +343,27 @@ describe("WordPress self-service pairing", () => {
     const expiredState: State = { pairing: expired, inserted: null };
     mocks.getDb.mockResolvedValue(createDb(expiredState));
 
-    await expect(claimWordPressPairing({
-      pairingId: expired.publicId,
-      pairingSecret: expired.pairingSecret,
-    })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "EXPIRED" });
+    await expect(
+      claimWordPressPairing({
+        pairingId: expired.publicId,
+        pairingSecret: expired.pairingSecret,
+      })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "EXPIRED",
+    });
 
     const claimed = pendingPairing({ status: "claimed" });
     const claimedState: State = { pairing: claimed, inserted: null };
     mocks.getDb.mockResolvedValue(createDb(claimedState));
 
-    await expect(claimWordPressPairing({
-      pairingId: claimed.publicId,
-      pairingSecret: claimed.pairingSecret,
-    })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "ALREADY_CLAIMED" });
+    await expect(
+      claimWordPressPairing({
+        pairingId: claimed.publicId,
+        pairingSecret: claimed.pairingSecret,
+      })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "ALREADY_CLAIMED",
+    });
   });
 
   it("returns ALREADY_CLAIMED when a concurrent claim wins the atomic update", async () => {
@@ -286,10 +375,14 @@ describe("WordPress self-service pairing", () => {
     const state: State = { pairing, inserted: null, claimAffectedRows: 0 };
     mocks.getDb.mockResolvedValue(createDb(state));
 
-    await expect(claimWordPressPairing({
-      pairingId: pairing.publicId,
-      pairingSecret: pairing.pairingSecret,
-    })).rejects.toMatchObject<Partial<WordPressPairingError>>({ code: "ALREADY_CLAIMED" });
+    await expect(
+      claimWordPressPairing({
+        pairingId: pairing.publicId,
+        pairingSecret: pairing.pairingSecret,
+      })
+    ).rejects.toMatchObject<Partial<WordPressPairingError>>({
+      code: "ALREADY_CLAIMED",
+    });
     expect(state.pairing).toMatchObject({
       status: "approved",
       encryptedApiKey: "encrypted:gp_live_test_wordpress_key",

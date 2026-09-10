@@ -541,10 +541,16 @@ async function startServer() {
   registerKoalendarRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
-  app.post("/api/scheduled/relay-heartbeat", (await import("../relayHealthRoutes")).relayHeartbeatHandler);
+  app.post(
+    "/api/scheduled/relay-heartbeat",
+    (await import("../relayHealthRoutes")).relayHeartbeatHandler
+  );
   app.post(SOURCE_HEALTH_CALLBACK_PATH, sourceHealthHandler);
   app.post(DISPOSABLE_DOMAIN_CALLBACK_PATH, disposableDomainHandler);
-  app.post("/api/scheduled/release-history-export", releaseHistoryExportScheduleHandler);
+  app.post(
+    "/api/scheduled/release-history-export",
+    releaseHistoryExportScheduleHandler
+  );
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
   app.post("/api/scheduled/process-quiet-hours", quietHoursHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);

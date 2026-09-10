@@ -3,6 +3,57 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
+function toFormattedSourcePattern(snippet: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let pattern = "";
+
+  for (let index = 0; index < snippet.length; ) {
+    const character = snippet[index];
+    if (character === '"' || character === "'") {
+      let closingIndex = index + 1;
+      while (closingIndex < snippet.length) {
+        if (
+          snippet[closingIndex] === character &&
+          snippet[closingIndex - 1] !== "\\"
+        )
+          break;
+        closingIndex += 1;
+      }
+      if (closingIndex < snippet.length) {
+        pattern += `["']${escape(snippet.slice(index + 1, closingIndex))}["']`;
+        index = closingIndex + 1;
+        continue;
+      }
+    }
+
+    if (/\s/.test(character)) {
+      while (index < snippet.length && /\s/.test(snippet[index])) index += 1;
+      pattern += "\\s*";
+      continue;
+    }
+
+    pattern += escape(character);
+    if ("().,=:?{}[]<>".includes(character)) pattern += "\\s*";
+    index += 1;
+  }
+
+  return new RegExp(pattern);
+}
+
+function expectFormattedSource(source: string) {
+  return {
+    toContain(snippet: string) {
+      expect(source).toMatch(toFormattedSourcePattern(snippet));
+    },
+    not: {
+      toContain(snippet: string) {
+        expect(source).not.toMatch(toFormattedSourcePattern(snippet));
+      },
+    },
+  };
+}
+
 const projectRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   ".."
@@ -434,7 +485,9 @@ describe("native-quality localization audit", () => {
       path.join(projectRoot, "client/public/sw.js"),
       "utf8"
     );
-    expect(i18nSource).toContain("{{ns}}.json?v=phame61");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
+    expectFormattedSource(i18nSource).toContain("{{ns}}.json?v=phame61");
+    expectFormattedSource(serviceWorker).toContain(
+      "const CACHE_NAME = 'getphame-v29'"
+    );
   });
 });

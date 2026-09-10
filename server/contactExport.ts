@@ -18,7 +18,7 @@ export const CONTACT_EXPORT_COLUMNS = [
   "createdAt",
 ] as const;
 
-export type ContactExportColumn = typeof CONTACT_EXPORT_COLUMNS[number];
+export type ContactExportColumn = (typeof CONTACT_EXPORT_COLUMNS)[number];
 export type ContactExportFormat = "csv" | "pdf";
 
 export type ContactExportRow = Record<ContactExportColumn, string | number>;
@@ -42,7 +42,9 @@ function parseTags(raw: string | null): string[] {
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((tag): tag is string => typeof tag === "string") : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((tag): tag is string => typeof tag === "string")
+      : [];
   } catch {
     return [];
   }
@@ -59,7 +61,8 @@ export function neutralizeSpreadsheetFormula(value: string): string {
 }
 
 export function toContactExportRow(contact: SavedContact): ContactExportRow {
-  const consentRecorded = Boolean(contact.consentBasis?.trim()) && contact.consentCapturedAt !== null;
+  const consentRecorded =
+    Boolean(contact.consentBasis?.trim()) && contact.consentCapturedAt !== null;
   return {
     name: neutralizeSpreadsheetFormula(contact.name),
     email: neutralizeSpreadsheetFormula(contact.email),
@@ -82,8 +85,12 @@ function escapeCsv(value: string | number): string {
 }
 
 export function serializeContactExportCsv(rows: ContactExportRow[]): string {
-  const header = CONTACT_EXPORT_COLUMNS.map((column) => escapeCsv(CONTACT_EXPORT_LABELS[column])).join(",");
-  const body = rows.map((row) => CONTACT_EXPORT_COLUMNS.map((column) => escapeCsv(row[column])).join(","));
+  const header = CONTACT_EXPORT_COLUMNS.map(column =>
+    escapeCsv(CONTACT_EXPORT_LABELS[column])
+  ).join(",");
+  const body = rows.map(row =>
+    CONTACT_EXPORT_COLUMNS.map(column => escapeCsv(row[column])).join(",")
+  );
   return `\uFEFF${[header, ...body].join("\r\n")}\r\n`;
 }
 
@@ -91,11 +98,20 @@ function dateOnly(value: string, fallback: string): string {
   return /^\d{4}-\d{2}-\d{2}T/.test(value) ? value.slice(0, 10) : fallback;
 }
 
-export function buildContactExportFilename(rows: ContactExportRow[], format: ContactExportFormat, now = new Date()): string {
+export function buildContactExportFilename(
+  rows: ContactExportRow[],
+  format: ContactExportFormat,
+  now = new Date()
+): string {
   const fallback = now.toISOString().slice(0, 10);
-  const dates = rows.map((row) => String(row.createdAt)).filter(Boolean).sort();
+  const dates = rows
+    .map(row => String(row.createdAt))
+    .filter(Boolean)
+    .sort();
   const from = dates.length ? dateOnly(dates[0], fallback) : fallback;
-  const to = dates.length ? dateOnly(dates[dates.length - 1], fallback) : fallback;
+  const to = dates.length
+    ? dateOnly(dates[dates.length - 1], fallback)
+    : fallback;
   return `get-phame-contacts-${from}_to_${to}.${format}`;
 }
 
@@ -105,11 +121,16 @@ export function buildContactExportSnapshot(input: {
   format: ContactExportFormat;
   now?: Date;
 }) {
-  const limit = input.format === "pdf" ? CONTACT_PDF_EXPORT_LIMIT : CONTACT_CSV_EXPORT_LIMIT;
-  const contactById = new Map(input.contacts.map((contact) => [contact.id, contact]));
+  const limit =
+    input.format === "pdf"
+      ? CONTACT_PDF_EXPORT_LIMIT
+      : CONTACT_CSV_EXPORT_LIMIT;
+  const contactById = new Map(
+    input.contacts.map(contact => [contact.id, contact])
+  );
   const uniqueRequestedIds = Array.from(new Set(input.requestedIds));
   const authorizedContacts = uniqueRequestedIds
-    .map((id) => contactById.get(id))
+    .map(id => contactById.get(id))
     .filter((contact): contact is SavedContact => Boolean(contact));
   const exportedContacts = authorizedContacts.slice(0, limit);
   const rows = exportedContacts.map(toContactExportRow);

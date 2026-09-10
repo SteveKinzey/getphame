@@ -7,7 +7,7 @@ import {
 function healthRow(
   overallStatus: "ok" | "fail",
   checkedAt: number,
-  overrides: Partial<AuthHealthUptimeRow> = {},
+  overrides: Partial<AuthHealthUptimeRow> = {}
 ): AuthHealthUptimeRow {
   const componentStatus = overallStatus;
   return {
@@ -42,10 +42,22 @@ describe("24-hour authentication uptime summary", () => {
   it("calculates availability, coverage, distinct incidents, latency, and component health", () => {
     const rows = [
       healthRow("ok", 1_000, { durationMs: 10 }),
-      healthRow("fail", 2_000, { durationMs: 20, databaseStatus: "fail", emailProviderStatus: "ok" }),
+      healthRow("fail", 2_000, {
+        durationMs: 20,
+        databaseStatus: "fail",
+        emailProviderStatus: "ok",
+      }),
       healthRow("ok", 3_000, { durationMs: 30 }),
-      healthRow("fail", 4_000, { durationMs: 20, databaseStatus: "ok", emailProviderStatus: "fail" }),
-      healthRow("fail", 5_000, { durationMs: 20, databaseStatus: "ok", emailProviderStatus: "fail" }),
+      healthRow("fail", 4_000, {
+        durationMs: 20,
+        databaseStatus: "ok",
+        emailProviderStatus: "fail",
+      }),
+      healthRow("fail", 5_000, {
+        durationMs: 20,
+        databaseStatus: "ok",
+        emailProviderStatus: "fail",
+      }),
     ];
 
     const summary = calculateAuthHealthUptimeSummary(rows);
@@ -65,7 +77,11 @@ describe("24-hour authentication uptime summary", () => {
       firstObservedAt: 1_000,
       nextExpectedAt: 905_000,
     });
-    expect(summary.components.find((component) => component.key === "emailProviderStatus")).toMatchObject({
+    expect(
+      summary.components.find(
+        component => component.key === "emailProviderStatus"
+      )
+    ).toMatchObject({
       latestStatus: "fail",
       successfulRuns: 3,
       failedRuns: 2,
@@ -74,7 +90,9 @@ describe("24-hour authentication uptime summary", () => {
   });
 
   it("marks a full healthy 96-run observation window complete", () => {
-    const rows = Array.from({ length: 96 }, (_, index) => healthRow("ok", index * 900_000));
+    const rows = Array.from({ length: 96 }, (_, index) =>
+      healthRow("ok", index * 900_000)
+    );
     const summary = calculateAuthHealthUptimeSummary(rows);
 
     expect(summary).toMatchObject({

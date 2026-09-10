@@ -18,13 +18,14 @@ export function getOnboardingGuideSeenKey(userId: string | number) {
 
 export function shouldAutoShowOnboardingGuide(
   { isAuthenticated, userId, onboardingStatus }: OnboardingGuideEligibility,
-  storage: Pick<Storage, "getItem">,
+  storage: Pick<Storage, "getItem">
 ) {
   if (!isAuthenticated || userId == null || !onboardingStatus) return false;
   if (
     onboardingStatus.dismissed ||
     onboardingStatus.allDone ||
     onboardingStatus.hasSentRequest
-  ) return false;
+  )
+    return false;
   return !storage.getItem(getOnboardingGuideSeenKey(userId));
 }

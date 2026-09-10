@@ -14,7 +14,8 @@ export const RELAY_OUTAGE_EXPORT_COLUMNS = [
   { key: "causeSanitized", csvHeader: "cause_sanitized" },
 ] as const;
 
-export type RelayOutageExportColumnKey = (typeof RELAY_OUTAGE_EXPORT_COLUMNS)[number]["key"];
+export type RelayOutageExportColumnKey =
+  (typeof RELAY_OUTAGE_EXPORT_COLUMNS)[number]["key"];
 export type RelayOutageExportRow = Record<RelayOutageExportColumnKey, string>;
 
 function formulaSafeCell(value: string | number) {
@@ -26,8 +27,10 @@ function toUtc(value: number | null) {
   return value === null ? "" : new Date(value).toISOString();
 }
 
-export function buildRelayOutageExportRows(outages: readonly OutageRecord[]): RelayOutageExportRow[] {
-  return outages.map((outage) => ({
+export function buildRelayOutageExportRows(
+  outages: readonly OutageRecord[]
+): RelayOutageExportRow[] {
+  return outages.map(outage => ({
     outageId: formulaSafeCell(outage.id),
     startedAtUtc: formulaSafeCell(toUtc(outage.startedAt)),
     resolvedAtUtc: formulaSafeCell(toUtc(outage.resolvedAt)),
@@ -55,13 +58,20 @@ export function buildRelayOutageCsvExport(input: {
     filename: buildRelayOutageCsvFilename(generatedAt),
     mimeType: "text/csv;charset=utf-8",
     csv: serializePreparedCsvRows(rows, RELAY_OUTAGE_EXPORT_COLUMNS),
-    clipboardText: serializePreparedCsvRows(rows, RELAY_OUTAGE_EXPORT_COLUMNS, false),
+    clipboardText: serializePreparedCsvRows(
+      rows,
+      RELAY_OUTAGE_EXPORT_COLUMNS,
+      false
+    ),
     generatedAt,
     snapshotToMs: input.snapshotToMs,
     rowCount: rows.length,
     totalMatching: input.totalMatching,
     truncated: input.truncated,
-    availableColumns: RELAY_OUTAGE_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader })),
+    availableColumns: RELAY_OUTAGE_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({
+      key,
+      csvHeader,
+    })),
     preview: {
       columns: RELAY_OUTAGE_EXPORT_COLUMNS,
       rows: rows.slice(0, RELAY_OUTAGE_CSV_PREVIEW_LIMIT),

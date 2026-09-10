@@ -33,7 +33,7 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
 
   // ── SMTP health ──────────────────────────────────────────────────────────
   const smtpRows = await db.select().from(smtpCredentials);
-  const failing = smtpRows.filter((r) => r.lastHealthStatus === "fail");
+  const failing = smtpRows.filter(r => r.lastHealthStatus === "fail");
   const total = smtpRows.length;
 
   const byHost: Record<string, { count: number; errors: string[] }> = {};
@@ -47,7 +47,10 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
   }
 
   const failRate = Math.round((failing.length / total) * 100);
-  const lastRunAt = smtpRows.reduce((max, r) => Math.max(max, r.lastHealthCheck ?? 0), 0);
+  const lastRunAt = smtpRows.reduce(
+    (max, r) => Math.max(max, r.lastHealthCheck ?? 0),
+    0
+  );
   const lastRunStr = lastRunAt ? new Date(lastRunAt).toUTCString() : "never";
 
   // ── Churn this week ───────────────────────────────────────────────────────
@@ -77,11 +80,16 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
 
   if (failing.length > 0) {
     lines.push(``, `Breakdown by provider:`);
-    for (const [host, { count, errors }] of Object.entries(byHost).sort((a, b) => b[1].count - a[1].count)) {
+    for (const [host, { count, errors }] of Object.entries(byHost).sort(
+      (a, b) => b[1].count - a[1].count
+    )) {
       lines.push(`  ${host}: ${count} failing`);
       for (const err of errors) lines.push(`    • ${err}`);
     }
-    lines.push(``, `→ Visit /admin/smtp-stats to run an on-demand health check.`);
+    lines.push(
+      ``,
+      `→ Visit /admin/smtp-stats to run an on-demand health check.`
+    );
   }
 
   lines.push(``, `━━ Cancellations This Week ━━`);
@@ -89,7 +97,9 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
     lines.push(`No cancellations this week. 🎉`);
   } else {
     lines.push(`${churnRows.length} cancellation(s) recorded:`);
-    for (const [reason, count] of Object.entries(churnCounts).sort((a, b) => b[1] - a[1])) {
+    for (const [reason, count] of Object.entries(churnCounts).sort(
+      (a, b) => b[1] - a[1]
+    )) {
       const label = REASON_LABELS[reason] ?? reason;
       lines.push(`  ${label}: ${count}`);
     }
@@ -105,18 +115,27 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
   }
 
   const content = lines.join("\n");
-  const smtpBadge = failing.length > 0 ? `⚠️ ${failing.length} SMTP fail · ` : "";
-  const churnBadge = churnRows.length > 0 ? `${churnRows.length} cancellation(s)` : "0 cancellations";
+  const smtpBadge =
+    failing.length > 0 ? `⚠️ ${failing.length} SMTP fail · ` : "";
+  const churnBadge =
+    churnRows.length > 0
+      ? `${churnRows.length} cancellation(s)`
+      : "0 cancellations";
 
   try {
     await notifyOwner({
       title: `📊 Weekly Digest — ${smtpBadge}${churnBadge}`,
       content,
     });
-    console.log(`[SmtpWeeklyDigest] Digest sent — ${failing.length} SMTP failing, ${churnRows.length} churn(s) this week.`);
+    console.log(
+      `[SmtpWeeklyDigest] Digest sent — ${failing.length} SMTP failing, ${churnRows.length} churn(s) this week.`
+    );
     return true;
   } catch (err) {
-    console.error("[SmtpWeeklyDigest] Failed to send digest notification:", err);
+    console.error(
+      "[SmtpWeeklyDigest] Failed to send digest notification:",
+      err
+    );
     return false;
   }
 }
@@ -132,11 +151,11 @@ export function startSmtpWeeklyDigestScheduler(): void {
   );
 
   setTimeout(() => {
-    sendSmtpWeeklyDigest().catch((err) =>
+    sendSmtpWeeklyDigest().catch(err =>
       console.error("[SmtpWeeklyDigest] First run failed:", err)
     );
     setInterval(() => {
-      sendSmtpWeeklyDigest().catch((err) =>
+      sendSmtpWeeklyDigest().catch(err =>
         console.error("[SmtpWeeklyDigest] Scheduled run failed:", err)
       );
     }, WEEK_MS);

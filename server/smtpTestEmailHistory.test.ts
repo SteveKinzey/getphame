@@ -11,7 +11,10 @@ describe("smtp diagnostic history privacy contract", () => {
   });
 
   it("persists and reads diagnostic rows through the authenticated tenant boundary", () => {
-    const source = fs.readFileSync(path.resolve(process.cwd(), "server/smtpTestEmailHistory.ts"), "utf8");
+    const source = fs.readFileSync(
+      path.resolve(process.cwd(), "server/smtpTestEmailHistory.ts"),
+      "utf8"
+    );
     expect(source).toContain("userId: input.userId");
     expect(source).toContain("eq(smtpTestEmailAttempts.userId, userId)");
     expect(source).toContain(".limit(MAX_HISTORY_ROWS)");
@@ -19,9 +22,14 @@ describe("smtp diagnostic history privacy contract", () => {
   });
 
   it("records only sanitized outcome metadata after saved-connection test sends", () => {
-    const routerSource = fs.readFileSync(path.resolve(process.cwd(), "server/routers.ts"), "utf8");
+    const routerSource = fs.readFileSync(
+      path.resolve(process.cwd(), "server/routers.ts"),
+      "utf8"
+    );
     expect(routerSource).toContain("recordSmtpTestEmailAttempt");
-    expect(routerSource).toContain("testEmailHistory: protectedProcedure.query");
+    expect(routerSource).toContain(
+      "testEmailHistory: protectedProcedure.query"
+    );
     expect(routerSource).toContain("userId: ctx.user.id");
   });
 });

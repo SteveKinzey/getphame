@@ -4,7 +4,8 @@ import { describe, expect, it } from "vitest";
 import { getMagicLinkRecoveryKind } from "../client/src/lib/authFeedback";
 
 const root = process.cwd();
-const read = (relativePath: string) => fs.readFileSync(path.join(root, relativePath), "utf8");
+const read = (relativePath: string) =>
+  fs.readFileSync(path.join(root, relativePath), "utf8");
 
 describe("magic-link request and confirmation UX", () => {
   it("shows an accessible busy state and success confirmation on every active entry surface", () => {
@@ -12,7 +13,9 @@ describe("magic-link request and confirmation UX", () => {
     const login = read("client/src/pages/Login.tsx");
     const onboarding = read("client/src/pages/Onboarding.tsx");
 
-    expect(form).toContain('type RequestState = "idle" | "sending" | "sent" | "resending"');
+    expect(form).toContain(
+      'type RequestState = "idle" | "sending" | "sent" | "resending"'
+    );
     expect(form).toContain('data-testid="magic-link-form"');
     expect(form).toContain("disabled={isSending}");
     expect(form).toContain("aria-busy={isSending}");
@@ -21,10 +24,10 @@ describe("magic-link request and confirmation UX", () => {
     expect(form).toContain('data-testid="magic-link-confirmation"');
     expect(form).toContain("setSentTo(result.email)");
     expect(form).toContain('fetch("/api/auth/magic-link"');
-    expect(login).toContain('<MagicLinkForm');
+    expect(login).toContain("<MagicLinkForm");
     expect(login).toContain('idPrefix="login"');
     expect(login).toContain("autoFocus");
-    expect(login).toContain('humanVerificationToken={humanVerificationToken}');
+    expect(login).toContain("humanVerificationToken={humanVerificationToken}");
     expect(onboarding).toContain("<MagicLinkForm");
     expect(onboarding).toContain('idPrefix="onboarding"');
   });
@@ -33,8 +36,12 @@ describe("magic-link request and confirmation UX", () => {
     const form = read("client/src/components/auth/MagicLinkForm.tsx");
 
     expect(form).toContain("MAGIC_LINK_RESEND_COOLDOWN_SECONDS = 60");
-    expect(form).toContain("setResendSeconds(MAGIC_LINK_RESEND_COOLDOWN_SECONDS)");
-    expect(form).toContain("setResendSeconds((current) => Math.max(0, current - 1))");
+    expect(form).toContain(
+      "setResendSeconds(MAGIC_LINK_RESEND_COOLDOWN_SECONDS)"
+    );
+    expect(form).toMatch(
+      /setResendSeconds\(\s*current\s*=>\s*Math\.max\(\s*0,\s*current\s*-\s*1\s*\)\s*\)/
+    );
     expect(form).toContain('data-testid="magic-link-resend"');
     expect(form).toContain("disabled={!canResend}");
     expect(form).toContain("aria-busy={isResending}");
@@ -84,9 +91,9 @@ describe("invalid and expired magic-link recovery", () => {
   it("keeps the client recovery classifier aligned with canonical verification redirects", () => {
     const server = read("server/auth-email.ts");
 
-    expect(server).toContain('auth_error=invalid_link');
-    expect(server).toContain('auth_error=link_expired');
-    expect(server).toContain('auth_error=verification_failed');
+    expect(server).toContain("auth_error=invalid_link");
+    expect(server).toContain("auth_error=link_expired");
+    expect(server).toContain("auth_error=verification_failed");
   });
 });
 
@@ -112,7 +119,9 @@ describe("localized magic-link UX contract", () => {
 
   it("provides every visible request, resend, and recovery string in all supported locales", () => {
     for (const locale of locales) {
-      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+      const catalog = JSON.parse(
+        read(`client/public/locales/${locale}/translation.json`)
+      );
 
       for (const key of requiredLoginKeys) {
         const value = catalog.login?.[key];
@@ -120,15 +129,23 @@ describe("localized magic-link UX contract", () => {
         expect(value.trim(), `${locale}:login.${key}`).not.toBe("");
       }
 
-      expect(catalog.login.resendCountdown, `${locale}:login.resendCountdown`).toContain("{{seconds}}");
+      expect(
+        catalog.login.resendCountdown,
+        `${locale}:login.resendCountdown`
+      ).toContain("{{seconds}}");
     }
   });
 
   it("does not retain unused login-only labels outside the shared form contract", () => {
     for (const locale of locales) {
-      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+      const catalog = JSON.parse(
+        read(`client/public/locales/${locale}/translation.json`)
+      );
 
-      expect(catalog.login?.continueWithEmail, `${locale}:login.continueWithEmail`).toBeUndefined();
+      expect(
+        catalog.login?.continueWithEmail,
+        `${locale}:login.continueWithEmail`
+      ).toBeUndefined();
       expect(catalog.login?.cancel, `${locale}:login.cancel`).toBeUndefined();
     }
   });

@@ -3,7 +3,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const projectRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  ".."
+);
 const clientSourceRoot = path.join(projectRoot, "client", "src");
 const localeRoot = path.join(projectRoot, "client", "public", "locales");
 const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
@@ -33,7 +36,10 @@ function collectDirectTranslationKeys(): string[] {
   return [...keys].sort();
 }
 
-function getNestedValue(source: Record<string, unknown>, dottedPath: string): unknown {
+function getNestedValue(
+  source: Record<string, unknown>,
+  dottedPath: string
+): unknown {
   return dottedPath.split(".").reduce<unknown>((current, key) => {
     if (!current || typeof current !== "object") return undefined;
     return (current as Record<string, unknown>)[key];
@@ -51,12 +57,18 @@ describe("direct passkey i18n key coverage", () => {
   for (const locale of locales) {
     it(`${locale} contains every directly referenced translation key`, () => {
       const file = path.join(localeRoot, locale, "translation.json");
-      const bundle = JSON.parse(fs.readFileSync(file, "utf8")) as Record<string, unknown>;
+      const bundle = JSON.parse(fs.readFileSync(file, "utf8")) as Record<
+        string,
+        unknown
+      >;
 
       for (const key of directKeys) {
         const value = getNestedValue(bundle, key);
         expect(value, `${locale}:${key}`).toBeTypeOf("string");
-        expect((value as string).trim().length, `${locale}:${key}`).toBeGreaterThan(0);
+        expect(
+          (value as string).trim().length,
+          `${locale}:${key}`
+        ).toBeGreaterThan(0);
       }
     });
   }

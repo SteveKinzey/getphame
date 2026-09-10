@@ -16,7 +16,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban, SendHorizonal, Eye, X } from "lucide-react";
+import {
+  Bell,
+  ChevronLeft,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Ban,
+  SendHorizonal,
+  Eye,
+  X,
+} from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -44,9 +54,12 @@ export default function Reminders() {
 
   const utils = trpc.useUtils();
 
-  const { data: reminders = [], isLoading } = trpc.reminders.list.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { data: reminders = [], isLoading } = trpc.reminders.list.useQuery(
+    undefined,
+    {
+      enabled: isAuthenticated,
+    }
+  );
 
   const cancelMutation = trpc.reminders.cancel.useMutation({
     onSuccess: () => {
@@ -54,7 +67,7 @@ export default function Reminders() {
       setCancelTarget(null);
       toast.success(t("toastMessages.reminderCancelled"));
     },
-    onError: (e) => toast.error(e.message),
+    onError: e => toast.error(e.message),
   });
 
   const sendNowMutation = trpc.reminders.sendNow.useMutation({
@@ -63,16 +76,17 @@ export default function Reminders() {
       setSendNowTarget(null);
       toast.success(t("toastMessages.followUpReminderSent"));
     },
-    onError: (e) => {
+    onError: e => {
       setSendNowTarget(null);
       toast.error(e.message);
     },
   });
 
-  const { data: previewData, isLoading: previewLoading } = trpc.reminders.previewEmail.useQuery(
-    { step: previewStep ?? 1 },
-    { enabled: previewStep !== null && isAuthenticated }
-  );
+  const { data: previewData, isLoading: previewLoading } =
+    trpc.reminders.previewEmail.useQuery(
+      { step: previewStep ?? 1 },
+      { enabled: previewStep !== null && isAuthenticated }
+    );
 
   if (authLoading) return null;
   if (!isAuthenticated) {
@@ -80,10 +94,13 @@ export default function Reminders() {
     return null;
   }
 
-  const pending = (reminders as Reminder[]).filter((r) => r.status === "pending");
-  const history = (reminders as Reminder[]).filter((r) => r.status !== "pending");
+  const pending = (reminders as Reminder[]).filter(r => r.status === "pending");
+  const history = (reminders as Reminder[]).filter(r => r.status !== "pending");
 
-  const STATUS_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+  const STATUS_CONFIG: Record<
+    string,
+    { label: string; icon: React.ReactNode; color: string }
+  > = {
     pending: {
       label: t("reminderRow.status.pending"),
       icon: <Clock size={13} />,
@@ -117,7 +134,10 @@ export default function Reminders() {
           <ChevronLeft size={16} /> {t("header.back")}
         </button>
         <div>
-          <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          <h1
+            className="text-2xl font-black text-white"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
             Follow-up Reminders
           </h1>
           <p className="text-base font-bold mt-1 text-white">
@@ -129,7 +149,8 @@ export default function Reminders() {
       <div className="px-4 pt-4 space-y-5">
         {/* Info banner */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-sm font-bold text-blue-900">
-          <strong>{t("infoBanner.howItWorks")}</strong> {t("infoBanner.description")}
+          <strong>{t("infoBanner.howItWorks")}</strong>{" "}
+          {t("infoBanner.description")}
           <div className="flex gap-2 mt-2.5">
             <button
               onClick={() => setPreviewStep(1)}
@@ -147,12 +168,18 @@ export default function Reminders() {
         </div>
 
         {isLoading ? (
-          <div className="text-center py-12 text-gray-400">{t("emptyState.loading")}</div>
+          <div className="text-center py-12 text-gray-400">
+            {t("emptyState.loading")}
+          </div>
         ) : reminders.length === 0 ? (
           <div className="text-center py-16">
             <Bell size={40} className="mx-auto mb-3 text-gray-300" />
-            <p className="text-gray-500 font-medium">{t("emptyState.noRemindersYet")}</p>
-            <p className="text-gray-400 text-sm mt-1">{t("emptyState.remindersCreatedAutomatically")}</p>
+            <p className="text-gray-500 font-medium">
+              {t("emptyState.noRemindersYet")}
+            </p>
+            <p className="text-gray-400 text-sm mt-1">
+              {t("emptyState.remindersCreatedAutomatically")}
+            </p>
           </div>
         ) : (
           <>
@@ -173,7 +200,7 @@ export default function Reminders() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  {pending.map((r) => (
+                  {pending.map(r => (
                     <ReminderRow
                       key={r.id}
                       reminder={r}
@@ -194,8 +221,13 @@ export default function Reminders() {
                   {t("sections.history", { count: history.length })}
                 </h2>
                 <div className="space-y-2">
-                  {history.map((r) => (
-                    <ReminderRow key={r.id} reminder={r} statusConfig={STATUS_CONFIG} t={t} />
+                  {history.map(r => (
+                    <ReminderRow
+                      key={r.id}
+                      reminder={r}
+                      statusConfig={STATUS_CONFIG}
+                      t={t}
+                    />
                   ))}
                 </div>
               </div>
@@ -205,18 +237,28 @@ export default function Reminders() {
       </div>
 
       {/* Send Now Confirm */}
-      <AlertDialog open={!!sendNowTarget} onOpenChange={(o) => { if (!o) setSendNowTarget(null); }}>
+      <AlertDialog
+        open={!!sendNowTarget}
+        onOpenChange={o => {
+          if (!o) setSendNowTarget(null);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("sendNowConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("sendNowConfirm.description", { customerName: sendNowTarget?.customerName ?? "" })}
+              {t("sendNowConfirm.description", {
+                customerName: sendNowTarget?.customerName ?? "",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("sendNowConfirm.notYet")}</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => sendNowTarget && sendNowMutation.mutate({ id: sendNowTarget.id })}
+              onClick={() =>
+                sendNowTarget &&
+                sendNowMutation.mutate({ id: sendNowTarget.id })
+              }
               className="rr-bg-navy rr-text-gold"
             >
               {t("sendNowConfirm.sendNow")}
@@ -226,20 +268,29 @@ export default function Reminders() {
       </AlertDialog>
 
       {/* Bulk Cancel All Confirm */}
-      <AlertDialog open={bulkCancelOpen} onOpenChange={(o) => { if (!o && !bulkCancelling) setBulkCancelOpen(false); }}>
+      <AlertDialog
+        open={bulkCancelOpen}
+        onOpenChange={o => {
+          if (!o && !bulkCancelling) setBulkCancelOpen(false);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("bulkCancelConfirm.title", { count: pending.length })}</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("bulkCancelConfirm.title", { count: pending.length })}
+            </AlertDialogTitle>
             <AlertDialogDescription>
               {t("bulkCancelConfirm.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={bulkCancelling}>{t("bulkCancelConfirm.keepThem")}</AlertDialogCancel>
+            <AlertDialogCancel disabled={bulkCancelling}>
+              {t("bulkCancelConfirm.keepThem")}
+            </AlertDialogCancel>
             <AlertDialogAction
               disabled={bulkCancelling}
               className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={async (e) => {
+              onClick={async e => {
                 e.preventDefault();
                 setBulkCancelling(true);
                 try {
@@ -247,7 +298,12 @@ export default function Reminders() {
                     await cancelMutation.mutateAsync({ id: r.id });
                   }
                   utils.reminders.list.invalidate();
-                  toast.success(t("bulkCancelConfirm.successMessage", { count: pending.length, plural: pending.length !== 1 ? 's' : '' }));
+                  toast.success(
+                    t("bulkCancelConfirm.successMessage", {
+                      count: pending.length,
+                      plural: pending.length !== 1 ? "s" : "",
+                    })
+                  );
                 } catch {
                   toast.error(t("bulkCancelConfirm.errorMessage"));
                 } finally {
@@ -256,7 +312,9 @@ export default function Reminders() {
                 }
               }}
             >
-              {bulkCancelling ? t("bulkCancelConfirm.cancelling") : t("bulkCancelConfirm.cancelAll", { count: pending.length })}
+              {bulkCancelling
+                ? t("bulkCancelConfirm.cancelling")
+                : t("bulkCancelConfirm.cancelAll", { count: pending.length })}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -270,27 +328,52 @@ export default function Reminders() {
           onClick={() => setPreviewStep(null)}
         >
           <div
-            className="w-full max-w-lg rounded-t-2xl overflow-hidden bg-white" style={{ maxHeight: "80vh", display: "flex", flexDirection: "column" }}
-            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg rounded-t-2xl overflow-hidden bg-white"
+            style={{
+              maxHeight: "80vh",
+              display: "flex",
+              flexDirection: "column",
+            }}
+            onClick={e => e.stopPropagation()}
           >
             {/* Modal header */}
-            <div className="flex items-center justify-between px-4 py-3 shrink-0 rr-bg-navy" style={{ borderBottom: "1px solid oklch(0.30 0.08 260)" }}>
+            <div
+              className="flex items-center justify-between px-4 py-3 shrink-0 rr-bg-navy"
+              style={{ borderBottom: "1px solid oklch(0.30 0.08 260)" }}
+            >
               <div>
-                <p className="text-sm font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                  {previewStep === 2 ? t("reminderRow.2ndFollowUp") : t("reminderRow.1stFollowUp")} Preview
+                <p
+                  className="text-sm font-black text-white"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                >
+                  {previewStep === 2
+                    ? t("reminderRow.2ndFollowUp")
+                    : t("reminderRow.1stFollowUp")}{" "}
+                  Preview
                 </p>
-                <p className="text-sm font-bold mt-0.5" style={{ color: "oklch(0.85 0.04 260)" }}>
-                  Subject: {previewStep === 2 ? "One last nudge — we'd love your review!" : "Just checking in — have you had a chance to leave us a review?"}
+                <p
+                  className="text-sm font-bold mt-0.5"
+                  style={{ color: "oklch(0.85 0.04 260)" }}
+                >
+                  Subject:{" "}
+                  {previewStep === 2
+                    ? "One last nudge — we'd love your review!"
+                    : "Just checking in — have you had a chance to leave us a review?"}
                 </p>
               </div>
-              <button onClick={() => setPreviewStep(null)} className="p-1 rounded-full hover:bg-white/10 transition-colors">
+              <button
+                onClick={() => setPreviewStep(null)}
+                className="p-1 rounded-full hover:bg-white/10 transition-colors"
+              >
                 <X size={18} className="rr-text-gold" />
               </button>
             </div>
             {/* Email body */}
             <div className="flex-1 overflow-y-auto p-4">
               {previewLoading ? (
-                <div className="text-center py-8 text-gray-400 text-sm">{t("emptyState.loading")}</div>
+                <div className="text-center py-8 text-gray-400 text-sm">
+                  {t("emptyState.loading")}
+                </div>
               ) : (
                 <div
                   className="text-sm text-gray-700 leading-relaxed"
@@ -300,18 +383,39 @@ export default function Reminders() {
               )}
             </div>
             {/* Step switcher */}
-            <div className="flex gap-2 px-4 py-3 shrink-0" style={{ borderTop: "1px solid oklch(0.93 0.02 260)" }}>
+            <div
+              className="flex gap-2 px-4 py-3 shrink-0"
+              style={{ borderTop: "1px solid oklch(0.93 0.02 260)" }}
+            >
               <button
                 onClick={() => setPreviewStep(1)}
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
-                style={{ background: previewStep === 1 ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.01 260)", color: previewStep === 1 ? "oklch(0.80 0.18 80)" : "oklch(0.40 0.04 260)" }}
+                style={{
+                  background:
+                    previewStep === 1
+                      ? "oklch(0.22 0.09 260)"
+                      : "oklch(0.95 0.01 260)",
+                  color:
+                    previewStep === 1
+                      ? "oklch(0.80 0.18 80)"
+                      : "oklch(0.40 0.04 260)",
+                }}
               >
                 {t("reminderRow.1stFollowUp")}
               </button>
               <button
                 onClick={() => setPreviewStep(2)}
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
-                style={{ background: previewStep === 2 ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.01 260)", color: previewStep === 2 ? "oklch(0.80 0.18 80)" : "oklch(0.40 0.04 260)" }}
+                style={{
+                  background:
+                    previewStep === 2
+                      ? "oklch(0.22 0.09 260)"
+                      : "oklch(0.95 0.01 260)",
+                  color:
+                    previewStep === 2
+                      ? "oklch(0.80 0.18 80)"
+                      : "oklch(0.40 0.04 260)",
+                }}
               >
                 {t("reminderRow.2ndFollowUp")}
               </button>
@@ -321,18 +425,27 @@ export default function Reminders() {
       )}
 
       {/* Cancel Confirm */}
-      <AlertDialog open={!!cancelTarget} onOpenChange={(o) => { if (!o) setCancelTarget(null); }}>
+      <AlertDialog
+        open={!!cancelTarget}
+        onOpenChange={o => {
+          if (!o) setCancelTarget(null);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("cancelConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("cancelConfirm.description", { customerName: cancelTarget?.customerName ?? "" })}
+              {t("cancelConfirm.description", {
+                customerName: cancelTarget?.customerName ?? "",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("cancelConfirm.keepIt")}</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => cancelTarget && cancelMutation.mutate({ id: cancelTarget.id })}
+              onClick={() =>
+                cancelTarget && cancelMutation.mutate({ id: cancelTarget.id })
+              }
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               {t("cancelConfirm.cancelReminder")}
@@ -352,7 +465,10 @@ function ReminderRow({
   t,
 }: {
   reminder: Reminder;
-  statusConfig: Record<string, { label: string; icon: React.ReactNode; color: string }>;
+  statusConfig: Record<
+    string,
+    { label: string; icon: React.ReactNode; color: string }
+  >;
   onCancel?: () => void;
   onSendNow?: () => void;
   t: (key: string, opts?: Record<string, unknown>) => string;
@@ -363,20 +479,44 @@ function ReminderRow({
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="font-bold text-gray-900 truncate">{reminder.customerName}</p>
-            <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full shrink-0" style={{ background: (reminder.sequenceStep ?? 1) === 2 ? 'oklch(0.93 0.08 80)' : 'oklch(0.93 0.06 260)', color: (reminder.sequenceStep ?? 1) === 2 ? 'oklch(0.45 0.12 80)' : 'oklch(0.35 0.08 260)' }}>
-              {(reminder.sequenceStep ?? 1) === 2 ? t("reminderRow.2ndFollowUp") : t("reminderRow.1stFollowUp")}
+            <p className="font-bold text-gray-900 truncate">
+              {reminder.customerName}
+            </p>
+            <span
+              className="text-xs font-semibold px-1.5 py-0.5 rounded-full shrink-0"
+              style={{
+                background:
+                  (reminder.sequenceStep ?? 1) === 2
+                    ? "oklch(0.93 0.08 80)"
+                    : "oklch(0.93 0.06 260)",
+                color:
+                  (reminder.sequenceStep ?? 1) === 2
+                    ? "oklch(0.45 0.12 80)"
+                    : "oklch(0.35 0.08 260)",
+              }}
+            >
+              {(reminder.sequenceStep ?? 1) === 2
+                ? t("reminderRow.2ndFollowUp")
+                : t("reminderRow.1stFollowUp")}
             </span>
           </div>
-          <p className="text-sm text-gray-500 truncate">{reminder.customerEmail}</p>
+          <p className="text-sm text-gray-500 truncate">
+            {reminder.customerEmail}
+          </p>
           <div className="flex items-center gap-3 mt-2">
-            <span className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>
+            <span
+              className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}
+            >
               {cfg.icon} {cfg.label}
             </span>
             <span className="text-xs text-gray-400">
               {reminder.status === "sent" && reminder.sentAt
-                ? t("reminderRow.sentAt", { date: format(new Date(reminder.sentAt), "MMM d, yyyy") })
-                : t("reminderRow.scheduledAt", { date: format(new Date(reminder.scheduledAt), "MMM d, yyyy") })}
+                ? t("reminderRow.sentAt", {
+                    date: format(new Date(reminder.sentAt), "MMM d, yyyy"),
+                  })
+                : t("reminderRow.scheduledAt", {
+                    date: format(new Date(reminder.scheduledAt), "MMM d, yyyy"),
+                  })}
             </span>
           </div>
         </div>

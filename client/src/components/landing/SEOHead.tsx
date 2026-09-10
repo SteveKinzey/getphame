@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 
-const DEFAULT_SOCIAL_IMAGE = "https://assets.getphame.app/getphame-og-image.png?v=4";
-const DEFAULT_SOCIAL_IMAGE_ALT = "Get Phame dashboard for sending review requests and tracking email engagement";
+const DEFAULT_SOCIAL_IMAGE =
+  "https://assets.getphame.app/getphame-og-image.png?v=4";
+const DEFAULT_SOCIAL_IMAGE_ALT =
+  "Get Phame dashboard for sending review requests and tracking email engagement";
 const PUBLIC_SITE_ORIGIN = "https://getphame.app";
 
 interface SEOHeadProps {
@@ -15,7 +17,12 @@ interface SEOHeadProps {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-function upsertMeta(selector: string, attribute: "name" | "property", key: string, content: string) {
+function upsertMeta(
+  selector: string,
+  attribute: "name" | "property",
+  key: string,
+  content: string
+) {
   let element = document.querySelector<HTMLMetaElement>(selector);
   if (!element) {
     element = document.createElement("meta");
@@ -46,7 +53,9 @@ export function getSocialImageMimeType(url: string) {
   return "image/png";
 }
 
-function upsertJsonLd(jsonLd?: Record<string, unknown> | Record<string, unknown>[]) {
+function upsertJsonLd(
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+) {
   const selector = 'script[data-seo-head-jsonld="true"]';
   const existing = document.querySelector<HTMLScriptElement>(selector);
 
@@ -86,10 +95,17 @@ export default function SEOHead({
     const socialImageMimeType = getSocialImageMimeType(socialImageUrl);
 
     if (keywords && keywords.length > 0) {
-      upsertMeta('meta[name="keywords"]', "name", "keywords", keywords.join(", "));
+      upsertMeta(
+        'meta[name="keywords"]',
+        "name",
+        "keywords",
+        keywords.join(", ")
+      );
     }
 
-    let canonicalElement = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    let canonicalElement = document.querySelector<HTMLLinkElement>(
+      'link[rel="canonical"]'
+    );
     if (canonical) {
       if (!canonicalElement) {
         canonicalElement = document.createElement("link");
@@ -99,7 +115,9 @@ export default function SEOHead({
       canonicalElement.href = canonical;
     }
 
-    let robotsMeta = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    let robotsMeta = document.querySelector<HTMLMetaElement>(
+      'meta[name="robots"]'
+    );
     if (noindex) {
       if (!robotsMeta) {
         robotsMeta = document.createElement("meta");
@@ -135,7 +153,16 @@ export default function SEOHead({
     setTwitter("twitter:description", description);
     setTwitter("twitter:image", socialImageUrl);
     setTwitter("twitter:image:alt", socialImageAlt);
-  }, [canonical, description, jsonLd, keywords, noindex, socialImage, socialImageAlt, title]);
+  }, [
+    canonical,
+    description,
+    jsonLd,
+    keywords,
+    noindex,
+    socialImage,
+    socialImageAlt,
+    title,
+  ]);
 
   return null;
 }

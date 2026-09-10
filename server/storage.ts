@@ -1,7 +1,7 @@
 // Preconfigured storage helpers for Manus WebDev templates
 // Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
 
-import { ENV } from './_core/env';
+import { ENV } from "./_core/env";
 
 type StorageConfig = { baseUrl: string; apiKey: string };
 
@@ -52,9 +52,10 @@ async function buildDownloadUrl(
     throw new Error("Storage download URL request returned invalid JSON");
   }
 
-  const url = payload && typeof payload === "object"
-    ? (payload as { url?: unknown }).url
-    : undefined;
+  const url =
+    payload && typeof payload === "object"
+      ? (payload as { url?: unknown }).url
+      : undefined;
   if (typeof url !== "string" || url.trim().length === 0) {
     throw new Error("Storage download URL response is missing a valid URL");
   }
@@ -66,7 +67,9 @@ async function buildDownloadUrl(
     throw new Error("Storage download URL response is missing a valid URL");
   }
   if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
-    throw new Error("Storage download URL response uses an unsupported protocol");
+    throw new Error(
+      "Storage download URL response uses an unsupported protocol"
+    );
   }
 
   return parsedUrl.toString();
@@ -123,7 +126,9 @@ export async function storagePut(
   return { key, url };
 }
 
-export async function storageGet(relKey: string): Promise<{ key: string; url: string; }> {
+export async function storageGet(
+  relKey: string
+): Promise<{ key: string; url: string }> {
   const { baseUrl, apiKey } = getStorageConfig();
   const key = normalizeKey(relKey);
   return {

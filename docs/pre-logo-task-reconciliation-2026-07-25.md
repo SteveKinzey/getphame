@@ -2,13 +2,13 @@
 
 This record reconciles unchecked entries in `todo-fnggkeft.md` against the current shared branch before any takeover work. The original ledger remains unchanged because it belongs to another session.
 
-| Original lines | Classification | Evidence and action |
-|---|---|---|
-| 178, 195, 196 | Stale release entries | The affected Settings, revenue-control, entitlement, localization, test, and release code is already present in published history. Do not repeat or overwrite it. |
-| 193, 215 | Implemented | `AdminRevenueControls.tsx`, complimentary-access server procedures, authorization checks, seven-locale strings, and focused regressions are present in the current branch and trace to commit `90eb9b5`. |
-| 194 | Genuinely incomplete | The administrator CSV-preview feature is shipped, but its dedicated reusable Agent Skill is absent from `/home/ubuntu/skills`. Restore and validate the skill from the current implementation contract. |
-| 227 | Partially implemented | The secure canonical import-only API, scoped keys, consent metadata, source metadata, idempotency, deduplication, masked audit history, and no-auto-send default exist. The easy provider-specific **Sources** workflow for Jotform, Facebook Lead Ads, Google Forms, Airtable, and similar tools is still missing. |
-| 228–229 | Genuinely incomplete | Add focused Sources tests, complete all required release gates, checkpoint the result, and verify the live bundle. |
+| Original lines | Classification        | Evidence and action                                                                                                                                                                                                                                                                                                 |
+| -------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 178, 195, 196  | Stale release entries | The affected Settings, revenue-control, entitlement, localization, test, and release code is already present in published history. Do not repeat or overwrite it.                                                                                                                                                   |
+| 193, 215       | Implemented           | `AdminRevenueControls.tsx`, complimentary-access server procedures, authorization checks, seven-locale strings, and focused regressions are present in the current branch and trace to commit `90eb9b5`.                                                                                                            |
+| 194            | Genuinely incomplete  | The administrator CSV-preview feature is shipped, but its dedicated reusable Agent Skill is absent from `/home/ubuntu/skills`. Restore and validate the skill from the current implementation contract.                                                                                                             |
+| 227            | Partially implemented | The secure canonical import-only API, scoped keys, consent metadata, source metadata, idempotency, deduplication, masked audit history, and no-auto-send default exist. The easy provider-specific **Sources** workflow for Jotform, Facebook Lead Ads, Google Forms, Airtable, and similar tools is still missing. |
+| 228–229        | Genuinely incomplete  | Add focused Sources tests, complete all required release gates, checkpoint the result, and verify the live bundle.                                                                                                                                                                                                  |
 
 ## Takeover scope
 

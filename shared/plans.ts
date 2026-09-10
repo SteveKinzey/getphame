@@ -9,7 +9,7 @@ export const PLAN_LABELS: Record<EffectivePlan, string> = {
 
 export function getEffectivePlan(
   tier: string | null | undefined,
-  role?: string | null,
+  role?: string | null
 ): EffectivePlan {
   if (role === "admin" || tier === "lifetime") return "life";
   if (tier === "annual") return "annual";
@@ -19,7 +19,7 @@ export function getEffectivePlan(
 
 export function getEffectiveTier(
   tier: string | null | undefined,
-  role?: string | null,
+  role?: string | null
 ): "free" | "pro" | "annual" | "lifetime" {
   const plan = getEffectivePlan(tier, role);
   if (plan === "life") return "lifetime";

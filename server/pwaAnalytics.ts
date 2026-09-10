@@ -26,7 +26,9 @@ export function toPwaEventPage(event: PwaEventName): string {
 export function fromPwaEventPage(page: string): PwaEventName | null {
   if (!page.startsWith(PWA_EVENT_PREFIX)) return null;
   const event = page.slice(PWA_EVENT_PREFIX.length).replaceAll("-", "_");
-  return PWA_EVENT_NAMES.includes(event as PwaEventName) ? (event as PwaEventName) : null;
+  return PWA_EVENT_NAMES.includes(event as PwaEventName)
+    ? (event as PwaEventName)
+    : null;
 }
 
 export interface PwaAnalyticsRow {
@@ -38,11 +40,15 @@ export interface PwaAnalyticsRow {
 type EventCounts = Record<PwaEventName, number>;
 
 function emptyCounts(): EventCounts {
-  return Object.fromEntries(PWA_EVENT_NAMES.map((event) => [event, 0])) as EventCounts;
+  return Object.fromEntries(
+    PWA_EVENT_NAMES.map(event => [event, 0])
+  ) as EventCounts;
 }
 
 function percent(numerator: number, denominator: number): number {
-  return denominator > 0 ? Math.round((numerator / denominator) * 1000) / 10 : 0;
+  return denominator > 0
+    ? Math.round((numerator / denominator) * 1000) / 10
+    : 0;
 }
 
 export function summarizePwaEvents(rows: PwaAnalyticsRow[], now = Date.now()) {
@@ -70,9 +76,18 @@ export function summarizePwaEvents(rows: PwaAnalyticsRow[], now = Date.now()) {
     last30Days,
     byPlatform,
     rates: {
-      promptEngagement: percent(allTime.install_prompt_opened, allTime.install_guide_viewed),
-      installCompletion: percent(allTime.app_installed, allTime.install_guide_viewed),
-      installAcceptance: percent(allTime.install_accepted, allTime.install_prompt_opened),
+      promptEngagement: percent(
+        allTime.install_prompt_opened,
+        allTime.install_guide_viewed
+      ),
+      installCompletion: percent(
+        allTime.app_installed,
+        allTime.install_guide_viewed
+      ),
+      installAcceptance: percent(
+        allTime.install_accepted,
+        allTime.install_prompt_opened
+      ),
       shareConversion: percent(totalShares, allTime.install_guide_viewed),
       shareCompletion: percent(totalShares, shareAttempts),
     },

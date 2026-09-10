@@ -17,12 +17,12 @@ export function isValidFollowUpDelayDays(value: string | number): boolean {
 
 export function normalizeFollowUpDelayDays(
   value: string | number,
-  fallback = DEFAULT_FOLLOW_UP_DELAY_DAYS,
+  fallback = DEFAULT_FOLLOW_UP_DELAY_DAYS
 ): number {
   if (!isValidFollowUpDelayDays(value)) {
     return Math.min(
       MAX_FOLLOW_UP_DELAY_DAYS,
-      Math.max(MIN_FOLLOW_UP_DELAY_DAYS, Math.trunc(fallback)),
+      Math.max(MIN_FOLLOW_UP_DELAY_DAYS, Math.trunc(fallback))
     );
   }
 
@@ -32,10 +32,12 @@ export function normalizeFollowUpDelayDays(
 export function getProjectedFollowUpDates(
   originalSentAt: number,
   firstDelayDays: number,
-  secondDelayDays: number,
+  secondDelayDays: number
 ): { first: Date; second: Date } {
   return {
     first: new Date(originalSentAt + firstDelayDays * DAY_IN_MS),
-    second: new Date(originalSentAt + (firstDelayDays + secondDelayDays) * DAY_IN_MS),
+    second: new Date(
+      originalSentAt + (firstDelayDays + secondDelayDays) * DAY_IN_MS
+    ),
   };
 }

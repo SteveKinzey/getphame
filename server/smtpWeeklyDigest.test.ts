@@ -15,12 +15,14 @@ import { sendSmtpWeeklyDigest } from "./smtpWeeklyDigest";
 const mockGetDb = vi.mocked(getDb);
 const mockNotifyOwner = vi.mocked(notifyOwner);
 
-function makeRow(overrides: Partial<{
-  host: string;
-  lastHealthStatus: string | null;
-  lastHealthError: string | null;
-  lastHealthCheck: number | null;
-}> = {}) {
+function makeRow(
+  overrides: Partial<{
+    host: string;
+    lastHealthStatus: string | null;
+    lastHealthError: string | null;
+    lastHealthCheck: number | null;
+  }> = {}
+) {
   return {
     id: 1,
     userId: 1,
@@ -56,7 +58,10 @@ describe("sendSmtpWeeklyDigest", () => {
    * - First call to .from() returns smtpRows (no .where() needed)
    * - Second call to .from() returns a chainable object with .where() that resolves churnRows
    */
-  function makeDb(smtpRows: ReturnType<typeof makeRow>[], churnRows: object[] = []) {
+  function makeDb(
+    smtpRows: ReturnType<typeof makeRow>[],
+    churnRows: object[] = []
+  ) {
     let callCount = 0;
     return {
       select: () => ({
@@ -97,8 +102,16 @@ describe("sendSmtpWeeklyDigest", () => {
   it("sends digest and returns true when there are failing accounts", async () => {
     const rows = [
       makeRow({ lastHealthStatus: "ok" }),
-      makeRow({ host: "smtp.zoho.com", lastHealthStatus: "fail", lastHealthError: "Auth failed" }),
-      makeRow({ host: "smtp.zoho.com", lastHealthStatus: "fail", lastHealthError: "Connection refused" }),
+      makeRow({
+        host: "smtp.zoho.com",
+        lastHealthStatus: "fail",
+        lastHealthError: "Auth failed",
+      }),
+      makeRow({
+        host: "smtp.zoho.com",
+        lastHealthStatus: "fail",
+        lastHealthError: "Connection refused",
+      }),
     ];
     mockGetDb.mockResolvedValue(makeDb(rows));
 
@@ -115,7 +128,11 @@ describe("sendSmtpWeeklyDigest", () => {
 
   it("includes at most 3 error samples per host", async () => {
     const rows = Array.from({ length: 5 }, (_, i) =>
-      makeRow({ host: "smtp.outlook.com", lastHealthStatus: "fail", lastHealthError: `Error ${i + 1}` })
+      makeRow({
+        host: "smtp.outlook.com",
+        lastHealthStatus: "fail",
+        lastHealthError: `Error ${i + 1}`,
+      })
     );
     mockGetDb.mockResolvedValue(makeDb(rows));
 

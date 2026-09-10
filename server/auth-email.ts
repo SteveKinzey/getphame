@@ -55,17 +55,29 @@ const PASSKEY_ENROLLMENT_INTENT = "enroll_passkey";
 
 function signPasskeyEnrollmentIntent(token: string, email: string): string {
   const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error("JWT_SECRET is required to protect passkey enrollment intent");
+  if (!secret)
+    throw new Error(
+      "JWT_SECRET is required to protect passkey enrollment intent"
+    );
   return crypto
     .createHmac("sha256", secret)
-    .update(`getphame:passkey-enrollment:v1\0${token}\0${email.trim().toLowerCase()}`)
+    .update(
+      `getphame:passkey-enrollment:v1\0${token}\0${email.trim().toLowerCase()}`
+    )
     .digest("hex");
 }
 
-function isValidPasskeyEnrollmentSignature(token: string, email: string, signature: string): boolean {
+function isValidPasskeyEnrollmentSignature(
+  token: string,
+  email: string,
+  signature: string
+): boolean {
   if (!/^[a-f0-9]{64}$/i.test(signature)) return false;
   const expected = signPasskeyEnrollmentIntent(token, email);
-  return crypto.timingSafeEqual(Buffer.from(signature, "hex"), Buffer.from(expected, "hex"));
+  return crypto.timingSafeEqual(
+    Buffer.from(signature, "hex"),
+    Buffer.from(expected, "hex")
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -220,7 +232,9 @@ export function registerEmailAuthRoutes(app: Express) {
         detail: "A valid email address is required",
         durationMs: Date.now() - requestStartedAt,
       });
-      return res.status(400).json({ error: "A valid email address is required." });
+      return res
+        .status(400)
+        .json({ error: "A valid email address is required." });
     }
     if (intent !== undefined && intent !== PASSKEY_ENROLLMENT_INTENT) {
       return res.status(400).json({ error: "Unsupported sign-in intent." });
@@ -237,20 +251,24 @@ export function registerEmailAuthRoutes(app: Express) {
 
     // Check system SMTP is configured
     const smtpConfig = getSystemSmtpConfig();
-    const hasSendGrid = !!(process.env.SENDGRID_API_KEY);
+    const hasSendGrid = !!process.env.SENDGRID_API_KEY;
     if (!smtpConfig && !hasSendGrid) {
-      console.error("[MagicLink] Neither SendGrid nor System SMTP is configured");
+      console.error(
+        "[MagicLink] Neither SendGrid nor System SMTP is configured"
+      );
       void recordAuthLifecycleEvent({
         requestId,
         eventType: "provider_failed",
         outcome: "fail",
         email: normalizedEmail,
         detailCode: "provider_config_missing",
-        detail: "No email relay configured (set SENDGRID_API_KEY or SYSTEM_SMTP_*)",
+        detail:
+          "No email relay configured (set SENDGRID_API_KEY or SYSTEM_SMTP_*)",
         durationMs: Date.now() - requestStartedAt,
       });
       return res.status(503).json({
-        error: "Email sending is not available. Please contact support or try another sign-in method.",
+        error:
+          "Email sending is not available. Please contact support or try another sign-in method.",
       });
     }
 
@@ -266,7 +284,9 @@ export function registerEmailAuthRoutes(app: Express) {
           detail: "Database connection is unavailable",
           durationMs: Date.now() - requestStartedAt,
         });
-        return res.status(500).json({ error: "Service temporarily unavailable." });
+        return res
+          .status(500)
+          .json({ error: "Service temporarily unavailable." });
       }
 
       // Only a genuinely new account requires a browser challenge. Existing
@@ -278,14 +298,15 @@ export function registerEmailAuthRoutes(app: Express) {
       const humanProof = existingAccount
         ? undefined
         : (await verifyTurnstileHuman(
-            humanVerificationToken,
-            typeof req.ip === "string" ? req.ip : undefined,
-          ))
+              humanVerificationToken,
+              typeof req.ip === "string" ? req.ip : undefined
+            ))
           ? createSignedHumanProof(normalizedEmail)
           : null;
       if (humanProof === null) {
         return res.status(403).json({
-          error: "Human verification is required before creating a new account.",
+          error:
+            "Human verification is required before creating a new account.",
         });
       }
 
@@ -309,13 +330,17 @@ export function registerEmailAuthRoutes(app: Express) {
       });
 
       // Build magic link URL
-      const baseUrl = process.env.APP_BASE_URL?.replace(/\/$/, "") || "https://getphame.app";
+      const baseUrl =
+        process.env.APP_BASE_URL?.replace(/\/$/, "") || "https://getphame.app";
       const magicLinkParams = new URLSearchParams({ token });
       const safeReturnTo = getSafeAuthReturnPath(returnTo);
       if (safeReturnTo) magicLinkParams.set("returnTo", safeReturnTo);
       if (intent === PASSKEY_ENROLLMENT_INTENT) {
         magicLinkParams.set("intent", PASSKEY_ENROLLMENT_INTENT);
-        magicLinkParams.set("intent_signature", signPasskeyEnrollmentIntent(token, normalizedEmail));
+        magicLinkParams.set(
+          "intent_signature",
+          signPasskeyEnrollmentIntent(token, normalizedEmail)
+        );
       }
       if (humanProof) magicLinkParams.set("human_proof", humanProof);
       const magicLinkUrl = `${baseUrl}/api/auth/magic-link/verify?${magicLinkParams.toString()}`;
@@ -338,7 +363,9 @@ export function registerEmailAuthRoutes(app: Express) {
         providerMessageId: delivery.messageId,
         durationMs: Date.now() - requestStartedAt,
       });
-      console.log(`[MagicLink] Provider accepted login link for ${maskDiagnosticEmail(normalizedEmail)}`);
+      console.log(
+        `[MagicLink] Provider accepted login link for ${maskDiagnosticEmail(normalizedEmail)}`
+      );
       return res.status(200).json({ ok: true, email: normalizedEmail });
     } catch (err) {
       void recordAuthLifecycleEvent({
@@ -350,8 +377,13 @@ export function registerEmailAuthRoutes(app: Express) {
         detail: err,
         durationMs: Date.now() - requestStartedAt,
       });
-      console.error("[MagicLink] Failed to send magic link:", redactAuthDiagnosticDetail(err));
-      return res.status(500).json({ error: "Failed to send login link. Please try again." });
+      console.error(
+        "[MagicLink] Failed to send magic link:",
+        redactAuthDiagnosticDetail(err)
+      );
+      return res
+        .status(500)
+        .json({ error: "Failed to send login link. Please try again." });
     }
   });
 
@@ -361,194 +393,228 @@ export function registerEmailAuthRoutes(app: Express) {
    * Validates the token, creates or finds the user, issues a revocable session cookie,
    * and redirects to the app.
    */
-  app.get("/api/auth/magic-link/verify", async (req: Request, res: Response) => {
-    const token = typeof req.query.token === "string" ? req.query.token : null;
-    const requestedIntent = typeof req.query.intent === "string" ? req.query.intent : null;
-    const intentSignature = typeof req.query.intent_signature === "string" ? req.query.intent_signature : null;
-    const humanProof = typeof req.query.human_proof === "string" ? req.query.human_proof : undefined;
-    const returnTo = getSafeAuthReturnPath(req.query.returnTo);
-    const verificationStartedAt = Date.now();
-    let requestId: string = crypto.randomUUID();
-    let verificationEmail: string | null = null;
+  app.get(
+    "/api/auth/magic-link/verify",
+    async (req: Request, res: Response) => {
+      const token =
+        typeof req.query.token === "string" ? req.query.token : null;
+      const requestedIntent =
+        typeof req.query.intent === "string" ? req.query.intent : null;
+      const intentSignature =
+        typeof req.query.intent_signature === "string"
+          ? req.query.intent_signature
+          : null;
+      const humanProof =
+        typeof req.query.human_proof === "string"
+          ? req.query.human_proof
+          : undefined;
+      const returnTo = getSafeAuthReturnPath(req.query.returnTo);
+      const verificationStartedAt = Date.now();
+      let requestId: string = crypto.randomUUID();
+      let verificationEmail: string | null = null;
 
-    if (!token) {
-      void recordAuthLifecycleEvent({
-        requestId,
-        eventType: "verification_failed",
-        outcome: "fail",
-        detailCode: "token_missing",
-        detail: "Magic-link token is missing",
-        durationMs: Date.now() - verificationStartedAt,
-      });
-      return res.redirect(302, "/login?auth_error=invalid_link");
-    }
-
-    try {
-      const correlation = await findAuthRequestByToken(token);
-      if (correlation?.requestId) requestId = correlation.requestId;
-      const database = await getDb();
-      if (!database) {
+      if (!token) {
         void recordAuthLifecycleEvent({
           requestId,
           eventType: "verification_failed",
           outcome: "fail",
-          token,
-          detailCode: "database_unavailable",
-          detail: "Database connection is unavailable",
+          detailCode: "token_missing",
+          detail: "Magic-link token is missing",
           durationMs: Date.now() - verificationStartedAt,
         });
-        return res.redirect(302, "/login?auth_error=service_unavailable");
-      }
-
-      // Find valid, unused, non-expired token
-      const now = new Date();
-      const [record] = await database
-        .select()
-        .from(magicLinks)
-        .where(
-          and(
-            eq(magicLinks.token, token),
-            isNull(magicLinks.usedAt),
-            gt(magicLinks.expiresAt, now)
-          )
-        )
-        .limit(1);
-
-      if (!record) {
-        void recordAuthLifecycleEvent({
-          requestId,
-          eventType: "verification_failed",
-          outcome: "fail",
-          token,
-          detailCode: "token_invalid_or_expired",
-          detail: "Token is invalid, expired, or already used",
-          durationMs: Date.now() - verificationStartedAt,
-        });
-        return res.redirect(302, "/login?auth_error=link_expired");
-      }
-
-      const email = record.email;
-      verificationEmail = email;
-      const isPasskeyEnrollment = requestedIntent === PASSKEY_ENROLLMENT_INTENT;
-      if (requestedIntent !== null && !isPasskeyEnrollment) {
         return res.redirect(302, "/login?auth_error=invalid_link");
       }
-      if (isPasskeyEnrollment && (!intentSignature || !isValidPasskeyEnrollmentSignature(token, email, intentSignature))) {
-        return res.redirect(302, "/login?auth_error=invalid_link");
-      }
-      const emailOpenId = `email_${email}`;
 
-      // Resolve both direct email-login accounts and accounts originally created
-      // through Google, Apple, or another provider. This prevents a returning
-      // customer from receiving a second empty account when using a magic link.
-      // Resolve the canonical data-owning account first. Historical releases
-      // could leave a direct `email_<address>` identity beside an older Google
-      // or Apple account for the same email. getUserByEmail ranks those
-      // candidates by role, paid access, onboarding data, and age; checking the
-      // direct email openId first would bypass that ranking and sign the user
-      // into the stale empty account.
-      const existingUser =
-        (await db.getUserByEmail(email)) ??
-        (await db.getUserByOpenId(emailOpenId));
-      const isNewUser = !existingUser;
-      if (isNewUser && await isHighConfidenceDisposableEmail(email)) {
-        return res.redirect(302, "/login?auth_error=disposable_email");
-      }
-      if (isNewUser && !verifySignedHumanProof(humanProof, email)) {
-        return res.redirect(302, "/login?auth_error=human_verification_required");
-      }
-      const sessionOpenId = existingUser?.openId ?? emailOpenId;
-      // Session verification requires a non-empty name. The previous empty
-      // string produced a signed cookie that was immediately rejected as
-      // "Session payload missing required fields" on the next request.
-      const sessionName = existingUser?.name?.trim() || email;
-
-      // Upsert user — creates account if new, updates lastSignedIn if existing
-      await db.upsertUser({
-        openId: sessionOpenId,
-        name: existingUser?.name ?? null,
-        email,
-        loginMethod: existingUser?.loginMethod ?? "email",
-        lastSignedIn: new Date(),
-      });
-
-      // Send welcome email to new users (fire-and-forget)
-      if (isNewUser) {
-        sendUserWelcomeEmail({
-          toEmail: email,
-          toName: null,
-        }).catch((err: unknown) =>
-          console.warn("[MagicLink] Welcome email failed:", err)
-        );
-      }
-
-      const sessionUser = await db.getUserByOpenId(sessionOpenId);
-      if (!sessionUser) throw new Error("Session user unavailable after magic-link account update");
-      if (isNewUser) {
-        try {
-          await recordSignupRiskEvent({
-            userId: sessionUser.id,
-            subject: email,
-            provider: "email",
-            outcome: "verified",
-            reasonCode: "human_proof_verified",
-            humanVerified: true,
+      try {
+        const correlation = await findAuthRequestByToken(token);
+        if (correlation?.requestId) requestId = correlation.requestId;
+        const database = await getDb();
+        if (!database) {
+          void recordAuthLifecycleEvent({
+            requestId,
+            eventType: "verification_failed",
+            outcome: "fail",
+            token,
+            detailCode: "database_unavailable",
+            detail: "Database connection is unavailable",
+            durationMs: Date.now() - verificationStartedAt,
           });
-        } catch (riskError) {
-          console.warn("[MagicLink] Signup-risk audit write failed:", redactAuthDiagnosticDetail(riskError));
+          return res.redirect(302, "/login?auth_error=service_unavailable");
         }
+
+        // Find valid, unused, non-expired token
+        const now = new Date();
+        const [record] = await database
+          .select()
+          .from(magicLinks)
+          .where(
+            and(
+              eq(magicLinks.token, token),
+              isNull(magicLinks.usedAt),
+              gt(magicLinks.expiresAt, now)
+            )
+          )
+          .limit(1);
+
+        if (!record) {
+          void recordAuthLifecycleEvent({
+            requestId,
+            eventType: "verification_failed",
+            outcome: "fail",
+            token,
+            detailCode: "token_invalid_or_expired",
+            detail: "Token is invalid, expired, or already used",
+            durationMs: Date.now() - verificationStartedAt,
+          });
+          return res.redirect(302, "/login?auth_error=link_expired");
+        }
+
+        const email = record.email;
+        verificationEmail = email;
+        const isPasskeyEnrollment =
+          requestedIntent === PASSKEY_ENROLLMENT_INTENT;
+        if (requestedIntent !== null && !isPasskeyEnrollment) {
+          return res.redirect(302, "/login?auth_error=invalid_link");
+        }
+        if (
+          isPasskeyEnrollment &&
+          (!intentSignature ||
+            !isValidPasskeyEnrollmentSignature(token, email, intentSignature))
+        ) {
+          return res.redirect(302, "/login?auth_error=invalid_link");
+        }
+        const emailOpenId = `email_${email}`;
+
+        // Resolve both direct email-login accounts and accounts originally created
+        // through Google, Apple, or another provider. This prevents a returning
+        // customer from receiving a second empty account when using a magic link.
+        // Resolve the canonical data-owning account first. Historical releases
+        // could leave a direct `email_<address>` identity beside an older Google
+        // or Apple account for the same email. getUserByEmail ranks those
+        // candidates by role, paid access, onboarding data, and age; checking the
+        // direct email openId first would bypass that ranking and sign the user
+        // into the stale empty account.
+        const existingUser =
+          (await db.getUserByEmail(email)) ??
+          (await db.getUserByOpenId(emailOpenId));
+        const isNewUser = !existingUser;
+        if (isNewUser && (await isHighConfidenceDisposableEmail(email))) {
+          return res.redirect(302, "/login?auth_error=disposable_email");
+        }
+        if (isNewUser && !verifySignedHumanProof(humanProof, email)) {
+          return res.redirect(
+            302,
+            "/login?auth_error=human_verification_required"
+          );
+        }
+        const sessionOpenId = existingUser?.openId ?? emailOpenId;
+        // Session verification requires a non-empty name. The previous empty
+        // string produced a signed cookie that was immediately rejected as
+        // "Session payload missing required fields" on the next request.
+        const sessionName = existingUser?.name?.trim() || email;
+
+        // Upsert user — creates account if new, updates lastSignedIn if existing
+        await db.upsertUser({
+          openId: sessionOpenId,
+          name: existingUser?.name ?? null,
+          email,
+          loginMethod: existingUser?.loginMethod ?? "email",
+          lastSignedIn: new Date(),
+        });
+
+        // Send welcome email to new users (fire-and-forget)
+        if (isNewUser) {
+          sendUserWelcomeEmail({
+            toEmail: email,
+            toName: null,
+          }).catch((err: unknown) =>
+            console.warn("[MagicLink] Welcome email failed:", err)
+          );
+        }
+
+        const sessionUser = await db.getUserByOpenId(sessionOpenId);
+        if (!sessionUser)
+          throw new Error(
+            "Session user unavailable after magic-link account update"
+          );
+        if (isNewUser) {
+          try {
+            await recordSignupRiskEvent({
+              userId: sessionUser.id,
+              subject: email,
+              provider: "email",
+              outcome: "verified",
+              reasonCode: "human_proof_verified",
+              humanVerified: true,
+            });
+          } catch (riskError) {
+            console.warn(
+              "[MagicLink] Signup-risk audit write failed:",
+              redactAuthDiagnosticDetail(riskError)
+            );
+          }
+        }
+        const { token: sessionToken, maxAge: sessionMaxAge } =
+          await issueSecuritySession({
+            userId: sessionUser.id,
+            authMethod: "magic_link",
+            assurance: "a1",
+            req,
+          });
+
+        // Consume the token only after account and session creation succeed.
+        // This keeps a valid link retryable if a database or signing error occurs.
+        await database
+          .update(magicLinks)
+          .set({ usedAt: now })
+          .where(and(eq(magicLinks.id, record.id), isNull(magicLinks.usedAt)));
+
+        const cookieOptions = getSessionCookieOptions(req);
+        res.cookie(COOKIE_NAME, sessionToken, {
+          ...cookieOptions,
+          maxAge: sessionMaxAge,
+        });
+
+        void recordAuthLifecycleEvent({
+          requestId,
+          eventType: "verification_succeeded",
+          outcome: "ok",
+          email,
+          token,
+          detailCode: isNewUser
+            ? "new_user_onboarding"
+            : "returning_user_session",
+          durationMs: Date.now() - verificationStartedAt,
+        });
+
+        // Enrollment resumes only after this one-time verification created a session.
+        res.redirect(
+          302,
+          isPasskeyEnrollment
+            ? "/settings?passkey_enroll=1"
+            : isNewUser
+              ? "/onboarding"
+              : (returnTo ?? "/")
+        );
+      } catch (err) {
+        void recordAuthLifecycleEvent({
+          requestId,
+          eventType: "verification_failed",
+          outcome: "fail",
+          email: verificationEmail,
+          token,
+          detailCode: classifyAuthDiagnosticError(err),
+          detail: err,
+          durationMs: Date.now() - verificationStartedAt,
+        });
+        console.error(
+          "[MagicLink] Verify failed:",
+          redactAuthDiagnosticDetail(err)
+        );
+        return res.redirect(302, "/login?auth_error=verification_failed");
       }
-      const { token: sessionToken, maxAge: sessionMaxAge } = await issueSecuritySession({
-        userId: sessionUser.id,
-        authMethod: "magic_link",
-        assurance: "a1",
-        req,
-      });
-
-      // Consume the token only after account and session creation succeed.
-      // This keeps a valid link retryable if a database or signing error occurs.
-      await database
-        .update(magicLinks)
-        .set({ usedAt: now })
-        .where(and(eq(magicLinks.id, record.id), isNull(magicLinks.usedAt)));
-
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: sessionMaxAge });
-
-      void recordAuthLifecycleEvent({
-        requestId,
-        eventType: "verification_succeeded",
-        outcome: "ok",
-        email,
-        token,
-        detailCode: isNewUser ? "new_user_onboarding" : "returning_user_session",
-        durationMs: Date.now() - verificationStartedAt,
-      });
-
-      // Enrollment resumes only after this one-time verification created a session.
-      res.redirect(
-        302,
-        isPasskeyEnrollment
-          ? "/settings?passkey_enroll=1"
-          : isNewUser
-            ? "/onboarding"
-            : returnTo ?? "/"
-      );
-    } catch (err) {
-      void recordAuthLifecycleEvent({
-        requestId,
-        eventType: "verification_failed",
-        outcome: "fail",
-        email: verificationEmail,
-        token,
-        detailCode: classifyAuthDiagnosticError(err),
-        detail: err,
-        durationMs: Date.now() - verificationStartedAt,
-      });
-      console.error("[MagicLink] Verify failed:", redactAuthDiagnosticDetail(err));
-      return res.redirect(302, "/login?auth_error=verification_failed");
     }
-  });
+  );
 
   /**
    * POST /api/auth/logout

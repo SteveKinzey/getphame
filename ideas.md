@@ -1,6 +1,7 @@
 # Phame — Design Brainstorm
 
 ## Approach 1: Bold Utility Brutalism
+
 <response>
 <text>
 **Design Movement:** Neo-Brutalism meets Utility-First Mobile
@@ -16,6 +17,7 @@
 </response>
 
 ## Approach 2: Friendly Fintech Warmth
+
 <response>
 <text>
 **Design Movement:** Warm Fintech / Consumer SaaS
@@ -31,6 +33,7 @@
 </response>
 
 ## Approach 3: Energetic Sports-App Boldness ✅ CHOSEN
+
 <response>
 <text>
 **Design Movement:** Bold Consumer App / Sports-Energy meets Local Business Tool
@@ -46,6 +49,7 @@
 </response>
 
 ## Selected Approach: Option 3 — Energetic Sports-App Boldness
+
 - Navy + Gold color system
 - Syne for headings, Nunito for body
 - Full-bleed navy header panels, white content cards

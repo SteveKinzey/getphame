@@ -43,7 +43,10 @@ describe("createThbCheckoutSession", () => {
 
   it("returns a checkout URL string for plan=monthly", async () => {
     const { createThbCheckoutSession } = await import("./stripe");
-    const url = await createThbCheckoutSession({ ...BASE_PARAMS, plan: "monthly" });
+    const url = await createThbCheckoutSession({
+      ...BASE_PARAMS,
+      plan: "monthly",
+    });
     expect(typeof url).toBe("string");
     expect(url).toContain("checkout.stripe.com");
   });
@@ -85,14 +88,22 @@ describe("createThbCheckoutSession", () => {
 
   it("prefills customer_email when no stripeCustomerId", async () => {
     const { createThbCheckoutSession } = await import("./stripe");
-    await createThbCheckoutSession({ ...BASE_PARAMS, plan: "monthly", stripeCustomerId: null });
+    await createThbCheckoutSession({
+      ...BASE_PARAMS,
+      plan: "monthly",
+      stripeCustomerId: null,
+    });
     const call = mockSessionCreate.mock.calls[0][0];
     expect(call.customer_email).toBe("test@example.com");
   });
 
   it("uses customer ID instead of email when stripeCustomerId is provided", async () => {
     const { createThbCheckoutSession } = await import("./stripe");
-    await createThbCheckoutSession({ ...BASE_PARAMS, plan: "monthly", stripeCustomerId: "cus_test123" });
+    await createThbCheckoutSession({
+      ...BASE_PARAMS,
+      plan: "monthly",
+      stripeCustomerId: "cus_test123",
+    });
     const call = mockSessionCreate.mock.calls[0][0];
     expect(call.customer).toBe("cus_test123");
     expect(call.customer_email).toBeUndefined();

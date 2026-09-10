@@ -2,10 +2,71 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const SUPPORTED_NON_ENGLISH_LOCALES = ["es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+function toFormattedSourcePattern(snippet: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let pattern = "";
+
+  for (let index = 0; index < snippet.length; ) {
+    const character = snippet[index];
+    if (character === '"' || character === "'") {
+      let closingIndex = index + 1;
+      while (closingIndex < snippet.length) {
+        if (
+          snippet[closingIndex] === character &&
+          snippet[closingIndex - 1] !== "\\"
+        )
+          break;
+        closingIndex += 1;
+      }
+      if (closingIndex < snippet.length) {
+        pattern += `["']${escape(snippet.slice(index + 1, closingIndex))}["']`;
+        index = closingIndex + 1;
+        continue;
+      }
+    }
+
+    if (/\s/.test(character)) {
+      while (index < snippet.length && /\s/.test(snippet[index])) index += 1;
+      pattern += "\\s*";
+      continue;
+    }
+
+    pattern += escape(character);
+    if ("().,=:?{}[]<>".includes(character)) pattern += "\\s*";
+    index += 1;
+  }
+
+  return new RegExp(pattern);
+}
+
+function expectFormattedSource(source: string) {
+  return {
+    toContain(snippet: string) {
+      expect(source).toMatch(toFormattedSourcePattern(snippet));
+    },
+    not: {
+      toContain(snippet: string) {
+        expect(source).not.toMatch(toFormattedSourcePattern(snippet));
+      },
+    },
+  };
+}
+
+const SUPPORTED_NON_ENGLISH_LOCALES = [
+  "es",
+  "fr",
+  "it",
+  "th",
+  "zh-CN",
+  "zh-TW",
+] as const;
 
 function readProjectFile(relativePath: string): string {
-  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+  return readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    "utf8"
+  );
 }
 
 type ManifestEntry = {
@@ -16,33 +77,38 @@ type ManifestEntry = {
 
 describe("Full application localization coverage", () => {
   const manifest = JSON.parse(
-    readProjectFile("../client/src/lib/autoTextManifest.json"),
+    readProjectFile("../client/src/lib/autoTextManifest.json")
   ) as ManifestEntry[];
   const translations = JSON.parse(
-    readProjectFile("../client/src/lib/autoTextTranslations.json"),
+    readProjectFile("../client/src/lib/autoTextTranslations.json")
   ) as Record<string, Record<string, string>>;
 
   it("provides a complete, non-empty translation for every audited static customer-facing string", () => {
     expect(manifest.length).toBeGreaterThan(1300);
-    const keys = manifest.map((entry) => entry.key).sort();
+    const keys = manifest.map(entry => entry.key).sort();
 
     for (const locale of SUPPORTED_NON_ENGLISH_LOCALES) {
       const catalog = translations[locale];
       expect(catalog, `${locale} static-copy catalog is missing`).toBeTruthy();
-      expect(Object.keys(catalog).sort(), `${locale} catalog key parity failure`).toEqual(keys);
+      expect(
+        Object.keys(catalog).sort(),
+        `${locale} catalog key parity failure`
+      ).toEqual(keys);
 
       for (const entry of manifest) {
         const value = catalog[entry.key];
         expect(
           typeof value === "string" && value.trim().length > 0,
-          `${locale} is missing a translation for ${entry.source}`,
+          `${locale} is missing a translation for ${entry.source}`
         ).toBe(true);
       }
     }
   });
 
   it("covers the public, legal, product, support, administrative, and form surfaces identified by the audit", () => {
-    const auditedFiles = new Set(manifest.flatMap((entry) => entry.usages.map((usage) => usage.file)));
+    const auditedFiles = new Set(
+      manifest.flatMap(entry => entry.usages.map(usage => usage.file))
+    );
     const requiredFileFragments = [
       "client/src/pages/PrivacyPolicy.tsx",
       "client/src/pages/TermsOfService.tsx",
@@ -59,21 +125,34 @@ describe("Full application localization coverage", () => {
     ];
 
     for (const requiredFile of requiredFileFragments) {
-      expect(auditedFiles.has(requiredFile), `Localization audit missed ${requiredFile}`).toBe(true);
+      expect(
+        auditedFiles.has(requiredFile),
+        `Localization audit missed ${requiredFile}`
+      ).toBe(true);
     }
   });
 
   it("keeps the locale-reactive static-copy bridge mounted in the app shell", () => {
     const helperSource = readProjectFile("../client/src/lib/autoText.ts");
-    const bridgeSource = readProjectFile("../client/src/components/AutoTextLocalizer.tsx");
+    const bridgeSource = readProjectFile(
+      "../client/src/components/AutoTextLocalizer.tsx"
+    );
     const appSource = readProjectFile("../client/src/App.tsx");
 
-    expect(helperSource).toContain("export function localizeStaticText");
-    expect(helperSource).toContain("localizeEmbeddedDates");
-    expect(bridgeSource).toContain("new MutationObserver(schedule)");
-    expect(bridgeSource).toContain('i18n.on("languageChanged", schedule)');
-    expect(bridgeSource).toContain('i18n.on("loaded", schedule)');
-    expect(appSource).toContain("<AutoTextLocalizer />");
+    expectFormattedSource(helperSource).toContain(
+      "export function localizeStaticText"
+    );
+    expectFormattedSource(helperSource).toContain("localizeEmbeddedDates");
+    expectFormattedSource(bridgeSource).toContain(
+      "new MutationObserver(schedule)"
+    );
+    expectFormattedSource(bridgeSource).toContain(
+      'i18n.on("languageChanged", schedule)'
+    );
+    expectFormattedSource(bridgeSource).toContain(
+      'i18n.on("loaded", schedule)'
+    );
+    expectFormattedSource(appSource).toContain("<AutoTextLocalizer />");
   });
 
   it("anchors authenticated dashboard translations to the translation namespace in every locale", () => {
@@ -81,30 +160,48 @@ describe("Full application localization coverage", () => {
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
     const bootstrapSource = readProjectFile("../client/src/main.tsx");
 
-    expect((homeSource.match(/useTranslation\("translation"\)/g) ?? []).length).toBeGreaterThanOrEqual(3);
-    expect(i18nSource).toContain("export const i18nReady");
-    expect(bootstrapSource).toContain("loadStaticLocalizationSupplement");
-    expect(bootstrapSource).toContain("void i18nReady.then(() => {");
-    expect(bootstrapSource).toContain("return loadStaticLocalizationSupplement();");
-    expect(homeSource).toContain('t("referralRewards.title")');
-    expect(homeSource).toContain('t("referralRewards.shareMessage", { url: shareUrl })');
-    expect(homeSource).not.toContain(">Referral Rewards<");
-    expect(homeSource).not.toContain(">Free Months<");
-    expect(homeSource).not.toContain('"Copy Link"');
+    expect(
+      (homeSource.match(/useTranslation\("translation"\)/g) ?? []).length
+    ).toBeGreaterThanOrEqual(3);
+    expectFormattedSource(i18nSource).toContain("export const i18nReady");
+    expectFormattedSource(bootstrapSource).toContain(
+      "loadStaticLocalizationSupplement"
+    );
+    expect(bootstrapSource).toMatch(
+      /void\s+i18nReady\s*\.then\s*\(\s*\(\s*\)\s*=>\s*\{/s
+    );
+    expect(bootstrapSource).toMatch(
+      /return\s+loadStaticLocalizationSupplement\s*\(\s*\)\s*;/s
+    );
+    expectFormattedSource(homeSource).toContain('t("referralRewards.title")');
+    expectFormattedSource(homeSource).toContain(
+      't("referralRewards.shareMessage", { url: shareUrl })'
+    );
+    expectFormattedSource(homeSource).not.toContain(">Referral Rewards<");
+    expectFormattedSource(homeSource).not.toContain(">Free Months<");
+    expectFormattedSource(homeSource).not.toContain('"Copy Link"');
 
     for (const locale of SUPPORTED_NON_ENGLISH_LOCALES) {
       const catalog = JSON.parse(
-        readProjectFile(`../client/public/locales/${locale}/translation.json`),
+        readProjectFile(`../client/public/locales/${locale}/translation.json`)
       ) as Record<string, unknown>;
 
-      for (const group of ["homePage", "trackingSummaryCard", "shareReferralCard", "referralRewards"]) {
+      for (const group of [
+        "homePage",
+        "trackingSummaryCard",
+        "shareReferralCard",
+        "referralRewards",
+      ]) {
         expect(
           typeof catalog[group] === "object" && catalog[group] !== null,
-          `${locale} is missing the ${group} dashboard translation group`,
+          `${locale} is missing the ${group} dashboard translation group`
         ).toBe(true);
       }
 
-      const referralRewards = catalog.referralRewards as Record<string, unknown>;
+      const referralRewards = catalog.referralRewards as Record<
+        string,
+        unknown
+      >;
       for (const key of [
         "title",
         "subtitle",
@@ -120,8 +217,9 @@ describe("Full application localization coverage", () => {
         "rewardProcessingHint",
       ]) {
         expect(
-          typeof referralRewards[key] === "string" && referralRewards[key].trim().length > 0,
-          `${locale}.referralRewards.${key} must be populated`,
+          typeof referralRewards[key] === "string" &&
+            referralRewards[key].trim().length > 0,
+          `${locale}.referralRewards.${key} must be populated`
         ).toBe(true);
       }
     }
@@ -130,27 +228,59 @@ describe("Full application localization coverage", () => {
   it("loads the static-copy supplement before render and localizes native-share payloads outside the DOM bridge", () => {
     const helperSource = readProjectFile("../client/src/lib/autoText.ts");
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
-    const onboardingSource = readProjectFile("../client/src/components/OnboardingWizard.tsx");
-    const paymentSuccessSource = readProjectFile("../client/src/pages/PaymentSuccess.tsx");
-    const pwaPromptSource = readProjectFile("../client/src/components/PWAInstallPrompt.tsx");
+    const onboardingSource = readProjectFile(
+      "../client/src/components/OnboardingWizard.tsx"
+    );
+    const paymentSuccessSource = readProjectFile(
+      "../client/src/pages/PaymentSuccess.tsx"
+    );
+    const pwaPromptSource = readProjectFile(
+      "../client/src/components/PWAInstallPrompt.tsx"
+    );
     const pwaShareSource = readProjectFile("../client/src/lib/pwaShare.ts");
 
     for (const locale of SUPPORTED_NON_ENGLISH_LOCALES) {
-      expect(helperSource).toContain(`"/api/assets/static-copy/${locale}"`);
+      expectFormattedSource(helperSource).toContain(
+        `"/api/assets/static-copy/${locale}"`
+      );
     }
-    expect(helperSource).toContain("export function loadStaticLocalizationSupplement");
-    expect(helperSource).toContain("mergeStaticCopySupplement");
-    expect(helperSource).toContain("loadedStaticCopyLocales");
-    expect(i18nSource).toContain("Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)])");
-    expect(onboardingSource).toContain('from "@/components/ui/tooltip"');
-    expect(onboardingSource).toContain("onboardingWizard.tooltips.smtpPassword.text");
-    expect(onboardingSource).toContain("onboardingWizard.tooltips.reviewUrl.text");
-    expect(onboardingSource).toContain("onboardingWizard.tooltips.firstRequest.text");
-    expect(paymentSuccessSource).toContain("const PERKS_BY_TIER");
-    expect(pwaPromptSource).toContain('const { at } = await import("@/lib/autoText")');
-    expect(pwaPromptSource).toContain("localizedShareText = at(localizedShareText)");
-    expect(pwaShareSource).toContain("export async function getLocalizedGetPhameShareData");
-    expect(pwaShareSource).toContain('const { at } = await import("./autoText")');
-    expect(pwaShareSource).toContain("await navigator.share(await getLocalizedGetPhameShareData())");
+    expectFormattedSource(helperSource).toContain(
+      "export function loadStaticLocalizationSupplement"
+    );
+    expectFormattedSource(helperSource).toContain("mergeStaticCopySupplement");
+    expectFormattedSource(helperSource).toContain("loadedStaticCopyLocales");
+    expectFormattedSource(i18nSource).toContain(
+      "Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)])"
+    );
+    expectFormattedSource(onboardingSource).toContain(
+      'from "@/components/ui/tooltip"'
+    );
+    expectFormattedSource(onboardingSource).toContain(
+      "onboardingWizard.tooltips.smtpPassword.text"
+    );
+    expectFormattedSource(onboardingSource).toContain(
+      "onboardingWizard.tooltips.reviewUrl.text"
+    );
+    expectFormattedSource(onboardingSource).toContain(
+      "onboardingWizard.tooltips.firstRequest.text"
+    );
+    expectFormattedSource(paymentSuccessSource).toContain(
+      "const PERKS_BY_TIER"
+    );
+    expectFormattedSource(pwaPromptSource).toContain(
+      'const { at } = await import("@/lib/autoText")'
+    );
+    expectFormattedSource(pwaPromptSource).toContain(
+      "localizedShareText = at(localizedShareText)"
+    );
+    expectFormattedSource(pwaShareSource).toContain(
+      "export async function getLocalizedGetPhameShareData"
+    );
+    expectFormattedSource(pwaShareSource).toContain(
+      'const { at } = await import("./autoText")'
+    );
+    expectFormattedSource(pwaShareSource).toContain(
+      "await navigator.share(await getLocalizedGetPhameShareData())"
+    );
   });
 });

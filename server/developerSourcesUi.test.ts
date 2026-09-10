@@ -2,85 +2,192 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
+function sourceContractPattern(expected: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&");
+  const hasClosingQuote = (start: number, quote: string) => {
+    for (let index = start + 1; index < expected.length; index += 1) {
+      if (expected[index] === "\\") {
+        index += 1;
+      } else if (expected[index] === quote) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  let pattern = "";
+  let quote: "'" | '"' | "`" | null = null;
+  for (let index = 0; index < expected.length; index += 1) {
+    const character = expected[index];
+    if (quote) {
+      if (character === "\\" && index + 1 < expected.length) {
+        pattern += escape(character + expected[index + 1]);
+        index += 1;
+      } else if (character === quote) {
+        pattern += quote === "`" ? "`" : "[\"']";
+        quote = null;
+      } else {
+        pattern += escape(character);
+      }
+      continue;
+    }
+    if (/\s/.test(character)) {
+      while (index + 1 < expected.length && /\s/.test(expected[index + 1])) {
+        index += 1;
+      }
+      pattern += "\\s*";
+    } else if (
+      (character === "'" || character === '"' || character === "`") &&
+      hasClosingQuote(index, character)
+    ) {
+      pattern += character === "`" ? "`" : "[\"']";
+      quote = character;
+    } else {
+      pattern += escape(character);
+    }
+  }
+  return new RegExp(pattern, "s");
+}
+
+function expectSourceContract(source: string) {
+  return {
+    toContain(expected: string) {
+      expect(source).toMatch(sourceContractPattern(expected));
+    },
+  };
+}
+
 function readProjectFile(relativePath: string) {
-  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+  return readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    "utf8"
+  );
 }
 
 const localePaths = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"];
 
 describe("Developer Sources workflow", () => {
   it("offers provider-specific, keyboard-accessible guided source selection", () => {
-    const component = readProjectFile("../client/src/components/SourceSetupGuide.tsx");
-    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
+    const component = readProjectFile(
+      "../client/src/components/SourceSetupGuide.tsx"
+    );
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
 
-    expect(page).toContain("<SourceSetupGuide endpoint={endpoint} />");
-    expect(component).toContain('type="radio"');
-    expect(component).toContain('name="source-provider"');
-    expect(component).toContain('data-testid="developer-sources"');
-    expect(component).toContain('label: "Jotform"');
-    expect(component).toContain('label: "Facebook Lead Ads"');
-    expect(component).toContain('label: "Google Forms"');
-    expect(component).toContain('label: "Airtable"');
-    expect(component).toContain('label: "Other source"');
+    expectSourceContract(page).toContain(
+      "<SourceSetupGuide endpoint={endpoint} />"
+    );
+    expectSourceContract(component).toContain('type="radio"');
+    expectSourceContract(component).toContain('name="source-provider"');
+    expectSourceContract(component).toContain(
+      'data-testid="developer-sources"'
+    );
+    expectSourceContract(component).toContain('label: "Jotform"');
+    expectSourceContract(component).toContain('label: "Facebook Lead Ads"');
+    expectSourceContract(component).toContain('label: "Google Forms"');
+    expectSourceContract(component).toContain('label: "Airtable"');
+    expectSourceContract(component).toContain('label: "Other source"');
   });
 
   it("uses only the canonical import endpoint and a placeholder secret", () => {
-    const component = readProjectFile("../client/src/components/SourceSetupGuide.tsx");
+    const component = readProjectFile(
+      "../client/src/components/SourceSetupGuide.tsx"
+    );
     const publicApi = readProjectFile("./publicApi.ts");
 
-    expect(component).toContain('const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>"');
+    expectSourceContract(component).toContain(
+      'const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>"'
+    );
     expect(component).not.toContain("gp_live_");
-    expect(component).toContain("Authorization: Bearer ${API_KEY_PLACEHOLDER}");
-    expect(component).toContain("Idempotency-Key: <stable-provider-event-id>");
+    expectSourceContract(component).toContain(
+      "Authorization: Bearer ${API_KEY_PLACEHOLDER}"
+    );
+    expectSourceContract(component).toContain(
+      "Idempotency-Key: <stable-provider-event-id>"
+    );
     expect(component).not.toContain("/api/public/send");
     expect(component).not.toContain("apiKeyRaw");
-    expect(publicApi).toContain('authenticateApiRequest(req, "contacts:write")');
-    expect(publicApi).toContain('app.post("/api/v1/contacts", handleContactImport(true))');
+    expectSourceContract(publicApi).toContain(
+      'authenticateApiRequest(req, "contacts:write")'
+    );
+    expectSourceContract(publicApi).toContain(
+      'app.post("/api/v1/contacts", handleContactImport(true))'
+    );
   });
 
   it("maps consent, stable source metadata, idempotency, and deduplication without automatic sending", () => {
-    const component = readProjectFile("../client/src/components/SourceSetupGuide.tsx");
+    const component = readProjectFile(
+      "../client/src/components/SourceSetupGuide.tsx"
+    );
     const publicApi = readProjectFile("./publicApi.ts");
 
-    for (const field of ["name", "email", "externalId", "sourceApp", "consentConfirmed", "consentBasis", "consentSource"]) {
-      expect(component).toContain(`["${field}"`);
+    for (const field of [
+      "name",
+      "email",
+      "externalId",
+      "sourceApp",
+      "consentConfirmed",
+      "consentBasis",
+      "consentSource",
+    ]) {
+      expectSourceContract(component).toContain(`["${field}"`);
     }
-    expect(component).toContain('sourceApp: "jotform"');
-    expect(component).toContain('sourceApp: "facebook-lead-ads"');
-    expect(component).toContain('sourceApp: "google-forms"');
-    expect(component).toContain('sourceApp: "airtable"');
-    expect(component).toContain('defaultValue: "Imports contacts only"');
-    expect(publicApi).toContain('"CONSENT_REQUIRED"');
-    expect(publicApi).toContain('"IDEMPOTENCY_CONFLICT"');
-    expect(publicApi).toContain("deduplicated: !result.created");
-    expect(publicApi).not.toContain('app.post("/api/v1/contacts", handleSendRequest');
+    expectSourceContract(component).toContain('sourceApp: "jotform"');
+    expectSourceContract(component).toContain('sourceApp: "facebook-lead-ads"');
+    expectSourceContract(component).toContain('sourceApp: "google-forms"');
+    expectSourceContract(component).toContain('sourceApp: "airtable"');
+    expectSourceContract(component).toContain(
+      'defaultValue: "Imports contacts only"'
+    );
+    expectSourceContract(publicApi).toContain('"CONSENT_REQUIRED"');
+    expectSourceContract(publicApi).toContain('"IDEMPOTENCY_CONFLICT"');
+    expectSourceContract(publicApi).toContain("deduplicated: !result.created");
+    expect(publicApi).not.toContain(
+      'app.post("/api/v1/contacts", handleSendRequest'
+    );
   });
 
   it("ships guided Zapier and Make recipes through a protected managed Sources workspace", () => {
-    const panel = readProjectFile("../client/src/components/SourceOperationsPanel.tsx");
-    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
+    const panel = readProjectFile(
+      "../client/src/components/SourceOperationsPanel.tsx"
+    );
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
     const router = readProjectFile("./routers/sourceOperations.ts");
 
-    expect(page).toContain("<SourceOperationsPanel />");
-    expect(panel).toContain("trpc.sources.setupManifest.useQuery()");
-    expect(panel).toContain("trpc.sources.create.useMutation");
-    expect(panel).toContain("trpc.sources.analytics.useQuery");
-    expect(panel).toContain("trpc.sources.healthHistory.useQuery");
-    expect(panel).toContain("trpc.sources.refreshHealth.useMutation");
-    expect(panel).toContain('value="zapier"');
-    expect(panel).toContain('value="make"');
-    expect(panel).toContain("Authorization: Bearer");
-    expect(panel).toContain("Idempotency-Key");
+    expectSourceContract(page).toContain("<SourceOperationsPanel />");
+    expectSourceContract(panel).toContain(
+      "trpc.sources.setupManifest.useQuery()"
+    );
+    expectSourceContract(panel).toContain("trpc.sources.create.useMutation");
+    expectSourceContract(panel).toContain("trpc.sources.analytics.useQuery");
+    expectSourceContract(panel).toContain(
+      "trpc.sources.healthHistory.useQuery"
+    );
+    expectSourceContract(panel).toContain(
+      "trpc.sources.refreshHealth.useMutation"
+    );
+    expectSourceContract(panel).toContain('value="zapier"');
+    expectSourceContract(panel).toContain('value="make"');
+    expectSourceContract(panel).toContain("Authorization: Bearer");
+    expectSourceContract(panel).toContain("Idempotency-Key");
     expect(panel).not.toContain("apiKeyRaw");
 
-    expect(router).toContain("setupManifest: protectedProcedure");
-    expect(router).toContain('sourceHeaderName: "X-Get-Phame-Source"');
-    expect(router).toContain('endpointPath: "/api/v1/contacts"');
-    expect(router).toContain("Webhooks by Zapier");
-    expect(router).toContain("https://help.zapier.com/hc/en-us/articles/8496288690317-Send-webhooks-in-Zaps");
-    expect(router).toContain('actionApp: "HTTP"');
-    expect(router).toContain("https://apps.make.com/http");
-    expect(router).toContain("keyHint: key.keyHint");
+    expectSourceContract(router).toContain("setupManifest: protectedProcedure");
+    expectSourceContract(router).toContain(
+      'sourceHeaderName: "X-Get-Phame-Source"'
+    );
+    expectSourceContract(router).toContain('endpointPath: "/api/v1/contacts"');
+    expectSourceContract(router).toContain("Webhooks by Zapier");
+    expectSourceContract(router).toContain(
+      "https://help.zapier.com/hc/en-us/articles/8496288690317-Send-webhooks-in-Zaps"
+    );
+    expectSourceContract(router).toContain('actionApp: "HTTP"');
+    expectSourceContract(router).toContain("https://apps.make.com/http");
+    expectSourceContract(router).toContain("keyHint: key.keyHint");
     expect(router).not.toContain("keyHash: key.keyHash");
   });
 
@@ -91,39 +198,59 @@ describe("Developer Sources workflow", () => {
     const router = readProjectFile("./routers/sourceOperations.ts");
     const schema = readProjectFile("../drizzle/schema.ts");
 
-    const authIndex = publicApi.indexOf('authenticateApiRequest(req, "contacts:write")');
-    const sourceHeaderIndex = publicApi.indexOf('req.header("X-Get-Phame-Source")');
+    const authIndex = publicApi.indexOf(
+      'authenticateApiRequest(req, "contacts:write")'
+    );
+    const sourceHeaderIndex = publicApi.indexOf(
+      'req.header("X-Get-Phame-Source")'
+    );
     expect(authIndex).toBeGreaterThan(-1);
     expect(sourceHeaderIndex).toBeGreaterThan(authIndex);
-    expect(publicApi).toContain("resolveSourceConnectionForPrincipal");
-    expect(publicApi).toContain('"SOURCE_CONNECTION_FORBIDDEN"');
-    expect(publicApi).toContain("sourceConnectionId");
-    expect(imports).toContain("recordSourceConnectionActivity");
-    expect(imports).toContain("sourceConnectionId: params.sourceConnectionId ?? null");
+    expectSourceContract(publicApi).toContain(
+      "resolveSourceConnectionForPrincipal"
+    );
+    expectSourceContract(publicApi).toContain('"SOURCE_CONNECTION_FORBIDDEN"');
+    expectSourceContract(publicApi).toContain("sourceConnectionId");
+    expectSourceContract(imports).toContain("recordSourceConnectionActivity");
+    expectSourceContract(imports).toContain(
+      "sourceConnectionId: params.sourceConnectionId ?? null"
+    );
 
-    expect(router).toContain("getSourceAnalytics(ctx.user.id, input.days)");
-    expect(router).toContain("z.literal(7)");
-    expect(router).toContain("z.literal(30)");
-    expect(router).toContain("z.literal(90)");
-    expect(router).toContain("listSourceHealthHistoryForUser(");
-    expect(router).toContain("getSourceConnectionForUser(ctx.user.id, input.id)");
-    expect(sources).toContain("contactsDeduplicated");
-    expect(sources).toContain("successRate");
-    expect(sources).toContain("latestActivityAt");
-    expect(sources).toContain("claimSourceHealthSchedulerRun");
+    expectSourceContract(router).toContain(
+      "getSourceAnalytics(ctx.user.id, input.days)"
+    );
+    expectSourceContract(router).toContain("z.literal(7)");
+    expectSourceContract(router).toContain("z.literal(30)");
+    expectSourceContract(router).toContain("z.literal(90)");
+    expectSourceContract(router).toContain("listSourceHealthHistoryForUser(");
+    expectSourceContract(router).toContain(
+      "getSourceConnectionForUser(ctx.user.id, input.id)"
+    );
+    expectSourceContract(sources).toContain("contactsDeduplicated");
+    expectSourceContract(sources).toContain("successRate");
+    expectSourceContract(sources).toContain("latestActivityAt");
+    expectSourceContract(sources).toContain("claimSourceHealthSchedulerRun");
 
-    expect(schema).toContain("export const sourceConnections");
-    expect(schema).toContain("export const sourceHealthHistory");
-    expect(schema).toContain("export const sourceHealthSchedulers");
-    expect(schema).toContain('sourceConnectionId: integer("sourceConnectionId")');
+    expectSourceContract(schema).toContain("export const sourceConnections");
+    expectSourceContract(schema).toContain("export const sourceHealthHistory");
+    expectSourceContract(schema).toContain(
+      "export const sourceHealthSchedulers"
+    );
+    expectSourceContract(schema).toContain(
+      'sourceConnectionId: integer("sourceConnectionId")'
+    );
   });
 
   it("ships a complete Sources namespace in all seven locale catalogs and bumps the PWA cache", () => {
-    const component = readProjectFile("../client/src/components/SourceSetupGuide.tsx");
+    const component = readProjectFile(
+      "../client/src/components/SourceSetupGuide.tsx"
+    );
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
 
     for (const locale of localePaths) {
-      const catalog = JSON.parse(readProjectFile(`../client/public/locales/${locale}/translation.json`));
+      const catalog = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/translation.json`)
+      );
       const sources = catalog.developerIntegrations?.sources;
       expect(sources?.title).toBeTypeOf("string");
       expect(sources?.title.length).toBeGreaterThan(0);
@@ -151,14 +278,20 @@ describe("Developer Sources workflow", () => {
     }
 
     const serviceWorker = readProjectFile("../client/public/sw.js");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
-    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame61');
-    expect(component).toContain("const STEP_FALLBACKS");
-    expect(component).toContain("const RULE_FALLBACKS");
-    expect(component).toContain("const PROVIDER_FALLBACKS");
-    expect(component).toContain("const FIELD_FALLBACKS");
+    expectSourceContract(serviceWorker).toContain(
+      "const CACHE_NAME = 'getphame-v29'"
+    );
+    expectSourceContract(i18nSource).toContain(
+      "/locales/{{lng}}/{{ns}}.json?v=phame61"
+    );
+    expectSourceContract(component).toContain("const STEP_FALLBACKS");
+    expectSourceContract(component).toContain("const RULE_FALLBACKS");
+    expectSourceContract(component).toContain("const PROVIDER_FALLBACKS");
+    expectSourceContract(component).toContain("const FIELD_FALLBACKS");
     for (const locale of localePaths) {
-      expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);
+      expectSourceContract(serviceWorker).toContain(
+        `/locales/${locale}/translation.json`
+      );
     }
   });
 });

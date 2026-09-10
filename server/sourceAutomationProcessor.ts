@@ -32,7 +32,8 @@ const defaultDeps: SourceAutomationProcessorDeps = {
 
 function errorCode(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
-  if (message.includes("approved") && message.includes("template")) return "TEMPLATE_NOT_READY";
+  if (message.includes("approved") && message.includes("template"))
+    return "TEMPLATE_NOT_READY";
   if (message.includes("SMTP not configured")) return "SMTP_NOT_READY";
   if (message.includes("review destination")) return "PLATFORM_NOT_READY";
   return "DELIVERY_FAILED";
@@ -40,9 +41,17 @@ function errorCode(error: unknown) {
 
 export async function processDueSourceAutomationEvents(
   now = Date.now(),
-  deps: SourceAutomationProcessorDeps = defaultDeps,
+  deps: SourceAutomationProcessorDeps = defaultDeps
 ) {
-  const summary = { checked: 0, sent: 0, queued: 0, suppressed: 0, dryRun: 0, retried: 0, failed: 0 };
+  const summary = {
+    checked: 0,
+    sent: 0,
+    queued: 0,
+    suppressed: 0,
+    dryRun: 0,
+    retried: 0,
+    failed: 0,
+  };
   for (let index = 0; index < MAX_EVENTS_PER_RUN; index += 1) {
     const event = await deps.claimDue(now);
     if (!event) break;
@@ -61,14 +70,20 @@ export async function processDueSourceAutomationEvents(
         continue;
       }
       const { contact, source } = context;
-      if (!source.automationEnabled || source.automationMode !== "review_request" || source.pausedAt) {
+      if (
+        !source.automationEnabled ||
+        source.automationMode !== "review_request" ||
+        source.pausedAt
+      ) {
         await deps.complete({
           userId: event.userId,
           eventId: event.id,
           sourceConnectionId: event.sourceConnectionId,
           status: "failed",
           contactId: contact.id,
-          errorCode: source.pausedAt ? "AUTOMATION_PAUSED" : "AUTOMATION_DISABLED",
+          errorCode: source.pausedAt
+            ? "AUTOMATION_PAUSED"
+            : "AUTOMATION_DISABLED",
         });
         summary.failed += 1;
         continue;
@@ -101,7 +116,14 @@ export async function processDueSourceAutomationEvents(
         userId: event.userId,
         customerName: contact.name,
         customerEmail: contact.email,
-        preferredLocale: event.preferredLocale as "en" | "es" | "fr" | "it" | "th" | "zh-CN" | "zh-TW",
+        preferredLocale: event.preferredLocale as
+          | "en"
+          | "es"
+          | "fr"
+          | "it"
+          | "th"
+          | "zh-CN"
+          | "zh-TW",
         templateId: event.templateId,
         platformId: event.platformId,
         sourceConnectionId: event.sourceConnectionId,
@@ -131,16 +153,28 @@ export async function processDueSourceAutomationEvents(
   return summary;
 }
 
-export async function sourceAutomationHeartbeatHandler(req: Request, res: Response) {
+export async function sourceAutomationHeartbeatHandler(
+  req: Request,
+  res: Response
+) {
   let taskUid: string | undefined;
   try {
     const user = await sdk.authenticateRequest(req);
-    if (!user.isCron || !user.taskUid) return res.status(403).json({ error: "cron-only" });
+    if (!user.isCron || !user.taskUid)
+      return res.status(403).json({ error: "cron-only" });
     taskUid = user.taskUid;
     const scheduler = await getSourceAutomationSchedulerByTaskUid(taskUid);
     if (!scheduler) return res.json({ ok: true, skipped: "orphan" });
-    const claimed = await claimSourceAutomationSchedulerRun(taskUid, RETRY_DEDUP_WINDOW_MS);
-    if (!claimed) return res.json({ ok: true, skipped: "recent-run-exists", checkedAt: scheduler.lastRunAt });
+    const claimed = await claimSourceAutomationSchedulerRun(
+      taskUid,
+      RETRY_DEDUP_WINDOW_MS
+    );
+    if (!claimed)
+      return res.json({
+        ok: true,
+        skipped: "recent-run-exists",
+        checkedAt: scheduler.lastRunAt,
+      });
     const summary = await processDueSourceAutomationEvents();
     await recordSourceAutomationSchedulerRun({ taskUid, status: "ok" });
     return res.json({ ok: true, summary });
@@ -152,7 +186,10 @@ export async function sourceAutomationHeartbeatHandler(req: Request, res: Respon
         errorCode: "SOURCE_AUTOMATION_PROCESSING_FAILED",
       }).catch(() => undefined);
     }
-    console.error("[SourceAutomation] Scheduled processor failed:", error instanceof Error ? error.name : "unknown");
+    console.error(
+      "[SourceAutomation] Scheduled processor failed:",
+      error instanceof Error ? error.name : "unknown"
+    );
     return res.status(500).json({
       error: "SOURCE_AUTOMATION_PROCESSING_FAILED",
       timestamp: new Date().toISOString(),

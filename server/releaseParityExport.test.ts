@@ -7,15 +7,17 @@ import {
 describe("release-history export", () => {
   it("uses a sanitized, formula-safe, bounded snapshot with clipboard parity", () => {
     const snapshot = buildReleaseHistoryCsvExport({
-      rows: [{
-        id: 1,
-        checkpointId: "=unsafe-checkpoint",
-        protectedMainCommit: "main-commit",
-        protectedMainTree: "main-tree",
-        managedTree: "managed-tree",
-        parityStatus: "matched",
-        recordedAt: 1_726_000_000_000,
-      }] as any,
+      rows: [
+        {
+          id: 1,
+          checkpointId: "=unsafe-checkpoint",
+          protectedMainCommit: "main-commit",
+          protectedMainTree: "main-tree",
+          managedTree: "managed-tree",
+          parityStatus: "matched",
+          recordedAt: 1_726_000_000_000,
+        },
+      ] as any,
       total: RELEASE_HISTORY_EXPORT_LIMIT + 1,
       truncated: true,
       status: "matched",
@@ -29,8 +31,10 @@ describe("release-history export", () => {
     expect(snapshot.csv).toContain("'=unsafe-checkpoint");
     expect(snapshot.truncated).toBe(true);
     expect(snapshot.snapshotToMs).toBe(1_726_000_000_000);
-    expect(snapshot.preview.rows).toEqual(snapshot.searchRows.slice(0, snapshot.preview.limit));
-    expect(snapshot.availableColumns.map((column) => column.key)).toEqual([
+    expect(snapshot.preview.rows).toEqual(
+      snapshot.searchRows.slice(0, snapshot.preview.limit)
+    );
+    expect(snapshot.availableColumns.map(column => column.key)).toEqual([
       "recordedAtUtc",
       "checkpointId",
       "protectedMainCommit",

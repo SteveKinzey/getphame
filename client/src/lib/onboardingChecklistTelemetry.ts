@@ -11,7 +11,8 @@ export const ONBOARDING_CHECKLIST_TELEMETRY_EVENTS = [
   "checklist_completed",
 ] as const;
 
-export type OnboardingChecklistTelemetryEvent = (typeof ONBOARDING_CHECKLIST_TELEMETRY_EVENTS)[number];
+export type OnboardingChecklistTelemetryEvent =
+  (typeof ONBOARDING_CHECKLIST_TELEMETRY_EVENTS)[number];
 
 interface SessionStorageLike {
   getItem(key: string): string | null;
@@ -29,14 +30,20 @@ function getSessionStorage(): SessionStorageLike | null {
   }
 }
 
-function parseStoredEvents(value: string | null): Set<OnboardingChecklistTelemetryEvent> {
+function parseStoredEvents(
+  value: string | null
+): Set<OnboardingChecklistTelemetryEvent> {
   if (!value) return new Set();
   try {
     const parsed = JSON.parse(value);
     if (!Array.isArray(parsed)) return new Set();
-    return new Set(parsed.filter((event): event is OnboardingChecklistTelemetryEvent =>
-      ONBOARDING_CHECKLIST_TELEMETRY_EVENTS.includes(event as OnboardingChecklistTelemetryEvent),
-    ));
+    return new Set(
+      parsed.filter((event): event is OnboardingChecklistTelemetryEvent =>
+        ONBOARDING_CHECKLIST_TELEMETRY_EVENTS.includes(
+          event as OnboardingChecklistTelemetryEvent
+        )
+      )
+    );
   } catch {
     return new Set();
   }
@@ -52,7 +59,7 @@ export function claimOnboardingChecklistTelemetryEvent(
   userId: number | null | undefined,
   event: OnboardingChecklistTelemetryEvent,
   claimedEvents: Set<string>,
-  storage: SessionStorageLike | null = getSessionStorage(),
+  storage: SessionStorageLike | null = getSessionStorage()
 ): boolean {
   const storageKey = `${STORAGE_PREFIX}${userId ?? "unknown"}`;
   const memoryKey = `${storageKey}:${event}`;

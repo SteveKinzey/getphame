@@ -49,7 +49,8 @@ export async function reconcileRelayHealthHeartbeat(options?: {
   enabled?: boolean;
   deps?: RelayHeartbeatDeps;
 }) {
-  if (!(options?.enabled ?? ENV.isProduction)) return { status: "skipped" as const };
+  if (!(options?.enabled ?? ENV.isProduction))
+    return { status: "skipped" as const };
 
   const deps = options?.deps ?? defaultDeps;
   const firstPage = await deps.list("", { page: 1, pageSize: 100 });

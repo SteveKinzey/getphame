@@ -1,7 +1,4 @@
-import {
-  OAUTH_STATE_COOKIE,
-  decodeOAuthState,
-} from "@shared/const";
+import { OAUTH_STATE_COOKIE, decodeOAuthState } from "@shared/const";
 import { ENV } from "./env";
 import { parse as parseCookieHeader } from "cookie";
 import type { Express, Request, Response } from "express";
@@ -27,7 +24,9 @@ export function registerOAuthRoutes(app: Express) {
     }
 
     const { nonce: stateNonce } = decodeOAuthState(state);
-    const cookieNonce = parseCookieHeader(req.headers.cookie ?? "")[OAUTH_STATE_COOKIE];
+    const cookieNonce = parseCookieHeader(req.headers.cookie ?? "")[
+      OAUTH_STATE_COOKIE
+    ];
     if (!stateNonce || !cookieNonce || stateNonce !== cookieNonce) {
       res.status(403).json({ error: "invalid oauth state" });
       return;
@@ -50,7 +49,10 @@ export function registerOAuthRoutes(app: Express) {
       // Check if this is a new user before upserting
       const existingUser = await db.getUserByOpenId(userInfo.openId);
       const isNewUser = !existingUser;
-      if (isNewUser && await isHighConfidenceDisposableEmail(userInfo.email)) {
+      if (
+        isNewUser &&
+        (await isHighConfidenceDisposableEmail(userInfo.email))
+      ) {
         return res.redirect(302, "/login?auth_error=disposable_email");
       }
 
@@ -77,7 +79,8 @@ export function registerOAuthRoutes(app: Express) {
       }
 
       const sessionUser = await db.getUserByOpenId(userInfo.openId);
-      if (!sessionUser) throw new Error("Session user unavailable after OAuth account update");
+      if (!sessionUser)
+        throw new Error("Session user unavailable after OAuth account update");
       await issueSecuritySession({
         userId: sessionUser.id,
         authMethod: "oauth",

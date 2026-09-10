@@ -4,7 +4,10 @@ import { describe, expect, it } from "vitest";
 
 const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 
-function flatten(value: Record<string, unknown>, prefix = ""): Record<string, string> {
+function flatten(
+  value: Record<string, unknown>,
+  prefix = ""
+): Record<string, string> {
   const result: Record<string, string> = {};
 
   for (const [key, item] of Object.entries(value)) {
@@ -20,8 +23,17 @@ function flatten(value: Record<string, unknown>, prefix = ""): Record<string, st
 }
 
 function readRecoveryDrill(locale: (typeof locales)[number]) {
-  const path = join(process.cwd(), "client", "public", "locales", locale, "translation.json");
-  const bundle = JSON.parse(readFileSync(path, "utf8")) as { recoveryDrill?: Record<string, unknown> };
+  const path = join(
+    process.cwd(),
+    "client",
+    "public",
+    "locales",
+    locale,
+    "translation.json"
+  );
+  const bundle = JSON.parse(readFileSync(path, "utf8")) as {
+    recoveryDrill?: Record<string, unknown>;
+  };
   expect(bundle.recoveryDrill, `${locale}.recoveryDrill`).toBeDefined();
   return flatten(bundle.recoveryDrill ?? {});
 }
@@ -41,10 +53,16 @@ describe("recovery drill locale bundles", () => {
       expect(Object.keys(localized).sort()).toEqual(requiredPaths);
 
       for (const path of requiredPaths) {
-        expect(localized[path].trim(), `${locale}.recoveryDrill.${path}`).not.toBe("");
+        expect(
+          localized[path].trim(),
+          `${locale}.recoveryDrill.${path}`
+        ).not.toBe("");
         const englishPlaceholders = english[path].match(/{{[^}]+}}/g) ?? [];
         const localizedPlaceholders = localized[path].match(/{{[^}]+}}/g) ?? [];
-        expect(localizedPlaceholders.sort(), `${locale}.recoveryDrill.${path}`).toEqual(englishPlaceholders.sort());
+        expect(
+          localizedPlaceholders.sort(),
+          `${locale}.recoveryDrill.${path}`
+        ).toEqual(englishPlaceholders.sort());
       }
     });
   }

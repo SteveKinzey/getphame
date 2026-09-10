@@ -28,14 +28,27 @@ export async function findSavedContactByEmail(userId: number, email: string) {
   const [contact] = await db
     .select()
     .from(savedContacts)
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.email, normalizedEmail)))
+    .where(
+      and(
+        eq(savedContacts.userId, userId),
+        eq(savedContacts.email, normalizedEmail)
+      )
+    )
     .limit(1);
   return contact ?? null;
 }
 
 export async function createSavedContact(
   userId: number,
-  data: { name: string; email: string; phone?: string; notes?: string; consentBasis?: string; consentCapturedAt?: number; consentSource?: string }
+  data: {
+    name: string;
+    email: string;
+    phone?: string;
+    notes?: string;
+    consentBasis?: string;
+    consentCapturedAt?: number;
+    consentSource?: string;
+  }
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -61,8 +74,15 @@ export async function updateSavedContact(
   if (!db) throw new Error("Database not available");
   await db
     .update(savedContacts)
-    .set({ name: data.name, email: data.email, phone: data.phone ?? null, notes: data.notes ?? null })
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId)));
+    .set({
+      name: data.name,
+      email: data.email,
+      phone: data.phone ?? null,
+      notes: data.notes ?? null,
+    })
+    .where(
+      and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId))
+    );
 }
 
 export async function deleteSavedContact(userId: number, contactId: number) {
@@ -70,7 +90,9 @@ export async function deleteSavedContact(userId: number, contactId: number) {
   if (!db) throw new Error("Database not available");
   await db
     .delete(savedContacts)
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId)));
+    .where(
+      and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId))
+    );
 }
 
 export async function markContactSent(userId: number, contactId: number) {
@@ -79,12 +101,16 @@ export async function markContactSent(userId: number, contactId: number) {
   const [contact] = await db
     .select({ totalSent: savedContacts.totalSent })
     .from(savedContacts)
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId)));
+    .where(
+      and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId))
+    );
   if (!contact) return;
   await db
     .update(savedContacts)
     .set({ lastSentAt: Date.now(), totalSent: (contact.totalSent ?? 0) + 1 })
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId)));
+    .where(
+      and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId))
+    );
 }
 
 /**
@@ -94,8 +120,18 @@ export async function markContactSent(userId: number, contactId: number) {
  */
 export async function importContacts(
   userId: number,
-  rows: { name: string; email: string; phone?: string; notes?: string; rowNumber?: number }[]
-): Promise<{ imported: number; skipped: number; errorSummary: ContactImportErrorSummary }> {
+  rows: {
+    name: string;
+    email: string;
+    phone?: string;
+    notes?: string;
+    rowNumber?: number;
+  }[]
+): Promise<{
+  imported: number;
+  skipped: number;
+  errorSummary: ContactImportErrorSummary;
+}> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
@@ -104,9 +140,9 @@ export async function importContacts(
     .select({ email: savedContacts.email })
     .from(savedContacts)
     .where(eq(savedContacts.userId, userId));
-  const seenEmails = new Set(existing.map((r) => r.email.trim().toLowerCase()));
+  const seenEmails = new Set(existing.map(r => r.email.trim().toLowerCase()));
   const issues: ContactImportIssue[] = [];
-  const toInsert = rows.filter((row) => {
+  const toInsert = rows.filter(row => {
     const normalizedEmail = row.email.trim().toLowerCase();
     if (seenEmails.has(normalizedEmail)) {
       issues.push({ reason: "duplicate_email", rowNumber: row.rowNumber });
@@ -122,7 +158,7 @@ export async function importContacts(
     for (let i = 0; i < toInsert.length; i += 100) {
       const batch = toInsert.slice(i, i + 100);
       await db.insert(savedContacts).values(
-        batch.map((r) => ({
+        batch.map(r => ({
           userId,
           name: r.name,
           email: r.email,
@@ -150,7 +186,13 @@ export async function importContacts(
  */
 export async function upsertContactsFromSource(
   userId: number,
-  rows: { name: string; email: string; phone?: string; source: "stripe" | "woocommerce"; externalId?: string }[]
+  rows: {
+    name: string;
+    email: string;
+    phone?: string;
+    source: "stripe" | "woocommerce";
+    externalId?: string;
+  }[]
 ): Promise<{ inserted: number; skipped: number }> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -160,16 +202,18 @@ export async function upsertContactsFromSource(
     .select({ email: savedContacts.email })
     .from(savedContacts)
     .where(eq(savedContacts.userId, userId));
-  const existingEmails = new Set(existing.map((r) => r.email.toLowerCase()));
+  const existingEmails = new Set(existing.map(r => r.email.toLowerCase()));
 
-  const toInsert = rows.filter((r) => r.email && !existingEmails.has(r.email.toLowerCase()));
+  const toInsert = rows.filter(
+    r => r.email && !existingEmails.has(r.email.toLowerCase())
+  );
   const skipped = rows.length - toInsert.length;
 
   if (toInsert.length > 0) {
     for (let i = 0; i < toInsert.length; i += 100) {
       const batch = toInsert.slice(i, i + 100);
       await db.insert(savedContacts).values(
-        batch.map((r) => ({
+        batch.map(r => ({
           userId,
           name: r.name || r.email,
           email: r.email,
@@ -187,13 +231,19 @@ export async function upsertContactsFromSource(
 }
 
 /** Update the tags array for a single contact */
-export async function setContactTags(userId: number, contactId: number, tags: string[]) {
+export async function setContactTags(
+  userId: number,
+  contactId: number,
+  tags: string[]
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db
     .update(savedContacts)
     .set({ tags: JSON.stringify(tags) })
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId)));
+    .where(
+      and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId))
+    );
 }
 
 /**
@@ -233,7 +283,9 @@ export async function upsertApiContact(
   const [existing] = await db
     .select()
     .from(savedContacts)
-    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.email, emailLower)))
+    .where(
+      and(eq(savedContacts.userId, userId), eq(savedContacts.email, emailLower))
+    )
     .limit(1);
 
   if (existing) {
@@ -246,7 +298,8 @@ export async function upsertApiContact(
         tags: data.tags ? JSON.stringify(data.tags) : existing.tags,
         externalId: data.externalId ?? existing.externalId,
         sourceApp: data.sourceApp ?? existing.sourceApp,
-        importedViaApiKeyId: data.importedViaApiKeyId ?? existing.importedViaApiKeyId,
+        importedViaApiKeyId:
+          data.importedViaApiKeyId ?? existing.importedViaApiKeyId,
         consentBasis: data.consentBasis ?? existing.consentBasis,
         consentCapturedAt: data.consentCapturedAt ?? existing.consentCapturedAt,
         consentSource: data.consentSource ?? existing.consentSource,
@@ -256,36 +309,40 @@ export async function upsertApiContact(
         consentVersion: data.consentVersion ?? existing.consentVersion,
         privacyPolicyUrl: data.privacyPolicyUrl ?? existing.privacyPolicyUrl,
         sourceFormId: data.sourceFormId ?? existing.sourceFormId,
-        sourceSubmissionId: data.sourceSubmissionId ?? existing.sourceSubmissionId,
+        sourceSubmissionId:
+          data.sourceSubmissionId ?? existing.sourceSubmissionId,
         preferredLocale: data.preferredLocale ?? existing.preferredLocale,
       })
       .where(eq(savedContacts.id, existing.id));
     return { id: existing.id, created: false, optedOut: existing.optedOut };
   }
 
-  const [result] = await db.insert(savedContacts).values({
-    userId,
-    name: data.name,
-    email: emailLower,
-    phone: data.phone ?? null,
-    notes: data.notes ?? null,
-    tags: data.tags ? JSON.stringify(data.tags) : null,
-    totalSent: 0,
-    source: data.source ?? "manual",
-    externalId: data.externalId ?? null,
-    sourceApp: data.sourceApp ?? null,
-    importedViaApiKeyId: data.importedViaApiKeyId ?? null,
-    consentBasis: data.consentBasis ?? null,
-    consentCapturedAt: data.consentCapturedAt ?? null,
-    consentSource: data.consentSource ?? null,
-    consentPurpose: data.consentPurpose ?? null,
-    consentChannel: data.consentChannel ?? null,
-    consentTextHash: data.consentTextHash ?? null,
-    consentVersion: data.consentVersion ?? null,
-    privacyPolicyUrl: data.privacyPolicyUrl ?? null,
-    sourceFormId: data.sourceFormId ?? null,
-    sourceSubmissionId: data.sourceSubmissionId ?? null,
-    preferredLocale: data.preferredLocale ?? "en",
-  }).$returningId();
+  const [result] = await db
+    .insert(savedContacts)
+    .values({
+      userId,
+      name: data.name,
+      email: emailLower,
+      phone: data.phone ?? null,
+      notes: data.notes ?? null,
+      tags: data.tags ? JSON.stringify(data.tags) : null,
+      totalSent: 0,
+      source: data.source ?? "manual",
+      externalId: data.externalId ?? null,
+      sourceApp: data.sourceApp ?? null,
+      importedViaApiKeyId: data.importedViaApiKeyId ?? null,
+      consentBasis: data.consentBasis ?? null,
+      consentCapturedAt: data.consentCapturedAt ?? null,
+      consentSource: data.consentSource ?? null,
+      consentPurpose: data.consentPurpose ?? null,
+      consentChannel: data.consentChannel ?? null,
+      consentTextHash: data.consentTextHash ?? null,
+      consentVersion: data.consentVersion ?? null,
+      privacyPolicyUrl: data.privacyPolicyUrl ?? null,
+      sourceFormId: data.sourceFormId ?? null,
+      sourceSubmissionId: data.sourceSubmissionId ?? null,
+      preferredLocale: data.preferredLocale ?? "en",
+    })
+    .$returningId();
   return { id: result.id, created: true, optedOut: 0 };
 }

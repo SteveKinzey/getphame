@@ -9,7 +9,12 @@
  */
 
 import nodemailer from "nodemailer";
-import { createCipheriv, createDecipheriv, randomBytes, createHash } from "crypto";
+import {
+  createCipheriv,
+  createDecipheriv,
+  randomBytes,
+  createHash,
+} from "crypto";
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
@@ -17,7 +22,10 @@ import { getDb } from "./db";
 import { smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
-import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
+import {
+  reserveAdaptiveSendCapacity,
+  type AdaptiveSendStatus,
+} from "./adaptiveSendLimits";
 import {
   clearOutboundDeliveryChannel,
   resolveOutboundDeliveryChannel,
@@ -36,13 +44,19 @@ function deriveEncryptionKey(secret: string): Buffer {
 function getPrimaryEncryptionKey(): Buffer {
   const secret = process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY;
   if (!secret || secret.length < 32) {
-    throw new Error("SMTP_CREDENTIAL_ENCRYPTION_KEY must contain at least 32 characters");
+    throw new Error(
+      "SMTP_CREDENTIAL_ENCRYPTION_KEY must contain at least 32 characters"
+    );
   }
   return deriveEncryptionKey(secret);
 }
 
 function decryptWithKey(encoded: string, key: Buffer): string {
-  if (!/^[0-9a-f]+$/i.test(encoded) || encoded.length < 66 || encoded.length % 2 !== 0) {
+  if (
+    !/^[0-9a-f]+$/i.test(encoded) ||
+    encoded.length < 66 ||
+    encoded.length % 2 !== 0
+  ) {
     throw new Error("Invalid SMTP ciphertext format");
   }
   const iv = Buffer.from(encoded.slice(0, 32), "hex");
@@ -57,7 +71,10 @@ export function encryptPassword(plaintext: string): string {
   const key = getPrimaryEncryptionKey();
   const iv = randomBytes(16);
   const cipher = createCipheriv("aes-256-gcm", key, iv);
-  const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
+  const encrypted = Buffer.concat([
+    cipher.update(plaintext, "utf8"),
+    cipher.final(),
+  ]);
   const tag = cipher.getAuthTag();
   // Format: v2:iv(32 hex) + tag(32 hex) + ciphertext(hex)
   return `${SMTP_CIPHERTEXT_VERSION}:${iv.toString("hex")}${tag.toString("hex")}${encrypted.toString("hex")}`;
@@ -66,12 +83,18 @@ export function encryptPassword(plaintext: string): string {
 export function decryptPassword(encoded: string): string {
   const versionedPrefix = `${SMTP_CIPHERTEXT_VERSION}:`;
   if (encoded.startsWith(versionedPrefix)) {
-    return decryptWithKey(encoded.slice(versionedPrefix.length), getPrimaryEncryptionKey());
+    return decryptWithKey(
+      encoded.slice(versionedPrefix.length),
+      getPrimaryEncryptionKey()
+    );
   }
 
   const candidateKeys = [getPrimaryEncryptionKey()];
   const legacySecret = process.env.JWT_SECRET;
-  if (legacySecret && legacySecret !== process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY) {
+  if (
+    legacySecret &&
+    legacySecret !== process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY
+  ) {
     candidateKeys.push(deriveEncryptionKey(legacySecret));
   }
 
@@ -87,7 +110,10 @@ export function decryptPassword(encoded: string): string {
 
 // ── SMTP host auto-detection ──────────────────────────────────────────────────
 
-const KNOWN_HOSTS: Record<string, { host: string; port: number; secure: number }> = {
+const KNOWN_HOSTS: Record<
+  string,
+  { host: string; port: number; secure: number }
+> = {
   "gmail.com": { host: "smtp.gmail.com", port: 587, secure: 0 },
   "googlemail.com": { host: "smtp.gmail.com", port: 587, secure: 0 },
   "outlook.com": { host: "smtp-mail.outlook.com", port: 587, secure: 0 },
@@ -105,29 +131,47 @@ const KNOWN_HOSTS: Record<string, { host: string; port: number; secure: number }
   "fastmail.com": { host: "smtp.fastmail.com", port: 587, secure: 0 },
 };
 
-export function detectSmtpSettings(email: string): { host: string; port: number; secure: number } | null {
+export function detectSmtpSettings(
+  email: string
+): { host: string; port: number; secure: number } | null {
   const domain = email.split("@")[1]?.toLowerCase();
   if (!domain) return null;
   return KNOWN_HOSTS[domain] ?? null;
 }
 
-export function getAppPasswordHint(email: string, host?: string): string | null {
+export function getAppPasswordHint(
+  email: string,
+  host?: string
+): string | null {
   const domain = email.split("@")[1]?.toLowerCase();
   if (domain === "gmail.com" || domain === "googlemail.com") {
     return "Gmail requires an App Password when 2-Step Verification is on. Go to myaccount.google.com → Security → App Passwords to create one.";
   }
   // Google Workspace: custom domain using smtp.gmail.com as host
-  if (host === "smtp.gmail.com" && domain && domain !== "gmail.com" && domain !== "googlemail.com") {
+  if (
+    host === "smtp.gmail.com" &&
+    domain &&
+    domain !== "gmail.com" &&
+    domain !== "googlemail.com"
+  ) {
     return "Google Workspace may permit an App Password. Turn on 2-Step Verification, then open myaccount.google.com/apppasswords. If the option is unavailable, ask your Workspace administrator for the approved SMTP or OAuth connection method.";
   }
-  if (domain === "outlook.com" || domain === "hotmail.com" || domain === "live.com") {
+  if (
+    domain === "outlook.com" ||
+    domain === "hotmail.com" ||
+    domain === "live.com"
+  ) {
     return "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.";
   }
   if (domain === "yahoo.com") {
     return "Yahoo requires an App Password. Go to account.yahoo.com → Security → Generate app password.";
   }
-  if (domain === "zoho.com" || domain === "zohomail.com" || host === "smtp.zoho.com") {
-    return "Zoho Mail requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"Allow SMTP Access\".";
+  if (
+    domain === "zoho.com" ||
+    domain === "zohomail.com" ||
+    host === "smtp.zoho.com"
+  ) {
+    return 'Zoho Mail requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable "Allow SMTP Access".';
   }
   return null;
 }
@@ -157,34 +201,74 @@ export function createTransporter(opts: {
 
 function isPrivateOrReservedIp(address: string): boolean {
   const normalized = address.toLowerCase();
-  if (normalized === "::1" || normalized === "::" || normalized.startsWith("fe80:") || normalized.startsWith("fc") || normalized.startsWith("fd")) return true;
-  const mappedIpv4 = normalized.startsWith("::ffff:") ? normalized.slice(7) : normalized;
+  if (
+    normalized === "::1" ||
+    normalized === "::" ||
+    normalized.startsWith("fe80:") ||
+    normalized.startsWith("fc") ||
+    normalized.startsWith("fd")
+  )
+    return true;
+  const mappedIpv4 = normalized.startsWith("::ffff:")
+    ? normalized.slice(7)
+    : normalized;
   if (isIP(mappedIpv4) !== 4) return false;
   const [a, b] = mappedIpv4.split(".").map(Number);
-  return a === 0 || a === 10 || a === 127 || (a === 100 && b >= 64 && b <= 127) || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || a >= 224;
+  return (
+    a === 0 ||
+    a === 10 ||
+    a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    a >= 224
+  );
 }
 
-export async function resolveSafeSmtpEndpoint(host: string): Promise<{ address: string; servername?: string }> {
+export async function resolveSafeSmtpEndpoint(
+  host: string
+): Promise<{ address: string; servername?: string }> {
   const normalized = host.trim().toLowerCase().replace(/\.$/, "");
-  if (!normalized || normalized.includes("://") || /[\s/\\?#]/.test(normalized) || normalized === "localhost" || normalized.endsWith(".localhost") || normalized.endsWith(".local")) {
+  if (
+    !normalized ||
+    normalized.includes("://") ||
+    /[\s/\\?#]/.test(normalized) ||
+    normalized === "localhost" ||
+    normalized.endsWith(".localhost") ||
+    normalized.endsWith(".local")
+  ) {
     throw new Error("SMTP_HOST_INVALID");
   }
   const addresses = await lookup(normalized, { all: true, verbatim: true });
-  if (!addresses.length || addresses.some((entry) => isPrivateOrReservedIp(entry.address))) {
+  if (
+    !addresses.length ||
+    addresses.some(entry => isPrivateOrReservedIp(entry.address))
+  ) {
     throw new Error("SMTP_HOST_PRIVATE");
   }
-  return { address: addresses[0].address, servername: isIP(normalized) ? undefined : normalized };
+  return {
+    address: addresses[0].address,
+    servername: isIP(normalized) ? undefined : normalized,
+  };
 }
 
 function describeSmtpConnectionError(error: unknown): string {
   const detail = error as NodeJS.ErrnoException & { responseCode?: number };
-  if (error instanceof Error && error.message === "SMTP_HOST_INVALID") return "Enter a public SMTP hostname supplied by your email provider.";
-  if (error instanceof Error && error.message === "SMTP_HOST_PRIVATE") return "Private, local, or reserved SMTP destinations are not allowed.";
-  if (detail.code === "EAUTH" || detail.responseCode === 535) return "Authentication failed. Check the provider username and app password or SMTP password.";
-  if (detail.code === "ETIMEDOUT" || detail.code === "ESOCKET") return "The SMTP service did not respond in time. Confirm the host, port, and security mode.";
-  if (detail.code === "ECONNREFUSED") return "The SMTP service refused the connection. Confirm the host, port, and security mode.";
-  if (detail.code === "ENOTFOUND" || detail.code === "EAI_AGAIN") return "The SMTP host could not be resolved. Confirm the provider settings and try again.";
-  if (error instanceof Error && /certificate|tls|ssl/i.test(error.message)) return "The SMTP service could not establish a trusted secure connection.";
+  if (error instanceof Error && error.message === "SMTP_HOST_INVALID")
+    return "Enter a public SMTP hostname supplied by your email provider.";
+  if (error instanceof Error && error.message === "SMTP_HOST_PRIVATE")
+    return "Private, local, or reserved SMTP destinations are not allowed.";
+  if (detail.code === "EAUTH" || detail.responseCode === 535)
+    return "Authentication failed. Check the provider username and app password or SMTP password.";
+  if (detail.code === "ETIMEDOUT" || detail.code === "ESOCKET")
+    return "The SMTP service did not respond in time. Confirm the host, port, and security mode.";
+  if (detail.code === "ECONNREFUSED")
+    return "The SMTP service refused the connection. Confirm the host, port, and security mode.";
+  if (detail.code === "ENOTFOUND" || detail.code === "EAI_AGAIN")
+    return "The SMTP host could not be resolved. Confirm the provider settings and try again.";
+  if (error instanceof Error && /certificate|tls|ssl/i.test(error.message))
+    return "The SMTP service could not establish a trusted secure connection.";
   return "Connection failed. Confirm the provider settings and try again.";
 }
 
@@ -196,7 +280,11 @@ async function createSafeTransporter(opts: {
   pass: string;
 }) {
   const endpoint = await resolveSafeSmtpEndpoint(opts.host);
-  return createTransporter({ ...opts, host: endpoint.address, servername: endpoint.servername });
+  return createTransporter({
+    ...opts,
+    host: endpoint.address,
+    servername: endpoint.servername,
+  });
 }
 
 // ── DB helpers ────────────────────────────────────────────────────────────────
@@ -258,15 +346,25 @@ export async function saveSmtpCredentials(
 }
 
 type SmtpCredentialDeleteDependencies = {
-  db?: { delete: (...args: any[]) => { where: (...args: any[]) => Promise<unknown> } };
-  clearPersonalDeliveryChannel?: (userId: number, channel: "personal") => Promise<void>;
+  db?: {
+    delete: (...args: any[]) => { where: (...args: any[]) => Promise<unknown> };
+  };
+  clearPersonalDeliveryChannel?: (
+    userId: number,
+    channel: "personal"
+  ) => Promise<void>;
 };
 
-export async function deleteSmtpCredentials(userId: number, dependencies: SmtpCredentialDeleteDependencies = {}) {
-  const db = dependencies.db ?? await getDb();
+export async function deleteSmtpCredentials(
+  userId: number,
+  dependencies: SmtpCredentialDeleteDependencies = {}
+) {
+  const db = dependencies.db ?? (await getDb());
   if (!db) throw new Error("Database not available");
   await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, userId));
-  await (dependencies.clearPersonalDeliveryChannel ?? clearOutboundDeliveryChannel)(userId, "personal");
+  await (
+    dependencies.clearPersonalDeliveryChannel ?? clearOutboundDeliveryChannel
+  )(userId, "personal");
 }
 
 export async function markSmtpVerified(userId: number) {
@@ -294,16 +392,26 @@ const GETPHAME_PLATFORM_SENDER_DOMAIN = "getphame.app";
 export function assertCustomerOutreachSender(fromEmail: string): void {
   const normalized = fromEmail.trim().toLowerCase();
   const domain = normalized.split("@")[1] ?? "";
-  if (domain === GETPHAME_PLATFORM_SENDER_DOMAIN || domain.endsWith(`.${GETPHAME_PLATFORM_SENDER_DOMAIN}`)) {
-    throw new Error("Customer review outreach must use the user's connected personal or business email address, not a Get Phame sender.");
+  if (
+    domain === GETPHAME_PLATFORM_SENDER_DOMAIN ||
+    domain.endsWith(`.${GETPHAME_PLATFORM_SENDER_DOMAIN}`)
+  ) {
+    throw new Error(
+      "Customer review outreach must use the user's connected personal or business email address, not a Get Phame sender."
+    );
   }
 }
 
-export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSendStatus | null> {
+export async function sendMailViaSmtp(
+  opts: SendMailOptions
+): Promise<AdaptiveSendStatus | null> {
   if (opts.safetyMode !== "system") {
     await assertReviewOutreachAllowed(opts.userId);
     const channel = await resolveOutboundDeliveryChannel(opts.userId);
-    if (!channel) throw new Error("No email account connected. Please connect your email in Settings.");
+    if (!channel)
+      throw new Error(
+        "No email account connected. Please connect your email in Settings."
+      );
     assertCustomerOutreachSender(channel.fromEmail);
     const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);
     const pass = decryptPassword(channel.encryptedSecret);
@@ -326,7 +434,10 @@ export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSe
   }
 
   const creds = await getSmtpCredentials(opts.userId);
-  if (!creds) throw new Error("No email account connected. Please connect your email in Settings.");
+  if (!creds)
+    throw new Error(
+      "No email account connected. Please connect your email in Settings."
+    );
 
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = await createSafeTransporter({
@@ -377,7 +488,9 @@ export async function testSmtpConnection(opts: {
  * Called automatically after smtp.connect succeeds so the user can verify
  * their connection works and see a preview of what their customers will receive.
  */
-export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; error?: string }> {
+export async function sendWelcomeEmail(
+  userId: number
+): Promise<{ ok: boolean; error?: string }> {
   try {
     const creds = await getSmtpCredentials(userId);
     if (!creds) return { ok: false, error: "No SMTP credentials found" };
@@ -485,11 +598,21 @@ type SmtpTestEmailDependencies = {
 };
 
 /** Send one diagnostic message through a verified saved tenant SMTP connection. */
-export async function sendSmtpTestEmail(userId: number, to: string, dependencies: SmtpTestEmailDependencies = {}): Promise<{ ok: boolean; error?: string }> {
+export async function sendSmtpTestEmail(
+  userId: number,
+  to: string,
+  dependencies: SmtpTestEmailDependencies = {}
+): Promise<{ ok: boolean; error?: string }> {
   try {
-    const creds = await (dependencies.getCredentials ?? getSmtpCredentials)(userId);
+    const creds = await (dependencies.getCredentials ?? getSmtpCredentials)(
+      userId
+    );
     if (!creds || creds.verified !== 1) {
-      return { ok: false, error: "Connect and verify your email server before sending a test email." };
+      return {
+        ok: false,
+        error:
+          "Connect and verify your email server before sending a test email.",
+      };
     }
 
     const fromName = creds.fromName ?? creds.user;
@@ -508,7 +631,10 @@ export async function sendSmtpTestEmail(userId: number, to: string, dependencies
 }
 
 /** Update only the fromName field on an existing SMTP credential row */
-export async function updateSmtpFromName(userId: number, fromName: string | null) {
+export async function updateSmtpFromName(
+  userId: number,
+  fromName: string | null
+) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db
@@ -537,10 +663,13 @@ export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const allCreds = await db.select().from(smtpCredentials);
-  console.log(`[SmtpHealthCheck] Running checks for ${allCreds.length} connected account(s)...`);
+  console.log(
+    `[SmtpHealthCheck] Running checks for ${allCreds.length} connected account(s)...`
+  );
 
   // Track failures by provider host for aggregate reporting
-  const providerFailures: Record<string, { count: number; errors: string[] }> = {};
+  const providerFailures: Record<string, { count: number; errors: string[] }> =
+    {};
   let healthyAccounts = 0;
 
   for (const creds of allCreds) {
@@ -558,15 +687,25 @@ export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
         const checkedAt = Date.now();
         await db
           .update(smtpCredentials)
-          .set({ lastHealthCheck: checkedAt, lastHealthStatus: "ok", lastHealthError: null })
+          .set({
+            lastHealthCheck: checkedAt,
+            lastHealthStatus: "ok",
+            lastHealthError: null,
+          })
           .where(eq(smtpCredentials.userId, creds.userId));
-        console.log(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✓ ok`);
+        console.log(
+          `[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✓ ok`
+        );
       } else {
         const errMsg = result.error ?? "Unknown error";
         const checkedAt = Date.now();
         await db
           .update(smtpCredentials)
-          .set({ lastHealthCheck: checkedAt, lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
+          .set({
+            lastHealthCheck: checkedAt,
+            lastHealthStatus: "fail",
+            lastHealthError: errMsg.slice(0, 500),
+          })
           .where(eq(smtpCredentials.userId, creds.userId));
         await notifySmtpFailureTransition({
           previousStatus: creds.lastHealthStatus as "ok" | "fail" | null,
@@ -575,20 +714,31 @@ export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
           checkedAt,
           error: errMsg,
         });
-        console.warn(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✗ fail: ${errMsg}`);
+        console.warn(
+          `[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✗ fail: ${errMsg}`
+        );
         // Aggregate by provider host
-        if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
+        if (!providerFailures[creds.host])
+          providerFailures[creds.host] = { count: 0, errors: [] };
         providerFailures[creds.host].count++;
-        if (providerFailures[creds.host].errors.length < 3) providerFailures[creds.host].errors.push(errMsg);
+        if (providerFailures[creds.host].errors.length < 3)
+          providerFailures[creds.host].errors.push(errMsg);
       }
     } catch (err) {
       // Don't let one failure abort the whole batch
       const errMsg = err instanceof Error ? err.message : String(err);
       const checkedAt = Date.now();
-      console.error(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} threw:`, errMsg);
+      console.error(
+        `[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} threw:`,
+        errMsg
+      );
       await db
         .update(smtpCredentials)
-        .set({ lastHealthCheck: checkedAt, lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
+        .set({
+          lastHealthCheck: checkedAt,
+          lastHealthStatus: "fail",
+          lastHealthError: errMsg.slice(0, 500),
+        })
         .where(eq(smtpCredentials.userId, creds.userId));
       await notifySmtpFailureTransition({
         previousStatus: creds.lastHealthStatus as "ok" | "fail" | null,
@@ -597,9 +747,11 @@ export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
         checkedAt,
         error: errMsg,
       });
-      if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
+      if (!providerFailures[creds.host])
+        providerFailures[creds.host] = { count: 0, errors: [] };
       providerFailures[creds.host].count++;
-      if (providerFailures[creds.host].errors.length < 3) providerFailures[creds.host].errors.push(errMsg);
+      if (providerFailures[creds.host].errors.length < 3)
+        providerFailures[creds.host].errors.push(errMsg);
     }
   }
 
@@ -612,10 +764,15 @@ export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
       console.warn(`  ${host}: ${count} failure(s) — ${errors.join(" | ")}`);
     }
   }
-  const failedAccounts = failingHosts.reduce((total, host) => total + providerFailures[host].count, 0);
+  const failedAccounts = failingHosts.reduce(
+    (total, host) => total + providerFailures[host].count,
+    0
+  );
   const checkedAt = Date.now();
   const durationMs = checkedAt - startedAt;
-  console.log(`[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failedAccounts} failed.`);
+  console.log(
+    `[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failedAccounts} failed.`
+  );
   return {
     totalAccounts: allCreds.length,
     healthyAccounts,
@@ -747,9 +904,21 @@ export async function sendUpgradeReceiptEmail(opts: {
   const tierLabel = tierLabels[opts.tier] ?? "Pro";
 
   const tierPerks: Record<string, string[]> = {
-    pro: ["Unlimited review requests", "Automated follow-up reminders", "Priority support"],
-    annual: ["Everything in Pro Monthly", "2 months free vs monthly billing", "Priority support"],
-    lifetime: ["Everything in Pro Annual", "Never pay again — one-time fee", "Lifetime updates included"],
+    pro: [
+      "Unlimited review requests",
+      "Automated follow-up reminders",
+      "Priority support",
+    ],
+    annual: [
+      "Everything in Pro Monthly",
+      "2 months free vs monthly billing",
+      "Priority support",
+    ],
+    lifetime: [
+      "Everything in Pro Annual",
+      "Never pay again — one-time fee",
+      "Lifetime updates included",
+    ],
   };
   const perks = tierPerks[opts.tier] ?? [];
 
@@ -1233,7 +1402,10 @@ export async function sendInactiveUserEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: displayName !== 'there' ? `${displayName}, your first review request is waiting` : `Your first review request is waiting`,
+    subject:
+      displayName !== "there"
+        ? `${displayName}, your first review request is waiting`
+        : `Your first review request is waiting`,
     html,
     text,
   });

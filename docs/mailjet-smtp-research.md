@@ -9,16 +9,16 @@ Mailjet authenticates with the account’s **API Key as the SMTP username** and 
 
 Before sending, the From address or its domain must be added to the relevant API key and validated in Mailjet. Mailjet also recommends SPF and DKIM for the sending domain.[3]
 
-| Preset field | Get Phame value | Reason |
-|---|---|---|
-| Provider ID | `mailjet` | Stable internal identifier |
-| SMTP host | `in-v3.mailjet.com` | Official Mailjet relay hostname[1] |
-| Port | `587` | Supported message-submission port[1] |
-| Security | `starttls` | Get Phame requires transport encryption |
-| Username | User-entered Mailjet API Key | Mailjet’s documented username[1][2] |
-| Secret | User-entered Mailjet Secret Key | Mailjet’s documented password[1][2] |
-| Region selector | None | The reviewed SMTP documentation publishes one relay hostname |
-| Sender prerequisite | Validated sender address or domain | Required before sending[3] |
+| Preset field        | Get Phame value                    | Reason                                                       |
+| ------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| Provider ID         | `mailjet`                          | Stable internal identifier                                   |
+| SMTP host           | `in-v3.mailjet.com`                | Official Mailjet relay hostname[1]                           |
+| Port                | `587`                              | Supported message-submission port[1]                         |
+| Security            | `starttls`                         | Get Phame requires transport encryption                      |
+| Username            | User-entered Mailjet API Key       | Mailjet’s documented username[1][2]                          |
+| Secret              | User-entered Mailjet Secret Key    | Mailjet’s documented password[1][2]                          |
+| Region selector     | None                               | The reviewed SMTP documentation publishes one relay hostname |
+| Sender prerequisite | Validated sender address or domain | Required before sending[3]                                   |
 
 The preset fills only the host, port, and security mode. The user supplies the API Key, Secret Key, and From address. The existing server-side SMTP `verify()` flow authenticates without sending a message, encrypts the Secret Key at rest, and never returns it through connection status.
 

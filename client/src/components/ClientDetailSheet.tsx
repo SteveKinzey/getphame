@@ -14,7 +14,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { X, Mail, Pencil, RefreshCw, Send, Loader2, RotateCcw, ChevronDown, ChevronUp, Bell, CheckCircle2, Clock, XCircle } from "lucide-react";
+import {
+  X,
+  Mail,
+  Pencil,
+  RefreshCw,
+  Send,
+  Loader2,
+  RotateCcw,
+  ChevronDown,
+  ChevronUp,
+  Bell,
+  CheckCircle2,
+  Clock,
+  XCircle,
+} from "lucide-react";
 import { format } from "date-fns";
 import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
@@ -23,7 +37,10 @@ interface ClientDetailSheetProps {
   onClose: () => void;
 }
 
-export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSheetProps) {
+export default function ClientDetailSheet({
+  requestId,
+  onClose,
+}: ClientDetailSheetProps) {
   const isOpen = requestId !== null;
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
 
@@ -53,7 +70,7 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
       setIsEditing(false);
       utils.requests.getById.invalidate({ id: requestId! });
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
 
   const resendMutation = trpc.requests.resend.useMutation({
@@ -66,7 +83,7 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
       utils.requests.list.invalidate();
       onClose();
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
 
   const { data: reminders } = trpc.reminders.listForRequest.useQuery(
@@ -75,10 +92,12 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
   );
 
   const hasEmail = !!(request?.emailSubject || request?.emailBody);
-  const isDirty = editSubject !== (request?.emailSubject ?? "") || editBody !== (request?.emailBody ?? "");
+  const isDirty =
+    editSubject !== (request?.emailSubject ?? "") ||
+    editBody !== (request?.emailBody ?? "");
   useUpdateDirtySource(
     "client-campaign-email-editor",
-    isOpen && isEditing && isDirty,
+    isOpen && isEditing && isDirty
   );
 
   if (!isOpen) return null;
@@ -103,25 +122,38 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
       >
         {/* Handle bar */}
         <div className="flex justify-center pt-3 pb-1 shrink-0">
-          <div className="w-10 h-1 rounded-full" style={{ background: "oklch(0.82 0.02 260)" }} />
+          <div
+            className="w-10 h-1 rounded-full"
+            style={{ background: "oklch(0.82 0.02 260)" }}
+          />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 shrink-0" style={{ borderBottom: "1px solid oklch(0.92 0.02 260)" }}>
+        <div
+          className="flex items-center justify-between px-5 py-3 shrink-0"
+          style={{ borderBottom: "1px solid oklch(0.92 0.02 260)" }}
+        >
           <div className="flex items-center gap-2">
             <Mail size={16} className="rr-text-navy" />
             <div>
               {isLoading ? (
                 <div className="h-4 w-32 rounded bg-gray-200 animate-pulse" />
               ) : (
-                <p className="text-sm font-black rr-text-navy leading-tight">{request?.customerName}</p>
+                <p className="text-sm font-black rr-text-navy leading-tight">
+                  {request?.customerName}
+                </p>
               )}
               {request?.customerEmail && (
-                <p className="text-xs rr-text-navy-muted">{request.customerEmail}</p>
+                <p className="text-xs rr-text-navy-muted">
+                  {request.customerEmail}
+                </p>
               )}
             </div>
           </div>
-          <button onClick={onClose} className="p-1 rr-text-navy-muted hover:rr-text-navy">
+          <button
+            onClick={onClose}
+            className="p-1 rr-text-navy-muted hover:rr-text-navy"
+          >
             <X size={20} />
           </button>
         </div>
@@ -134,26 +166,53 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
               <div className="h-32 w-full rounded bg-gray-200 animate-pulse" />
             </div>
           ) : !hasEmail ? (
-            <div className="rounded-xl p-4 text-center" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
-              <p className="text-sm rr-text-navy-muted">No email content stored for this request.</p>
-              <p className="text-xs rr-text-navy-muted mt-1">Only requests sent after this update will have stored email content.</p>
+            <div
+              className="rounded-xl p-4 text-center"
+              style={{
+                background: "oklch(0.97 0.01 260)",
+                border: "1px solid oklch(0.90 0.02 260)",
+              }}
+            >
+              <p className="text-sm rr-text-navy-muted">
+                No email content stored for this request.
+              </p>
+              <p className="text-xs rr-text-navy-muted mt-1">
+                Only requests sent after this update will have stored email
+                content.
+              </p>
             </div>
           ) : (
             <>
               {/* Subject */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Subject</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                  Subject
+                </label>
                 {isEditing ? (
                   <input
                     type="text"
                     value={editSubject}
-                    onChange={(e) => setEditSubject(e.target.value)}
+                    onChange={e => setEditSubject(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                    style={{ border: "2px solid oklch(0.80 0.18 80)", fontSize: "14px" }}
-                   name="rr-components-client-detail-sheet-edit-subject-147" />
+                    style={{
+                      border: "2px solid oklch(0.80 0.18 80)",
+                      fontSize: "14px",
+                    }}
+                    name="rr-components-client-detail-sheet-edit-subject-147"
+                  />
                 ) : (
-                  <p className="text-sm rr-text-navy px-3 py-2 rounded-xl" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
-                    {editSubject || <span className="rr-text-navy-muted italic">No subject</span>}
+                  <p
+                    className="text-sm rr-text-navy px-3 py-2 rounded-xl"
+                    style={{
+                      background: "oklch(0.97 0.01 260)",
+                      border: "1px solid oklch(0.90 0.02 260)",
+                    }}
+                  >
+                    {editSubject || (
+                      <span className="rr-text-navy-muted italic">
+                        No subject
+                      </span>
+                    )}
                   </p>
                 )}
               </div>
@@ -161,13 +220,23 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
               {/* Body */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold rr-text-navy-mid">Email Body</label>
+                  <label className="text-xs font-bold rr-text-navy-mid">
+                    Email Body
+                  </label>
                   {!isEditing && (
                     <button
-                      onClick={() => setShowPreview((v) => !v)}
+                      onClick={() => setShowPreview(v => !v)}
                       className="flex items-center gap-0.5 text-xs rr-text-navy-muted"
                     >
-                      {showPreview ? <><ChevronUp size={12} /> Hide preview</> : <><ChevronDown size={12} /> Show preview</>}
+                      {showPreview ? (
+                        <>
+                          <ChevronUp size={12} /> Hide preview
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown size={12} /> Show preview
+                        </>
+                      )}
                     </button>
                   )}
                 </div>
@@ -175,16 +244,24 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
                 {isEditing ? (
                   <textarea
                     value={editBody}
-                    onChange={(e) => setEditBody(e.target.value)}
+                    onChange={e => setEditBody(e.target.value)}
                     rows={10}
                     className="w-full px-3 py-2 rounded-xl text-sm outline-none resize-none font-mono"
-                    style={{ border: "2px solid oklch(0.80 0.18 80)", fontSize: "12px" }}
+                    style={{
+                      border: "2px solid oklch(0.80 0.18 80)",
+                      fontSize: "12px",
+                    }}
                     placeholder="HTML email body..."
-                   name="rr-components-client-detail-sheet-edit-body-176" />
+                    name="rr-components-client-detail-sheet-edit-body-176"
+                  />
                 ) : showPreview ? (
                   <div
                     className="rounded-xl overflow-hidden"
-                    style={{ border: "1px solid oklch(0.90 0.02 260)", maxHeight: "260px", overflowY: "auto" }}
+                    style={{
+                      border: "1px solid oklch(0.90 0.02 260)",
+                      maxHeight: "260px",
+                      overflowY: "auto",
+                    }}
                   >
                     <iframe
                       srcDoc={editBody}
@@ -199,15 +276,27 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
 
               {/* Campaign Timeline */}
               {!isEditing && (
-                <div className="rounded-xl p-3 space-y-2" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
-                  <p className="text-xs font-black rr-text-navy uppercase tracking-wider">Campaign Timeline</p>
+                <div
+                  className="rounded-xl p-3 space-y-2"
+                  style={{
+                    background: "oklch(0.97 0.01 260)",
+                    border: "1px solid oklch(0.90 0.02 260)",
+                  }}
+                >
+                  <p className="text-xs font-black rr-text-navy uppercase tracking-wider">
+                    Campaign Timeline
+                  </p>
 
                   {/* Initial send */}
                   {request?.sentAt && (
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 size={13} style={{ color: "oklch(0.55 0.15 145)", flexShrink: 0 }} />
+                      <CheckCircle2
+                        size={13}
+                        style={{ color: "oklch(0.55 0.15 145)", flexShrink: 0 }}
+                      />
                       <span className="text-xs rr-text-navy">
-                        Email sent — {format(new Date(request.sentAt), "MMM d, h:mm a")}
+                        Email sent —{" "}
+                        {format(new Date(request.sentAt), "MMM d, h:mm a")}
                       </span>
                     </div>
                   )}
@@ -215,25 +304,57 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
                   {/* Reminders */}
                   {reminders && reminders.length > 0 ? (
                     reminders.map((r, i) => {
-                      const icon = r.status === "sent"
-                        ? <CheckCircle2 size={13} style={{ color: "oklch(0.55 0.15 145)", flexShrink: 0 }} />
-                        : r.status === "cancelled"
-                        ? <XCircle size={13} style={{ color: "oklch(0.60 0.08 30)", flexShrink: 0 }} />
-                        : <Clock size={13} style={{ color: "oklch(0.65 0.14 80)", flexShrink: 0 }} />;
-                      const label = r.status === "sent" ? "Sent" : r.status === "cancelled" ? "Cancelled" : "Scheduled";
+                      const icon =
+                        r.status === "sent" ? (
+                          <CheckCircle2
+                            size={13}
+                            style={{
+                              color: "oklch(0.55 0.15 145)",
+                              flexShrink: 0,
+                            }}
+                          />
+                        ) : r.status === "cancelled" ? (
+                          <XCircle
+                            size={13}
+                            style={{
+                              color: "oklch(0.60 0.08 30)",
+                              flexShrink: 0,
+                            }}
+                          />
+                        ) : (
+                          <Clock
+                            size={13}
+                            style={{
+                              color: "oklch(0.65 0.14 80)",
+                              flexShrink: 0,
+                            }}
+                          />
+                        );
+                      const label =
+                        r.status === "sent"
+                          ? "Sent"
+                          : r.status === "cancelled"
+                            ? "Cancelled"
+                            : "Scheduled";
                       return (
                         <div key={r.id} className="flex items-center gap-2">
                           {icon}
                           <span className="text-xs rr-text-navy">
-                            <Bell size={11} className="inline mr-1 opacity-60" />
-                            Reminder {i + 1} — {format(new Date(r.scheduledAt), "MMM d, h:mm a")}
+                            <Bell
+                              size={11}
+                              className="inline mr-1 opacity-60"
+                            />
+                            Reminder {i + 1} —{" "}
+                            {format(new Date(r.scheduledAt), "MMM d, h:mm a")}
                             <span className="ml-1 opacity-60">({label})</span>
                           </span>
                         </div>
                       );
                     })
                   ) : (
-                    <p className="text-xs rr-text-navy-muted">No reminders scheduled.</p>
+                    <p className="text-xs rr-text-navy-muted">
+                      No reminders scheduled.
+                    </p>
                   )}
                 </div>
               )}
@@ -243,7 +364,11 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
                 <button
                   onClick={() => setIsEditing(true)}
                   className="flex items-center gap-2 text-sm font-bold px-4 py-2.5 rounded-xl w-full justify-center"
-                  style={{ background: "oklch(0.97 0.01 260)", border: "1.5px solid oklch(0.88 0.03 260)", color: "oklch(0.35 0.06 260)" }}
+                  style={{
+                    background: "oklch(0.97 0.01 260)",
+                    border: "1.5px solid oklch(0.88 0.03 260)",
+                    color: "oklch(0.35 0.06 260)",
+                  }}
                 >
                   <Pencil size={14} />
                   Edit Email
@@ -251,18 +376,30 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
               ) : (
                 <div className="flex gap-2">
                   <button
-                    onClick={() => { setEditSubject(request?.emailSubject ?? ""); setEditBody(request?.emailBody ?? ""); setIsEditing(false); }}
+                    onClick={() => {
+                      setEditSubject(request?.emailSubject ?? "");
+                      setEditBody(request?.emailBody ?? "");
+                      setIsEditing(false);
+                    }}
                     className="flex-1 py-2.5 rounded-xl text-sm font-bold border rr-text-navy-mid"
                     style={{ border: "1.5px solid oklch(0.88 0.03 260)" }}
                   >
                     Cancel
                   </button>
                   <button
-                    onClick={() => updateEmailMutation.mutate({ id: requestId!, emailSubject: editSubject, emailBody: editBody })}
+                    onClick={() =>
+                      updateEmailMutation.mutate({
+                        id: requestId!,
+                        emailSubject: editSubject,
+                        emailBody: editBody,
+                      })
+                    }
                     disabled={updateEmailMutation.isPending || !isDirty}
                     className="flex-1 py-2.5 rounded-xl text-sm font-bold rr-bg-navy rr-text-gold"
                   >
-                    {updateEmailMutation.isPending ? <Loader2 size={14} className="animate-spin inline mr-1" /> : null}
+                    {updateEmailMutation.isPending ? (
+                      <Loader2 size={14} className="animate-spin inline mr-1" />
+                    ) : null}
                     Save Changes
                   </button>
                 </div>
@@ -273,35 +410,63 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
 
         {/* Action buttons */}
         {hasEmail && !isEditing && (
-          <div className="px-5 pb-6 pt-3 shrink-0 space-y-2" style={{ borderTop: "1px solid oklch(0.92 0.02 260)" }}>
+          <div
+            className="px-5 pb-6 pt-3 shrink-0 space-y-2"
+            style={{ borderTop: "1px solid oklch(0.92 0.02 260)" }}
+          >
             <p className="text-xs rr-text-navy-muted text-center mb-2">
               Changes to the email above will be used in reminder sends.
             </p>
             <button
-              onClick={() => resendMutation.mutate({ id: requestId!, emailSubject: editSubject, emailBody: editBody, restart: false })}
+              onClick={() =>
+                resendMutation.mutate({
+                  id: requestId!,
+                  emailSubject: editSubject,
+                  emailBody: editBody,
+                  restart: false,
+                })
+              }
               disabled={resendMutation.isPending}
               className="flex items-center gap-2 text-sm font-bold px-4 py-3 rounded-xl w-full justify-center rr-bg-gold rr-text-navy"
             >
-              {resendMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+              {resendMutation.isPending ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Send size={14} />
+              )}
               Resend This Email
             </button>
             <button
               onClick={() => setRestartConfirmOpen(true)}
               disabled={resendMutation.isPending}
               className="flex items-center gap-2 text-sm font-bold px-4 py-3 rounded-xl w-full justify-center"
-              style={{ background: "oklch(0.97 0.02 30)", border: "1.5px solid oklch(0.85 0.08 30)", color: "oklch(0.40 0.14 30)" }}
+              style={{
+                background: "oklch(0.97 0.02 30)",
+                border: "1.5px solid oklch(0.85 0.08 30)",
+                color: "oklch(0.40 0.14 30)",
+              }}
             >
-              {resendMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <RotateCcw size={14} />}
+              {resendMutation.isPending ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <RotateCcw size={14} />
+              )}
               Restart Campaign
             </button>
 
             {/* Restart Campaign confirmation modal */}
-            <AlertDialog open={restartConfirmOpen} onOpenChange={setRestartConfirmOpen}>
+            <AlertDialog
+              open={restartConfirmOpen}
+              onOpenChange={setRestartConfirmOpen}
+            >
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Restart campaign for {request?.customerName}?</AlertDialogTitle>
+                  <AlertDialogTitle>
+                    Restart campaign for {request?.customerName}?
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
-                    This cancels any pending reminders and sends a fresh review request email. The campaign clock resets to today.
+                    This cancels any pending reminders and sends a fresh review
+                    request email. The campaign clock resets to today.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -309,7 +474,12 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
                   <AlertDialogAction
                     onClick={() => {
                       setRestartConfirmOpen(false);
-                      resendMutation.mutate({ id: requestId!, emailSubject: editSubject, emailBody: editBody, restart: true });
+                      resendMutation.mutate({
+                        id: requestId!,
+                        emailSubject: editSubject,
+                        emailBody: editBody,
+                        restart: true,
+                      });
                     }}
                   >
                     Yes, restart

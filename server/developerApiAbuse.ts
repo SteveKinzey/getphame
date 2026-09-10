@@ -1,7 +1,13 @@
 import { and, eq, lt, sql } from "drizzle-orm";
 import { apiAbuseLimitWindows } from "../drizzle/schema";
-import { fingerprintAuthValue, normalizeDiagnosticEmail } from "./authOperations";
-import { suspendDeveloperApiKey, type DeveloperApiPrincipal } from "./developerApiKeys";
+import {
+  fingerprintAuthValue,
+  normalizeDiagnosticEmail,
+} from "./authOperations";
+import {
+  suspendDeveloperApiKey,
+  type DeveloperApiPrincipal,
+} from "./developerApiKeys";
 import { getDb } from "./db";
 
 export type DeveloperApiAbuseAction = "contact_import" | "review_request_send";
@@ -45,22 +51,29 @@ async function incrementAbuseWindow(params: {
   if (!db) throw new Error("Database unavailable");
 
   const dimensionHash = hashDimension(params.rule.dimension, params.rule.value);
-  const windowStartedAt = Math.floor(params.now / params.rule.windowMs) * params.rule.windowMs;
+  const windowStartedAt =
+    Math.floor(params.now / params.rule.windowMs) * params.rule.windowMs;
   const expiresAt = windowStartedAt + params.rule.windowMs;
-  await db.delete(apiAbuseLimitWindows).where(and(
-    eq(apiAbuseLimitWindows.action, params.action),
-    eq(apiAbuseLimitWindows.dimensionHash, dimensionHash),
-    lt(apiAbuseLimitWindows.expiresAt, params.now + 1),
-  ));
+  await db
+    .delete(apiAbuseLimitWindows)
+    .where(
+      and(
+        eq(apiAbuseLimitWindows.action, params.action),
+        eq(apiAbuseLimitWindows.dimensionHash, dimensionHash),
+        lt(apiAbuseLimitWindows.expiresAt, params.now + 1)
+      )
+    );
 
   const [existing] = await db
     .select()
     .from(apiAbuseLimitWindows)
-    .where(and(
-      eq(apiAbuseLimitWindows.action, params.action),
-      eq(apiAbuseLimitWindows.dimensionHash, dimensionHash),
-      eq(apiAbuseLimitWindows.windowStartedAt, windowStartedAt),
-    ))
+    .where(
+      and(
+        eq(apiAbuseLimitWindows.action, params.action),
+        eq(apiAbuseLimitWindows.dimensionHash, dimensionHash),
+        eq(apiAbuseLimitWindows.windowStartedAt, windowStartedAt)
+      )
+    )
     .limit(1);
 
   if (!existing) {
@@ -94,7 +107,9 @@ async function incrementAbuseWindow(params: {
   const allowed = requestCount <= params.rule.limit;
   return {
     allowed,
-    retryAfterSeconds: allowed ? 0 : Math.max(1, Math.ceil((expiresAt - params.now) / 1000)),
+    retryAfterSeconds: allowed
+      ? 0
+      : Math.max(1, Math.ceil((expiresAt - params.now) / 1000)),
   };
 }
 
@@ -107,36 +122,88 @@ export function buildDeveloperApiAbuseRules(params: {
   const account = String(params.principal.userId);
   const key = String(params.principal.apiKeyId);
   const ip = params.clientIp || "unknown";
-  const recipient = params.recipientEmail ? normalizeDiagnosticEmail(params.recipientEmail) : null;
+  const recipient = params.recipientEmail
+    ? normalizeDiagnosticEmail(params.recipientEmail)
+    : null;
 
   if (params.action === "review_request_send") {
     return [
-      { dimension: "key_burst", value: key, limit: 10, windowMs: 60_000, suspendOnBreach: true, reason: "send_key_burst" },
-      { dimension: "account_burst", value: account, limit: 20, windowMs: 10 * 60_000, suspendOnBreach: true, reason: "send_account_burst" },
-      { dimension: "account_daily", value: account, limit: 100, windowMs: 24 * 60 * 60_000, suspendOnBreach: true, reason: "send_account_daily" },
-      { dimension: "ip_burst", value: ip, limit: 30, windowMs: 60 * 60_000, suspendOnBreach: true, reason: "send_ip_burst" },
-      ...(recipient ? [{
-        dimension: "recipient_daily" as const,
-        value: `${account}:${recipient}`,
-        limit: 2,
+      {
+        dimension: "key_burst",
+        value: key,
+        limit: 10,
+        windowMs: 60_000,
+        suspendOnBreach: true,
+        reason: "send_key_burst",
+      },
+      {
+        dimension: "account_burst",
+        value: account,
+        limit: 20,
+        windowMs: 10 * 60_000,
+        suspendOnBreach: true,
+        reason: "send_account_burst",
+      },
+      {
+        dimension: "account_daily",
+        value: account,
+        limit: 100,
         windowMs: 24 * 60 * 60_000,
-        suspendOnBreach: false,
-        reason: "send_recipient_daily",
-      }] : []),
+        suspendOnBreach: true,
+        reason: "send_account_daily",
+      },
+      {
+        dimension: "ip_burst",
+        value: ip,
+        limit: 30,
+        windowMs: 60 * 60_000,
+        suspendOnBreach: true,
+        reason: "send_ip_burst",
+      },
+      ...(recipient
+        ? [
+            {
+              dimension: "recipient_daily" as const,
+              value: `${account}:${recipient}`,
+              limit: 2,
+              windowMs: 24 * 60 * 60_000,
+              suspendOnBreach: false,
+              reason: "send_recipient_daily",
+            },
+          ]
+        : []),
     ];
   }
 
   return [
-    { dimension: "account_burst", value: account, limit: 300, windowMs: 60 * 60_000, suspendOnBreach: true, reason: "import_account_burst" },
-    { dimension: "ip_burst", value: ip, limit: 120, windowMs: 10 * 60_000, suspendOnBreach: true, reason: "import_ip_burst" },
-    ...(recipient ? [{
-      dimension: "recipient_daily" as const,
-      value: `${account}:${recipient}`,
-      limit: 8,
-      windowMs: 24 * 60 * 60_000,
-      suspendOnBreach: false,
-      reason: "import_recipient_daily",
-    }] : []),
+    {
+      dimension: "account_burst",
+      value: account,
+      limit: 300,
+      windowMs: 60 * 60_000,
+      suspendOnBreach: true,
+      reason: "import_account_burst",
+    },
+    {
+      dimension: "ip_burst",
+      value: ip,
+      limit: 120,
+      windowMs: 10 * 60_000,
+      suspendOnBreach: true,
+      reason: "import_ip_burst",
+    },
+    ...(recipient
+      ? [
+          {
+            dimension: "recipient_daily" as const,
+            value: `${account}:${recipient}`,
+            limit: 8,
+            windowMs: 24 * 60 * 60_000,
+            suspendOnBreach: false,
+            reason: "import_recipient_daily",
+          },
+        ]
+      : []),
   ];
 }
 
@@ -171,11 +238,19 @@ export async function checkDeveloperApiAbuse(params: {
       allowed: false,
       reason: rule.reason,
       retryAfterSeconds: rule.suspendOnBreach
-        ? Math.max(result.retryAfterSeconds, Math.ceil(DEVELOPER_API_ABUSE_SUSPENSION_MS / 1000))
+        ? Math.max(
+            result.retryAfterSeconds,
+            Math.ceil(DEVELOPER_API_ABUSE_SUSPENSION_MS / 1000)
+          )
         : result.retryAfterSeconds,
       suspended: rule.suspendOnBreach,
     };
   }
 
-  return { allowed: true, reason: null, retryAfterSeconds: 0, suspended: false };
+  return {
+    allowed: true,
+    reason: null,
+    retryAfterSeconds: 0,
+    suspended: false,
+  };
 }

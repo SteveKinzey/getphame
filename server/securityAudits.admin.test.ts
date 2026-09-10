@@ -6,7 +6,7 @@ const mocks = vi.hoisted(() => ({
   getSecurityAuditDashboard: vi.fn(),
 }));
 
-vi.mock("./db", async (importOriginal) => ({
+vi.mock("./db", async importOriginal => ({
   ...(await importOriginal<typeof import("./db")>()),
   getDb: mocks.getDb,
 }));

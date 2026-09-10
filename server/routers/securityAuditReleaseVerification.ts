@@ -40,9 +40,17 @@ export const SECURITY_AUDIT_RELEASE_VERIFICATION = {
   ],
   validationGates: [
     { id: "focused-tests", status: "passed" as const, result: "23 / 23" },
-    { id: "full-suite", status: "passed" as const, result: "948 passed · 17 skipped" },
+    {
+      id: "full-suite",
+      status: "passed" as const,
+      result: "948 passed · 17 skipped",
+    },
     { id: "typescript", status: "passed" as const, result: "0 errors" },
-    { id: "dependency-audit", status: "passed" as const, result: "0 production advisories" },
+    {
+      id: "dependency-audit",
+      status: "passed" as const,
+      result: "0 production advisories",
+    },
     { id: "production-build", status: "passed" as const, result: "Passed" },
     { id: "responsive", status: "passed" as const, result: "4 viewport cases" },
   ],
@@ -140,18 +148,30 @@ export function buildSecurityAuditReleaseVerificationPayload() {
     ...SECURITY_AUDIT_RELEASE_VERIFICATION,
     release: { ...SECURITY_AUDIT_RELEASE_VERIFICATION.release },
     determination: { ...SECURITY_AUDIT_RELEASE_VERIFICATION.determination },
-    accessBoundary: SECURITY_AUDIT_RELEASE_VERIFICATION.accessBoundary.map(item => ({ ...item })),
-    validationGates: SECURITY_AUDIT_RELEASE_VERIFICATION.validationGates.map(item => ({ ...item })),
-    productionControls: SECURITY_AUDIT_RELEASE_VERIFICATION.productionControls.map(item => ({ ...item })),
+    accessBoundary: SECURITY_AUDIT_RELEASE_VERIFICATION.accessBoundary.map(
+      item => ({ ...item })
+    ),
+    validationGates: SECURITY_AUDIT_RELEASE_VERIFICATION.validationGates.map(
+      item => ({ ...item })
+    ),
+    productionControls:
+      SECURITY_AUDIT_RELEASE_VERIFICATION.productionControls.map(item => ({
+        ...item,
+      })),
     lineage: { ...SECURITY_AUDIT_RELEASE_VERIFICATION.lineage },
     schema: {
       ...SECURITY_AUDIT_RELEASE_VERIFICATION.schema,
       indexes: [...SECURITY_AUDIT_RELEASE_VERIFICATION.schema.indexes],
     },
-    evidence: SECURITY_AUDIT_RELEASE_VERIFICATION.evidence.map(item => ({ ...item })),
+    evidence: SECURITY_AUDIT_RELEASE_VERIFICATION.evidence.map(item => ({
+      ...item,
+    })),
     nextOperationalConfirmation: {
       ...SECURITY_AUDIT_RELEASE_VERIFICATION.nextOperationalConfirmation,
-      steps: [...SECURITY_AUDIT_RELEASE_VERIFICATION.nextOperationalConfirmation.steps],
+      steps: [
+        ...SECURITY_AUDIT_RELEASE_VERIFICATION.nextOperationalConfirmation
+          .steps,
+      ],
     },
     privacy: { ...SECURITY_AUDIT_RELEASE_VERIFICATION.privacy },
   };

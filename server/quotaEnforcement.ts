@@ -36,7 +36,9 @@ const productionQuotaDataSource: FreeQuotaDataSource = {
       .where(eq(users.id, userId))
       .limit(1);
     if (!account) return false;
-    return Boolean(await findActiveComplimentaryAccess({ userId, email: account.email }));
+    return Boolean(
+      await findActiveComplimentaryAccess({ userId, email: account.email })
+    );
   },
   getQuota: getFreeQuotaSummary,
 };
@@ -49,7 +51,7 @@ const productionQuotaDataSource: FreeQuotaDataSource = {
 export async function evaluateFreeQuotaAccess(
   userId: number,
   tier: string,
-  dataSource: FreeQuotaDataSource = productionQuotaDataSource,
+  dataSource: FreeQuotaDataSource = productionQuotaDataSource
 ): Promise<FreeQuotaAccessDecision> {
   if (tier !== "free") {
     return { allowed: true, bypassed: true, quota: null };
@@ -59,7 +61,10 @@ export async function evaluateFreeQuotaAccess(
     return { allowed: true, bypassed: true, quota: null };
   }
 
-  if (dataSource.hasComplimentaryAccess && await dataSource.hasComplimentaryAccess(userId)) {
+  if (
+    dataSource.hasComplimentaryAccess &&
+    (await dataSource.hasComplimentaryAccess(userId))
+  ) {
     return { allowed: true, bypassed: true, quota: null };
   }
 
@@ -69,7 +74,7 @@ export async function evaluateFreeQuotaAccess(
 
 export function formatFreeQuotaBlockedMessage(
   quota: FreeQuotaSummary | null,
-  baseMessage: string,
+  baseMessage: string
 ): string {
   const resetMessage = quota?.nextAvailableAt
     ? ` Next send available ${new Date(quota.nextAvailableAt).toISOString()}.`

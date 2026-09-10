@@ -1,5 +1,82 @@
 <!doctype html>
 <html lang="fr">
-  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /><meta name="theme-color" content="#101b3f" /><title>Hors connexion — Get Phame</title><link rel="stylesheet" href="/offline.css" /></head>
-  <body><main><section class="offline-card" aria-labelledby="offline-title"><div class="lockup" aria-label="GET PHAME"><img class="brand-mark" src="/apple-touch-icon.png" alt="" width="52" height="52" /><span class="wordmark">GET PHAME</span></div><div class="signal" aria-hidden="true"><span></span><span></span><span></span><i></i></div><p class="eyebrow">Connexion nécessaire</p><h1 id="offline-title">Vous êtes hors connexion</h1><p class="intro">Get Phame ne peut pas se connecter à Internet pour le moment. Vérifiez votre connexion, puis réessayez pour revenir à votre tableau de bord d’avis.</p><div class="recovery-card"><p class="recovery-title">Ce que vous pouvez faire</p><ul class="recovery-list"><li>Vérifiez le Wi-Fi ou les données mobiles.</li><li>Gardez cet onglet ouvert&nbsp;; les données de votre compte ne seront pas modifiées.</li></ul></div><button id="retry" type="button" data-reconnecting-label="Vérification de la connexion…" data-offline-message="Les données de votre compte n’ont pas été modifiées." data-online-message="Connexion détectée. Réessayez pour revenir à Get Phame." data-reconnecting-message="Vérification de votre connexion…"><span class="retry-label">Réessayer</span></button><p id="connection-status" class="hint" role="status" aria-live="polite">Les données de votre compte n’ont pas été modifiées.</p></section></main><script>(() => { const button = document.getElementById('retry'); const label = button.querySelector('.retry-label'); const status = document.getElementById('connection-status'); const setConnectionState = () => { status.textContent = navigator.onLine ? button.dataset.onlineMessage : button.dataset.offlineMessage; }; button.addEventListener('click', () => { button.disabled = true; label.textContent = button.dataset.reconnectingLabel; status.textContent = button.dataset.reconnectingMessage; window.setTimeout(() => window.location.reload(), 80); }); window.addEventListener('online', setConnectionState); window.addEventListener('offline', setConnectionState); setConnectionState(); })();</script></body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#101b3f" />
+    <title>Hors connexion — Get Phame</title>
+    <link rel="stylesheet" href="/offline.css" />
+  </head>
+  <body>
+    <main>
+      <section class="offline-card" aria-labelledby="offline-title">
+        <div class="lockup" aria-label="GET PHAME">
+          <img
+            class="brand-mark"
+            src="/apple-touch-icon.png"
+            alt=""
+            width="52"
+            height="52"
+          /><span class="wordmark">GET PHAME</span>
+        </div>
+        <div class="signal" aria-hidden="true">
+          <span></span><span></span><span></span><i></i>
+        </div>
+        <p class="eyebrow">Connexion nécessaire</p>
+        <h1 id="offline-title">Vous êtes hors connexion</h1>
+        <p class="intro">
+          Get Phame ne peut pas se connecter à Internet pour le moment. Vérifiez
+          votre connexion, puis réessayez pour revenir à votre tableau de bord
+          d’avis.
+        </p>
+        <div class="recovery-card">
+          <p class="recovery-title">Ce que vous pouvez faire</p>
+          <ul class="recovery-list">
+            <li>Vérifiez le Wi-Fi ou les données mobiles.</li>
+            <li>
+              Gardez cet onglet ouvert&nbsp;; les données de votre compte ne
+              seront pas modifiées.
+            </li>
+          </ul>
+        </div>
+        <button
+          id="retry"
+          type="button"
+          data-reconnecting-label="Vérification de la connexion…"
+          data-offline-message="Les données de votre compte n’ont pas été modifiées."
+          data-online-message="Connexion détectée. Réessayez pour revenir à Get Phame."
+          data-reconnecting-message="Vérification de votre connexion…"
+        >
+          <span class="retry-label">Réessayer</span>
+        </button>
+        <p id="connection-status" class="hint" role="status" aria-live="polite">
+          Les données de votre compte n’ont pas été modifiées.
+        </p>
+      </section>
+    </main>
+    <script>
+      (() => {
+        const button = document.getElementById("retry");
+        const label = button.querySelector(".retry-label");
+        const status = document.getElementById("connection-status");
+        const setConnectionState = () => {
+          status.textContent = navigator.onLine
+            ? button.dataset.onlineMessage
+            : button.dataset.offlineMessage;
+        };
+        button.addEventListener("click", () => {
+          button.disabled = true;
+          label.textContent = button.dataset.reconnectingLabel;
+          status.textContent = button.dataset.reconnectingMessage;
+          window.setTimeout(() => window.location.reload(), 80);
+        });
+        window.addEventListener("online", setConnectionState);
+        window.addEventListener("offline", setConnectionState);
+        setConnectionState();
+      })();
+    </script>
+  </body>
 </html>

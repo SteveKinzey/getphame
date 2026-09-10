@@ -8,17 +8,17 @@ const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
 }));
 
-vi.mock("./emailToneAdjustment", async (importOriginal) => ({
+vi.mock("./emailToneAdjustment", async importOriginal => ({
   ...(await importOriginal<typeof import("./emailToneAdjustment")>()),
   adjustEmailTone: mocks.adjustEmailTone,
 }));
 
-vi.mock("./db", async (importOriginal) => ({
+vi.mock("./db", async importOriginal => ({
   ...(await importOriginal<typeof import("./db")>()),
   getDb: mocks.getDb,
 }));
 
-vi.mock("./complimentaryAccess", async (importOriginal) => ({
+vi.mock("./complimentaryAccess", async importOriginal => ({
   ...(await importOriginal<typeof import("./complimentaryAccess")>()),
   findActiveComplimentaryAccess: mocks.findActiveComplimentaryAccess,
 }));
@@ -82,7 +82,9 @@ describe("email.adjustTone", () => {
   });
 
   it("rejects free-tier callers before invoking the assistant", async () => {
-    const profileLookup = vi.fn().mockResolvedValue({ tier: "free", planExpiresAt: null });
+    const profileLookup = vi
+      .fn()
+      .mockResolvedValue({ tier: "free", planExpiresAt: null });
     mocks.getDb.mockResolvedValue(databaseWithActiveAccount(profileLookup));
     const caller = appRouter.createCaller(context(entitledUser));
 
@@ -94,18 +96,24 @@ describe("email.adjustTone", () => {
   });
 
   it("runs for an entitled tenant and scopes the rewrite to the authenticated user", async () => {
-    const profileLookup = vi.fn().mockResolvedValue({ tier: "pro", planExpiresAt: null });
+    const profileLookup = vi
+      .fn()
+      .mockResolvedValue({ tier: "pro", planExpiresAt: null });
     mocks.getDb.mockResolvedValue(databaseWithActiveAccount(profileLookup));
     mocks.adjustEmailTone.mockResolvedValue({
       subject: "A warm request from {{businessName}}",
       body: "Hi {{customerName}}, please share feedback at {{platformLinks}}. Reply unsubscribe to opt out.",
-      rationales: [{ field: "subject", rationale: "Uses a friendlier opening." }],
+      rationales: [
+        { field: "subject", rationale: "Uses a friendlier opening." },
+      ],
     });
     const caller = appRouter.createCaller(context(entitledUser));
 
     await expect(caller.email.adjustTone(input)).resolves.toMatchObject({
       subject: "A warm request from {{businessName}}",
-      rationales: [{ field: "subject", rationale: "Uses a friendlier opening." }],
+      rationales: [
+        { field: "subject", rationale: "Uses a friendlier opening." },
+      ],
     });
     expect(mocks.adjustEmailTone).toHaveBeenCalledWith({
       ...input,

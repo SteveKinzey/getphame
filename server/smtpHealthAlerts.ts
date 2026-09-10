@@ -10,17 +10,25 @@ export type SmtpFailureTransitionInput = {
   error: string;
 };
 
-export function isHealthyToFailedTransition(previousStatus: SmtpHealthState): boolean {
+export function isHealthyToFailedTransition(
+  previousStatus: SmtpHealthState
+): boolean {
   return previousStatus === "ok";
 }
 
-export async function notifySmtpFailureTransition(input: SmtpFailureTransitionInput): Promise<boolean> {
+export async function notifySmtpFailureTransition(
+  input: SmtpFailureTransitionInput
+): Promise<boolean> {
   if (!isHealthyToFailedTransition(input.previousStatus)) return false;
 
-  const accountEmail = input.accountEmail.trim().slice(0, 320) || "Unknown SMTP account";
+  const accountEmail =
+    input.accountEmail.trim().slice(0, 320) || "Unknown SMTP account";
   const host = input.host.trim().slice(0, 255) || "Unknown provider";
   const error = input.error.trim().slice(0, 500) || "SMTP verification failed.";
-  const baseUrl = (process.env.APP_BASE_URL ?? "https://getphame.app").replace(/\/$/, "");
+  const baseUrl = (process.env.APP_BASE_URL ?? "https://getphame.app").replace(
+    /\/$/,
+    ""
+  );
   const remediationUrl = `${baseUrl}/admin/users?smtpStatus=failing&search=${encodeURIComponent(accountEmail)}`;
 
   try {
@@ -35,7 +43,10 @@ export async function notifySmtpFailureTransition(input: SmtpFailureTransitionIn
       ].join("\n"),
     });
   } catch (error) {
-    console.warn("[SmtpHealthCheck] Owner notification failed without interrupting health checks:", error);
+    console.warn(
+      "[SmtpHealthCheck] Owner notification failed without interrupting health checks:",
+      error
+    );
     return false;
   }
 }

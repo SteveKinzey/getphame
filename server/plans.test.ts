@@ -12,11 +12,14 @@ describe("Get Phame effective plans", () => {
     ["pro", "user", "monthly", "Monthly"],
     ["annual", "user", "annual", "Annual"],
     ["lifetime", "user", "life", "Life"],
-  ] as const)("maps %s to %s plan", (tier, role, expectedPlan, expectedLabel) => {
-    const plan = getEffectivePlan(tier, role);
-    expect(plan).toBe(expectedPlan);
-    expect(PLAN_LABELS[plan]).toBe(expectedLabel);
-  });
+  ] as const)(
+    "maps %s to %s plan",
+    (tier, role, expectedPlan, expectedLabel) => {
+      const plan = getEffectivePlan(tier, role);
+      expect(plan).toBe(expectedPlan);
+      expect(PLAN_LABELS[plan]).toBe(expectedLabel);
+    }
+  );
 
   it("treats every administrator as Life regardless of the stored tier", () => {
     expect(getEffectivePlan("free", "admin")).toBe("life");

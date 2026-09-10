@@ -50,17 +50,22 @@ import { parse as parseCookie } from "cookie";
 import { COOKIE_NAME } from "@shared/const";
 import { createHeartbeatJob } from "../_core/heartbeat";
 
-const sessionToken = parseCookie(ctx.req.headers.cookie ?? "")[COOKIE_NAME] ?? "";
+const sessionToken =
+  parseCookie(ctx.req.headers.cookie ?? "")[COOKIE_NAME] ?? "";
 
-const job = await createHeartbeatJob({
-  name: `marketing-${campaign.id}`,    // unique within (project, owner)
-  cron: input.cron,                    // 6-field "sec min hour dom mon dow"
-  path: "/api/scheduled/sendMarketing",
-  payload: { campaignId: campaign.id },
-  description: `Daily 9am send for ${campaign.name}`,
-}, sessionToken);
+const job = await createHeartbeatJob(
+  {
+    name: `marketing-${campaign.id}`, // unique within (project, owner)
+    cron: input.cron, // 6-field "sec min hour dom mon dow"
+    path: "/api/scheduled/sendMarketing",
+    payload: { campaignId: campaign.id },
+    description: `Daily 9am send for ${campaign.name}`,
+  },
+  sessionToken
+);
 
-await db.update(campaigns)
+await db
+  .update(campaigns)
   .set({ scheduleCronTaskUid: job.taskUid })
   .where(eq(campaigns.id, campaign.id));
 ```
@@ -71,10 +76,16 @@ await db.update(campaigns)
 
 ```ts
 const user = await sdk.authenticateRequest(req);
-if (!user.isCron || !user.taskUid) return res.status(403).json({ error: "cron-only" });
+if (!user.isCron || !user.taskUid)
+  return res.status(403).json({ error: "cron-only" });
 
-const campaign = (await db.select().from(campaigns)
-  .where(eq(campaigns.scheduleCronTaskUid, user.taskUid)).limit(1))[0];
+const campaign = (
+  await db
+    .select()
+    .from(campaigns)
+    .where(eq(campaigns.scheduleCronTaskUid, user.taskUid))
+    .limit(1)
+)[0];
 if (!campaign) return res.json({ ok: true, skipped: "orphan" }); // 2xx so forge stops retrying
 
 await sendCampaignEmails(campaign);
@@ -135,7 +146,7 @@ If the AGENT cron needs to write back to **this** site, the only path in is the 
 
 ### 4c. Owner UI on manus.im (NOT something you build)
 
-The Manus dashboard surfaces ALL crons in the project (both end-user-driven and agent-driven), with execution history, pause/resume, edit, Run Now, and Investigate. Owners can't *create* crons there — only via §3 / §4a / §4b. Mention this to the user when they ask "how do I see/manage all my crons".
+The Manus dashboard surfaces ALL crons in the project (both end-user-driven and agent-driven), with execution history, pause/resume, edit, Run Now, and Investigate. Owners can't _create_ crons there — only via §3 / §4a / §4b. Mention this to the user when they ask "how do I see/manage all my crons".
 
 ---
 
@@ -187,14 +198,14 @@ In-sandbox tool that hits the same backend as the SDK in §5a but with project o
 
 The table below is just an index — `manus-heartbeat <cmd> --help` is canonical for full flag lists and examples.
 
-| Command | What |
-| --- | --- |
-| `create` | Create a cron under the project owner identity (§4a). Returns `task_uid` — persist it. |
-| `update` | Mutate a cron located by `--task-uid`. `--enable=false` pauses, `--enable=true` resumes; can also change cron expression / path / payload. |
-| `delete` | Remove a cron located by `--task-uid`. |
-| `list` | List crons. Default = owner's own; `--user-id u_xxx` inspects an end-user's (debugging §3 crons). |
-| `logs` | Recent execution history for one task (`--task-uid`). Default last 20 runs, no body — `--with-body` for full responses, `--run-uid` for one specific run, `--status failed` to filter. |
-| `bootstrap-legacy-project` | Already used to drop this file and `server/_core/heartbeat.ts` into the project. Re-run with `--overwrite` to refresh either file. |
+| Command                    | What                                                                                                                                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `create`                   | Create a cron under the project owner identity (§4a). Returns `task_uid` — persist it.                                                                                                 |
+| `update`                   | Mutate a cron located by `--task-uid`. `--enable=false` pauses, `--enable=true` resumes; can also change cron expression / path / payload.                                             |
+| `delete`                   | Remove a cron located by `--task-uid`.                                                                                                                                                 |
+| `list`                     | List crons. Default = owner's own; `--user-id u_xxx` inspects an end-user's (debugging §3 crons).                                                                                      |
+| `logs`                     | Recent execution history for one task (`--task-uid`). Default last 20 runs, no body — `--with-body` for full responses, `--run-uid` for one specific run, `--status failed` to filter. |
+| `bootstrap-legacy-project` | Already used to drop this file and `server/_core/heartbeat.ts` into the project. Re-run with `--overwrite` to refresh either file.                                                     |
 
 ### 5c. Local patches required for site-driven Heartbeat (§3)
 
@@ -231,10 +242,12 @@ export type AuthenticatedUser = User & {
   isCron?: boolean;
 };
 
-function buildCronUser(userInfo: GetUserInfoWithJwtResponse): AuthenticatedUser {
+function buildCronUser(
+  userInfo: GetUserInfoWithJwtResponse
+): AuthenticatedUser {
   const now = new Date();
   return {
-    id: -1,                                          // surrogate; real users are auto-increment > 0
+    id: -1, // surrogate; real users are auto-increment > 0
     openId: userInfo.openId,
     name: userInfo.name || "Manus Scheduled Task",
     email: null,

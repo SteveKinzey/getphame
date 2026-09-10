@@ -11,10 +11,20 @@ const mocks = vi.hoisted(() => ({
 vi.mock("./db", () => ({ getDb: mocks.getDb }));
 vi.mock("./contacts", () => ({ upsertApiContact: mocks.upsertApiContact }));
 vi.mock("./webhookHelpers", () => ({ fireWebhooks: mocks.fireWebhooks }));
-vi.mock("./entitlements", () => ({ hasPaidOrAdminAccess: mocks.hasPaidOrAdminAccess }));
+vi.mock("./entitlements", () => ({
+  hasPaidOrAdminAccess: mocks.hasPaidOrAdminAccess,
+}));
 
-import { ingestKoalendarPayload, processDueKoalendarBookings, retryFailedKoalendarBooking } from "./koalendar";
-import { koalendarBookings, koalendarConnections, users } from "../drizzle/schema";
+import {
+  ingestKoalendarPayload,
+  processDueKoalendarBookings,
+  retryFailedKoalendarBooking,
+} from "./koalendar";
+import {
+  koalendarBookings,
+  koalendarConnections,
+  users,
+} from "../drizzle/schema";
 
 const TOKEN = "a".repeat(48);
 const START = Date.parse("2026-07-16T17:00:00.000Z");
@@ -39,7 +49,11 @@ function payload(overrides: Record<string, any> = {}) {
       fields: { privateAnswer: "must not persist" },
     },
     calendar_event: { id: "calendar-event-123", calendarId: "calendar-1" },
-    link: { id: "booking-page-1", slug: "meet-with-steve", name: "Meet with Steve" },
+    link: {
+      id: "booking-page-1",
+      slug: "meet-with-steve",
+      name: "Meet with Steve",
+    },
     start_at: new Date(START).toISOString(),
     end_at: new Date(END).toISOString(),
     canceled_at: null,
@@ -53,7 +67,11 @@ function createDb(state: TestState) {
     if (table === koalendarConnections) return [state.connection];
     if (table === users) return [state.user];
     if (table === koalendarBookings) {
-      if (ordered) return state.bookings.filter((booking) => booking.status === "pending" && booking.nextAttemptAt <= Date.now());
+      if (ordered)
+        return state.bookings.filter(
+          booking =>
+            booking.status === "pending" && booking.nextAttemptAt <= Date.now()
+        );
       return state.bookings.length > 0 ? [state.bookings[0]] : [];
     }
     return [];
@@ -64,11 +82,23 @@ function createDb(state: TestState) {
       let table: unknown;
       let ordered = false;
       const chain: any = {
-        from(value: unknown) { table = value; return chain; },
-        leftJoin() { return chain; },
-        where() { return chain; },
-        orderBy() { ordered = true; return chain; },
-        limit(limit: number) { return Promise.resolve(rowsFor(table, ordered).slice(0, limit)); },
+        from(value: unknown) {
+          table = value;
+          return chain;
+        },
+        leftJoin() {
+          return chain;
+        },
+        where() {
+          return chain;
+        },
+        orderBy() {
+          ordered = true;
+          return chain;
+        },
+        limit(limit: number) {
+          return Promise.resolve(rowsFor(table, ordered).slice(0, limit));
+        },
       };
       return chain;
     }),
@@ -85,9 +115,13 @@ function createDb(state: TestState) {
           return;
         }
         if (table === koalendarBookings) {
-          const target = patch.status === "processing"
-            ? state.bookings.find((booking) => booking.status === "pending" || booking.status === "failed")
-            : state.bookings[0];
+          const target =
+            patch.status === "processing"
+              ? state.bookings.find(
+                  booking =>
+                    booking.status === "pending" || booking.status === "failed"
+                )
+              : state.bookings[0];
           if (target) {
             Object.assign(target, patch);
             changed = true;
@@ -95,11 +129,22 @@ function createDb(state: TestState) {
         }
       };
       const chain: any = {
-        set(value: Record<string, any>) { patch = value; return chain; },
-        where() { return chain; },
-        then(resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) {
+        set(value: Record<string, any>) {
+          patch = value;
+          return chain;
+        },
+        where() {
+          return chain;
+        },
+        then(
+          resolve: (value: unknown) => unknown,
+          reject: (reason: unknown) => unknown
+        ) {
           apply();
-          return Promise.resolve([{ affectedRows: changed ? 1 : 0 }]).then(resolve, reject);
+          return Promise.resolve([{ affectedRows: changed ? 1 : 0 }]).then(
+            resolve,
+            reject
+          );
         },
       };
       return chain;
@@ -109,13 +154,22 @@ function createDb(state: TestState) {
       const chain: any = {
         values(value: Record<string, any>) {
           if (table === koalendarBookings) {
-            inserted = { id: state.nextBookingId++, createdAt: Date.now(), ...value };
+            inserted = {
+              id: state.nextBookingId++,
+              createdAt: Date.now(),
+              ...value,
+            };
             state.bookings.push(inserted);
           }
           return chain;
         },
-        then(resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) {
-          return Promise.resolve([{ insertId: inserted?.id ?? 1, affectedRows: 1 }]).then(resolve, reject);
+        then(
+          resolve: (value: unknown) => unknown,
+          reject: (reason: unknown) => unknown
+        ) {
+          return Promise.resolve([
+            { insertId: inserted?.id ?? 1, affectedRows: 1 },
+          ]).then(resolve, reject);
         },
       };
       return chain;
@@ -125,7 +179,13 @@ function createDb(state: TestState) {
 
 function setupState(): TestState {
   const state: TestState = {
-    connection: { id: 10, userId: 1, webhookToken: TOKEN, enabled: true, lastEventAt: null },
+    connection: {
+      id: 10,
+      userId: 1,
+      webhookToken: TOKEN,
+      enabled: true,
+      lastEventAt: null,
+    },
     bookings: [],
     user: { role: "user", tier: "lifetime", planExpiresAt: null },
     nextBookingId: 1,
@@ -149,7 +209,11 @@ describe("Koalendar delayed contact import", () => {
     vi.setSystemTime(START - 60_000);
     const state = setupState();
     const result = await ingestKoalendarPayload(TOKEN, payload());
-    expect(result).toMatchObject({ accepted: true, ignored: false, status: "pending" });
+    expect(result).toMatchObject({
+      accepted: true,
+      ignored: false,
+      status: "pending",
+    });
     expect(state.bookings).toHaveLength(1);
     expect(state.bookings[0]).toMatchObject({
       externalBookingId: "calendar-event-123",
@@ -169,7 +233,9 @@ describe("Koalendar delayed contact import", () => {
 
   it("rejects invalid scheduling timestamps as a client error", async () => {
     setupState();
-    await expect(ingestKoalendarPayload(TOKEN, payload({ end_at: "not-a-date" }))).resolves.toMatchObject({
+    await expect(
+      ingestKoalendarPayload(TOKEN, payload({ end_at: "not-a-date" }))
+    ).resolves.toMatchObject({
       accepted: false,
       statusCode: 400,
     });
@@ -179,11 +245,14 @@ describe("Koalendar delayed contact import", () => {
     vi.setSystemTime(START - 60_000);
     const state = setupState();
     await ingestKoalendarPayload(TOKEN, payload());
-    await ingestKoalendarPayload(TOKEN, payload({
-      type: "event.canceled",
-      canceled_at: new Date(START - 30_000).toISOString(),
-      cancel_reason: "Invitee canceled",
-    }));
+    await ingestKoalendarPayload(
+      TOKEN,
+      payload({
+        type: "event.canceled",
+        canceled_at: new Date(START - 30_000).toISOString(),
+        cancel_reason: "Invitee canceled",
+      })
+    );
     expect(state.bookings).toHaveLength(1);
     expect(state.bookings[0].status).toBe("canceled");
     vi.setSystemTime(END + 60_000);
@@ -197,12 +266,15 @@ describe("Koalendar delayed contact import", () => {
     await ingestKoalendarPayload(TOKEN, payload());
     const laterStart = START + 24 * 60 * 60_000;
     const laterEnd = END + 24 * 60 * 60_000;
-    await ingestKoalendarPayload(TOKEN, payload({
-      id: "webhook-event-2",
-      type: "event.rescheduled",
-      start_at: new Date(laterStart).toISOString(),
-      end_at: new Date(laterEnd).toISOString(),
-    }));
+    await ingestKoalendarPayload(
+      TOKEN,
+      payload({
+        id: "webhook-event-2",
+        type: "event.rescheduled",
+        start_at: new Date(laterStart).toISOString(),
+        end_at: new Date(laterEnd).toISOString(),
+      })
+    );
     expect(state.bookings).toHaveLength(1);
     expect(state.bookings[0]).toMatchObject({
       eventType: "event.rescheduled",
@@ -233,7 +305,11 @@ describe("Koalendar delayed contact import", () => {
       source: "koalendar",
       externalId: "calendar-event-123",
     });
-    expect(state.bookings[0]).toMatchObject({ status: "imported", contactId: 99, lastError: null });
+    expect(state.bookings[0]).toMatchObject({
+      status: "imported",
+      contactId: 99,
+      lastError: null,
+    });
     expect(await processDueKoalendarBookings()).toBe(0);
     expect(mocks.upsertApiContact).toHaveBeenCalledTimes(1);
   });
@@ -242,10 +318,16 @@ describe("Koalendar delayed contact import", () => {
     vi.setSystemTime(START - 60_000);
     const state = setupState();
     await ingestKoalendarPayload(TOKEN, payload());
-    mocks.upsertApiContact.mockRejectedValueOnce(new Error("temporary database timeout"));
+    mocks.upsertApiContact.mockRejectedValueOnce(
+      new Error("temporary database timeout")
+    );
     vi.setSystemTime(END + 1);
     expect(await processDueKoalendarBookings()).toBe(0);
-    expect(state.bookings[0]).toMatchObject({ status: "pending", attempts: 1, lastError: "temporary database timeout" });
+    expect(state.bookings[0]).toMatchObject({
+      status: "pending",
+      attempts: 1,
+      lastError: "temporary database timeout",
+    });
     const retryAt = state.bookings[0].nextAttemptAt;
     vi.setSystemTime(retryAt + 1);
     expect(await processDueKoalendarBookings()).toBe(1);
@@ -282,15 +364,23 @@ describe("Koalendar delayed contact import", () => {
     vi.setSystemTime(START - 60_000);
     const state = setupState();
     await ingestKoalendarPayload(TOKEN, payload());
-    Object.assign(state.bookings[0], { status: "failed", attempts: 3, lastError: "temporary failure" });
+    Object.assign(state.bookings[0], {
+      status: "failed",
+      attempts: 3,
+      lastError: "temporary failure",
+    });
     vi.setSystemTime(END + 1);
 
-    await expect(retryFailedKoalendarBooking(state.bookings[0].id)).resolves.toMatchObject({
+    await expect(
+      retryFailedKoalendarBooking(state.bookings[0].id)
+    ).resolves.toMatchObject({
       outcome: "imported",
       bookingId: state.bookings[0].id,
       contactId: 99,
     });
-    await expect(retryFailedKoalendarBooking(state.bookings[0].id)).resolves.toMatchObject({
+    await expect(
+      retryFailedKoalendarBooking(state.bookings[0].id)
+    ).resolves.toMatchObject({
       outcome: "not_eligible",
       status: "imported",
     });
@@ -301,11 +391,19 @@ describe("Koalendar delayed contact import", () => {
     vi.setSystemTime(START - 60_000);
     const state = setupState();
     await ingestKoalendarPayload(TOKEN, payload());
-    Object.assign(state.bookings[0], { status: "failed", attempts: 2, lastError: "earlier failure" });
-    mocks.upsertApiContact.mockRejectedValueOnce(new Error("provider still unavailable"));
+    Object.assign(state.bookings[0], {
+      status: "failed",
+      attempts: 2,
+      lastError: "earlier failure",
+    });
+    mocks.upsertApiContact.mockRejectedValueOnce(
+      new Error("provider still unavailable")
+    );
     vi.setSystemTime(END + 1);
 
-    await expect(retryFailedKoalendarBooking(state.bookings[0].id)).resolves.toMatchObject({
+    await expect(
+      retryFailedKoalendarBooking(state.bookings[0].id)
+    ).resolves.toMatchObject({
       outcome: "failed",
       attempts: 3,
       error: "provider still unavailable",
@@ -319,28 +417,60 @@ describe("Koalendar delayed contact import", () => {
 });
 
 describe("Koalendar Settings feedback", () => {
-  const source = readFileSync(new URL("../client/src/components/KoalendarSettingsCard.tsx", import.meta.url), "utf8");
+  const source = readFileSync(
+    new URL(
+      "../client/src/components/KoalendarSettingsCard.tsx",
+      import.meta.url
+    ),
+    "utf8"
+  );
 
   it("shows an accessible loading state and success toast while saving the webhook URL", () => {
-    expect(source).toContain('aria-busy={connect.isPending}');
-    expect(source).toContain('connect.isPending ? "Saving webhook URL…" : "Connect Koalendar"');
-    expect(source).toContain('toast.success("Koalendar webhook URL saved successfully.")');
+    expect(source).toContain("aria-busy={connect.isPending}");
+    expect(source).toContain(
+      'connect.isPending ? "Saving webhook URL…" : "Connect Koalendar"'
+    );
+    expect(source).toContain(
+      'toast.success("Koalendar webhook URL saved successfully.")'
+    );
   });
 
   it("shows an accessible loading state and success toast while updating the webhook URL", () => {
-    expect(source).toContain('aria-busy={rotate.isPending}');
-    expect(source).toContain('rotate.isPending ? "Updating URL…" : "Rotate URL"');
-    expect(source).toContain('toast.success("Koalendar webhook URL updated successfully.")');
+    expect(source).toContain("aria-busy={rotate.isPending}");
+    expect(source).toContain(
+      'rotate.isPending ? "Updating URL…" : "Rotate URL"'
+    );
+    expect(source).toContain(
+      'toast.success("Koalendar webhook URL updated successfully.")'
+    );
   });
 });
 
 describe("Koalendar admin recovery and authenticated landing navigation", () => {
-  const routerSource = readFileSync(new URL("./routers.ts", import.meta.url), "utf8");
-  const pageSource = readFileSync(new URL("../client/src/pages/AdminKoalendarRetry.tsx", import.meta.url), "utf8");
-  const appSource = readFileSync(new URL("../client/src/App.tsx", import.meta.url), "utf8");
-  const brandSource = readFileSync(new URL("../client/src/components/BrandLockup.tsx", import.meta.url), "utf8");
-  const landingBrandLinkSource = readFileSync(new URL("../client/src/components/LandingBrandLink.tsx", import.meta.url), "utf8");
-  const smtpSource = readFileSync(new URL("./smtp.ts", import.meta.url), "utf8");
+  const routerSource = readFileSync(
+    new URL("./routers.ts", import.meta.url),
+    "utf8"
+  );
+  const pageSource = readFileSync(
+    new URL("../client/src/pages/AdminKoalendarRetry.tsx", import.meta.url),
+    "utf8"
+  );
+  const appSource = readFileSync(
+    new URL("../client/src/App.tsx", import.meta.url),
+    "utf8"
+  );
+  const brandSource = readFileSync(
+    new URL("../client/src/components/BrandLockup.tsx", import.meta.url),
+    "utf8"
+  );
+  const landingBrandLinkSource = readFileSync(
+    new URL("../client/src/components/LandingBrandLink.tsx", import.meta.url),
+    "utf8"
+  );
+  const smtpSource = readFileSync(
+    new URL("./smtp.ts", import.meta.url),
+    "utf8"
+  );
 
   it("keeps failure listing and manual retry behind admin procedures", () => {
     expect(routerSource).toMatch(/listKoalendarFailures:\s*adminProcedure/);
@@ -348,23 +478,31 @@ describe("Koalendar admin recovery and authenticated landing navigation", () => 
   });
 
   it("renders confirmation-gated per-event retry controls and mobile-safe cards", () => {
-    expect(pageSource).toContain('data-testid={`retry-koalendar-${failure.id}`}');
+    expect(pageSource).toContain(
+      "data-testid={`retry-koalendar-${failure.id}`}"
+    );
     expect(pageSource).toContain('data-testid="confirm-koalendar-retry"');
     expect(pageSource).toContain('className="flex flex-col gap-4 lg:flex-row');
-    expect(pageSource).toContain('It will not send a review request.');
+    expect(pageSource).toMatch(/It will not\s+send a\s+review request\./);
   });
 
   it("gives authenticated P icons an accessible public landing destination", () => {
     expect(appSource).toContain('if (path === "/landing")');
-    expect(brandSource).toContain('https://assets.getphame.app/getphame-logo.svg');
-    expect(brandSource).not.toContain('iconHref');
+    expect(brandSource).toContain(
+      "https://assets.getphame.app/getphame-logo.svg"
+    );
+    expect(brandSource).not.toContain("iconHref");
     expect(landingBrandLinkSource).toContain('href="/landing"');
-    expect(landingBrandLinkSource).toContain('View the Get Phame landing page');
+    expect(landingBrandLinkSource).toContain("View the Get Phame landing page");
   });
 
   it("keeps Workspace avatars outside application SMTP sender fields", () => {
-    expect(smtpSource).toContain('const from = `"${fromName}" <${creds.user}>`;');
-    expect(smtpSource).toContain('const replyTo = creds.replyTo ?? creds.user;');
+    expect(smtpSource).toContain(
+      'const from = `"${fromName}" <${creds.user}>`;'
+    );
+    expect(smtpSource).toContain(
+      "const replyTo = creds.replyTo ?? creds.user;"
+    );
     expect(smtpSource).not.toMatch(/avatarUrl|senderAvatar|profileImage/);
   });
 });

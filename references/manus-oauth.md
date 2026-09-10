@@ -3,6 +3,7 @@
 **Key Rule:** When handling redirect URLs, always use `window.location.origin` and never hardcode domains or use `req.host`. This is because the frontend and the backend are deployed on separate servers. The server cannot reliably determine the frontend's origin and so the frontend must always pass it explicitly.
 
 **Unsupported browsers:**
+
 - Safari Private Browsing (blocks all cookies)
 - Firefox with Enhanced Tracking Protection (Strict)
 - Brave with Shields (Aggressive)
@@ -11,6 +12,7 @@
 Manus OAuth requires cookies to maintain session state. If a user's browser blocks cookies, authentication will not work.
 
 **Anti-patterns:**
+
 ```ts
 // ❌ Guessing the URL doesn't allow you to redirect to the actual domain that the user is using
 const appId = process.env.VITE_APP_ID || "";
@@ -97,7 +99,11 @@ router.get("/api/oauth/callback", async (req, res) => {
     res.status(403).json({ error: "invalid oauth state" });
     return; // never exchange the code on mismatch
   }
-  res.clearCookie("__Host-oauth_state", { path: "/", secure: true, sameSite: "none" });
+  res.clearCookie("__Host-oauth_state", {
+    path: "/",
+    secure: true,
+    sameSite: "none",
+  });
 
   const token = await exchangeCodeForToken(code, redirectUri);
   res.cookie(COOKIE_NAME, token, cookieOptions);

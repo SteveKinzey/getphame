@@ -9,6 +9,65 @@ import {
   deleteAccountAsAdmin,
 } from "./accountManagement";
 
+function sourceContractPattern(expected: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&");
+  const hasClosingQuote = (start: number, quote: string) => {
+    for (let index = start + 1; index < expected.length; index += 1) {
+      if (expected[index] === "\\") {
+        index += 1;
+      } else if (expected[index] === quote) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  let pattern = "";
+  let quote: "'" | '"' | "`" | null = null;
+  for (let index = 0; index < expected.length; index += 1) {
+    const character = expected[index];
+    if (quote) {
+      if (character === "\\" && index + 1 < expected.length) {
+        pattern += escape(character + expected[index + 1]);
+        index += 1;
+      } else if (character === quote) {
+        pattern += quote === "`" ? "`" : "[\"']";
+        quote = null;
+      } else {
+        pattern += escape(character);
+      }
+      continue;
+    }
+    if (/\s/.test(character)) {
+      while (index + 1 < expected.length && /\s/.test(expected[index + 1])) {
+        index += 1;
+      }
+      pattern += "\\s*";
+    } else if (
+      (character === "'" || character === '"' || character === "`") &&
+      hasClosingQuote(index, character)
+    ) {
+      pattern += character === "`" ? "`" : "[\"']";
+      quote = character;
+    } else {
+      const canWrap = "().,=:?{}[]<>".includes(character);
+      if (canWrap) pattern += "\\s*";
+      pattern += escape(character);
+      if (canWrap) pattern += "\\s*";
+    }
+  }
+  return new RegExp(pattern, "s");
+}
+
+function expectSourceContract(source: string) {
+  return {
+    toContain(expected: string) {
+      expect(source).toMatch(sourceContractPattern(expected));
+    },
+  };
+}
+
 describe("administrative account-management safeguards", () => {
   it("prevents an administrator from deleting their own signed-in account", async () => {
     await expect(deleteAccountAsAdmin(7, 7)).rejects.toMatchObject({
@@ -24,14 +83,18 @@ describe("administrative account-management safeguards", () => {
     });
     await expect(combineAccountsAsAdmin(7, 7, 9)).rejects.toMatchObject({
       code: "BAD_REQUEST",
-      message: "Your signed-in administrator account must be the account that remains.",
+      message:
+        "Your signed-in administrator account must be the account that remains.",
     });
   });
 });
 
 describe("duplicate-account data preservation", () => {
   it("keeps table-by-table transfer and conflict protection for every user-owned account-data category", () => {
-    const source = fs.readFileSync(path.join(process.cwd(), "server/accountManagement.ts"), "utf8");
+    const source = fs.readFileSync(
+      path.join(process.cwd(), "server/accountManagement.ts"),
+      "utf8"
+    );
     const transferredTables = [
       "customerRequests",
       "savedContacts",
@@ -58,38 +121,78 @@ describe("duplicate-account data preservation", () => {
     ];
 
     for (const table of transferredTables) {
-      expect(source).toContain(`tx.update(${table}).set({ userId: targetUserId })`);
+      expect(source).toMatch(
+        new RegExp(
+          `tx\\s*\\.\\s*update\\(\\s*${table}\\s*\\)\\s*\\.\\s*set\\(\\s*\\{\\s*userId\\s*:\\s*targetUserId\\s*\\}\\s*\\)`,
+          "s"
+        )
+      );
     }
     for (const table of conflictProtectedSingletons) {
-      expect(source).toContain(`assertNoSingletonConflict(tx, ${table}, sourceUserId, targetUserId`);
-      expect(source).toContain(`tx.update(${table}).set({ userId: targetUserId })`);
+      expectSourceContract(source).toContain(
+        `assertNoSingletonConflict(tx, ${table}, sourceUserId, targetUserId`
+      );
+      expect(source).toMatch(
+        new RegExp(
+          `tx\\s*\\.\\s*update\\(\\s*${table}\\s*\\)\\s*\\.\\s*set\\(\\s*\\{\\s*userId\\s*:\\s*targetUserId\\s*\\}\\s*\\)`,
+          "s"
+        )
+      );
     }
-    expect(source).toContain("resolveSmtpConflict(tx, sourceUserId, targetUserId)");
-    expect(source).toContain("tx.update(smtpCredentials).set({ userId: targetUserId })");
-    expect(source).toContain("tx.delete(smtpCredentials).where(eq(smtpCredentials.id, losingId))");
-    expect(source).toContain("buildMergedProfileValues(sourceProfile, targetProfile)");
-    expect(source).toContain("tx.update(notificationPrefs).set({ userId: targetUserId })");
-    expect(source).toContain("tx.update(accessCodeRedemptions).set({ userId: targetUserId })");
-    expect(source).toContain("tx.update(referrals).set({ referredUserId: targetUserId })");
-    expect(source).toContain("tx.update(referrals).set({ referrerUserId: targetUserId })");
-    expect(source).toContain("tx.update(userIdentityAliases).set({ userId: targetUserId })");
-    expect(source).toContain("await tx.delete(users).where(eq(users.id, sourceUserId))");
+    expectSourceContract(source).toContain(
+      "resolveSmtpConflict(tx, sourceUserId, targetUserId)"
+    );
+    expectSourceContract(source).toContain(
+      "tx.update(smtpCredentials).set({ userId: targetUserId })"
+    );
+    expectSourceContract(source).toContain(
+      "tx.delete(smtpCredentials).where(eq(smtpCredentials.id, losingId))"
+    );
+    expectSourceContract(source).toContain(
+      "buildMergedProfileValues(sourceProfile, targetProfile)"
+    );
+    expectSourceContract(source).toContain(
+      "tx.update(notificationPrefs).set({ userId: targetUserId })"
+    );
+    expectSourceContract(source).toContain(
+      "tx.update(accessCodeRedemptions).set({ userId: targetUserId })"
+    );
+    expectSourceContract(source).toContain(
+      "tx.update(referrals).set({ referredUserId: targetUserId })"
+    );
+    expectSourceContract(source).toContain(
+      "tx.update(referrals).set({ referrerUserId: targetUserId })"
+    );
+    expectSourceContract(source).toContain(
+      "tx.update(userIdentityAliases).set({ userId: targetUserId })"
+    );
+    expectSourceContract(source).toContain(
+      "await tx.delete(users).where(eq(users.id, sourceUserId))"
+    );
   });
 
   it("keeps a verified source SMTP connection over an unverified survivor connection", () => {
-    expect(chooseSmtpMergeWinner({ verified: 1 }, { verified: 0 })).toBe("source");
+    expect(chooseSmtpMergeWinner({ verified: 1 }, { verified: 0 })).toBe(
+      "source"
+    );
   });
 
   it("keeps a verified survivor SMTP connection over an unverified source connection", () => {
-    expect(chooseSmtpMergeWinner({ verified: 0 }, { verified: 1 })).toBe("target");
+    expect(chooseSmtpMergeWinner({ verified: 0 }, { verified: 1 })).toBe(
+      "target"
+    );
   });
 
   it("requires an explicit choice when both SMTP connections are verified", () => {
-    expect(chooseSmtpMergeWinner({ verified: 1 }, { verified: 1 })).toBe("conflict");
+    expect(chooseSmtpMergeWinner({ verified: 1 }, { verified: 1 })).toBe(
+      "conflict"
+    );
   });
 
   it("requires verification or removal when both SMTP connections are unverified", () => {
-    expect(chooseSmtpMergeWinner({ verified: 0 }, { verified: 0 })).toBe("conflict");
+    expect(chooseSmtpMergeWinner({ verified: 0 }, { verified: 0 })).toBe(
+      "conflict"
+    );
   });
 
   it("keeps the survivor's preferred profile fields while preserving the strongest plan and accumulated usage", () => {
@@ -117,7 +220,7 @@ describe("duplicate-account data preservation", () => {
         stripeCustomerId: null,
         fromName: null,
         replyTo: "target@example.test",
-      },
+      }
     );
 
     expect(merged).toEqual({
@@ -149,7 +252,7 @@ describe("duplicate-account data preservation", () => {
         email: "survivor@example.test",
         defaultFromEmail: null,
         defaultFromName: "Survivor Sender",
-      },
+      }
     );
 
     expect(merged).toEqual({

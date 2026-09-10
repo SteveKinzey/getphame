@@ -18,7 +18,9 @@ describe("follow-up delay settings", () => {
   it("provides fast 3, 5, and 7 day choices for either independently edited interval", () => {
     expect(FOLLOW_UP_DELAY_PRESETS).toEqual([3, 5, 7]);
     expect(DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS).toBe(7);
-    expect(normalizeFollowUpDelayDays("5", DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS)).toBe(5);
+    expect(
+      normalizeFollowUpDelayDays("5", DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS)
+    ).toBe(5);
   });
 
   it("rejects empty, fractional, and out-of-range values without saving them", () => {
@@ -33,7 +35,11 @@ describe("follow-up delay settings", () => {
     const originalSentAt = Date.UTC(2026, 6, 15, 12, 0, 0);
     const projected = getProjectedFollowUpDates(originalSentAt, 3, 7);
 
-    expect(projected.first.getTime()).toBe(originalSentAt + 3 * 24 * 60 * 60 * 1000);
-    expect(projected.second.getTime()).toBe(originalSentAt + 10 * 24 * 60 * 60 * 1000);
+    expect(projected.first.getTime()).toBe(
+      originalSentAt + 3 * 24 * 60 * 60 * 1000
+    );
+    expect(projected.second.getTime()).toBe(
+      originalSentAt + 10 * 24 * 60 * 60 * 1000
+    );
   });
 });

@@ -4,7 +4,10 @@ const mocks = vi.hoisted(() => ({ notifyOwner: vi.fn() }));
 
 vi.mock("./_core/notification", () => ({ notifyOwner: mocks.notifyOwner }));
 
-import { isHealthyToFailedTransition, notifySmtpFailureTransition } from "./smtpHealthAlerts";
+import {
+  isHealthyToFailedTransition,
+  notifySmtpFailureTransition,
+} from "./smtpHealthAlerts";
 
 describe("SMTP health failure alerts", () => {
   beforeEach(() => {
@@ -24,28 +27,48 @@ describe("SMTP health failure alerts", () => {
 
     expect(sent).toBe(true);
     expect(mocks.notifyOwner).toHaveBeenCalledTimes(1);
-    expect(mocks.notifyOwner).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Get Phame SMTP connection failed: owner@example.test",
-      content: expect.stringContaining("https://getphame.app/admin/users?smtpStatus=failing&search=owner%40example.test"),
-    }));
+    expect(mocks.notifyOwner).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Get Phame SMTP connection failed: owner@example.test",
+        content: expect.stringContaining(
+          "https://getphame.app/admin/users?smtpStatus=failing&search=owner%40example.test"
+        ),
+      })
+    );
   });
 
   it("does not duplicate alerts for repeated failures or an unknown initial state", async () => {
     expect(isHealthyToFailedTransition("fail")).toBe(false);
     expect(isHealthyToFailedTransition(null)).toBe(false);
-    await notifySmtpFailureTransition({ previousStatus: "fail", accountEmail: "owner@example.test", host: "smtp.example.test", checkedAt: 1, error: "Still failing" });
-    await notifySmtpFailureTransition({ previousStatus: null, accountEmail: "owner@example.test", host: "smtp.example.test", checkedAt: 2, error: "Initial failure" });
+    await notifySmtpFailureTransition({
+      previousStatus: "fail",
+      accountEmail: "owner@example.test",
+      host: "smtp.example.test",
+      checkedAt: 1,
+      error: "Still failing",
+    });
+    await notifySmtpFailureTransition({
+      previousStatus: null,
+      accountEmail: "owner@example.test",
+      host: "smtp.example.test",
+      checkedAt: 2,
+      error: "Initial failure",
+    });
     expect(mocks.notifyOwner).not.toHaveBeenCalled();
   });
 
   it("isolates notification-service failures from the health-check workflow", async () => {
-    mocks.notifyOwner.mockRejectedValueOnce(new Error("Notification service unavailable"));
-    await expect(notifySmtpFailureTransition({
-      previousStatus: "ok",
-      accountEmail: "owner@example.test",
-      host: "smtp.example.test",
-      checkedAt: 3,
-      error: "Connection refused",
-    })).resolves.toBe(false);
+    mocks.notifyOwner.mockRejectedValueOnce(
+      new Error("Notification service unavailable")
+    );
+    await expect(
+      notifySmtpFailureTransition({
+        previousStatus: "ok",
+        accountEmail: "owner@example.test",
+        host: "smtp.example.test",
+        checkedAt: 3,
+        error: "Connection refused",
+      })
+    ).resolves.toBe(false);
   });
 });

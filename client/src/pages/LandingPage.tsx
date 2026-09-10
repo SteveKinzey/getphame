@@ -14,7 +14,9 @@ import SecuritySummary from "@/components/landing/SecuritySummary";
 const VideoDemo = lazy(() => import("@/components/landing/VideoDemo"));
 const Features = lazy(() => import("@/components/landing/Features"));
 const HowItWorks = lazy(() => import("@/components/landing/HowItWorks"));
-const ProductShowcase = lazy(() => import("@/components/landing/ProductShowcase"));
+const ProductShowcase = lazy(
+  () => import("@/components/landing/ProductShowcase")
+);
 const Stats = lazy(() => import("@/components/landing/Stats"));
 const Pricing = lazy(() => import("@/components/landing/Pricing"));
 const Comparison = lazy(() => import("@/components/landing/Comparison"));
@@ -25,7 +27,9 @@ const Footer = lazy(() => import("@/components/landing/Footer"));
 
 // Lightweight skeleton fallback shown while lazy sections are loading
 function SectionSkeleton() {
-  return <div className="h-48 animate-pulse bg-white/5 rounded-2xl mx-4 my-4" />;
+  return (
+    <div className="h-48 animate-pulse bg-white/5 rounded-2xl mx-4 my-4" />
+  );
 }
 
 export default function LandingPage() {
@@ -41,17 +45,39 @@ export default function LandingPage() {
       <AppPurpose />
       <TrustBar />
       <SecuritySummary />
-      <Suspense fallback={<SectionSkeleton />}><VideoDemo /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><Features /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><HowItWorks /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><ProductShowcase /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><Stats /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><Pricing /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><Comparison /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><FAQ /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><LeadCapture /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><FinalCTA /></Suspense>
-      <Suspense fallback={<SectionSkeleton />}><Footer /></Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <VideoDemo />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <Features />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <HowItWorks />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <ProductShowcase />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <Stats />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <Pricing />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <Comparison />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <FAQ />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <LeadCapture />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <FinalCTA />
+      </Suspense>
+      <Suspense fallback={<SectionSkeleton />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

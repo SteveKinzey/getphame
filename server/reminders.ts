@@ -15,7 +15,11 @@ import {
   resolveQuietHoursWindow,
 } from "./quietHours";
 import { getDefaultReviewPlatform } from "./reviewPlatforms";
-import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
+import {
+  encodeTrackingToken,
+  wrapClickUrl,
+  buildOpenPixel,
+} from "./emailTracking";
 import { buildReviewRequestEmail } from "./emailTemplates";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -39,7 +43,9 @@ function getAffectedRows(result: unknown): number {
     const header = result[0] as { affectedRows?: number } | undefined;
     return Number(header?.affectedRows ?? 0);
   }
-  return Number((result as { affectedRows?: number } | undefined)?.affectedRows ?? 0);
+  return Number(
+    (result as { affectedRows?: number } | undefined)?.affectedRows ?? 0
+  );
 }
 
 /** Schedule each enabled follow-up stage while preserving cumulative timing. */
@@ -127,14 +133,22 @@ export async function cancelReminder(userId: number, reminderId: number) {
   await db
     .update(followUpReminders)
     .set({ status: "cancelled" })
-    .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.id, reminderId)));
+    .where(
+      and(
+        eq(followUpReminders.userId, userId),
+        eq(followUpReminders.id, reminderId)
+      )
+    );
 }
 
 /**
  * Cancel ALL pending reminders for a given customerRequestId.
  * Called when a customer is marked as responded so they stop receiving follow-ups.
  */
-export async function cancelRemindersByRequestId(userId: number, customerRequestId: number) {
+export async function cancelRemindersByRequestId(
+  userId: number,
+  customerRequestId: number
+) {
   const db = await getDb();
   if (!db) return;
   await db
@@ -147,7 +161,9 @@ export async function cancelRemindersByRequestId(userId: number, customerRequest
         eq(followUpReminders.status, "pending")
       )
     );
-  console.log(`[Reminders] Cancelled all pending reminders for request ${customerRequestId}`);
+  console.log(
+    `[Reminders] Cancelled all pending reminders for request ${customerRequestId}`
+  );
 }
 
 /** Cancel pending rows for reminder stages the user has switched off. */
@@ -162,7 +178,12 @@ export async function syncPendingReminderStages(
     await db
       .update(followUpReminders)
       .set({ status: "cancelled" })
-      .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.status, "pending")));
+      .where(
+        and(
+          eq(followUpReminders.userId, userId),
+          eq(followUpReminders.status, "pending")
+        )
+      );
     return;
   }
 
@@ -203,11 +224,12 @@ function getReminderBody(
   openPixel: string,
   showPoweredBy = false
 ): string {
-  const bodyHtml = step === 2
-    ? `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">We know life gets busy — this is our last follow-up, we promise! 😊</p>
+  const bodyHtml =
+    step === 2
+      ? `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">We know life gets busy — this is our last follow-up, we promise! 😊</p>
        <p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">If you've had a chance to experience our service, it would mean the world to us if you could spare a minute to share your thoughts.</p>
        <p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">Your feedback helps other customers find us and helps us keep improving.</p>`
-    : `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!</p>
+      : `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!</p>
        <p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">Leaving a review only takes a minute and helps us a lot.</p>`;
 
   return buildReviewRequestEmail({
@@ -223,7 +245,14 @@ function getReminderBody(
  * Process all due pending reminders — called by the background scheduler.
  */
 export async function processDueReminders() {
-  const summary = { checked: 0, sent: 0, deferred: 0, cancelled: 0, failed: 0, locked: 0 };
+  const summary = {
+    checked: 0,
+    sent: 0,
+    deferred: 0,
+    cancelled: 0,
+    failed: 0,
+    locked: 0,
+  };
   try {
     const db = await getDb();
     if (!db) return summary;
@@ -262,14 +291,20 @@ export async function processDueReminders() {
           .from(businessProfiles)
           .where(eq(businessProfiles.userId, reminder.userId));
         if (!profile) {
-          await db.update(followUpReminders).set({ status: "cancelled" }).where(eq(followUpReminders.id, reminder.id));
+          await db
+            .update(followUpReminders)
+            .set({ status: "cancelled" })
+            .where(eq(followUpReminders.id, reminder.id));
           summary.cancelled += 1;
           continue;
         }
 
         const step = reminder.sequenceStep ?? 1;
         if (!isStageEnabled(profile, step)) {
-          await db.update(followUpReminders).set({ status: "cancelled" }).where(eq(followUpReminders.id, reminder.id));
+          await db
+            .update(followUpReminders)
+            .set({ status: "cancelled" })
+            .where(eq(followUpReminders.id, reminder.id));
           summary.cancelled += 1;
           continue;
         }
@@ -286,16 +321,37 @@ export async function processDueReminders() {
 
         const defaultPlatform = await getDefaultReviewPlatform(reminder.userId);
         const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
-        const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
+        const trackingToken = encodeTrackingToken(
+          reminder.customerRequestId,
+          reminder.userId,
+          null
+        );
         const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
-        const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
+        const trackedReviewUrl = wrapClickUrl(
+          reviewUrl,
+          trackingToken,
+          baseUrl
+        );
         const openPixel = buildOpenPixel(trackingToken, baseUrl);
 
         const subject = getReminderSubject(step);
-        const showPoweredBy = !profile.tier || profile.tier === 'free';
-        const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
+        const showPoweredBy = !profile.tier || profile.tier === "free";
+        const html = getReminderBody(
+          step,
+          reminder.customerName,
+          profile.businessName ?? "Us",
+          trackedReviewUrl,
+          reviewUrl,
+          openPixel,
+          showPoweredBy
+        );
 
-        await sendTenantOwnedReviewEmail({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
+        await sendTenantOwnedReviewEmail({
+          userId: reminder.userId,
+          to: reminder.customerEmail,
+          subject,
+          html,
+        });
 
         await db
           .update(followUpReminders)
@@ -303,15 +359,23 @@ export async function processDueReminders() {
           .where(eq(followUpReminders.id, reminder.id));
 
         summary.sent += 1;
-        console.log(`[Reminders] Step ${step} follow-up sent for reminder ${reminder.id}`);
+        console.log(
+          `[Reminders] Step ${step} follow-up sent for reminder ${reminder.id}`
+        );
       } catch (err) {
         summary.failed += 1;
-        console.error(`[Reminders] Failed to send follow-up for reminder ${reminder.id}:`, err);
+        console.error(
+          `[Reminders] Failed to send follow-up for reminder ${reminder.id}:`,
+          err
+        );
       }
     }
   } catch (err) {
     // Swallow DB connection errors (e.g. SSL timeout) so the server process stays alive
-    console.error("[Reminders] processDueReminders failed (will retry next interval):", err instanceof Error ? err.message : err);
+    console.error(
+      "[Reminders] processDueReminders failed (will retry next interval):",
+      err instanceof Error ? err.message : err
+    );
   }
   return summary;
 }
@@ -326,9 +390,15 @@ export async function sendReminderNow(userId: number, reminderId: number) {
   const [reminder] = await db
     .select()
     .from(followUpReminders)
-    .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.id, reminderId)));
+    .where(
+      and(
+        eq(followUpReminders.userId, userId),
+        eq(followUpReminders.id, reminderId)
+      )
+    );
   if (!reminder) throw new Error("Reminder not found.");
-  if (reminder.status !== "pending") throw new Error("Only pending reminders can be sent now.");
+  if (reminder.status !== "pending")
+    throw new Error("Only pending reminders can be sent now.");
 
   const [profile] = await db
     .select()
@@ -353,16 +423,33 @@ export async function sendReminderNow(userId: number, reminderId: number) {
 
   const defaultPlatform = await getDefaultReviewPlatform(userId);
   const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
-  const trackingToken = encodeTrackingToken(reminder.customerRequestId, userId, null);
+  const trackingToken = encodeTrackingToken(
+    reminder.customerRequestId,
+    userId,
+    null
+  );
   const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
   const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
   const openPixel = buildOpenPixel(trackingToken, baseUrl);
 
   const subject = getReminderSubject(step);
-  const showPoweredBy = !profile.tier || profile.tier === 'free';
-  const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
+  const showPoweredBy = !profile.tier || profile.tier === "free";
+  const html = getReminderBody(
+    step,
+    reminder.customerName,
+    profile.businessName ?? "Us",
+    trackedReviewUrl,
+    reviewUrl,
+    openPixel,
+    showPoweredBy
+  );
 
-  await sendTenantOwnedReviewEmail({ userId, to: reminder.customerEmail, subject, html });
+  await sendTenantOwnedReviewEmail({
+    userId,
+    to: reminder.customerEmail,
+    subject,
+    html,
+  });
   await db
     .update(followUpReminders)
     .set({ status: "sent", sentAt: Date.now() })
@@ -371,12 +458,28 @@ export async function sendReminderNow(userId: number, reminderId: number) {
 }
 
 /** Build a preview of a follow-up reminder email for the given user and sequence step */
-export async function getReminderPreviewHtml(userId: number, step: number): Promise<string> {
+export async function getReminderPreviewHtml(
+  userId: number,
+  step: number
+): Promise<string> {
   const db = await getDb();
   const profile = db
-    ? (await db.select().from(businessProfiles).where(eq(businessProfiles.userId, userId)).limit(1))[0]
+    ? (
+        await db
+          .select()
+          .from(businessProfiles)
+          .where(eq(businessProfiles.userId, userId))
+          .limit(1)
+      )[0]
     : null;
   const businessName = profile?.businessName ?? "Your Business";
   const reviewUrl = "https://g.page/r/example-preview";
-  return getReminderBody(step, "Alex Johnson", businessName, reviewUrl, reviewUrl, "");
+  return getReminderBody(
+    step,
+    "Alex Johnson",
+    businessName,
+    reviewUrl,
+    reviewUrl,
+    ""
+  );
 }

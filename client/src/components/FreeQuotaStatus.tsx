@@ -2,13 +2,13 @@ import type { FreeQuotaSummary } from "@shared/quota";
 
 type Translate = (
   key: string,
-  options?: { defaultValue?: string; date?: string },
+  options?: { defaultValue?: string; date?: string }
 ) => string;
 
 export function FreeQuotaStatus({
   quota,
   t,
-  formatDate = (timestamp) => new Date(timestamp).toLocaleDateString(),
+  formatDate = timestamp => new Date(timestamp).toLocaleDateString(),
 }: {
   quota?: FreeQuotaSummary | null;
   t: Translate;
@@ -25,8 +25,13 @@ export function FreeQuotaStatus({
     >
       <p className="text-xs font-black text-white">
         {isRolling
-          ? t("homePage.freeAllowanceMonthly", { defaultValue: "Free plan: 5 requests every rolling 30 days" })
-          : t("homePage.freeAllowanceInitial", { defaultValue: "Free plan: 10 initial requests, then 5 every rolling 30 days" })}
+          ? t("homePage.freeAllowanceMonthly", {
+              defaultValue: "Free plan: 5 requests every rolling 30 days",
+            })
+          : t("homePage.freeAllowanceInitial", {
+              defaultValue:
+                "Free plan: 10 initial requests, then 5 every rolling 30 days",
+            })}
       </p>
       {quota?.blocked && quota.nextAvailableAt && (
         <p className="mt-1 text-[11px] font-semibold text-white/70">

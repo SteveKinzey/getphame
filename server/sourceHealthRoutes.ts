@@ -33,9 +33,10 @@ export type SourceEventWindow = {
 export function evaluateSourceHealthState(
   connection: SourceConnection,
   window: SourceEventWindow,
-  checkedAt = Date.now(),
+  checkedAt = Date.now()
 ) {
-  const expectedMs = Math.max(15, connection.expectedIntervalMinutes) * MINUTE_MS;
+  const expectedMs =
+    Math.max(15, connection.expectedIntervalMinutes) * MINUTE_MS;
   const graceMs = Math.max(15 * MINUTE_MS, Math.round(expectedMs * 0.5));
   let status: SourceHealthStatus;
   let reasonCode: string;
@@ -53,21 +54,29 @@ export function evaluateSourceHealthState(
     status = "delayed";
     reasonCode = "expected_import_overdue";
   } else if (
-    window.failures > 0
-    && window.lastFailureAt !== null
-    && (window.lastSuccessAt === null || window.lastFailureAt > window.lastSuccessAt)
+    window.failures > 0 &&
+    window.lastFailureAt !== null &&
+    (window.lastSuccessAt === null ||
+      window.lastFailureAt > window.lastSuccessAt)
   ) {
     status = "failing";
-    reasonCode = window.lastErrorCode ? `error_${window.lastErrorCode.toLowerCase()}` : "recent_import_error";
+    reasonCode = window.lastErrorCode
+      ? `error_${window.lastErrorCode.toLowerCase()}`
+      : "recent_import_error";
   } else {
     status = "healthy";
-    reasonCode = window.failures > 0 ? "recovered_after_error" : "imports_flowing";
+    reasonCode =
+      window.failures > 0 ? "recovered_after_error" : "imports_flowing";
   }
 
   const unhealthy = status === "delayed" || status === "failing";
-  const consecutiveFailures = unhealthy ? connection.consecutiveFailures + 1 : 0;
-  const shouldOpenIncident = unhealthy && consecutiveFailures >= FAILURE_ALERT_THRESHOLD;
-  const openedFailureIncident = !connection.failureAlertOpen && shouldOpenIncident;
+  const consecutiveFailures = unhealthy
+    ? connection.consecutiveFailures + 1
+    : 0;
+  const shouldOpenIncident =
+    unhealthy && consecutiveFailures >= FAILURE_ALERT_THRESHOLD;
+  const openedFailureIncident =
+    !connection.failureAlertOpen && shouldOpenIncident;
   const recoveredIncident = connection.failureAlertOpen && status === "healthy";
   const failureAlertOpen = recoveredIncident
     ? false
@@ -88,28 +97,35 @@ function alertReviewPath(source: SourceConnection) {
   return `/settings?section=developer&source=${encodeURIComponent(source.publicId)}`;
 }
 
-async function deliverSourceHealthAlert(source: SourceConnection, transition: "failure" | "recovery") {
-  const detectedAt = new Date(source.lastEvaluatedAt ?? Date.now()).toISOString();
+async function deliverSourceHealthAlert(
+  source: SourceConnection,
+  transition: "failure" | "recovery"
+) {
+  const detectedAt = new Date(
+    source.lastEvaluatedAt ?? Date.now()
+  ).toISOString();
   const delivered = await notifyOwner({
-    title: transition === "failure"
-      ? "Get Phame source connection needs attention"
-      : "Get Phame source connection recovered",
-    content: transition === "failure"
-      ? [
-          `Source: ${source.label}`,
-          `Provider: ${source.provider}`,
-          `Status: ${source.status}`,
-          `Detected: ${detectedAt}`,
-          `Reason: ${source.lastErrorCode ?? "expected import overdue"}`,
-          `Review: ${alertReviewPath(source)}`,
-        ].join("\n")
-      : [
-          `Source: ${source.label}`,
-          `Provider: ${source.provider}`,
-          `Recovered: ${detectedAt}`,
-          "Imports are flowing again.",
-          `Review: ${alertReviewPath(source)}`,
-        ].join("\n"),
+    title:
+      transition === "failure"
+        ? "Get Phame source connection needs attention"
+        : "Get Phame source connection recovered",
+    content:
+      transition === "failure"
+        ? [
+            `Source: ${source.label}`,
+            `Provider: ${source.provider}`,
+            `Status: ${source.status}`,
+            `Detected: ${detectedAt}`,
+            `Reason: ${source.lastErrorCode ?? "expected import overdue"}`,
+            `Review: ${alertReviewPath(source)}`,
+          ].join("\n")
+        : [
+            `Source: ${source.label}`,
+            `Provider: ${source.provider}`,
+            `Recovered: ${detectedAt}`,
+            "Imports are flowing again.",
+            `Review: ${alertReviewPath(source)}`,
+          ].join("\n"),
   });
   if (!delivered) throw new Error("SOURCE_HEALTH_ALERT_DELIVERY_FAILED");
   await markSourceHealthAlertDelivered(source.id, transition);
@@ -118,15 +134,25 @@ async function deliverSourceHealthAlert(source: SourceConnection, transition: "f
 export async function deliverPendingSourceHealthAlerts() {
   const pending = await listPendingSourceHealthAlerts();
   for (const source of pending) {
-    await deliverSourceHealthAlert(source, source.failureAlertOpen ? "failure" : "recovery");
+    await deliverSourceHealthAlert(
+      source,
+      source.failureAlertOpen ? "failure" : "recovery"
+    );
   }
   return pending.length;
 }
 
-export async function evaluateSourceConnection(connection: SourceConnection, checkedAt = Date.now()) {
-  const expectedMs = Math.max(15, connection.expectedIntervalMinutes) * MINUTE_MS;
+export async function evaluateSourceConnection(
+  connection: SourceConnection,
+  checkedAt = Date.now()
+) {
+  const expectedMs =
+    Math.max(15, connection.expectedIntervalMinutes) * MINUTE_MS;
   const lookbackMs = Math.min(7 * DAY_MS, Math.max(DAY_MS, expectedMs * 2));
-  const window = await getSourceEventWindow(connection.id, checkedAt - lookbackMs);
+  const window = await getSourceEventWindow(
+    connection.id,
+    checkedAt - lookbackMs
+  );
   const evaluation = evaluateSourceHealthState(connection, window, checkedAt);
   await persistSourceHealthEvaluation({
     connection,
@@ -158,19 +184,32 @@ export async function runSourceHealthEvaluationBatch(now = Date.now()) {
   }
   const alertsDelivered = await deliverPendingSourceHealthAlerts();
   await pruneExpiredSourceHealthHistory(now);
-  return { ...counts, alertsDelivered, hasMore: due.length === SOURCE_HEALTH_BATCH_SIZE };
+  return {
+    ...counts,
+    alertsDelivered,
+    hasMore: due.length === SOURCE_HEALTH_BATCH_SIZE,
+  };
 }
 
 export async function sourceHealthHandler(req: Request, res: Response) {
   let taskUid: string | undefined;
   try {
     const user = await sdk.authenticateRequest(req);
-    if (!user.isCron || !user.taskUid) return res.status(403).json({ error: "cron-only" });
+    if (!user.isCron || !user.taskUid)
+      return res.status(403).json({ error: "cron-only" });
     taskUid = user.taskUid;
     const scheduler = await getSourceHealthSchedulerByTaskUid(taskUid);
     if (!scheduler) return res.json({ ok: true, skipped: "orphan" });
-    const claimed = await claimSourceHealthSchedulerRun(taskUid, RETRY_DEDUP_WINDOW_MS);
-    if (!claimed) return res.json({ ok: true, skipped: "recent-run-exists", checkedAt: scheduler.lastRunAt });
+    const claimed = await claimSourceHealthSchedulerRun(
+      taskUid,
+      RETRY_DEDUP_WINDOW_MS
+    );
+    if (!claimed)
+      return res.json({
+        ok: true,
+        skipped: "recent-run-exists",
+        checkedAt: scheduler.lastRunAt,
+      });
 
     const result = await runSourceHealthEvaluationBatch();
     await recordSourceHealthSchedulerRun({ taskUid, status: "ok" });
@@ -183,7 +222,10 @@ export async function sourceHealthHandler(req: Request, res: Response) {
         errorCode: "SOURCE_HEALTH_RUN_FAILED",
       }).catch(() => undefined);
     }
-    console.error("[SourceHealth] Scheduled callback failed:", error instanceof Error ? error.name : "unknown");
+    console.error(
+      "[SourceHealth] Scheduled callback failed:",
+      error instanceof Error ? error.name : "unknown"
+    );
     return res.status(500).json({
       error: "SOURCE_HEALTH_RUN_FAILED",
       timestamp: new Date().toISOString(),

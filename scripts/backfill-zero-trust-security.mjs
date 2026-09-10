@@ -27,15 +27,17 @@ try {
          AND existing.revoked_at IS NULL
          AND (existing.expires_at IS NULL OR existing.expires_at > ?)
      )`,
-    [now, now],
+    [now, now]
   );
 
   const [ownerRows] = await connection.execute(
     "SELECT id FROM users WHERE openId = ? LIMIT 1",
-    [ownerOpenId],
+    [ownerOpenId]
   );
   if (!Array.isArray(ownerRows) || ownerRows.length !== 1) {
-    throw new Error("Configured application owner could not be resolved uniquely");
+    throw new Error(
+      "Configured application owner could not be resolved uniquely"
+    );
   }
   const ownerUserId = ownerRows[0].id;
 
@@ -53,14 +55,18 @@ try {
          AND existing.revoked_at IS NULL
          AND (existing.expires_at IS NULL OR existing.expires_at > ?)
      )`,
-    [ownerUserId, ownerUserId, now, ownerUserId, now],
+    [ownerUserId, ownerUserId, now, ownerUserId, now]
   );
 
   await connection.commit();
-  console.log(JSON.stringify({
-    organizationOwnerGrantsAdded: Number(organizationResult.affectedRows ?? 0),
-    platformOwnerGrantsAdded: Number(platformResult.affectedRows ?? 0),
-  }));
+  console.log(
+    JSON.stringify({
+      organizationOwnerGrantsAdded: Number(
+        organizationResult.affectedRows ?? 0
+      ),
+      platformOwnerGrantsAdded: Number(platformResult.affectedRows ?? 0),
+    })
+  );
 } catch (error) {
   await connection.rollback();
   throw error;

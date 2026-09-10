@@ -151,15 +151,15 @@ describe("Get Phame regression contracts", () => {
     expect(html).toContain(
       '<meta name="apple-mobile-web-app-title" content="Get Phame"'
     );
-    expect(html).toContain(
-      'property="og:image" content="https://assets.getphame.app/getphame-og-image.png?v=4"'
+    expect(html).toMatch(
+      /property=["']og:image["']\s+content=["']https:\/\/assets\.getphame\.app\/getphame-og-image\.png\?v=4["']/
     );
     expect(html).toContain('property="og:image:width" content="1200"');
     expect(html).toContain('property="og:image:height" content="630"');
     expect(html).toContain('property="og:image:alt"');
     expect(html).toContain('name="twitter:card" content="summary_large_image"');
-    expect(html).toContain(
-      'name="twitter:image" content="https://assets.getphame.app/getphame-og-image.png?v=4"'
+    expect(html).toMatch(
+      /name=["']twitter:image["']\s+content=["']https:\/\/assets\.getphame\.app\/getphame-og-image\.png\?v=4["']/
     );
     expect(html).toContain('name="twitter:description"');
     expect(html).toContain(
@@ -189,33 +189,42 @@ describe("Get Phame regression contracts", () => {
     ).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
-    expect(serviceWorker).toContain("'/locales/en/landing.json'");
-    expect(serviceWorker).toContain("'/locales/zh-TW/landing.json'");
-    expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
-    expect(serviceWorker).toContain("'/getphame-walkthrough.es.vtt'");
-    expect(serviceWorker).toContain("'/getphame-walkthrough.fr.vtt'");
-    expect(serviceWorker).toContain("'/getphame-walkthrough.it.vtt'");
-    expect(serviceWorker).toContain("'/getphame-walkthrough.de.vtt'");
-    expect(serviceWorker).toContain("'/getphame-walkthrough.pt.vtt'");
-    expect(serviceWorker).toContain("self.addEventListener('install'");
-    expect(serviceWorker).toContain("self.addEventListener('fetch'");
-    expect(serviceWorker).toContain(
-      "url.pathname.startsWith('/manus-storage/')"
+    expect(serviceWorker).toMatch(
+      /const\s+CACHE_NAME\s*=\s*["']getphame-v29["']/
     );
-    expect(
-      serviceWorker.indexOf("url.pathname.startsWith('/manus-storage/')")
-    ).toBeLessThan(serviceWorker.indexOf("event.respondWith("));
+    expect(serviceWorker).toMatch(/["']\/locales\/en\/landing\.json["']/);
+    expect(serviceWorker).toMatch(/["']\/locales\/zh-TW\/landing\.json["']/);
+    expect(serviceWorker).toMatch(/["']\/getphame-walkthrough\.en\.vtt["']/);
+    expect(serviceWorker).toMatch(/["']\/getphame-walkthrough\.es\.vtt["']/);
+    expect(serviceWorker).toMatch(/["']\/getphame-walkthrough\.fr\.vtt["']/);
+    expect(serviceWorker).toMatch(/["']\/getphame-walkthrough\.it\.vtt["']/);
+    expect(serviceWorker).toMatch(/["']\/getphame-walkthrough\.de\.vtt["']/);
+    expect(serviceWorker).toMatch(/["']\/getphame-walkthrough\.pt\.vtt["']/);
+    expect(serviceWorker).toMatch(/self\.addEventListener\(\s*["']install["']/);
+    expect(serviceWorker).toMatch(/self\.addEventListener\(\s*["']fetch["']/);
+    const storagePathIndex = serviceWorker.search(
+      /url\.pathname\.startsWith\(\s*["']\/manus-storage\/["']\s*\)/
+    );
+    const respondWithIndex = serviceWorker.search(/event\.respondWith\(/);
+    expect(storagePathIndex).toBeGreaterThan(-1);
+    expect(respondWithIndex).toBeGreaterThan(-1);
+    expect(storagePathIndex).toBeLessThan(respondWithIndex);
     expect(serviceWorker).toContain(
       "media byte ranges and redirects are handled natively"
     );
     expect(serviceWorker).toContain("const OFFLINE_PAGES = {");
-    expect(serviceWorker).toContain("it: '/offline.it.html'");
-    expect(serviceWorker).toContain("'zh-CN': '/offline.zh-CN.html'");
-    expect(serviceWorker).toContain("event.data.type === 'SET_LANGUAGE'");
+    expect(serviceWorker).toMatch(/it:\s*["']\/offline\.it\.html["']/);
+    expect(serviceWorker).toMatch(
+      /["']zh-CN["']:\s*["']\/offline\.zh-CN\.html["']/
+    );
+    expect(serviceWorker).toMatch(
+      /event\.data\.type\s*===\s*["']SET_LANGUAGE["']/
+    );
     expect(serviceWorker).toContain("return getOfflinePage()");
-    expect(serviceWorker).toContain("'/offline.html'");
-    expect(serviceWorker).toContain("cache.match('/offline.html')");
+    expect(serviceWorker).toMatch(/["']\/offline\.html["']/);
+    expect(serviceWorker).toMatch(
+      /cache\.match\(\s*["']\/offline\.html["']\s*\)/
+    );
     expect(serviceWorker).toContain("await self.clients.claim()");
     expect(offlinePage).toContain("You’re offline");
     expect(offlinePage).toContain("GET PHAME");
@@ -240,8 +249,8 @@ describe("Get Phame regression contracts", () => {
     expect(installBanner).toContain('event: "install_banner_dismissed"');
     expect(installBanner).toContain('event: "install_banner_remind_later"');
     expect(installBanner).toContain("ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000");
-    expect(installBanner).toContain(
-      "window.localStorage.setItem(REMIND_UNTIL_KEY"
+    expect(installBanner).toMatch(
+      /window\.localStorage\.setItem\(\s*REMIND_UNTIL_KEY/
     );
     expect(installBanner).toContain('t("pwaInstallBanner.remindLater"');
     expect(installBanner).toContain("home-install-banner-enter");
@@ -260,8 +269,8 @@ describe("Get Phame regression contracts", () => {
     expect(shareHelper).toContain(
       "navigator.share(await getLocalizedGetPhameShareData())"
     );
-    expect(shareHelper).toContain(
-      "navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url"
+    expect(shareHelper).toMatch(
+      /navigator\.clipboard\.writeText\(\s*GET_PHAME_SHARE_DATA\.url/
     );
     expect(main).toContain('postMessage({ type: "SET_LANGUAGE", language })');
     expect(main).toContain('i18n.on("languageChanged", syncCurrentLanguage)');
@@ -336,8 +345,8 @@ describe("Get Phame regression contracts", () => {
     expect(styles).toContain(
       "@media (min-width: 640px) and (max-width: 1279px)"
     );
-    expect(styles).toContain(".home-brand-full { display: none; }");
-    expect(styles).toContain(".home-brand-mark { display: block; }");
+    expect(styles).toMatch(/\.home-brand-full\s*\{\s*display:\s*none;\s*\}/);
+    expect(styles).toMatch(/\.home-brand-mark\s*\{\s*display:\s*block;\s*\}/);
   });
 
   it("orders the shared language selector as EN, CN, ES, FR, IT, TH, TW and uses the USA flag", () => {
@@ -458,12 +467,12 @@ describe("Get Phame regression contracts", () => {
     const serverIndex = readProjectFile("./_core/index.ts");
 
     expect(settings).toContain("value={followUpDelayInput}");
-    expect(settings).toContain(
-      "onChange={(e) => setFollowUpDelayInput(e.target.value)}"
+    expect(settings).toMatch(
+      /onChange=\{\s*\(?e\)?\s*=>\s*setFollowUpDelayInput\(e\.target\.value\)\s*\}/
     );
     expect(settings).toContain("value={followUpSecondDelayInput}");
-    expect(settings).toContain(
-      "onChange={(e) => setFollowUpSecondDelayInput(e.target.value)}"
+    expect(settings).toMatch(
+      /onChange=\{\s*\(?e\)?\s*=>\s*setFollowUpSecondDelayInput\(e\.target\.value\)\s*\}/
     );
     expect(settings).toContain("FOLLOW_UP_DELAY_PRESETS.map");
     expect(settings).toContain("!followUpTimingHasChanges");
@@ -477,7 +486,7 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("getProjectedFollowUpDates");
     expect(settings).toContain("Timing performance");
     expect(settings).toContain("directional last-touch attribution");
-    expect(settings).toContain("reminderPerformance.slice(0, 6)");
+    expect(settings).toMatch(/reminderPerformance\s*\.slice\(\s*0,\s*6\s*\)/);
     expect(router).toContain(
       "followUpSecondDelayDays: z.number().int().min(1).max(14)"
     );
@@ -517,7 +526,9 @@ describe("Get Phame regression contracts", () => {
     expect(styles).toContain(
       "-webkit-text-fill-color: var(--card-foreground);"
     );
-    expect(styles).toContain(".dark :is(input, textarea, select).bg-white");
+    expect(styles).toMatch(
+      /\.dark\s+:is\(\s*input,\s*textarea,\s*select\s*\)\.bg-white/
+    );
     expect(input).toContain('"rr-form-field');
     expect(textarea).toContain('"rr-form-field');
     expect(select).toContain('"rr-form-field');
@@ -533,7 +544,9 @@ describe("Get Phame regression contracts", () => {
     );
 
     expect(home).toContain("getEffectivePlan(profile?.tier, user?.role)");
-    expect(home).toContain('effectivePlan === "life" ? t("homePage.lifePlan"');
+    expect(home).toMatch(
+      /effectivePlan\s*===\s*["']life["']\s*\?\s*t\(\s*["']homePage\.lifePlan["']/
+    );
     expect(home).toContain("<FreeQuotaStatus");
     expect(quotaStatus).toContain('data-testid="free-quota-status"');
     expect(quotaStatus).toContain('quota?.phase === "rolling"');
@@ -546,8 +559,8 @@ describe("Get Phame regression contracts", () => {
 
     expect(database).toContain("offset(FREE_INITIAL_REQUESTS - 1)");
     expect(database).toContain("const postInitial = or(");
-    expect(database).toContain(
-      "gte(customerRequests.sentAt, cutoff), postInitial"
+    expect(database).toMatch(
+      /gte\(\s*customerRequests\.sentAt,\s*cutoff\s*\),\s*postInitial/
     );
     expect(database).toContain("return buildFreeQuotaSummary({");
     expect(quota).toContain('FREE_INITIAL_REQUESTS ? "initial" : "rolling"');
@@ -616,10 +629,12 @@ describe("Get Phame regression contracts", () => {
 
     expect(bottomNav).toContain("<DropdownMenu");
     expect(bottomNav).toContain('data-testid="mobile-logout"');
-    expect(bottomNav).toContain(
-      "t('logout.button', { defaultValue: 'Log Out' })"
+    expect(bottomNav).toMatch(
+      /t\(\s*["']logout\.button["']\s*,\s*\{\s*defaultValue:\s*["']Log Out["']\s*\}\s*\)/
     );
-    expect(bottomNav).toContain("void logout().then(() => navigate('/'))");
+    expect(bottomNav).toMatch(
+      /void\s+logout\(\)\.then\(\(\)\s*=>\s*navigate\(\s*["']\/["']\s*\)\s*\)/
+    );
     expect(bottomNav).toContain("<LogOut");
   });
 
@@ -627,7 +642,7 @@ describe("Get Phame regression contracts", () => {
     const app = readProjectFile("../client/src/App.tsx");
 
     expect(app).toContain("getSafeReturnPath(window.location.search)");
-    expect(app).toContain('navigate(returnPath, { replace: true })');
+    expect(app).toContain("navigate(returnPath, { replace: true })");
     expect(app).toContain('path === "/admin/email-preview"');
   });
 
@@ -692,8 +707,8 @@ describe("Get Phame regression contracts", () => {
     expect(layout).toContain('user?.role === "admin"');
     expect(layout).toContain('navigate("/admin")');
     expect(layout).toContain('data-testid="admin-sidebar-badge"');
-    expect(bottomNav).toContain("user?.role === 'admin'");
-    expect(bottomNav).toContain("path: '/admin'");
+    expect(bottomNav).toMatch(/user\?\.role\s*===\s*["']admin["']/);
+    expect(bottomNav).toMatch(/path:\s*["']\/admin["']/);
     expect(dashboard).toContain('data-testid="admin-operations-hub"');
     expect(dashboard).toContain('path: "/admin/users"');
     expect(dashboard).toContain('path: "/admin/auth-diagnostics"');
@@ -864,11 +879,19 @@ describe("Get Phame regression contracts", () => {
     const appLayout = readProjectFile("../client/src/components/AppLayout.tsx");
 
     const title = html.match(/<title>([^<]+)<\/title>/)?.[1] ?? "";
-    const description =
-      html.match(/<meta name="description" content="([^"]+)"/i)?.[1] ?? "";
-    const keywords =
-      html.match(/<meta name="keywords" content="([^"]+)"/i)?.[1].split(", ") ??
-      [];
+    const metaTags = [...html.matchAll(/<meta\b[^>]*>/gi)].map(
+      match => match[0]
+    );
+    const readMetaContent = (name: "description" | "keywords") =>
+      metaTags
+        .find(tag =>
+          new RegExp(`\\bname\\s*=\\s*["']${name}["']`, "i").test(tag)
+        )
+        ?.match(/\bcontent\s*=\s*(["'])(.*?)\1/i)?.[2] ?? "";
+    const description = readMetaContent("description");
+    const keywords = readMetaContent("keywords")
+      .split(/\s*,\s*/)
+      .filter(Boolean);
     expect(title).toBe(
       "Get Phame | Review Request Software for Local Businesses"
     );
@@ -897,7 +920,7 @@ describe("Get Phame regression contracts", () => {
     expect(landingPage).toContain(
       'description="Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame."'
     );
-    expect(html).toContain('meta name="keywords"');
+    expect(html).toMatch(/<meta\s+name=["']keywords["']/);
 
     expect(seoHead).toContain("document.title = title");
     expect(seoHead).toContain('keywords.join(", ")');
@@ -1045,8 +1068,8 @@ describe("Get Phame regression contracts", () => {
       "trpc.support.uploadScreenshot.useMutation"
     );
     expect(supportDialog).toContain('accept="image/jpeg,image/png,image/webp"');
-    expect(supportIntake).toContain(
-      'SUPPORT_ATTACHMENT_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"]'
+    expect(supportIntake).toMatch(
+      /SUPPORT_ATTACHMENT_MIME_TYPES\s*=\s*\[\s*["']image\/jpeg["']\s*,\s*["']image\/png["']\s*,\s*["']image\/webp["']\s*,?\s*\]/
     );
     expect(supportIntake).toContain(
       "MAX_SUPPORT_ATTACHMENT_BYTES = 8 * 1024 * 1024"

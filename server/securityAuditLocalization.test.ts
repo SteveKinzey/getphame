@@ -2,6 +2,57 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
+function toFormattedSourcePattern(snippet: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let pattern = "";
+
+  for (let index = 0; index < snippet.length; ) {
+    const character = snippet[index];
+    if (character === '"' || character === "'") {
+      let closingIndex = index + 1;
+      while (closingIndex < snippet.length) {
+        if (
+          snippet[closingIndex] === character &&
+          snippet[closingIndex - 1] !== "\\"
+        )
+          break;
+        closingIndex += 1;
+      }
+      if (closingIndex < snippet.length) {
+        pattern += `["']${escape(snippet.slice(index + 1, closingIndex))}["']`;
+        index = closingIndex + 1;
+        continue;
+      }
+    }
+
+    if (/\s/.test(character)) {
+      while (index < snippet.length && /\s/.test(snippet[index])) index += 1;
+      pattern += "\\s*";
+      continue;
+    }
+
+    pattern += escape(character);
+    if ("().,=:?{}[]<>".includes(character)) pattern += "\\s*";
+    index += 1;
+  }
+
+  return new RegExp(pattern);
+}
+
+function expectFormattedSource(source: string) {
+  return {
+    toContain(snippet: string) {
+      expect(source).toMatch(toFormattedSourcePattern(snippet));
+    },
+    not: {
+      toContain(snippet: string) {
+        expect(source).not.toMatch(toFormattedSourcePattern(snippet));
+      },
+    },
+  };
+}
+
 const root = process.cwd();
 const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 const pageSource = readFileSync(
@@ -75,18 +126,26 @@ describe("Security Audit History localization", () => {
       );
     }
 
-    expect(pageSource).toContain("new Intl.NumberFormat(locale)");
-    expect(pageSource).toContain("new Intl.DateTimeFormat(locale");
+    expectFormattedSource(pageSource).toContain(
+      "new Intl.NumberFormat(locale)"
+    );
+    expectFormattedSource(pageSource).toContain(
+      "new Intl.DateTimeFormat(locale"
+    );
   });
 
   it("advances both locale HTTP and offline PWA cache contracts", () => {
-    expect(i18nSource).toContain(
+    expectFormattedSource(i18nSource).toContain(
       'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame61"'
     );
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v29'");
+    expectFormattedSource(serviceWorker).toContain(
+      "const CACHE_NAME = 'getphame-v29'"
+    );
 
     for (const locale of locales) {
-      expect(serviceWorker).toContain(`/locales/${locale}/translation.json`);
+      expectFormattedSource(serviceWorker).toContain(
+        `/locales/${locale}/translation.json`
+      );
     }
   });
 });

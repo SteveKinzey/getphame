@@ -88,11 +88,13 @@ describe("sourceOperations.preflight", () => {
     vi.clearAllMocks();
     mocks.getDb.mockResolvedValue(activeAccountDatabase());
     mocks.getSourceConnectionForUser.mockResolvedValue(source());
-    mocks.listDeveloperApiKeys.mockResolvedValue([{
-      id: 44,
-      status: "active",
-      scopes: ["contacts:write", "review_requests:send"],
-    }]);
+    mocks.listDeveloperApiKeys.mockResolvedValue([
+      {
+        id: 44,
+        status: "active",
+        scopes: ["contacts:write", "review_requests:send"],
+      },
+    ]);
     mocks.findSavedContactByEmail.mockResolvedValue(null);
     mocks.validateReviewRequestDelivery.mockResolvedValue({
       valid: true,
@@ -109,11 +111,13 @@ describe("sourceOperations.preflight", () => {
   it("rejects unauthenticated callers before reading source configuration", async () => {
     const caller = sourceOperationsRouter.createCaller(context(null));
 
-    await expect(caller.preflight({
-      id: 31,
-      customerName: "Test Customer",
-      customerEmail: "customer@example.com",
-    })).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+    await expect(
+      caller.preflight({
+        id: 31,
+        customerName: "Test Customer",
+        customerEmail: "customer@example.com",
+      })
+    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
     expect(mocks.getSourceConnectionForUser).not.toHaveBeenCalled();
   });
 
@@ -144,15 +148,17 @@ describe("sourceOperations.preflight", () => {
       },
     });
     expect(mocks.getSourceConnectionForUser).toHaveBeenCalledWith(user.id, 31);
-    expect(mocks.validateReviewRequestDelivery).toHaveBeenCalledWith(expect.objectContaining({
-      userId: user.id,
-      customerName: "Test Customer",
-      customerEmail: "customer@example.com",
-      preferredLocale: "fr",
-      templateId: 12,
-      platformId: 18,
-      sourceConnectionId: 31,
-    }));
+    expect(mocks.validateReviewRequestDelivery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: user.id,
+        customerName: "Test Customer",
+        customerEmail: "customer@example.com",
+        preferredLocale: "fr",
+        templateId: 12,
+        platformId: 18,
+        sourceConnectionId: 31,
+      })
+    );
     expect(JSON.stringify(result)).not.toContain("customer@example.com");
     expect(JSON.stringify(result)).not.toContain("Authorization");
   });
@@ -161,11 +167,13 @@ describe("sourceOperations.preflight", () => {
     mocks.findSavedContactByEmail.mockResolvedValue({ id: 91, optedOut: true });
     const caller = sourceOperationsRouter.createCaller(context(user));
 
-    await expect(caller.preflight({
-      id: 31,
-      customerName: "Suppressed Customer",
-      customerEmail: "suppressed@example.com",
-    })).resolves.toMatchObject({
+    await expect(
+      caller.preflight({
+        id: 31,
+        customerName: "Suppressed Customer",
+        customerEmail: "suppressed@example.com",
+      })
+    ).resolves.toMatchObject({
       configurationReady: false,
       readyForDryRun: false,
       readyForLive: false,
@@ -175,7 +183,9 @@ describe("sourceOperations.preflight", () => {
 
   it("maps sender-readiness failures to stable UI codes without returning raw errors", async () => {
     mocks.validateReviewRequestDelivery.mockRejectedValue(
-      new Error("SMTP not configured. Connect your email account in Get Phame Settings."),
+      new Error(
+        "SMTP not configured. Connect your email account in Get Phame Settings."
+      )
     );
     const caller = sourceOperationsRouter.createCaller(context(user));
     const result = await caller.preflight({
@@ -194,17 +204,21 @@ describe("sourceOperations.preflight", () => {
   });
 
   it("reports live readiness only after durable dry-run completion evidence exists", async () => {
-    mocks.getSourceConnectionForUser.mockResolvedValue(source({
-      dryRun: false,
-      dryRunCompletedAt: 1_785_700_000_000,
-    }));
+    mocks.getSourceConnectionForUser.mockResolvedValue(
+      source({
+        dryRun: false,
+        dryRunCompletedAt: 1_785_700_000_000,
+      })
+    );
     const caller = sourceOperationsRouter.createCaller(context(user));
 
-    await expect(caller.preflight({
-      id: 31,
-      customerName: "Test Customer",
-      customerEmail: "customer@example.com",
-    })).resolves.toMatchObject({
+    await expect(
+      caller.preflight({
+        id: 31,
+        customerName: "Test Customer",
+        customerEmail: "customer@example.com",
+      })
+    ).resolves.toMatchObject({
       configurationReady: true,
       readyForDryRun: true,
       readyForLive: true,

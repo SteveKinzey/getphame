@@ -177,7 +177,7 @@ export default function Login() {
   >(null);
   useUpdateCriticalActivity(
     "login-provider-redirect",
-    isGoogleSubmitting || isAppleSubmitting,
+    isGoogleSubmitting || isAppleSubmitting
   );
 
   // Check if Google OAuth is configured on the server
@@ -293,12 +293,9 @@ export default function Login() {
         defaultValue: "Google sign-in could not be opened. Please try again.",
       });
       setFormError(message);
-      toast.error(
-        message,
-        {
-          id: GOOGLE_SIGN_IN_TOAST_ID,
-        }
-      );
+      toast.error(message, {
+        id: GOOGLE_SIGN_IN_TOAST_ID,
+      });
     }
   }, [createVerifiedProviderUrl, isGoogleSubmitting, t]);
 
@@ -498,33 +495,33 @@ export default function Login() {
 
                   {appleLoginEnabled && (
                     <div>
-                    <button
-                      type="button"
-                      onClick={handleAppleSignIn}
-                      disabled={isAppleSubmitting}
-                      aria-busy={isAppleSubmitting}
-                      aria-describedby={
-                        isAppleSubmitting ? APPLE_AUTH_STATUS_ID : undefined
-                      }
-                      className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 disabled:cursor-wait disabled:text-white/60 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
-                    >
-                      {isAppleSubmitting ? <Spinner /> : <AppleIcon />}
-                      {t("login.continueWithApple", {
-                        defaultValue: "Continue with Apple",
-                      })}
-                    </button>
-                    {isAppleSubmitting && (
-                      <p
-                        id={APPLE_AUTH_STATUS_ID}
-                        role="status"
-                        aria-live="polite"
-                        className="mt-2 text-center text-xs font-semibold text-white/70"
+                      <button
+                        type="button"
+                        onClick={handleAppleSignIn}
+                        disabled={isAppleSubmitting}
+                        aria-busy={isAppleSubmitting}
+                        aria-describedby={
+                          isAppleSubmitting ? APPLE_AUTH_STATUS_ID : undefined
+                        }
+                        className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 disabled:cursor-wait disabled:text-white/60 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
                       >
-                        {t("login.appleSignInLoading", {
-                          defaultValue: "Opening secure Apple sign-in…",
+                        {isAppleSubmitting ? <Spinner /> : <AppleIcon />}
+                        {t("login.continueWithApple", {
+                          defaultValue: "Continue with Apple",
                         })}
-                      </p>
-                    )}
+                      </button>
+                      {isAppleSubmitting && (
+                        <p
+                          id={APPLE_AUTH_STATUS_ID}
+                          role="status"
+                          aria-live="polite"
+                          className="mt-2 text-center text-xs font-semibold text-white/70"
+                        >
+                          {t("login.appleSignInLoading", {
+                            defaultValue: "Opening secure Apple sign-in…",
+                          })}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

@@ -16,7 +16,7 @@ describe("generated locale fallback merge", () => {
       {
         onboardingGuide: { welcome: "Etiqueta de bienvenida heredada" },
         nav: { home: "Inicio mantenido" },
-      },
+      }
     );
 
     expect(merged).toEqual({

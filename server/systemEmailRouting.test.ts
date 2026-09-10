@@ -47,8 +47,11 @@ describe("system email priority routing", () => {
     process.env.SENDGRID_API_KEY = "SG.test_backup_key";
 
     const { sendSystemEmail } = await import("./sendgrid");
-    const transport = nodemailer.createTransport as unknown as ReturnType<typeof vi.fn>;
-    const sendMail = (transport() as { sendMail: ReturnType<typeof vi.fn> }).sendMail;
+    const transport = nodemailer.createTransport as unknown as ReturnType<
+      typeof vi.fn
+    >;
+    const sendMail = (transport() as { sendMail: ReturnType<typeof vi.fn> })
+      .sendMail;
 
     sendMail.mockResolvedValueOnce({ messageId: "smtp-msg-123" });
 
@@ -64,14 +67,14 @@ describe("system email priority routing", () => {
         port: 465,
         secure: true,
         auth: { user: "resend", pass: "re_test_secret" },
-      }),
+      })
     );
     expect(sendMail).toHaveBeenCalledWith(
       expect.objectContaining({
         to: "recipient@example.com",
         subject: "Test Subject",
         html: "<p>Hello</p>",
-      }),
+      })
     );
     expect(sgMail.send).not.toHaveBeenCalled();
     expect(sgMail.setApiKey).not.toHaveBeenCalled();
@@ -99,7 +102,7 @@ describe("system email priority routing", () => {
         to: "recipient@example.com",
         subject: "Test Backup SendGrid",
         html: "<p>Backup Hello</p>",
-      }),
+      })
     );
     expect(nodemailer.createTransport).not.toHaveBeenCalled();
   });
@@ -115,7 +118,9 @@ describe("system email priority routing", () => {
     });
 
     expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("neither primary SYSTEM_SMTP_* nor backup SENDGRID_API_KEY are configured"),
+      expect.stringContaining(
+        "neither primary SYSTEM_SMTP_* nor backup SENDGRID_API_KEY are configured"
+      )
     );
     expect(nodemailer.createTransport).not.toHaveBeenCalled();
     expect(sgMail.send).not.toHaveBeenCalled();

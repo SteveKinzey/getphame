@@ -56,7 +56,7 @@ function writeToLogFile(source: LogSource, entries: unknown[]) {
   const logPath = path.join(LOG_DIR, `${source}.log`);
 
   // Format entries with timestamps
-  const lines = entries.map((entry) => {
+  const lines = entries.map(entry => {
     const ts = new Date().toISOString();
     return `[${ts}] ${JSON.stringify(entry)}`;
   });
@@ -132,7 +132,7 @@ function vitePluginManusDebugCollector(): Plugin {
         }
 
         let body = "";
-        req.on("data", (chunk) => {
+        req.on("data", chunk => {
           body += chunk.toString();
         });
 
@@ -150,7 +150,13 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+const plugins = [
+  react(),
+  tailwindcss(),
+  jsxLocPlugin(),
+  vitePluginManusRuntime(),
+  vitePluginManusDebugCollector(),
+];
 
 export default defineConfig({
   plugins,
@@ -159,8 +165,12 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "client", "src"),
       "@shared": path.resolve(import.meta.dirname, "shared"),
       "@assets": path.resolve(import.meta.dirname, "attached_assets"),
-      "react": path.resolve(import.meta.dirname, "node_modules", "react"),
-      "react-dom": path.resolve(import.meta.dirname, "node_modules", "react-dom"),
+      react: path.resolve(import.meta.dirname, "node_modules", "react"),
+      "react-dom": path.resolve(
+        import.meta.dirname,
+        "node_modules",
+        "react-dom"
+      ),
     },
     dedupe: ["react", "react-dom"],
   },
@@ -187,38 +197,48 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           // React core + router — loaded on every page, cache separately
-          if (id.includes('node_modules/react/') ||
-              id.includes('node_modules/react-dom/') ||
-              id.includes('node_modules/scheduler/')) {
-            return 'vendor-react';
+          if (
+            id.includes("node_modules/react/") ||
+            id.includes("node_modules/react-dom/") ||
+            id.includes("node_modules/scheduler/")
+          ) {
+            return "vendor-react";
           }
           // tRPC + tanstack-query — data layer, changes less often than app code
-          if (id.includes('node_modules/@trpc/') ||
-              id.includes('node_modules/@tanstack/') ||
-              id.includes('node_modules/superjson/')) {
-            return 'vendor-trpc';
+          if (
+            id.includes("node_modules/@trpc/") ||
+            id.includes("node_modules/@tanstack/") ||
+            id.includes("node_modules/superjson/")
+          ) {
+            return "vendor-trpc";
           }
           // Radix UI + shadcn/ui components — large, rarely changes
-          if (id.includes('node_modules/@radix-ui/') ||
-              id.includes('node_modules/class-variance-authority/') ||
-              id.includes('node_modules/clsx/') ||
-              id.includes('node_modules/tailwind-merge/')) {
-            return 'vendor-ui';
+          if (
+            id.includes("node_modules/@radix-ui/") ||
+            id.includes("node_modules/class-variance-authority/") ||
+            id.includes("node_modules/clsx/") ||
+            id.includes("node_modules/tailwind-merge/")
+          ) {
+            return "vendor-ui";
           }
           // recharts + D3 — only loaded on Dashboard page
-          if (id.includes('node_modules/recharts/') ||
-              id.includes('node_modules/d3-') ||
-              id.includes('node_modules/victory-vendor/')) {
-            return 'vendor-recharts';
+          if (
+            id.includes("node_modules/recharts/") ||
+            id.includes("node_modules/d3-") ||
+            id.includes("node_modules/victory-vendor/")
+          ) {
+            return "vendor-recharts";
           }
           // date-fns — used across many pages (date formatting), separate from recharts
-          if (id.includes('node_modules/date-fns/')) {
-            return 'vendor-datefns';
+          if (id.includes("node_modules/date-fns/")) {
+            return "vendor-datefns";
           }
           // i18n — large locale data, separate cache key
-          if (id.includes('node_modules/i18next') ||
-              id.includes('node_modules/react-i18next')) {
-            return 'vendor-i18n';
+          if (
+            id.includes("node_modules/i18next") ||
+            id.includes("node_modules/react-i18next")
+          ) {
+            return "vendor-i18n";
           }
         },
       },

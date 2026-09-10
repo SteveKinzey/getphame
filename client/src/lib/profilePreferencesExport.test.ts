@@ -19,13 +19,21 @@ const payload: ProfilePreferencesExportPayload = {
     consentLabelName: null,
     physicalAddress: null,
   },
-  preferences: { themePreference: "system", resolvedTheme: "dark", hapticsEnabled: true },
+  preferences: {
+    themePreference: "system",
+    resolvedTheme: "dark",
+    hapticsEnabled: true,
+  },
 };
 
 describe("profile and preferences export serialization", () => {
   it("uses date-stamped format-specific filenames", () => {
-    expect(buildProfilePreferencesExportFilename("json", payload.exportedAt)).toBe("get-phame-profile-preferences-2026-08-26.json");
-    expect(buildProfilePreferencesExportFilename("csv", payload.exportedAt)).toBe("get-phame-profile-preferences-2026-08-26.csv");
+    expect(
+      buildProfilePreferencesExportFilename("json", payload.exportedAt)
+    ).toBe("get-phame-profile-preferences-2026-08-26.json");
+    expect(
+      buildProfilePreferencesExportFilename("csv", payload.exportedAt)
+    ).toBe("get-phame-profile-preferences-2026-08-26.csv");
   });
 
   it("neutralizes spreadsheet formulas and escapes CSV fields", () => {
@@ -41,10 +49,17 @@ describe("profile and preferences export serialization", () => {
       receiptId: 42,
       format: "csv",
       exportedAt: Date.parse(payload.exportedAt),
-      filename: buildProfilePreferencesExportFilename("csv", payload.exportedAt),
+      filename: buildProfilePreferencesExportFilename(
+        "csv",
+        payload.exportedAt
+      ),
     });
 
-    expect(buildProfilePreferencesExportReceiptFilename(Date.parse(payload.exportedAt))).toBe("get-phame-export-receipt-2026-08-26.txt");
+    expect(
+      buildProfilePreferencesExportReceiptFilename(
+        Date.parse(payload.exportedAt)
+      )
+    ).toBe("get-phame-export-receipt-2026-08-26.txt");
     expect(receipt).toContain("Receipt ID: 42");
     expect(receipt).toContain("Export format: CSV");
     expect(receipt).toContain("get-phame-profile-preferences-2026-08-26.csv");

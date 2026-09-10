@@ -5,7 +5,8 @@ import { localizeStaticText } from "@/lib/autoText";
 const ATTRIBUTE_NAMES = ["aria-label", "placeholder", "title", "alt"] as const;
 const SKIPPED_TAGS = new Set(["CODE", "PRE", "SCRIPT", "STYLE", "TEXTAREA"]);
 const LOADED_NAMESPACES = ["translation", "landing", "cancellation"] as const;
-const I18N_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)+$/;
+const I18N_KEY_PATTERN =
+  /^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)+$/;
 
 type AttributeSources = Map<string, string>;
 
@@ -23,7 +24,8 @@ function resolveRenderedKey(value: string): string | undefined {
   if (!I18N_KEY_PATTERN.test(value)) return undefined;
 
   const languages = [i18n.resolvedLanguage, i18n.language, "en"].filter(
-    (language, index, values): language is string => Boolean(language) && values.indexOf(language) === index,
+    (language, index, values): language is string =>
+      Boolean(language) && values.indexOf(language) === index
   );
 
   for (const language of languages) {
@@ -50,7 +52,11 @@ export default function AutoTextLocalizer() {
 
     const shouldSkip = (node: Node) => {
       const element = node.parentElement;
-      return !element || SKIPPED_TAGS.has(element.tagName) || element.closest("[data-auto-localize='off']") !== null;
+      return (
+        !element ||
+        SKIPPED_TAGS.has(element.tagName) ||
+        element.closest("[data-auto-localize='off']") !== null
+      );
     };
 
     const localizeTextNode = (node: Text) => {
@@ -70,14 +76,20 @@ export default function AutoTextLocalizer() {
     };
 
     const localizeAttributes = (element: Element) => {
-      if (SKIPPED_TAGS.has(element.tagName) || element.closest("[data-auto-localize='off']") !== null) return;
-      const sources = attributeSources.get(element) ?? new Map<string, string>();
+      if (
+        SKIPPED_TAGS.has(element.tagName) ||
+        element.closest("[data-auto-localize='off']") !== null
+      )
+        return;
+      const sources =
+        attributeSources.get(element) ?? new Map<string, string>();
 
       for (const name of ATTRIBUTE_NAMES) {
         const current = element.getAttribute(name);
         if (!current) continue;
         const source = sources.get(name) ?? current;
-        const localized = resolveRenderedKey(source) ?? localizeStaticText(source);
+        const localized =
+          resolveRenderedKey(source) ?? localizeStaticText(source);
         if (localized !== source || sources.has(name)) {
           sources.set(name, source);
           if (current !== localized) element.setAttribute(name, localized);

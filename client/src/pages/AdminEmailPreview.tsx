@@ -3,8 +3,21 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Mail, ChevronDown, Moon, Sun, Send, Loader2, Copy, Check,
-  ExternalLink, SlidersHorizontal, ChevronUp, RotateCcw, Save, X, Download,
+  Mail,
+  ChevronDown,
+  Moon,
+  Sun,
+  Send,
+  Loader2,
+  Copy,
+  Check,
+  ExternalLink,
+  SlidersHorizontal,
+  ChevronUp,
+  RotateCcw,
+  Save,
+  X,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -24,7 +37,7 @@ function getInitialTemplate(): TemplateKey {
   if (typeof window === "undefined") return "magic-link";
   const requested = new URLSearchParams(window.location.search).get("template");
   return TEMPLATES.some(template => template.value === requested)
-    ? requested as TemplateKey
+    ? (requested as TemplateKey)
     : "magic-link";
 }
 
@@ -48,17 +61,22 @@ function sanitizeEmailPreviewHtml(html: string): string {
     for (const attribute of Array.from(node.attributes)) {
       const name = attribute.name.toLowerCase();
       const value = attribute.value.trim().toLowerCase();
-      if (name.startsWith("on") || (name === "srcdoc")) {
+      if (name.startsWith("on") || name === "srcdoc") {
         node.removeAttribute(attribute.name);
         continue;
       }
-      if ((name === "href" || name === "src") && value.startsWith("javascript:")) {
+      if (
+        (name === "href" || name === "src") &&
+        value.startsWith("javascript:")
+      ) {
         node.removeAttribute(attribute.name);
       }
     }
   });
 
-  const headStyles = Array.from(documentFragment.head.querySelectorAll("style, link[rel='stylesheet']"))
+  const headStyles = Array.from(
+    documentFragment.head.querySelectorAll("style, link[rel='stylesheet']")
+  )
     .map(node => node.outerHTML)
     .join("");
 
@@ -114,19 +132,32 @@ function EmailPreviewSurface({
       const shadow = host.shadowRoot ?? host.attachShadow({ mode: "open" });
       shadow.innerHTML = `<style>:host{display:block} [data-email-preview-content]{display:block;min-height:${minHeight}px;overflow-wrap:anywhere}</style>${sanitizeEmailPreviewHtml(html)}`;
 
-      const content = shadow.querySelector<HTMLElement>("[data-email-preview-content]");
+      const content = shadow.querySelector<HTMLElement>(
+        "[data-email-preview-content]"
+      );
       const renderedText = content?.innerText?.trim() ?? "";
-      if (!content || !renderedText) throw new Error("Email preview contains no rendered content");
+      if (!content || !renderedText)
+        throw new Error("Email preview contains no rendered content");
       onReady();
     } catch {
       onError();
     }
   }, [html, minHeight, onError, onReady]);
 
-  return <div ref={hostRef} data-testid="email-preview-surface" style={{ minHeight }} />;
+  return (
+    <div
+      ref={hostRef}
+      data-testid="email-preview-surface"
+      style={{ minHeight }}
+    />
+  );
 }
 
-export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boolean }) {
+export default function AdminEmailPreview({
+  readOnly = false,
+}: {
+  readOnly?: boolean;
+}) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [selected, setSelected] = useState<TemplateKey>(getInitialTemplate);
@@ -141,8 +172,11 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
 
   // Preset state
   const [presets, setPresets] = useState<Preset[]>(() => {
-    try { return JSON.parse(localStorage.getItem(PRESET_KEY) ?? "[]"); }
-    catch { return []; }
+    try {
+      return JSON.parse(localStorage.getItem(PRESET_KEY) ?? "[]");
+    } catch {
+      return [];
+    }
   });
   const [presetName, setPresetName] = useState("");
 
@@ -166,74 +200,86 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
       toast.success(
         `${t("adminEmailPreview.testSent", { defaultValue: "Test email sent!" })} → ${testEmail}`
       ),
-    onError: (err) =>
+    onError: err =>
       toast.error(
-        t("adminEmailPreview.testFailed", { defaultValue: "Failed to send test email." }) +
-          (err.message ? ` (${err.message})` : "")
+        t("adminEmailPreview.testFailed", {
+          defaultValue: "Failed to send test email.",
+        }) + (err.message ? ` (${err.message})` : "")
       ),
   });
-  const recordRendererError = trpc.admin.recordEmailPreviewRendererError.useMutation();
+  const recordRendererError =
+    trpc.admin.recordEmailPreviewRendererError.useMutation();
 
   // Apply variable substitutions to raw HTML
-  const buildPreviewHtml = useCallback((raw: string) => {
-    let html = raw
-      .replace(/\[name\]/gi, vars.name)
-      .replace(/\[company\]/gi, vars.company)
-      .replace(/\[plan\]/gi, vars.plan)
-      .replace(/\[email\]/gi, vars.email);
-    if (darkMode) {
-      html = html.replace(
-        "<body",
-        '<style>body{background:#111827!important;color:#f8fafc!important}table[role="presentation"]{background:#161b22!important}.email-card{background:#161b22!important}.email-body,.email-body *{color:#f8fafc!important}.email-body a{color:#f6d56e!important}.email-footer{background:#0f172a!important}.email-footer,.email-footer *{color:#cbd5e1!important}</style><body'
-      );
-    }
-    return html;
-  }, [vars, darkMode]);
+  const buildPreviewHtml = useCallback(
+    (raw: string) => {
+      let html = raw
+        .replace(/\[name\]/gi, vars.name)
+        .replace(/\[company\]/gi, vars.company)
+        .replace(/\[plan\]/gi, vars.plan)
+        .replace(/\[email\]/gi, vars.email);
+      if (darkMode) {
+        html = html.replace(
+          "<body",
+          '<style>body{background:#111827!important;color:#f8fafc!important}table[role="presentation"]{background:#161b22!important}.email-card{background:#161b22!important}.email-body,.email-body *{color:#f8fafc!important}.email-body a{color:#f6d56e!important}.email-footer{background:#0f172a!important}.email-footer,.email-footer *{color:#cbd5e1!important}</style><body'
+        );
+      }
+      return html;
+    },
+    [vars, darkMode]
+  );
 
   const previewHtml = data?.html ? buildPreviewHtml(data.html) : null;
   const [previewReadyKey, setPreviewReadyKey] = useState<string | null>(null);
   const [previewErrorKey, setPreviewErrorKey] = useState<string | null>(null);
 
   const previewKey = `${selected}-${viewMode}-${darkMode}-${JSON.stringify(vars)}`;
-  const previewRenderState = previewErrorKey === previewKey
-    ? "error"
-    : previewReadyKey === previewKey
-      ? "ready"
-      : "loading";
+  const previewRenderState =
+    previewErrorKey === previewKey
+      ? "error"
+      : previewReadyKey === previewKey
+        ? "ready"
+        : "loading";
 
   const handlePreviewReady = useCallback((key: string) => {
-    setPreviewErrorKey(current => current === key ? null : current);
+    setPreviewErrorKey(current => (current === key ? null : current));
     setPreviewReadyKey(key);
   }, []);
-  const handlePreviewError = useCallback((key: string) => {
-    setPreviewReadyKey(current => current === key ? null : current);
-    setPreviewErrorKey(key);
-    if (
-      !readOnly &&
-      user?.role === "admin" &&
-      !reportedRendererErrorKeys.current.has(key)
-    ) {
-      reportedRendererErrorKeys.current.add(key);
-      recordRendererError.mutate({
-        templateKey: selected,
-        viewportMode: viewMode,
-        darkMode,
-        errorCode: "render_content_unavailable",
-      });
-    }
-  }, [darkMode, readOnly, recordRendererError, selected, user?.role, viewMode]);
+  const handlePreviewError = useCallback(
+    (key: string) => {
+      setPreviewReadyKey(current => (current === key ? null : current));
+      setPreviewErrorKey(key);
+      if (
+        !readOnly &&
+        user?.role === "admin" &&
+        !reportedRendererErrorKeys.current.has(key)
+      ) {
+        reportedRendererErrorKeys.current.add(key);
+        recordRendererError.mutate({
+          templateKey: selected,
+          viewportMode: viewMode,
+          darkMode,
+          errorCode: "render_content_unavailable",
+        });
+      }
+    },
+    [darkMode, readOnly, recordRendererError, selected, user?.role, viewMode]
+  );
 
   const handleCopy = async () => {
     if (!previewHtml) return;
     const copySucceeded = await copyTextWithFallback(previewHtml);
     if (copySucceeded) {
       setCopied(true);
-      toast.success(t("adminEmailPreview.copied", { defaultValue: "Rendered HTML copied." }));
+      toast.success(
+        t("adminEmailPreview.copied", { defaultValue: "Rendered HTML copied." })
+      );
       window.setTimeout(() => setCopied(false), 1500);
     } else {
       toast.error(
         t("adminEmailPreview.copyFailed", {
-          defaultValue: "Copying the rendered HTML was blocked by this browser.",
+          defaultValue:
+            "Copying the rendered HTML was blocked by this browser.",
         })
       );
     }
@@ -242,7 +288,9 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
   const handleExportHtml = () => {
     if (!previewHtml) return;
 
-    const templateSlug = selected.replace(/[^a-z0-9-]+/gi, "-").replace(/^-+|-+$/g, "");
+    const templateSlug = selected
+      .replace(/[^a-z0-9-]+/gi, "-")
+      .replace(/^-+|-+$/g, "");
     const blob = new Blob([previewHtml], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
@@ -266,8 +314,15 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
   };
 
   const renderPreviewFallback = () => (
-    <div className="mx-auto flex max-w-2xl items-center justify-between gap-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950" role="alert">
-      <span>{t("adminEmailPreview.previewFallback", { defaultValue: "This preview could not render in the embedded frame." })}</span>
+    <div
+      className="mx-auto flex max-w-2xl items-center justify-between gap-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+      role="alert"
+    >
+      <span>
+        {t("adminEmailPreview.previewFallback", {
+          defaultValue: "This preview could not render in the embedded frame.",
+        })}
+      </span>
       <button
         type="button"
         onClick={handleOpenTab}
@@ -286,21 +341,37 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
       style={{ minHeight }}
       role="status"
       aria-live="polite"
-      aria-label={t("adminEmailPreview.previewLoading", { defaultValue: "Generating email preview…" })}
+      aria-label={t("adminEmailPreview.previewLoading", {
+        defaultValue: "Generating email preview…",
+      })}
     >
-      <div className="h-14 w-full animate-pulse rounded-lg" style={{ background: "oklch(0.22 0.09 260 / 0.12)" }} />
+      <div
+        className="h-14 w-full animate-pulse rounded-lg"
+        style={{ background: "oklch(0.22 0.09 260 / 0.12)" }}
+      />
       <div className="h-6 w-3/5 animate-pulse rounded bg-gray-200" />
       <div className="space-y-3 pt-3">
         <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
         <div className="h-4 w-11/12 animate-pulse rounded bg-gray-100" />
         <div className="h-4 w-4/5 animate-pulse rounded bg-gray-100" />
       </div>
-      <div className="mt-auto h-10 w-36 animate-pulse rounded-lg" style={{ background: "oklch(0.80 0.18 80 / 0.28)" }} />
-      <span className="sr-only">{t("adminEmailPreview.previewLoading", { defaultValue: "Generating email preview…" })}</span>
+      <div
+        className="mt-auto h-10 w-36 animate-pulse rounded-lg"
+        style={{ background: "oklch(0.80 0.18 80 / 0.28)" }}
+      />
+      <span className="sr-only">
+        {t("adminEmailPreview.previewLoading", {
+          defaultValue: "Generating email preview…",
+        })}
+      </span>
     </div>
   );
 
-  const renderPreviewDocument = (title: string, key: string, minHeight: number) =>
+  const renderPreviewDocument = (
+    title: string,
+    key: string,
+    minHeight: number
+  ) => (
     <div className="relative" style={{ minHeight }}>
       <EmailPreviewSurface
         key={key}
@@ -310,9 +381,12 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
         onError={() => handlePreviewError(previewKey)}
       />
       {previewRenderState === "loading" && (
-        <div className="absolute inset-0">{renderPreviewSkeleton(minHeight)}</div>
+        <div className="absolute inset-0">
+          {renderPreviewSkeleton(minHeight)}
+        </div>
       )}
-    </div>;
+    </div>
+  );
 
   // Preset management
   const savePreset = () => {
@@ -346,33 +420,52 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
       <div className="border-b border-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-400">
         {label}
       </div>
-      {previewRenderState === "error" ? renderPreviewFallback() : previewHtml ? (
+      {previewRenderState === "error" ? (
+        renderPreviewFallback()
+      ) : previewHtml ? (
         renderPreviewDocument(`${label} preview`, key, 500)
       ) : (
         <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
           {isLoading
-            ? t("adminEmailPreview.loading", { defaultValue: "Loading preview…" })
-            : t("adminEmailPreview.noPreview", { defaultValue: "No preview available." })}
+            ? t("adminEmailPreview.loading", {
+                defaultValue: "Loading preview…",
+              })
+            : t("adminEmailPreview.noPreview", {
+                defaultValue: "No preview available.",
+              })}
         </div>
       )}
     </div>
   );
 
   return (
-    <div className="min-h-screen" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div
+      className="min-h-screen"
+      style={{ background: "oklch(0.975 0.003 100)" }}
+    >
       {/* Header */}
       <div
         className="sticky top-0 z-10 flex items-center gap-3 px-5 py-4 shadow-sm"
         style={{ background: "oklch(0.22 0.09 260)" }}
       >
-        <Mail className="h-5 w-5 shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} aria-hidden="true" />
+        <Mail
+          className="h-5 w-5 shrink-0"
+          style={{ color: "oklch(0.80 0.18 80)" }}
+          aria-hidden="true"
+        />
         <h1
           className="text-lg font-bold text-white"
           style={{ fontFamily: "'Syne', sans-serif" }}
         >
-          {t("adminEmailPreview.title", { defaultValue: "Email Template Preview" })}
+          {t("adminEmailPreview.title", {
+            defaultValue: "Email Template Preview",
+          })}
         </h1>
-        {!readOnly && <span className="ml-auto text-xs font-semibold text-white/40">Admin only</span>}
+        {!readOnly && (
+          <span className="ml-auto text-xs font-semibold text-white/40">
+            Admin only
+          </span>
+        )}
       </div>
 
       {/* Controls */}
@@ -383,14 +476,26 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
             value={selected}
             onChange={e => setSelected(e.target.value as TemplateKey)}
             className="appearance-none rounded-xl border border-white/20 bg-white px-4 py-2.5 pr-10 text-sm font-semibold text-gray-800 shadow-sm focus:outline-none focus:ring-2"
-            style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
-            aria-label={t("adminEmailPreview.selectTemplate", { defaultValue: "Select template" })}
-           name="rr-pages-admin-email-preview-selected-382">
+            style={
+              {
+                "--tw-ring-color": "oklch(0.80 0.18 80)",
+              } as React.CSSProperties
+            }
+            aria-label={t("adminEmailPreview.selectTemplate", {
+              defaultValue: "Select template",
+            })}
+            name="rr-pages-admin-email-preview-selected-382"
+          >
             {TEMPLATES.map(tpl => (
-              <option key={tpl.value} value={tpl.value}>{tpl.label}</option>
+              <option key={tpl.value} value={tpl.value}>
+                {tpl.label}
+              </option>
             ))}
           </select>
-          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" aria-hidden="true" />
+          <ChevronDown
+            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+            aria-hidden="true"
+          />
         </div>
 
         {/* Viewport toggle — desktop / mobile / split */}
@@ -402,7 +507,8 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               onClick={() => setViewMode(mode)}
               className="px-4 py-2 text-sm font-semibold capitalize transition"
               style={{
-                background: viewMode === mode ? "oklch(0.22 0.09 260)" : "transparent",
+                background:
+                  viewMode === mode ? "oklch(0.22 0.09 260)" : "transparent",
                 color: viewMode === mode ? "#fff" : "#555",
               }}
             >
@@ -421,7 +527,11 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
           style={{ color: darkMode ? "oklch(0.22 0.09 260)" : "#555" }}
           aria-pressed={darkMode}
         >
-          {darkMode ? <Sun className="h-4 w-4" aria-hidden="true" /> : <Moon className="h-4 w-4" aria-hidden="true" />}
+          {darkMode ? (
+            <Sun className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Moon className="h-4 w-4" aria-hidden="true" />
+          )}
           {t("adminEmailPreview.darkMode", { defaultValue: "Dark mode" })}
         </button>
 
@@ -432,9 +542,15 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
           onClick={handleCopy}
           className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:opacity-40"
           style={{ color: copied ? "oklch(0.22 0.09 260)" : "#555" }}
-          aria-label={t("adminEmailPreview.copyHtml", { defaultValue: "Copy HTML" })}
+          aria-label={t("adminEmailPreview.copyHtml", {
+            defaultValue: "Copy HTML",
+          })}
         >
-          {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
+          {copied ? (
+            <Check className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Copy className="h-4 w-4" aria-hidden="true" />
+          )}
           {copied
             ? t("adminEmailPreview.copied", { defaultValue: "Copied!" })
             : t("adminEmailPreview.copyHtml", { defaultValue: "Copy HTML" })}
@@ -447,12 +563,20 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
           onClick={handleExportHtml}
           className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:opacity-40"
           style={{ color: exported ? "oklch(0.22 0.09 260)" : "#555" }}
-          aria-label={t("adminEmailPreview.exportHtml", { defaultValue: "Export HTML" })}
+          aria-label={t("adminEmailPreview.exportHtml", {
+            defaultValue: "Export HTML",
+          })}
         >
-          {exported ? <Check className="h-4 w-4" aria-hidden="true" /> : <Download className="h-4 w-4" aria-hidden="true" />}
+          {exported ? (
+            <Check className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Download className="h-4 w-4" aria-hidden="true" />
+          )}
           {exported
             ? t("adminEmailPreview.exported", { defaultValue: "Downloaded!" })
-            : t("adminEmailPreview.exportHtml", { defaultValue: "Export HTML" })}
+            : t("adminEmailPreview.exportHtml", {
+                defaultValue: "Export HTML",
+              })}
         </button>
 
         {/* Open in new tab button */}
@@ -462,7 +586,9 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
           onClick={handleOpenTab}
           className="flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm transition disabled:opacity-40"
           style={{ color: "#555" }}
-          aria-label={t("adminEmailPreview.openTab", { defaultValue: "Open in tab" })}
+          aria-label={t("adminEmailPreview.openTab", {
+            defaultValue: "Open in tab",
+          })}
         >
           <ExternalLink className="h-4 w-4" aria-hidden="true" />
           {t("adminEmailPreview.openTab", { defaultValue: "Open in tab" })}
@@ -480,7 +606,11 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
             >
               <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {t("adminEmailPreview.variables", { defaultValue: "Variables" })}
-              {showVars ? <ChevronUp className="h-3 w-3" aria-hidden="true" /> : <ChevronDown className="h-3 w-3" aria-hidden="true" />}
+              {showVars ? (
+                <ChevronUp className="h-3 w-3" aria-hidden="true" />
+              ) : (
+                <ChevronDown className="h-3 w-3" aria-hidden="true" />
+              )}
             </button>
 
             {/* Test sending stays protected by the admin procedure. */}
@@ -488,27 +618,49 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               type="email"
               value={testEmail}
               onChange={e => setTestEmail(e.target.value)}
-              placeholder={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
+              placeholder={t("adminEmailPreview.emailPlaceholder", {
+                defaultValue: "Send to…",
+              })}
               className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 w-56"
-              style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
-              aria-label={t("adminEmailPreview.emailPlaceholder", { defaultValue: "Send to…" })}
-             name="rr-pages-admin-email-preview-test-email-487"  autoComplete="email"/>
+              style={
+                {
+                  "--tw-ring-color": "oklch(0.80 0.18 80)",
+                } as React.CSSProperties
+              }
+              aria-label={t("adminEmailPreview.emailPlaceholder", {
+                defaultValue: "Send to…",
+              })}
+              name="rr-pages-admin-email-preview-test-email-487"
+              autoComplete="email"
+            />
             <button
               type="button"
-              disabled={sendTest.isPending || isLoading || !data?.html || !testEmail}
-              onClick={() => sendTest.mutate({ template: selected, to: testEmail })}
+              disabled={
+                sendTest.isPending || isLoading || !data?.html || !testEmail
+              }
+              onClick={() =>
+                sendTest.mutate({ template: selected, to: testEmail })
+              }
               className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm transition disabled:opacity-50"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              style={{
+                background: "oklch(0.80 0.18 80)",
+                color: "oklch(0.22 0.09 260)",
+              }}
             >
               {sendTest.isPending ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <Loader2
+                    className="h-4 w-4 animate-spin"
+                    aria-hidden="true"
+                  />
                   {t("adminEmailPreview.sending", { defaultValue: "Sending…" })}
                 </>
               ) : (
                 <>
                   <Send className="h-4 w-4" aria-hidden="true" />
-                  {t("adminEmailPreview.sendTest", { defaultValue: "Send test email" })}
+                  {t("adminEmailPreview.sendTest", {
+                    defaultValue: "Send test email",
+                  })}
                 </>
               )}
             </button>
@@ -517,12 +669,16 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
 
         {isLoading && (
           <span className="text-xs text-gray-400 animate-pulse">
-            {t("adminEmailPreview.loading", { defaultValue: "Loading preview…" })}
+            {t("adminEmailPreview.loading", {
+              defaultValue: "Loading preview…",
+            })}
           </span>
         )}
         {error && (
           <span className="text-xs text-red-500">
-            {t("adminEmailPreview.error", { defaultValue: "Failed to load preview." })}
+            {t("adminEmailPreview.error", {
+              defaultValue: "Failed to load preview.",
+            })}
           </span>
         )}
       </div>
@@ -533,7 +689,10 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
           {/* Panel header */}
           <div className="mb-3 flex items-center gap-2">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              {t("adminEmailPreview.variablesNote", { defaultValue: "Substitute [name], [company], [plan], [email] placeholders in the template" })}
+              {t("adminEmailPreview.variablesNote", {
+                defaultValue:
+                  "Substitute [name], [company], [plan], [email] placeholders in the template",
+              })}
             </p>
             {/* Reset button */}
             <button
@@ -541,7 +700,9 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               onClick={() => setVars(DEFAULT_VARS)}
               className="ml-auto flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold transition hover:bg-gray-100"
               style={{ color: "#888" }}
-              title={t("adminEmailPreview.resetVars", { defaultValue: "Reset to defaults" })}
+              title={t("adminEmailPreview.resetVars", {
+                defaultValue: "Reset to defaults",
+              })}
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
               {t("adminEmailPreview.resetVars", { defaultValue: "Reset" })}
@@ -558,11 +719,18 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
                 <input
                   type="text"
                   value={vars[key]}
-                  onChange={e => setVars(v => ({ ...v, [key]: e.target.value }))}
+                  onChange={e =>
+                    setVars(v => ({ ...v, [key]: e.target.value }))
+                  }
                   className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2"
-                  style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
+                  style={
+                    {
+                      "--tw-ring-color": "oklch(0.80 0.18 80)",
+                    } as React.CSSProperties
+                  }
                   placeholder={DEFAULT_VARS[key]}
-                 name="rr-pages-admin-email-preview-vars-558" />
+                  name="rr-pages-admin-email-preview-vars-558"
+                />
               </label>
             ))}
           </div>
@@ -601,17 +769,27 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               type="text"
               value={presetName}
               onChange={e => setPresetName(e.target.value)}
-              placeholder={t("adminEmailPreview.presetNamePlaceholder", { defaultValue: "Preset name…" })}
+              placeholder={t("adminEmailPreview.presetNamePlaceholder", {
+                defaultValue: "Preset name…",
+              })}
               className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2"
-              style={{ "--tw-ring-color": "oklch(0.80 0.18 80)" } as React.CSSProperties}
+              style={
+                {
+                  "--tw-ring-color": "oklch(0.80 0.18 80)",
+                } as React.CSSProperties
+              }
               onKeyDown={e => e.key === "Enter" && savePreset()}
-             name="rr-pages-admin-email-preview-preset-name-600" />
+              name="rr-pages-admin-email-preview-preset-name-600"
+            />
             <button
               type="button"
               onClick={savePreset}
               disabled={!presetName.trim()}
               className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition disabled:opacity-40"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              style={{
+                background: "oklch(0.80 0.18 80)",
+                color: "oklch(0.22 0.09 260)",
+              }}
             >
               <Save className="h-4 w-4" aria-hidden="true" />
               {t("adminEmailPreview.savePreset", { defaultValue: "Save" })}
@@ -625,8 +803,16 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
         {viewMode === "split" ? (
           /* Split-screen: desktop + mobile side-by-side */
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {renderIframePane("Desktop — 800px", 800, `split-desktop-${previewKey}`)}
-            {renderIframePane("Mobile — 390px", 390, `split-mobile-${previewKey}`)}
+            {renderIframePane(
+              "Desktop — 800px",
+              800,
+              `split-desktop-${previewKey}`
+            )}
+            {renderIframePane(
+              "Mobile — 390px",
+              390,
+              `split-mobile-${previewKey}`
+            )}
           </div>
         ) : (
           /* Single viewport */
@@ -637,29 +823,43 @@ export default function AdminEmailPreview({ readOnly = false }: { readOnly?: boo
               background: darkMode ? "#1a1a1a" : "#fff",
             }}
           >
-             {previewRenderState === "error" ? renderPreviewFallback() : previewHtml ? (
-               renderPreviewDocument(
-                 `Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`,
-                 previewKey,
-                 600
-               )
+            {previewRenderState === "error" ? (
+              renderPreviewFallback()
+            ) : previewHtml ? (
+              renderPreviewDocument(
+                `Email preview: ${TEMPLATES.find(tpl => tpl.value === selected)?.label ?? selected}`,
+                previewKey,
+                600
+              )
             ) : (
               <div className="flex min-h-96 items-center justify-center text-sm text-gray-400">
                 {isLoading
-                  ? t("adminEmailPreview.loading", { defaultValue: "Loading preview…" })
-                  : t("adminEmailPreview.noPreview", { defaultValue: "No preview available." })}
+                  ? t("adminEmailPreview.loading", {
+                      defaultValue: "Loading preview…",
+                    })
+                  : t("adminEmailPreview.noPreview", {
+                      defaultValue: "No preview available.",
+                    })}
               </div>
             )}
           </div>
         )}
         {previewRenderState === "ready" && previewHtml && (
-          <p className="mt-3 flex items-center justify-center gap-2 text-center text-xs font-semibold text-emerald-700" aria-live="polite">
+          <p
+            className="mt-3 flex items-center justify-center gap-2 text-center text-xs font-semibold text-emerald-700"
+            aria-live="polite"
+          >
             <Check className="h-4 w-4" aria-hidden="true" />
-            {t("adminEmailPreview.previewReady", { defaultValue: "Preview ready" })}
+            {t("adminEmailPreview.previewReady", {
+              defaultValue: "Preview ready",
+            })}
           </p>
         )}
         <p className="mt-3 text-center text-xs text-gray-400">
-          {t("adminEmailPreview.note", { defaultValue: "Preview uses sample data. Actual emails are sent with real user names and secure links." })}
+          {t("adminEmailPreview.note", {
+            defaultValue:
+              "Preview uses sample data. Actual emails are sent with real user names and secure links.",
+          })}
           {!readOnly && testEmail && (
             <span className="ml-1">
               Test sends to <strong>{testEmail}</strong>.
