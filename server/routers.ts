@@ -4971,21 +4971,51 @@ export const appRouter = router({
         saveAdaptiveSendBurstCaps(input, ctx.user.id)
       ),
 
-    /** Bounded, idempotent delivery of the current diagnostics snapshot to active administrators. */
-    generateMonthlyDiagnosticsSnapshot: adminProcedure.mutation(async () => {
-      try {
-        return await processManualMonthlyDiagnosticsSnapshot();
-      } catch (error) {
-        console.error("[MonthlyDiagnostics] Manual snapshot failed.", {
-          errorType: error instanceof Error ? error.name : "UnknownError",
-        });
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message:
-            "The diagnostics snapshot could not be prepared. No report was delivered.",
-        });
-      }
-    }),
+    /** Bounded, idempotent delivery of a monthly or administrator-selected diagnostics period. */
+    generateMonthlyDiagnosticsSnapshot: adminProcedure
+      .input(
+        z
+          .object({
+            startDate: z
+              .string()
+              .regex(/^\d{4}-\d{2}-\d{2}$/)
+              .optional(),
+            endDate: z
+              .string()
+              .regex(/^\d{4}-\d{2}-\d{2}$/)
+              .optional(),
+          })
+          .refine(
+            value =>
+              (Boolean(value.startDate) && Boolean(value.endDate)) ||
+              (!value.startDate && !value.endDate),
+            { message: "Choose both a start and end date for a custom report." }
+          )
+      )
+      .mutation(async ({ input }) => {
+        try {
+          return await processManualMonthlyDiagnosticsSnapshot(input);
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.message === "INVALID_REPORT_RANGE"
+          ) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message:
+                "Choose a valid UTC reporting period of up to 366 days ending today or earlier.",
+            });
+          }
+          console.error("[MonthlyDiagnostics] Manual snapshot failed.", {
+            errorType: error instanceof Error ? error.name : "UnknownError",
+          });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message:
+              "The diagnostics snapshot could not be prepared. No report was delivered.",
+          });
+        }
+      }),
 
     /** Bounded administrator-only release lineage with stable filtering and sorting. */
     listReleaseParityRecords: adminProcedure

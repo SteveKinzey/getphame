@@ -3817,7 +3817,9 @@
       "protected": "Ce réglage global ne peut pas augmenter une limite de sécurité du fournisseur ou du compte.",
       "saved": "Plafonds d’envoi groupé enregistrés.",
       "saving": "Enregistrement…",
-      "save": "Enregistrer les plafonds"
+      "save": "Enregistrer les plafonds",
+      "usage": "Utilisation du plafond configuré",
+      "usageLabel": "Plafond de rafale configuré par rapport au maximum du niveau"
     }
   },
   "developerEnrollment": {
@@ -4798,5 +4800,15 @@
     "checkoutOpened": "Le paiement sécurisé s’est ouvert dans un nouvel onglet.",
     "dismiss": "Masquer le rappel d’essai",
     "daysRemaining": "Il reste {{count}} jours avant le début de votre forfait payant."
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "Instantané des diagnostics",
+    "description": "Laissez les dates vides pour le mois UTC précédent complet ou choisissez jusqu’à 366 jours.",
+    "startDate": "Date de début (UTC)",
+    "endDate": "Date de fin (UTC)",
+    "completeRange": "Choisissez une date de début et une date de fin, ou laissez les deux champs vides.",
+    "invalidRange": "La date de fin doit être égale ou postérieure à la date de début.",
+    "generating": "Génération de l’instantané…",
+    "generate": "Générer l’instantané maintenant"
   }
 }

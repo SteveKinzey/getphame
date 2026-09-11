@@ -908,7 +908,7 @@ export default function HomePage() {
             {/* ── Trial time remaining and direct checkout ─────────────────────── */}
             {remainingTrialDays !== null && !trialBannerDismissed && (
               <div
-                className="rounded-2xl border p-4 shadow-sm"
+                className="trial-reminder-attention rounded-2xl border p-4 shadow-sm"
                 style={{
                   background: "oklch(0.975 0.025 84)",
                   borderColor: "oklch(0.82 0.14 80)",

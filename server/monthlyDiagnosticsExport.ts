@@ -8,7 +8,7 @@ export const MONTHLY_DIAGNOSTICS_AUTH_ROW_LIMIT = 5_000;
 export const MONTHLY_DIAGNOSTICS_ATTACHMENT_BYTE_LIMIT = 1024 * 1024;
 
 const CONSENT_COLUMNS = [
-  { key: "reportMonthUtc", csvHeader: "report_month_utc" },
+  { key: "reportPeriodUtc", csvHeader: "report_period_utc" },
   {
     key: "snapshotGeneratedAtUtc",
     csvHeader: "snapshot_generated_at_utc",
@@ -27,7 +27,7 @@ const CONSENT_COLUMNS = [
 ] as const satisfies readonly PreparedCsvColumn<ConsentColumnKey>[];
 
 type ConsentColumnKey =
-  | "reportMonthUtc"
+  | "reportPeriodUtc"
   | "snapshotGeneratedAtUtc"
   | "savedContactsTotal"
   | "explicitConsentTotal"
@@ -103,6 +103,12 @@ export type MonthlyDiagnosticsReportWindow = {
   snapshotGeneratedAtMs: number;
 };
 
+const UTC_DAY_MS = 86_400_000;
+const UTC_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const CUSTOM_REPORT_KEY_PATTERN =
+  /^(\d{4}-\d{2}-\d{2})_to_(\d{4}-\d{2}-\d{2})$/;
+export const MAX_MANUAL_DIAGNOSTICS_RANGE_DAYS = 366;
+
 function nonNegativeInteger(value: number): number {
   return Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : 0;
 }
@@ -154,6 +160,72 @@ export function getUtcMonthBounds(reportMonthKey: string) {
   return { periodStartMs, periodEndExclusiveMs };
 }
 
+function parseUtcDateOnly(value: string): number {
+  if (!UTC_DATE_PATTERN.test(value)) throw new Error("INVALID_REPORT_RANGE");
+  const parsed = Date.parse(`${value}T00:00:00.000Z`);
+  if (
+    !Number.isFinite(parsed) ||
+    new Date(parsed).toISOString().slice(0, 10) !== value
+  ) {
+    throw new Error("INVALID_REPORT_RANGE");
+  }
+  return parsed;
+}
+
+/**
+ * Create an inclusive UTC date range with a bounded duration. The end is made
+ * exclusive before querying so no diagnostic row can fall into two windows.
+ */
+export function deriveCustomUtcDateRange(
+  startDate: string,
+  endDate: string,
+  snapshotGeneratedAtMs: number
+): MonthlyDiagnosticsReportWindow {
+  if (!Number.isFinite(snapshotGeneratedAtMs)) {
+    throw new Error("INVALID_SNAPSHOT_TIMESTAMP");
+  }
+  const periodStartMs = parseUtcDateOnly(startDate);
+  const endInclusiveMs = parseUtcDateOnly(endDate);
+  const periodEndExclusiveMs = endInclusiveMs + UTC_DAY_MS;
+  const snapshotDayEndExclusiveMs = Date.UTC(
+    new Date(snapshotGeneratedAtMs).getUTCFullYear(),
+    new Date(snapshotGeneratedAtMs).getUTCMonth(),
+    new Date(snapshotGeneratedAtMs).getUTCDate() + 1
+  );
+  if (
+    periodEndExclusiveMs <= periodStartMs ||
+    (periodEndExclusiveMs - periodStartMs) / UTC_DAY_MS >
+      MAX_MANUAL_DIAGNOSTICS_RANGE_DAYS ||
+    periodEndExclusiveMs > snapshotDayEndExclusiveMs
+  ) {
+    throw new Error("INVALID_REPORT_RANGE");
+  }
+  return {
+    reportMonthKey: `${startDate}_to_${endDate}`,
+    periodStartMs,
+    periodEndExclusiveMs,
+    snapshotGeneratedAtMs: Math.trunc(snapshotGeneratedAtMs),
+  };
+}
+
+/** Parse persisted monthly or custom keys without storing report content. */
+export function getDiagnosticsReportWindow(
+  reportPeriodKey: string,
+  snapshotGeneratedAtMs: number
+): MonthlyDiagnosticsReportWindow {
+  if (/^\d{4}-\d{2}$/.test(reportPeriodKey)) {
+    const bounds = getUtcMonthBounds(reportPeriodKey);
+    return {
+      reportMonthKey: reportPeriodKey,
+      ...bounds,
+      snapshotGeneratedAtMs: Math.trunc(snapshotGeneratedAtMs),
+    };
+  }
+  const custom = CUSTOM_REPORT_KEY_PATTERN.exec(reportPeriodKey);
+  if (!custom?.[1] || !custom[2]) throw new Error("INVALID_REPORT_RANGE");
+  return deriveCustomUtcDateRange(custom[1], custom[2], snapshotGeneratedAtMs);
+}
+
 function buildAuthRow(
   row: MonthlyDiagnosticsAuthRow
 ): Record<AuthColumnKey, string> {
@@ -201,11 +273,14 @@ function fitRowsToByteLimit<Key extends string>(
 
 export function buildMonthlyDiagnosticsExport(input: {
   snapshotGeneratedAtMs: number;
+  window?: MonthlyDiagnosticsReportWindow;
   consent: MonthlyDiagnosticsConsentAggregate;
   authRows: MonthlyDiagnosticsAuthRow[];
   authTotalMatching: number;
 }) {
-  const window = deriveCompletedPreviousUtcMonth(input.snapshotGeneratedAtMs);
+  const window =
+    input.window ??
+    deriveCompletedPreviousUtcMonth(input.snapshotGeneratedAtMs);
   const savedContactsTotal = nonNegativeInteger(
     input.consent.savedContactsTotal
   );
@@ -218,7 +293,7 @@ export function buildMonthlyDiagnosticsExport(input: {
     nonNegativeInteger(input.consent.optedOutTotal)
   );
   const consentRow: Record<ConsentColumnKey, string> = {
-    reportMonthUtc: window.reportMonthKey,
+    reportPeriodUtc: window.reportMonthKey,
     snapshotGeneratedAtUtc: new Date(
       window.snapshotGeneratedAtMs
     ).toISOString(),

@@ -4057,7 +4057,9 @@
       "protected": "Questa impostazione globale non può aumentare un limite di sicurezza del provider o dell’account.",
       "saved": "Limiti di invio in blocco salvati.",
       "saving": "Salvataggio…",
-      "save": "Salva limiti"
+      "save": "Salva limiti",
+      "usage": "Utilizzo del limite configurato",
+      "usageLabel": "Limite di invio configurato rispetto al massimo del piano"
     }
   },
   "developerEnrollment": {
@@ -5038,5 +5040,15 @@
     "checkoutOpened": "Il pagamento sicuro è stato aperto in una nuova scheda.",
     "dismiss": "Nascondi il promemoria di prova",
     "daysRemaining": "Mancano {{count}} giorni prima dell’inizio del piano a pagamento."
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "Snapshot diagnostico",
+    "description": "Lascia vuote le date per il mese UTC precedente completo oppure scegli fino a 366 giorni.",
+    "startDate": "Data di inizio (UTC)",
+    "endDate": "Data di fine (UTC)",
+    "completeRange": "Scegli sia una data di inizio sia una data di fine, oppure lascia entrambi i campi vuoti.",
+    "invalidRange": "La data di fine deve essere uguale o successiva alla data di inizio.",
+    "generating": "Generazione snapshot…",
+    "generate": "Genera snapshot ora"
   }
 }

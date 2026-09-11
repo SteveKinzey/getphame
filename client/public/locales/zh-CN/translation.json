@@ -3306,7 +3306,9 @@
       "protected": "此全局设置不能提高服务商或账户的安全限制。",
       "saved": "批量发送上限已保存。",
       "saving": "正在保存…",
-      "save": "保存上限"
+      "save": "保存上限",
+      "usage": "已配置上限使用率",
+      "usageLabel": "相对于套餐最高值的已配置批量发送上限"
     }
   },
   "developerEnrollment": {
@@ -4285,5 +4287,15 @@
     "openingCheckout": "正在打开结账页面…",
     "checkoutOpened": "安全结账页面已在新标签页中打开。",
     "dismiss": "关闭试用提醒"
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "诊断快照",
+    "description": "留空将使用上一个完整 UTC 月，或选择最长 366 天的范围。",
+    "startDate": "开始日期（UTC）",
+    "endDate": "结束日期（UTC）",
+    "completeRange": "请同时选择开始和结束日期，或将两者都留空。",
+    "invalidRange": "结束日期必须等于或晚于开始日期。",
+    "generating": "正在生成快照…",
+    "generate": "立即生成快照"
   }
 }

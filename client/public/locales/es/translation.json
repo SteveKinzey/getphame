@@ -3817,7 +3817,9 @@
       "protected": "Esta configuración global no puede aumentar un límite de seguridad del proveedor o de la cuenta.",
       "saved": "Límites de envío masivo guardados.",
       "saving": "Guardando…",
-      "save": "Guardar límites"
+      "save": "Guardar límites",
+      "usage": "Uso del límite configurado",
+      "usageLabel": "Límite de ráfaga configurado con respecto al máximo del nivel"
     }
   },
   "developerEnrollment": {
@@ -4798,5 +4800,15 @@
     "checkoutOpened": "El pago seguro se abrió en una pestaña nueva.",
     "dismiss": "Descartar recordatorio de prueba",
     "daysRemaining": "Quedan {{count}} días antes de que comience tu plan de pago."
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "Instantánea de diagnósticos",
+    "description": "Deja las fechas vacías para el mes UTC anterior completo o elige hasta 366 días.",
+    "startDate": "Fecha de inicio (UTC)",
+    "endDate": "Fecha de finalización (UTC)",
+    "completeRange": "Elige una fecha de inicio y una de finalización, o deja ambas vacías.",
+    "invalidRange": "La fecha de finalización debe ser igual o posterior a la fecha de inicio.",
+    "generating": "Generando instantánea…",
+    "generate": "Generar instantánea ahora"
   }
 }

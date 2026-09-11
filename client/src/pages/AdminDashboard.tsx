@@ -787,6 +787,10 @@ export default function AdminDashboard() {
   >("30");
   const [supportReportStartDate, setSupportReportStartDate] = useState("");
   const [supportReportEndDate, setSupportReportEndDate] = useState("");
+  const [diagnosticSnapshotStartDate, setDiagnosticSnapshotStartDate] =
+    useState("");
+  const [diagnosticSnapshotEndDate, setDiagnosticSnapshotEndDate] =
+    useState("");
   const [onboardingFunnelPeriod, setOnboardingFunnelPeriod] = useState<
     "7" | "30" | "90" | "custom"
   >("30");
@@ -1054,7 +1058,7 @@ export default function AdminDashboard() {
         }
         if (result.summary.sent > 0) {
           toast.success(
-            `Diagnostics snapshot delivered to ${result.summary.sent} administrator${result.summary.sent === 1 ? "" : "s"}.`
+            `Diagnostics snapshot for ${result.reportMonthKey} delivered to ${result.summary.sent} administrator${result.summary.sent === 1 ? "" : "s"}.`
           );
           return;
         }
@@ -1261,22 +1265,113 @@ export default function AdminDashboard() {
                   <span className="hidden text-xs font-normal rr-text-navy-muted sm:block">
                     Live summaries refresh automatically
                   </span>
-                  <button
-                    type="button"
-                    data-testid="admin-monthly-diagnostics-snapshot"
-                    onClick={() => generateDiagnosticsSnapshot.mutate()}
-                    disabled={generateDiagnosticsSnapshot.isPending}
-                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[oklch(0.77_0.13_80)] bg-white px-4 text-sm font-black rr-text-navy transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 sm:w-auto"
+                  <div
+                    className="rounded-xl border bg-white p-2.5"
+                    style={{ borderColor: "oklch(0.84 0.07 80)" }}
+                    aria-label="Custom diagnostics reporting period"
                   >
-                    {generateDiagnosticsSnapshot.isPending ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : (
-                      <Mail size={16} />
-                    )}
-                    {generateDiagnosticsSnapshot.isPending
-                      ? "Generating snapshot…"
-                      : "Generate Snapshot Now"}
-                  </button>
+                    <p className="text-xs font-black rr-text-navy">
+                      {t("adminDiagnosticsSnapshot.title", {
+                        defaultValue: "Diagnostics snapshot",
+                      })}
+                    </p>
+                    <p className="mt-0.5 text-xs font-semibold rr-text-navy-muted">
+                      {t("adminDiagnosticsSnapshot.description", {
+                        defaultValue:
+                          "Leave dates blank for the completed previous UTC month, or choose up to 366 days.",
+                      })}
+                    </p>
+                    <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                      <label className="grid gap-1 text-xs font-bold rr-text-navy-mid">
+                        {t("adminDiagnosticsSnapshot.startDate", {
+                          defaultValue: "Start date (UTC)",
+                        })}
+                        <input
+                          id="admin-diagnostics-start-date"
+                          name="adminDiagnosticsStartDate"
+                          type="date"
+                          value={diagnosticSnapshotStartDate}
+                          max={new Date().toISOString().slice(0, 10)}
+                          onChange={event =>
+                            setDiagnosticSnapshotStartDate(event.target.value)
+                          }
+                          className="min-h-10 rounded-lg border bg-white px-2 text-sm font-bold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+                          style={{ borderColor: "oklch(0.84 0.04 260)" }}
+                          data-testid="admin-diagnostics-start-date"
+                        />
+                      </label>
+                      <label className="grid gap-1 text-xs font-bold rr-text-navy-mid">
+                        {t("adminDiagnosticsSnapshot.endDate", {
+                          defaultValue: "End date (UTC)",
+                        })}
+                        <input
+                          id="admin-diagnostics-end-date"
+                          name="adminDiagnosticsEndDate"
+                          type="date"
+                          value={diagnosticSnapshotEndDate}
+                          min={diagnosticSnapshotStartDate || undefined}
+                          max={new Date().toISOString().slice(0, 10)}
+                          onChange={event =>
+                            setDiagnosticSnapshotEndDate(event.target.value)
+                          }
+                          className="min-h-10 rounded-lg border bg-white px-2 text-sm font-bold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+                          style={{ borderColor: "oklch(0.84 0.04 260)" }}
+                          data-testid="admin-diagnostics-end-date"
+                        />
+                      </label>
+                    </div>
+                    <button
+                      type="button"
+                      data-testid="admin-monthly-diagnostics-snapshot"
+                      onClick={() => {
+                        if (
+                          Boolean(diagnosticSnapshotStartDate) !==
+                          Boolean(diagnosticSnapshotEndDate)
+                        ) {
+                          toast.error(
+                            t("adminDiagnosticsSnapshot.completeRange", {
+                              defaultValue:
+                                "Choose both a start and end date, or leave both blank.",
+                            })
+                          );
+                          return;
+                        }
+                        if (
+                          diagnosticSnapshotStartDate &&
+                          diagnosticSnapshotEndDate &&
+                          diagnosticSnapshotEndDate <
+                            diagnosticSnapshotStartDate
+                        ) {
+                          toast.error(
+                            t("adminDiagnosticsSnapshot.invalidRange", {
+                              defaultValue:
+                                "The end date must be on or after the start date.",
+                            })
+                          );
+                          return;
+                        }
+                        generateDiagnosticsSnapshot.mutate({
+                          startDate: diagnosticSnapshotStartDate || undefined,
+                          endDate: diagnosticSnapshotEndDate || undefined,
+                        });
+                      }}
+                      disabled={generateDiagnosticsSnapshot.isPending}
+                      className="mt-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[oklch(0.77_0.13_80)] bg-white px-4 text-sm font-black rr-text-navy transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60"
+                    >
+                      {generateDiagnosticsSnapshot.isPending ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : (
+                        <Mail size={16} />
+                      )}
+                      {generateDiagnosticsSnapshot.isPending
+                        ? t("adminDiagnosticsSnapshot.generating", {
+                            defaultValue: "Generating snapshot…",
+                          })
+                        : t("adminDiagnosticsSnapshot.generate", {
+                            defaultValue: "Generate Snapshot Now",
+                          })}
+                    </button>
+                  </div>
                   <button
                     type="button"
                     data-testid="admin-operations-csv-export"

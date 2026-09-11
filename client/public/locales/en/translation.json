@@ -3763,7 +3763,9 @@
       "protected": "This global setting cannot raise a provider or account safety limit.",
       "saved": "Bulk-send caps saved.",
       "saving": "Saving…",
-      "save": "Save caps"
+      "save": "Save caps",
+      "usage": "Configured cap usage",
+      "usageLabel": "Configured burst cap relative to the tier maximum"
     }
   },
   "developerEnrollment": {
@@ -4747,5 +4749,15 @@
     "checkoutOpened": "Secure checkout opened in a new tab.",
     "dismiss": "Dismiss trial reminder",
     "daysRemaining": "{{count}} days remain before your paid plan begins."
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "Diagnostics snapshot",
+    "description": "Leave dates blank for the completed previous UTC month, or choose up to 366 days.",
+    "startDate": "Start date (UTC)",
+    "endDate": "End date (UTC)",
+    "completeRange": "Choose both a start and end date, or leave both blank.",
+    "invalidRange": "The end date must be on or after the start date.",
+    "generating": "Generating snapshot…",
+    "generate": "Generate Snapshot Now"
   }
 }

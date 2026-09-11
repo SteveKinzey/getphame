@@ -631,13 +631,13 @@ export type MonthlyDiagnosticExportSchedule =
 export type InsertMonthlyDiagnosticExportSchedule =
   typeof monthlyDiagnosticExportSchedules.$inferInsert;
 
-/** Metadata-only monthly snapshots. CSV bytes, report text, and addresses are excluded. */
+/** Metadata-only scheduled or custom-period snapshots. CSV bytes, report text, and addresses are excluded. */
 export const monthlyDiagnosticExportRuns = pgTable(
   "monthly_diagnostic_export_runs",
   {
     id: serial("id").primaryKey(),
     scheduleId: integer("schedule_id").notNull(),
-    reportMonthKey: varchar("report_month_key", { length: 7 }).notNull(),
+    reportMonthKey: varchar("report_month_key", { length: 32 }).notNull(),
     /** Idempotency key: one scheduled run/month or one admin run/UTC hour. */
     snapshotKey: varchar("snapshot_key", { length: 96 }).notNull(),
     snapshotGeneratedAt: bigint("snapshot_generated_at", {
