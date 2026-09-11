@@ -49,6 +49,7 @@ import {
   requestDeveloperSendScope,
   reviewDeveloperSendScope,
 } from "./developerApiEnrollment";
+import { validateContactImportPayload } from "./publicApi";
 import {
   approveWordPressPairing,
   getWordPressPairingForApproval,
@@ -7850,6 +7851,30 @@ export const appRouter = router({
       .input(z.object({ limit: z.number().int().min(1).max(50).default(10) }))
       .query(async ({ ctx, input }) => {
         return getRecentApiImports(ctx.user.id, input.limit);
+      }),
+    /**
+     * Validate a draft webhook payload without an API key, database write,
+     * source lookup, outbound call, or review-request delivery.
+     */
+    simulateContactImport: protectedProcedure
+      .input(z.object({ payload: z.unknown() }))
+      .mutation(({ input }) => {
+        let serialized = "";
+        try {
+          serialized = JSON.stringify(input.payload);
+        } catch {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Payload must be JSON-compatible.",
+          });
+        }
+        if (!serialized || Buffer.byteLength(serialized, "utf8") > 24_000) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Payload must be valid JSON under 24 KB.",
+          });
+        }
+        return validateContactImportPayload(input.payload);
       }),
   }),
 

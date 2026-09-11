@@ -3688,6 +3688,20 @@
       "download": "Télécharger le connecteur WordPress",
       "downloading": "Préparation du téléchargement…",
       "downloadStarted": "Le téléchargement du connecteur WordPress a commencé."
+    },
+    "simulator": {
+      "eyebrow": "Vérification préalable",
+      "title": "Vérifier une charge utile de webhook",
+      "description": "Vérifiez la structure du contact et du consentement avant d’activer un webhook Zapier, Make, Jotform ou de votre outil de formulaires. Ce simulateur n’utilise aucune clé API, ne crée aucun contact, n’écrit pas dans votre compte et n’envoie aucune demande.",
+      "verify": "Vérifier la charge utile",
+      "verifying": "Vérification…",
+      "payloadLabel": "Charge utile JSON du webhook",
+      "help": "Utilisez une charge utile représentative qui ne concerne pas un client. L’exemple emploie des données fictives et ne déclenche aucun envoi.",
+      "validToast": "La charge utile est structurellement valide. Rien n’a été envoyé.",
+      "invalidJson": "Saisissez du JSON valide avant de lancer le simulateur.",
+      "validTitle": "La charge utile est prête pour une vérification préalable réelle.",
+      "validDetail": "Les informations de contact requises et la preuve de consentement explicite par e-mail sont présentes. Rien n’a été créé ni envoyé.",
+      "invalidTitle": "La charge utile doit être corrigée avant la mise en ligne."
     }
   },
   "landing": {

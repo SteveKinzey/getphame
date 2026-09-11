@@ -173,6 +173,34 @@ describe("Developer Integrations workspace", () => {
     );
   });
 
+  it("provides a no-delivery payload simulator without exposing an API key", () => {
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
+    const router = readProjectFile("./routers.ts");
+    const api = readProjectFile("./publicApi.ts");
+
+    expectSourceContract(page).toContain(
+      'data-testid="webhook-verification-simulator"'
+    );
+    expectSourceContract(page).toContain(
+      "trpc.apiKey.simulateContactImport.useMutation"
+    );
+    expectSourceContract(page).toContain('name="webhook-simulator-payload"');
+    expectSourceContract(page).toContain("CONTACT_IMPORT_SIMULATOR_EXAMPLE");
+    expect(page).not.toContain("gp_live_");
+    expectSourceContract(router).toContain(
+      "simulateContactImport: protectedProcedure"
+    );
+    expectSourceContract(router).toContain(
+      "validateContactImportPayload(input.payload)"
+    );
+    expectSourceContract(api).toContain(
+      "validateContactImportPayload(input: unknown)"
+    );
+    expectSourceContract(api).toContain("contactImportSchema.safeParse");
+  });
+
   it("documents the canonical consent-aware import endpoint for every approved builder without embedding a raw key", () => {
     const guide = readProjectFile(
       "../client/src/components/IntegrationGuide.tsx"
