@@ -15,6 +15,7 @@
     "check:router-contracts": "tsc --noEmit --incremental false",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:db-integration": "VITEST_DB_INTEGRATION=1 vitest run server/**/*.db.integration.test.ts",
     "test:e2e": "playwright test",
     "db:push": "drizzle-kit generate && drizzle-kit migrate"
   },
