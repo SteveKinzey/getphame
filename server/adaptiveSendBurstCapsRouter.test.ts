@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { appRouter } from "./routers";
 
 describe("admin adaptive send burst-cap router contracts", () => {
-  it("registers getAdaptiveSendBurstCaps and updateAdaptiveSendBurstCaps on the admin router", () => {
+  it("registers cap reads, updates, and audit history on the admin router", () => {
     const caller = appRouter.createCaller({
       user: null,
       req: { protocol: "http", headers: {} } as any,
@@ -13,6 +13,9 @@ describe("admin adaptive send burst-cap router contracts", () => {
       "function"
     );
     expect(typeof (caller.admin as any).updateAdaptiveSendBurstCaps).toBe(
+      "function"
+    );
+    expect(typeof (caller.admin as any).listAdaptiveSendBurstCapAudit).toBe(
       "function"
     );
   });
@@ -26,6 +29,11 @@ describe("admin adaptive send burst-cap router contracts", () => {
 
     await expect(
       (unauthedCaller.admin as any).getAdaptiveSendBurstCaps()
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+    });
+    await expect(
+      (unauthedCaller.admin as any).listAdaptiveSendBurstCapAudit()
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
     });
@@ -48,6 +56,11 @@ describe("admin adaptive send burst-cap router contracts", () => {
 
     await expect(
       (standardUserCaller.admin as any).getAdaptiveSendBurstCaps()
+    ).rejects.toMatchObject({
+      code: "FORBIDDEN",
+    });
+    await expect(
+      (standardUserCaller.admin as any).listAdaptiveSendBurstCapAudit()
     ).rejects.toMatchObject({
       code: "FORBIDDEN",
     });

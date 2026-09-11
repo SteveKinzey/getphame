@@ -3826,7 +3826,24 @@
       "nearMaximumActionLabel": "Vérifier le plafond d’envoi groupé : {{cap}} demandes sur {{max}} configurées",
       "remainingBurstValue": "{{configured}} demandes sur {{maximum}} configurées ; {{remaining}} envois groupés restants.",
       "remainingBurstTooltip": "{{remaining}} envois groupés peuvent encore être configurés avant que ce niveau atteigne le maximum de {{maximum}} demandes.",
-      "remainingBurstInvalid": "Saisissez un plafond entier dans la plage autorisée pour afficher les envois groupés restants."
+      "remainingBurstInvalid": "Saisissez un plafond entier dans la plage autorisée pour afficher les envois groupés restants.",
+      "auditTitle": "Historique d’audit des plafonds d’envoi",
+      "auditDescription": "Les six dernières modifications enregistrées indiquent l’administrateur et les valeurs exactes modifiées par niveau.",
+      "auditRetry": "Réessayer",
+      "auditLoading": "Chargement de l’historique des modifications…",
+      "auditError": "L’historique des modifications de plafond n’a pas pu être chargé.",
+      "auditEmpty": "Aucune modification de plafond d’envoi n’a encore été enregistrée.",
+      "quickEditEyebrow": "Sécurité des envois",
+      "quickEditTitle": "Modification rapide des plafonds",
+      "quickEditDescription": "Mettez à jour le nombre maximal de demandes d’avis qu’une action groupée peut lancer. Les limites du fournisseur et du compte restent applicables.",
+      "quickEditFullSettings": "Réglages complets",
+      "quickEditLoading": "Chargement des plafonds actuels…",
+      "quickEditUnavailable": "Les contrôles de plafond sont en cours de mise à jour. Vos limites actuelles restent actives.",
+      "quickEditInput": "Plafond d’envoi {{tier}}",
+      "quickEditRange": "Limites entières de {{min}} à {{max}}.",
+      "quickEditSave": "Appliquer les plafonds",
+      "quickEditSaved": "Plafonds d’envoi mis à jour.",
+      "quickEditError": "Les plafonds d’envoi n’ont pas pu être mis à jour. Réessayez."
     }
   },
   "developerEnrollment": {
@@ -4820,5 +4837,9 @@
     "presetLabel": "Périodes prédéfinies UTC",
     "last7Days": "7 derniers jours",
     "last30Days": "30 derniers jours"
+  },
+  "adminProcedureRecovery": {
+    "title": "Les contrôles administrateur sont en cours de mise à jour.",
+    "description": "Ce contrôle administrateur est en cours de mise à jour. Vos réglages existants restent inchangés ; actualisez dans un instant pour réessayer."
   }
 }

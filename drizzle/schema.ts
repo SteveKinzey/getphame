@@ -1095,6 +1095,44 @@ export type AdaptiveSendBurstPolicy =
 export type InsertAdaptiveSendBurstPolicy =
   typeof adaptiveSendBurstPolicies.$inferInsert;
 
+/**
+ * Immutable administrator audit history for adaptive burst-cap changes. The
+ * actor is referenced by ID so changing an account's name does not rewrite
+ * historical responsibility, and no customer or delivery data is retained.
+ */
+export const adaptiveSendBurstPolicyChanges = pgTable(
+  "adaptive_send_burst_policy_changes",
+  {
+    id: serial("id").primaryKey(),
+    policyKey: varchar("policyKey", { length: 32 }).notNull(),
+    changedByUserId: integer("changedByUserId").notNull(),
+    previousFreeBurstCap: integer("previousFreeBurstCap").notNull(),
+    previousProBurstCap: integer("previousProBurstCap").notNull(),
+    previousAnnualBurstCap: integer("previousAnnualBurstCap").notNull(),
+    previousLifetimeBurstCap: integer("previousLifetimeBurstCap").notNull(),
+    freeBurstCap: integer("freeBurstCap").notNull(),
+    proBurstCap: integer("proBurstCap").notNull(),
+    annualBurstCap: integer("annualBurstCap").notNull(),
+    lifetimeBurstCap: integer("lifetimeBurstCap").notNull(),
+    changedAt: bigint("changedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("adaptive_send_burst_policy_changes_changed_idx").on(
+      table.policyKey,
+      table.changedAt
+    ),
+    index("adaptive_send_burst_policy_changes_actor_idx").on(
+      table.changedByUserId,
+      table.changedAt
+    ),
+  ]
+);
+
+export type AdaptiveSendBurstPolicyChange =
+  typeof adaptiveSendBurstPolicyChanges.$inferSelect;
+export type InsertAdaptiveSendBurstPolicyChange =
+  typeof adaptiveSendBurstPolicyChanges.$inferInsert;
+
 /** Each review request sent by a business owner to their customer */
 export const customerRequests = pgTable(
   "customer_requests",

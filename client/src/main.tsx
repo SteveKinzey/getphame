@@ -11,6 +11,11 @@ import { getLoginUrl } from "./const";
 import { apiFetch } from "./lib/apiFetch";
 import { queryRetryDelay, shouldRetryQuery } from "./lib/queryRetry";
 import { loadStaticLocalizationSupplement } from "./lib/autoText";
+import {
+  ADMIN_PROCEDURE_MISMATCH_MESSAGE,
+  ADMIN_PROCEDURE_MISMATCH_TOAST_ID,
+  isAdministrativeProcedureMismatch,
+} from "./lib/adminProcedureRecovery";
 import { isPasskeyEnrollmentRequiredError } from "./lib/passkeyEnrollment";
 import "./index.css";
 
@@ -52,6 +57,21 @@ queryClient.getQueryCache().subscribe(event => {
     // Intermediate failures remain in a fetching state while React Query retries.
     if (event.query.state.fetchStatus === "idle") {
       console.error("[API Query Error]", error);
+      if (isAdministrativeProcedureMismatch(error)) {
+        toast.warning(
+          i18n.t("adminProcedureRecovery.title", {
+            defaultValue: "Administrator controls are updating.",
+          }),
+          {
+            id: ADMIN_PROCEDURE_MISMATCH_TOAST_ID,
+            description: i18n.t("adminProcedureRecovery.description", {
+              defaultValue: ADMIN_PROCEDURE_MISMATCH_MESSAGE,
+            }),
+            duration: 8_000,
+          }
+        );
+        return;
+      }
       // Surface one concise, localized recovery message without exposing a raw
       // server error or creating a separate toast for every failed query.
       toast.error(

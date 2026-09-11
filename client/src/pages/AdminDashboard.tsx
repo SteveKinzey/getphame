@@ -76,6 +76,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { EmailRelayStatusCard } from "@/components/admin/EmailRelayStatusCard";
+import AdaptiveSendBurstCapQuickEdit from "@/components/AdaptiveSendBurstCapQuickEdit";
 import {
   getDiagnosticSnapshotPresetRange,
   matchesDiagnosticSnapshotPreset,
@@ -1266,6 +1267,7 @@ export default function AdminDashboard() {
 
         <RouteAuditControl />
         <RendererFailureTrendAlert />
+        <AdaptiveSendBurstCapQuickEdit />
 
         {stats && (
           <>

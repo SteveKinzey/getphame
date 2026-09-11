@@ -54,11 +54,24 @@ function parseCaps(
 export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
   const { t } = useTranslation("translation");
   const utils = trpc.useUtils();
-  const { data, isLoading, isError } =
-    trpc.admin.getAdaptiveSendBurstCaps.useQuery(undefined, {
-      enabled: isAdmin,
-      staleTime: 30_000,
-    });
+  const {
+    data,
+    isLoading,
+    isError: isCapsError,
+  } = trpc.admin.getAdaptiveSendBurstCaps.useQuery(undefined, {
+    enabled: isAdmin,
+    staleTime: 30_000,
+    retry: false,
+  });
+  const {
+    data: auditEntries,
+    isLoading: isAuditLoading,
+    isError: isAuditError,
+    refetch: refetchAudit,
+  } = trpc.admin.listAdaptiveSendBurstCapAudit.useQuery(
+    { page: 1, pageSize: 6 },
+    { enabled: isAdmin, staleTime: 30_000, retry: false }
+  );
   const [draft, setDraft] = useState<Record<BurstTier, string>>(() =>
     asDraft(DEFAULT_ADAPTIVE_SEND_BURST_CAPS)
   );
@@ -76,6 +89,7 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
       setDraft(asDraft(caps));
       await Promise.all([
         utils.admin.getAdaptiveSendBurstCaps.invalidate(),
+        utils.admin.listAdaptiveSendBurstCapAudit.invalidate(),
         utils.contacts.getDailyStatus.invalidate(),
       ]);
       toast.success(
@@ -264,7 +278,7 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
         })}
       </p>
 
-      {isError && (
+      {isCapsError && (
         <p className="mt-2 text-xs font-semibold text-destructive" role="alert">
           {t("adaptiveSending.adminCaps.loadError", {
             defaultValue:
@@ -272,6 +286,101 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
           })}
         </p>
       )}
+
+      <section
+        className="mt-5 border-t pt-4"
+        style={{ borderColor: "oklch(0.90 0.02 260)" }}
+        aria-labelledby="adaptive-send-burst-cap-audit-title"
+        data-testid="adaptive-send-burst-cap-audit"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <h3
+              id="adaptive-send-burst-cap-audit-title"
+              className="text-sm font-black rr-text-navy"
+            >
+              {t("adaptiveSending.adminCaps.auditTitle", {
+                defaultValue: "Burst-cap audit trail",
+              })}
+            </h3>
+            <p className="mt-0.5 text-xs rr-text-navy-muted">
+              {t("adaptiveSending.adminCaps.auditDescription", {
+                defaultValue:
+                  "The last six saved changes record the administrator and the exact tier values changed.",
+              })}
+            </p>
+          </div>
+          {isAuditError && (
+            <button
+              type="button"
+              onClick={() => void refetchAudit()}
+              className="min-h-9 rounded-lg border bg-white px-2.5 text-xs font-black rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+              style={{ borderColor: "oklch(0.84 0.04 260)" }}
+            >
+              {t("adaptiveSending.adminCaps.auditRetry", {
+                defaultValue: "Retry",
+              })}
+            </button>
+          )}
+        </div>
+
+        {isAuditLoading ? (
+          <p className="mt-3 flex items-center gap-2 text-xs font-semibold rr-text-navy-muted">
+            <Loader2 size={14} className="animate-spin" aria-hidden="true" />
+            {t("adaptiveSending.adminCaps.auditLoading", {
+              defaultValue: "Loading change history…",
+            })}
+          </p>
+        ) : isAuditError ? (
+          <p
+            className="mt-3 text-xs font-semibold text-destructive"
+            role="alert"
+          >
+            {t("adaptiveSending.adminCaps.auditError", {
+              defaultValue: "The cap change history could not be loaded.",
+            })}
+          </p>
+        ) : auditEntries?.length ? (
+          <ol className="mt-3 space-y-2" aria-label="Burst-cap change history">
+            {auditEntries.map(entry => {
+              const changes = tiers
+                .filter(
+                  tier => entry.previous[tier.key] !== entry.next[tier.key]
+                )
+                .map(
+                  tier =>
+                    `${tier.label}: ${entry.previous[tier.key]} → ${entry.next[tier.key]}`
+                );
+              return (
+                <li
+                  key={entry.id}
+                  className="rounded-xl border bg-[oklch(0.985_0.003_100)] px-3 py-2"
+                  style={{ borderColor: "oklch(0.91 0.015 260)" }}
+                >
+                  <p className="text-xs font-black rr-text-navy">
+                    {entry.actor}
+                  </p>
+                  <p className="mt-0.5 text-xs font-semibold rr-text-navy-mid">
+                    {changes.join(" · ")}
+                  </p>
+                  <time
+                    dateTime={new Date(entry.changedAt).toISOString()}
+                    className="mt-1 block text-[11px] font-semibold rr-text-navy-muted"
+                  >
+                    {new Date(entry.changedAt).toLocaleString()}
+                  </time>
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          <p className="mt-3 text-xs font-semibold rr-text-navy-muted">
+            {t("adaptiveSending.adminCaps.auditEmpty", {
+              defaultValue: "No burst-cap changes have been recorded yet.",
+            })}
+          </p>
+        )}
+      </section>
 
       <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="flex items-start gap-1.5 text-xs rr-text-navy-muted">

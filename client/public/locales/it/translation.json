@@ -4066,7 +4066,24 @@
       "nearMaximumActionLabel": "Controlla limite di invii in blocco: {{cap}} di {{max}} richieste configurate",
       "remainingBurstValue": "{{configured}} di {{maximum}} richieste configurate; restano {{remaining}} invii in blocco.",
       "remainingBurstTooltip": "È ancora possibile configurare {{remaining}} invii in blocco prima che questo livello raggiunga il massimo di {{maximum}} richieste.",
-      "remainingBurstInvalid": "Inserisci un limite intero nell’intervallo consentito per vedere gli invii in blocco rimanenti."
+      "remainingBurstInvalid": "Inserisci un limite intero nell’intervallo consentito per vedere gli invii in blocco rimanenti.",
+      "auditTitle": "Registro di controllo dei limiti per invio",
+      "auditDescription": "Le ultime sei modifiche salvate registrano l’amministratore e i valori esatti modificati per piano.",
+      "auditRetry": "Riprova",
+      "auditLoading": "Caricamento della cronologia delle modifiche…",
+      "auditError": "Impossibile caricare la cronologia delle modifiche ai limiti.",
+      "auditEmpty": "Non sono ancora state registrate modifiche ai limiti per invio.",
+      "quickEditEyebrow": "Sicurezza di invio",
+      "quickEditTitle": "Modifica rapida dei limiti per invio",
+      "quickEditDescription": "Aggiorna il numero massimo di richieste di recensione che una singola azione collettiva può avviare. I limiti del provider e dell’account restano applicati.",
+      "quickEditFullSettings": "Impostazioni complete",
+      "quickEditLoading": "Caricamento dei limiti attuali…",
+      "quickEditUnavailable": "I controlli dei limiti sono in aggiornamento. I limiti attuali restano attivi.",
+      "quickEditInput": "Limite per invio {{tier}}",
+      "quickEditRange": "Limiti interi da {{min}} a {{max}}.",
+      "quickEditSave": "Applica limiti",
+      "quickEditSaved": "Limiti per invio aggiornati.",
+      "quickEditError": "Impossibile aggiornare i limiti per invio. Riprova."
     }
   },
   "developerEnrollment": {
@@ -5060,5 +5077,9 @@
     "presetLabel": "Intervalli predefiniti UTC",
     "last7Days": "Ultimi 7 giorni",
     "last30Days": "Ultimi 30 giorni"
+  },
+  "adminProcedureRecovery": {
+    "title": "I controlli amministrativi sono in aggiornamento.",
+    "description": "Questo controllo amministrativo è in aggiornamento. Le impostazioni esistenti restano invariate; aggiorna tra poco per riprovare."
   }
 }
