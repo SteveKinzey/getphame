@@ -40,6 +40,7 @@ import {
   GitBranch,
   BadgePercent,
   RefreshCw,
+  Database,
 } from "lucide-react";
 import { CreditCard } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -301,6 +302,97 @@ function SubscriptionRecordHealthCard() {
           })}
         </p>
       )}
+    </section>
+  );
+}
+
+function DatabaseConnectionHealthIndicator() {
+  const { t } = useTranslation("translation");
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
+  const health = trpc.integrationHealth.snapshot.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 15_000,
+    refetchOnWindowFocus: true,
+  });
+  const database = health.data?.database;
+  const healthy = database?.status === "healthy";
+  const needsAttention =
+    database?.status === "degraded" || database?.status === "unavailable";
+
+  return (
+    <section
+      data-testid="admin-database-connection-health"
+      aria-live="polite"
+      className={`mb-4 rounded-2xl border p-4 shadow-sm ${
+        healthy
+          ? "border-emerald-200 bg-emerald-50/60"
+          : needsAttention
+            ? "border-red-200 bg-red-50/60"
+            : "border-slate-200 bg-white"
+      }`}
+      aria-labelledby="admin-database-connection-health-title"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <span
+            className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-white ${
+              healthy
+                ? "bg-emerald-700"
+                : needsAttention
+                  ? "bg-red-700"
+                  : "bg-slate-600"
+            }`}
+          >
+            <Database size={21} aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">
+              {t("integrationHealth.dashboard.eyebrow", {
+                defaultValue: "Live diagnostics",
+              })}
+            </p>
+            <h2
+              id="admin-database-connection-health-title"
+              className="mt-0.5 text-lg font-black rr-text-navy"
+            >
+              {t("integrationHealth.dashboard.title", {
+                defaultValue: "Database connection",
+              })}
+            </h2>
+            <p className="mt-1 text-sm rr-text-navy-muted">
+              {health.isLoading
+                ? t("integrationHealth.dashboard.checking", {
+                    defaultValue: "Checking the read-only connection probe…",
+                  })
+                : health.error || !database
+                  ? t("integrationHealth.dashboard.unavailable", {
+                      defaultValue:
+                        "Connection status is unavailable. No healthy state is inferred from missing data.",
+                    })
+                  : database.detail}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate("/admin/integration-health")}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-black rr-text-navy transition active:scale-[0.97]"
+        >
+          {health.isLoading
+            ? t("integrationHealth.dashboard.loading", {
+                defaultValue: "Checking…",
+              })
+            : healthy
+              ? t("integrationHealth.dashboard.healthy", {
+                  defaultValue: "Healthy · {{latency}} ms",
+                  latency: database?.latencyMs ?? 0,
+                })
+              : t("integrationHealth.dashboard.review", {
+                  defaultValue: "Review health",
+                })}
+        </button>
+      </div>
     </section>
   );
 }
@@ -1591,6 +1683,17 @@ export default function AdminDashboard() {
                     Icon: ShieldAlert,
                   },
                   {
+                    path: "/admin/integration-health",
+                    label: t("integrationHealth.dashboardCardTitle", {
+                      defaultValue: "Integration health",
+                    }),
+                    detail: t("integrationHealth.dashboardCardBody", {
+                      defaultValue:
+                        "Live database, scheduler, Stripe, email relay, and source checks",
+                    }),
+                    Icon: Activity,
+                  },
+                  {
                     path: "/admin/automation-health",
                     label: t("automationHealth.dashboardCardTitle", {
                       defaultValue: "Automation health",
@@ -2408,6 +2511,7 @@ export default function AdminDashboard() {
               </button>
             </section>
 
+            <DatabaseConnectionHealthIndicator />
             <SubscriptionRecordHealthCard />
             {/* Stripe status widget */}
             <section

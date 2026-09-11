@@ -5141,5 +5141,54 @@
       "subscription_without_business_profile": "Esiste un record di abbonamento senza profilo aziendale associato",
       "duplicate_subscription_records": "Trovati record di abbonamento multipli per lo stesso utente"
     }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "Operativo",
+      "degraded": "Richiede attenzione",
+      "unavailable": "Non disponibile",
+      "notConfigured": "Non configurato"
+    },
+    "card": {
+      "latency": "Latenza",
+      "notMeasured": "Non misurata",
+      "latencyValue": "{{value}} millisecondi"
+    },
+    "back": "Torna all'amministrazione",
+    "eyebrow": "Operazioni in tempo reale",
+    "title": "Stato delle integrazioni",
+    "subtitle": "Controlli limitati e di sola lettura per il database e i servizi di consegna connessi. Si aggiorna ogni 15 secondi mentre questa pagina è aperta.",
+    "refresh": "Aggiorna ora",
+    "summary": {
+      "healthy": "Tutti i servizi configurati rispondono normalmente.",
+      "degraded": "Almeno un servizio configurato richiede attenzione. Controlla la scheda interessata qui sotto.",
+      "unavailable": "Almeno un servizio richiesto non è disponibile. Riprova dopo aver risolto il problema di connessione.",
+      "title": "Stato attuale del sistema",
+      "checked": "Controllato {{time}} · {{duration}} ms"
+    },
+    "loadError": {
+      "title": "I dati sullo stato non sono disponibili",
+      "body": "Nessuno stato viene dedotto da dati mancanti. Usa Aggiorna ora per ripetere i controlli limitati."
+    },
+    "cards": {
+      "label": "Controlli sullo stato delle integrazioni",
+      "database": "Connessione al database",
+      "heartbeat": "Heartbeat in background",
+      "stripe": "API Stripe",
+      "emailRelay": "Relay e-mail",
+      "sources": "Fonti in entrata",
+      "sourcesFooter": "{{healthy}} operative · {{attention}} da verificare"
+    },
+    "dashboard": {
+      "eyebrow": "Diagnostica in tempo reale",
+      "title": "Connessione al database",
+      "checking": "Controllo della sonda di connessione in sola lettura…",
+      "unavailable": "Lo stato della connessione non è disponibile. Nessuno stato operativo viene dedotto da dati mancanti.",
+      "loading": "Controllo…",
+      "healthy": "Operativo · {{latency}} ms",
+      "review": "Controlla stato"
+    },
+    "dashboardCardTitle": "Stato delle integrazioni",
+    "dashboardCardBody": "Controlli in tempo reale di database, pianificatore, Stripe, relay e-mail e fonti"
   }
 }

@@ -4410,5 +4410,54 @@
       "subscription_without_business_profile": "存在沒有對應企業資料的訂閱記錄",
       "duplicate_subscription_records": "同一使用者存在多筆訂閱記錄"
     }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "正常",
+      "degraded": "需要注意",
+      "unavailable": "無法使用",
+      "notConfigured": "未設定"
+    },
+    "card": {
+      "latency": "延遲",
+      "notMeasured": "未測量",
+      "latencyValue": "{{value}} 毫秒"
+    },
+    "back": "返回管理中心",
+    "eyebrow": "即時營運",
+    "title": "整合健康狀態",
+    "subtitle": "對資料庫和已連線傳送服務執行有界唯讀檢查。此頁面開啟時每 15 秒重新整理一次。",
+    "refresh": "立即重新整理",
+    "summary": {
+      "healthy": "所有已設定服務都正常回應。",
+      "degraded": "至少一項已設定服務需要注意。請查看下方受影響的卡片。",
+      "unavailable": "至少一項必要服務無法使用。解決底層連線問題後請重試。",
+      "title": "目前系統狀態",
+      "checked": "檢查時間 {{time}} · {{duration}} 毫秒"
+    },
+    "loadError": {
+      "title": "健康資料無法使用",
+      "body": "不會根據缺少的資料推斷狀態。請使用「立即重新整理」重新執行有界檢查。"
+    },
+    "cards": {
+      "label": "整合健康檢查",
+      "database": "資料庫連線",
+      "heartbeat": "背景心跳",
+      "stripe": "Stripe API 介面",
+      "emailRelay": "電子郵件中繼",
+      "sources": "傳入來源",
+      "sourcesFooter": "{{healthy}} 正常 · {{attention}} 需注意"
+    },
+    "dashboard": {
+      "eyebrow": "即時診斷",
+      "title": "資料庫連線",
+      "checking": "正在檢查唯讀連線探針…",
+      "unavailable": "連線狀態無法使用。不會根據缺少的資料推斷正常狀態。",
+      "loading": "正在檢查…",
+      "healthy": "正常 · {{latency}} 毫秒",
+      "review": "查看健康狀態"
+    },
+    "dashboardCardTitle": "整合健康狀態",
+    "dashboardCardBody": "即時檢查資料庫、排程器、Stripe、電子郵件中繼和來源"
   }
 }

@@ -4850,5 +4850,54 @@
       "subscription_without_business_profile": "Subscription record exists without an associated business profile",
       "duplicate_subscription_records": "Multiple subscription records found for the same user"
     }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "Healthy",
+      "degraded": "Needs attention",
+      "unavailable": "Unavailable",
+      "notConfigured": "Not configured"
+    },
+    "card": {
+      "latency": "Latency",
+      "notMeasured": "Not measured",
+      "latencyValue": "{{value}} ms"
+    },
+    "back": "Back to administration",
+    "eyebrow": "Live operations",
+    "title": "Integration health",
+    "subtitle": "Bounded, read-only checks for the database and connected delivery services. Refreshes every 15 seconds while this page is open.",
+    "refresh": "Refresh now",
+    "summary": {
+      "healthy": "All configured services are responding normally.",
+      "degraded": "At least one configured service needs attention. Review the affected card below.",
+      "unavailable": "At least one required service is unavailable. Retry after resolving the underlying connection issue.",
+      "title": "Current system status",
+      "checked": "Checked {{time}} · {{duration}} ms"
+    },
+    "loadError": {
+      "title": "Health data is unavailable",
+      "body": "No status is inferred from missing data. Use Refresh now to retry the bounded checks."
+    },
+    "cards": {
+      "label": "Integration health checks",
+      "database": "Database connection",
+      "heartbeat": "Background heartbeats",
+      "stripe": "Stripe API",
+      "emailRelay": "Email relay",
+      "sources": "Inbound sources",
+      "sourcesFooter": "{{healthy}} healthy · {{attention}} attention"
+    },
+    "dashboard": {
+      "eyebrow": "Live diagnostics",
+      "title": "Database connection",
+      "checking": "Checking the read-only connection probe…",
+      "unavailable": "Connection status is unavailable. No healthy state is inferred from missing data.",
+      "loading": "Checking…",
+      "healthy": "Healthy · {{latency}} ms",
+      "review": "Review health"
+    },
+    "dashboardCardTitle": "Integration health",
+    "dashboardCardBody": "Live database, scheduler, Stripe, email relay, and source checks"
   }
 }
