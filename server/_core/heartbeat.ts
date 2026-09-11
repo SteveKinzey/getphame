@@ -86,6 +86,7 @@ const callForge = async <T>(
       method: "POST",
       headers,
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(10_000),
     });
   } catch (error) {
     throw new TRPCError({
