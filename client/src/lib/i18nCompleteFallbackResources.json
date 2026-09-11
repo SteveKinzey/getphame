@@ -2045,6 +2045,52 @@
           "exportCancel": "Close",
           "exportDownload": "Download CSV"
         }
+      },
+      "integrationHealth": {
+        "sparkline": {
+          "empty": "24-hour history will appear after scheduled checks run.",
+          "title": "Latency · last 24 hours",
+          "max": "Peak {{value}} ms",
+          "label": "{{title}} latency history. Peak {{value}} milliseconds."
+        },
+        "card": {
+          "reauthenticate": "Re-authenticate securely"
+        },
+        "alerts": {
+          "title": "Operational alert webhooks",
+          "description": "Send a bounded operational alert to Slack or Discord when a checked service is unavailable or exceeds your latency threshold. Webhook URLs are encrypted at rest and never shown again.",
+          "active": "Active",
+          "inactive": "Not active",
+          "provider": "Alert destination",
+          "latencyThreshold": "High-latency threshold (ms)",
+          "webhookUrl": "Incoming webhook URL",
+          "webhookPlaceholderSaved": "Saved securely — enter a replacement only to change it",
+          "webhookPlaceholder": "https://…",
+          "webhookHelp": "Use the official incoming-webhook URL for the selected provider. Do not use browser automation or append credentials.",
+          "conditions": "Alert conditions",
+          "enable": "Enable this alert destination",
+          "failure": "Service unavailable or credentials rejected",
+          "highLatency": "Measured latency reaches the threshold",
+          "save": "Save alert settings",
+          "saving": "Saving…",
+          "saved": "Health alert settings saved.",
+          "test": "Send test alert",
+          "testing": "Testing…",
+          "testSuccess": "Test alert delivered.",
+          "remove": "Remove destination",
+          "removed": "Health alert destination removed.",
+          "invalidThreshold": "Choose a latency threshold between 100 and 60,000 ms.",
+          "providerSlack": "Slack incoming webhook",
+          "providerDiscord": "Discord incoming webhook"
+        },
+        "reauth": {
+          "title": "Stripe authorization needs attention",
+          "description": "Get Phame does not expose billing credentials in the browser. Update the managed Stripe payment configuration through the secure payment controls, then run a fresh credential check here.",
+          "notice": "No secret, endpoint, customer, or billing record is shown in this dialog.",
+          "close": "Close",
+          "recheck": "Recheck secure connection",
+          "openSettings": "Open payment settings"
+        }
       }
     },
     "trialBanner": {
@@ -4429,6 +4475,52 @@
           "exportCause": "Causa saneada",
           "exportCancel": "Cerrar",
           "exportDownload": "Descargar CSV"
+        }
+      },
+      "integrationHealth": {
+        "sparkline": {
+          "empty": "El historial de 24 horas aparecerá tras las comprobaciones programadas.",
+          "title": "Latencia · últimas 24 horas",
+          "max": "Pico {{value}} ms",
+          "label": "Historial de latencia de {{title}}. Pico de {{value}} milisegundos."
+        },
+        "card": {
+          "reauthenticate": "Volver a autenticar de forma segura"
+        },
+        "alerts": {
+          "title": "Webhooks de alerta operativa",
+          "description": "Envía una alerta operativa acotada a Slack o Discord cuando un servicio no esté disponible o supere el umbral de latencia. Las URL de webhook se cifran en reposo y no se vuelven a mostrar.",
+          "active": "Activa",
+          "inactive": "Inactiva",
+          "provider": "Destino de la alerta",
+          "latencyThreshold": "Umbral de latencia alta (ms)",
+          "webhookUrl": "URL de webhook entrante",
+          "webhookPlaceholderSaved": "Guardada de forma segura: escribe un reemplazo solo para cambiarla",
+          "webhookPlaceholder": "https://…",
+          "webhookHelp": "Usa la URL oficial de webhook entrante del proveedor seleccionado. No uses automatización de navegador ni agregues credenciales.",
+          "conditions": "Condiciones de alerta",
+          "enable": "Habilitar este destino de alerta",
+          "failure": "Servicio no disponible o credenciales rechazadas",
+          "highLatency": "La latencia medida alcanza el umbral",
+          "save": "Guardar ajustes de alerta",
+          "saving": "Guardando…",
+          "saved": "Ajustes de alertas de salud guardados.",
+          "test": "Enviar alerta de prueba",
+          "testing": "Probando…",
+          "testSuccess": "Alerta de prueba entregada.",
+          "remove": "Eliminar destino",
+          "removed": "Destino de alertas eliminado.",
+          "invalidThreshold": "Elige un umbral de latencia entre 100 y 60.000 ms.",
+          "providerSlack": "Webhook entrante de Slack",
+          "providerDiscord": "Webhook entrante de Discord"
+        },
+        "reauth": {
+          "title": "La autorización de Stripe requiere atención",
+          "description": "Get Phame no expone credenciales de facturación en el navegador. Actualiza la configuración administrada de Stripe en los controles seguros de pago y vuelve a verificar aquí.",
+          "notice": "En este cuadro de diálogo no se muestra ningún secreto, extremo, cliente ni registro de facturación.",
+          "close": "Cerrar",
+          "recheck": "Volver a verificar conexión segura",
+          "openSettings": "Abrir ajustes de pago"
         }
       }
     },
@@ -6836,6 +6928,52 @@
           "exportCancel": "Fermer",
           "exportDownload": "Télécharger le CSV"
         }
+      },
+      "integrationHealth": {
+        "sparkline": {
+          "empty": "L’historique sur 24 heures apparaîtra après les vérifications planifiées.",
+          "title": "Latence · dernières 24 heures",
+          "max": "Pic {{value}} ms",
+          "label": "Historique de latence pour {{title}}. Pic de {{value}} millisecondes."
+        },
+        "card": {
+          "reauthenticate": "Réauthentifier de manière sécurisée"
+        },
+        "alerts": {
+          "title": "Webhooks d’alerte opérationnelle",
+          "description": "Envoyez une alerte opérationnelle encadrée vers Slack ou Discord lorsqu’un service est indisponible ou dépasse votre seuil de latence. Les URL de webhook sont chiffrées au repos et ne sont plus réaffichées.",
+          "active": "Activée",
+          "inactive": "Inactive",
+          "provider": "Destination de l’alerte",
+          "latencyThreshold": "Seuil de latence élevée (ms)",
+          "webhookUrl": "URL du webhook entrant",
+          "webhookPlaceholderSaved": "Enregistrée de manière sécurisée — saisissez un remplacement uniquement pour la modifier",
+          "webhookPlaceholder": "https://…",
+          "webhookHelp": "Utilisez l’URL officielle du webhook entrant pour le fournisseur choisi. N’utilisez pas d’automatisation de navigateur et n’ajoutez aucun identifiant.",
+          "conditions": "Conditions d’alerte",
+          "enable": "Activer cette destination d’alerte",
+          "failure": "Service indisponible ou identifiants rejetés",
+          "highLatency": "La latence mesurée atteint le seuil",
+          "save": "Enregistrer les alertes",
+          "saving": "Enregistrement…",
+          "saved": "Paramètres d’alerte de santé enregistrés.",
+          "test": "Envoyer une alerte test",
+          "testing": "Envoi du test…",
+          "testSuccess": "Alerte test envoyée.",
+          "remove": "Supprimer la destination",
+          "removed": "Destination d’alerte supprimée.",
+          "invalidThreshold": "Choisissez un seuil de latence compris entre 100 et 60 000 ms.",
+          "providerSlack": "Webhook entrant Slack",
+          "providerDiscord": "Webhook entrant Discord"
+        },
+        "reauth": {
+          "title": "L’autorisation Stripe nécessite une attention",
+          "description": "Get Phame n’expose aucun identifiant de facturation dans le navigateur. Mettez à jour la configuration gérée de Stripe dans les contrôles sécurisés de paiement puis relancez une vérification ici.",
+          "notice": "Aucun secret, point de terminaison, client ou enregistrement de facturation n’est affiché dans cette boîte de dialogue.",
+          "close": "Fermer",
+          "recheck": "Revérifier la connexion sécurisée",
+          "openSettings": "Ouvrir les paramètres de paiement"
+        }
       }
     },
     "trialBanner": {
@@ -9089,6 +9227,52 @@
           "exportCancel": "Chiudi",
           "exportDownload": "Scarica CSV"
         }
+      },
+      "integrationHealth": {
+        "sparkline": {
+          "empty": "La cronologia delle 24 ore comparirà dopo i controlli pianificati.",
+          "title": "Latenza · ultime 24 ore",
+          "max": "Picco {{value}} ms",
+          "label": "Cronologia della latenza di {{title}}. Picco di {{value}} millisecondi."
+        },
+        "card": {
+          "reauthenticate": "Riautentica in modo sicuro"
+        },
+        "alerts": {
+          "title": "Webhook per avvisi operativi",
+          "description": "Invia un avviso operativo delimitato a Slack o Discord quando un servizio non è disponibile o supera la soglia di latenza. Gli URL dei webhook vengono crittografati a riposo e mai più mostrati.",
+          "active": "Attivo",
+          "inactive": "Non attivo",
+          "provider": "Destinazione dell’avviso",
+          "latencyThreshold": "Soglia di latenza elevata (ms)",
+          "webhookUrl": "URL del webhook in entrata",
+          "webhookPlaceholderSaved": "Salvato in sicurezza: inserisci una sostituzione solo per modificarlo",
+          "webhookPlaceholder": "https://…",
+          "webhookHelp": "Usa l’URL ufficiale del webhook in entrata per il provider selezionato. Non usare automazione browser né aggiungere credenziali.",
+          "conditions": "Condizioni per gli avvisi",
+          "enable": "Abilita questa destinazione di avviso",
+          "failure": "Servizio non disponibile o credenziali rifiutate",
+          "highLatency": "La latenza misurata raggiunge la soglia",
+          "save": "Salva impostazioni avvisi",
+          "saving": "Salvataggio…",
+          "saved": "Impostazioni degli avvisi sullo stato salvate.",
+          "test": "Invia avviso di prova",
+          "testing": "Invio prova…",
+          "testSuccess": "Avviso di prova recapitato.",
+          "remove": "Rimuovi destinazione",
+          "removed": "Destinazione dell’avviso rimossa.",
+          "invalidThreshold": "Scegli una soglia di latenza compresa tra 100 e 60.000 ms.",
+          "providerSlack": "Webhook in entrata Slack",
+          "providerDiscord": "Webhook in entrata Discord"
+        },
+        "reauth": {
+          "title": "L’autorizzazione Stripe richiede attenzione",
+          "description": "Get Phame non mostra le credenziali di fatturazione nel browser. Aggiorna la configurazione gestita di Stripe nei controlli di pagamento sicuri, quindi ripeti qui la verifica.",
+          "notice": "In questa finestra non viene mostrato alcun segreto, endpoint, cliente o record di fatturazione.",
+          "close": "Chiudi",
+          "recheck": "Ricontrolla la connessione sicura",
+          "openSettings": "Apri impostazioni di pagamento"
+        }
       }
     },
     "trialBanner": {
@@ -11332,6 +11516,52 @@
           "exportCancel": "ปิด",
           "exportDownload": "ดาวน์โหลด CSV"
         }
+      },
+      "integrationHealth": {
+        "sparkline": {
+          "empty": "ประวัติ 24 ชั่วโมงจะแสดงขึ้นหลังการตรวจสอบตามกำหนดการทำงาน",
+          "title": "เวลาแฝง · 24 ชั่วโมงที่ผ่านมา",
+          "max": "สูงสุด {{value}} มิลลิวินาที",
+          "label": "ประวัติเวลาแฝงของ {{title}} สูงสุด {{value}} มิลลิวินาที"
+        },
+        "card": {
+          "reauthenticate": "ยืนยันตัวตนใหม่อย่างปลอดภัย"
+        },
+        "alerts": {
+          "title": "Webhook แจ้งเตือนการดำเนินงาน",
+          "description": "ส่งการแจ้งเตือนการดำเนินงานแบบจำกัดขอบเขตไปยัง Slack หรือ Discord เมื่อบริการไม่พร้อมใช้งานหรือมีเวลาแฝงเกินเกณฑ์ URL ของ Webhook จะถูกเข้ารหัสขณะจัดเก็บและไม่แสดงอีก",
+          "active": "เปิดใช้งาน",
+          "inactive": "ไม่ได้เปิดใช้งาน",
+          "provider": "ปลายทางการแจ้งเตือน",
+          "latencyThreshold": "เกณฑ์เวลาแฝงสูง (มิลลิวินาที)",
+          "webhookUrl": "URL ของ Incoming Webhook",
+          "webhookPlaceholderSaved": "บันทึกอย่างปลอดภัยแล้ว — ป้อนค่าใหม่เฉพาะเมื่อต้องการเปลี่ยน",
+          "webhookPlaceholder": "https://…",
+          "webhookHelp": "ใช้ URL ทางการของ Incoming Webhook สำหรับผู้ให้บริการที่เลือก ห้ามใช้บอทเบราว์เซอร์หรือแนบข้อมูลรับรอง",
+          "conditions": "เงื่อนไขการแจ้งเตือน",
+          "enable": "เปิดใช้งานปลายทางการแจ้งเตือนนี้",
+          "failure": "บริการไม่พร้อมใช้งานหรือข้อมูลรับรองถูกปฏิเสธ",
+          "highLatency": "เวลาแฝงที่วัดได้ถึงเกณฑ์ที่กำหนด",
+          "save": "บันทึกการตั้งค่าการแจ้งเตือน",
+          "saving": "กำลังบันทึก…",
+          "saved": "บันทึกการตั้งค่าการแจ้งเตือนความพร้อมใช้งานแล้ว",
+          "test": "ส่งการแจ้งเตือนทดสอบ",
+          "testing": "กำลังทดสอบ…",
+          "testSuccess": "ส่งการแจ้งเตือนทดสอบเรียบร้อยแล้ว",
+          "remove": "ลบปลายทาง",
+          "removed": "ลบปลายทางการแจ้งเตือนแล้ว",
+          "invalidThreshold": "เลือกเกณฑ์เวลาแฝงระหว่าง 100 ถึง 60,000 มิลลิวินาที",
+          "providerSlack": "Incoming Webhook ของ Slack",
+          "providerDiscord": "Incoming Webhook ของ Discord"
+        },
+        "reauth": {
+          "title": "การอนุญาตของ Stripe ต้องได้รับการตรวจสอบ",
+          "description": "Get Phame ไม่เปิดเผยข้อมูลรับรองการเรียกเก็บเงินในเบราว์เซอร์ โปรดอัปเดตการกำหนดค่า Stripe ผ่านส่วนควบคุมการชำระเงินที่ปลอดภัย แล้วตรวจสอบข้อมูลรับรองอีกครั้งที่นี่",
+          "notice": "กล่องข้อความนี้จะไม่แสดงรหัสลับ จุดสิ้นสุด ลูกค้า หรือข้อมูลการเรียกเก็บเงินใดๆ",
+          "close": "ปิด",
+          "recheck": "ตรวจสอบการเชื่อมต่อที่ปลอดภัยอีกครั้ง",
+          "openSettings": "เปิดการตั้งค่าการชำระเงิน"
+        }
       }
     },
     "trialBanner": {
@@ -13562,6 +13792,52 @@
           "exportCause": "脱敏原因",
           "exportCancel": "关闭",
           "exportDownload": "下载 CSV"
+        }
+      },
+      "integrationHealth": {
+        "sparkline": {
+          "empty": "计划健康检查运行后将显示 24 小时历史趋势。",
+          "title": "延迟 · 最近 24 小时",
+          "max": "峰值 {{value}} 毫秒",
+          "label": "{{title}} 延迟历史，峰值 {{value}} 毫秒。"
+        },
+        "card": {
+          "reauthenticate": "安全重新认证"
+        },
+        "alerts": {
+          "title": "运维告警 Webhook",
+          "description": "当被检测服务不可用或延迟超过阈值时，向 Slack 或 Discord 发送受控告警。Webhook 地址在存储时已加密，且不再向前端回显。",
+          "active": "已启用",
+          "inactive": "未启用",
+          "provider": "告警接收平台",
+          "latencyThreshold": "高延迟阈值（毫秒）",
+          "webhookUrl": "传入 Webhook 地址",
+          "webhookPlaceholderSaved": "已安全保存 — 仅在需要更改时输入新地址",
+          "webhookPlaceholder": "https://…",
+          "webhookHelp": "请使用所选平台官方提供的传入 Webhook 地址。切勿使用浏览器自动化脚本或附加凭据。",
+          "conditions": "告警触发条件",
+          "enable": "启用此告警接收目标",
+          "failure": "服务不可用或凭据被拒绝",
+          "highLatency": "实测延迟达到设定阈值",
+          "save": "保存告警设置",
+          "saving": "正在保存…",
+          "saved": "健康告警设置已保存。",
+          "test": "发送测试告警",
+          "testing": "正在测试…",
+          "testSuccess": "测试告警已成功送达。",
+          "remove": "移除接收目标",
+          "removed": "告警接收目标已移除。",
+          "invalidThreshold": "请选择 100 至 60,000 毫秒之间的延迟阈值。",
+          "providerSlack": "Slack 传入 Webhook",
+          "providerDiscord": "Discord 传入 Webhook"
+        },
+        "reauth": {
+          "title": "Stripe 授权需要处理",
+          "description": "Get Phame 不会在浏览器端暴露结算凭据。请通过受保护的支付设置更新托管的 Stripe 配置，随后在此重新发起凭据检测。",
+          "notice": "此对话框中不会显示任何密钥、端点、客户或账单数据。",
+          "close": "关闭",
+          "recheck": "重新检测安全连接",
+          "openSettings": "打开支付设置"
         }
       }
     },
@@ -15808,6 +16084,52 @@
           "exportCause": "去識別化原因",
           "exportCancel": "關閉",
           "exportDownload": "下載 CSV"
+        }
+      },
+      "integrationHealth": {
+        "sparkline": {
+          "empty": "排程健康檢查執行後將顯示 24 小時歷史趨勢。",
+          "title": "延遲 · 最近 24 小時",
+          "max": "峰值 {{value}} 毫秒",
+          "label": "{{title}} 延遲歷史，峰值 {{value}} 毫秒。"
+        },
+        "card": {
+          "reauthenticate": "安全重新認證"
+        },
+        "alerts": {
+          "title": "維運警報 Webhook",
+          "description": "當受監控服務不可用或延遲超過閾值時，向 Slack 或 Discord 發送受控警報。Webhook 網址在儲存時均經加密，且不再向前端回顯。",
+          "active": "已啟用",
+          "inactive": "未啟用",
+          "provider": "警報接收平台",
+          "latencyThreshold": "高延遲閾值（毫秒）",
+          "webhookUrl": "傳入 Webhook 網址",
+          "webhookPlaceholderSaved": "已安全儲存 — 僅在需要變更時輸入新網址",
+          "webhookPlaceholder": "https://…",
+          "webhookHelp": "請使用所選平台官方提供的傳入 Webhook 網址。切勿使用瀏覽器自動化腳本或附加憑證。",
+          "conditions": "警報觸發條件",
+          "enable": "啟用此警報接收目標",
+          "failure": "服務不可用或憑證遭拒",
+          "highLatency": "實測延遲達到設定閾值",
+          "save": "儲存警報設定",
+          "saving": "正在儲存…",
+          "saved": "健康警報設定已儲存。",
+          "test": "發送測試警報",
+          "testing": "正在測試…",
+          "testSuccess": "測試警報已成功送達。",
+          "remove": "移除接收目標",
+          "removed": "警報接收目標已移除。",
+          "invalidThreshold": "請選擇 100 至 60,000 毫秒之間的延遲閾值。",
+          "providerSlack": "Slack 傳入 Webhook",
+          "providerDiscord": "Discord 傳入 Webhook"
+        },
+        "reauth": {
+          "title": "Stripe 授權需要處理",
+          "description": "Get Phame 不會在瀏覽器端暴露帳務憑證。請透過受保護的付款設定更新託管的 Stripe 配置，隨後在此重新發起憑證檢測。",
+          "notice": "此對話方塊中不會顯示任何金鑰、端點、客戶或帳單記錄。",
+          "close": "關閉",
+          "recheck": "重新檢測安全連線",
+          "openSettings": "開啟付款設定"
         }
       }
     },

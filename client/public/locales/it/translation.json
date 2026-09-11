@@ -5152,7 +5152,8 @@
     "card": {
       "latency": "Latenza",
       "notMeasured": "Non misurata",
-      "latencyValue": "{{value}} millisecondi"
+      "latencyValue": "{{value}} millisecondi",
+      "reauthenticate": "Riautentica in modo sicuro"
     },
     "back": "Torna all'amministrazione",
     "eyebrow": "Operazioni in tempo reale",
@@ -5189,6 +5190,47 @@
       "review": "Controlla stato"
     },
     "dashboardCardTitle": "Stato delle integrazioni",
-    "dashboardCardBody": "Controlli in tempo reale di database, pianificatore, Stripe, relay e-mail e fonti"
+    "dashboardCardBody": "Controlli in tempo reale di database, pianificatore, Stripe, relay e-mail e fonti",
+    "sparkline": {
+      "empty": "La cronologia delle 24 ore comparirà dopo i controlli pianificati.",
+      "title": "Latenza · ultime 24 ore",
+      "max": "Picco {{value}} ms",
+      "label": "Cronologia della latenza di {{title}}. Picco di {{value}} millisecondi."
+    },
+    "alerts": {
+      "title": "Webhook per avvisi operativi",
+      "description": "Invia un avviso operativo delimitato a Slack o Discord quando un servizio non è disponibile o supera la soglia di latenza. Gli URL dei webhook vengono crittografati a riposo e mai più mostrati.",
+      "active": "Attivo",
+      "inactive": "Non attivo",
+      "provider": "Destinazione dell’avviso",
+      "latencyThreshold": "Soglia di latenza elevata (ms)",
+      "webhookUrl": "URL del webhook in entrata",
+      "webhookPlaceholderSaved": "Salvato in sicurezza: inserisci una sostituzione solo per modificarlo",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "Usa l’URL ufficiale del webhook in entrata per il provider selezionato. Non usare automazione browser né aggiungere credenziali.",
+      "conditions": "Condizioni per gli avvisi",
+      "enable": "Abilita questa destinazione di avviso",
+      "failure": "Servizio non disponibile o credenziali rifiutate",
+      "highLatency": "La latenza misurata raggiunge la soglia",
+      "save": "Salva impostazioni avvisi",
+      "saving": "Salvataggio…",
+      "saved": "Impostazioni degli avvisi sullo stato salvate.",
+      "test": "Invia avviso di prova",
+      "testing": "Invio prova…",
+      "testSuccess": "Avviso di prova recapitato.",
+      "remove": "Rimuovi destinazione",
+      "removed": "Destinazione dell’avviso rimossa.",
+      "invalidThreshold": "Scegli una soglia di latenza compresa tra 100 e 60.000 ms.",
+      "providerSlack": "Webhook in entrata Slack",
+      "providerDiscord": "Webhook in entrata Discord"
+    },
+    "reauth": {
+      "title": "L’autorizzazione Stripe richiede attenzione",
+      "description": "Get Phame non mostra le credenziali di fatturazione nel browser. Aggiorna la configurazione gestita di Stripe nei controlli di pagamento sicuri, quindi ripeti qui la verifica.",
+      "notice": "In questa finestra non viene mostrato alcun segreto, endpoint, cliente o record di fatturazione.",
+      "close": "Chiudi",
+      "recheck": "Ricontrolla la connessione sicura",
+      "openSettings": "Apri impostazioni di pagamento"
+    }
   }
 }

@@ -16,6 +16,8 @@ export type IntegrationHealthComponent = {
   status: IntegrationHealthStatus;
   latencyMs: number | null;
   detail: string;
+  reauthRequired?: boolean;
+  reauthTarget?: "stripe";
 };
 
 export type SourceIntegrationHealthComponent = IntegrationHealthComponent & {
@@ -239,12 +241,16 @@ export async function getIntegrationHealthSnapshot(
         headers: { Authorization: `Bearer ${stripeSecretKey}` },
         signal: AbortSignal.timeout(INTEGRATION_HEALTH_TIMEOUT_MS),
       });
+      const requiresCredentialRefresh =
+        response.status === 401 || response.status === 403;
       stripe = {
         status: response.ok ? "healthy" : "degraded",
         latencyMs: elapsed(stripeStartedAt, deps.now),
         detail: response.ok
           ? "Stripe API credential probe passed"
           : `Stripe API returned HTTP ${response.status}`,
+        reauthRequired: requiresCredentialRefresh || undefined,
+        reauthTarget: requiresCredentialRefresh ? "stripe" : undefined,
       };
     } catch (error) {
       stripe = {

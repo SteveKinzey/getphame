@@ -4861,7 +4861,8 @@
     "card": {
       "latency": "Latency",
       "notMeasured": "Not measured",
-      "latencyValue": "{{value}} ms"
+      "latencyValue": "{{value}} ms",
+      "reauthenticate": "Re-authenticate securely"
     },
     "back": "Back to administration",
     "eyebrow": "Live operations",
@@ -4898,6 +4899,47 @@
       "review": "Review health"
     },
     "dashboardCardTitle": "Integration health",
-    "dashboardCardBody": "Live database, scheduler, Stripe, email relay, and source checks"
+    "dashboardCardBody": "Live database, scheduler, Stripe, email relay, and source checks",
+    "sparkline": {
+      "empty": "24-hour history will appear after scheduled checks run.",
+      "title": "Latency · last 24 hours",
+      "max": "Peak {{value}} ms",
+      "label": "{{title}} latency history. Peak {{value}} milliseconds."
+    },
+    "alerts": {
+      "title": "Operational alert webhooks",
+      "description": "Send a bounded operational alert to Slack or Discord when a checked service is unavailable or exceeds your latency threshold. Webhook URLs are encrypted at rest and never shown again.",
+      "active": "Active",
+      "inactive": "Not active",
+      "provider": "Alert destination",
+      "latencyThreshold": "High-latency threshold (ms)",
+      "webhookUrl": "Incoming webhook URL",
+      "webhookPlaceholderSaved": "Saved securely — enter a replacement only to change it",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "Use the official incoming-webhook URL for the selected provider. Do not use browser automation or append credentials.",
+      "conditions": "Alert conditions",
+      "enable": "Enable this alert destination",
+      "failure": "Service unavailable or credentials rejected",
+      "highLatency": "Measured latency reaches the threshold",
+      "save": "Save alert settings",
+      "saving": "Saving…",
+      "saved": "Health alert settings saved.",
+      "test": "Send test alert",
+      "testing": "Testing…",
+      "testSuccess": "Test alert delivered.",
+      "remove": "Remove destination",
+      "removed": "Health alert destination removed.",
+      "invalidThreshold": "Choose a latency threshold between 100 and 60,000 ms.",
+      "providerSlack": "Slack incoming webhook",
+      "providerDiscord": "Discord incoming webhook"
+    },
+    "reauth": {
+      "title": "Stripe authorization needs attention",
+      "description": "Get Phame does not expose billing credentials in the browser. Update the managed Stripe payment configuration through the secure payment controls, then run a fresh credential check here.",
+      "notice": "No secret, endpoint, customer, or billing record is shown in this dialog.",
+      "close": "Close",
+      "recheck": "Recheck secure connection",
+      "openSettings": "Open payment settings"
+    }
   }
 }

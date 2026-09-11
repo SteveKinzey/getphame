@@ -4912,7 +4912,8 @@
     "card": {
       "latency": "Latencia",
       "notMeasured": "No medida",
-      "latencyValue": "{{value}} milisegundos"
+      "latencyValue": "{{value}} milisegundos",
+      "reauthenticate": "Volver a autenticar de forma segura"
     },
     "back": "Volver a administración",
     "eyebrow": "Operaciones en directo",
@@ -4949,6 +4950,47 @@
       "review": "Revisar estado"
     },
     "dashboardCardTitle": "Estado de integraciones",
-    "dashboardCardBody": "Comprobaciones en directo de base de datos, planificador, Stripe, relay de correo y fuentes"
+    "dashboardCardBody": "Comprobaciones en directo de base de datos, planificador, Stripe, relay de correo y fuentes",
+    "sparkline": {
+      "empty": "El historial de 24 horas aparecerá tras las comprobaciones programadas.",
+      "title": "Latencia · últimas 24 horas",
+      "max": "Pico {{value}} ms",
+      "label": "Historial de latencia de {{title}}. Pico de {{value}} milisegundos."
+    },
+    "alerts": {
+      "title": "Webhooks de alerta operativa",
+      "description": "Envía una alerta operativa acotada a Slack o Discord cuando un servicio no esté disponible o supere el umbral de latencia. Las URL de webhook se cifran en reposo y no se vuelven a mostrar.",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "provider": "Destino de la alerta",
+      "latencyThreshold": "Umbral de latencia alta (ms)",
+      "webhookUrl": "URL de webhook entrante",
+      "webhookPlaceholderSaved": "Guardada de forma segura: escribe un reemplazo solo para cambiarla",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "Usa la URL oficial de webhook entrante del proveedor seleccionado. No uses automatización de navegador ni agregues credenciales.",
+      "conditions": "Condiciones de alerta",
+      "enable": "Habilitar este destino de alerta",
+      "failure": "Servicio no disponible o credenciales rechazadas",
+      "highLatency": "La latencia medida alcanza el umbral",
+      "save": "Guardar ajustes de alerta",
+      "saving": "Guardando…",
+      "saved": "Ajustes de alertas de salud guardados.",
+      "test": "Enviar alerta de prueba",
+      "testing": "Probando…",
+      "testSuccess": "Alerta de prueba entregada.",
+      "remove": "Eliminar destino",
+      "removed": "Destino de alertas eliminado.",
+      "invalidThreshold": "Elige un umbral de latencia entre 100 y 60.000 ms.",
+      "providerSlack": "Webhook entrante de Slack",
+      "providerDiscord": "Webhook entrante de Discord"
+    },
+    "reauth": {
+      "title": "La autorización de Stripe requiere atención",
+      "description": "Get Phame no expone credenciales de facturación en el navegador. Actualiza la configuración administrada de Stripe en los controles seguros de pago y vuelve a verificar aquí.",
+      "notice": "En este cuadro de diálogo no se muestra ningún secreto, extremo, cliente ni registro de facturación.",
+      "close": "Cerrar",
+      "recheck": "Volver a verificar conexión segura",
+      "openSettings": "Abrir ajustes de pago"
+    }
   }
 }

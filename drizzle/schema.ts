@@ -417,6 +417,127 @@ export type InsertEmailRelayDiagnostic =
   typeof emailRelayDiagnostics.$inferInsert;
 
 /**
+ * Rolling, privacy-safe integration health observations. These retain only
+ * aggregate statuses and measured durations so administrators can see a
+ * 24-hour latency trend without persisting credentials, endpoints, payloads,
+ * customer data, or provider error bodies.
+ */
+export const integrationHealthSamples = pgTable(
+  "integration_health_samples",
+  {
+    id: serial("id").primaryKey(),
+    checkedAt: bigint("checkedAt", { mode: "number" }).notNull(),
+    durationMs: integer("durationMs").notNull(),
+    overallStatus: varchar("overallStatus", { length: 20 }).notNull(),
+    databaseStatus: varchar("databaseStatus", { length: 20 }).notNull(),
+    databaseLatencyMs: integer("databaseLatencyMs"),
+    heartbeatStatus: varchar("heartbeatStatus", { length: 20 }).notNull(),
+    heartbeatLatencyMs: integer("heartbeatLatencyMs"),
+    stripeStatus: varchar("stripeStatus", { length: 20 }).notNull(),
+    stripeLatencyMs: integer("stripeLatencyMs"),
+    emailRelayStatus: varchar("emailRelayStatus", { length: 20 }).notNull(),
+    emailRelayLatencyMs: integer("emailRelayLatencyMs"),
+    sourcesStatus: varchar("sourcesStatus", { length: 20 }).notNull(),
+    sourcesLatencyMs: integer("sourcesLatencyMs"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  table => [index("integration_health_samples_checked_idx").on(table.checkedAt)]
+);
+
+export type IntegrationHealthSample =
+  typeof integrationHealthSamples.$inferSelect;
+export type InsertIntegrationHealthSample =
+  typeof integrationHealthSamples.$inferInsert;
+
+/**
+ * One administrator-managed alert destination for the shared Get Phame
+ * operational health monitor. The destination is AES-GCM encrypted at rest;
+ * list and mutation APIs expose only provider, enabled state, and settings.
+ */
+export const integrationHealthAlertConfigs = pgTable(
+  "integration_health_alert_configs",
+  {
+    id: serial("id").primaryKey(),
+    scopeKey: varchar("scopeKey", { length: 32 }).notNull().unique(),
+    enabled: boolean("enabled").notNull().default(false),
+    provider: varchar("provider", { length: 16 }).notNull(),
+    encryptedWebhookUrl: text("encryptedWebhookUrl").notNull(),
+    latencyThresholdMs: integer("latencyThresholdMs").notNull().default(2500),
+    alertOnFailure: boolean("alertOnFailure").notNull().default(true),
+    alertOnHighLatency: boolean("alertOnHighLatency").notNull().default(true),
+    updatedByUserId: integer("updatedByUserId").notNull(),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  }
+);
+
+export type IntegrationHealthAlertConfig =
+  typeof integrationHealthAlertConfigs.$inferSelect;
+export type InsertIntegrationHealthAlertConfig =
+  typeof integrationHealthAlertConfigs.$inferInsert;
+
+/**
+ * Bounded audit history for health alert attempts. It records aggregate event
+ * category and delivery result only, never an alert destination or provider
+ * response body.
+ */
+export const integrationHealthAlertDeliveries = pgTable(
+  "integration_health_alert_deliveries",
+  {
+    id: serial("id").primaryKey(),
+    configId: integer("configId").notNull(),
+    eventKey: varchar("eventKey", { length: 96 }).notNull(),
+    category: varchar("category", { length: 16 }).notNull(),
+    component: varchar("component", { length: 32 }).notNull(),
+    componentStatus: varchar("componentStatus", { length: 20 }).notNull(),
+    delivered: boolean("delivered").notNull().default(false),
+    httpStatus: integer("httpStatus"),
+    failureCode: varchar("failureCode", { length: 48 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("integration_health_alert_deliveries_event_idx").on(
+      table.configId,
+      table.eventKey,
+      table.createdAt
+    ),
+  ]
+);
+
+export type IntegrationHealthAlertDelivery =
+  typeof integrationHealthAlertDeliveries.$inferSelect;
+export type InsertIntegrationHealthAlertDelivery =
+  typeof integrationHealthAlertDeliveries.$inferInsert;
+
+/** Managed scheduler state for the project-owned integration health heartbeat. */
+export const integrationHealthSchedulers = pgTable(
+  "integration_health_schedulers",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("scheduleKey", { length: 64 }).notNull().unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 128 })
+      .notNull()
+      .unique(),
+    cronExpression: varchar("cronExpression", { length: 64 }).notNull(),
+    lastRunAt: bigint("lastRunAt", { mode: "number" }),
+    lastRunStatus: varchar("lastRunStatus", { length: 24 }),
+    lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("integration_health_schedulers_task_idx").on(
+      table.scheduleCronTaskUid
+    ),
+  ]
+);
+
+export type IntegrationHealthScheduler =
+  typeof integrationHealthSchedulers.$inferSelect;
+export type InsertIntegrationHealthScheduler =
+  typeof integrationHealthSchedulers.$inferInsert;
+
+/**
  * Sanitized production-route audit outcomes triggered by administrators. The
  * findings payload contains only route paths, aggregate browser signal counts,
  * and render metrics; it deliberately excludes cookies, page markup, request
