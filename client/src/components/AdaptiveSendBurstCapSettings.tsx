@@ -119,46 +119,94 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-        {tiers.map(({ key, label, detail }) => (
-          <label
-            key={key}
-            htmlFor={`adaptive-send-burst-cap-${key}`}
-            className="rounded-xl border p-3"
-            style={{ borderColor: "oklch(0.90 0.02 260)" }}
-          >
-            <span className="block text-xs font-black rr-text-navy">
-              {label}
-            </span>
-            <span className="mt-0.5 block text-xs rr-text-navy-muted">
-              {detail}
-            </span>
-            <span className="mt-2 flex items-center gap-2">
-              <input
-                id={`adaptive-send-burst-cap-${key}`}
-                type="number"
-                inputMode="numeric"
-                min={ADAPTIVE_SEND_MINIMUM_BURST_CAP}
-                max={ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
-                step={1}
-                value={draft[key]}
-                onChange={event =>
-                  setDraft(current => ({
-                    ...current,
-                    [key]: event.target.value,
-                  }))
-                }
-                className="min-h-10 w-24 rounded-lg border bg-white px-2 text-sm font-black rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
-                style={{ borderColor: "oklch(0.84 0.04 260)" }}
-                aria-describedby="adaptive-send-burst-cap-help"
-              />
-              <span className="text-xs font-semibold rr-text-navy-muted">
-                {t("adaptiveSending.adminCaps.requests", {
-                  defaultValue: "requests/action",
-                })}
+        {tiers.map(({ key, label, detail }) => {
+          const configuredCap = Number(draft[key]);
+          const progressPercent = Number.isFinite(configuredCap)
+            ? Math.max(
+                0,
+                Math.min(
+                  100,
+                  Math.round(
+                    (configuredCap / ADAPTIVE_SEND_MAXIMUM_BURST_CAP) * 100
+                  )
+                )
+              )
+            : 0;
+          return (
+            <label
+              key={key}
+              htmlFor={`adaptive-send-burst-cap-${key}`}
+              className="rounded-xl border p-3"
+              style={{ borderColor: "oklch(0.90 0.02 260)" }}
+            >
+              <span className="block text-xs font-black rr-text-navy">
+                {label}
               </span>
-            </span>
-          </label>
-        ))}
+              <span className="mt-0.5 block text-xs rr-text-navy-muted">
+                {detail}
+              </span>
+              <span className="mt-2 flex items-center gap-2">
+                <input
+                  id={`adaptive-send-burst-cap-${key}`}
+                  type="number"
+                  inputMode="numeric"
+                  min={ADAPTIVE_SEND_MINIMUM_BURST_CAP}
+                  max={ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
+                  step={1}
+                  value={draft[key]}
+                  onChange={event =>
+                    setDraft(current => ({
+                      ...current,
+                      [key]: event.target.value,
+                    }))
+                  }
+                  className="min-h-10 w-24 rounded-lg border bg-white px-2 text-sm font-black rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+                  style={{ borderColor: "oklch(0.84 0.04 260)" }}
+                  aria-describedby={`adaptive-send-burst-cap-help adaptive-send-burst-cap-usage-${key}`}
+                />
+                <span className="text-xs font-semibold rr-text-navy-muted">
+                  {t("adaptiveSending.adminCaps.requests", {
+                    defaultValue: "requests/action",
+                  })}
+                </span>
+              </span>
+              <span
+                className="mt-3 block"
+                id={`adaptive-send-burst-cap-usage-${key}`}
+              >
+                <span className="mb-1 flex items-center justify-between gap-2 text-xs font-bold rr-text-navy-mid">
+                  <span>
+                    {t("adaptiveSending.adminCaps.usage", {
+                      defaultValue: "Configured cap usage",
+                    })}
+                  </span>
+                  <span>
+                    {configuredCap || 0}/{ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
+                  </span>
+                </span>
+                <span
+                  className="block h-2 overflow-hidden rounded-full"
+                  style={{ background: "oklch(0.92 0.015 260)" }}
+                  role="progressbar"
+                  aria-label={t("adaptiveSending.adminCaps.usageLabel", {
+                    defaultValue:
+                      "Configured burst cap relative to the tier maximum",
+                  })}
+                  aria-valuemin={0}
+                  aria-valuemax={ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
+                  aria-valuenow={
+                    Number.isFinite(configuredCap) ? configuredCap : 0
+                  }
+                >
+                  <span
+                    className="block h-full rounded-full bg-[oklch(0.80_0.18_80)] transition-[width] duration-200 motion-reduce:transition-none"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </span>
+              </span>
+            </label>
+          );
+        })}
       </div>
 
       <p

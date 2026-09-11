@@ -3328,7 +3328,9 @@
       "protected": "此全域設定無法提高服務商或帳戶的安全限制。",
       "saved": "批量傳送上限已儲存。",
       "saving": "正在儲存…",
-      "save": "儲存上限"
+      "save": "儲存上限",
+      "usage": "已設定上限使用率",
+      "usageLabel": "相對於方案最高值的已設定批量傳送上限"
     }
   },
   "developerEnrollment": {
@@ -4307,5 +4309,15 @@
     "openingCheckout": "正在開啟結帳頁面…",
     "checkoutOpened": "安全結帳頁面已在新分頁中開啟。",
     "dismiss": "關閉試用提醒"
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "診斷快照",
+    "description": "留空將使用上一個完整 UTC 月，或選擇最長 366 天的範圍。",
+    "startDate": "開始日期（UTC）",
+    "endDate": "結束日期（UTC）",
+    "completeRange": "請同時選擇開始與結束日期，或將兩者都留空。",
+    "invalidRange": "結束日期必須等於或晚於開始日期。",
+    "generating": "正在產生快照…",
+    "generate": "立即產生快照"
   }
 }

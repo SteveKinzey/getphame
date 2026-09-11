@@ -131,7 +131,7 @@ describe("manual monthly diagnostics snapshot processor", () => {
       sendReport,
     };
 
-    const result = await processManualMonthlyDiagnosticsSnapshot(now, deps);
+    const result = await processManualMonthlyDiagnosticsSnapshot({}, now, deps);
     expect(result).toMatchObject({
       ok: true,
       reportMonthKey: "2026-08",
@@ -144,37 +144,104 @@ describe("manual monthly diagnostics snapshot processor", () => {
       now,
     });
 
-    const terminalResult = await processManualMonthlyDiagnosticsSnapshot(now, {
-      ...deps,
-      snapshotRun: vi.fn().mockResolvedValue({
-        run: {
-          id: 55,
-          scheduleId: 1,
-          reportMonthKey: "2026-08",
-          snapshotKey: "manual:496924",
-          snapshotGeneratedAt: now,
-          status: "completed",
-          savedContactsTotal: 15,
-          explicitConsentTotal: 11,
-          withoutExplicitConsentTotal: 4,
-          optedOutTotal: 1,
-          authTotalMatching: 0,
-          authExportedRows: 0,
-          authTruncated: false,
-          consentFilename: "getphame-consent-posture-2026-08.csv",
-          authFilename: "getphame-auth-health-2026-08.csv",
-          errorCode: null,
-          createdAt: now,
-          completedAt: now,
-        },
-        created: false,
-      }),
-    });
+    const terminalResult = await processManualMonthlyDiagnosticsSnapshot(
+      {},
+      now,
+      {
+        ...deps,
+        snapshotRun: vi.fn().mockResolvedValue({
+          run: {
+            id: 55,
+            scheduleId: 1,
+            reportMonthKey: "2026-08",
+            snapshotKey: "manual:496924",
+            snapshotGeneratedAt: now,
+            status: "completed",
+            savedContactsTotal: 15,
+            explicitConsentTotal: 11,
+            withoutExplicitConsentTotal: 4,
+            optedOutTotal: 1,
+            authTotalMatching: 0,
+            authExportedRows: 0,
+            authTruncated: false,
+            consentFilename: "getphame-consent-posture-2026-08.csv",
+            authFilename: "getphame-auth-health-2026-08.csv",
+            errorCode: null,
+            createdAt: now,
+            completedAt: now,
+          },
+          created: false,
+        }),
+      }
+    );
 
     expect(terminalResult).toEqual({
       ok: true,
       skipped: "snapshot_already_terminal",
       reportMonthKey: "2026-08",
     });
+  });
+
+  it("uses the selected range in a manual snapshot key and rejects partial ranges", async () => {
+    const dependencies = {
+      getOrCreateSchedule: vi.fn().mockResolvedValue({ id: 1, enabled: true }),
+      getScheduleByTaskUid: vi.fn().mockResolvedValue({ id: 1, enabled: true }),
+      snapshotRun: vi.fn().mockResolvedValue({
+        run: {
+          id: 56,
+          scheduleId: 1,
+          reportMonthKey: "2026-09-01_to_2026-09-10",
+          snapshotKey: "manual:2026-09-01_to_2026-09-10:496934",
+          snapshotGeneratedAt: now,
+          status: "preparing",
+          savedContactsTotal: 0,
+          explicitConsentTotal: 0,
+          withoutExplicitConsentTotal: 0,
+          optedOutTotal: 0,
+          authTotalMatching: 0,
+          authExportedRows: 0,
+          authTruncated: false,
+          consentFilename: null,
+          authFilename: null,
+          errorCode: null,
+          createdAt: now,
+          completedAt: null,
+        },
+        created: true,
+      }),
+      loadSource: vi.fn().mockResolvedValue({
+        consent: {
+          savedContactsTotal: 1,
+          explicitConsentTotal: 1,
+          optedOutTotal: 0,
+        },
+        authRows: [],
+        authTotalMatching: 0,
+      }),
+      saveRun: vi.fn().mockResolvedValue(undefined),
+      listPending: vi.fn().mockResolvedValue([]),
+      claimDelivery: vi.fn(),
+      resolveRecipient: vi.fn(),
+      finishDelivery: vi.fn(),
+      sendReport: vi.fn(),
+    } as ManualMonthlyDiagnosticsProcessorDeps;
+    await processManualMonthlyDiagnosticsSnapshot(
+      { startDate: "2026-09-01", endDate: "2026-09-10" },
+      now,
+      dependencies
+    );
+    expect(dependencies.snapshotRun).toHaveBeenCalledWith(
+      1,
+      "2026-09-01_to_2026-09-10",
+      now,
+      expect.stringMatching(/^manual:2026-09-01_to_2026-09-10:/)
+    );
+    await expect(
+      processManualMonthlyDiagnosticsSnapshot(
+        { startDate: "2026-09-01" },
+        now,
+        dependencies
+      )
+    ).rejects.toThrow("INVALID_REPORT_RANGE");
   });
 });

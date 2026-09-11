@@ -2025,8 +2025,20 @@
         "protected": "This global setting cannot raise a provider or account safety limit.",
         "saved": "Bulk-send caps saved.",
         "saving": "Saving…",
-        "save": "Save caps"
+        "save": "Save caps",
+        "usage": "Configured cap usage",
+        "usageLabel": "Configured burst cap relative to the tier maximum"
       }
+    },
+    "adminDiagnosticsSnapshot": {
+      "title": "Diagnostics snapshot",
+      "description": "Leave dates blank for the completed previous UTC month, or choose up to 366 days.",
+      "startDate": "Start date (UTC)",
+      "endDate": "End date (UTC)",
+      "completeRange": "Choose both a start and end date, or leave both blank.",
+      "invalidRange": "The end date must be on or after the start date.",
+      "generating": "Generating snapshot…",
+      "generate": "Generate Snapshot Now"
     }
   },
   "es": {
@@ -4256,8 +4268,20 @@
         "protected": "Esta configuración global no puede aumentar un límite de seguridad del proveedor o de la cuenta.",
         "saved": "Límites de envío masivo guardados.",
         "saving": "Guardando…",
-        "save": "Guardar límites"
+        "save": "Guardar límites",
+        "usage": "Uso del límite configurado",
+        "usageLabel": "Límite de ráfaga configurado con respecto al máximo del nivel"
       }
+    },
+    "adminDiagnosticsSnapshot": {
+      "title": "Instantánea de diagnósticos",
+      "description": "Deja las fechas vacías para el mes UTC anterior completo o elige hasta 366 días.",
+      "startDate": "Fecha de inicio (UTC)",
+      "endDate": "Fecha de finalización (UTC)",
+      "completeRange": "Elige una fecha de inicio y una de finalización, o deja ambas vacías.",
+      "invalidRange": "La fecha de finalización debe ser igual o posterior a la fecha de inicio.",
+      "generating": "Generando instantánea…",
+      "generate": "Generar instantánea ahora"
     }
   },
   "fr": {
@@ -6508,8 +6532,20 @@
         "protected": "Ce réglage global ne peut pas augmenter une limite de sécurité du fournisseur ou du compte.",
         "saved": "Plafonds d’envoi groupé enregistrés.",
         "saving": "Enregistrement…",
-        "save": "Enregistrer les plafonds"
+        "save": "Enregistrer les plafonds",
+        "usage": "Utilisation du plafond configuré",
+        "usageLabel": "Plafond de rafale configuré par rapport au maximum du niveau"
       }
+    },
+    "adminDiagnosticsSnapshot": {
+      "title": "Instantané des diagnostics",
+      "description": "Laissez les dates vides pour le mois UTC précédent complet ou choisissez jusqu’à 366 jours.",
+      "startDate": "Date de début (UTC)",
+      "endDate": "Date de fin (UTC)",
+      "completeRange": "Choisissez une date de début et une date de fin, ou laissez les deux champs vides.",
+      "invalidRange": "La date de fin doit être égale ou postérieure à la date de début.",
+      "generating": "Génération de l’instantané…",
+      "generate": "Générer l’instantané maintenant"
     }
   },
   "it": {
@@ -8607,8 +8643,20 @@
         "protected": "Questa impostazione globale non può aumentare un limite di sicurezza del provider o dell’account.",
         "saved": "Limiti di invio in blocco salvati.",
         "saving": "Salvataggio…",
-        "save": "Salva limiti"
+        "save": "Salva limiti",
+        "usage": "Utilizzo del limite configurato",
+        "usageLabel": "Limite di invio configurato rispetto al massimo del piano"
       }
+    },
+    "adminDiagnosticsSnapshot": {
+      "title": "Snapshot diagnostico",
+      "description": "Lascia vuote le date per il mese UTC precedente completo oppure scegli fino a 366 giorni.",
+      "startDate": "Data di inizio (UTC)",
+      "endDate": "Data di fine (UTC)",
+      "completeRange": "Scegli sia una data di inizio sia una data di fine, oppure lascia entrambi i campi vuoti.",
+      "invalidRange": "La data di fine deve essere uguale o successiva alla data di inizio.",
+      "generating": "Generazione snapshot…",
+      "generate": "Genera snapshot ora"
     }
   },
   "th": {
@@ -10694,8 +10742,20 @@
         "protected": "การตั้งค่าส่วนกลางนี้ไม่สามารถเพิ่มข้อจำกัดด้านความปลอดภัยของผู้ให้บริการหรือบัญชีได้",
         "saved": "บันทึกเพดานการส่งเป็นชุดแล้ว",
         "saving": "กำลังบันทึก…",
-        "save": "บันทึกเพดาน"
+        "save": "บันทึกเพดาน",
+        "usage": "การใช้ขีดจำกัดที่กำหนด",
+        "usageLabel": "ขีดจำกัดการส่งเป็นชุดที่กำหนดเทียบกับค่าสูงสุดของระดับ"
       }
+    },
+    "adminDiagnosticsSnapshot": {
+      "title": "สแนปชอตการวินิจฉัย",
+      "description": "เว้นวันที่ว่างไว้สำหรับเดือน UTC ก่อนหน้าที่สมบูรณ์ หรือเลือกได้สูงสุด 366 วัน",
+      "startDate": "วันที่เริ่มต้น (UTC)",
+      "endDate": "วันที่สิ้นสุด (UTC)",
+      "completeRange": "เลือกทั้งวันที่เริ่มต้นและวันที่สิ้นสุด หรือเว้นทั้งสองช่องว่างไว้",
+      "invalidRange": "วันที่สิ้นสุดต้องเป็นวันเดียวกับหรือหลังวันที่เริ่มต้น",
+      "generating": "กำลังสร้างสแนปชอต…",
+      "generate": "สร้างสแนปชอตตอนนี้"
     }
   },
   "zh-CN": {
@@ -12771,8 +12831,20 @@
         "protected": "此全局设置不能提高服务商或账户的安全限制。",
         "saved": "批量发送上限已保存。",
         "saving": "正在保存…",
-        "save": "保存上限"
+        "save": "保存上限",
+        "usage": "已配置上限使用率",
+        "usageLabel": "相对于套餐最高值的已配置批量发送上限"
       }
+    },
+    "adminDiagnosticsSnapshot": {
+      "title": "诊断快照",
+      "description": "留空将使用上一个完整 UTC 月，或选择最长 366 天的范围。",
+      "startDate": "开始日期（UTC）",
+      "endDate": "结束日期（UTC）",
+      "completeRange": "请同时选择开始和结束日期，或将两者都留空。",
+      "invalidRange": "结束日期必须等于或晚于开始日期。",
+      "generating": "正在生成快照…",
+      "generate": "立即生成快照"
     }
   },
   "zh-TW": {
@@ -14863,8 +14935,20 @@
         "protected": "此全域設定無法提高服務商或帳戶的安全限制。",
         "saved": "批量傳送上限已儲存。",
         "saving": "正在儲存…",
-        "save": "儲存上限"
+        "save": "儲存上限",
+        "usage": "已設定上限使用率",
+        "usageLabel": "相對於方案最高值的已設定批量傳送上限"
       }
+    },
+    "adminDiagnosticsSnapshot": {
+      "title": "診斷快照",
+      "description": "留空將使用上一個完整 UTC 月，或選擇最長 366 天的範圍。",
+      "startDate": "開始日期（UTC）",
+      "endDate": "結束日期（UTC）",
+      "completeRange": "請同時選擇開始與結束日期，或將兩者都留空。",
+      "invalidRange": "結束日期必須等於或晚於開始日期。",
+      "generating": "正在產生快照…",
+      "generate": "立即產生快照"
     }
   }
 }

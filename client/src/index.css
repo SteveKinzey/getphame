@@ -1420,6 +1420,26 @@
   transform-origin: center;
   will-change: transform;
 }
+@keyframes trialReminderPulse {
+  0%,
+  76%,
+  100% {
+    transform: scale(1);
+  }
+  84% {
+    transform: scale(1.008);
+  }
+  92% {
+    transform: scale(1.002);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .trial-reminder-attention {
+    animation: trialReminderPulse 5.6s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+    transform-origin: center;
+    will-change: transform;
+  }
+}
 @keyframes homeInstallBannerEnter {
   from {
     opacity: 0;

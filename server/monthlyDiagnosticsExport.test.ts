@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildMonthlyDiagnosticsExport,
+  deriveCustomUtcDateRange,
   deriveCompletedPreviousUtcMonth,
   MONTHLY_DIAGNOSTICS_ATTACHMENT_BYTE_LIMIT,
   MONTHLY_DIAGNOSTICS_AUTH_HEADERS,
@@ -42,6 +43,21 @@ describe("monthly diagnostics export", () => {
     });
   });
 
+  it("derives a bounded inclusive custom UTC range with an exclusive query end", () => {
+    const snapshot = Date.parse("2026-09-11T14:30:00.000Z");
+    expect(
+      deriveCustomUtcDateRange("2026-08-15", "2026-09-10", snapshot)
+    ).toEqual({
+      reportMonthKey: "2026-08-15_to_2026-09-10",
+      periodStartMs: Date.parse("2026-08-15T00:00:00.000Z"),
+      periodEndExclusiveMs: Date.parse("2026-09-11T00:00:00.000Z"),
+      snapshotGeneratedAtMs: snapshot,
+    });
+    expect(() =>
+      deriveCustomUtcDateRange("2026-09-10", "2026-08-15", snapshot)
+    ).toThrow("INVALID_REPORT_RANGE");
+  });
+
   it("emits exactly two bounded aggregate-only attachments with stable headers", () => {
     const snapshot = Date.parse("2026-09-01T08:10:00.000Z");
     const start = Date.parse("2026-08-01T00:00:00.000Z");
@@ -66,7 +82,7 @@ describe("monthly diagnostics export", () => {
     expect(result.attachments).toHaveLength(2);
     expect(result.window.reportMonthKey).toBe("2026-08");
     expect(MONTHLY_DIAGNOSTICS_CONSENT_HEADERS).toEqual([
-      "report_month_utc",
+      "report_period_utc",
       "snapshot_generated_at_utc",
       "saved_contacts_total",
       "explicit_consent_total",
@@ -103,6 +119,36 @@ describe("monthly diagnostics export", () => {
     expect(
       result.attachments.every(item => item.byteLength <= 1024 * 1024)
     ).toBe(true);
+  });
+
+  it("uses a custom range key in bounded CSV metadata, filenames, and filtering", () => {
+    const snapshot = Date.parse("2026-09-11T14:30:00.000Z");
+    const window = deriveCustomUtcDateRange(
+      "2026-09-01",
+      "2026-09-10",
+      snapshot
+    );
+    const result = buildMonthlyDiagnosticsExport({
+      snapshotGeneratedAtMs: snapshot,
+      window,
+      consent: {
+        savedContactsTotal: 3,
+        explicitConsentTotal: 2,
+        optedOutTotal: 0,
+      },
+      authRows: [
+        authRow(1, Date.parse("2026-09-01T00:00:00.000Z")),
+        authRow(2, Date.parse("2026-09-10T23:59:59.999Z")),
+        authRow(3, Date.parse("2026-09-11T00:00:00.000Z")),
+      ],
+      authTotalMatching: 2,
+    });
+    expect(result.window.reportMonthKey).toBe("2026-09-01_to_2026-09-10");
+    expect(result.attachments[0].filename).toBe(
+      "getphame-consent-posture-2026-09-01_to_2026-09-10.csv"
+    );
+    expect(result.attachments[0].content).toContain("2026-09-01_to_2026-09-10");
+    expect(result.attachments[1].content.trim().split("\r\n")).toHaveLength(3);
   });
 
   it("enforces the one-MiB byte limit and discloses truncation", () => {

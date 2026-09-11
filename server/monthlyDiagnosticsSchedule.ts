@@ -20,11 +20,13 @@ import { ENV } from "./_core/env";
 import { getDb } from "./db";
 import {
   buildMonthlyDiagnosticsExport,
+  deriveCustomUtcDateRange,
   deriveCompletedPreviousUtcMonth,
-  getUtcMonthBounds,
+  getDiagnosticsReportWindow,
   MONTHLY_DIAGNOSTICS_AUTH_ROW_LIMIT,
   type MonthlyDiagnosticsAuthRow,
   type MonthlyDiagnosticsConsentAggregate,
+  type MonthlyDiagnosticsReportWindow,
 } from "./monthlyDiagnosticsExport";
 import { sendMonthlyDiagnosticReportEmail } from "./monthlyDiagnosticsReportEmail";
 
@@ -232,7 +234,7 @@ async function snapshotMonthlyRun(
 }
 
 export async function loadMonthlyDiagnosticsSource(
-  reportMonthKey: string
+  window: MonthlyDiagnosticsReportWindow
 ): Promise<{
   consent: MonthlyDiagnosticsConsentAggregate;
   authRows: MonthlyDiagnosticsAuthRow[];
@@ -240,12 +242,10 @@ export async function loadMonthlyDiagnosticsSource(
 }> {
   const db = await getDb();
   if (!db) throw new Error("DATABASE_UNAVAILABLE");
-  const { periodStartMs, periodEndExclusiveMs } =
-    getUtcMonthBounds(reportMonthKey);
   const authWhere = and(
     eq(authHealthChecks.triggerSource, "scheduled"),
-    gte(authHealthChecks.checkedAt, periodStartMs),
-    lt(authHealthChecks.checkedAt, periodEndExclusiveMs)
+    gte(authHealthChecks.checkedAt, window.periodStartMs),
+    lt(authHealthChecks.checkedAt, window.periodEndExclusiveMs)
   );
   const [consentRow, authTotalRow, authRows] = await Promise.all([
     db
@@ -455,9 +455,14 @@ async function deliverMonthlyDiagnosticsRun(
   now: number,
   deps: MonthlyDiagnosticsProcessorDeps
 ) {
-  const source = await deps.loadSource(run.reportMonthKey);
+  const window = getDiagnosticsReportWindow(
+    run.reportMonthKey,
+    run.snapshotGeneratedAt
+  );
+  const source = await deps.loadSource(window);
   const report = buildMonthlyDiagnosticsExport({
     snapshotGeneratedAtMs: run.snapshotGeneratedAt,
+    window,
     consent: source.consent,
     authRows: source.authRows,
     authTotalMatching: source.authTotalMatching,
@@ -568,12 +573,21 @@ export async function processMonthlyDiagnosticsExport(
  * lets a second operator receive a truthful no-op rather than a duplicate.
  */
 export async function processManualMonthlyDiagnosticsSnapshot(
+  input: { startDate?: string; endDate?: string } = {},
   now = Date.now(),
   deps: ManualMonthlyDiagnosticsProcessorDeps = defaultManualProcessorDeps
 ) {
   const schedule = await deps.getOrCreateSchedule(now);
-  const requestedWindow = deriveCompletedPreviousUtcMonth(now);
-  const snapshotKey = `manual:${Math.floor(now / MANUAL_SNAPSHOT_WINDOW_MS)}`;
+  const hasStartDate = Boolean(input.startDate);
+  const hasEndDate = Boolean(input.endDate);
+  if (hasStartDate !== hasEndDate) throw new Error("INVALID_REPORT_RANGE");
+  const requestedWindow =
+    hasStartDate && hasEndDate
+      ? deriveCustomUtcDateRange(input.startDate!, input.endDate!, now)
+      : deriveCompletedPreviousUtcMonth(now);
+  const snapshotKey = `manual:${requestedWindow.reportMonthKey}:${Math.floor(
+    now / MANUAL_SNAPSHOT_WINDOW_MS
+  )}`;
   const runClaim = await deps.snapshotRun(
     schedule.id,
     requestedWindow.reportMonthKey,
