@@ -2027,7 +2027,14 @@
         "saving": "Saving…",
         "save": "Save caps",
         "usage": "Configured cap usage",
-        "usageLabel": "Configured burst cap relative to the tier maximum"
+        "usageLabel": "Configured burst cap relative to the tier maximum",
+        "nearMaximumBadge": "Burst cap at {{cap}}/{{max}}. Review the configuration.",
+        "nearMaximumDescription": "This per-action burst cap is near the platform maximum. Provider warm-up and hourly or daily safety limits still apply.",
+        "nearMaximumAction": "Review caps",
+        "nearMaximumActionLabel": "Review burst cap setting: {{cap}} of {{max}} requests configured",
+        "remainingBurstValue": "{{configured}} of {{maximum}} requests configured; {{remaining}} burst sends remaining.",
+        "remainingBurstTooltip": "{{remaining}} burst sends can still be configured before this tier reaches the {{maximum}}-request maximum.",
+        "remainingBurstInvalid": "Enter a whole-number cap within the allowed range to view remaining burst sends."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -2038,7 +2045,10 @@
       "completeRange": "Choose both a start and end date, or leave both blank.",
       "invalidRange": "The end date must be on or after the start date.",
       "generating": "Generating snapshot…",
-      "generate": "Generate Snapshot Now"
+      "generate": "Generate Snapshot Now",
+      "presetLabel": "UTC date presets",
+      "last7Days": "Last 7 Days",
+      "last30Days": "Last 30 Days"
     }
   },
   "es": {
@@ -4270,7 +4280,14 @@
         "saving": "Guardando…",
         "save": "Guardar límites",
         "usage": "Uso del límite configurado",
-        "usageLabel": "Límite de ráfaga configurado con respecto al máximo del nivel"
+        "usageLabel": "Límite de ráfaga configurado con respecto al máximo del nivel",
+        "nearMaximumBadge": "El límite de envíos en bloque es {{cap}}/{{max}}. Revise la configuración.",
+        "nearMaximumDescription": "Este límite por acción está cerca del máximo de la plataforma. El calentamiento del proveedor y los límites de seguridad por hora o día siguen aplicándose.",
+        "nearMaximumAction": "Revisar límites",
+        "nearMaximumActionLabel": "Revisar límite de envíos en bloque: {{cap}} de {{max}} solicitudes configuradas",
+        "remainingBurstValue": "{{configured}} de {{maximum}} solicitudes configuradas; quedan {{remaining}} envíos en bloque.",
+        "remainingBurstTooltip": "Aún se pueden configurar {{remaining}} envíos en bloque antes de que este nivel alcance el máximo de {{maximum}} solicitudes.",
+        "remainingBurstInvalid": "Ingrese un límite de número entero dentro del rango permitido para ver los envíos en bloque restantes."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -4281,7 +4298,10 @@
       "completeRange": "Elige una fecha de inicio y una de finalización, o deja ambas vacías.",
       "invalidRange": "La fecha de finalización debe ser igual o posterior a la fecha de inicio.",
       "generating": "Generando instantánea…",
-      "generate": "Generar instantánea ahora"
+      "generate": "Generar instantánea ahora",
+      "presetLabel": "Períodos predefinidos en UTC",
+      "last7Days": "Últimos 7 días",
+      "last30Days": "Últimos 30 días"
     }
   },
   "fr": {
@@ -6534,7 +6554,14 @@
         "saving": "Enregistrement…",
         "save": "Enregistrer les plafonds",
         "usage": "Utilisation du plafond configuré",
-        "usageLabel": "Plafond de rafale configuré par rapport au maximum du niveau"
+        "usageLabel": "Plafond de rafale configuré par rapport au maximum du niveau",
+        "nearMaximumBadge": "Le plafond d’envoi groupé est à {{cap}}/{{max}}. Vérifiez la configuration.",
+        "nearMaximumDescription": "Ce plafond par action approche du maximum de la plateforme. Le préchauffage du fournisseur et les limites de sécurité horaires ou quotidiennes s’appliquent toujours.",
+        "nearMaximumAction": "Vérifier les plafonds",
+        "nearMaximumActionLabel": "Vérifier le plafond d’envoi groupé : {{cap}} demandes sur {{max}} configurées",
+        "remainingBurstValue": "{{configured}} demandes sur {{maximum}} configurées ; {{remaining}} envois groupés restants.",
+        "remainingBurstTooltip": "{{remaining}} envois groupés peuvent encore être configurés avant que ce niveau atteigne le maximum de {{maximum}} demandes.",
+        "remainingBurstInvalid": "Saisissez un plafond entier dans la plage autorisée pour afficher les envois groupés restants."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -6545,7 +6572,10 @@
       "completeRange": "Choisissez une date de début et une date de fin, ou laissez les deux champs vides.",
       "invalidRange": "La date de fin doit être égale ou postérieure à la date de début.",
       "generating": "Génération de l’instantané…",
-      "generate": "Générer l’instantané maintenant"
+      "generate": "Générer l’instantané maintenant",
+      "presetLabel": "Périodes prédéfinies UTC",
+      "last7Days": "7 derniers jours",
+      "last30Days": "30 derniers jours"
     }
   },
   "it": {
@@ -8645,7 +8675,14 @@
         "saving": "Salvataggio…",
         "save": "Salva limiti",
         "usage": "Utilizzo del limite configurato",
-        "usageLabel": "Limite di invio configurato rispetto al massimo del piano"
+        "usageLabel": "Limite di invio configurato rispetto al massimo del piano",
+        "nearMaximumBadge": "Il limite di invii in blocco è {{cap}}/{{max}}. Controlla la configurazione.",
+        "nearMaximumDescription": "Questo limite per azione è vicino al massimo della piattaforma. Restano validi il riscaldamento del provider e i limiti di sicurezza orari o giornalieri.",
+        "nearMaximumAction": "Controlla limiti",
+        "nearMaximumActionLabel": "Controlla limite di invii in blocco: {{cap}} di {{max}} richieste configurate",
+        "remainingBurstValue": "{{configured}} di {{maximum}} richieste configurate; restano {{remaining}} invii in blocco.",
+        "remainingBurstTooltip": "È ancora possibile configurare {{remaining}} invii in blocco prima che questo livello raggiunga il massimo di {{maximum}} richieste.",
+        "remainingBurstInvalid": "Inserisci un limite intero nell’intervallo consentito per vedere gli invii in blocco rimanenti."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -8656,7 +8693,10 @@
       "completeRange": "Scegli sia una data di inizio sia una data di fine, oppure lascia entrambi i campi vuoti.",
       "invalidRange": "La data di fine deve essere uguale o successiva alla data di inizio.",
       "generating": "Generazione snapshot…",
-      "generate": "Genera snapshot ora"
+      "generate": "Genera snapshot ora",
+      "presetLabel": "Intervalli predefiniti UTC",
+      "last7Days": "Ultimi 7 giorni",
+      "last30Days": "Ultimi 30 giorni"
     }
   },
   "th": {
@@ -10744,7 +10784,14 @@
         "saving": "กำลังบันทึก…",
         "save": "บันทึกเพดาน",
         "usage": "การใช้ขีดจำกัดที่กำหนด",
-        "usageLabel": "ขีดจำกัดการส่งเป็นชุดที่กำหนดเทียบกับค่าสูงสุดของระดับ"
+        "usageLabel": "ขีดจำกัดการส่งเป็นชุดที่กำหนดเทียบกับค่าสูงสุดของระดับ",
+        "nearMaximumBadge": "ขีดจำกัดการส่งแบบกลุ่มอยู่ที่ {{cap}}/{{max}} โปรดตรวจสอบการตั้งค่า",
+        "nearMaximumDescription": "ขีดจำกัดต่อการดำเนินการนี้ใกล้ถึงค่าสูงสุดของแพลตฟอร์มแล้ว การอุ่นเครื่องของผู้ให้บริการและขีดจำกัดความปลอดภัยรายชั่วโมงหรือรายวันยังคงมีผล",
+        "nearMaximumAction": "ตรวจสอบขีดจำกัด",
+        "nearMaximumActionLabel": "ตรวจสอบการตั้งค่าขีดจำกัดการส่งแบบกลุ่ม: ตั้งค่า {{cap}} จาก {{max}} คำขอ",
+        "remainingBurstValue": "ตั้งค่า {{configured}} จาก {{maximum}} คำขอแล้ว เหลือการส่งแบบกลุ่ม {{remaining}} ครั้ง",
+        "remainingBurstTooltip": "ยังตั้งค่าการส่งแบบกลุ่มได้อีก {{remaining}} ครั้งก่อนที่ระดับนี้จะถึงค่าสูงสุด {{maximum}} คำขอ",
+        "remainingBurstInvalid": "ป้อนขีดจำกัดเป็นจำนวนเต็มภายในช่วงที่อนุญาตเพื่อดูจำนวนการส่งแบบกลุ่มที่เหลือ"
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -10755,7 +10802,10 @@
       "completeRange": "เลือกทั้งวันที่เริ่มต้นและวันที่สิ้นสุด หรือเว้นทั้งสองช่องว่างไว้",
       "invalidRange": "วันที่สิ้นสุดต้องเป็นวันเดียวกับหรือหลังวันที่เริ่มต้น",
       "generating": "กำลังสร้างสแนปชอต…",
-      "generate": "สร้างสแนปชอตตอนนี้"
+      "generate": "สร้างสแนปชอตตอนนี้",
+      "presetLabel": "ช่วงวันที่ล่วงหน้าแบบ UTC",
+      "last7Days": "7 วันที่ผ่านมา",
+      "last30Days": "30 วันที่ผ่านมา"
     }
   },
   "zh-CN": {
@@ -12833,7 +12883,14 @@
         "saving": "正在保存…",
         "save": "保存上限",
         "usage": "已配置上限使用率",
-        "usageLabel": "相对于套餐最高值的已配置批量发送上限"
+        "usageLabel": "相对于套餐最高值的已配置批量发送上限",
+        "nearMaximumBadge": "批量发送上限为 {{cap}}/{{max}}。请检查配置。",
+        "nearMaximumDescription": "此单次操作上限接近平台最大值。提供商预热以及每小时或每日安全限制仍然适用。",
+        "nearMaximumAction": "检查上限",
+        "nearMaximumActionLabel": "检查批量发送上限设置：已配置 {{cap}} / {{max}} 个请求",
+        "remainingBurstValue": "已配置 {{configured}} / {{maximum}} 个请求；剩余 {{remaining}} 个批量发送名额。",
+        "remainingBurstTooltip": "在此层级达到 {{maximum}} 个请求的上限前，还可以配置 {{remaining}} 个批量发送名额。",
+        "remainingBurstInvalid": "请输入允许范围内的整数上限，以查看剩余的批量发送名额。"
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -12844,7 +12901,10 @@
       "completeRange": "请同时选择开始和结束日期，或将两者都留空。",
       "invalidRange": "结束日期必须等于或晚于开始日期。",
       "generating": "正在生成快照…",
-      "generate": "立即生成快照"
+      "generate": "立即生成快照",
+      "presetLabel": "UTC 日期预设",
+      "last7Days": "过去 7 天",
+      "last30Days": "过去 30 天"
     }
   },
   "zh-TW": {
@@ -14937,7 +14997,14 @@
         "saving": "正在儲存…",
         "save": "儲存上限",
         "usage": "已設定上限使用率",
-        "usageLabel": "相對於方案最高值的已設定批量傳送上限"
+        "usageLabel": "相對於方案最高值的已設定批量傳送上限",
+        "nearMaximumBadge": "批次傳送上限為 {{cap}}/{{max}}。請檢查設定。",
+        "nearMaximumDescription": "此單次操作上限接近平台最大值。供應商預熱以及每小時或每日安全限制仍然適用。",
+        "nearMaximumAction": "檢查上限",
+        "nearMaximumActionLabel": "檢查批次傳送上限設定：已設定 {{cap}} / {{max}} 個請求",
+        "remainingBurstValue": "已設定 {{configured}} / {{maximum}} 個請求；剩餘 {{remaining}} 個批次傳送名額。",
+        "remainingBurstTooltip": "在此層級達到 {{maximum}} 個請求的上限前，還可以設定 {{remaining}} 個批次傳送名額。",
+        "remainingBurstInvalid": "請輸入允許範圍內的整數上限，以查看剩餘的批次傳送名額。"
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -14948,7 +15015,10 @@
       "completeRange": "請同時選擇開始與結束日期，或將兩者都留空。",
       "invalidRange": "結束日期必須等於或晚於開始日期。",
       "generating": "正在產生快照…",
-      "generate": "立即產生快照"
+      "generate": "立即產生快照",
+      "presetLabel": "UTC 日期預設",
+      "last7Days": "過去 7 天",
+      "last30Days": "過去 30 天"
     }
   }
 }

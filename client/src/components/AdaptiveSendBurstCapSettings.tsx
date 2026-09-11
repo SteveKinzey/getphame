@@ -4,6 +4,11 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
   ADAPTIVE_SEND_MINIMUM_BURST_CAP,
   DEFAULT_ADAPTIVE_SEND_BURST_CAPS,
@@ -86,6 +91,7 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
 
   return (
     <section
+      id="adaptive-send-burst-cap-settings"
       aria-labelledby="adaptive-send-burst-caps-title"
       className="rounded-2xl border bg-white p-4 shadow-sm"
       style={{ borderColor: "oklch(0.88 0.03 260)" }}
@@ -121,7 +127,15 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
       <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
         {tiers.map(({ key, label, detail }) => {
           const configuredCap = Number(draft[key]);
-          const progressPercent = Number.isFinite(configuredCap)
+          const hasValidConfiguredCap =
+            Number.isInteger(configuredCap) &&
+            configuredCap >= ADAPTIVE_SEND_MINIMUM_BURST_CAP &&
+            configuredCap <= ADAPTIVE_SEND_MAXIMUM_BURST_CAP;
+          const progressValue = hasValidConfiguredCap ? configuredCap : 0;
+          const remainingBurstSends = hasValidConfiguredCap
+            ? ADAPTIVE_SEND_MAXIMUM_BURST_CAP - configuredCap
+            : null;
+          const progressPercent = hasValidConfiguredCap
             ? Math.max(
                 0,
                 Math.min(
@@ -139,7 +153,10 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
               className="rounded-xl border p-3"
               style={{ borderColor: "oklch(0.90 0.02 260)" }}
             >
-              <span className="block text-xs font-black rr-text-navy">
+              <span
+                id={`adaptive-send-burst-cap-tier-${key}`}
+                className="block text-xs font-black rr-text-navy"
+              >
                 {label}
               </span>
               <span className="mt-0.5 block text-xs rr-text-navy-muted">
@@ -181,28 +198,55 @@ export default function AdaptiveSendBurstCapSettings({ isAdmin }: Props) {
                     })}
                   </span>
                   <span>
-                    {configuredCap || 0}/{ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
+                    {progressValue}/{ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
                   </span>
                 </span>
-                <span
-                  className="block h-2 overflow-hidden rounded-full"
-                  style={{ background: "oklch(0.92 0.015 260)" }}
-                  role="progressbar"
-                  aria-label={t("adaptiveSending.adminCaps.usageLabel", {
-                    defaultValue:
-                      "Configured burst cap relative to the tier maximum",
-                  })}
-                  aria-valuemin={0}
-                  aria-valuemax={ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
-                  aria-valuenow={
-                    Number.isFinite(configuredCap) ? configuredCap : 0
-                  }
-                >
-                  <span
-                    className="block h-full rounded-full bg-[oklch(0.80_0.18_80)] transition-[width] duration-200 motion-reduce:transition-none"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                </span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span
+                      className="block h-2 overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2"
+                      style={{ background: "oklch(0.92 0.015 260)" }}
+                      role="progressbar"
+                      tabIndex={0}
+                      data-testid={`adaptive-send-burst-cap-progress-${key}`}
+                      aria-labelledby={`adaptive-send-burst-cap-tier-${key}`}
+                      aria-valuemin={0}
+                      aria-valuemax={ADAPTIVE_SEND_MAXIMUM_BURST_CAP}
+                      aria-valuenow={
+                        hasValidConfiguredCap ? configuredCap : undefined
+                      }
+                      aria-valuetext={
+                        hasValidConfiguredCap && remainingBurstSends !== null
+                          ? t("adaptiveSending.adminCaps.remainingBurstValue", {
+                              defaultValue:
+                                "{{configured}} of {{maximum}} requests configured; {{remaining}} burst sends remaining.",
+                              configured: configuredCap,
+                              maximum: ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+                              remaining: remainingBurstSends,
+                            })
+                          : undefined
+                      }
+                    >
+                      <span
+                        className="block h-full rounded-full bg-[oklch(0.80_0.18_80)] transition-[width] duration-200 motion-reduce:transition-none"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-64 text-center">
+                    {hasValidConfiguredCap && remainingBurstSends !== null
+                      ? t("adaptiveSending.adminCaps.remainingBurstTooltip", {
+                          defaultValue:
+                            "{{remaining}} burst sends can still be configured before this tier reaches the {{maximum}}-request maximum.",
+                          remaining: remainingBurstSends,
+                          maximum: ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+                        })
+                      : t("adaptiveSending.adminCaps.remainingBurstInvalid", {
+                          defaultValue:
+                            "Enter a whole-number cap within the allowed range to view remaining burst sends.",
+                        })}
+                  </TooltipContent>
+                </Tooltip>
               </span>
             </label>
           );

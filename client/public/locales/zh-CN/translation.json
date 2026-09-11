@@ -3308,7 +3308,14 @@
       "saving": "正在保存…",
       "save": "保存上限",
       "usage": "已配置上限使用率",
-      "usageLabel": "相对于套餐最高值的已配置批量发送上限"
+      "usageLabel": "相对于套餐最高值的已配置批量发送上限",
+      "nearMaximumBadge": "批量发送上限为 {{cap}}/{{max}}。请检查配置。",
+      "nearMaximumDescription": "此单次操作上限接近平台最大值。提供商预热以及每小时或每日安全限制仍然适用。",
+      "nearMaximumAction": "检查上限",
+      "nearMaximumActionLabel": "检查批量发送上限设置：已配置 {{cap}} / {{max}} 个请求",
+      "remainingBurstValue": "已配置 {{configured}} / {{maximum}} 个请求；剩余 {{remaining}} 个批量发送名额。",
+      "remainingBurstTooltip": "在此层级达到 {{maximum}} 个请求的上限前，还可以配置 {{remaining}} 个批量发送名额。",
+      "remainingBurstInvalid": "请输入允许范围内的整数上限，以查看剩余的批量发送名额。"
     }
   },
   "developerEnrollment": {
@@ -4296,6 +4303,9 @@
     "completeRange": "请同时选择开始和结束日期，或将两者都留空。",
     "invalidRange": "结束日期必须等于或晚于开始日期。",
     "generating": "正在生成快照…",
-    "generate": "立即生成快照"
+    "generate": "立即生成快照",
+    "presetLabel": "UTC 日期预设",
+    "last7Days": "过去 7 天",
+    "last30Days": "过去 30 天"
   }
 }

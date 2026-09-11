@@ -4059,7 +4059,14 @@
       "saving": "Salvataggio…",
       "save": "Salva limiti",
       "usage": "Utilizzo del limite configurato",
-      "usageLabel": "Limite di invio configurato rispetto al massimo del piano"
+      "usageLabel": "Limite di invio configurato rispetto al massimo del piano",
+      "nearMaximumBadge": "Il limite di invii in blocco è {{cap}}/{{max}}. Controlla la configurazione.",
+      "nearMaximumDescription": "Questo limite per azione è vicino al massimo della piattaforma. Restano validi il riscaldamento del provider e i limiti di sicurezza orari o giornalieri.",
+      "nearMaximumAction": "Controlla limiti",
+      "nearMaximumActionLabel": "Controlla limite di invii in blocco: {{cap}} di {{max}} richieste configurate",
+      "remainingBurstValue": "{{configured}} di {{maximum}} richieste configurate; restano {{remaining}} invii in blocco.",
+      "remainingBurstTooltip": "È ancora possibile configurare {{remaining}} invii in blocco prima che questo livello raggiunga il massimo di {{maximum}} richieste.",
+      "remainingBurstInvalid": "Inserisci un limite intero nell’intervallo consentito per vedere gli invii in blocco rimanenti."
     }
   },
   "developerEnrollment": {
@@ -5049,6 +5056,9 @@
     "completeRange": "Scegli sia una data di inizio sia una data di fine, oppure lascia entrambi i campi vuoti.",
     "invalidRange": "La data di fine deve essere uguale o successiva alla data di inizio.",
     "generating": "Generazione snapshot…",
-    "generate": "Genera snapshot ora"
+    "generate": "Genera snapshot ora",
+    "presetLabel": "Intervalli predefiniti UTC",
+    "last7Days": "Ultimi 7 giorni",
+    "last30Days": "Ultimi 30 giorni"
   }
 }

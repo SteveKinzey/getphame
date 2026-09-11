@@ -77,6 +77,11 @@ import {
 } from "@/components/ui/dialog";
 import { EmailRelayStatusCard } from "@/components/admin/EmailRelayStatusCard";
 import {
+  getDiagnosticSnapshotPresetRange,
+  matchesDiagnosticSnapshotPreset,
+  type DiagnosticSnapshotPresetDays,
+} from "@/lib/diagnosticSnapshotPresets";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -1069,6 +1074,25 @@ export default function AdminDashboard() {
       onError: error => toast.error(error.message),
     });
 
+  const applyDiagnosticSnapshotPreset = (
+    days: DiagnosticSnapshotPresetDays
+  ) => {
+    const range = getDiagnosticSnapshotPresetRange(days);
+    setDiagnosticSnapshotStartDate(range.startDate);
+    setDiagnosticSnapshotEndDate(range.endDate);
+  };
+
+  const diagnosticSnapshotPresetIsActive = (
+    days: DiagnosticSnapshotPresetDays
+  ) =>
+    matchesDiagnosticSnapshotPreset(
+      {
+        startDate: diagnosticSnapshotStartDate,
+        endDate: diagnosticSnapshotEndDate,
+      },
+      days
+    );
+
   const downloadOperationsAnalytics = async () => {
     try {
       const result = await operationsExport.refetch();
@@ -1281,6 +1305,39 @@ export default function AdminDashboard() {
                           "Leave dates blank for the completed previous UTC month, or choose up to 366 days.",
                       })}
                     </p>
+                    <fieldset className="mt-3">
+                      <legend className="text-xs font-black rr-text-navy-mid">
+                        {t("adminDiagnosticsSnapshot.presetLabel", {
+                          defaultValue: "UTC date presets",
+                        })}
+                      </legend>
+                      <div className="mt-1.5 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => applyDiagnosticSnapshotPreset(7)}
+                          aria-pressed={diagnosticSnapshotPresetIsActive(7)}
+                          className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-3 text-xs font-black rr-text-navy transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+                          style={{ borderColor: "oklch(0.84 0.04 260)" }}
+                          data-testid="admin-diagnostics-preset-last-7-days"
+                        >
+                          {t("adminDiagnosticsSnapshot.last7Days", {
+                            defaultValue: "Last 7 Days",
+                          })}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => applyDiagnosticSnapshotPreset(30)}
+                          aria-pressed={diagnosticSnapshotPresetIsActive(30)}
+                          className="inline-flex min-h-11 items-center justify-center rounded-xl border bg-white px-3 text-xs font-black rr-text-navy transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+                          style={{ borderColor: "oklch(0.84 0.04 260)" }}
+                          data-testid="admin-diagnostics-preset-last-30-days"
+                        >
+                          {t("adminDiagnosticsSnapshot.last30Days", {
+                            defaultValue: "Last 30 Days",
+                          })}
+                        </button>
+                      </div>
+                    </fieldset>
                     <div className="mt-2 grid gap-2 sm:grid-cols-2">
                       <label className="grid gap-1 text-xs font-bold rr-text-navy-mid">
                         {t("adminDiagnosticsSnapshot.startDate", {

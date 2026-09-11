@@ -5,11 +5,14 @@ import {
   ACCOUNT_HARD_DAILY_SEND_CEILING,
   ACCOUNT_HARD_HOURLY_SEND_CEILING,
   ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD,
+  ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD,
+  ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
   ADAPTIVE_SEND_WARNING_THRESHOLD,
   buildAdaptiveSendPolicy,
   getAdaptiveSendRecommendedAction,
   getAdaptiveSendVelocityAdvice,
   getAdaptiveSendWarningLevel,
+  shouldReviewAdaptiveSendBurstCap,
   type AdaptiveSendChannelDescriptor,
 } from "../shared/adaptiveSendLimits";
 import {
@@ -170,6 +173,18 @@ describe("adaptive send policy", () => {
     ).toBe("high");
     expect(getAdaptiveSendWarningLevel(1, 1)).toBe("blocked");
     expect(getAdaptiveSendWarningLevel(0.2, 0)).toBe("blocked");
+  });
+
+  it("flags only burst-cap configuration at or above the 90% review threshold", () => {
+    const threshold =
+      ADAPTIVE_SEND_MAXIMUM_BURST_CAP *
+      ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD;
+
+    expect(threshold).toBe(180);
+    expect(shouldReviewAdaptiveSendBurstCap(179)).toBe(false);
+    expect(shouldReviewAdaptiveSendBurstCap(180)).toBe(true);
+    expect(shouldReviewAdaptiveSendBurstCap(200)).toBe(true);
+    expect(shouldReviewAdaptiveSendBurstCap(null)).toBe(false);
   });
 
   it("suggests paid Bulk Sender paths without allowing an upgrade to bypass safety", () => {

@@ -3765,7 +3765,14 @@
       "saving": "Saving…",
       "save": "Save caps",
       "usage": "Configured cap usage",
-      "usageLabel": "Configured burst cap relative to the tier maximum"
+      "usageLabel": "Configured burst cap relative to the tier maximum",
+      "nearMaximumBadge": "Burst cap at {{cap}}/{{max}}. Review the configuration.",
+      "nearMaximumDescription": "This per-action burst cap is near the platform maximum. Provider warm-up and hourly or daily safety limits still apply.",
+      "nearMaximumAction": "Review caps",
+      "nearMaximumActionLabel": "Review burst cap setting: {{cap}} of {{max}} requests configured",
+      "remainingBurstValue": "{{configured}} of {{maximum}} requests configured; {{remaining}} burst sends remaining.",
+      "remainingBurstTooltip": "{{remaining}} burst sends can still be configured before this tier reaches the {{maximum}}-request maximum.",
+      "remainingBurstInvalid": "Enter a whole-number cap within the allowed range to view remaining burst sends."
     }
   },
   "developerEnrollment": {
@@ -4758,6 +4765,9 @@
     "completeRange": "Choose both a start and end date, or leave both blank.",
     "invalidRange": "The end date must be on or after the start date.",
     "generating": "Generating snapshot…",
-    "generate": "Generate Snapshot Now"
+    "generate": "Generate Snapshot Now",
+    "presetLabel": "UTC date presets",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days"
   }
 }
