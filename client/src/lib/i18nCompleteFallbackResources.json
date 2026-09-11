@@ -1621,6 +1621,20 @@
         "download": "Download WordPress Connector",
         "downloading": "Preparing download…",
         "downloadStarted": "WordPress Connector download started."
+      },
+      "simulator": {
+        "eyebrow": "Preflight check",
+        "title": "Verify a webhook payload",
+        "description": "Check the contact and consent shape before activating a Zapier, Make, Jotform, or form-builder webhook. This simulator never uses an API key, creates a contact, writes to your account, or sends a request.",
+        "verify": "Verify payload",
+        "verifying": "Verifying…",
+        "payloadLabel": "Webhook JSON payload",
+        "help": "Use a representative, non-customer payload. The example uses placeholder data and has no delivery side effects.",
+        "validToast": "Payload is structurally valid. Nothing was sent.",
+        "invalidJson": "Enter valid JSON before running the simulator.",
+        "validTitle": "Payload is ready for a live preflight.",
+        "validDetail": "Required contact and explicit email consent evidence are present. Nothing was created or sent.",
+        "invalidTitle": "Payload needs changes before go-live."
       }
     },
     "manual": {
@@ -3920,6 +3934,20 @@
         "download": "Descargar el conector de WordPress",
         "downloading": "Preparando descarga…",
         "downloadStarted": "La descarga del conector de WordPress ha comenzado."
+      },
+      "simulator": {
+        "eyebrow": "Comprobación previa",
+        "title": "Verificar una carga útil de webhook",
+        "description": "Comprueba la estructura del contacto y el consentimiento antes de activar un webhook de Zapier, Make, Jotform o tu creador de formularios. Este simulador no usa una clave API, no crea contactos, no escribe en tu cuenta ni envía solicitudes.",
+        "verify": "Verificar carga útil",
+        "verifying": "Verificando…",
+        "payloadLabel": "Carga útil JSON del webhook",
+        "help": "Usa una carga útil representativa que no pertenezca a un cliente. El ejemplo utiliza datos de marcador de posición y no produce entregas.",
+        "validToast": "La carga útil es estructuralmente válida. No se envió nada.",
+        "invalidJson": "Introduce JSON válido antes de ejecutar el simulador.",
+        "validTitle": "La carga útil está lista para una comprobación previa en vivo.",
+        "validDetail": "Están presentes los datos obligatorios del contacto y el consentimiento explícito por correo. No se creó ni se envió nada.",
+        "invalidTitle": "La carga útil necesita cambios antes de activarla."
       }
     },
     "manual": {
@@ -6370,6 +6398,20 @@
         "download": "Télécharger le connecteur WordPress",
         "downloading": "Préparation du téléchargement…",
         "downloadStarted": "Le téléchargement du connecteur WordPress a commencé."
+      },
+      "simulator": {
+        "eyebrow": "Vérification préalable",
+        "title": "Vérifier une charge utile de webhook",
+        "description": "Vérifiez la structure du contact et du consentement avant d’activer un webhook Zapier, Make, Jotform ou de votre outil de formulaires. Ce simulateur n’utilise aucune clé API, ne crée aucun contact, n’écrit pas dans votre compte et n’envoie aucune demande.",
+        "verify": "Vérifier la charge utile",
+        "verifying": "Vérification…",
+        "payloadLabel": "Charge utile JSON du webhook",
+        "help": "Utilisez une charge utile représentative qui ne concerne pas un client. L’exemple emploie des données fictives et ne déclenche aucun envoi.",
+        "validToast": "La charge utile est structurellement valide. Rien n’a été envoyé.",
+        "invalidJson": "Saisissez du JSON valide avant de lancer le simulateur.",
+        "validTitle": "La charge utile est prête pour une vérification préalable réelle.",
+        "validDetail": "Les informations de contact requises et la preuve de consentement explicite par e-mail sont présentes. Rien n’a été créé ni envoyé.",
+        "invalidTitle": "La charge utile doit être corrigée avant la mise en ligne."
       }
     },
     "manual": {
@@ -8793,6 +8835,20 @@
         "download": "Scarica il connettore WordPress",
         "downloading": "Preparazione del download…",
         "downloadStarted": "Il download del connettore WordPress è iniziato."
+      },
+      "simulator": {
+        "eyebrow": "Controllo preliminare",
+        "title": "Verifica un payload webhook",
+        "description": "Controlla la struttura del contatto e del consenso prima di attivare un webhook di Zapier, Make, Jotform o del tuo strumento per moduli. Questo simulatore non usa una chiave API, non crea contatti, non scrive nel tuo account e non invia richieste.",
+        "verify": "Verifica payload",
+        "verifying": "Verifica in corso…",
+        "payloadLabel": "Payload JSON del webhook",
+        "help": "Usa un payload rappresentativo che non appartenga a un cliente. L’esempio usa dati segnaposto e non produce invii.",
+        "validToast": "Il payload è strutturalmente valido. Non è stato inviato nulla.",
+        "invalidJson": "Inserisci JSON valido prima di avviare il simulatore.",
+        "validTitle": "Il payload è pronto per una verifica preliminare reale.",
+        "validDetail": "Sono presenti i dati di contatto obbligatori e la prova del consenso e-mail esplicito. Non è stato creato né inviato nulla.",
+        "invalidTitle": "Il payload richiede modifiche prima della pubblicazione."
       }
     },
     "manual": {
@@ -11091,6 +11147,20 @@
         "download": "ดาวน์โหลดตัวเชื่อมต่อ WordPress",
         "downloading": "กำลังเตรียมการดาวน์โหลด…",
         "downloadStarted": "เริ่มดาวน์โหลดตัวเชื่อมต่อ WordPress แล้ว"
+      },
+      "simulator": {
+        "eyebrow": "ตรวจสอบก่อนใช้งาน",
+        "title": "ตรวจสอบเพย์โหลด Webhook",
+        "description": "ตรวจสอบโครงสร้างข้อมูลติดต่อและความยินยอมก่อนเปิดใช้ Webhook จาก Zapier, Make, Jotform หรือเครื่องมือฟอร์มของคุณ เครื่องมือนี้ไม่ใช้คีย์ API ไม่สร้างผู้ติดต่อ ไม่เขียนข้อมูลลงบัญชี และไม่ส่งคำขอใด ๆ",
+        "verify": "ตรวจสอบเพย์โหลด",
+        "verifying": "กำลังตรวจสอบ…",
+        "payloadLabel": "เพย์โหลด JSON ของ Webhook",
+        "help": "ใช้เพย์โหลดตัวอย่างที่ไม่ใช่ข้อมูลลูกค้าจริง ตัวอย่างนี้ใช้ข้อมูลแทนและไม่มีผลต่อการส่ง",
+        "validToast": "โครงสร้างเพย์โหลดถูกต้อง ไม่มีการส่งข้อมูล",
+        "invalidJson": "ป้อน JSON ที่ถูกต้องก่อนเริ่มเครื่องมือจำลอง",
+        "validTitle": "เพย์โหลดพร้อมสำหรับการตรวจสอบก่อนใช้งานจริง",
+        "validDetail": "มีข้อมูลติดต่อที่จำเป็นและหลักฐานความยินยอมทางอีเมลอย่างชัดแจ้ง ไม่มีการสร้างหรือส่งข้อมูล",
+        "invalidTitle": "ต้องแก้ไขเพย์โหลดก่อนเปิดใช้งานจริง"
       }
     },
     "manual": {
@@ -13384,6 +13454,20 @@
         "download": "下载 WordPress 连接器",
         "downloading": "正在准备下载…",
         "downloadStarted": "WordPress 连接器下载已开始。"
+      },
+      "simulator": {
+        "eyebrow": "上线前检查",
+        "title": "验证 Webhook 负载",
+        "description": "在启用 Zapier、Make、Jotform 或表单构建器 Webhook 前，检查联系人和同意信息结构。此模拟器不会使用 API 密钥、创建联系人、写入账户或发送请求。",
+        "verify": "验证负载",
+        "verifying": "正在验证…",
+        "payloadLabel": "Webhook JSON 负载",
+        "help": "请使用不含真实客户信息的代表性负载。示例使用占位数据，不会产生任何发送操作。",
+        "validToast": "负载结构有效。未发送任何内容。",
+        "invalidJson": "请先输入有效的 JSON，再运行模拟器。",
+        "validTitle": "负载已可进行实际上线前检查。",
+        "validDetail": "已提供必需的联系人信息和明确的电子邮件同意证据。未创建或发送任何内容。",
+        "invalidTitle": "负载需要修改后才能上线。"
       }
     },
     "manual": {
@@ -15671,6 +15755,20 @@
         "download": "下載 WordPress 連接器",
         "downloading": "正在準備下載…",
         "downloadStarted": "WordPress 連接器下載已開始。"
+      },
+      "simulator": {
+        "eyebrow": "上線前檢查",
+        "title": "驗證 Webhook 承載資料",
+        "description": "在啟用 Zapier、Make、Jotform 或表單建立工具的 Webhook 前，檢查聯絡人與同意資料結構。此模擬器不會使用 API 金鑰、建立聯絡人、寫入帳戶或傳送請求。",
+        "verify": "驗證承載資料",
+        "verifying": "正在驗證…",
+        "payloadLabel": "Webhook JSON 承載資料",
+        "help": "請使用不含真實客戶資料的代表性承載資料。範例使用預留位置資料，不會產生任何傳送動作。",
+        "validToast": "承載資料結構有效。未傳送任何內容。",
+        "invalidJson": "請先輸入有效的 JSON，再執行模擬器。",
+        "validTitle": "承載資料已可進行實際上線前檢查。",
+        "validDetail": "已提供必要的聯絡人資訊和明確的電子郵件同意證據。未建立或傳送任何內容。",
+        "invalidTitle": "承載資料需要修改後才能上線。"
       }
     },
     "manual": {

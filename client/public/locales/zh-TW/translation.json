@@ -3195,6 +3195,20 @@
       "download": "下載 WordPress 連接器",
       "downloading": "正在準備下載…",
       "downloadStarted": "WordPress 連接器下載已開始。"
+    },
+    "simulator": {
+      "eyebrow": "上線前檢查",
+      "title": "驗證 Webhook 承載資料",
+      "description": "在啟用 Zapier、Make、Jotform 或表單建立工具的 Webhook 前，檢查聯絡人與同意資料結構。此模擬器不會使用 API 金鑰、建立聯絡人、寫入帳戶或傳送請求。",
+      "verify": "驗證承載資料",
+      "verifying": "正在驗證…",
+      "payloadLabel": "Webhook JSON 承載資料",
+      "help": "請使用不含真實客戶資料的代表性承載資料。範例使用預留位置資料，不會產生任何傳送動作。",
+      "validToast": "承載資料結構有效。未傳送任何內容。",
+      "invalidJson": "請先輸入有效的 JSON，再執行模擬器。",
+      "validTitle": "承載資料已可進行實際上線前檢查。",
+      "validDetail": "已提供必要的聯絡人資訊和明確的電子郵件同意證據。未建立或傳送任何內容。",
+      "invalidTitle": "承載資料需要修改後才能上線。"
     }
   },
   "promotionLink": {

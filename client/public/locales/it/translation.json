@@ -3922,6 +3922,20 @@
       "download": "Scarica il connettore WordPress",
       "downloading": "Preparazione del download…",
       "downloadStarted": "Il download del connettore WordPress è iniziato."
+    },
+    "simulator": {
+      "eyebrow": "Controllo preliminare",
+      "title": "Verifica un payload webhook",
+      "description": "Controlla la struttura del contatto e del consenso prima di attivare un webhook di Zapier, Make, Jotform o del tuo strumento per moduli. Questo simulatore non usa una chiave API, non crea contatti, non scrive nel tuo account e non invia richieste.",
+      "verify": "Verifica payload",
+      "verifying": "Verifica in corso…",
+      "payloadLabel": "Payload JSON del webhook",
+      "help": "Usa un payload rappresentativo che non appartenga a un cliente. L’esempio usa dati segnaposto e non produce invii.",
+      "validToast": "Il payload è strutturalmente valido. Non è stato inviato nulla.",
+      "invalidJson": "Inserisci JSON valido prima di avviare il simulatore.",
+      "validTitle": "Il payload è pronto per una verifica preliminare reale.",
+      "validDetail": "Sono presenti i dati di contatto obbligatori e la prova del consenso e-mail esplicito. Non è stato creato né inviato nulla.",
+      "invalidTitle": "Il payload richiede modifiche prima della pubblicazione."
     }
   },
   "promotionLink": {

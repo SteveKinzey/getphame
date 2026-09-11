@@ -129,20 +129,18 @@ export async function listIntegrationHealthHistory(
   if (!db) return emptyHistory();
   const since = now - Math.min(windowMs, INTEGRATION_HEALTH_HISTORY_WINDOW_MS);
   try {
-    const rows = (
-      await db
-        .select()
-        .from(integrationHealthSamples)
-        .where(
-          and(
-            gte(integrationHealthSamples.checkedAt, since),
-            lte(integrationHealthSamples.checkedAt, now)
-          )
+    const rows = await db
+      .select()
+      .from(integrationHealthSamples)
+      .where(
+        and(
+          gte(integrationHealthSamples.checkedAt, since),
+          lte(integrationHealthSamples.checkedAt, now)
         )
-        .orderBy(desc(integrationHealthSamples.checkedAt))
-        .limit(MAX_INTEGRATION_HEALTH_HISTORY_SAMPLES)
-    ).reverse();
-    return toHistory(rows);
+      )
+      .orderBy(desc(integrationHealthSamples.checkedAt))
+      .limit(MAX_INTEGRATION_HEALTH_HISTORY_SAMPLES);
+    return toHistory([...rows].reverse());
   } catch (error) {
     console.warn(
       "[IntegrationHealth] Could not read sanitized health history:",

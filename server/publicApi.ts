@@ -197,6 +197,60 @@ export function normalizeContactImportPayload(input: unknown) {
   };
 }
 
+/**
+ * Validate a prospective contact import without authenticating an API key,
+ * resolving a source, writing a record, or triggering any delivery. This is
+ * intentionally limited to a structural contract check for the authenticated
+ * developer workspace simulator.
+ */
+export function validateContactImportPayload(input: unknown) {
+  const parsed = contactImportSchema.safeParse(
+    normalizeContactImportPayload(input)
+  );
+  if (!parsed.success) {
+    return {
+      valid: false as const,
+      issues: parsed.error.issues.slice(0, 5).map(issue => ({
+        field: issue.path.length > 0 ? issue.path.join(".") : "payload",
+        message: issue.message,
+      })),
+    };
+  }
+
+  const consent = parsed.data.consent;
+  const hasReviewOutreachEvidence =
+    consent?.basis === "explicit_opt_in" &&
+    "purpose" in consent &&
+    consent.purpose === "review_outreach" &&
+    "channel" in consent &&
+    consent.channel === "email";
+
+  if (!hasReviewOutreachEvidence) {
+    return {
+      valid: false as const,
+      issues: [
+        {
+          field: "consent",
+          message:
+            "Provide explicit email opt-in evidence for review outreach, including purpose, channel, disclosure text, version, and privacy-policy URL.",
+        },
+      ],
+    };
+  }
+
+  return {
+    valid: true as const,
+    summary: {
+      hasName: parsed.data.name.length > 0,
+      hasEmail: parsed.data.email.length > 0,
+      sourceApp: parsed.data.sourceApp ?? null,
+      hasExternalId: Boolean(parsed.data.externalId),
+      consentBasis: consent?.basis ?? null,
+      hasReviewOutreachEvidence,
+    },
+  };
+}
+
 type ApiFailure = {
   error: { code: DeveloperApiErrorCode; message: string };
   requestId: string;

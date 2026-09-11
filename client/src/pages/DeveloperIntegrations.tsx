@@ -8,6 +8,7 @@ import {
   Code2,
   Copy,
   Download,
+  FlaskConical,
   KeyRound,
   Loader2,
   Plus,
@@ -50,6 +51,41 @@ type PendingAction = {
 } | null;
 type RevealedSecret = { rawKey: string; label: string; keyHint: string } | null;
 type WordPressPairingFailure = "not_found" | "unavailable";
+type SimulatorResult =
+  | {
+      valid: true;
+      summary: {
+        hasName: boolean;
+        hasEmail: boolean;
+        sourceApp: string | null;
+        hasExternalId: boolean;
+        consentBasis: string | null;
+        hasReviewOutreachEvidence: boolean;
+      };
+    }
+  | { valid: false; issues: Array<{ field: string; message: string }> };
+
+const CONTACT_IMPORT_SIMULATOR_EXAMPLE = JSON.stringify(
+  {
+    name: "Example Customer",
+    email: "customer@example.com",
+    externalId: "form:submission:example-001",
+    sourceApp: "website-form",
+    consent: {
+      confirmed: true,
+      basis: "explicit_opt_in",
+      purpose: "review_outreach",
+      channel: "email",
+      capturedAt: "2026-09-11T20:00:00.000Z",
+      source: "Website form example, submission example-001",
+      text: "I agree that this business may email me one review request.",
+      version: "website-form-v1",
+      privacyPolicyUrl: "https://example.com/privacy",
+    },
+  },
+  null,
+  2
+);
 
 export function classifyWordPressPairingFailure(
   error: unknown
@@ -127,6 +163,11 @@ export default function DeveloperIntegrationsPage() {
   const [showGuide, setShowGuide] = useState(
     () => new URLSearchParams(window.location.search).get("guides") === "1"
   );
+  const [simulatorPayload, setSimulatorPayload] = useState(
+    CONTACT_IMPORT_SIMULATOR_EXAMPLE
+  );
+  const [simulatorResult, setSimulatorResult] =
+    useState<SimulatorResult | null>(null);
   const [wordpressPairingActionFailure, setWordpressPairingActionFailure] =
     useState<WordPressPairingFailure | null>(null);
 
@@ -181,6 +222,22 @@ export default function DeveloperIntegrationsPage() {
       );
     },
     onError: error => toast.error(error.message),
+  });
+  const simulateContactImport = trpc.apiKey.simulateContactImport.useMutation({
+    onSuccess: result => {
+      setSimulatorResult(result);
+      if (result.valid) {
+        toast.success(
+          t("developerIntegrations.simulator.validToast", {
+            defaultValue: "Payload is structurally valid. Nothing was sent.",
+          })
+        );
+      }
+    },
+    onError: error => {
+      setSimulatorResult(null);
+      toast.error(error.message);
+    },
   });
   const wordpressPairingFailure =
     wordpressPairingActionFailure ??
@@ -311,6 +368,20 @@ export default function DeveloperIntegrationsPage() {
         t("developerIntegrations.copyFailed", {
           defaultValue:
             "Could not copy automatically. Select and copy the value manually.",
+        })
+      );
+    }
+  };
+
+  const simulatePayload = () => {
+    try {
+      const payload = JSON.parse(simulatorPayload) as unknown;
+      setSimulatorResult(null);
+      simulateContactImport.mutate({ payload });
+    } catch {
+      toast.error(
+        t("developerIntegrations.simulator.invalidJson", {
+          defaultValue: "Enter valid JSON before running the simulator.",
         })
       );
     }
@@ -510,6 +581,130 @@ export default function DeveloperIntegrationsPage() {
               </button>
             </div>
           </div>
+        </section>
+
+        <section
+          aria-labelledby="webhook-simulator-title"
+          className="rounded-3xl border border-[oklch(0.84_0.07_80)] bg-[oklch(0.985_0.018_80)] p-5 shadow-sm sm:p-6"
+          data-testid="webhook-verification-simulator"
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex gap-3">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold">
+                <FlaskConical size={20} aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-amber-800">
+                  {t("developerIntegrations.simulator.eyebrow", {
+                    defaultValue: "Preflight check",
+                  })}
+                </p>
+                <h2
+                  id="webhook-simulator-title"
+                  className="mt-1 text-xl font-semibold rr-text-navy"
+                >
+                  {t("developerIntegrations.simulator.title", {
+                    defaultValue: "Verify a webhook payload",
+                  })}
+                </h2>
+                <p className="mt-1 max-w-3xl text-sm leading-6 rr-text-navy-muted">
+                  {t("developerIntegrations.simulator.description", {
+                    defaultValue:
+                      "Check the contact and consent shape before activating a Zapier, Make, Jotform, or form-builder webhook. This simulator never uses an API key, creates a contact, writes to your account, or sends a request.",
+                  })}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={simulatePayload}
+              disabled={simulateContactImport.isPending}
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-navy rr-text-gold transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.97]"
+            >
+              {simulateContactImport.isPending ? (
+                <Loader2
+                  size={16}
+                  className="animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                <FlaskConical size={16} aria-hidden="true" />
+              )}
+              {simulateContactImport.isPending
+                ? t("developerIntegrations.simulator.verifying", {
+                    defaultValue: "Verifying…",
+                  })
+                : t("developerIntegrations.simulator.verify", {
+                    defaultValue: "Verify payload",
+                  })}
+            </button>
+          </div>
+          <label
+            htmlFor="webhook-simulator-payload"
+            className="mt-5 block text-sm font-bold rr-text-navy"
+          >
+            {t("developerIntegrations.simulator.payloadLabel", {
+              defaultValue: "Webhook JSON payload",
+            })}
+          </label>
+          <textarea
+            id="webhook-simulator-payload"
+            name="webhook-simulator-payload"
+            value={simulatorPayload}
+            onChange={event => setSimulatorPayload(event.target.value)}
+            spellCheck={false}
+            rows={13}
+            className="mt-2 block w-full rounded-2xl border border-slate-300 bg-slate-950 p-4 font-mono text-xs leading-5 text-slate-100 shadow-inner focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+            aria-describedby="webhook-simulator-help"
+          />
+          <p
+            id="webhook-simulator-help"
+            className="mt-2 text-xs leading-5 rr-text-navy-muted"
+          >
+            {t("developerIntegrations.simulator.help", {
+              defaultValue:
+                "Use a representative, non-customer payload. The example uses placeholder data and has no delivery side effects.",
+            })}
+          </p>
+          {simulatorResult && (
+            <div
+              className={`mt-4 rounded-2xl border p-4 ${simulatorResult.valid ? "border-emerald-200 bg-emerald-50 text-emerald-950" : "border-rose-200 bg-rose-50 text-rose-950"}`}
+              role="status"
+              aria-live="polite"
+            >
+              {simulatorResult.valid ? (
+                <>
+                  <p className="font-black">
+                    {t("developerIntegrations.simulator.validTitle", {
+                      defaultValue: "Payload is ready for a live preflight.",
+                    })}
+                  </p>
+                  <p className="mt-1 text-sm leading-6">
+                    {t("developerIntegrations.simulator.validDetail", {
+                      defaultValue:
+                        "Required contact and explicit email consent evidence are present. Nothing was created or sent.",
+                    })}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="font-black">
+                    {t("developerIntegrations.simulator.invalidTitle", {
+                      defaultValue: "Payload needs changes before go-live.",
+                    })}
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                    {simulatorResult.issues.map(issue => (
+                      <li key={`${issue.field}-${issue.message}`}>
+                        <span className="font-bold">{issue.field}:</span>{" "}
+                        {issue.message}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          )}
         </section>
 
         <section

@@ -3744,6 +3744,20 @@
       "download": "Download WordPress Connector",
       "downloading": "Preparing download…",
       "downloadStarted": "WordPress Connector download started."
+    },
+    "simulator": {
+      "eyebrow": "Preflight check",
+      "title": "Verify a webhook payload",
+      "description": "Check the contact and consent shape before activating a Zapier, Make, Jotform, or form-builder webhook. This simulator never uses an API key, creates a contact, writes to your account, or sends a request.",
+      "verify": "Verify payload",
+      "verifying": "Verifying…",
+      "payloadLabel": "Webhook JSON payload",
+      "help": "Use a representative, non-customer payload. The example uses placeholder data and has no delivery side effects.",
+      "validToast": "Payload is structurally valid. Nothing was sent.",
+      "invalidJson": "Enter valid JSON before running the simulator.",
+      "validTitle": "Payload is ready for a live preflight.",
+      "validDetail": "Required contact and explicit email consent evidence are present. Nothing was created or sent.",
+      "invalidTitle": "Payload needs changes before go-live."
     }
   },
   "helpAssistant": {

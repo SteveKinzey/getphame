@@ -63,7 +63,10 @@ vi.mock("./sourceAutomation", () => ({
   retryOrFailSourceAutomationEvent: mocks.retryOrFailSourceAutomationEvent,
 }));
 
-import { registerPublicApiRoutes } from "./publicApi";
+import {
+  registerPublicApiRoutes,
+  validateContactImportPayload,
+} from "./publicApi";
 
 const principal = {
   userId: 17,
@@ -227,6 +230,38 @@ describe("public source-event review-request automation", () => {
         consentTextHash: expect.stringMatching(/^[a-f0-9]{64}$/),
       })
     );
+  });
+
+  it("validates a representative form payload without authenticating, writing, or delivering", () => {
+    const result = validateContactImportPayload(contactImportPayload());
+
+    expect(result).toMatchObject({
+      valid: true,
+      summary: {
+        hasName: true,
+        hasEmail: true,
+        sourceApp: "gravity_forms",
+        hasExternalId: true,
+        consentBasis: "explicit_opt_in",
+        hasReviewOutreachEvidence: true,
+      },
+    });
+    expect(mocks.authenticateDeveloperApiKeyWithStatus).not.toHaveBeenCalled();
+    expect(mocks.upsertApiContact).not.toHaveBeenCalled();
+    expect(mocks.deliverReviewRequest).not.toHaveBeenCalled();
+  });
+
+  it("returns structured feedback for an unsafe simulator payload", () => {
+    const result = validateContactImportPayload({
+      name: "Missing evidence",
+      email: "missing@example.com",
+      consent: { confirmed: true, basis: "explicit_opt_in", source: "Form" },
+    });
+
+    expect(result.valid).toBe(false);
+    if (!result.valid) {
+      expect(result.issues[0]?.field).toBe("consent");
+    }
   });
 
   it("rejects incomplete review-outreach consent instead of downgrading to generic consent", async () => {

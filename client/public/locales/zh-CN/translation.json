@@ -3313,6 +3313,20 @@
       "download": "下载 WordPress 连接器",
       "downloading": "正在准备下载…",
       "downloadStarted": "WordPress 连接器下载已开始。"
+    },
+    "simulator": {
+      "eyebrow": "上线前检查",
+      "title": "验证 Webhook 负载",
+      "description": "在启用 Zapier、Make、Jotform 或表单构建器 Webhook 前，检查联系人和同意信息结构。此模拟器不会使用 API 密钥、创建联系人、写入账户或发送请求。",
+      "verify": "验证负载",
+      "verifying": "正在验证…",
+      "payloadLabel": "Webhook JSON 负载",
+      "help": "请使用不含真实客户信息的代表性负载。示例使用占位数据，不会产生任何发送操作。",
+      "validToast": "负载结构有效。未发送任何内容。",
+      "invalidJson": "请先输入有效的 JSON，再运行模拟器。",
+      "validTitle": "负载已可进行实际上线前检查。",
+      "validDetail": "已提供必需的联系人信息和明确的电子邮件同意证据。未创建或发送任何内容。",
+      "invalidTitle": "负载需要修改后才能上线。"
     }
   },
   "adaptiveSending": {
