@@ -101,6 +101,7 @@ import {
 } from "./adaptiveSendLimits";
 import {
   getAdaptiveSendBurstCaps,
+  listAdaptiveSendBurstCapAudit,
   saveAdaptiveSendBurstCaps,
 } from "./adaptiveSendBurstPolicy";
 import { processManualMonthlyDiagnosticsSnapshot } from "./monthlyDiagnosticsSchedule";
@@ -498,6 +499,11 @@ const adaptiveSendBurstCapsInput = z.object({
     .int()
     .min(ADAPTIVE_SEND_MINIMUM_BURST_CAP)
     .max(ADAPTIVE_SEND_MAXIMUM_BURST_CAP),
+});
+
+const adaptiveSendBurstCapAuditInput = z.object({
+  page: z.number().int().min(1).default(1),
+  pageSize: z.number().int().min(1).max(100).default(25),
 });
 
 const releaseHistoryInput = z.object({
@@ -4964,6 +4970,11 @@ export const appRouter = router({
     getAdaptiveSendBurstCaps: adminProcedure.query(() =>
       getAdaptiveSendBurstCaps()
     ),
+
+    /** Immutable, administrator-only history of global burst-cap changes. */
+    listAdaptiveSendBurstCapAudit: adminProcedure
+      .input(adaptiveSendBurstCapAuditInput.optional())
+      .query(({ input }) => listAdaptiveSendBurstCapAudit(input)),
 
     updateAdaptiveSendBurstCaps: adminProcedure
       .input(adaptiveSendBurstCapsInput)

@@ -2034,7 +2034,24 @@
         "nearMaximumActionLabel": "Review burst cap setting: {{cap}} of {{max}} requests configured",
         "remainingBurstValue": "{{configured}} of {{maximum}} requests configured; {{remaining}} burst sends remaining.",
         "remainingBurstTooltip": "{{remaining}} burst sends can still be configured before this tier reaches the {{maximum}}-request maximum.",
-        "remainingBurstInvalid": "Enter a whole-number cap within the allowed range to view remaining burst sends."
+        "remainingBurstInvalid": "Enter a whole-number cap within the allowed range to view remaining burst sends.",
+        "auditTitle": "Burst-cap audit trail",
+        "auditDescription": "The last six saved changes record the administrator and the exact tier values changed.",
+        "auditRetry": "Retry",
+        "auditLoading": "Loading change history…",
+        "auditError": "The cap change history could not be loaded.",
+        "auditEmpty": "No burst-cap changes have been recorded yet.",
+        "quickEditEyebrow": "Sending safety",
+        "quickEditTitle": "Quick-edit burst caps",
+        "quickEditDescription": "Update the maximum review requests a single bulk action may initiate. Provider and account limits still apply.",
+        "quickEditFullSettings": "Full settings",
+        "quickEditLoading": "Loading current caps…",
+        "quickEditUnavailable": "Burst-cap controls are updating. Your existing limits remain active.",
+        "quickEditInput": "{{tier}} burst cap",
+        "quickEditRange": "Whole-number limits from {{min}} to {{max}}.",
+        "quickEditSave": "Apply caps",
+        "quickEditSaved": "Burst caps updated.",
+        "quickEditError": "The burst caps could not be updated. Try again."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -2049,6 +2066,10 @@
       "presetLabel": "UTC date presets",
       "last7Days": "Last 7 Days",
       "last30Days": "Last 30 Days"
+    },
+    "adminProcedureRecovery": {
+      "title": "Administrator controls are updating.",
+      "description": "This administrator control is updating. Your existing settings are unchanged; refresh in a moment to try again."
     }
   },
   "es": {
@@ -4287,7 +4308,24 @@
         "nearMaximumActionLabel": "Revisar límite de envíos en bloque: {{cap}} de {{max}} solicitudes configuradas",
         "remainingBurstValue": "{{configured}} de {{maximum}} solicitudes configuradas; quedan {{remaining}} envíos en bloque.",
         "remainingBurstTooltip": "Aún se pueden configurar {{remaining}} envíos en bloque antes de que este nivel alcance el máximo de {{maximum}} solicitudes.",
-        "remainingBurstInvalid": "Ingrese un límite de número entero dentro del rango permitido para ver los envíos en bloque restantes."
+        "remainingBurstInvalid": "Ingrese un límite de número entero dentro del rango permitido para ver los envíos en bloque restantes.",
+        "auditTitle": "Historial de auditoría de límites por envío",
+        "auditDescription": "Los últimos seis cambios guardados registran al administrador y los valores exactos modificados por nivel.",
+        "auditRetry": "Reintentar",
+        "auditLoading": "Cargando historial de cambios…",
+        "auditError": "No se pudo cargar el historial de cambios de límites.",
+        "auditEmpty": "Aún no se han registrado cambios de límites por envío.",
+        "quickEditEyebrow": "Seguridad de envíos",
+        "quickEditTitle": "Edición rápida de límites por envío",
+        "quickEditDescription": "Actualiza el máximo de solicitudes de reseña que una acción masiva puede iniciar. Los límites del proveedor y de la cuenta siguen aplicándose.",
+        "quickEditFullSettings": "Configuración completa",
+        "quickEditLoading": "Cargando límites actuales…",
+        "quickEditUnavailable": "Los controles de límites se están actualizando. Tus límites actuales siguen activos.",
+        "quickEditInput": "Límite por envío de {{tier}}",
+        "quickEditRange": "Límites enteros de {{min}} a {{max}}.",
+        "quickEditSave": "Aplicar límites",
+        "quickEditSaved": "Límites por envío actualizados.",
+        "quickEditError": "No se pudieron actualizar los límites por envío. Inténtalo de nuevo."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -4302,6 +4340,10 @@
       "presetLabel": "Períodos predefinidos en UTC",
       "last7Days": "Últimos 7 días",
       "last30Days": "Últimos 30 días"
+    },
+    "adminProcedureRecovery": {
+      "title": "Los controles de administrador se están actualizando.",
+      "description": "Este control administrativo se está actualizando. La configuración actual no ha cambiado; actualiza la página en un momento para volver a intentarlo."
     }
   },
   "fr": {
@@ -6561,7 +6603,24 @@
         "nearMaximumActionLabel": "Vérifier le plafond d’envoi groupé : {{cap}} demandes sur {{max}} configurées",
         "remainingBurstValue": "{{configured}} demandes sur {{maximum}} configurées ; {{remaining}} envois groupés restants.",
         "remainingBurstTooltip": "{{remaining}} envois groupés peuvent encore être configurés avant que ce niveau atteigne le maximum de {{maximum}} demandes.",
-        "remainingBurstInvalid": "Saisissez un plafond entier dans la plage autorisée pour afficher les envois groupés restants."
+        "remainingBurstInvalid": "Saisissez un plafond entier dans la plage autorisée pour afficher les envois groupés restants.",
+        "auditTitle": "Historique d’audit des plafonds d’envoi",
+        "auditDescription": "Les six dernières modifications enregistrées indiquent l’administrateur et les valeurs exactes modifiées par niveau.",
+        "auditRetry": "Réessayer",
+        "auditLoading": "Chargement de l’historique des modifications…",
+        "auditError": "L’historique des modifications de plafond n’a pas pu être chargé.",
+        "auditEmpty": "Aucune modification de plafond d’envoi n’a encore été enregistrée.",
+        "quickEditEyebrow": "Sécurité des envois",
+        "quickEditTitle": "Modification rapide des plafonds",
+        "quickEditDescription": "Mettez à jour le nombre maximal de demandes d’avis qu’une action groupée peut lancer. Les limites du fournisseur et du compte restent applicables.",
+        "quickEditFullSettings": "Réglages complets",
+        "quickEditLoading": "Chargement des plafonds actuels…",
+        "quickEditUnavailable": "Les contrôles de plafond sont en cours de mise à jour. Vos limites actuelles restent actives.",
+        "quickEditInput": "Plafond d’envoi {{tier}}",
+        "quickEditRange": "Limites entières de {{min}} à {{max}}.",
+        "quickEditSave": "Appliquer les plafonds",
+        "quickEditSaved": "Plafonds d’envoi mis à jour.",
+        "quickEditError": "Les plafonds d’envoi n’ont pas pu être mis à jour. Réessayez."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -6576,6 +6635,10 @@
       "presetLabel": "Périodes prédéfinies UTC",
       "last7Days": "7 derniers jours",
       "last30Days": "30 derniers jours"
+    },
+    "adminProcedureRecovery": {
+      "title": "Les contrôles administrateur sont en cours de mise à jour.",
+      "description": "Ce contrôle administrateur est en cours de mise à jour. Vos réglages existants restent inchangés ; actualisez dans un instant pour réessayer."
     }
   },
   "it": {
@@ -8682,7 +8745,24 @@
         "nearMaximumActionLabel": "Controlla limite di invii in blocco: {{cap}} di {{max}} richieste configurate",
         "remainingBurstValue": "{{configured}} di {{maximum}} richieste configurate; restano {{remaining}} invii in blocco.",
         "remainingBurstTooltip": "È ancora possibile configurare {{remaining}} invii in blocco prima che questo livello raggiunga il massimo di {{maximum}} richieste.",
-        "remainingBurstInvalid": "Inserisci un limite intero nell’intervallo consentito per vedere gli invii in blocco rimanenti."
+        "remainingBurstInvalid": "Inserisci un limite intero nell’intervallo consentito per vedere gli invii in blocco rimanenti.",
+        "auditTitle": "Registro di controllo dei limiti per invio",
+        "auditDescription": "Le ultime sei modifiche salvate registrano l’amministratore e i valori esatti modificati per piano.",
+        "auditRetry": "Riprova",
+        "auditLoading": "Caricamento della cronologia delle modifiche…",
+        "auditError": "Impossibile caricare la cronologia delle modifiche ai limiti.",
+        "auditEmpty": "Non sono ancora state registrate modifiche ai limiti per invio.",
+        "quickEditEyebrow": "Sicurezza di invio",
+        "quickEditTitle": "Modifica rapida dei limiti per invio",
+        "quickEditDescription": "Aggiorna il numero massimo di richieste di recensione che una singola azione collettiva può avviare. I limiti del provider e dell’account restano applicati.",
+        "quickEditFullSettings": "Impostazioni complete",
+        "quickEditLoading": "Caricamento dei limiti attuali…",
+        "quickEditUnavailable": "I controlli dei limiti sono in aggiornamento. I limiti attuali restano attivi.",
+        "quickEditInput": "Limite per invio {{tier}}",
+        "quickEditRange": "Limiti interi da {{min}} a {{max}}.",
+        "quickEditSave": "Applica limiti",
+        "quickEditSaved": "Limiti per invio aggiornati.",
+        "quickEditError": "Impossibile aggiornare i limiti per invio. Riprova."
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -8697,6 +8777,10 @@
       "presetLabel": "Intervalli predefiniti UTC",
       "last7Days": "Ultimi 7 giorni",
       "last30Days": "Ultimi 30 giorni"
+    },
+    "adminProcedureRecovery": {
+      "title": "I controlli amministrativi sono in aggiornamento.",
+      "description": "Questo controllo amministrativo è in aggiornamento. Le impostazioni esistenti restano invariate; aggiorna tra poco per riprovare."
     }
   },
   "th": {
@@ -10791,7 +10875,24 @@
         "nearMaximumActionLabel": "ตรวจสอบการตั้งค่าขีดจำกัดการส่งแบบกลุ่ม: ตั้งค่า {{cap}} จาก {{max}} คำขอ",
         "remainingBurstValue": "ตั้งค่า {{configured}} จาก {{maximum}} คำขอแล้ว เหลือการส่งแบบกลุ่ม {{remaining}} ครั้ง",
         "remainingBurstTooltip": "ยังตั้งค่าการส่งแบบกลุ่มได้อีก {{remaining}} ครั้งก่อนที่ระดับนี้จะถึงค่าสูงสุด {{maximum}} คำขอ",
-        "remainingBurstInvalid": "ป้อนขีดจำกัดเป็นจำนวนเต็มภายในช่วงที่อนุญาตเพื่อดูจำนวนการส่งแบบกลุ่มที่เหลือ"
+        "remainingBurstInvalid": "ป้อนขีดจำกัดเป็นจำนวนเต็มภายในช่วงที่อนุญาตเพื่อดูจำนวนการส่งแบบกลุ่มที่เหลือ",
+        "auditTitle": "ประวัติการตรวจสอบขีดจำกัดการส่ง",
+        "auditDescription": "การเปลี่ยนแปลงที่บันทึกไว้ล่าสุดหกรายการจะแสดงผู้ดูแลระบบและค่าระดับที่เปลี่ยนแปลงอย่างชัดเจน",
+        "auditRetry": "ลองอีกครั้ง",
+        "auditLoading": "กำลังโหลดประวัติการเปลี่ยนแปลง…",
+        "auditError": "ไม่สามารถโหลดประวัติการเปลี่ยนแปลงขีดจำกัดได้",
+        "auditEmpty": "ยังไม่มีการบันทึกการเปลี่ยนแปลงขีดจำกัดการส่ง",
+        "quickEditEyebrow": "ความปลอดภัยในการส่ง",
+        "quickEditTitle": "แก้ไขขีดจำกัดการส่งอย่างรวดเร็ว",
+        "quickEditDescription": "อัปเดตจำนวนคำขอรีวิวสูงสุดที่การดำเนินการแบบกลุ่มหนึ่งครั้งเริ่มได้ ขีดจำกัดของผู้ให้บริการและบัญชียังคงมีผล",
+        "quickEditFullSettings": "การตั้งค่าทั้งหมด",
+        "quickEditLoading": "กำลังโหลดขีดจำกัดปัจจุบัน…",
+        "quickEditUnavailable": "กำลังอัปเดตการควบคุมขีดจำกัด ขีดจำกัดปัจจุบันของคุณยังใช้งานอยู่",
+        "quickEditInput": "ขีดจำกัดการส่ง {{tier}}",
+        "quickEditRange": "จำกัดเป็นจำนวนเต็มตั้งแต่ {{min}} ถึง {{max}}",
+        "quickEditSave": "ใช้ขีดจำกัด",
+        "quickEditSaved": "อัปเดตขีดจำกัดการส่งแล้ว",
+        "quickEditError": "ไม่สามารถอัปเดตขีดจำกัดการส่งได้ โปรดลองอีกครั้ง"
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -10806,6 +10907,10 @@
       "presetLabel": "ช่วงวันที่ล่วงหน้าแบบ UTC",
       "last7Days": "7 วันที่ผ่านมา",
       "last30Days": "30 วันที่ผ่านมา"
+    },
+    "adminProcedureRecovery": {
+      "title": "กำลังอัปเดตการควบคุมผู้ดูแลระบบ",
+      "description": "การควบคุมผู้ดูแลระบบนี้กำลังอัปเดต การตั้งค่าปัจจุบันของคุณยังไม่เปลี่ยนแปลง โปรดรีเฟรชอีกครั้งในอีกสักครู่"
     }
   },
   "zh-CN": {
@@ -12890,7 +12995,24 @@
         "nearMaximumActionLabel": "检查批量发送上限设置：已配置 {{cap}} / {{max}} 个请求",
         "remainingBurstValue": "已配置 {{configured}} / {{maximum}} 个请求；剩余 {{remaining}} 个批量发送名额。",
         "remainingBurstTooltip": "在此层级达到 {{maximum}} 个请求的上限前，还可以配置 {{remaining}} 个批量发送名额。",
-        "remainingBurstInvalid": "请输入允许范围内的整数上限，以查看剩余的批量发送名额。"
+        "remainingBurstInvalid": "请输入允许范围内的整数上限，以查看剩余的批量发送名额。",
+        "auditTitle": "发送批次上限审计记录",
+        "auditDescription": "最近六次保存的更改会记录管理员及各层级修改的确切数值。",
+        "auditRetry": "重试",
+        "auditLoading": "正在加载更改记录…",
+        "auditError": "无法加载上限更改记录。",
+        "auditEmpty": "尚未记录发送批次上限的更改。",
+        "quickEditEyebrow": "发送安全",
+        "quickEditTitle": "快速编辑发送批次上限",
+        "quickEditDescription": "更新一次批量操作可发起的最大评价请求数。服务商和账户上限仍然适用。",
+        "quickEditFullSettings": "完整设置",
+        "quickEditLoading": "正在加载当前上限…",
+        "quickEditUnavailable": "上限控件正在更新。您当前的上限仍然有效。",
+        "quickEditInput": "{{tier}} 发送批次上限",
+        "quickEditRange": "整数上限范围为 {{min}} 到 {{max}}。",
+        "quickEditSave": "应用上限",
+        "quickEditSaved": "发送批次上限已更新。",
+        "quickEditError": "无法更新发送批次上限。请重试。"
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -12905,6 +13027,10 @@
       "presetLabel": "UTC 日期预设",
       "last7Days": "过去 7 天",
       "last30Days": "过去 30 天"
+    },
+    "adminProcedureRecovery": {
+      "title": "管理员控件正在更新。",
+      "description": "此管理员控件正在更新。您现有的设置不会改变；请稍后刷新后重试。"
     }
   },
   "zh-TW": {
@@ -15004,7 +15130,24 @@
         "nearMaximumActionLabel": "檢查批次傳送上限設定：已設定 {{cap}} / {{max}} 個請求",
         "remainingBurstValue": "已設定 {{configured}} / {{maximum}} 個請求；剩餘 {{remaining}} 個批次傳送名額。",
         "remainingBurstTooltip": "在此層級達到 {{maximum}} 個請求的上限前，還可以設定 {{remaining}} 個批次傳送名額。",
-        "remainingBurstInvalid": "請輸入允許範圍內的整數上限，以查看剩餘的批次傳送名額。"
+        "remainingBurstInvalid": "請輸入允許範圍內的整數上限，以查看剩餘的批次傳送名額。",
+        "auditTitle": "傳送批次上限稽核記錄",
+        "auditDescription": "最近六次儲存的變更會記錄管理員及各方案修改的確切數值。",
+        "auditRetry": "重試",
+        "auditLoading": "正在載入變更記錄…",
+        "auditError": "無法載入上限變更記錄。",
+        "auditEmpty": "尚未記錄傳送批次上限的變更。",
+        "quickEditEyebrow": "傳送安全",
+        "quickEditTitle": "快速編輯傳送批次上限",
+        "quickEditDescription": "更新單次大量操作可發起的最大評論請求數。服務商和帳戶上限仍然適用。",
+        "quickEditFullSettings": "完整設定",
+        "quickEditLoading": "正在載入目前上限…",
+        "quickEditUnavailable": "上限控制項正在更新。您目前的上限仍然有效。",
+        "quickEditInput": "{{tier}} 傳送批次上限",
+        "quickEditRange": "整數上限範圍為 {{min}} 到 {{max}}。",
+        "quickEditSave": "套用上限",
+        "quickEditSaved": "傳送批次上限已更新。",
+        "quickEditError": "無法更新傳送批次上限。請重試。"
       }
     },
     "adminDiagnosticsSnapshot": {
@@ -15019,6 +15162,10 @@
       "presetLabel": "UTC 日期預設",
       "last7Days": "過去 7 天",
       "last30Days": "過去 30 天"
+    },
+    "adminProcedureRecovery": {
+      "title": "管理員控制項正在更新。",
+      "description": "此管理員控制項正在更新。您現有的設定不會變更；請稍後重新整理再試一次。"
     }
   }
 }

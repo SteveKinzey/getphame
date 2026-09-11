@@ -3826,7 +3826,24 @@
       "nearMaximumActionLabel": "Revisar límite de envíos en bloque: {{cap}} de {{max}} solicitudes configuradas",
       "remainingBurstValue": "{{configured}} de {{maximum}} solicitudes configuradas; quedan {{remaining}} envíos en bloque.",
       "remainingBurstTooltip": "Aún se pueden configurar {{remaining}} envíos en bloque antes de que este nivel alcance el máximo de {{maximum}} solicitudes.",
-      "remainingBurstInvalid": "Ingrese un límite de número entero dentro del rango permitido para ver los envíos en bloque restantes."
+      "remainingBurstInvalid": "Ingrese un límite de número entero dentro del rango permitido para ver los envíos en bloque restantes.",
+      "auditTitle": "Historial de auditoría de límites por envío",
+      "auditDescription": "Los últimos seis cambios guardados registran al administrador y los valores exactos modificados por nivel.",
+      "auditRetry": "Reintentar",
+      "auditLoading": "Cargando historial de cambios…",
+      "auditError": "No se pudo cargar el historial de cambios de límites.",
+      "auditEmpty": "Aún no se han registrado cambios de límites por envío.",
+      "quickEditEyebrow": "Seguridad de envíos",
+      "quickEditTitle": "Edición rápida de límites por envío",
+      "quickEditDescription": "Actualiza el máximo de solicitudes de reseña que una acción masiva puede iniciar. Los límites del proveedor y de la cuenta siguen aplicándose.",
+      "quickEditFullSettings": "Configuración completa",
+      "quickEditLoading": "Cargando límites actuales…",
+      "quickEditUnavailable": "Los controles de límites se están actualizando. Tus límites actuales siguen activos.",
+      "quickEditInput": "Límite por envío de {{tier}}",
+      "quickEditRange": "Límites enteros de {{min}} a {{max}}.",
+      "quickEditSave": "Aplicar límites",
+      "quickEditSaved": "Límites por envío actualizados.",
+      "quickEditError": "No se pudieron actualizar los límites por envío. Inténtalo de nuevo."
     }
   },
   "developerEnrollment": {
@@ -4820,5 +4837,9 @@
     "presetLabel": "Períodos predefinidos en UTC",
     "last7Days": "Últimos 7 días",
     "last30Days": "Últimos 30 días"
+  },
+  "adminProcedureRecovery": {
+    "title": "Los controles de administrador se están actualizando.",
+    "description": "Este control administrativo se está actualizando. La configuración actual no ha cambiado; actualiza la página en un momento para volver a intentarlo."
   }
 }

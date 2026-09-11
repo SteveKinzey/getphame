@@ -3772,7 +3772,24 @@
       "nearMaximumActionLabel": "Review burst cap setting: {{cap}} of {{max}} requests configured",
       "remainingBurstValue": "{{configured}} of {{maximum}} requests configured; {{remaining}} burst sends remaining.",
       "remainingBurstTooltip": "{{remaining}} burst sends can still be configured before this tier reaches the {{maximum}}-request maximum.",
-      "remainingBurstInvalid": "Enter a whole-number cap within the allowed range to view remaining burst sends."
+      "remainingBurstInvalid": "Enter a whole-number cap within the allowed range to view remaining burst sends.",
+      "auditTitle": "Burst-cap audit trail",
+      "auditDescription": "The last six saved changes record the administrator and the exact tier values changed.",
+      "auditRetry": "Retry",
+      "auditLoading": "Loading change history…",
+      "auditError": "The cap change history could not be loaded.",
+      "auditEmpty": "No burst-cap changes have been recorded yet.",
+      "quickEditEyebrow": "Sending safety",
+      "quickEditTitle": "Quick-edit burst caps",
+      "quickEditDescription": "Update the maximum review requests a single bulk action may initiate. Provider and account limits still apply.",
+      "quickEditFullSettings": "Full settings",
+      "quickEditLoading": "Loading current caps…",
+      "quickEditUnavailable": "Burst-cap controls are updating. Your existing limits remain active.",
+      "quickEditInput": "{{tier}} burst cap",
+      "quickEditRange": "Whole-number limits from {{min}} to {{max}}.",
+      "quickEditSave": "Apply caps",
+      "quickEditSaved": "Burst caps updated.",
+      "quickEditError": "The burst caps could not be updated. Try again."
     }
   },
   "developerEnrollment": {
@@ -4769,5 +4786,9 @@
     "presetLabel": "UTC date presets",
     "last7Days": "Last 7 Days",
     "last30Days": "Last 30 Days"
+  },
+  "adminProcedureRecovery": {
+    "title": "Administrator controls are updating.",
+    "description": "This administrator control is updating. Your existing settings are unchanged; refresh in a moment to try again."
   }
 }

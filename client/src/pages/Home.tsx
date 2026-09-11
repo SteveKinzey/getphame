@@ -446,6 +446,7 @@ export default function HomePage() {
     trpc.admin.getAdaptiveSendBurstCaps.useQuery(undefined, {
       enabled: user?.role === "admin",
       staleTime: 30_000,
+      retry: false,
     });
   const utils = trpc.useUtils();
   const pwaAnalytics = trpc.analytics.trackPwaEvent.useMutation();

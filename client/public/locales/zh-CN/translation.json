@@ -3315,7 +3315,24 @@
       "nearMaximumActionLabel": "检查批量发送上限设置：已配置 {{cap}} / {{max}} 个请求",
       "remainingBurstValue": "已配置 {{configured}} / {{maximum}} 个请求；剩余 {{remaining}} 个批量发送名额。",
       "remainingBurstTooltip": "在此层级达到 {{maximum}} 个请求的上限前，还可以配置 {{remaining}} 个批量发送名额。",
-      "remainingBurstInvalid": "请输入允许范围内的整数上限，以查看剩余的批量发送名额。"
+      "remainingBurstInvalid": "请输入允许范围内的整数上限，以查看剩余的批量发送名额。",
+      "auditTitle": "发送批次上限审计记录",
+      "auditDescription": "最近六次保存的更改会记录管理员及各层级修改的确切数值。",
+      "auditRetry": "重试",
+      "auditLoading": "正在加载更改记录…",
+      "auditError": "无法加载上限更改记录。",
+      "auditEmpty": "尚未记录发送批次上限的更改。",
+      "quickEditEyebrow": "发送安全",
+      "quickEditTitle": "快速编辑发送批次上限",
+      "quickEditDescription": "更新一次批量操作可发起的最大评价请求数。服务商和账户上限仍然适用。",
+      "quickEditFullSettings": "完整设置",
+      "quickEditLoading": "正在加载当前上限…",
+      "quickEditUnavailable": "上限控件正在更新。您当前的上限仍然有效。",
+      "quickEditInput": "{{tier}} 发送批次上限",
+      "quickEditRange": "整数上限范围为 {{min}} 到 {{max}}。",
+      "quickEditSave": "应用上限",
+      "quickEditSaved": "发送批次上限已更新。",
+      "quickEditError": "无法更新发送批次上限。请重试。"
     }
   },
   "developerEnrollment": {
@@ -4307,5 +4324,9 @@
     "presetLabel": "UTC 日期预设",
     "last7Days": "过去 7 天",
     "last30Days": "过去 30 天"
+  },
+  "adminProcedureRecovery": {
+    "title": "管理员控件正在更新。",
+    "description": "此管理员控件正在更新。您现有的设置不会改变；请稍后刷新后重试。"
   }
 }

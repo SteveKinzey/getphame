@@ -3337,7 +3337,24 @@
       "nearMaximumActionLabel": "檢查批次傳送上限設定：已設定 {{cap}} / {{max}} 個請求",
       "remainingBurstValue": "已設定 {{configured}} / {{maximum}} 個請求；剩餘 {{remaining}} 個批次傳送名額。",
       "remainingBurstTooltip": "在此層級達到 {{maximum}} 個請求的上限前，還可以設定 {{remaining}} 個批次傳送名額。",
-      "remainingBurstInvalid": "請輸入允許範圍內的整數上限，以查看剩餘的批次傳送名額。"
+      "remainingBurstInvalid": "請輸入允許範圍內的整數上限，以查看剩餘的批次傳送名額。",
+      "auditTitle": "傳送批次上限稽核記錄",
+      "auditDescription": "最近六次儲存的變更會記錄管理員及各方案修改的確切數值。",
+      "auditRetry": "重試",
+      "auditLoading": "正在載入變更記錄…",
+      "auditError": "無法載入上限變更記錄。",
+      "auditEmpty": "尚未記錄傳送批次上限的變更。",
+      "quickEditEyebrow": "傳送安全",
+      "quickEditTitle": "快速編輯傳送批次上限",
+      "quickEditDescription": "更新單次大量操作可發起的最大評論請求數。服務商和帳戶上限仍然適用。",
+      "quickEditFullSettings": "完整設定",
+      "quickEditLoading": "正在載入目前上限…",
+      "quickEditUnavailable": "上限控制項正在更新。您目前的上限仍然有效。",
+      "quickEditInput": "{{tier}} 傳送批次上限",
+      "quickEditRange": "整數上限範圍為 {{min}} 到 {{max}}。",
+      "quickEditSave": "套用上限",
+      "quickEditSaved": "傳送批次上限已更新。",
+      "quickEditError": "無法更新傳送批次上限。請重試。"
     }
   },
   "developerEnrollment": {
@@ -4329,5 +4346,9 @@
     "presetLabel": "UTC 日期預設",
     "last7Days": "過去 7 天",
     "last30Days": "過去 30 天"
+  },
+  "adminProcedureRecovery": {
+    "title": "管理員控制項正在更新。",
+    "description": "此管理員控制項正在更新。您現有的設定不會變更；請稍後重新整理再試一次。"
   }
 }
