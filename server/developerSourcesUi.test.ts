@@ -172,6 +172,7 @@ describe("Developer Sources workflow", () => {
     );
     expectSourceContract(panel).toContain('value="zapier"');
     expectSourceContract(panel).toContain('value="make"');
+    expectSourceContract(panel).toContain('value="jotform"');
     expectSourceContract(panel).toContain("Authorization: Bearer");
     expectSourceContract(panel).toContain("Idempotency-Key");
     expect(panel).not.toContain("apiKeyRaw");
@@ -187,6 +188,7 @@ describe("Developer Sources workflow", () => {
     );
     expectSourceContract(router).toContain('actionApp: "HTTP"');
     expectSourceContract(router).toContain("https://apps.make.com/http");
+    expectSourceContract(router).toContain('provider: "jotform"');
     expectSourceContract(router).toContain("keyHint: key.keyHint");
     expect(router).not.toContain("keyHash: key.keyHash");
   });

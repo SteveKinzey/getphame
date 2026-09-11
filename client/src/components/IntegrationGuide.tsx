@@ -16,10 +16,14 @@ const CONTACTS_ENDPOINT = `${BASE_URL}/api/v1/contacts`;
 const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>";
 
 type FormBuilder =
+  | "zapier"
+  | "make"
+  | "jotform"
   | "wsform"
   | "gravity"
   | "fluent"
   | "elementor"
+  | "contactForm7"
   | "generic"
   | "curl";
 
@@ -88,7 +92,7 @@ function CodeBlock({ code, label }: { code: string; label: string }) {
 
 export function IntegrationGuide({ showSnippet, setShowSnippet }: Props) {
   const { t } = useTranslation();
-  const [activeBuilder, setActiveBuilder] = useState<FormBuilder>("wsform");
+  const [activeBuilder, setActiveBuilder] = useState<FormBuilder>("zapier");
 
   const canonicalJson = `{
   "name": "Jordan Lee",
@@ -126,6 +130,180 @@ Idempotency-Key: <stable submission or entry ID>`;
 
   const guides = useMemo<Record<FormBuilder, BuilderGuide>>(
     () => ({
+      zapier: {
+        label: "Zapier",
+        summary: t("developerIntegrations.guides.zapier.summary", {
+          defaultValue:
+            "Map one eligible trigger into Webhooks by Zapier with an explicit JSON request.",
+        }),
+        sourceApp: "zapier",
+        documentationUrl:
+          "https://help.zapier.com/hc/en-us/articles/8496326446989-Send-webhooks-in-Zap-workflows",
+        steps: [
+          t("developerIntegrations.guides.zapier.step1", {
+            defaultValue:
+              "Choose the trigger that creates an eligible customer record, then add Webhooks by Zapier as the next action.",
+          }),
+          t("developerIntegrations.guides.zapier.step2", {
+            defaultValue:
+              "Choose POST or Custom Request, set the URL to the v1 contact endpoint, and set Payload Type to JSON.",
+          }),
+          t("developerIntegrations.guides.zapier.step3", {
+            defaultValue:
+              "Map only the fields below. Add Authorization in protected headers and never leave the Data section blank.",
+          }),
+          t("developerIntegrations.guides.zapier.step4", {
+            defaultValue:
+              "Map the source event ID unchanged into externalId and Idempotency-Key so a retry remains a safe replay.",
+          }),
+          t("developerIntegrations.guides.zapier.step5", {
+            defaultValue:
+              "Test with one permitted record, then verify its masked result in Recent API imports.",
+          }),
+        ],
+        fieldMap: [
+          [
+            "name",
+            t("developerIntegrations.guides.map.name", {
+              defaultValue: "Your customer name field",
+            }),
+          ],
+          [
+            "email",
+            t("developerIntegrations.guides.map.email", {
+              defaultValue: "Your customer email field",
+            }),
+          ],
+          ["externalId", "Source event ID"],
+          ["sourceApp", "zapier"],
+          ["consentConfirmed", "true"],
+          ["consentBasis", "customer_relationship | explicit_opt_in | other"],
+          [
+            "consentSource",
+            t("developerIntegrations.guides.map.consentSource", {
+              defaultValue: "A short description of where consent was captured",
+            }),
+          ],
+        ],
+        example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "zapier")}`,
+      },
+      make: {
+        label: "Make",
+        summary: t("developerIntegrations.guides.make.summary", {
+          defaultValue:
+            "Use Make HTTP v4 with a JSON data structure and a protected API-key credential.",
+        }),
+        sourceApp: "make",
+        documentationUrl: "https://apps.make.com/http",
+        steps: [
+          t("developerIntegrations.guides.make.step1", {
+            defaultValue:
+              "Choose the trigger module that produces an eligible customer record, then add HTTP > Make a request (v4).",
+          }),
+          t("developerIntegrations.guides.make.step2", {
+            defaultValue:
+              "Set Method to POST, URL to the v1 contact endpoint, and Body content type to application/json.",
+          }),
+          t("developerIntegrations.guides.make.step3", {
+            defaultValue:
+              "Choose Data structure for JSON mapping and configure the Get Phame key in Make’s protected credential store.",
+          }),
+          t("developerIntegrations.guides.make.step4", {
+            defaultValue:
+              "Map the stable source event ID into externalId and Idempotency-Key. Do not generate a new value on retry.",
+          }),
+          t("developerIntegrations.guides.make.step5", {
+            defaultValue:
+              "Enable error handling for non-2xx responses, then run one permitted scenario test.",
+          }),
+        ],
+        fieldMap: [
+          [
+            "name",
+            t("developerIntegrations.guides.map.name", {
+              defaultValue: "Your customer name field",
+            }),
+          ],
+          [
+            "email",
+            t("developerIntegrations.guides.map.email", {
+              defaultValue: "Your customer email field",
+            }),
+          ],
+          ["externalId", "Source event ID"],
+          ["sourceApp", "make"],
+          ["consentConfirmed", "true"],
+          ["consentBasis", "customer_relationship | explicit_opt_in | other"],
+          [
+            "consentSource",
+            t("developerIntegrations.guides.map.consentSource", {
+              defaultValue: "A short description of where consent was captured",
+            }),
+          ],
+        ],
+        example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "make")}`,
+      },
+      jotform: {
+        label: "Jotform",
+        summary: t("developerIntegrations.guides.jotform.summary", {
+          defaultValue:
+            "Use the native Jotform webhook as a trigger and forward it through a server-side bridge that holds the API key.",
+        }),
+        sourceApp: "jotform",
+        documentationUrl:
+          "https://www.jotform.com/help/245-how-to-send-submission-data-via-a-webhook/",
+        steps: [
+          t("developerIntegrations.guides.jotform.step1", {
+            defaultValue:
+              "In Jotform Settings > Integrations, add Webhooks and point it to an HTTPS bridge URL you control.",
+          }),
+          t("developerIntegrations.guides.jotform.step2", {
+            defaultValue:
+              "In the bridge, validate the expected form and affirmative consent, then parse Jotform’s rawRequest payload.",
+          }),
+          t("developerIntegrations.guides.jotform.step3", {
+            defaultValue:
+              "Send only the normalized fields below from the bridge to the v1 contact endpoint with protected headers.",
+          }),
+          t("developerIntegrations.guides.jotform.step4", {
+            defaultValue:
+              "Reuse Jotform submissionID as externalId and Idempotency-Key for every downstream retry.",
+          }),
+          t("developerIntegrations.guides.jotform.step5", {
+            defaultValue:
+              "Acknowledge Jotform promptly after durable acceptance, then test one permitted submission end to end.",
+          }),
+        ],
+        fieldMap: [
+          [
+            "name",
+            t("developerIntegrations.guides.map.name", {
+              defaultValue: "Your customer name field",
+            }),
+          ],
+          [
+            "email",
+            t("developerIntegrations.guides.map.email", {
+              defaultValue: "Your customer email field",
+            }),
+          ],
+          ["externalId", "Jotform submissionID"],
+          ["sourceApp", "jotform"],
+          ["consentConfirmed", "true"],
+          ["consentBasis", "customer_relationship | explicit_opt_in | other"],
+          [
+            "consentSource",
+            t("developerIntegrations.guides.map.consentSource", {
+              defaultValue: "A short description of where consent was captured",
+            }),
+          ],
+        ],
+        example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "jotform")}`,
+        caution: t("developerIntegrations.guides.jotform.caution", {
+          defaultValue:
+            "Jotform’s native webhook setup does not document protected request headers. Keep the Get Phame API key exclusively in the server-side bridge, never in the Jotform form or webhook URL.",
+        }),
+      },
       wsform: {
         label: "WS Form",
         summary: t("developerIntegrations.guides.wsform.summary", {
@@ -367,6 +545,67 @@ Idempotency-Key: <stable submission or entry ID>`;
         caution: t("developerIntegrations.guides.elementor.caution", {
           defaultValue:
             "Elementor’s built-in Webhook action may not expose every protected-header control required by your setup. Do not work around that by placing the API key in the URL or page source.",
+        }),
+      },
+      contactForm7: {
+        label: "Contact Form 7",
+        summary: t("developerIntegrations.guides.contactForm7.summary", {
+          defaultValue:
+            "Use a small WordPress-side integration because Contact Form 7 has no native generic outbound webhook action.",
+        }),
+        sourceApp: "contact-form-7",
+        documentationUrl:
+          "https://contactform7.com/integration-with-external-apis/",
+        steps: [
+          t("developerIntegrations.guides.contactForm7.step1", {
+            defaultValue:
+              "Add a required Contact Form 7 acceptance checkbox with consent wording that matches your actual outreach channels.",
+          }),
+          t("developerIntegrations.guides.contactForm7.step2", {
+            defaultValue:
+              "Use the documented wpcf7_before_send_mail hook in a reviewed WordPress plugin or mu-plugin to read sanitized submission data.",
+          }),
+          t("developerIntegrations.guides.contactForm7.step3", {
+            defaultValue:
+              "Validate the form identity and consent server-side, then post only the mapped JSON fields to the v1 contact endpoint.",
+          }),
+          t("developerIntegrations.guides.contactForm7.step4", {
+            defaultValue:
+              "Generate and persist one idempotency key before retrying so retries never create duplicate contact work.",
+          }),
+          t("developerIntegrations.guides.contactForm7.step5", {
+            defaultValue:
+              "Keep the API key in server configuration and verify one permitted submission in Recent API imports.",
+          }),
+        ],
+        fieldMap: [
+          [
+            "name",
+            t("developerIntegrations.guides.map.name", {
+              defaultValue: "Your customer name field",
+            }),
+          ],
+          [
+            "email",
+            t("developerIntegrations.guides.map.email", {
+              defaultValue: "Your customer email field",
+            }),
+          ],
+          ["externalId", "Persisted server-side submission ID"],
+          ["sourceApp", "contact-form-7"],
+          ["consentConfirmed", "true"],
+          ["consentBasis", "customer_relationship | explicit_opt_in | other"],
+          [
+            "consentSource",
+            t("developerIntegrations.guides.map.consentSource", {
+              defaultValue: "A short description of where consent was captured",
+            }),
+          ],
+        ],
+        example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "contact-form-7")}`,
+        caution: t("developerIntegrations.guides.contactForm7.caution", {
+          defaultValue:
+            "Do not use browser DOM events or form markup for this connection. They expose the API key and are not an authoritative consent-to-import boundary.",
         }),
       },
       generic: {

@@ -1476,6 +1476,14 @@
             "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
             "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
             "5": "Send one permitted record, then refresh health here."
+          },
+          "jotform": {
+            "1": "Add Jotform Webhooks and send form submissions to a server-side bridge you control.",
+            "2": "Do not place a Get Phame API key in Jotform, a public URL, or a browser script.",
+            "3": "Validate the expected form and affirmative consent in the bridge, then parse rawRequest.",
+            "4": "Forward the normalized JSON to Get Phame with the protected headers shown below.",
+            "5": "Reuse Jotform submissionID for externalId and Idempotency-Key on every retry.",
+            "6": "Submit one permitted record, then refresh health here."
           }
         },
         "automation": {
@@ -1569,6 +1577,42 @@
         "failurePrivacy": "No credentials were created or exposed. Start again from your WordPress dashboard.",
         "expiredPrivacy": "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials.",
         "privacy": "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."
+      },
+      "guides": {
+        "zapier": {
+          "summary": "Map one eligible trigger into Webhooks by Zapier with an explicit JSON request.",
+          "step1": "Choose the trigger that creates an eligible customer record, then add Webhooks by Zapier as the next action.",
+          "step2": "Choose POST or Custom Request, set the URL to the v1 contact endpoint, and set Payload Type to JSON.",
+          "step3": "Map only the fields below. Add Authorization in protected headers and never leave the Data section blank.",
+          "step4": "Map the source event ID unchanged into externalId and Idempotency-Key so a retry remains a safe replay.",
+          "step5": "Test with one permitted record, then verify its masked result in Recent API imports."
+        },
+        "make": {
+          "summary": "Use Make HTTP v4 with a JSON data structure and a protected API-key credential.",
+          "step1": "Choose the trigger module that produces an eligible customer record, then add HTTP > Make a request (v4).",
+          "step2": "Set Method to POST, URL to the v1 contact endpoint, and Body content type to application/json.",
+          "step3": "Choose Data structure for JSON mapping and configure the Get Phame key in Make’s protected credential store.",
+          "step4": "Map the stable source event ID into externalId and Idempotency-Key. Do not generate a new value on retry.",
+          "step5": "Enable error handling for non-2xx responses, then run one permitted scenario test."
+        },
+        "jotform": {
+          "summary": "Use the native Jotform webhook as a trigger and forward it through a server-side bridge that holds the API key.",
+          "step1": "In Jotform Settings > Integrations, add Webhooks and point it to an HTTPS bridge URL you control.",
+          "step2": "In the bridge, validate the expected form and affirmative consent, then parse Jotform’s rawRequest payload.",
+          "step3": "Send only the normalized fields below from the bridge to the v1 contact endpoint with protected headers.",
+          "step4": "Reuse Jotform submissionID as externalId and Idempotency-Key for every downstream retry.",
+          "step5": "Acknowledge Jotform promptly after durable acceptance, then test one permitted submission end to end.",
+          "caution": "Jotform’s native webhook setup does not document protected request headers. Keep the Get Phame API key exclusively in the server-side bridge, never in the Jotform form or webhook URL."
+        },
+        "contactForm7": {
+          "summary": "Use a small WordPress-side integration because Contact Form 7 has no native generic outbound webhook action.",
+          "step1": "Add a required Contact Form 7 acceptance checkbox with consent wording that matches your actual outreach channels.",
+          "step2": "Use the documented wpcf7_before_send_mail hook in a reviewed WordPress plugin or mu-plugin to read sanitized submission data.",
+          "step3": "Validate the form identity and consent server-side, then post only the mapped JSON fields to the v1 contact endpoint.",
+          "step4": "Generate and persist one idempotency key before retrying so retries never create duplicate contact work.",
+          "step5": "Keep the API key in server configuration and verify one permitted submission in Recent API imports.",
+          "caution": "Do not use browser DOM events or form markup for this connection. They expose the API key and are not an authoritative consent-to-import boundary."
+        }
       }
     },
     "manual": {
@@ -2070,6 +2114,24 @@
     "adminProcedureRecovery": {
       "title": "Administrator controls are updating.",
       "description": "This administrator control is updating. Your existing settings are unchanged; refresh in a moment to try again."
+    },
+    "adminSubscriptionHealth": {
+      "eyebrow": "Billing data integrity",
+      "loading": "Checking subscription records…",
+      "healthyTitle": "Business profiles and Stripe records match",
+      "attentionTitle": "Subscription records need review",
+      "unavailable": "The local record comparison could not be completed. Refresh to try again.",
+      "summary": "{{profiles}} profiles and {{subscriptions}} local subscription records checked. No Stripe API request is made.",
+      "refresh": "Refresh",
+      "issues": "Detected record mismatches",
+      "checkedAt": "Last checked {{time}}",
+      "issue": {
+        "paid_profile_without_active_subscription": "Paid profile with no active subscription record",
+        "active_subscription_on_free_profile": "Active subscription attached to a free profile",
+        "plan_tier_mismatch": "Active subscription plan does not match profile tier",
+        "subscription_without_business_profile": "Subscription record exists without an associated business profile",
+        "duplicate_subscription_records": "Multiple subscription records found for the same user"
+      }
     }
   },
   "es": {
@@ -3609,6 +3671,14 @@
             "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
             "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
             "5": "Envíe un registro permitido y luego actualice el estado aquí."
+          },
+          "jotform": {
+            "1": "Agregue Webhooks en Jotform y envíe los envíos a un puente seguro del lado del servidor que usted controle.",
+            "2": "No coloque una clave API de Get Phame en Jotform, en una URL pública ni en un script del navegador.",
+            "3": "Valide el formulario esperado y el consentimiento explícito en el puente antes de procesar rawRequest.",
+            "4": "Reenvíe el JSON normalizado a Get Phame con los encabezados protegidos que se muestran a continuación.",
+            "5": "Reutilice el submissionID de Jotform en externalId e Idempotency-Key en cada reintento.",
+            "6": "Envíe un registro de prueba permitido y luego actualice el estado aquí."
           }
         },
         "automation": {
@@ -3703,6 +3773,42 @@
         "failurePrivacy": "No se crearon ni expusieron credenciales. Comienza de nuevo desde tu panel de WordPress.",
         "expiredPrivacy": "Inicia una nueva conexión en WordPress. Get Phame nunca recibe tus credenciales de administrador de WordPress.",
         "privacy": "Esta solicitud expira en 15 minutos. Get Phame nunca recibe tus credenciales de administrador de WordPress."
+      },
+      "guides": {
+        "zapier": {
+          "summary": "Asocie un activador permitido en Webhooks by Zapier con una solicitud JSON explícita.",
+          "step1": "Elija el activador que produce un cliente permitido y luego agregue Webhooks by Zapier como siguiente acción.",
+          "step2": "Elija POST o Custom Request, defina la URL en el endpoint v1 de contactos y el tipo de contenido como JSON.",
+          "step3": "Asocie únicamente los campos indicados abajo. Añada Authorization en encabezados protegidos y nunca deje Data en blanco.",
+          "step4": "Asocie el ID de evento de origen sin modificar a externalId e Idempotency-Key para que los reintentos sean seguros.",
+          "step5": "Pruebe con un registro permitido y confirme el resultado enmascarado en Importaciones recientes de la API."
+        },
+        "make": {
+          "summary": "Use Make HTTP v4 con una estructura de datos JSON y credenciales protegidas de clave API.",
+          "step1": "Elija el módulo activador que genera un cliente permitido y agregue HTTP > Make a request (v4).",
+          "step2": "Establezca el método en POST, la URL en el endpoint v1 de contactos y el tipo de cuerpo en application/json.",
+          "step3": "Seleccione Data structure para la asignación JSON y configure la clave de Get Phame en el almacén de credenciales de Make.",
+          "step4": "Asigne el ID de evento estable del origen a externalId e Idempotency-Key. No genere un valor nuevo en cada reintento.",
+          "step5": "Active el control de errores para respuestas que no sean 2xx y ejecute una prueba de escenario permitida."
+        },
+        "jotform": {
+          "summary": "Use el webhook nativo de Jotform como activador y reenvíelo mediante un puente del lado del servidor que guarde la clave API.",
+          "step1": "En Configuración de Jotform > Integraciones, agregue Webhooks apuntando a una URL HTTPS de puente que usted controle.",
+          "step2": "En el puente, valide el formulario esperado y el consentimiento afirmativo, y luego procese la carga rawRequest.",
+          "step3": "Envíe solo los campos normalizados al endpoint v1 de contactos con los encabezados protegidos.",
+          "step4": "Reutilice el submissionID de Jotform como externalId e Idempotency-Key en todos los reintentos.",
+          "step5": "Confirme la recepción a Jotform de inmediato tras la aceptación duradera y pruebe un envío permitido de extremo a extremo.",
+          "caution": "La configuración nativa de webhooks de Jotform no documenta encabezados de solicitud protegidos. Guarde la clave de Get Phame exclusivamente en el puente del lado del servidor, nunca en Jotform ni en la URL."
+        },
+        "contactForm7": {
+          "summary": "Use una pequeña integración de WordPress ya que Contact Form 7 no ofrece una acción nativa de webhook genérico saliente.",
+          "step1": "Agregue una casilla de verificación obligatoria de aceptación en Contact Form 7 con un texto de consentimiento que coincida con sus canales reales.",
+          "step2": "Utilice el hook documentado wpcf7_before_send_mail en un plugin o mu-plugin de WordPress revisado para leer datos saneados.",
+          "step3": "Valide la identidad del formulario y el consentimiento en el servidor antes de enviar el JSON normalizado al endpoint v1 de contactos.",
+          "step4": "Genere y guarde una clave de idempotencia antes de reintentar para que los reintentos no dupliquen contactos.",
+          "step5": "Mantenga la clave API en la configuración del servidor y confirme un envío permitido en Importaciones recientes de la API.",
+          "caution": "No use eventos DOM del navegador ni el código del formulario para esta conexión. Exponen la clave API y no constituyen un límite de consentimiento seguro."
+        }
       }
     },
     "manual": {
@@ -4344,6 +4450,24 @@
     "adminProcedureRecovery": {
       "title": "Los controles de administrador se están actualizando.",
       "description": "Este control administrativo se está actualizando. La configuración actual no ha cambiado; actualiza la página en un momento para volver a intentarlo."
+    },
+    "adminSubscriptionHealth": {
+      "eyebrow": "Integridad de datos de facturación",
+      "loading": "Comprobando registros de suscripción…",
+      "healthyTitle": "Los perfiles de negocio y los registros de Stripe coinciden",
+      "attentionTitle": "Los registros de suscripción requieren revisión",
+      "unavailable": "No se pudo completar la comparación local de registros. Actualice para intentarlo de nuevo.",
+      "summary": "{{profiles}} perfiles y {{subscriptions}} registros locales de suscripción comprobados. No se realiza ninguna solicitud a la API de Stripe.",
+      "refresh": "Actualizar",
+      "issues": "Discrepancias detectadas en los registros",
+      "checkedAt": "Última comprobación: {{time}}",
+      "issue": {
+        "paid_profile_without_active_subscription": "Perfil de pago sin registro de suscripción activa",
+        "active_subscription_on_free_profile": "Suscripción activa asociada a un perfil gratuito",
+        "plan_tier_mismatch": "El plan de la suscripción activa no coincide con el nivel del perfil",
+        "subscription_without_business_profile": "Existe un registro de suscripción sin perfil de negocio asociado",
+        "duplicate_subscription_records": "Se encontraron múltiples registros de suscripción para el mismo usuario"
+      }
     }
   },
   "fr": {
@@ -5892,6 +6016,14 @@
             "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
             "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
             "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
+          },
+          "jotform": {
+            "1": "Ajoutez Webhooks dans Jotform et transmettez les soumissions à une passerelle côté serveur sécurisée que vous contrôlez.",
+            "2": "Ne placez jamais de clé API Get Phame dans Jotform, dans une URL publique ou dans un script de navigateur.",
+            "3": "Validez le formulaire attendu et le consentement explicite dans la passerelle avant d'analyser rawRequest.",
+            "4": "Transmettez le JSON normalisé à Get Phame avec les en-têtes protégés indiqués ci-dessous.",
+            "5": "Réutilisez le submissionID de Jotform pour externalId et Idempotency-Key à chaque nouvelle tentative.",
+            "6": "Envoyez un enregistrement de test autorisé, puis actualisez l'état ici."
           }
         },
         "automation": {
@@ -5988,6 +6120,42 @@
         "failurePrivacy": "Aucun identifiant n'a été créé ni exposé. Recommencez depuis votre tableau de bord WordPress.",
         "expiredPrivacy": "Démarrez une nouvelle connexion dans WordPress. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress.",
         "privacy": "Cette demande expire dans 15 minutes. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress."
+      },
+      "guides": {
+        "zapier": {
+          "summary": "Associez un déclencheur autorisé dans Webhooks by Zapier avec une requête JSON explicite.",
+          "step1": "Choisissez le déclencheur produisant un enregistrement client autorisé, puis ajoutez l'action Webhooks by Zapier.",
+          "step2": "Choisissez POST ou Custom Request, définissez l'URL sur le point de terminaison v1 et le type sur JSON.",
+          "step3": "Mappez uniquement les champs ci-dessous. Ajoutez Authorization aux en-têtes protégés et ne laissez jamais la section Data vide.",
+          "step4": "Mappez l'ID d'événement source sans modification vers externalId et Idempotency-Key pour sécuriser les rejeux.",
+          "step5": "Testez avec un enregistrement autorisé, puis vérifiez le résultat masqué dans Importations récentes de l'API."
+        },
+        "make": {
+          "summary": "Utilisez Make HTTP v4 avec une structure de données JSON et un identifiant de clé API sécurisé.",
+          "step1": "Choisissez le module déclencheur produisant un client éligible, puis ajoutez HTTP > Make a request (v4).",
+          "step2": "Définissez la méthode sur POST, l'URL sur le point de terminaison v1 et le type de corps sur application/json.",
+          "step3": "Choisissez Data structure pour le mappage JSON et configurez la clé Get Phame dans le trousseau sécurisé de Make.",
+          "step4": "Mappez l'ID d'événement source stable vers externalId et Idempotency-Key sans générer de nouvelle valeur lors des réessais.",
+          "step5": "Activez la gestion des erreurs pour les réponses hors 2xx, puis exécutez un test de scénario autorisé."
+        },
+        "jotform": {
+          "summary": "Utilisez le webhook natif de Jotform comme déclencheur et transmettez-le via une passerelle côté serveur qui conserve la clé API.",
+          "step1": "Dans Paramètres Jotform > Intégrations, ajoutez Webhooks en ciblant une URL HTTPS de passerelle que vous contrôlez.",
+          "step2": "Dans la passerelle, validez le formulaire attendu et le consentement affirmatif, puis analysez la charge rawRequest.",
+          "step3": "Envoyez uniquement les champs normalisés au point de terminaison v1 avec les en-têtes protégés.",
+          "step4": "Réutilisez le submissionID Jotform comme externalId et Idempotency-Key pour chaque nouvel essai.",
+          "step5": "Accusez réception immédiatement à Jotform après enregistrement durable, puis testez une soumission de bout en bout.",
+          "caution": "La configuration native des webhooks Jotform ne documente pas d'en-têtes protégés. Conservez la clé Get Phame exclusivement sur la passerelle côté serveur."
+        },
+        "contactForm7": {
+          "summary": "Utilisez une intégration WordPress légère car Contact Form 7 ne propose aucune action native de webhook sortant générique.",
+          "step1": "Ajoutez une case d'acceptation obligatoire dans Contact Form 7 avec un libellé adapté à vos canaux réels.",
+          "step2": "Utilisez le crochet documenté wpcf7_before_send_mail dans un plugin ou mu-plugin WordPress vérifié pour lire les données assainies.",
+          "step3": "Validez l'identité du formulaire et le consentement côté serveur avant d'envoyer le JSON au point de terminaison v1.",
+          "step4": "Générez et conservez une clé d'idempotence avant toute nouvelle tentative pour éviter les doublons.",
+          "step5": "Conservez la clé API dans la configuration du serveur et vérifiez une soumission autorisée dans Importations récentes de l'API.",
+          "caution": "N'utilisez pas d'événements DOM du navigateur ni le code du formulaire. Ils exposent la clé API et ne constituent pas une frontière de consentement sûre."
+        }
       }
     },
     "manual": {
@@ -6639,6 +6807,24 @@
     "adminProcedureRecovery": {
       "title": "Les contrôles administrateur sont en cours de mise à jour.",
       "description": "Ce contrôle administrateur est en cours de mise à jour. Vos réglages existants restent inchangés ; actualisez dans un instant pour réessayer."
+    },
+    "adminSubscriptionHealth": {
+      "eyebrow": "Intégrité des données de facturation",
+      "loading": "Vérification des enregistrements d'abonnement…",
+      "healthyTitle": "Les profils d'entreprise et les enregistrements Stripe concordent",
+      "attentionTitle": "Les enregistrements d'abonnement nécessitent un examen",
+      "unavailable": "La comparaison locale des enregistrements n'a pas pu être effectuée. Actualisez pour réessayer.",
+      "summary": "{{profiles}} profils et {{subscriptions}} enregistrements locaux vérifiés. Aucune requête n'est adressée à l'API Stripe.",
+      "refresh": "Actualiser",
+      "issues": "Anomalies détectées dans les enregistrements",
+      "checkedAt": "Dernière vérification : {{time}}",
+      "issue": {
+        "paid_profile_without_active_subscription": "Profil payant sans enregistrement d'abonnement actif",
+        "active_subscription_on_free_profile": "Abonnement actif associé à un profil gratuit",
+        "plan_tier_mismatch": "Le forfait de l'abonnement actif ne correspond pas au niveau du profil",
+        "subscription_without_business_profile": "Un enregistrement d'abonnement existe sans profil d'entreprise associé",
+        "duplicate_subscription_records": "Plusieurs enregistrements d'abonnement trouvés pour le même utilisateur"
+      }
     }
   },
   "it": {
@@ -8153,6 +8339,14 @@
             "3": "Invia JSON all'endpoint Get Phame con gli header mostrati sotto.",
             "4": "Usa un ID record sorgente immutabile per externalId e Idempotency-Key.",
             "5": "Invia un record consentito, poi aggiorna lo stato qui."
+          },
+          "jotform": {
+            "1": "Aggiungi Webhooks in Jotform e inoltra gli invii a un bridge lato server protetto sotto il tuo controllo.",
+            "2": "Non inserire la chiave API di Get Phame in Jotform, in un URL pubblico o negli script del browser.",
+            "3": "Valida il modulo previsto e il consenso esplicito nel bridge prima di analizzare rawRequest.",
+            "4": "Inoltra il JSON normalizzato a Get Phame con le intestazioni protette mostrate di seguito.",
+            "5": "Riutilizza il submissionID di Jotform per externalId e Idempotency-Key a ogni nuovo tentativo.",
+            "6": "Invia un record di prova consentito, quindi aggiorna lo stato qui."
           }
         },
         "automation": {
@@ -8246,6 +8440,42 @@
         "failurePrivacy": "Non sono state create né esposte credenziali. Ricomincia dalla dashboard di WordPress.",
         "expiredPrivacy": "Avvia una nuova connessione in WordPress. Get Phame non riceve mai le credenziali amministrative di WordPress.",
         "privacy": "Questa richiesta scade tra 15 minuti. Get Phame non riceve mai le credenziali amministrative di WordPress."
+      },
+      "guides": {
+        "zapier": {
+          "summary": "Collega un trigger autorizzato in Webhooks by Zapier con una richiesta JSON esplicita.",
+          "step1": "Scegli il trigger che genera un record cliente idoneo, quindi aggiungi Webhooks by Zapier come azione successiva.",
+          "step2": "Scegli POST o Custom Request, imposta l'URL sull'endpoint contatti v1 e Payload Type su JSON.",
+          "step3": "Mappa solo i campi indicati di seguito. Aggiungi Authorization nelle intestazioni protette e non lasciare mai vuoto il campo Data.",
+          "step4": "Mappa l'ID evento di origine invariato in externalId e Idempotency-Key per garantire replay sicuri.",
+          "step5": "Esegui un test con un record autorizzato, quindi verifica il risultato mascherato in Importazioni API recenti."
+        },
+        "make": {
+          "summary": "Usa Make HTTP v4 con una struttura dati JSON e una credenziale sicura per la chiave API.",
+          "step1": "Scegli il modulo trigger che genera un cliente idoneo, quindi aggiungi HTTP > Make a request (v4).",
+          "step2": "Imposta Method su POST, URL sull'endpoint contatti v1 e Body content type su application/json.",
+          "step3": "Scegli Data structure per la mappatura JSON e configura la chiave Get Phame nel gestore credenziali di Make.",
+          "step4": "Mappa l'ID evento di origine in externalId e Idempotency-Key senza generare un nuovo valore nei tentativi successivi.",
+          "step5": "Abilita la gestione degli errori per risposte diverse da 2xx, quindi esegui una prova consentita dello scenario."
+        },
+        "jotform": {
+          "summary": "Usa il webhook nativo di Jotform come trigger e inoltralo tramite un bridge lato server che custodisce la chiave API.",
+          "step1": "In Impostazioni Jotform > Integrazioni, aggiungi Webhooks indirizzandolo all'URL HTTPS del tuo bridge.",
+          "step2": "Nel bridge, valida il modulo atteso e il consenso affermativo, quindi elabora il payload rawRequest.",
+          "step3": "Invia solo i campi normalizzati all'endpoint contatti v1 con le intestazioni protette.",
+          "step4": "Riutilizza il submissionID di Jotform come externalId e Idempotency-Key per ogni tentativo.",
+          "step5": "Conferma la ricezione a Jotform subito dopo la registrazione durevole e testa un invio completo consentito.",
+          "caution": "La configurazione nativa dei webhook di Jotform non documenta intestazioni protette. Conserva la chiave Get Phame esclusivamente nel bridge lato server."
+        },
+        "contactForm7": {
+          "summary": "Usa una leggera integrazione WordPress poiché Contact Form 7 non include un'azione webhook generica nativa.",
+          "step1": "Aggiungi una casella di accettazione obbligatoria in Contact Form 7 con testo del consenso conforme ai tuoi canali effettivi.",
+          "step2": "Usa l'hook documentato wpcf7_before_send_mail in un plugin o mu-plugin WordPress verificato per leggere i dati sanitizzati.",
+          "step3": "Valida l'identità del modulo e il consenso sul server prima di inviare il JSON normalizzato all'endpoint contatti v1.",
+          "step4": "Genera e conserva una chiave di idempotenza prima dei re-invii per evitare contatti duplicati.",
+          "step5": "Conserva la chiave API nella configurazione del server e verifica un invio consentito in Importazioni API recenti.",
+          "caution": "Non utilizzare eventi DOM del browser o il codice del modulo. Espongono la chiave API e non garantiscono un limite di consenso sicuro."
+        }
       }
     },
     "manual": {
@@ -8781,6 +9011,24 @@
     "adminProcedureRecovery": {
       "title": "I controlli amministrativi sono in aggiornamento.",
       "description": "Questo controllo amministrativo è in aggiornamento. Le impostazioni esistenti restano invariate; aggiorna tra poco per riprovare."
+    },
+    "adminSubscriptionHealth": {
+      "eyebrow": "Integrità dei dati di fatturazione",
+      "loading": "Verifica delle registrazioni di abbonamento…",
+      "healthyTitle": "I profili aziendali e i record Stripe corrispondono",
+      "attentionTitle": "I record di abbonamento richiedono una revisione",
+      "unavailable": "Impossibile completare il confronto locale dei record. Aggiorna per riprovare.",
+      "summary": "{{profiles}} profili e {{subscriptions}} record locali di abbonamento verificati. Nessuna richiesta inviata all'API Stripe.",
+      "refresh": "Aggiorna",
+      "issues": "Discrepanze rilevate nei record",
+      "checkedAt": "Ultimo controllo: {{time}}",
+      "issue": {
+        "paid_profile_without_active_subscription": "Profilo a pagamento senza record di abbonamento attivo",
+        "active_subscription_on_free_profile": "Abbonamento attivo associato a un profilo gratuito",
+        "plan_tier_mismatch": "Il piano dell'abbonamento attivo non corrisponde al livello del profilo",
+        "subscription_without_business_profile": "Esiste un record di abbonamento senza profilo aziendale associato",
+        "duplicate_subscription_records": "Trovati record di abbonamento multipli per lo stesso utente"
+      }
     }
   },
   "th": {
@@ -10286,6 +10534,14 @@
             "3": "ส่ง JSON ไปยัง endpoint ของ Get Phame พร้อม headers ที่แสดงด้านล่าง",
             "4": "ใช้หมายเลขระเบียนแหล่งข้อมูลที่ไม่เปลี่ยนแปลงเพียงค่าเดียวสำหรับ externalId และ Idempotency-Key",
             "5": "ส่งระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
+          },
+          "jotform": {
+            "1": "เพิ่ม Webhooks ใน Jotform แล้วส่งข้อมูลแบบฟอร์มไปยังบริดจ์ฝั่งเซิร์ฟเวอร์ที่คุณดูแล",
+            "2": "ห้ามใส่คีย์ API ของ Get Phame ใน Jotform, URL สาธารณะ หรือสคริปต์บนเบราว์เซอร์",
+            "3": "ตรวจสอบแบบฟอร์มและการยินยอมอย่างชัดเจนในบริดจ์ก่อนแยกวิเคราะห์ rawRequest",
+            "4": "ส่งต่อ JSON ที่ปรับมาตรฐานแล้วไปยัง Get Phame พร้อมส่วนหัวที่ปลอดภัยตามที่แสดงด้านล่าง",
+            "5": "ใช้ submissionID ของ Jotform ซ้ำสำหรับ externalId และ Idempotency-Key ในการลองส่งใหม่ทุกครั้ง",
+            "6": "ส่งบันทึกทดสอบที่ได้รับอนุญาตหนึ่งรายการ จากนั้นรีเฟรชสถานะที่นี่"
           }
         },
         "automation": {
@@ -10379,6 +10635,42 @@
         "failurePrivacy": "ไม่มีข้อมูลประจำตัวใดถูกสร้างหรือเปิดเผย เริ่มใหม่จากแดชบอร์ด WordPress ของคุณ",
         "expiredPrivacy": "เริ่มการเชื่อมต่อใหม่ใน WordPress. Get Phame จะไม่รับข้อมูลประจำตัวผู้ดูแลระบบของ WordPress ของคุณ",
         "privacy": "คำขอนี้หมดอายุภายใน 15 นาที. Get Phame จะไม่รับข้อมูลประจำตัวผู้ดูแลระบบของ WordPress ของคุณ"
+      },
+      "guides": {
+        "zapier": {
+          "summary": "แมปทริกเกอร์ที่ได้รับอนุญาตเข้ากับ Webhooks by Zapier ด้วยคำขอ JSON ที่ชัดเจน",
+          "step1": "เลือกทริกเกอร์ที่สร้างบันทึกลูกค้าที่ถูกต้อง จากนั้นเพิ่ม Webhooks by Zapier เป็นการดำเนินการถัดไป",
+          "step2": "เลือก POST หรือ Custom Request ตั้งค่า URL เป็นปลายทางผู้ติดต่อ v1 และตั้งประเภทเป็น JSON",
+          "step3": "แมปเฉพาะฟิลด์ด้านล่าง เพิ่ม Authorization ในส่วนหัวที่ปลอดภัย และอย่าปล่อยให้ช่อง Data ว่าง",
+          "step4": "แมปรหัสเหตุการณ์ต้นทางเดิมไปยัง externalId และ Idempotency-Key เพื่อให้การส่งซ้ำปลอดภัย",
+          "step5": "ทดสอบด้วยบันทึกที่ได้รับอนุญาตหนึ่งรายการ แล้วตรวจสอบผลลัพธ์ที่มาสก์ไว้ในรายการนำเข้า API ล่าสุด"
+        },
+        "make": {
+          "summary": "ใช้ Make HTTP v4 พร้อมโครงสร้างข้อมูล JSON และคลังข้อมูลลับคีย์ API ที่ปลอดภัย",
+          "step1": "เลือกโมดูลทริกเกอร์ที่สร้างลูกค้าที่ได้รับอนุญาต จากนั้นเพิ่ม HTTP > Make a request (v4)",
+          "step2": "ตั้งค่า Method เป็น POST, URL เป็นปลายทางผู้ติดต่อ v1 และ Body content type เป็น application/json",
+          "step3": "เลือก Data structure สำหรับการแมป JSON และกำหนดค่าคีย์ Get Phame ในคลังข้อมูลลับของ Make",
+          "step4": "แมปรหัสเหตุการณ์ต้นทางที่คงที่ไปยัง externalId และ Idempotency-Key โดยไม่สร้างค่าใหม่เมื่อลองซ้ำ",
+          "step5": "เปิดใช้งานการจัดการข้อผิดพลาดสำหรับการตอบกลับที่ไม่ใช่ 2xx แล้วรันการทดสอบสถานการณ์ที่ได้รับอนุญาต"
+        },
+        "jotform": {
+          "summary": "ใช้เว็บฮุกในตัวของ Jotform เป็นทริกเกอร์และส่งต่อผ่านบริดจ์ฝั่งเซิร์ฟเวอร์ที่เก็บรักษาคีย์ API ไว้อย่างปลอดภัย",
+          "step1": "ใน Jotform Settings > Integrations ให้เพิ่ม Webhooks โดยชี้ไปยัง URL HTTPS ของบริดจ์ที่คุณควบคุม",
+          "step2": "ในบริดจ์ ให้ตรวจสอบแบบฟอร์มและการยินยอมก่อนแยกวิเคราะห์เพย์โหลด rawRequest",
+          "step3": "ส่งเฉพาะฟิลด์ที่ปรับมาตรฐานไปยังปลายทางผู้ติดต่อ v1 พร้อมส่วนหัวที่ปลอดภัย",
+          "step4": "ใช้ submissionID ของ Jotform ซ้ำเป็น externalId และ Idempotency-Key ในการลองส่งใหม่ทุกครั้ง",
+          "step5": "ตอบรับ Jotform ทันทีหลังจากบันทึกข้อมูลสำเร็จ และทดสอบการส่งแบบฟอร์มที่ได้รับอนุญาตแบบครบวงจร",
+          "caution": "การตั้งค่าเว็บฮุกมาตรฐานของ Jotform ไม่รองรับการกำหนดส่วนหัวที่ปลอดภัย โปรดเก็บคีย์ API ของ Get Phame ไว้ในบริดจ์ฝั่งเซิร์ฟเวอร์เท่านั้น"
+        },
+        "contactForm7": {
+          "summary": "ใช้การเชื่อมต่อฝั่ง WordPress ขนาดเล็กเนื่องจาก Contact Form 7 ไม่มีฟังก์ชันเว็บฮุกขาออกทั่วไปในตัว",
+          "step1": "เพิ่มช่องทำเครื่องหมายการยอมรับที่จำเป็นใน Contact Form 7 โดยระบุข้อความยินยอมที่ตรงกับช่องทางการสื่อสารจริง",
+          "step2": "ใช้ฮุก wpcf7_before_send_mail ในปลั๊กอินหรือ mu-plugin ของ WordPress ที่ผ่านการตรวจสอบเพื่ออ่านข้อมูลที่ผ่านการกรองแล้ว",
+          "step3": "ตรวจสอบความถูกต้องของแบบฟอร์มและการยินยอมที่ฝั่งเซิร์ฟเวอร์ก่อนส่ง JSON ไปยังปลายทางผู้ติดต่อ v1",
+          "step4": "สร้างและจัดเก็บคีย์ Idempotency ก่อนลองส่งซ้ำ เพื่อป้องกันไม่ให้เกิดผู้ติดต่อซ้ำซ้อน",
+          "step5": "เก็บคีย์ API ไว้ในการกำหนดค่าฝั่งเซิร์ฟเวอร์ และตรวจสอบการส่งที่ได้รับอนุญาตในรายการนำเข้า API ล่าสุด",
+          "caution": "ห้ามใช้เหตุการณ์ DOM ของเบราว์เซอร์หรือโค้ดหน้าเว็บสำหรับการเชื่อมต่อนี้ เพราะจะทำให้คีย์ API รั่วไหลและไม่ใช่การยืนยันความยินยอมที่ปลอดภัย"
+        }
       }
     },
     "manual": {
@@ -10911,6 +11203,24 @@
     "adminProcedureRecovery": {
       "title": "กำลังอัปเดตการควบคุมผู้ดูแลระบบ",
       "description": "การควบคุมผู้ดูแลระบบนี้กำลังอัปเดต การตั้งค่าปัจจุบันของคุณยังไม่เปลี่ยนแปลง โปรดรีเฟรชอีกครั้งในอีกสักครู่"
+    },
+    "adminSubscriptionHealth": {
+      "eyebrow": "ความสมบูรณ์ของข้อมูลการเรียกเก็บเงิน",
+      "loading": "กำลังตรวจสอบบันทึกการสมัครสมาชิก…",
+      "healthyTitle": "โปรไฟล์ธุรกิจและบันทึก Stripe ตรงกันทั้งหมด",
+      "attentionTitle": "บันทึกการสมัครสมาชิกจำเป็นต้องได้รับการตรวจสอบ",
+      "unavailable": "ไม่สามารถเปรียบเทียบบันทึกในเครื่องได้ โปรดรีเฟรชเพื่อลองใหม่อีกครั้ง",
+      "summary": "ตรวจสอบแล้ว {{profiles}} โปรไฟล์และ {{subscriptions}} บันทึกในเครื่อง ไม่มีการส่งคำขอไปยัง Stripe API",
+      "refresh": "รีเฟรช",
+      "issues": "พบรายการที่ไม่สอดคล้องกัน",
+      "checkedAt": "ตรวจสอบล่าสุดเมื่อ {{time}}",
+      "issue": {
+        "paid_profile_without_active_subscription": "โปรไฟล์แบบชำระเงินแต่ไม่มีบันทึกการสมัครสมาชิกที่ใช้งานอยู่",
+        "active_subscription_on_free_profile": "มีการสมัครสมาชิกที่ใช้งานอยู่ผูกกับโปรไฟล์ฟรี",
+        "plan_tier_mismatch": "แผนการสมัครสมาชิกที่ใช้งานอยู่ไม่ตรงกับระดับของโปรไฟล์",
+        "subscription_without_business_profile": "พบบันทึกการสมัครสมาชิกโดยไม่มีโปรไฟล์ธุรกิจที่เกี่ยวข้อง",
+        "duplicate_subscription_records": "พบบันทึกการสมัครสมาชิกซ้ำซ้อนสำหรับผู้ใช้รายเดียวกัน"
+      }
     }
   },
   "zh-CN": {
@@ -12414,6 +12724,14 @@
             "3": "将 JSON 和下方所示的请求头一起发送到 Get Phame 端点。",
             "4": "为 externalId 和 Idempotency-Key 使用一个不可变的来源记录 ID。",
             "5": "发送一条允许的记录，然后在此刷新健康状态。"
+          },
+          "jotform": {
+            "1": "在 Jotform 中添加 Webhooks，并将表单提交发送至受您控制的受信服务端桥接器。",
+            "2": "切勿将 Get Phame API 密钥保存在 Jotform、公开 URL 或浏览器脚本中。",
+            "3": "在桥接器中验证预期表单与明确授权，然后解析 rawRequest 数据包。",
+            "4": "将规范化 JSON 转发至 Get Phame，并附带下方显示的受保护请求头。",
+            "5": "在每次重试中复用 Jotform submissionID 作为 externalId 与 Idempotency-Key。",
+            "6": "提交一条合规测试记录，然后在此处刷新健康状态。"
           }
         },
         "automation": {
@@ -12507,6 +12825,42 @@
         "failurePrivacy": "未创建或泄露任何凭据。请从 WordPress 仪表板重新开始。",
         "expiredPrivacy": "请在 WordPress 中发起新的连接。Get Phame 不会接收您的 WordPress 管理员凭据。",
         "privacy": "此请求将在 15 分钟后过期。Get Phame 不会接收您的 WordPress 管理员凭据。"
+      },
+      "guides": {
+        "zapier": {
+          "summary": "通过 Webhooks by Zapier 显式映射合规触发器与 JSON 请求。",
+          "step1": "选择生成合规客户记录的触发器，然后添加 Webhooks by Zapier 作为下一步动作。",
+          "step2": "选择 POST 或 Custom Request，将 URL 设置为 v1 联系人端点，Payload Type 设置为 JSON。",
+          "step3": "仅映射下方列出的字段，在受保护请求头中添加 Authorization，切勿将 Data 留空。",
+          "step4": "将原始事件 ID 原样映射至 externalId 和 Idempotency-Key，确保重试属于安全重放。",
+          "step5": "使用合规记录进行测试，并在“最近 API 导入”中确认掩码处理后的导入结果。"
+        },
+        "make": {
+          "summary": "使用 Make HTTP v4 组件配合 JSON 数据结构及受保护的 API 密钥凭据库。",
+          "step1": "选择生成合规客户记录的触发模块，然后添加 HTTP > Make a request (v4)。",
+          "step2": "将 Method 设为 POST，URL 设为 v1 联系人端点，Body content type 设为 application/json。",
+          "step3": "选择 Data structure 进行 JSON 映射，并在 Make 受保护凭据库中配置 Get Phame 密钥。",
+          "step4": "将稳定的源事件 ID 映射至 externalId 与 Idempotency-Key，重试时切勿生成新值。",
+          "step5": "开启非 2xx 响应的错误处理，然后执行一次合规场景测试。"
+        },
+        "jotform": {
+          "summary": "将 Jotform 原生 Webhook 用作触发器，通过保管 API 密钥的服务端桥接器转发。",
+          "step1": "在 Jotform Settings > Integrations 中添加 Webhooks，指向您控制的 HTTPS 桥接器 URL。",
+          "step2": "在桥接器中验证目标表单与明确知情同意，然后解析 rawRequest 请求内容。",
+          "step3": "仅将规范化字段从桥接器转发至 v1 联系人端点，并附带受保护的请求头。",
+          "step4": "在所有重试中复用 Jotform submissionID 作为 externalId 与 Idempotency-Key。",
+          "step5": "在持久化接收后立即向 Jotform 回复确认，并端到端测试一条合规提交记录。",
+          "caution": "Jotform 原生 Webhook 配置未提供受保护请求头控制。请将 Get Phame API 密钥仅保存在服务端桥接器中，切勿填入 Jotform 表单或 URL。"
+        },
+        "contactForm7": {
+          "summary": "使用简易 WordPress 扩展集成，因为 Contact Form 7 本身不包含原生通用外发 Webhook 动作。",
+          "step1": "在 Contact Form 7 中添加必选同意复选框，文本需与实际联系渠道一致。",
+          "step2": "在经过审查的 WordPress 插件或 mu-plugin 中使用 wpcf7_before_send_mail 钩子读取净化后的数据。",
+          "step3": "在服务端验证表单来源与知情同意，然后将映射好的 JSON 发送至 v1 联系人端点。",
+          "step4": "在发起重试前生成并持久化幂等键，避免重试导致重复创建联系人。",
+          "step5": "将 API 密钥存放在服务器配置中，并在“最近 API 导入”中确认一条合规测试提交。",
+          "caution": "切勿使用浏览器 DOM 事件或前端表单代码进行此类对接，这会暴露 API 密钥且无法作为权威的合规导入边界。"
+        }
       }
     },
     "manual": {
@@ -13031,6 +13385,24 @@
     "adminProcedureRecovery": {
       "title": "管理员控件正在更新。",
       "description": "此管理员控件正在更新。您现有的设置不会改变；请稍后刷新后重试。"
+    },
+    "adminSubscriptionHealth": {
+      "eyebrow": "账单数据完整性",
+      "loading": "正在检查订阅记录…",
+      "healthyTitle": "企业资料与 Stripe 记录完全一致",
+      "attentionTitle": "订阅记录需要复核",
+      "unavailable": "无法完成本地记录比对，请刷新重试。",
+      "summary": "已检查 {{profiles}} 个企业资料与 {{subscriptions}} 条本地订阅记录。未发起任何 Stripe API 请求。",
+      "refresh": "刷新",
+      "issues": "检测到记录不一致",
+      "checkedAt": "上次检查时间：{{time}}",
+      "issue": {
+        "paid_profile_without_active_subscription": "付费资料未关联有效订阅记录",
+        "active_subscription_on_free_profile": "有效订阅关联到了免费资料",
+        "plan_tier_mismatch": "有效订阅套餐与资料等级不匹配",
+        "subscription_without_business_profile": "存在没有对应企业资料的订阅记录",
+        "duplicate_subscription_records": "同一用户存在多条订阅记录"
+      }
     }
   },
   "zh-TW": {
@@ -14535,6 +14907,14 @@
             "3": "將 JSON 與下方標頭一起送至 Get Phame 端點。",
             "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
             "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
+          },
+          "jotform": {
+            "1": "在 Jotform 中新增 Webhooks，並將表單提交傳送至受您控制的受信伺服器端橋接器。",
+            "2": "切勿將 Get Phame API 金鑰存放在 Jotform、公開 URL 或瀏覽器指令碼中。",
+            "3": "在橋接器中驗證預期表單與明確授權，然後解析 rawRequest 資料包。",
+            "4": "將正規化 JSON 轉發至 Get Phame，並附帶下方顯示的受保護請求標頭。",
+            "5": "在每次重試中重複使用 Jotform submissionID 作為 externalId 與 Idempotency-Key。",
+            "6": "提交一筆合規測試記錄，然後在此處重新整理健全狀態。"
           }
         },
         "automation": {
@@ -14629,6 +15009,42 @@
         "failurePrivacy": "未建立或洩露任何憑證。請從 WordPress 儀表板重新開始。",
         "expiredPrivacy": "請在 WordPress 中重新建立連線。Get Phame 不會接收您的 WordPress 管理員憑證。",
         "privacy": "此請求將於 15 分鐘後到期。Get Phame 不會接收您的 WordPress 管理員憑證。"
+      },
+      "guides": {
+        "zapier": {
+          "summary": "透過 Webhooks by Zapier 明確對應合規觸發條件與 JSON 請求。",
+          "step1": "選擇產生合規客戶記錄的觸發條件，然後新增 Webhooks by Zapier 作為下一步動作。",
+          "step2": "選擇 POST 或 Custom Request，將 URL 設定為 v1 聯絡人端點，Payload Type 設定為 JSON。",
+          "step3": "僅對應下方列出的欄位，在受保護請求標頭中新增 Authorization，切勿將 Data 留空。",
+          "step4": "將原始事件 ID 原樣對應至 externalId 與 Idempotency-Key，確保重試屬於安全重播。",
+          "step5": "使用合規記錄進行測試，並在「最近 API 匯入」中確認遮罩處理後的匯入結果。"
+        },
+        "make": {
+          "summary": "使用 Make HTTP v4 元件配合 JSON 資料結構及受保護的 API 金鑰憑證庫。",
+          "step1": "選擇產生合規客戶記錄的觸發模組，然後新增 HTTP > Make a request (v4)。",
+          "step2": "將 Method 設為 POST，URL 設為 v1 聯絡人端點，Body content type 設為 application/json。",
+          "step3": "選擇 Data structure 進行 JSON 對應，並在 Make 受保護憑證庫中設定 Get Phame 金鑰。",
+          "step4": "將穩定的來源事件 ID 對應至 externalId 與 Idempotency-Key，重試時切勿產生新值。",
+          "step5": "開啟非 2xx 回應的錯誤處理，然後執行一次合規情境測試。"
+        },
+        "jotform": {
+          "summary": "將 Jotform 原生 Webhook 用作觸發條件，透過保管 API 金鑰的伺服器端橋接器轉發。",
+          "step1": "在 Jotform Settings > Integrations 中新增 Webhooks，指向您控制的 HTTPS 橋接器 URL。",
+          "step2": "在橋接器中驗證目標表單與明確知情同意，然後解析 rawRequest 請求內容。",
+          "step3": "僅將正規化欄位從橋接器轉發至 v1 聯絡人端點，並附帶受保護的請求標頭。",
+          "step4": "在所有重試中重複使用 Jotform submissionID 作為 externalId 與 Idempotency-Key。",
+          "step5": "在持久化接收後立即向 Jotform 回覆確認，並端對端測試一筆合規提交記錄。",
+          "caution": "Jotform 原生 Webhook 設定未提供受保護請求標頭控制。請將 Get Phame API 金鑰僅保存在伺服器端橋接器中，切勿填入 Jotform 表單或 URL。"
+        },
+        "contactForm7": {
+          "summary": "使用簡易 WordPress 擴充整合，因為 Contact Form 7 本身不包含原生通用外發 Webhook 動作。",
+          "step1": "在 Contact Form 7 中新增必選同意核取方塊，文字需與實際聯繫管道一致。",
+          "step2": "在經過審查的 WordPress 外掛程式或 mu-plugin 中使用 wpcf7_before_send_mail 鉤子讀取淨化後的資料。",
+          "step3": "在伺服器端驗證表單來源與知情同意，然後將對應好的 JSON 發送至 v1 聯絡人端點。",
+          "step4": "在發起重試前產生並持久化冪等鍵，避免重試導致重複建立聯絡人。",
+          "step5": "將 API 金鑰存放在伺服器設定中，並在「最近 API 匯入」中確認一筆合規測試提交。",
+          "caution": "切勿使用瀏覽器 DOM 事件或前端表單程式碼進行此類對接，這會暴露 API 金鑰且無法作為權威的合規匯入邊界。"
+        }
       }
     },
     "manual": {
@@ -15166,6 +15582,24 @@
     "adminProcedureRecovery": {
       "title": "管理員控制項正在更新。",
       "description": "此管理員控制項正在更新。您現有的設定不會變更；請稍後重新整理再試一次。"
+    },
+    "adminSubscriptionHealth": {
+      "eyebrow": "帳單資料完整性",
+      "loading": "正在檢查訂閱記錄…",
+      "healthyTitle": "企業資料與 Stripe 記錄完全相符",
+      "attentionTitle": "訂閱記錄需要複核",
+      "unavailable": "無法完成本地記錄比對，請重新整理後重試。",
+      "summary": "已檢查 {{profiles}} 筆企業資料與 {{subscriptions}} 筆本地訂閱記錄。未發送任何 Stripe API 請求。",
+      "refresh": "重新整理",
+      "issues": "檢測到記錄不一致",
+      "checkedAt": "上次檢查時間：{{time}}",
+      "issue": {
+        "paid_profile_without_active_subscription": "付費資料未關聯有效訂閱記錄",
+        "active_subscription_on_free_profile": "有效訂閱關聯到了免費資料",
+        "plan_tier_mismatch": "有效訂閱方案與資料等級不相符",
+        "subscription_without_business_profile": "存在沒有對應企業資料的訂閱記錄",
+        "duplicate_subscription_records": "同一使用者存在多筆訂閱記錄"
+      }
     }
   }
 }

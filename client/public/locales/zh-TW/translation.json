@@ -2885,6 +2885,40 @@
         "step4": "使用 Header Mapping 設定 Authorization 與 Idempotency-Key。選擇表單送出識別符作為 idempotency 值。",
         "step5": "保持 SSL Verify 啟用，儲存該動作，並提交一筆允許的測試紀錄。",
         "summary": "使用 Webhook 動作搭配 JSON 欄位、自訂與標頭對應。"
+      },
+      "zapier": {
+        "summary": "透過 Webhooks by Zapier 明確對應合規觸發條件與 JSON 請求。",
+        "step1": "選擇產生合規客戶記錄的觸發條件，然後新增 Webhooks by Zapier 作為下一步動作。",
+        "step2": "選擇 POST 或 Custom Request，將 URL 設定為 v1 聯絡人端點，Payload Type 設定為 JSON。",
+        "step3": "僅對應下方列出的欄位，在受保護請求標頭中新增 Authorization，切勿將 Data 留空。",
+        "step4": "將原始事件 ID 原樣對應至 externalId 與 Idempotency-Key，確保重試屬於安全重播。",
+        "step5": "使用合規記錄進行測試，並在「最近 API 匯入」中確認遮罩處理後的匯入結果。"
+      },
+      "make": {
+        "summary": "使用 Make HTTP v4 元件配合 JSON 資料結構及受保護的 API 金鑰憑證庫。",
+        "step1": "選擇產生合規客戶記錄的觸發模組，然後新增 HTTP > Make a request (v4)。",
+        "step2": "將 Method 設為 POST，URL 設為 v1 聯絡人端點，Body content type 設為 application/json。",
+        "step3": "選擇 Data structure 進行 JSON 對應，並在 Make 受保護憑證庫中設定 Get Phame 金鑰。",
+        "step4": "將穩定的來源事件 ID 對應至 externalId 與 Idempotency-Key，重試時切勿產生新值。",
+        "step5": "開啟非 2xx 回應的錯誤處理，然後執行一次合規情境測試。"
+      },
+      "jotform": {
+        "summary": "將 Jotform 原生 Webhook 用作觸發條件，透過保管 API 金鑰的伺服器端橋接器轉發。",
+        "step1": "在 Jotform Settings > Integrations 中新增 Webhooks，指向您控制的 HTTPS 橋接器 URL。",
+        "step2": "在橋接器中驗證目標表單與明確知情同意，然後解析 rawRequest 請求內容。",
+        "step3": "僅將正規化欄位從橋接器轉發至 v1 聯絡人端點，並附帶受保護的請求標頭。",
+        "step4": "在所有重試中重複使用 Jotform submissionID 作為 externalId 與 Idempotency-Key。",
+        "step5": "在持久化接收後立即向 Jotform 回覆確認，並端對端測試一筆合規提交記錄。",
+        "caution": "Jotform 原生 Webhook 設定未提供受保護請求標頭控制。請將 Get Phame API 金鑰僅保存在伺服器端橋接器中，切勿填入 Jotform 表單或 URL。"
+      },
+      "contactForm7": {
+        "summary": "使用簡易 WordPress 擴充整合，因為 Contact Form 7 本身不包含原生通用外發 Webhook 動作。",
+        "step1": "在 Contact Form 7 中新增必選同意核取方塊，文字需與實際聯繫管道一致。",
+        "step2": "在經過審查的 WordPress 外掛程式或 mu-plugin 中使用 wpcf7_before_send_mail 鉤子讀取淨化後的資料。",
+        "step3": "在伺服器端驗證表單來源與知情同意，然後將對應好的 JSON 發送至 v1 聯絡人端點。",
+        "step4": "在發起重試前產生並持久化冪等鍵，避免重試導致重複建立聯絡人。",
+        "step5": "將 API 金鑰存放在伺服器設定中，並在「最近 API 匯入」中確認一筆合規測試提交。",
+        "caution": "切勿使用瀏覽器 DOM 事件或前端表單程式碼進行此類對接，這會暴露 API 金鑰且無法作為權威的合規匯入邊界。"
       }
     },
     "imports": {
@@ -3052,6 +3086,14 @@
           "3": "將 JSON 與下方標頭一起送至 Get Phame 端點。",
           "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
           "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
+        },
+        "jotform": {
+          "1": "在 Jotform 中新增 Webhooks，並將表單提交傳送至受您控制的受信伺服器端橋接器。",
+          "2": "切勿將 Get Phame API 金鑰存放在 Jotform、公開 URL 或瀏覽器指令碼中。",
+          "3": "在橋接器中驗證預期表單與明確授權，然後解析 rawRequest 資料包。",
+          "4": "將正規化 JSON 轉發至 Get Phame，並附帶下方顯示的受保護請求標頭。",
+          "5": "在每次重試中重複使用 Jotform submissionID 作為 externalId 與 Idempotency-Key。",
+          "6": "提交一筆合規測試記錄，然後在此處重新整理健全狀態。"
         }
       },
       "automation": {
@@ -4350,5 +4392,23 @@
   "adminProcedureRecovery": {
     "title": "管理員控制項正在更新。",
     "description": "此管理員控制項正在更新。您現有的設定不會變更；請稍後重新整理再試一次。"
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "帳單資料完整性",
+    "loading": "正在檢查訂閱記錄…",
+    "healthyTitle": "企業資料與 Stripe 記錄完全相符",
+    "attentionTitle": "訂閱記錄需要複核",
+    "unavailable": "無法完成本地記錄比對，請重新整理後重試。",
+    "summary": "已檢查 {{profiles}} 筆企業資料與 {{subscriptions}} 筆本地訂閱記錄。未發送任何 Stripe API 請求。",
+    "refresh": "重新整理",
+    "issues": "檢測到記錄不一致",
+    "checkedAt": "上次檢查時間：{{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "付費資料未關聯有效訂閱記錄",
+      "active_subscription_on_free_profile": "有效訂閱關聯到了免費資料",
+      "plan_tier_mismatch": "有效訂閱方案與資料等級不相符",
+      "subscription_without_business_profile": "存在沒有對應企業資料的訂閱記錄",
+      "duplicate_subscription_records": "同一使用者存在多筆訂閱記錄"
+    }
   }
 }

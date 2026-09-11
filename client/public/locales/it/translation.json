@@ -3612,6 +3612,40 @@
         "step4": "Usa Header Mapping per Authorization e Idempotency-Key. Seleziona l'identificatore della submission del form come valore di idempotency.",
         "step5": "Mantieni SSL Verify abilitato, salva l'azione e invia un record di test consentito.",
         "summary": "Usa l'azione Webhook con mappature JSON field, custom e header."
+      },
+      "zapier": {
+        "summary": "Collega un trigger autorizzato in Webhooks by Zapier con una richiesta JSON esplicita.",
+        "step1": "Scegli il trigger che genera un record cliente idoneo, quindi aggiungi Webhooks by Zapier come azione successiva.",
+        "step2": "Scegli POST o Custom Request, imposta l'URL sull'endpoint contatti v1 e Payload Type su JSON.",
+        "step3": "Mappa solo i campi indicati di seguito. Aggiungi Authorization nelle intestazioni protette e non lasciare mai vuoto il campo Data.",
+        "step4": "Mappa l'ID evento di origine invariato in externalId e Idempotency-Key per garantire replay sicuri.",
+        "step5": "Esegui un test con un record autorizzato, quindi verifica il risultato mascherato in Importazioni API recenti."
+      },
+      "make": {
+        "summary": "Usa Make HTTP v4 con una struttura dati JSON e una credenziale sicura per la chiave API.",
+        "step1": "Scegli il modulo trigger che genera un cliente idoneo, quindi aggiungi HTTP > Make a request (v4).",
+        "step2": "Imposta Method su POST, URL sull'endpoint contatti v1 e Body content type su application/json.",
+        "step3": "Scegli Data structure per la mappatura JSON e configura la chiave Get Phame nel gestore credenziali di Make.",
+        "step4": "Mappa l'ID evento di origine in externalId e Idempotency-Key senza generare un nuovo valore nei tentativi successivi.",
+        "step5": "Abilita la gestione degli errori per risposte diverse da 2xx, quindi esegui una prova consentita dello scenario."
+      },
+      "jotform": {
+        "summary": "Usa il webhook nativo di Jotform come trigger e inoltralo tramite un bridge lato server che custodisce la chiave API.",
+        "step1": "In Impostazioni Jotform > Integrazioni, aggiungi Webhooks indirizzandolo all'URL HTTPS del tuo bridge.",
+        "step2": "Nel bridge, valida il modulo atteso e il consenso affermativo, quindi elabora il payload rawRequest.",
+        "step3": "Invia solo i campi normalizzati all'endpoint contatti v1 con le intestazioni protette.",
+        "step4": "Riutilizza il submissionID di Jotform come externalId e Idempotency-Key per ogni tentativo.",
+        "step5": "Conferma la ricezione a Jotform subito dopo la registrazione durevole e testa un invio completo consentito.",
+        "caution": "La configurazione nativa dei webhook di Jotform non documenta intestazioni protette. Conserva la chiave Get Phame esclusivamente nel bridge lato server."
+      },
+      "contactForm7": {
+        "summary": "Usa una leggera integrazione WordPress poiché Contact Form 7 non include un'azione webhook generica nativa.",
+        "step1": "Aggiungi una casella di accettazione obbligatoria in Contact Form 7 con testo del consenso conforme ai tuoi canali effettivi.",
+        "step2": "Usa l'hook documentato wpcf7_before_send_mail in un plugin o mu-plugin WordPress verificato per leggere i dati sanitizzati.",
+        "step3": "Valida l'identità del modulo e il consenso sul server prima di inviare il JSON normalizzato all'endpoint contatti v1.",
+        "step4": "Genera e conserva una chiave di idempotenza prima dei re-invii per evitare contatti duplicati.",
+        "step5": "Conserva la chiave API nella configurazione del server e verifica un invio consentito in Importazioni API recenti.",
+        "caution": "Non utilizzare eventi DOM del browser o il codice del modulo. Espongono la chiave API e non garantiscono un limite di consenso sicuro."
       }
     },
     "imports": {
@@ -3779,6 +3813,14 @@
           "3": "Invia JSON all'endpoint Get Phame con gli header mostrati sotto.",
           "4": "Usa un ID record sorgente immutabile per externalId e Idempotency-Key.",
           "5": "Invia un record consentito, poi aggiorna lo stato qui."
+        },
+        "jotform": {
+          "1": "Aggiungi Webhooks in Jotform e inoltra gli invii a un bridge lato server protetto sotto il tuo controllo.",
+          "2": "Non inserire la chiave API di Get Phame in Jotform, in un URL pubblico o negli script del browser.",
+          "3": "Valida il modulo previsto e il consenso esplicito nel bridge prima di analizzare rawRequest.",
+          "4": "Inoltra il JSON normalizzato a Get Phame con le intestazioni protette mostrate di seguito.",
+          "5": "Riutilizza il submissionID di Jotform per externalId e Idempotency-Key a ogni nuovo tentativo.",
+          "6": "Invia un record di prova consentito, quindi aggiorna lo stato qui."
         }
       },
       "automation": {
@@ -5081,5 +5123,23 @@
   "adminProcedureRecovery": {
     "title": "I controlli amministrativi sono in aggiornamento.",
     "description": "Questo controllo amministrativo è in aggiornamento. Le impostazioni esistenti restano invariate; aggiorna tra poco per riprovare."
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "Integrità dei dati di fatturazione",
+    "loading": "Verifica delle registrazioni di abbonamento…",
+    "healthyTitle": "I profili aziendali e i record Stripe corrispondono",
+    "attentionTitle": "I record di abbonamento richiedono una revisione",
+    "unavailable": "Impossibile completare il confronto locale dei record. Aggiorna per riprovare.",
+    "summary": "{{profiles}} profili e {{subscriptions}} record locali di abbonamento verificati. Nessuna richiesta inviata all'API Stripe.",
+    "refresh": "Aggiorna",
+    "issues": "Discrepanze rilevate nei record",
+    "checkedAt": "Ultimo controllo: {{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "Profilo a pagamento senza record di abbonamento attivo",
+      "active_subscription_on_free_profile": "Abbonamento attivo associato a un profilo gratuito",
+      "plan_tier_mismatch": "Il piano dell'abbonamento attivo non corrisponde al livello del profilo",
+      "subscription_without_business_profile": "Esiste un record di abbonamento senza profilo aziendale associato",
+      "duplicate_subscription_records": "Trovati record di abbonamento multipli per lo stesso utente"
+    }
   }
 }

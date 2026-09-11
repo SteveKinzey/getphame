@@ -193,6 +193,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
+import { assessSubscriptionRecordHealth } from "./subscriptionRecordHealth";
 import {
   stripeSubscriptions,
   businessProfiles,
@@ -7202,6 +7203,34 @@ export const appRouter = router({
         .orderBy(desc(leads.createdAt))
         .limit(200);
       return rows;
+    }),
+
+    subscriptionRecordHealth: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Subscription record health is temporarily unavailable.",
+        });
+      }
+
+      const [profiles, subscriptions] = await Promise.all([
+        db
+          .select({
+            userId: businessProfiles.userId,
+            tier: businessProfiles.tier,
+          })
+          .from(businessProfiles),
+        db
+          .select({
+            userId: stripeSubscriptions.userId,
+            plan: stripeSubscriptions.plan,
+            status: stripeSubscriptions.status,
+          })
+          .from(stripeSubscriptions),
+      ]);
+
+      return assessSubscriptionRecordHealth(profiles, subscriptions);
     }),
 
     stripeStatus: adminProcedure.query(async () => {

@@ -96,3 +96,17 @@ Responses never expose database errors, stack traces, credentials, hashes, or ac
 ## Form-Builder Mapping
 
 WS Form, Gravity Forms, Fluent Forms, Elementor Forms, and generic webhook tools all call the same endpoint and payload. Product-specific guides differ only in where the webhook URL, header, and JSON field mappings are entered. The documentation must use placeholders for secrets and must never render an account’s raw key into copyable examples after its one-time creation screen is dismissed.
+
+## Supported Form and Automation Paths
+
+| Platform            | Connection pattern                                                                                                            | Stable idempotency value            | Key handling                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| Zapier              | Webhooks by Zapier POST or Custom Request directly to the v1 endpoint. Map every JSON field explicitly.                       | Original source event ID            | Zapier protected connection or header configuration.                                          |
+| Make                | HTTP > Make a request (v4), POST with an `application/json` data structure. Treat non-2xx responses as errors.                | Original source event ID            | Make protected credential store.                                                              |
+| Jotform             | Native Jotform Webhooks to a trusted HTTPS bridge, then the bridge posts normalized JSON to the v1 endpoint.                  | `submissionID`                      | The bridge only; Jotform's native webhook setup does not document protected outbound headers. |
+| Elementor Pro Forms | A reviewed server-side WordPress form action or bridge forwards the submission after validation.                              | Persisted server-side submission ID | WordPress server configuration only.                                                          |
+| Gravity Forms       | Webhooks Add-On feed using POST, JSON, selected fields, and protected headers.                                                | Namespaced `{entry_id}`             | Webhook feed header configuration or a server-side filter.                                    |
+| WS Form             | Submitted-only Webhook Action using JSON, Header Mapping, and SSL verification.                                               | Namespaced `#submit_id`             | Header Mapping or a server-side filter.                                                       |
+| Contact Form 7      | A reviewed WordPress plugin or mu-plugin uses `wpcf7_before_send_mail`, validates sanitized data, and posts JSON server-side. | Persisted server-generated key      | WordPress server configuration only.                                                          |
+
+Do not put a Get Phame key in browser JavaScript, a public webhook URL, a query string, or a form field. Each bridge must validate its expected form identifier and affirmative consent before forwarding; all retries must reuse the same stable idempotency value. Contact import remains import-only: it does not queue or send review outreach.

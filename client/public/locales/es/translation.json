@@ -3378,6 +3378,40 @@
         "step4": "Use Header Mapping para Authorization y Idempotency-Key. Seleccione el identificador de envío del formulario para el valor de idempotency.",
         "step5": "Mantenga SSL Verify habilitado, guarde la acción y envíe un registro de prueba permitido.",
         "summary": "Use la acción Webhook con mapeos JSON de campos, personalizados y de encabezado."
+      },
+      "zapier": {
+        "summary": "Asocie un activador permitido en Webhooks by Zapier con una solicitud JSON explícita.",
+        "step1": "Elija el activador que produce un cliente permitido y luego agregue Webhooks by Zapier como siguiente acción.",
+        "step2": "Elija POST o Custom Request, defina la URL en el endpoint v1 de contactos y el tipo de contenido como JSON.",
+        "step3": "Asocie únicamente los campos indicados abajo. Añada Authorization en encabezados protegidos y nunca deje Data en blanco.",
+        "step4": "Asocie el ID de evento de origen sin modificar a externalId e Idempotency-Key para que los reintentos sean seguros.",
+        "step5": "Pruebe con un registro permitido y confirme el resultado enmascarado en Importaciones recientes de la API."
+      },
+      "make": {
+        "summary": "Use Make HTTP v4 con una estructura de datos JSON y credenciales protegidas de clave API.",
+        "step1": "Elija el módulo activador que genera un cliente permitido y agregue HTTP > Make a request (v4).",
+        "step2": "Establezca el método en POST, la URL en el endpoint v1 de contactos y el tipo de cuerpo en application/json.",
+        "step3": "Seleccione Data structure para la asignación JSON y configure la clave de Get Phame en el almacén de credenciales de Make.",
+        "step4": "Asigne el ID de evento estable del origen a externalId e Idempotency-Key. No genere un valor nuevo en cada reintento.",
+        "step5": "Active el control de errores para respuestas que no sean 2xx y ejecute una prueba de escenario permitida."
+      },
+      "jotform": {
+        "summary": "Use el webhook nativo de Jotform como activador y reenvíelo mediante un puente del lado del servidor que guarde la clave API.",
+        "step1": "En Configuración de Jotform > Integraciones, agregue Webhooks apuntando a una URL HTTPS de puente que usted controle.",
+        "step2": "En el puente, valide el formulario esperado y el consentimiento afirmativo, y luego procese la carga rawRequest.",
+        "step3": "Envíe solo los campos normalizados al endpoint v1 de contactos con los encabezados protegidos.",
+        "step4": "Reutilice el submissionID de Jotform como externalId e Idempotency-Key en todos los reintentos.",
+        "step5": "Confirme la recepción a Jotform de inmediato tras la aceptación duradera y pruebe un envío permitido de extremo a extremo.",
+        "caution": "La configuración nativa de webhooks de Jotform no documenta encabezados de solicitud protegidos. Guarde la clave de Get Phame exclusivamente en el puente del lado del servidor, nunca en Jotform ni en la URL."
+      },
+      "contactForm7": {
+        "summary": "Use una pequeña integración de WordPress ya que Contact Form 7 no ofrece una acción nativa de webhook genérico saliente.",
+        "step1": "Agregue una casilla de verificación obligatoria de aceptación en Contact Form 7 con un texto de consentimiento que coincida con sus canales reales.",
+        "step2": "Utilice el hook documentado wpcf7_before_send_mail en un plugin o mu-plugin de WordPress revisado para leer datos saneados.",
+        "step3": "Valide la identidad del formulario y el consentimiento en el servidor antes de enviar el JSON normalizado al endpoint v1 de contactos.",
+        "step4": "Genere y guarde una clave de idempotencia antes de reintentar para que los reintentos no dupliquen contactos.",
+        "step5": "Mantenga la clave API en la configuración del servidor y confirme un envío permitido en Importaciones recientes de la API.",
+        "caution": "No use eventos DOM del navegador ni el código del formulario para esta conexión. Exponen la clave API y no constituyen un límite de consentimiento seguro."
       }
     },
     "imports": {
@@ -3545,6 +3579,14 @@
           "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
           "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
           "5": "Envíe un registro permitido y luego actualice el estado aquí."
+        },
+        "jotform": {
+          "1": "Agregue Webhooks en Jotform y envíe los envíos a un puente seguro del lado del servidor que usted controle.",
+          "2": "No coloque una clave API de Get Phame en Jotform, en una URL pública ni en un script del navegador.",
+          "3": "Valide el formulario esperado y el consentimiento explícito en el puente antes de procesar rawRequest.",
+          "4": "Reenvíe el JSON normalizado a Get Phame con los encabezados protegidos que se muestran a continuación.",
+          "5": "Reutilice el submissionID de Jotform en externalId e Idempotency-Key en cada reintento.",
+          "6": "Envíe un registro de prueba permitido y luego actualice el estado aquí."
         }
       },
       "automation": {
@@ -4841,5 +4883,23 @@
   "adminProcedureRecovery": {
     "title": "Los controles de administrador se están actualizando.",
     "description": "Este control administrativo se está actualizando. La configuración actual no ha cambiado; actualiza la página en un momento para volver a intentarlo."
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "Integridad de datos de facturación",
+    "loading": "Comprobando registros de suscripción…",
+    "healthyTitle": "Los perfiles de negocio y los registros de Stripe coinciden",
+    "attentionTitle": "Los registros de suscripción requieren revisión",
+    "unavailable": "No se pudo completar la comparación local de registros. Actualice para intentarlo de nuevo.",
+    "summary": "{{profiles}} perfiles y {{subscriptions}} registros locales de suscripción comprobados. No se realiza ninguna solicitud a la API de Stripe.",
+    "refresh": "Actualizar",
+    "issues": "Discrepancias detectadas en los registros",
+    "checkedAt": "Última comprobación: {{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "Perfil de pago sin registro de suscripción activa",
+      "active_subscription_on_free_profile": "Suscripción activa asociada a un perfil gratuito",
+      "plan_tier_mismatch": "El plan de la suscripción activa no coincide con el nivel del perfil",
+      "subscription_without_business_profile": "Existe un registro de suscripción sin perfil de negocio asociado",
+      "duplicate_subscription_records": "Se encontraron múltiples registros de suscripción para el mismo usuario"
+    }
   }
 }

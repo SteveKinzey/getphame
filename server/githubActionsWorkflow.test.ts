@@ -33,8 +33,13 @@ describe("GitHub Actions quality gate", () => {
 
     expect(workflow).toContain("Validate router schema contracts");
     expect(workflow).toContain("pnpm check:router-contracts");
+    expect(workflow).toContain("Lint database schema and migration parity");
+    expect(workflow).toContain("pnpm lint:schema-migrations");
     expect(packageJson.scripts?.["check:router-contracts"]).toBe(
       "tsc --noEmit --incremental false"
+    );
+    expect(packageJson.scripts?.["lint:schema-migrations"]).toBe(
+      "node scripts/lint-schema-migrations.mjs"
     );
   });
 });
