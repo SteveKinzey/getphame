@@ -1,5 +1,6 @@
 export const ADAPTIVE_SEND_WARNING_THRESHOLD = 0.7;
 export const ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD = 0.85;
+export const ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD = 0.9;
 export const ACCOUNT_HARD_DAILY_SEND_CEILING = 2_000;
 export const ACCOUNT_HARD_HOURLY_SEND_CEILING = 300;
 export const ADAPTIVE_SEND_MINIMUM_BURST_CAP = 1;
@@ -59,6 +60,21 @@ export function getAdaptiveSendBurstCapForTier(
   if (tier === "annual") return caps.annual;
   if (tier === "lifetime") return caps.lifetime;
   return caps.free;
+}
+
+/**
+ * Identify an administrator-controlled cap that is nearing the platform-wide
+ * maximum. This is a configuration review signal, not live send capacity.
+ */
+export function shouldReviewAdaptiveSendBurstCap(
+  configuredCap: number | null | undefined
+): boolean {
+  return (
+    typeof configuredCap === "number" &&
+    Number.isFinite(configuredCap) &&
+    configuredCap >=
+      ADAPTIVE_SEND_MAXIMUM_BURST_CAP * ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD
+  );
 }
 
 export type AdaptiveSendChannelType = "personal" | "bulk";

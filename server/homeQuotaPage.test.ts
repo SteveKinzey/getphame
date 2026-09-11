@@ -4,13 +4,20 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { FreeQuotaSummary } from "../shared/quota";
 
 let profileFixture: {
-  tier: "free";
+  tier: "free" | "pro" | "annual" | "lifetime";
   businessName: string;
   reviewLink: string;
   reviewGoal: number;
   planExpiresAt: null;
   freeQuota: FreeQuotaSummary;
 };
+let userRole: "user" | "admin" = "user";
+let adaptiveSendBurstCapsFixture: {
+  free: number;
+  pro: number;
+  annual: number;
+  lifetime: number;
+} | null = null;
 
 const query = (data: unknown, extras: Record<string, unknown> = {}) => ({
   data,
@@ -23,7 +30,7 @@ vi.mock("@/_core/hooks/useAuth", () => ({
       id: 701,
       name: "Quota Tester",
       email: "quota@example.test",
-      role: "user",
+      role: userRole,
     },
     isAuthenticated: true,
   }),
@@ -100,6 +107,11 @@ vi.mock("@/lib/trpc", () => ({
         useMutation: () => ({ mutate: vi.fn(), isPending: false }),
       },
     },
+    admin: {
+      getAdaptiveSendBurstCaps: {
+        useQuery: () => query(adaptiveSendBurstCapsFixture),
+      },
+    },
     useUtils: () => ({
       profile: { get: { invalidate: vi.fn() } },
       smtp: {
@@ -146,6 +158,8 @@ describe("Home dashboard Free quota page wiring", () => {
   });
 
   beforeEach(() => {
+    userRole = "user";
+    adaptiveSendBurstCapsFixture = null;
     profileFixture = {
       tier: "free",
       businessName: "Quota Test Business",
@@ -229,5 +243,36 @@ describe("Home dashboard Free quota page wiring", () => {
     expect(html).toContain("Free plan: 5 requests every rolling 30 days");
     expect(html).toContain("Next request available");
     expect(html).toContain("0/5");
+  });
+
+  it("shows an administrator-only review badge at 90% of the active tier burst cap", () => {
+    userRole = "admin";
+    profileFixture = { ...profileFixture, tier: "pro" };
+    adaptiveSendBurstCapsFixture = {
+      free: 10,
+      pro: 180,
+      annual: 50,
+      lifetime: 100,
+    };
+
+    const html = renderHome();
+
+    expect(html).toContain('data-testid="admin-burst-cap-review-badge"');
+    expect(html).toContain("Burst cap at {{cap}}/{{max}}");
+    expect(html).toContain("Review caps");
+  });
+
+  it("does not show a burst-cap review badge below the threshold or to regular users", () => {
+    adaptiveSendBurstCapsFixture = {
+      free: 179,
+      pro: 25,
+      annual: 50,
+      lifetime: 100,
+    };
+
+    expect(renderHome()).not.toContain("admin-burst-cap-review-badge");
+
+    userRole = "admin";
+    expect(renderHome()).not.toContain("admin-burst-cap-review-badge");
   });
 });

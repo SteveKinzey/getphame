@@ -3819,7 +3819,14 @@
       "saving": "Guardando…",
       "save": "Guardar límites",
       "usage": "Uso del límite configurado",
-      "usageLabel": "Límite de ráfaga configurado con respecto al máximo del nivel"
+      "usageLabel": "Límite de ráfaga configurado con respecto al máximo del nivel",
+      "nearMaximumBadge": "El límite de envíos en bloque es {{cap}}/{{max}}. Revise la configuración.",
+      "nearMaximumDescription": "Este límite por acción está cerca del máximo de la plataforma. El calentamiento del proveedor y los límites de seguridad por hora o día siguen aplicándose.",
+      "nearMaximumAction": "Revisar límites",
+      "nearMaximumActionLabel": "Revisar límite de envíos en bloque: {{cap}} de {{max}} solicitudes configuradas",
+      "remainingBurstValue": "{{configured}} de {{maximum}} solicitudes configuradas; quedan {{remaining}} envíos en bloque.",
+      "remainingBurstTooltip": "Aún se pueden configurar {{remaining}} envíos en bloque antes de que este nivel alcance el máximo de {{maximum}} solicitudes.",
+      "remainingBurstInvalid": "Ingrese un límite de número entero dentro del rango permitido para ver los envíos en bloque restantes."
     }
   },
   "developerEnrollment": {
@@ -4809,6 +4816,9 @@
     "completeRange": "Elige una fecha de inicio y una de finalización, o deja ambas vacías.",
     "invalidRange": "La fecha de finalización debe ser igual o posterior a la fecha de inicio.",
     "generating": "Generando instantánea…",
-    "generate": "Generar instantánea ahora"
+    "generate": "Generar instantánea ahora",
+    "presetLabel": "Períodos predefinidos en UTC",
+    "last7Days": "Últimos 7 días",
+    "last30Days": "Últimos 30 días"
   }
 }

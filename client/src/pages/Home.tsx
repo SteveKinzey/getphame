@@ -33,6 +33,11 @@ import { FreeQuotaStatus } from "@/components/FreeQuotaStatus";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
+import {
+  ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+  getAdaptiveSendBurstCapForTier,
+  shouldReviewAdaptiveSendBurstCap,
+} from "@shared/adaptiveSendLimits";
 import { getEffectivePlan } from "@shared/plans";
 import { normalizeLifecycleLocale } from "@shared/lifecycleLocale";
 import LandingBrandLink from "@/components/LandingBrandLink";
@@ -437,6 +442,11 @@ export default function HomePage() {
   const { data: stats } = trpc.requests.stats.useQuery();
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery();
   const { data: referralData } = trpc.referral.getCode.useQuery();
+  const { data: adaptiveSendBurstCaps } =
+    trpc.admin.getAdaptiveSendBurstCaps.useQuery(undefined, {
+      enabled: user?.role === "admin",
+      staleTime: 30_000,
+    });
   const utils = trpc.useUtils();
   const pwaAnalytics = trpc.analytics.trackPwaEvent.useMutation();
   const recheckMailServer = trpc.smtp.test.useMutation({
@@ -572,6 +582,12 @@ export default function HomePage() {
     ? Math.max(1, Math.ceil((trialEndsAt - Date.now()) / (24 * 60 * 60 * 1000)))
     : null;
   const trialCheckoutPlan = profile?.tier === "annual" ? "annual" : "monthly";
+  const activeTierBurstCap = adaptiveSendBurstCaps
+    ? getAdaptiveSendBurstCapForTier(adaptiveSendBurstCaps, profile?.tier)
+    : null;
+  const shouldShowBurstCapReviewBadge =
+    user?.role === "admin" &&
+    shouldReviewAdaptiveSendBurstCap(activeTierBurstCap);
 
   // Subscription expiry warning banner — show when planExpiresAt < 7 days away
   const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
@@ -801,6 +817,71 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           {/* ── Left column (main content) — spans 2 cols on desktop ── */}
           <div className="lg:col-span-2 flex flex-col gap-4">
+            {shouldShowBurstCapReviewBadge && activeTierBurstCap !== null && (
+              <section
+                className="rounded-2xl border p-4 shadow-sm"
+                style={{
+                  background: "oklch(0.975 0.025 84)",
+                  borderColor: "oklch(0.82 0.14 80)",
+                }}
+                role="status"
+                aria-labelledby="burst-cap-review-title"
+                data-testid="admin-burst-cap-review-badge"
+              >
+                <div className="flex items-start gap-3">
+                  <AlertTriangle
+                    size={20}
+                    className="mt-0.5 shrink-0"
+                    style={{ color: "oklch(0.53 0.15 72)" }}
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p
+                      id="burst-cap-review-title"
+                      className="text-sm font-black"
+                      style={{ color: "oklch(0.30 0.10 60)" }}
+                    >
+                      {t("adaptiveSending.adminCaps.nearMaximumBadge", {
+                        defaultValue:
+                          "Burst cap at {{cap}}/{{max}}. Review the configuration.",
+                        cap: activeTierBurstCap,
+                        max: ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+                      })}
+                    </p>
+                    <p
+                      className="mt-1 text-xs font-semibold"
+                      style={{ color: "oklch(0.40 0.08 60)" }}
+                    >
+                      {t("adaptiveSending.adminCaps.nearMaximumDescription", {
+                        defaultValue:
+                          "This per-action burst cap is near the platform maximum. Provider warm-up and hourly or daily safety limits still apply.",
+                      })}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate("/settings#adaptive-send-burst-cap-settings")
+                      }
+                      className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black rr-bg-navy rr-text-gold"
+                      aria-label={t(
+                        "adaptiveSending.adminCaps.nearMaximumActionLabel",
+                        {
+                          defaultValue:
+                            "Review burst cap setting: {{cap}} of {{max}} requests configured",
+                          cap: activeTierBurstCap,
+                          max: ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+                        }
+                      )}
+                    >
+                      {t("adaptiveSending.adminCaps.nearMaximumAction", {
+                        defaultValue: "Review caps",
+                      })}
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
+
             {/* ── SMTP Health Failure Alert ─────────────────────────────────── */}
             {smtpHealthFailed && (
               <div

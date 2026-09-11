@@ -3819,7 +3819,14 @@
       "saving": "Enregistrement…",
       "save": "Enregistrer les plafonds",
       "usage": "Utilisation du plafond configuré",
-      "usageLabel": "Plafond de rafale configuré par rapport au maximum du niveau"
+      "usageLabel": "Plafond de rafale configuré par rapport au maximum du niveau",
+      "nearMaximumBadge": "Le plafond d’envoi groupé est à {{cap}}/{{max}}. Vérifiez la configuration.",
+      "nearMaximumDescription": "Ce plafond par action approche du maximum de la plateforme. Le préchauffage du fournisseur et les limites de sécurité horaires ou quotidiennes s’appliquent toujours.",
+      "nearMaximumAction": "Vérifier les plafonds",
+      "nearMaximumActionLabel": "Vérifier le plafond d’envoi groupé : {{cap}} demandes sur {{max}} configurées",
+      "remainingBurstValue": "{{configured}} demandes sur {{maximum}} configurées ; {{remaining}} envois groupés restants.",
+      "remainingBurstTooltip": "{{remaining}} envois groupés peuvent encore être configurés avant que ce niveau atteigne le maximum de {{maximum}} demandes.",
+      "remainingBurstInvalid": "Saisissez un plafond entier dans la plage autorisée pour afficher les envois groupés restants."
     }
   },
   "developerEnrollment": {
@@ -4809,6 +4816,9 @@
     "completeRange": "Choisissez une date de début et une date de fin, ou laissez les deux champs vides.",
     "invalidRange": "La date de fin doit être égale ou postérieure à la date de début.",
     "generating": "Génération de l’instantané…",
-    "generate": "Générer l’instantané maintenant"
+    "generate": "Générer l’instantané maintenant",
+    "presetLabel": "Périodes prédéfinies UTC",
+    "last7Days": "7 derniers jours",
+    "last30Days": "30 derniers jours"
   }
 }
