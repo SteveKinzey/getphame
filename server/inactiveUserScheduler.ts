@@ -122,10 +122,12 @@ export async function runInactiveUserCheck(): Promise<void> {
 
 export function startInactiveUserScheduler(): void {
   console.log("[InactiveUsers] Scheduler started — checking every 6 hours.");
-  // Run immediately on start, then every 6 hours
-  runInactiveUserCheck().catch(err =>
-    console.error("[InactiveUsers] Initial check failed:", err)
-  );
+  // Defer initial check by 30 seconds to prioritize server readiness on cold start, then run periodically
+  setTimeout(() => {
+    runInactiveUserCheck().catch(err =>
+      console.error("[InactiveUsers] Initial check failed:", err)
+    );
+  }, 30_000);
   setInterval(() => {
     runInactiveUserCheck().catch(err =>
       console.error("[InactiveUsers] Periodic check failed:", err)

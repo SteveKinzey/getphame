@@ -153,10 +153,12 @@ export async function runReEngagementCheck(): Promise<void> {
 
 export function startReEngagementScheduler(): void {
   console.log("[ReEngagement] Scheduler started — checking every hour.");
-  // Run immediately on start, then every hour
-  runReEngagementCheck().catch(err =>
-    console.error("[ReEngagement] Initial check failed:", err)
-  );
+  // Defer initial check by 30 seconds to prioritize server readiness on cold start, then run periodically
+  setTimeout(() => {
+    runReEngagementCheck().catch(err =>
+      console.error("[ReEngagement] Initial check failed:", err)
+    );
+  }, 30_000);
   setInterval(() => {
     runReEngagementCheck().catch(err =>
       console.error("[ReEngagement] Hourly check failed:", err)
