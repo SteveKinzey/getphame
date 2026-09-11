@@ -261,7 +261,8 @@ async function startServer() {
         return res.json({ lang: "en" });
       }
       const response = await fetch(
-        `http://ip-api.com/json/${ip}?fields=countryCode`
+        `http://ip-api.com/json/${ip}?fields=countryCode`,
+        { signal: AbortSignal.timeout(3_000) }
       );
       const data = (await response.json()) as { countryCode?: string };
       const country = data.countryCode ?? "";
@@ -418,41 +419,49 @@ async function startServer() {
   server.listen(port, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${port}/`);
     if (ENV.isProduction) {
-      void reconcileSourceHealthHeartbeat()
-        .then(result =>
-          console.log(`[SourceHealth] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[SourceHealth] Heartbeat reconciliation failed.")
-        );
-      void reconcileDisposableDomainHeartbeat()
-        .then(result =>
-          console.log(`[DisposableDomains] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[DisposableDomains] Heartbeat reconciliation failed.")
-        );
-      void reconcileRelayHealthHeartbeat()
-        .then(result =>
-          console.log(`[RelayHealth] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[RelayHealth] Heartbeat reconciliation failed.")
-        );
-      void reconcileStripeLifecycleHeartbeat()
-        .then(result =>
-          console.log(`[StripeLifecycle] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[StripeLifecycle] Heartbeat reconciliation failed.")
-        );
-      void reconcileMonthlyDiagnosticsHeartbeat()
-        .then(result =>
-          console.log(`[MonthlyDiagnostics] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[MonthlyDiagnostics] Heartbeat reconciliation failed.")
-        );
+      // Defer heartbeat reconciliations by 30 seconds so cold-start readiness
+      // probe passes immediately without competing for database or network I/O
+      setTimeout(() => {
+        void reconcileSourceHealthHeartbeat()
+          .then(result =>
+            console.log(`[SourceHealth] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error("[SourceHealth] Heartbeat reconciliation failed.")
+          );
+        void reconcileDisposableDomainHeartbeat()
+          .then(result =>
+            console.log(`[DisposableDomains] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error(
+              "[DisposableDomains] Heartbeat reconciliation failed."
+            )
+          );
+        void reconcileRelayHealthHeartbeat()
+          .then(result =>
+            console.log(`[RelayHealth] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error("[RelayHealth] Heartbeat reconciliation failed.")
+          );
+        void reconcileStripeLifecycleHeartbeat()
+          .then(result =>
+            console.log(`[StripeLifecycle] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error("[StripeLifecycle] Heartbeat reconciliation failed.")
+          );
+        void reconcileMonthlyDiagnosticsHeartbeat()
+          .then(result =>
+            console.log(`[MonthlyDiagnostics] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error(
+              "[MonthlyDiagnostics] Heartbeat reconciliation failed."
+            )
+          );
+      }, 30_000);
     }
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();
