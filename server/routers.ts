@@ -397,6 +397,7 @@ import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { signupRiskReviewRouter } from "./routers/signupRiskReview";
 import { activityTrendExportPresetsRouter } from "./routers/activityTrendExportPresets";
 import { automationHealthRouter } from "./routers/automationHealth";
+import { integrationHealthRouter } from "./routers/integrationHealth";
 import { securityAuditsRouter } from "./routers/securityAudits";
 import { securityAuditReleaseVerificationRouter } from "./routers/securityAuditReleaseVerification";
 import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
@@ -1287,6 +1288,7 @@ export const appRouter = router({
   authDiagnostics: authDiagnosticsRouter,
   signupRiskReview: signupRiskReviewRouter,
   automationHealth: automationHealthRouter,
+  integrationHealth: integrationHealthRouter,
   securityAudits: securityAuditsRouter,
   securityAuditReleaseVerification: securityAuditReleaseVerificationRouter,
   githubCleanupShowcase: githubCleanupShowcaseRouter,

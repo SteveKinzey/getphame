@@ -4901,5 +4901,54 @@
       "subscription_without_business_profile": "Existe un registro de suscripción sin perfil de negocio asociado",
       "duplicate_subscription_records": "Se encontraron múltiples registros de suscripción para el mismo usuario"
     }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "Correcto",
+      "degraded": "Requiere atención",
+      "unavailable": "No disponible",
+      "notConfigured": "Sin configurar"
+    },
+    "card": {
+      "latency": "Latencia",
+      "notMeasured": "No medida",
+      "latencyValue": "{{value}} milisegundos"
+    },
+    "back": "Volver a administración",
+    "eyebrow": "Operaciones en directo",
+    "title": "Estado de integraciones",
+    "subtitle": "Comprobaciones limitadas y de solo lectura de la base de datos y los servicios de entrega conectados. Se actualiza cada 15 segundos mientras esta página está abierta.",
+    "refresh": "Actualizar ahora",
+    "summary": {
+      "healthy": "Todos los servicios configurados responden normalmente.",
+      "degraded": "Al menos un servicio configurado requiere atención. Revise la tarjeta afectada a continuación.",
+      "unavailable": "Al menos un servicio necesario no está disponible. Vuelva a intentarlo después de resolver el problema de conexión.",
+      "title": "Estado actual del sistema",
+      "checked": "Comprobado {{time}} · {{duration}} ms"
+    },
+    "loadError": {
+      "title": "Los datos de estado no están disponibles",
+      "body": "No se infiere ningún estado a partir de datos ausentes. Use Actualizar ahora para repetir las comprobaciones limitadas."
+    },
+    "cards": {
+      "label": "Comprobaciones de estado de integraciones",
+      "database": "Conexión de base de datos",
+      "heartbeat": "Heartbeats en segundo plano",
+      "stripe": "API de Stripe",
+      "emailRelay": "Relay de correo",
+      "sources": "Fuentes entrantes",
+      "sourcesFooter": "{{healthy}} correctas · {{attention}} requieren atención"
+    },
+    "dashboard": {
+      "eyebrow": "Diagnóstico en directo",
+      "title": "Conexión de base de datos",
+      "checking": "Comprobando la sonda de conexión de solo lectura…",
+      "unavailable": "El estado de conexión no está disponible. No se infiere un estado correcto a partir de datos ausentes.",
+      "loading": "Comprobando…",
+      "healthy": "Correcto · {{latency}} ms",
+      "review": "Revisar estado"
+    },
+    "dashboardCardTitle": "Estado de integraciones",
+    "dashboardCardBody": "Comprobaciones en directo de base de datos, planificador, Stripe, relay de correo y fuentes"
   }
 }

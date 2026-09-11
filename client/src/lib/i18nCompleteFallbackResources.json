@@ -2132,6 +2132,55 @@
         "subscription_without_business_profile": "Subscription record exists without an associated business profile",
         "duplicate_subscription_records": "Multiple subscription records found for the same user"
       }
+    },
+    "integrationHealth": {
+      "status": {
+        "healthy": "Healthy",
+        "degraded": "Needs attention",
+        "unavailable": "Unavailable",
+        "notConfigured": "Not configured"
+      },
+      "card": {
+        "latency": "Latency",
+        "notMeasured": "Not measured",
+        "latencyValue": "{{value}} ms"
+      },
+      "back": "Back to administration",
+      "eyebrow": "Live operations",
+      "title": "Integration health",
+      "subtitle": "Bounded, read-only checks for the database and connected delivery services. Refreshes every 15 seconds while this page is open.",
+      "refresh": "Refresh now",
+      "summary": {
+        "healthy": "All configured services are responding normally.",
+        "degraded": "At least one configured service needs attention. Review the affected card below.",
+        "unavailable": "At least one required service is unavailable. Retry after resolving the underlying connection issue.",
+        "title": "Current system status",
+        "checked": "Checked {{time}} · {{duration}} ms"
+      },
+      "loadError": {
+        "title": "Health data is unavailable",
+        "body": "No status is inferred from missing data. Use Refresh now to retry the bounded checks."
+      },
+      "cards": {
+        "label": "Integration health checks",
+        "database": "Database connection",
+        "heartbeat": "Background heartbeats",
+        "stripe": "Stripe API",
+        "emailRelay": "Email relay",
+        "sources": "Inbound sources",
+        "sourcesFooter": "{{healthy}} healthy · {{attention}} attention"
+      },
+      "dashboard": {
+        "eyebrow": "Live diagnostics",
+        "title": "Database connection",
+        "checking": "Checking the read-only connection probe…",
+        "unavailable": "Connection status is unavailable. No healthy state is inferred from missing data.",
+        "loading": "Checking…",
+        "healthy": "Healthy · {{latency}} ms",
+        "review": "Review health"
+      },
+      "dashboardCardTitle": "Integration health",
+      "dashboardCardBody": "Live database, scheduler, Stripe, email relay, and source checks"
     }
   },
   "es": {
@@ -4468,6 +4517,55 @@
         "subscription_without_business_profile": "Existe un registro de suscripción sin perfil de negocio asociado",
         "duplicate_subscription_records": "Se encontraron múltiples registros de suscripción para el mismo usuario"
       }
+    },
+    "integrationHealth": {
+      "status": {
+        "healthy": "Correcto",
+        "degraded": "Requiere atención",
+        "unavailable": "No disponible",
+        "notConfigured": "Sin configurar"
+      },
+      "card": {
+        "latency": "Latencia",
+        "notMeasured": "No medida",
+        "latencyValue": "{{value}} milisegundos"
+      },
+      "back": "Volver a administración",
+      "eyebrow": "Operaciones en directo",
+      "title": "Estado de integraciones",
+      "subtitle": "Comprobaciones limitadas y de solo lectura de la base de datos y los servicios de entrega conectados. Se actualiza cada 15 segundos mientras esta página está abierta.",
+      "refresh": "Actualizar ahora",
+      "summary": {
+        "healthy": "Todos los servicios configurados responden normalmente.",
+        "degraded": "Al menos un servicio configurado requiere atención. Revise la tarjeta afectada a continuación.",
+        "unavailable": "Al menos un servicio necesario no está disponible. Vuelva a intentarlo después de resolver el problema de conexión.",
+        "title": "Estado actual del sistema",
+        "checked": "Comprobado {{time}} · {{duration}} ms"
+      },
+      "loadError": {
+        "title": "Los datos de estado no están disponibles",
+        "body": "No se infiere ningún estado a partir de datos ausentes. Use Actualizar ahora para repetir las comprobaciones limitadas."
+      },
+      "cards": {
+        "label": "Comprobaciones de estado de integraciones",
+        "database": "Conexión de base de datos",
+        "heartbeat": "Heartbeats en segundo plano",
+        "stripe": "API de Stripe",
+        "emailRelay": "Relay de correo",
+        "sources": "Fuentes entrantes",
+        "sourcesFooter": "{{healthy}} correctas · {{attention}} requieren atención"
+      },
+      "dashboard": {
+        "eyebrow": "Diagnóstico en directo",
+        "title": "Conexión de base de datos",
+        "checking": "Comprobando la sonda de conexión de solo lectura…",
+        "unavailable": "El estado de conexión no está disponible. No se infiere un estado correcto a partir de datos ausentes.",
+        "loading": "Comprobando…",
+        "healthy": "Correcto · {{latency}} ms",
+        "review": "Revisar estado"
+      },
+      "dashboardCardTitle": "Estado de integraciones",
+      "dashboardCardBody": "Comprobaciones en directo de base de datos, planificador, Stripe, relay de correo y fuentes"
     }
   },
   "fr": {
@@ -6825,6 +6923,55 @@
         "subscription_without_business_profile": "Un enregistrement d'abonnement existe sans profil d'entreprise associé",
         "duplicate_subscription_records": "Plusieurs enregistrements d'abonnement trouvés pour le même utilisateur"
       }
+    },
+    "integrationHealth": {
+      "status": {
+        "healthy": "Opérationnel",
+        "degraded": "À surveiller",
+        "unavailable": "Indisponible",
+        "notConfigured": "Non configuré"
+      },
+      "card": {
+        "latency": "Latence",
+        "notMeasured": "Non mesurée",
+        "latencyValue": "{{value}} millisecondes"
+      },
+      "back": "Retour à l'administration",
+      "eyebrow": "Opérations en direct",
+      "title": "État des intégrations",
+      "subtitle": "Vérifications limitées en lecture seule de la base de données et des services de livraison connectés. Actualisation toutes les 15 secondes tant que cette page est ouverte.",
+      "refresh": "Actualiser",
+      "summary": {
+        "healthy": "Tous les services configurés répondent normalement.",
+        "degraded": "Au moins un service configuré nécessite une attention. Consultez la carte concernée ci-dessous.",
+        "unavailable": "Au moins un service requis est indisponible. Réessayez après avoir résolu le problème de connexion.",
+        "title": "État actuel du système",
+        "checked": "Vérifié {{time}} · {{duration}} ms"
+      },
+      "loadError": {
+        "title": "Les données d'état sont indisponibles",
+        "body": "Aucun état n'est déduit de données absentes. Utilisez Actualiser pour relancer les vérifications limitées."
+      },
+      "cards": {
+        "label": "Vérifications de l'état des intégrations",
+        "database": "Connexion à la base de données",
+        "heartbeat": "Pulsations en arrière-plan",
+        "stripe": "API Stripe",
+        "emailRelay": "Relais e-mail",
+        "sources": "Sources entrantes",
+        "sourcesFooter": "{{healthy}} opérationnelles · {{attention}} à surveiller"
+      },
+      "dashboard": {
+        "eyebrow": "Diagnostics en direct",
+        "title": "Connexion à la base de données",
+        "checking": "Vérification de la sonde de connexion en lecture seule…",
+        "unavailable": "L'état de la connexion est indisponible. Aucun état opérationnel n'est déduit de données absentes.",
+        "loading": "Vérification…",
+        "healthy": "Opérationnel · {{latency}} ms",
+        "review": "Voir l'état"
+      },
+      "dashboardCardTitle": "État des intégrations",
+      "dashboardCardBody": "Vérifications en direct de la base de données, du planificateur, de Stripe, du relais e-mail et des sources"
     }
   },
   "it": {
@@ -9029,6 +9176,55 @@
         "subscription_without_business_profile": "Esiste un record di abbonamento senza profilo aziendale associato",
         "duplicate_subscription_records": "Trovati record di abbonamento multipli per lo stesso utente"
       }
+    },
+    "integrationHealth": {
+      "status": {
+        "healthy": "Operativo",
+        "degraded": "Richiede attenzione",
+        "unavailable": "Non disponibile",
+        "notConfigured": "Non configurato"
+      },
+      "card": {
+        "latency": "Latenza",
+        "notMeasured": "Non misurata",
+        "latencyValue": "{{value}} millisecondi"
+      },
+      "back": "Torna all'amministrazione",
+      "eyebrow": "Operazioni in tempo reale",
+      "title": "Stato delle integrazioni",
+      "subtitle": "Controlli limitati e di sola lettura per il database e i servizi di consegna connessi. Si aggiorna ogni 15 secondi mentre questa pagina è aperta.",
+      "refresh": "Aggiorna ora",
+      "summary": {
+        "healthy": "Tutti i servizi configurati rispondono normalmente.",
+        "degraded": "Almeno un servizio configurato richiede attenzione. Controlla la scheda interessata qui sotto.",
+        "unavailable": "Almeno un servizio richiesto non è disponibile. Riprova dopo aver risolto il problema di connessione.",
+        "title": "Stato attuale del sistema",
+        "checked": "Controllato {{time}} · {{duration}} ms"
+      },
+      "loadError": {
+        "title": "I dati sullo stato non sono disponibili",
+        "body": "Nessuno stato viene dedotto da dati mancanti. Usa Aggiorna ora per ripetere i controlli limitati."
+      },
+      "cards": {
+        "label": "Controlli sullo stato delle integrazioni",
+        "database": "Connessione al database",
+        "heartbeat": "Heartbeat in background",
+        "stripe": "API Stripe",
+        "emailRelay": "Relay e-mail",
+        "sources": "Fonti in entrata",
+        "sourcesFooter": "{{healthy}} operative · {{attention}} da verificare"
+      },
+      "dashboard": {
+        "eyebrow": "Diagnostica in tempo reale",
+        "title": "Connessione al database",
+        "checking": "Controllo della sonda di connessione in sola lettura…",
+        "unavailable": "Lo stato della connessione non è disponibile. Nessuno stato operativo viene dedotto da dati mancanti.",
+        "loading": "Controllo…",
+        "healthy": "Operativo · {{latency}} ms",
+        "review": "Controlla stato"
+      },
+      "dashboardCardTitle": "Stato delle integrazioni",
+      "dashboardCardBody": "Controlli in tempo reale di database, pianificatore, Stripe, relay e-mail e fonti"
     }
   },
   "th": {
@@ -11221,6 +11417,55 @@
         "subscription_without_business_profile": "พบบันทึกการสมัครสมาชิกโดยไม่มีโปรไฟล์ธุรกิจที่เกี่ยวข้อง",
         "duplicate_subscription_records": "พบบันทึกการสมัครสมาชิกซ้ำซ้อนสำหรับผู้ใช้รายเดียวกัน"
       }
+    },
+    "integrationHealth": {
+      "status": {
+        "healthy": "ปกติ",
+        "degraded": "ต้องตรวจสอบ",
+        "unavailable": "ไม่พร้อมใช้งาน",
+        "notConfigured": "ยังไม่ได้ตั้งค่า"
+      },
+      "card": {
+        "latency": "ความหน่วง",
+        "notMeasured": "ยังไม่ได้วัด",
+        "latencyValue": "{{value}} มิลลิวินาที"
+      },
+      "back": "กลับไปที่การดูแลระบบ",
+      "eyebrow": "การดำเนินงานแบบเรียลไทม์",
+      "title": "สถานะการเชื่อมต่อ",
+      "subtitle": "การตรวจสอบแบบจำกัดและอ่านอย่างเดียวสำหรับฐานข้อมูลและบริการส่งข้อมูลที่เชื่อมต่อ รีเฟรชทุก 15 วินาทีขณะที่หน้านี้เปิดอยู่",
+      "refresh": "รีเฟรชตอนนี้",
+      "summary": {
+        "healthy": "บริการที่ตั้งค่าทั้งหมดตอบสนองตามปกติ",
+        "degraded": "มีบริการที่ตั้งค่าไว้อย่างน้อยหนึ่งรายการต้องตรวจสอบ โปรดดูการ์ดที่เกี่ยวข้องด้านล่าง",
+        "unavailable": "มีบริการที่จำเป็นอย่างน้อยหนึ่งรายการไม่พร้อมใช้งาน โปรดลองอีกครั้งหลังแก้ไขปัญหาการเชื่อมต่อ",
+        "title": "สถานะระบบปัจจุบัน",
+        "checked": "ตรวจสอบ {{time}} · {{duration}} มิลลิวินาที"
+      },
+      "loadError": {
+        "title": "ข้อมูลสถานะไม่พร้อมใช้งาน",
+        "body": "ระบบจะไม่สรุปสถานะจากข้อมูลที่ขาดหาย ใช้รีเฟรชตอนนี้เพื่อลองตรวจสอบแบบจำกัดอีกครั้ง"
+      },
+      "cards": {
+        "label": "การตรวจสอบสถานะการเชื่อมต่อ",
+        "database": "การเชื่อมต่อฐานข้อมูล",
+        "heartbeat": "ฮาร์ตบีตเบื้องหลัง",
+        "stripe": "API ของ Stripe",
+        "emailRelay": "รีเลย์อีเมล",
+        "sources": "แหล่งข้อมูลขาเข้า",
+        "sourcesFooter": "ปกติ {{healthy}} · ต้องตรวจสอบ {{attention}}"
+      },
+      "dashboard": {
+        "eyebrow": "การวินิจฉัยแบบเรียลไทม์",
+        "title": "การเชื่อมต่อฐานข้อมูล",
+        "checking": "กำลังตรวจสอบโพรบการเชื่อมต่อแบบอ่านอย่างเดียว…",
+        "unavailable": "สถานะการเชื่อมต่อไม่พร้อมใช้งาน ระบบจะไม่สรุปว่าปกติจากข้อมูลที่ขาดหาย",
+        "loading": "กำลังตรวจสอบ…",
+        "healthy": "ปกติ · {{latency}} มิลลิวินาที",
+        "review": "ตรวจสอบสถานะ"
+      },
+      "dashboardCardTitle": "สถานะการเชื่อมต่อ",
+      "dashboardCardBody": "การตรวจสอบแบบเรียลไทม์ของฐานข้อมูล ตัวกำหนดเวลา Stripe รีเลย์อีเมล และแหล่งข้อมูล"
     }
   },
   "zh-CN": {
@@ -13403,6 +13648,55 @@
         "subscription_without_business_profile": "存在没有对应企业资料的订阅记录",
         "duplicate_subscription_records": "同一用户存在多条订阅记录"
       }
+    },
+    "integrationHealth": {
+      "status": {
+        "healthy": "正常",
+        "degraded": "需要关注",
+        "unavailable": "不可用",
+        "notConfigured": "未配置"
+      },
+      "card": {
+        "latency": "延迟",
+        "notMeasured": "未测量",
+        "latencyValue": "{{value}} 毫秒"
+      },
+      "back": "返回管理中心",
+      "eyebrow": "实时运营",
+      "title": "集成健康状态",
+      "subtitle": "对数据库和已连接交付服务执行有界只读检查。此页面打开时每 15 秒刷新一次。",
+      "refresh": "立即刷新",
+      "summary": {
+        "healthy": "所有已配置服务均正常响应。",
+        "degraded": "至少一项已配置服务需要关注。请查看下方受影响的卡片。",
+        "unavailable": "至少一项必需服务不可用。解决底层连接问题后请重试。",
+        "title": "当前系统状态",
+        "checked": "检查时间 {{time}} · {{duration}} 毫秒"
+      },
+      "loadError": {
+        "title": "健康数据不可用",
+        "body": "不会根据缺失数据推断状态。请使用“立即刷新”重新执行有界检查。"
+      },
+      "cards": {
+        "label": "集成健康检查",
+        "database": "数据库连接",
+        "heartbeat": "后台心跳",
+        "stripe": "Stripe 接口",
+        "emailRelay": "邮件中继",
+        "sources": "入站来源",
+        "sourcesFooter": "{{healthy}} 正常 · {{attention}} 需关注"
+      },
+      "dashboard": {
+        "eyebrow": "实时诊断",
+        "title": "数据库连接",
+        "checking": "正在检查只读连接探针…",
+        "unavailable": "连接状态不可用。不会根据缺失数据推断正常状态。",
+        "loading": "正在检查…",
+        "healthy": "正常 · {{latency}} 毫秒",
+        "review": "查看健康状态"
+      },
+      "dashboardCardTitle": "集成健康状态",
+      "dashboardCardBody": "实时检查数据库、调度程序、Stripe、邮件中继和来源"
     }
   },
   "zh-TW": {
@@ -15600,6 +15894,55 @@
         "subscription_without_business_profile": "存在沒有對應企業資料的訂閱記錄",
         "duplicate_subscription_records": "同一使用者存在多筆訂閱記錄"
       }
+    },
+    "integrationHealth": {
+      "status": {
+        "healthy": "正常",
+        "degraded": "需要注意",
+        "unavailable": "無法使用",
+        "notConfigured": "未設定"
+      },
+      "card": {
+        "latency": "延遲",
+        "notMeasured": "未測量",
+        "latencyValue": "{{value}} 毫秒"
+      },
+      "back": "返回管理中心",
+      "eyebrow": "即時營運",
+      "title": "整合健康狀態",
+      "subtitle": "對資料庫和已連線傳送服務執行有界唯讀檢查。此頁面開啟時每 15 秒重新整理一次。",
+      "refresh": "立即重新整理",
+      "summary": {
+        "healthy": "所有已設定服務都正常回應。",
+        "degraded": "至少一項已設定服務需要注意。請查看下方受影響的卡片。",
+        "unavailable": "至少一項必要服務無法使用。解決底層連線問題後請重試。",
+        "title": "目前系統狀態",
+        "checked": "檢查時間 {{time}} · {{duration}} 毫秒"
+      },
+      "loadError": {
+        "title": "健康資料無法使用",
+        "body": "不會根據缺少的資料推斷狀態。請使用「立即重新整理」重新執行有界檢查。"
+      },
+      "cards": {
+        "label": "整合健康檢查",
+        "database": "資料庫連線",
+        "heartbeat": "背景心跳",
+        "stripe": "Stripe API 介面",
+        "emailRelay": "電子郵件中繼",
+        "sources": "傳入來源",
+        "sourcesFooter": "{{healthy}} 正常 · {{attention}} 需注意"
+      },
+      "dashboard": {
+        "eyebrow": "即時診斷",
+        "title": "資料庫連線",
+        "checking": "正在檢查唯讀連線探針…",
+        "unavailable": "連線狀態無法使用。不會根據缺少的資料推斷正常狀態。",
+        "loading": "正在檢查…",
+        "healthy": "正常 · {{latency}} 毫秒",
+        "review": "查看健康狀態"
+      },
+      "dashboardCardTitle": "整合健康狀態",
+      "dashboardCardBody": "即時檢查資料庫、排程器、Stripe、電子郵件中繼和來源"
     }
   }
 }

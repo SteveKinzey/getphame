@@ -41,6 +41,52 @@ export type HeartbeatJobInfo = {
 };
 
 const SERVICE = "webdevtoken.v1.WebDevService";
+export const HEARTBEAT_MAX_ATTEMPTS = 3;
+export const HEARTBEAT_RETRY_BASE_DELAY_MS = 250;
+
+type HeartbeatRetryDependencies = {
+  sleep: (delayMs: number) => Promise<void>;
+};
+
+const defaultHeartbeatRetryDependencies: HeartbeatRetryDependencies = {
+  sleep: delayMs =>
+    new Promise(resolve => {
+      setTimeout(resolve, delayMs);
+    }),
+};
+
+export function isRetryableHeartbeatError(error: unknown): boolean {
+  if (!(error instanceof TRPCError)) return false;
+  return (
+    error.code === "INTERNAL_SERVER_ERROR" || error.code === "TOO_MANY_REQUESTS"
+  );
+}
+
+/**
+ * Retry only transient Heartbeat API failures. Configuration and authorization
+ * failures remain fail-fast, while 250ms/500ms backoff prevents a brief Forge
+ * disruption from leaving a recurring scheduler unreconciled.
+ */
+export async function retryHeartbeatOperation<T>(
+  operation: () => Promise<T>,
+  dependencies: Partial<HeartbeatRetryDependencies> = {}
+): Promise<T> {
+  const deps = { ...defaultHeartbeatRetryDependencies, ...dependencies };
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < HEARTBEAT_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      const isLastAttempt = attempt === HEARTBEAT_MAX_ATTEMPTS - 1;
+      if (isLastAttempt || !isRetryableHeartbeatError(error)) throw error;
+      await deps.sleep(HEARTBEAT_RETRY_BASE_DELAY_MS * 2 ** attempt);
+    }
+  }
+
+  throw lastError;
+}
 
 const buildEndpoint = (rpc: string): string => {
   if (!ENV.forgeApiUrl) {
@@ -80,26 +126,28 @@ const callForge = async <T>(
     headers["x-manus-user-session"] = userSession;
   }
 
-  let response: Response;
-  try {
-    response = await fetch(endpoint, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(10_000),
-    });
-  } catch (error) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: `Heartbeat ${rpc} network error: ${String(error)}`,
-    });
-  }
+  return retryHeartbeatOperation(async () => {
+    let response: Response;
+    try {
+      response = await fetch(endpoint, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(10_000),
+      });
+    } catch (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Heartbeat ${rpc} network error: ${String(error)}`,
+      });
+    }
 
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw mapForgeError(response, detail, rpc);
-  }
-  return (await response.json()) as T;
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      throw mapForgeError(response, detail, rpc);
+    }
+    return (await response.json()) as T;
+  });
 };
 
 const mapForgeError = (

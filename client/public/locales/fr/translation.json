@@ -4901,5 +4901,54 @@
       "subscription_without_business_profile": "Un enregistrement d'abonnement existe sans profil d'entreprise associé",
       "duplicate_subscription_records": "Plusieurs enregistrements d'abonnement trouvés pour le même utilisateur"
     }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "Opérationnel",
+      "degraded": "À surveiller",
+      "unavailable": "Indisponible",
+      "notConfigured": "Non configuré"
+    },
+    "card": {
+      "latency": "Latence",
+      "notMeasured": "Non mesurée",
+      "latencyValue": "{{value}} millisecondes"
+    },
+    "back": "Retour à l'administration",
+    "eyebrow": "Opérations en direct",
+    "title": "État des intégrations",
+    "subtitle": "Vérifications limitées en lecture seule de la base de données et des services de livraison connectés. Actualisation toutes les 15 secondes tant que cette page est ouverte.",
+    "refresh": "Actualiser",
+    "summary": {
+      "healthy": "Tous les services configurés répondent normalement.",
+      "degraded": "Au moins un service configuré nécessite une attention. Consultez la carte concernée ci-dessous.",
+      "unavailable": "Au moins un service requis est indisponible. Réessayez après avoir résolu le problème de connexion.",
+      "title": "État actuel du système",
+      "checked": "Vérifié {{time}} · {{duration}} ms"
+    },
+    "loadError": {
+      "title": "Les données d'état sont indisponibles",
+      "body": "Aucun état n'est déduit de données absentes. Utilisez Actualiser pour relancer les vérifications limitées."
+    },
+    "cards": {
+      "label": "Vérifications de l'état des intégrations",
+      "database": "Connexion à la base de données",
+      "heartbeat": "Pulsations en arrière-plan",
+      "stripe": "API Stripe",
+      "emailRelay": "Relais e-mail",
+      "sources": "Sources entrantes",
+      "sourcesFooter": "{{healthy}} opérationnelles · {{attention}} à surveiller"
+    },
+    "dashboard": {
+      "eyebrow": "Diagnostics en direct",
+      "title": "Connexion à la base de données",
+      "checking": "Vérification de la sonde de connexion en lecture seule…",
+      "unavailable": "L'état de la connexion est indisponible. Aucun état opérationnel n'est déduit de données absentes.",
+      "loading": "Vérification…",
+      "healthy": "Opérationnel · {{latency}} ms",
+      "review": "Voir l'état"
+    },
+    "dashboardCardTitle": "État des intégrations",
+    "dashboardCardBody": "Vérifications en direct de la base de données, du planificateur, de Stripe, du relais e-mail et des sources"
   }
 }

@@ -4388,5 +4388,54 @@
       "subscription_without_business_profile": "存在没有对应企业资料的订阅记录",
       "duplicate_subscription_records": "同一用户存在多条订阅记录"
     }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "正常",
+      "degraded": "需要关注",
+      "unavailable": "不可用",
+      "notConfigured": "未配置"
+    },
+    "card": {
+      "latency": "延迟",
+      "notMeasured": "未测量",
+      "latencyValue": "{{value}} 毫秒"
+    },
+    "back": "返回管理中心",
+    "eyebrow": "实时运营",
+    "title": "集成健康状态",
+    "subtitle": "对数据库和已连接交付服务执行有界只读检查。此页面打开时每 15 秒刷新一次。",
+    "refresh": "立即刷新",
+    "summary": {
+      "healthy": "所有已配置服务均正常响应。",
+      "degraded": "至少一项已配置服务需要关注。请查看下方受影响的卡片。",
+      "unavailable": "至少一项必需服务不可用。解决底层连接问题后请重试。",
+      "title": "当前系统状态",
+      "checked": "检查时间 {{time}} · {{duration}} 毫秒"
+    },
+    "loadError": {
+      "title": "健康数据不可用",
+      "body": "不会根据缺失数据推断状态。请使用“立即刷新”重新执行有界检查。"
+    },
+    "cards": {
+      "label": "集成健康检查",
+      "database": "数据库连接",
+      "heartbeat": "后台心跳",
+      "stripe": "Stripe 接口",
+      "emailRelay": "邮件中继",
+      "sources": "入站来源",
+      "sourcesFooter": "{{healthy}} 正常 · {{attention}} 需关注"
+    },
+    "dashboard": {
+      "eyebrow": "实时诊断",
+      "title": "数据库连接",
+      "checking": "正在检查只读连接探针…",
+      "unavailable": "连接状态不可用。不会根据缺失数据推断正常状态。",
+      "loading": "正在检查…",
+      "healthy": "正常 · {{latency}} 毫秒",
+      "review": "查看健康状态"
+    },
+    "dashboardCardTitle": "集成健康状态",
+    "dashboardCardBody": "实时检查数据库、调度程序、Stripe、邮件中继和来源"
   }
 }
