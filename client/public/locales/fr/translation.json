@@ -4912,7 +4912,8 @@
     "card": {
       "latency": "Latence",
       "notMeasured": "Non mesurée",
-      "latencyValue": "{{value}} millisecondes"
+      "latencyValue": "{{value}} millisecondes",
+      "reauthenticate": "Réauthentifier de manière sécurisée"
     },
     "back": "Retour à l'administration",
     "eyebrow": "Opérations en direct",
@@ -4949,6 +4950,47 @@
       "review": "Voir l'état"
     },
     "dashboardCardTitle": "État des intégrations",
-    "dashboardCardBody": "Vérifications en direct de la base de données, du planificateur, de Stripe, du relais e-mail et des sources"
+    "dashboardCardBody": "Vérifications en direct de la base de données, du planificateur, de Stripe, du relais e-mail et des sources",
+    "sparkline": {
+      "empty": "L’historique sur 24 heures apparaîtra après les vérifications planifiées.",
+      "title": "Latence · dernières 24 heures",
+      "max": "Pic {{value}} ms",
+      "label": "Historique de latence pour {{title}}. Pic de {{value}} millisecondes."
+    },
+    "alerts": {
+      "title": "Webhooks d’alerte opérationnelle",
+      "description": "Envoyez une alerte opérationnelle encadrée vers Slack ou Discord lorsqu’un service est indisponible ou dépasse votre seuil de latence. Les URL de webhook sont chiffrées au repos et ne sont plus réaffichées.",
+      "active": "Activée",
+      "inactive": "Inactive",
+      "provider": "Destination de l’alerte",
+      "latencyThreshold": "Seuil de latence élevée (ms)",
+      "webhookUrl": "URL du webhook entrant",
+      "webhookPlaceholderSaved": "Enregistrée de manière sécurisée — saisissez un remplacement uniquement pour la modifier",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "Utilisez l’URL officielle du webhook entrant pour le fournisseur choisi. N’utilisez pas d’automatisation de navigateur et n’ajoutez aucun identifiant.",
+      "conditions": "Conditions d’alerte",
+      "enable": "Activer cette destination d’alerte",
+      "failure": "Service indisponible ou identifiants rejetés",
+      "highLatency": "La latence mesurée atteint le seuil",
+      "save": "Enregistrer les alertes",
+      "saving": "Enregistrement…",
+      "saved": "Paramètres d’alerte de santé enregistrés.",
+      "test": "Envoyer une alerte test",
+      "testing": "Envoi du test…",
+      "testSuccess": "Alerte test envoyée.",
+      "remove": "Supprimer la destination",
+      "removed": "Destination d’alerte supprimée.",
+      "invalidThreshold": "Choisissez un seuil de latence compris entre 100 et 60 000 ms.",
+      "providerSlack": "Webhook entrant Slack",
+      "providerDiscord": "Webhook entrant Discord"
+    },
+    "reauth": {
+      "title": "L’autorisation Stripe nécessite une attention",
+      "description": "Get Phame n’expose aucun identifiant de facturation dans le navigateur. Mettez à jour la configuration gérée de Stripe dans les contrôles sécurisés de paiement puis relancez une vérification ici.",
+      "notice": "Aucun secret, point de terminaison, client ou enregistrement de facturation n’est affiché dans cette boîte de dialogue.",
+      "close": "Fermer",
+      "recheck": "Revérifier la connexion sécurisée",
+      "openSettings": "Ouvrir les paramètres de paiement"
+    }
   }
 }

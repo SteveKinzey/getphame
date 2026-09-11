@@ -22,6 +22,18 @@ describe("administrator integration health interface", () => {
     expect(app).toContain("AdminIntegrationHealthPage");
     expect(app).toContain('path="/admin/integration-health"');
     expect(router).toContain("integrationHealth: integrationHealthRouter");
+
+    const subRouter = source("server/routers/integrationHealth.ts");
+    expect(subRouter).toContain("snapshot: adminProcedure");
+    expect(subRouter).toContain("history: adminProcedure");
+    expect(subRouter).toContain("saveAlertSettings: adminProcedure");
+    expect(subRouter).toContain("testAlert: adminProcedure");
+    expect(subRouter).toContain("deleteAlertSettings: adminProcedure");
+
+    expect(page).toContain("trpc.integrationHealth.history.useQuery");
+    expect(page).toContain("HealthLatencySparkline");
+    expect(page).toContain("HealthAlertSettingsPanel");
+    expect(page).toContain("reauthenticationDialogOpen");
   });
 
   it("surfaces database latency in the administration diagnostics hub", () => {

@@ -4421,7 +4421,8 @@
     "card": {
       "latency": "延遲",
       "notMeasured": "未測量",
-      "latencyValue": "{{value}} 毫秒"
+      "latencyValue": "{{value}} 毫秒",
+      "reauthenticate": "安全重新認證"
     },
     "back": "返回管理中心",
     "eyebrow": "即時營運",
@@ -4458,6 +4459,47 @@
       "review": "查看健康狀態"
     },
     "dashboardCardTitle": "整合健康狀態",
-    "dashboardCardBody": "即時檢查資料庫、排程器、Stripe、電子郵件中繼和來源"
+    "dashboardCardBody": "即時檢查資料庫、排程器、Stripe、電子郵件中繼和來源",
+    "sparkline": {
+      "empty": "排程健康檢查執行後將顯示 24 小時歷史趨勢。",
+      "title": "延遲 · 最近 24 小時",
+      "max": "峰值 {{value}} 毫秒",
+      "label": "{{title}} 延遲歷史，峰值 {{value}} 毫秒。"
+    },
+    "alerts": {
+      "title": "維運警報 Webhook",
+      "description": "當受監控服務不可用或延遲超過閾值時，向 Slack 或 Discord 發送受控警報。Webhook 網址在儲存時均經加密，且不再向前端回顯。",
+      "active": "已啟用",
+      "inactive": "未啟用",
+      "provider": "警報接收平台",
+      "latencyThreshold": "高延遲閾值（毫秒）",
+      "webhookUrl": "傳入 Webhook 網址",
+      "webhookPlaceholderSaved": "已安全儲存 — 僅在需要變更時輸入新網址",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "請使用所選平台官方提供的傳入 Webhook 網址。切勿使用瀏覽器自動化腳本或附加憑證。",
+      "conditions": "警報觸發條件",
+      "enable": "啟用此警報接收目標",
+      "failure": "服務不可用或憑證遭拒",
+      "highLatency": "實測延遲達到設定閾值",
+      "save": "儲存警報設定",
+      "saving": "正在儲存…",
+      "saved": "健康警報設定已儲存。",
+      "test": "發送測試警報",
+      "testing": "正在測試…",
+      "testSuccess": "測試警報已成功送達。",
+      "remove": "移除接收目標",
+      "removed": "警報接收目標已移除。",
+      "invalidThreshold": "請選擇 100 至 60,000 毫秒之間的延遲閾值。",
+      "providerSlack": "Slack 傳入 Webhook",
+      "providerDiscord": "Discord 傳入 Webhook"
+    },
+    "reauth": {
+      "title": "Stripe 授權需要處理",
+      "description": "Get Phame 不會在瀏覽器端暴露帳務憑證。請透過受保護的付款設定更新託管的 Stripe 配置，隨後在此重新發起憑證檢測。",
+      "notice": "此對話方塊中不會顯示任何金鑰、端點、客戶或帳單記錄。",
+      "close": "關閉",
+      "recheck": "重新檢測安全連線",
+      "openSettings": "開啟付款設定"
+    }
   }
 }

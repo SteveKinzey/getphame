@@ -4399,7 +4399,8 @@
     "card": {
       "latency": "延迟",
       "notMeasured": "未测量",
-      "latencyValue": "{{value}} 毫秒"
+      "latencyValue": "{{value}} 毫秒",
+      "reauthenticate": "安全重新认证"
     },
     "back": "返回管理中心",
     "eyebrow": "实时运营",
@@ -4436,6 +4437,47 @@
       "review": "查看健康状态"
     },
     "dashboardCardTitle": "集成健康状态",
-    "dashboardCardBody": "实时检查数据库、调度程序、Stripe、邮件中继和来源"
+    "dashboardCardBody": "实时检查数据库、调度程序、Stripe、邮件中继和来源",
+    "sparkline": {
+      "empty": "计划健康检查运行后将显示 24 小时历史趋势。",
+      "title": "延迟 · 最近 24 小时",
+      "max": "峰值 {{value}} 毫秒",
+      "label": "{{title}} 延迟历史，峰值 {{value}} 毫秒。"
+    },
+    "alerts": {
+      "title": "运维告警 Webhook",
+      "description": "当被检测服务不可用或延迟超过阈值时，向 Slack 或 Discord 发送受控告警。Webhook 地址在存储时已加密，且不再向前端回显。",
+      "active": "已启用",
+      "inactive": "未启用",
+      "provider": "告警接收平台",
+      "latencyThreshold": "高延迟阈值（毫秒）",
+      "webhookUrl": "传入 Webhook 地址",
+      "webhookPlaceholderSaved": "已安全保存 — 仅在需要更改时输入新地址",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "请使用所选平台官方提供的传入 Webhook 地址。切勿使用浏览器自动化脚本或附加凭据。",
+      "conditions": "告警触发条件",
+      "enable": "启用此告警接收目标",
+      "failure": "服务不可用或凭据被拒绝",
+      "highLatency": "实测延迟达到设定阈值",
+      "save": "保存告警设置",
+      "saving": "正在保存…",
+      "saved": "健康告警设置已保存。",
+      "test": "发送测试告警",
+      "testing": "正在测试…",
+      "testSuccess": "测试告警已成功送达。",
+      "remove": "移除接收目标",
+      "removed": "告警接收目标已移除。",
+      "invalidThreshold": "请选择 100 至 60,000 毫秒之间的延迟阈值。",
+      "providerSlack": "Slack 传入 Webhook",
+      "providerDiscord": "Discord 传入 Webhook"
+    },
+    "reauth": {
+      "title": "Stripe 授权需要处理",
+      "description": "Get Phame 不会在浏览器端暴露结算凭据。请通过受保护的支付设置更新托管的 Stripe 配置，随后在此重新发起凭据检测。",
+      "notice": "此对话框中不会显示任何密钥、端点、客户或账单数据。",
+      "close": "关闭",
+      "recheck": "重新检测安全连接",
+      "openSettings": "打开支付设置"
+    }
   }
 }

@@ -65,6 +65,11 @@ import {
   MONTHLY_DIAGNOSTICS_CALLBACK_PATH,
   reconcileMonthlyDiagnosticsHeartbeat,
 } from "../monthlyDiagnosticsSchedule";
+import { integrationHealthHandler } from "../integrationHealthRoutes";
+import {
+  INTEGRATION_HEALTH_CALLBACK_PATH,
+  reconcileIntegrationHealthHeartbeat,
+} from "../integrationHealthHeartbeat";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -240,6 +245,7 @@ async function startServer() {
     MONTHLY_DIAGNOSTICS_CALLBACK_PATH,
     monthlyDiagnosticsScheduleHandler
   );
+  app.post(INTEGRATION_HEALTH_CALLBACK_PATH, integrationHealthHandler);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
   // Note: Mainland China (CN) is excluded from zh-TW detection since YouTube is blocked there.
@@ -459,6 +465,15 @@ async function startServer() {
           .catch(() =>
             console.error(
               "[MonthlyDiagnostics] Heartbeat reconciliation failed."
+            )
+          );
+        void reconcileIntegrationHealthHeartbeat()
+          .then(result =>
+            console.log(`[IntegrationHealth] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error(
+              "[IntegrationHealth] Heartbeat reconciliation failed."
             )
           );
       }, 30_000);

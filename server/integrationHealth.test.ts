@@ -95,4 +95,25 @@ describe("integration health snapshot", () => {
     expect(snapshot.sources.status).toBe("not_configured");
     expect(snapshot.overallStatus).toBe("healthy");
   });
+
+  it("flags reauthentication required on 401 or 403 without returning secrets or raw traces", async () => {
+    const dependencies = healthDependencies(makeDatabase([]));
+    dependencies.fetch.mockResolvedValue(
+      new Response(JSON.stringify({ error: "Invalid API Key provided" }), {
+        status: 401,
+        headers: { "content-type": "application/json" },
+      })
+    );
+
+    const snapshot = await getIntegrationHealthSnapshot(dependencies);
+
+    expect(snapshot.stripe).toMatchObject({
+      status: "degraded",
+      reauthRequired: true,
+      reauthTarget: "stripe",
+      detail: "Stripe API returned HTTP 401",
+    });
+    expect(snapshot.stripe.detail).not.toContain("configured-key");
+    expect(snapshot.stripe.detail).not.toContain("Invalid API Key");
+  });
 });
