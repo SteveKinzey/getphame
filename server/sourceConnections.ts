@@ -13,6 +13,7 @@ import { getDb } from "./db";
 export const SOURCE_PROVIDERS = [
   "zapier",
   "make",
+  "jotform",
   "custom",
   "woocommerce",
 ] as const;

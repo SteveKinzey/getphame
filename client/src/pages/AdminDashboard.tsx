@@ -39,6 +39,7 @@ import {
   Clock3,
   GitBranch,
   BadgePercent,
+  RefreshCw,
 } from "lucide-react";
 import { CreditCard } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -174,6 +175,132 @@ function ReleaseParityCard() {
           )}
         </div>
       </div>
+    </section>
+  );
+}
+
+function SubscriptionRecordHealthCard() {
+  const { t, i18n } = useTranslation("translation");
+  const health = trpc.admin.subscriptionRecordHealth.useQuery(undefined, {
+    refetchInterval: 300_000,
+  });
+  const healthy = health.data?.healthy === true;
+  const checkedAt = health.data?.checkedAt
+    ? new Intl.DateTimeFormat(i18n.language, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(health.data.checkedAt))
+    : null;
+
+  return (
+    <section
+      data-testid="subscription-record-health-card"
+      className="mb-4 rounded-2xl border p-4 shadow-sm"
+      style={{
+        borderColor: healthy ? "oklch(0.76 0.12 145)" : "oklch(0.83 0.1 80)",
+        background: healthy ? "oklch(0.97 0.02 145)" : "oklch(0.98 0.02 80)",
+      }}
+      aria-labelledby="subscription-record-health-title"
+      aria-live="polite"
+    >
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <span
+            className={`flex size-11 shrink-0 items-center justify-center rounded-xl text-white ${healthy ? "bg-emerald-700" : "bg-amber-700"}`}
+          >
+            {healthy ? (
+              <ShieldCheck size={21} aria-hidden="true" />
+            ) : (
+              <AlertTriangle size={21} aria-hidden="true" />
+            )}
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">
+              {t("adminSubscriptionHealth.eyebrow", {
+                defaultValue: "Billing data integrity",
+              })}
+            </p>
+            <h2
+              id="subscription-record-health-title"
+              className="mt-0.5 text-lg font-black rr-text-navy"
+            >
+              {health.isLoading
+                ? t("adminSubscriptionHealth.loading", {
+                    defaultValue: "Checking subscription records…",
+                  })
+                : healthy
+                  ? t("adminSubscriptionHealth.healthyTitle", {
+                      defaultValue:
+                        "Business profiles and Stripe records match",
+                    })
+                  : t("adminSubscriptionHealth.attentionTitle", {
+                      defaultValue: "Subscription records need review",
+                    })}
+            </h2>
+            <p className="mt-1 text-sm rr-text-navy-muted">
+              {health.error
+                ? t("adminSubscriptionHealth.unavailable", {
+                    defaultValue:
+                      "The local record comparison could not be completed. Refresh to try again.",
+                  })
+                : health.data
+                  ? t("adminSubscriptionHealth.summary", {
+                      defaultValue:
+                        "{{profiles}} profiles and {{subscriptions}} local subscription records checked. No Stripe API request is made.",
+                      profiles: health.data.profileCount,
+                      subscriptions: health.data.subscriptionRecordCount,
+                    })
+                  : t("adminSubscriptionHealth.loading", {
+                      defaultValue: "Checking subscription records…",
+                    })}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => void health.refetch()}
+          disabled={health.isFetching}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-black rr-text-navy transition active:scale-[0.97] disabled:opacity-60"
+        >
+          <RefreshCw
+            size={15}
+            aria-hidden="true"
+            className={health.isFetching ? "animate-spin" : ""}
+          />
+          {t("adminSubscriptionHealth.refresh", { defaultValue: "Refresh" })}
+        </button>
+      </div>
+
+      {health.data && !health.data.healthy && (
+        <ul
+          className="mt-4 grid gap-2 sm:grid-cols-2"
+          aria-label={t("adminSubscriptionHealth.issues", {
+            defaultValue: "Detected record mismatches",
+          })}
+        >
+          {health.data.issues.map(issue => (
+            <li
+              key={issue.kind}
+              className="rounded-xl border border-amber-200 bg-white/70 px-3 py-2 text-sm font-bold text-amber-950"
+            >
+              <span className="mr-2 inline-flex min-w-6 justify-center rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-black">
+                {issue.count}
+              </span>
+              {t(`adminSubscriptionHealth.issue.${issue.kind}`, {
+                defaultValue: issue.kind.replaceAll("_", " "),
+              })}
+            </li>
+          ))}
+        </ul>
+      )}
+      {checkedAt && (
+        <p className="mt-3 text-xs font-bold rr-text-navy-faint">
+          {t("adminSubscriptionHealth.checkedAt", {
+            defaultValue: "Last checked {{time}}",
+            time: checkedAt,
+          })}
+        </p>
+      )}
     </section>
   );
 }
@@ -2281,6 +2408,7 @@ export default function AdminDashboard() {
               </button>
             </section>
 
+            <SubscriptionRecordHealthCard />
             {/* Stripe status widget */}
             <section
               data-testid="stripe-status-widget"

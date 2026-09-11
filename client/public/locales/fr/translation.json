@@ -3378,6 +3378,40 @@
         "step4": "Utilisez Header Mapping pour Authorization et Idempotency-Key. Sélectionnez l'identifiant de soumission du formulaire pour la valeur d'idempotence.",
         "step5": "Laissez SSL Verify activé, enregistrez l'action et soumettez un enregistrement de test autorisé.",
         "summary": "Utilisez l'action Webhook avec mappages JSON field, custom et header."
+      },
+      "zapier": {
+        "summary": "Associez un déclencheur autorisé dans Webhooks by Zapier avec une requête JSON explicite.",
+        "step1": "Choisissez le déclencheur produisant un enregistrement client autorisé, puis ajoutez l'action Webhooks by Zapier.",
+        "step2": "Choisissez POST ou Custom Request, définissez l'URL sur le point de terminaison v1 et le type sur JSON.",
+        "step3": "Mappez uniquement les champs ci-dessous. Ajoutez Authorization aux en-têtes protégés et ne laissez jamais la section Data vide.",
+        "step4": "Mappez l'ID d'événement source sans modification vers externalId et Idempotency-Key pour sécuriser les rejeux.",
+        "step5": "Testez avec un enregistrement autorisé, puis vérifiez le résultat masqué dans Importations récentes de l'API."
+      },
+      "make": {
+        "summary": "Utilisez Make HTTP v4 avec une structure de données JSON et un identifiant de clé API sécurisé.",
+        "step1": "Choisissez le module déclencheur produisant un client éligible, puis ajoutez HTTP > Make a request (v4).",
+        "step2": "Définissez la méthode sur POST, l'URL sur le point de terminaison v1 et le type de corps sur application/json.",
+        "step3": "Choisissez Data structure pour le mappage JSON et configurez la clé Get Phame dans le trousseau sécurisé de Make.",
+        "step4": "Mappez l'ID d'événement source stable vers externalId et Idempotency-Key sans générer de nouvelle valeur lors des réessais.",
+        "step5": "Activez la gestion des erreurs pour les réponses hors 2xx, puis exécutez un test de scénario autorisé."
+      },
+      "jotform": {
+        "summary": "Utilisez le webhook natif de Jotform comme déclencheur et transmettez-le via une passerelle côté serveur qui conserve la clé API.",
+        "step1": "Dans Paramètres Jotform > Intégrations, ajoutez Webhooks en ciblant une URL HTTPS de passerelle que vous contrôlez.",
+        "step2": "Dans la passerelle, validez le formulaire attendu et le consentement affirmatif, puis analysez la charge rawRequest.",
+        "step3": "Envoyez uniquement les champs normalisés au point de terminaison v1 avec les en-têtes protégés.",
+        "step4": "Réutilisez le submissionID Jotform comme externalId et Idempotency-Key pour chaque nouvel essai.",
+        "step5": "Accusez réception immédiatement à Jotform après enregistrement durable, puis testez une soumission de bout en bout.",
+        "caution": "La configuration native des webhooks Jotform ne documente pas d'en-têtes protégés. Conservez la clé Get Phame exclusivement sur la passerelle côté serveur."
+      },
+      "contactForm7": {
+        "summary": "Utilisez une intégration WordPress légère car Contact Form 7 ne propose aucune action native de webhook sortant générique.",
+        "step1": "Ajoutez une case d'acceptation obligatoire dans Contact Form 7 avec un libellé adapté à vos canaux réels.",
+        "step2": "Utilisez le crochet documenté wpcf7_before_send_mail dans un plugin ou mu-plugin WordPress vérifié pour lire les données assainies.",
+        "step3": "Validez l'identité du formulaire et le consentement côté serveur avant d'envoyer le JSON au point de terminaison v1.",
+        "step4": "Générez et conservez une clé d'idempotence avant toute nouvelle tentative pour éviter les doublons.",
+        "step5": "Conservez la clé API dans la configuration du serveur et vérifiez une soumission autorisée dans Importations récentes de l'API.",
+        "caution": "N'utilisez pas d'événements DOM du navigateur ni le code du formulaire. Ils exposent la clé API et ne constituent pas une frontière de consentement sûre."
       }
     },
     "imports": {
@@ -3545,6 +3579,14 @@
           "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
           "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
           "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
+        },
+        "jotform": {
+          "1": "Ajoutez Webhooks dans Jotform et transmettez les soumissions à une passerelle côté serveur sécurisée que vous contrôlez.",
+          "2": "Ne placez jamais de clé API Get Phame dans Jotform, dans une URL publique ou dans un script de navigateur.",
+          "3": "Validez le formulaire attendu et le consentement explicite dans la passerelle avant d'analyser rawRequest.",
+          "4": "Transmettez le JSON normalisé à Get Phame avec les en-têtes protégés indiqués ci-dessous.",
+          "5": "Réutilisez le submissionID de Jotform pour externalId et Idempotency-Key à chaque nouvelle tentative.",
+          "6": "Envoyez un enregistrement de test autorisé, puis actualisez l'état ici."
         }
       },
       "automation": {
@@ -4841,5 +4883,23 @@
   "adminProcedureRecovery": {
     "title": "Les contrôles administrateur sont en cours de mise à jour.",
     "description": "Ce contrôle administrateur est en cours de mise à jour. Vos réglages existants restent inchangés ; actualisez dans un instant pour réessayer."
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "Intégrité des données de facturation",
+    "loading": "Vérification des enregistrements d'abonnement…",
+    "healthyTitle": "Les profils d'entreprise et les enregistrements Stripe concordent",
+    "attentionTitle": "Les enregistrements d'abonnement nécessitent un examen",
+    "unavailable": "La comparaison locale des enregistrements n'a pas pu être effectuée. Actualisez pour réessayer.",
+    "summary": "{{profiles}} profils et {{subscriptions}} enregistrements locaux vérifiés. Aucune requête n'est adressée à l'API Stripe.",
+    "refresh": "Actualiser",
+    "issues": "Anomalies détectées dans les enregistrements",
+    "checkedAt": "Dernière vérification : {{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "Profil payant sans enregistrement d'abonnement actif",
+      "active_subscription_on_free_profile": "Abonnement actif associé à un profil gratuit",
+      "plan_tier_mismatch": "Le forfait de l'abonnement actif ne correspond pas au niveau du profil",
+      "subscription_without_business_profile": "Un enregistrement d'abonnement existe sans profil d'entreprise associé",
+      "duplicate_subscription_records": "Plusieurs enregistrements d'abonnement trouvés pour le même utilisateur"
+    }
   }
 }

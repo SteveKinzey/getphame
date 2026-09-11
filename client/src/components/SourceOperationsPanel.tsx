@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-type SourceProvider = "zapier" | "make" | "custom";
+type SourceProvider = "zapier" | "make" | "jotform" | "custom";
 type AnalyticsDays = 7 | 30 | 90;
 
 const INTERVALS = [
@@ -48,6 +48,10 @@ const PROVIDER_DEFAULTS: Record<
 > = {
   zapier: { label: "Zapier customer import", sourceApp: "zapier" },
   make: { label: "Make customer import", sourceApp: "make" },
+  jotform: {
+    label: "Jotform secure bridge import",
+    sourceApp: "jotform",
+  },
   custom: { label: "Custom customer import", sourceApp: "custom-source" },
 };
 
@@ -67,6 +71,14 @@ const PROVIDER_STEPS: Record<SourceProvider, string[]> = {
     "Add the protected headers exactly as shown below.",
     "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
     "Run the scenario once with one permitted record, then refresh health here.",
+  ],
+  jotform: [
+    "Add Jotform Webhooks and send form submissions to a server-side bridge you control.",
+    "Do not place a Get Phame API key in Jotform, a public URL, or a browser script.",
+    "Validate the expected form and affirmative consent in the bridge, then parse rawRequest.",
+    "Forward the normalized JSON to Get Phame with the protected headers shown below.",
+    "Reuse Jotform submissionID for externalId and Idempotency-Key on every retry.",
+    "Submit one permitted record, then refresh health here.",
   ],
   custom: [
     "Use a trusted server-side workflow that supports POST and protected headers.",
@@ -201,7 +213,9 @@ export function SourceOperationsPanel() {
     [historyQuery.data, selectedSource?.id]
   );
   const selectedProviderRecipe =
-    selectedSource?.provider === "zapier" || selectedSource?.provider === "make"
+    selectedSource?.provider === "zapier" ||
+    selectedSource?.provider === "make" ||
+    selectedSource?.provider === "jotform"
       ? manifestQuery.data?.providerRecipes[selectedSource.provider]
       : undefined;
   const totals = useMemo(
@@ -375,6 +389,7 @@ Idempotency-Key: <stable-provider-event-id>
             >
               <option value="zapier">Zapier</option>
               <option value="make">Make</option>
+              <option value="jotform">Jotform secure bridge</option>
               <option value="custom">
                 {t("developerIntegrations.sourceOps.custom", {
                   defaultValue: "Custom webhook",
@@ -624,9 +639,11 @@ Idempotency-Key: <stable-provider-event-id>
                         ? "Make"
                         : source.provider === "zapier"
                           ? "Zapier"
-                          : t("developerIntegrations.sourceOps.custom", {
-                              defaultValue: "Custom webhook",
-                            })}
+                          : source.provider === "jotform"
+                            ? "Jotform secure bridge"
+                            : t("developerIntegrations.sourceOps.custom", {
+                                defaultValue: "Custom webhook",
+                              })}
                     </p>
                   </div>
                   <button
@@ -789,9 +806,11 @@ Idempotency-Key: <stable-provider-event-id>
                       ? "Make"
                       : selectedSource.provider === "zapier"
                         ? "Zapier"
-                        : t("developerIntegrations.sourceOps.custom", {
-                            defaultValue: "Custom webhook",
-                          })}{" "}
+                        : selectedSource.provider === "jotform"
+                          ? "Jotform secure bridge"
+                          : t("developerIntegrations.sourceOps.custom", {
+                              defaultValue: "Custom webhook",
+                            })}{" "}
                     {t("developerIntegrations.sourceOps.template", {
                       defaultValue: "guided template",
                     })}

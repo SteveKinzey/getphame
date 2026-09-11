@@ -3437,6 +3437,14 @@
           "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
           "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
           "5": "Send one permitted record, then refresh health here."
+        },
+        "jotform": {
+          "1": "Add Jotform Webhooks and send form submissions to a server-side bridge you control.",
+          "2": "Do not place a Get Phame API key in Jotform, a public URL, or a browser script.",
+          "3": "Validate the expected form and affirmative consent in the bridge, then parse rawRequest.",
+          "4": "Forward the normalized JSON to Get Phame with the protected headers shown below.",
+          "5": "Reuse Jotform submissionID for externalId and Idempotency-Key on every retry.",
+          "6": "Submit one permitted record, then refresh health here."
         }
       },
       "automation": {
@@ -3586,7 +3594,41 @@
       "check5": "A successful import appears with a masked email in Recent API imports.",
       "check6": "The imported contact is not emailed automatically.",
       "title": "Form-builder setup guides",
-      "description": "Choose your builder for endpoint, authorization, field mapping, consent, and testing instructions."
+      "description": "Choose your builder for endpoint, authorization, field mapping, consent, and testing instructions.",
+      "zapier": {
+        "summary": "Map one eligible trigger into Webhooks by Zapier with an explicit JSON request.",
+        "step1": "Choose the trigger that creates an eligible customer record, then add Webhooks by Zapier as the next action.",
+        "step2": "Choose POST or Custom Request, set the URL to the v1 contact endpoint, and set Payload Type to JSON.",
+        "step3": "Map only the fields below. Add Authorization in protected headers and never leave the Data section blank.",
+        "step4": "Map the source event ID unchanged into externalId and Idempotency-Key so a retry remains a safe replay.",
+        "step5": "Test with one permitted record, then verify its masked result in Recent API imports."
+      },
+      "make": {
+        "summary": "Use Make HTTP v4 with a JSON data structure and a protected API-key credential.",
+        "step1": "Choose the trigger module that produces an eligible customer record, then add HTTP > Make a request (v4).",
+        "step2": "Set Method to POST, URL to the v1 contact endpoint, and Body content type to application/json.",
+        "step3": "Choose Data structure for JSON mapping and configure the Get Phame key in Make’s protected credential store.",
+        "step4": "Map the stable source event ID into externalId and Idempotency-Key. Do not generate a new value on retry.",
+        "step5": "Enable error handling for non-2xx responses, then run one permitted scenario test."
+      },
+      "jotform": {
+        "summary": "Use the native Jotform webhook as a trigger and forward it through a server-side bridge that holds the API key.",
+        "step1": "In Jotform Settings > Integrations, add Webhooks and point it to an HTTPS bridge URL you control.",
+        "step2": "In the bridge, validate the expected form and affirmative consent, then parse Jotform’s rawRequest payload.",
+        "step3": "Send only the normalized fields below from the bridge to the v1 contact endpoint with protected headers.",
+        "step4": "Reuse Jotform submissionID as externalId and Idempotency-Key for every downstream retry.",
+        "step5": "Acknowledge Jotform promptly after durable acceptance, then test one permitted submission end to end.",
+        "caution": "Jotform’s native webhook setup does not document protected request headers. Keep the Get Phame API key exclusively in the server-side bridge, never in the Jotform form or webhook URL."
+      },
+      "contactForm7": {
+        "summary": "Use a small WordPress-side integration because Contact Form 7 has no native generic outbound webhook action.",
+        "step1": "Add a required Contact Form 7 acceptance checkbox with consent wording that matches your actual outreach channels.",
+        "step2": "Use the documented wpcf7_before_send_mail hook in a reviewed WordPress plugin or mu-plugin to read sanitized submission data.",
+        "step3": "Validate the form identity and consent server-side, then post only the mapped JSON fields to the v1 contact endpoint.",
+        "step4": "Generate and persist one idempotency key before retrying so retries never create duplicate contact work.",
+        "step5": "Keep the API key in server configuration and verify one permitted submission in Recent API imports.",
+        "caution": "Do not use browser DOM events or form markup for this connection. They expose the API key and are not an authoritative consent-to-import boundary."
+      }
     },
     "copyFailed": "Could not copy automatically. Select and copy the value manually.",
     "contract": {
@@ -4790,5 +4832,23 @@
   "adminProcedureRecovery": {
     "title": "Administrator controls are updating.",
     "description": "This administrator control is updating. Your existing settings are unchanged; refresh in a moment to try again."
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "Billing data integrity",
+    "loading": "Checking subscription records…",
+    "healthyTitle": "Business profiles and Stripe records match",
+    "attentionTitle": "Subscription records need review",
+    "unavailable": "The local record comparison could not be completed. Refresh to try again.",
+    "summary": "{{profiles}} profiles and {{subscriptions}} local subscription records checked. No Stripe API request is made.",
+    "refresh": "Refresh",
+    "issues": "Detected record mismatches",
+    "checkedAt": "Last checked {{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "Paid profile with no active subscription record",
+      "active_subscription_on_free_profile": "Active subscription attached to a free profile",
+      "plan_tier_mismatch": "Active subscription plan does not match profile tier",
+      "subscription_without_business_profile": "Subscription record exists without an associated business profile",
+      "duplicate_subscription_records": "Multiple subscription records found for the same user"
+    }
   }
 }

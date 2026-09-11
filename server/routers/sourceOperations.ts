@@ -55,6 +55,15 @@ const PROVIDER_RECIPES = {
     documentationUrl: "https://apps.make.com/http",
     sourceApp: "make",
   },
+  jotform: {
+    provider: "jotform" as const,
+    actionApp: "Jotform Webhooks + secure bridge",
+    actionEvent: "Submission forwarded by your bridge",
+    method: "POST",
+    documentationUrl:
+      "https://www.jotform.com/help/245-how-to-send-submission-data-via-a-webhook/",
+    sourceApp: "jotform",
+  },
 } as const;
 
 const FIELD_MAPPING = [
