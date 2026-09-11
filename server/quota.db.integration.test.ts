@@ -10,7 +10,20 @@ import {
 import { FREE_LIMIT_ERR_MSG } from "@shared/const";
 
 const databaseUrl = process.env.DATABASE_URL;
-const integration = databaseUrl ? describe : describe.skip;
+/**
+ * The application runtime provides DATABASE_URL in production builds, but that
+ * database is not a test fixture. Keep this destructive-in-principle test
+ * exclusive to a deliberately invoked integration lane with isolated test
+ * credentials. A temporary table is connection-scoped, yet a lost connection
+ * during Cloud Build can still make the quality gate nondeterministic.
+ */
+const isIntegrationLaneRequested = process.env.VITEST_DB_INTEGRATION === "1";
+if (isIntegrationLaneRequested && !databaseUrl) {
+  throw new Error(
+    "DATABASE_URL must be set when VITEST_DB_INTEGRATION=1 is explicitly requested."
+  );
+}
+const integration = isIntegrationLaneRequested ? describe : describe.skip;
 
 integration("Free-plan quota through isolated persisted rows", () => {
   const nowMs = Date.UTC(2026, 6, 14, 12, 0, 0);
