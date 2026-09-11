@@ -89,12 +89,22 @@ import {
   retryOrFailSourceAutomationEvent,
 } from "./sourceAutomation";
 
-const consentSchema = z.object({
-  confirmed: z.literal(true),
-  basis: z.enum(["customer_relationship", "explicit_opt_in", "other"]),
-  capturedAt: z.string().datetime({ offset: true }).optional(),
-  source: z.string().trim().min(1).max(255),
-});
+const consentSchema = z.union([
+  reviewOutreachConsentSchema,
+  z
+    .object({
+      confirmed: z.literal(true),
+      basis: z.enum(["customer_relationship", "explicit_opt_in", "other"]),
+      capturedAt: z.string().datetime({ offset: true }).optional(),
+      source: z.string().trim().min(1).max(255),
+      purpose: z.never().optional(),
+      channel: z.never().optional(),
+      text: z.never().optional(),
+      version: z.never().optional(),
+      privacyPolicyUrl: z.never().optional(),
+    })
+    .strict(),
+]);
 
 const contactImportSchema = z
   .object({
@@ -509,6 +519,12 @@ export function registerPublicApiRoutes(app: Router) {
         },
         consentCapturedAt: capturedAt,
       };
+      const detailedConsentResult = reviewOutreachConsentSchema.safeParse(
+        normalized.consent
+      );
+      const detailedConsent = detailedConsentResult.success
+        ? detailedConsentResult.data
+        : null;
       if (
         !(await applyApiAbuseProtection({
           req,
@@ -590,6 +606,13 @@ export function registerPublicApiRoutes(app: Router) {
           consentBasis: normalized.consent.basis,
           consentCapturedAt: normalized.consentCapturedAt,
           consentSource: normalized.consent.source,
+          consentPurpose: detailedConsent?.purpose,
+          consentChannel: detailedConsent?.channel,
+          consentTextHash: detailedConsent
+            ? consentTextHash(detailedConsent.text)
+            : undefined,
+          consentVersion: detailedConsent?.version,
+          privacyPolicyUrl: detailedConsent?.privacyPolicyUrl,
         });
         const response = {
           success: true,

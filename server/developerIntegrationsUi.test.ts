@@ -152,6 +152,27 @@ describe("Developer Integrations workspace", () => {
     );
   });
 
+  it("offers a protected versioned WordPress Connector download from the workspace", () => {
+    const page = readProjectFile(
+      "../client/src/pages/DeveloperIntegrations.tsx"
+    );
+    const router = readProjectFile("./routers.ts");
+
+    expectSourceContract(page).toContain("trpc.connector.download.useMutation");
+    expectSourceContract(page).toContain(
+      'data-testid="wordpress-connector-download"'
+    );
+    expectSourceContract(page).toContain(
+      'defaultValue: "Download WordPress Connector"'
+    );
+    expectSourceContract(router).toContain(
+      'storageGet( "connectors/get-phame-connector-2.2.0.zip" )'
+    );
+    expectSourceContract(router).toContain(
+      'fileName: "get-phame-connector-2.2.0.zip"'
+    );
+  });
+
   it("documents the canonical consent-aware import endpoint for every approved builder without embedding a raw key", () => {
     const guide = readProjectFile(
       "../client/src/components/IntegrationGuide.tsx"
@@ -219,6 +240,23 @@ describe("Developer Integrations workspace", () => {
       expect(pairing?.notFoundDescription).toBeTypeOf("string");
       expect(pairing?.unavailableDescription).toBeTypeOf("string");
       expect(pairing?.failurePrivacy).toBeTypeOf("string");
+    }
+  });
+
+  it("ships Connector CTA copy in every served locale and offline fallback", () => {
+    const fallback = JSON.parse(
+      readProjectFile("../client/src/lib/i18nCompleteFallbackResources.json")
+    );
+    for (const locale of ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"]) {
+      const catalog = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/translation.json`)
+      );
+      expect(catalog.developerIntegrations?.connector?.download).toBeTypeOf(
+        "string"
+      );
+      expect(
+        fallback[locale]?.developerIntegrations?.connector?.download
+      ).toBeTypeOf("string");
     }
   });
 });

@@ -7605,8 +7605,10 @@ export const appRouter = router({
   /** Private WordPress connector delivery for paid subscribers and administrators. */
   connector: router({
     download: paidProcedure.mutation(async () => {
-      const { url } = await storageGet("connectors/get-phame-connector.zip");
-      return { url, fileName: "get-phame-connector.zip" };
+      const { url } = await storageGet(
+        "connectors/get-phame-connector-2.2.0.zip"
+      );
+      return { url, fileName: "get-phame-connector-2.2.0.zip" };
     }),
   }),
 

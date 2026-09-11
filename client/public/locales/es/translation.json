@@ -3680,6 +3680,14 @@
       "failurePrivacy": "No se crearon ni expusieron credenciales. Comienza de nuevo desde tu panel de WordPress.",
       "expiredPrivacy": "Inicia una nueva conexión en WordPress. Get Phame nunca recibe tus credenciales de administrador de WordPress.",
       "privacy": "Esta solicitud expira en 15 minutos. Get Phame nunca recibe tus credenciales de administrador de WordPress."
+    },
+    "connector": {
+      "eyebrow": "Integración de WordPress",
+      "title": "Instala el conector de WordPress de Get Phame",
+      "description": "Descarga el conector centrado en el consentimiento, instálalo en WordPress y aprueba la conexión desde tu propio panel. Los envíos de formularios permanecen locales hasta que un administrador los revise y apruebe.",
+      "download": "Descargar el conector de WordPress",
+      "downloading": "Preparando descarga…",
+      "downloadStarted": "La descarga del conector de WordPress ha comenzado."
     }
   },
   "landing": {

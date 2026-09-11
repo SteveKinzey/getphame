@@ -164,6 +164,24 @@ export default function DeveloperIntegrationsPage() {
       );
     },
   });
+  const downloadConnector = trpc.connector.download.useMutation({
+    onSuccess: ({ url, fileName }) => {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success(
+        t("developerIntegrations.connector.downloadStarted", {
+          defaultValue: "WordPress Connector download started.",
+        })
+      );
+    },
+    onError: error => toast.error(error.message),
+  });
   const wordpressPairingFailure =
     wordpressPairingActionFailure ??
     (wordpressPairingQuery.error
@@ -491,6 +509,64 @@ export default function DeveloperIntegrationsPage() {
                 <Copy size={16} aria-hidden="true" />
               </button>
             </div>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="wordpress-connector-download-title"
+          className="rounded-3xl rr-bg-navy p-5 text-white shadow-sm sm:p-6"
+          data-testid="wordpress-connector-download"
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 gap-3">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10 rr-text-gold">
+                <Download size={20} aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.16em] rr-text-gold">
+                  {t("developerIntegrations.connector.eyebrow", {
+                    defaultValue: "WordPress integration",
+                  })}
+                </p>
+                <h2
+                  id="wordpress-connector-download-title"
+                  className="mt-1 text-xl font-semibold"
+                >
+                  {t("developerIntegrations.connector.title", {
+                    defaultValue: "Install the Get Phame WordPress Connector",
+                  })}
+                </h2>
+                <p className="mt-1 max-w-2xl text-sm leading-6 text-white/80">
+                  {t("developerIntegrations.connector.description", {
+                    defaultValue:
+                      "Download the consent-first Connector, install it in WordPress, and approve the connection from your own dashboard. Form submissions stay local until an administrator reviews and approves them.",
+                  })}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => downloadConnector.mutate()}
+              disabled={downloadConnector.isPending}
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-black text-primary-foreground transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.97]"
+            >
+              {downloadConnector.isPending ? (
+                <Loader2
+                  size={16}
+                  className="animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Download size={16} aria-hidden="true" />
+              )}
+              {downloadConnector.isPending
+                ? t("developerIntegrations.connector.downloading", {
+                    defaultValue: "Preparing download…",
+                  })
+                : t("developerIntegrations.connector.download", {
+                    defaultValue: "Download WordPress Connector",
+                  })}
+            </button>
           </div>
         </section>
 

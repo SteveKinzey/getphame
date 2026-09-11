@@ -3187,6 +3187,14 @@
       "failurePrivacy": "未建立或洩露任何憑證。請從 WordPress 儀表板重新開始。",
       "expiredPrivacy": "請在 WordPress 中重新建立連線。Get Phame 不會接收您的 WordPress 管理員憑證。",
       "privacy": "此請求將於 15 分鐘後到期。Get Phame 不會接收您的 WordPress 管理員憑證。"
+    },
+    "connector": {
+      "eyebrow": "WordPress 整合",
+      "title": "安裝 Get Phame WordPress 連接器",
+      "description": "下載以同意為優先的連接器，在 WordPress 中安裝，然後從您自己的控制面板核准連線。表單提交會保留在本機，直到管理員審查並核准。",
+      "download": "下載 WordPress 連接器",
+      "downloading": "正在準備下載…",
+      "downloadStarted": "WordPress 連接器下載已開始。"
     }
   },
   "promotionLink": {

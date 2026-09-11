@@ -3736,6 +3736,14 @@
       "failurePrivacy": "No credentials were created or exposed. Start again from your WordPress dashboard.",
       "expiredPrivacy": "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials.",
       "privacy": "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."
+    },
+    "connector": {
+      "eyebrow": "WordPress integration",
+      "title": "Install the Get Phame WordPress Connector",
+      "description": "Download the consent-first Connector, install it in WordPress, and approve the connection from your own dashboard. Form submissions stay local until an administrator reviews and approves them.",
+      "download": "Download WordPress Connector",
+      "downloading": "Preparing download…",
+      "downloadStarted": "WordPress Connector download started."
     }
   },
   "helpAssistant": {

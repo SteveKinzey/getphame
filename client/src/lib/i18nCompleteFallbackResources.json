@@ -1613,6 +1613,14 @@
           "step5": "Keep the API key in server configuration and verify one permitted submission in Recent API imports.",
           "caution": "Do not use browser DOM events or form markup for this connection. They expose the API key and are not an authoritative consent-to-import boundary."
         }
+      },
+      "connector": {
+        "eyebrow": "WordPress integration",
+        "title": "Install the Get Phame WordPress Connector",
+        "description": "Download the consent-first Connector, install it in WordPress, and approve the connection from your own dashboard. Form submissions stay local until an administrator reviews and approves them.",
+        "download": "Download WordPress Connector",
+        "downloading": "Preparing download…",
+        "downloadStarted": "WordPress Connector download started."
       }
     },
     "manual": {
@@ -3904,6 +3912,14 @@
           "step5": "Mantenga la clave API en la configuración del servidor y confirme un envío permitido en Importaciones recientes de la API.",
           "caution": "No use eventos DOM del navegador ni el código del formulario para esta conexión. Exponen la clave API y no constituyen un límite de consentimiento seguro."
         }
+      },
+      "connector": {
+        "eyebrow": "Integración de WordPress",
+        "title": "Instala el conector de WordPress de Get Phame",
+        "description": "Descarga el conector centrado en el consentimiento, instálalo en WordPress y aprueba la conexión desde tu propio panel. Los envíos de formularios permanecen locales hasta que un administrador los revise y apruebe.",
+        "download": "Descargar el conector de WordPress",
+        "downloading": "Preparando descarga…",
+        "downloadStarted": "La descarga del conector de WordPress ha comenzado."
       }
     },
     "manual": {
@@ -6346,6 +6362,14 @@
           "step5": "Conservez la clé API dans la configuration du serveur et vérifiez une soumission autorisée dans Importations récentes de l'API.",
           "caution": "N'utilisez pas d'événements DOM du navigateur ni le code du formulaire. Ils exposent la clé API et ne constituent pas une frontière de consentement sûre."
         }
+      },
+      "connector": {
+        "eyebrow": "Intégration WordPress",
+        "title": "Installez le connecteur WordPress Get Phame",
+        "description": "Téléchargez le connecteur axé sur le consentement, installez-le dans WordPress et approuvez la connexion depuis votre tableau de bord. Les soumissions de formulaires restent locales jusqu’à leur examen et leur approbation par un administrateur.",
+        "download": "Télécharger le connecteur WordPress",
+        "downloading": "Préparation du téléchargement…",
+        "downloadStarted": "Le téléchargement du connecteur WordPress a commencé."
       }
     },
     "manual": {
@@ -8761,6 +8785,14 @@
           "step5": "Conserva la chiave API nella configurazione del server e verifica un invio consentito in Importazioni API recenti.",
           "caution": "Non utilizzare eventi DOM del browser o il codice del modulo. Espongono la chiave API e non garantiscono un limite di consenso sicuro."
         }
+      },
+      "connector": {
+        "eyebrow": "Integrazione WordPress",
+        "title": "Installa il connettore WordPress di Get Phame",
+        "description": "Scarica il connettore orientato al consenso, installalo in WordPress e approva la connessione dalla tua dashboard. Le richieste dei moduli restano locali finché un amministratore non le esamina e approva.",
+        "download": "Scarica il connettore WordPress",
+        "downloading": "Preparazione del download…",
+        "downloadStarted": "Il download del connettore WordPress è iniziato."
       }
     },
     "manual": {
@@ -11051,6 +11083,14 @@
           "step5": "เก็บคีย์ API ไว้ในการกำหนดค่าฝั่งเซิร์ฟเวอร์ และตรวจสอบการส่งที่ได้รับอนุญาตในรายการนำเข้า API ล่าสุด",
           "caution": "ห้ามใช้เหตุการณ์ DOM ของเบราว์เซอร์หรือโค้ดหน้าเว็บสำหรับการเชื่อมต่อนี้ เพราะจะทำให้คีย์ API รั่วไหลและไม่ใช่การยืนยันความยินยอมที่ปลอดภัย"
         }
+      },
+      "connector": {
+        "eyebrow": "การเชื่อมต่อ WordPress",
+        "title": "ติดตั้งตัวเชื่อมต่อ WordPress ของ Get Phame",
+        "description": "ดาวน์โหลดตัวเชื่อมต่อที่ยึดหลักความยินยอม ติดตั้งใน WordPress และอนุมัติการเชื่อมต่อจากแดชบอร์ดของคุณ ข้อมูลที่ส่งผ่านฟอร์มจะอยู่ในระบบภายในจนกว่าผู้ดูแลระบบจะตรวจสอบและอนุมัติ",
+        "download": "ดาวน์โหลดตัวเชื่อมต่อ WordPress",
+        "downloading": "กำลังเตรียมการดาวน์โหลด…",
+        "downloadStarted": "เริ่มดาวน์โหลดตัวเชื่อมต่อ WordPress แล้ว"
       }
     },
     "manual": {
@@ -13336,6 +13376,14 @@
           "step5": "将 API 密钥存放在服务器配置中，并在“最近 API 导入”中确认一条合规测试提交。",
           "caution": "切勿使用浏览器 DOM 事件或前端表单代码进行此类对接，这会暴露 API 密钥且无法作为权威的合规导入边界。"
         }
+      },
+      "connector": {
+        "eyebrow": "WordPress 集成",
+        "title": "安装 Get Phame WordPress 连接器",
+        "description": "下载以同意为先的连接器，在 WordPress 中安装，然后从您自己的控制面板批准连接。表单提交会保留在本地，直到管理员审核并批准。",
+        "download": "下载 WordPress 连接器",
+        "downloading": "正在准备下载…",
+        "downloadStarted": "WordPress 连接器下载已开始。"
       }
     },
     "manual": {
@@ -15615,6 +15663,14 @@
           "step5": "將 API 金鑰存放在伺服器設定中，並在「最近 API 匯入」中確認一筆合規測試提交。",
           "caution": "切勿使用瀏覽器 DOM 事件或前端表單程式碼進行此類對接，這會暴露 API 金鑰且無法作為權威的合規匯入邊界。"
         }
+      },
+      "connector": {
+        "eyebrow": "WordPress 整合",
+        "title": "安裝 Get Phame WordPress 連接器",
+        "description": "下載以同意為優先的連接器，在 WordPress 中安裝，然後從您自己的控制面板核准連線。表單提交會保留在本機，直到管理員審查並核准。",
+        "download": "下載 WordPress 連接器",
+        "downloading": "正在準備下載…",
+        "downloadStarted": "WordPress 連接器下載已開始。"
       }
     },
     "manual": {

@@ -132,6 +132,35 @@ function postSourceEvent(app = buildApp()) {
     .send(sourceEventPayload());
 }
 
+function contactImportPayload() {
+  return {
+    name: "Consent-proven customer",
+    email: "Customer@Example.com",
+    phone: "+1 (555) 010-0199",
+    externalId: "gpc:gravity_forms:12:99",
+    sourceApp: "gravity_forms",
+    consent: {
+      confirmed: true,
+      basis: "explicit_opt_in",
+      purpose: "review_outreach",
+      channel: "email",
+      capturedAt: "2026-09-11T20:00:00.000Z",
+      source: "gravity_forms form 12, submission 99, country CA",
+      text: "Yes, I agree to receive an individual Get Phame review invitation by email.",
+      version: "2026-09-11",
+      privacyPolicyUrl: "https://example.com/privacy",
+    },
+  };
+}
+
+function postContactImport(payload = contactImportPayload(), app = buildApp()) {
+  return request(app)
+    .post("/api/v1/contacts")
+    .set("Authorization", `Bearer gp_live_${"a".repeat(48)}`)
+    .set("X-Get-Phame-Source", "src_zapier_orders")
+    .send(payload);
+}
+
 describe("public source-event review-request automation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -150,6 +179,7 @@ describe("public source-event review-request automation", () => {
       sourceConnection()
     );
     mocks.hashDeveloperApiRequest.mockReturnValue("request-hash");
+    mocks.logDeveloperApiImport.mockResolvedValue(undefined);
     mocks.claimSourceAutomationEvent.mockResolvedValue({
       kind: "claimed",
       eventId: 55,
@@ -177,6 +207,46 @@ describe("public source-event review-request automation", () => {
     mocks.retryOrFailSourceAutomationEvent.mockResolvedValue({
       failed: false,
       scheduledAt: 1_785_665_100_000,
+    });
+  });
+
+  it("preserves full explicit email opt-in evidence on a contact import", async () => {
+    const response = await postContactImport();
+
+    expect(response.status).toBe(200);
+    expect(mocks.upsertApiContact).toHaveBeenCalledWith(
+      principal.userId,
+      expect.objectContaining({
+        email: "customer@example.com",
+        sourceApp: "gravity_forms",
+        consentBasis: "explicit_opt_in",
+        consentPurpose: "review_outreach",
+        consentChannel: "email",
+        consentVersion: "2026-09-11",
+        privacyPolicyUrl: "https://example.com/privacy",
+        consentTextHash: expect.stringMatching(/^[a-f0-9]{64}$/),
+      })
+    );
+  });
+
+  it("rejects incomplete review-outreach consent instead of downgrading to generic consent", async () => {
+    const response = await postContactImport({
+      name: "Incomplete Opt-In",
+      email: "incomplete@example.com",
+      consent: {
+        confirmed: true,
+        basis: "explicit_opt_in",
+        source: "Checkout Form",
+        purpose: "review_invitation",
+        // missing channel, text, version, and privacyPolicyUrl
+      },
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toMatchObject({
+      error: {
+        code: "INVALID_REQUEST",
+      },
     });
   });
 

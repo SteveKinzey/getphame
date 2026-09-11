@@ -57,8 +57,8 @@ describe("private connector download", () => {
     });
     mocks.findActiveComplimentaryAccess.mockResolvedValue(null);
     mocks.storageGet.mockResolvedValue({
-      key: "connectors/get-phame-connector.zip",
-      url: "https://signed.example.com/get-phame-connector.zip",
+      key: "connectors/get-phame-connector-2.2.0.zip",
+      url: "https://signed.example.com/get-phame-connector-2.2.0.zip",
     });
   });
 
@@ -77,8 +77,8 @@ describe("private connector download", () => {
     await expect(
       appRouter.createCaller(context("admin")).connector.download()
     ).resolves.toEqual({
-      url: "https://signed.example.com/get-phame-connector.zip",
-      fileName: "get-phame-connector.zip",
+      url: "https://signed.example.com/get-phame-connector-2.2.0.zip",
+      fileName: "get-phame-connector-2.2.0.zip",
     });
   });
 
@@ -90,7 +90,7 @@ describe("private connector download", () => {
     await expect(
       appRouter.createCaller(context("user")).connector.download()
     ).resolves.toMatchObject({
-      fileName: "get-phame-connector.zip",
+      fileName: "get-phame-connector-2.2.0.zip",
     });
 
     mocks.findProfile.mockResolvedValueOnce({
