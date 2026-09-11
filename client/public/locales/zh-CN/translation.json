@@ -3305,6 +3305,14 @@
       "failurePrivacy": "未创建或泄露任何凭据。请从 WordPress 仪表板重新开始。",
       "expiredPrivacy": "请在 WordPress 中发起新的连接。Get Phame 不会接收您的 WordPress 管理员凭据。",
       "privacy": "此请求将在 15 分钟后过期。Get Phame 不会接收您的 WordPress 管理员凭据。"
+    },
+    "connector": {
+      "eyebrow": "WordPress 集成",
+      "title": "安装 Get Phame WordPress 连接器",
+      "description": "下载以同意为先的连接器，在 WordPress 中安装，然后从您自己的控制面板批准连接。表单提交会保留在本地，直到管理员审核并批准。",
+      "download": "下载 WordPress 连接器",
+      "downloading": "正在准备下载…",
+      "downloadStarted": "WordPress 连接器下载已开始。"
     }
   },
   "adaptiveSending": {

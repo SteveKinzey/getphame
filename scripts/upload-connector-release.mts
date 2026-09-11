@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 import { storageGet, storagePut } from "../server/storage";
 
 const STORAGE_KEY = "connectors/get-phame-connector.zip";
+const VERSIONED_KEY = "connectors/get-phame-connector-2.2.0.zip";
 
 function sha256(data: Uint8Array): string {
   return createHash("sha256").update(data).digest("hex");
@@ -38,7 +39,23 @@ async function main(): Promise<void> {
     throw new Error(`Unexpected storage key: ${uploaded.key}`);
   }
 
+  const uploadedVersioned = await storagePut(
+    VERSIONED_KEY,
+    releaseBytes,
+    "application/zip"
+  );
+  if (uploadedVersioned.key !== VERSIONED_KEY) {
+    throw new Error(`Unexpected storage key: ${uploadedVersioned.key}`);
+  }
+
   const signedDownload = await storageGet(STORAGE_KEY);
+  const signedVersionedDownload = await storageGet(VERSIONED_KEY);
+  const versionedResponse = await fetch(signedVersionedDownload.url);
+  if (!versionedResponse.ok) {
+    throw new Error(
+      `Connector verification download failed for versioned key with status ${versionedResponse.status}`
+    );
+  }
   const response = await fetch(signedDownload.url);
   if (!response.ok) {
     throw new Error(
