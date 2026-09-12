@@ -35,6 +35,17 @@ export class RouteAuditError extends Error {
   }
 }
 
+function messageContainsHost(message: string, expectedHostname: string): boolean {
+  const urls = message.match(/https?:\/\/[^\s)"'`]+/g) ?? [];
+  return urls.some(candidate => {
+    try {
+      return new URL(candidate).hostname === expectedHostname;
+    } catch {
+      return false;
+    }
+  });
+}
+
 /** Browser-backed audits run only in an explicitly provisioned Chromium runtime. */
 export function isProductionRouteAuditEnabled(
   env: NodeJS.ProcessEnv = process.env
@@ -66,7 +77,7 @@ export function extractProductionAuditRoutes(sitemapXml: string): string[] {
 
 function isExternalAnalyticsCspWarning(message: string): boolean {
   return (
-    message.includes("static.cloudflareinsights.com") &&
+    messageContainsHost(message, "static.cloudflareinsights.com") &&
     message.includes("Content Security Policy")
   );
 }

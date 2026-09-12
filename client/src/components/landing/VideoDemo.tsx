@@ -97,6 +97,25 @@ function parseVttTimestamp(value: string): number | null {
   return hours * 3600 + minutes * 60 + seconds;
 }
 
+function stripWebVttTags(value: string): string {
+  let sanitized = "";
+  let inTag = false;
+
+  for (const character of value) {
+    if (character === "<") {
+      inTag = true;
+      continue;
+    }
+    if (character === ">") {
+      inTag = false;
+      continue;
+    }
+    if (!inTag) sanitized += character;
+  }
+
+  return sanitized;
+}
+
 export function parseWebVttCues(source: string): TranscriptCue[] {
   return source
     .replace(/^\uFEFF/, "")
@@ -121,7 +140,11 @@ export function parseWebVttCues(source: string): TranscriptCue[] {
       const text = lines
         .slice(timingIndex + 1)
         .join(" ")
-        .replace(/<[^>]*>/g, "")
+        .replace(/>/g, " ")
+        .replace(/</g, " <")
+        .split(/\s+/)
+        .map(stripWebVttTags)
+        .join(" ")
         .replace(/\s+/g, " ")
         .trim();
 

@@ -73,6 +73,10 @@ function asTimestamp(value: Date | number | null | undefined): number {
   return Date.now();
 }
 
+function hostnameMatches(hostname: string, expected: string): boolean {
+  return hostname === expected || hostname.endsWith(`.${expected}`);
+}
+
 export function classifyPersonalSmtpProvider(
   host: string,
   email: string
@@ -103,7 +107,7 @@ export function classifyPersonalSmtpProvider(
     return { id: "yahoo", label: "Yahoo Mail" };
   if (
     normalizedHost.includes("icloud") ||
-    normalizedHost.includes("mail.me.com") ||
+    hostnameMatches(normalizedHost, "mail.me.com") ||
     ["icloud.com", "me.com"].includes(domain)
   )
     return { id: "icloud", label: "iCloud Mail" };

@@ -265,7 +265,8 @@ export function registerAppleAuthRoutes(app: Express) {
 
     if (error) {
       console.warn(
-        `[AppleAuth] Authorization declined or failed: ${error}`,
+        "[AppleAuth] Authorization declined or failed: %s %s",
+        error,
         errorDescription ?? ""
       );
       return res.redirect(

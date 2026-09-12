@@ -90,6 +90,29 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
+function normalizeIpForGeoLookup(value: string): string | null {
+  const trimmed = value.trim();
+  const normalized = trimmed.startsWith("::ffff:")
+    ? trimmed.slice("::ffff:".length)
+    : trimmed;
+  const lowerCased = normalized.toLowerCase();
+  if (!normalized || net.isIP(normalized) === 0) return null;
+  if (
+    normalized === "127.0.0.1" ||
+    normalized === "::1" ||
+    normalized.startsWith("10.") ||
+    normalized.startsWith("192.168.") ||
+    /^172\.(1[6-9]|2\d|3[0-1])\./.test(normalized) ||
+    normalized.startsWith("169.254.") ||
+    lowerCased.startsWith("fc") ||
+    lowerCased.startsWith("fd") ||
+    lowerCased.startsWith("fe80:")
+  ) {
+    return null;
+  }
+  return normalized;
+}
+
 async function startServer() {
   const app = express();
   // The managed runtime terminates HTTPS before forwarding to Express.
@@ -115,79 +138,83 @@ async function startServer() {
   });
 
   // Security headers
+  const contentSecurityPolicyDirectives = {
+    defaultSrc: ["'self'"],
+    baseUri: ["'self'"],
+    fontSrc: ["'self'", "https:", "data:"],
+    formAction: ["'self'"],
+    frameAncestors: ["'self'"],
+    // Allow images from self, data URIs, Cloudflare R2 CDN, CloudFront, and public manuscdn CDN
+    imgSrc: [
+      "'self'",
+      "data:",
+      "https://assets.getphame.app",
+      "https://*.r2.dev",
+      "https://d2xsxph8kpxj0f.cloudfront.net",
+      // Managed web assets redirect to this CloudFront distribution in production.
+      "https://d36hbw14aib5lz.cloudfront.net",
+      "https://files.manuscdn.com",
+      // YouTube thumbnails used on landing page VideoDemo section
+      "https://img.youtube.com",
+      "https://i.ytimg.com",
+    ],
+    // Allow YouTube embeds and the official Turnstile challenge frame.
+    frameSrc: [
+      // Admin email previews render local, static HTML through a revocable Blob URL.
+      "blob:",
+      "https://www.youtube.com",
+      "https://youtube.com",
+      "https://challenges.cloudflare.com",
+    ],
+    // Keep video delivery restricted to the app and the durable public media CDN.
+    mediaSrc: ["'self'", "https://files.manuscdn.com"],
+    // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
+    connectSrc: [
+      "'self'",
+      "http://ip-api.com",
+      "https://ip-api.com",
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com",
+      "https://vitals.vercel-insights.com",
+      "https://files.manuscdn.com",
+      // Manus analytics (Umami) beacon endpoint
+      "https://manus-analytics.com",
+      ...(process.env.NODE_ENV === "production"
+        ? []
+        : ["http:", "https:", "ws:", "wss:"]),
+    ],
+    objectSrc: ["'none'"],
+    // Allow the Manus analytics script (Umami) injected by the platform at deploy time.
+    // 'unsafe-inline' is required because the Manus platform injects an inline <script>
+    // into the served HTML at deploy time (line 146) that cannot be removed or hashed.
+    scriptSrc: [
+      "'self'",
+      "'unsafe-inline'",
+      "https://manus-analytics.com",
+      // Cloudflare Web Analytics injects this integrity-protected beacon at the proxied edge.
+      "https://static.cloudflareinsights.com",
+      // Invisible Turnstile protects genuinely new account creation.
+      "https://challenges.cloudflare.com",
+      ...(process.env.NODE_ENV === "production" ? [] : ["'unsafe-eval'"]),
+    ],
+    scriptSrcAttr: ["'none'"],
+    // 'unsafe-inline' is required for:
+    // 1. The Manus platform injects an inline script at line 146 of the served HTML
+    // 2. The shadcn/ui chart component injects dynamic <style> tags with CSS custom properties
+    // Removing it causes the app to break entirely (white screen).
+    // The Cloudflare warning is advisory — the actual XSS risk is low given the app has no
+    // user-generated HTML injection vectors. Revisit with a nonce-based approach later.
+    styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+    ...(process.env.NODE_ENV === "production"
+      ? { upgradeInsecureRequests: [] }
+      : {}),
+  };
   app.use(
     helmet({
       // Allow inline scripts/styles needed by Vite HMR in development
-      contentSecurityPolicy:
-        process.env.NODE_ENV === "production"
-          ? {
-              directives: {
-                defaultSrc: ["'self'"],
-                baseUri: ["'self'"],
-                fontSrc: ["'self'", "https:", "data:"],
-                formAction: ["'self'"],
-                frameAncestors: ["'self'"],
-                // Allow images from self, data URIs, Cloudflare R2 CDN, CloudFront, and public manuscdn CDN
-                imgSrc: [
-                  "'self'",
-                  "data:",
-                  "https://assets.getphame.app",
-                  "https://*.r2.dev",
-                  "https://d2xsxph8kpxj0f.cloudfront.net",
-                  // Managed web assets redirect to this CloudFront distribution in production.
-                  "https://d36hbw14aib5lz.cloudfront.net",
-                  "https://files.manuscdn.com",
-                  // YouTube thumbnails used on landing page VideoDemo section
-                  "https://img.youtube.com",
-                  "https://i.ytimg.com",
-                ],
-                // Allow YouTube embeds and the official Turnstile challenge frame.
-                frameSrc: [
-                  // Admin email previews render local, static HTML through a revocable Blob URL.
-                  "blob:",
-                  "https://www.youtube.com",
-                  "https://youtube.com",
-                  "https://challenges.cloudflare.com",
-                ],
-                // Keep video delivery restricted to the app and the durable public media CDN.
-                mediaSrc: ["'self'", "https://files.manuscdn.com"],
-                // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
-                connectSrc: [
-                  "'self'",
-                  "http://ip-api.com",
-                  "https://ip-api.com",
-                  "https://fonts.googleapis.com",
-                  "https://fonts.gstatic.com",
-                  "https://vitals.vercel-insights.com",
-                  "https://files.manuscdn.com",
-                  // Manus analytics (Umami) beacon endpoint
-                  "https://manus-analytics.com",
-                ],
-                objectSrc: ["'none'"],
-                // Allow the Manus analytics script (Umami) injected by the platform at deploy time.
-                // 'unsafe-inline' is required because the Manus platform injects an inline <script>
-                // into the served HTML at deploy time (line 146) that cannot be removed or hashed.
-                scriptSrc: [
-                  "'self'",
-                  "'unsafe-inline'",
-                  "https://manus-analytics.com",
-                  // Cloudflare Web Analytics injects this integrity-protected beacon at the proxied edge.
-                  "https://static.cloudflareinsights.com",
-                  // Invisible Turnstile protects genuinely new account creation.
-                  "https://challenges.cloudflare.com",
-                ],
-                scriptSrcAttr: ["'none'"],
-                // 'unsafe-inline' is required for:
-                // 1. The Manus platform injects an inline script at line 146 of the served HTML
-                // 2. The shadcn/ui chart component injects dynamic <style> tags with CSS custom properties
-                // Removing it causes the app to break entirely (white screen).
-                // The Cloudflare warning is advisory — the actual XSS risk is low given the app has no
-                // user-generated HTML injection vectors. Revisit with a nonce-based approach later.
-                styleSrc: ["'self'", "https:", "'unsafe-inline'"],
-                upgradeInsecureRequests: [],
-              },
-            }
-          : false,
+      contentSecurityPolicy: {
+        directives: contentSecurityPolicyDirectives,
+      },
       crossOriginEmbedderPolicy: false, // required for OAuth popup flows
     })
   );
@@ -252,18 +279,13 @@ async function startServer() {
   // Traditional Chinese (zh-TW) targets Taiwan, Hong Kong, Macau, and overseas Chinese communities.
   app.get("/api/detect-language", async (req, res) => {
     try {
-      const ip =
+      const ip = normalizeIpForGeoLookup(
         (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
-        req.socket.remoteAddress ||
-        "";
-      // Skip detection for localhost/private IPs
-      if (
-        !ip ||
-        ip === "127.0.0.1" ||
-        ip === "::1" ||
-        ip.startsWith("192.168.") ||
-        ip.startsWith("10.")
-      ) {
+          req.ip ||
+          req.socket.remoteAddress ||
+          ""
+      );
+      if (!ip) {
         return res.json({ lang: "en" });
       }
       const response = await fetch(

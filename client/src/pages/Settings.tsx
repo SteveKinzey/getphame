@@ -1747,6 +1747,24 @@ export function SettingsBulkSenderTestFixture() {
   );
 }
 
+function sanitizeAvatarImageUrl(value: string | null | undefined): string | null {
+  if (!value) return null;
+  if (value.startsWith("blob:")) return value;
+  if (typeof window === "undefined") return null;
+  try {
+    const parsed = new URL(value, window.location.origin);
+    if (
+      parsed.protocol === "https:" ||
+      parsed.origin === window.location.origin
+    ) {
+      return parsed.toString();
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 function AccountProfileCard() {
   const { t } = useTranslation();
   const utils = trpc.useUtils();
@@ -1867,8 +1885,8 @@ function AccountProfileCard() {
   }
 
   const avatarSrc =
-    previewUrl ||
-    account?.avatarUrl ||
+    sanitizeAvatarImageUrl(previewUrl) ||
+    sanitizeAvatarImageUrl(account?.avatarUrl) ||
     "https://assets.getphame.app/getphame-logo.svg";
   const nameChanged =
     name.trim() !== (account?.name ?? "") && name.trim().length >= 2;

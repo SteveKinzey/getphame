@@ -26,4 +26,11 @@ describe("production Content Security Policy", () => {
     expect(connectSrc).toContain("'self'");
     expect(connectSrc).not.toContain("cloudflareinsights.com");
   });
+
+  it("adds upgrade-insecure-requests only in production instead of serializing null in development", () => {
+    expect(serverEntry).toMatch(
+      /\.\.\.\(process\.env\.NODE_ENV === "production"\s*\?\s*\{\s*upgradeInsecureRequests:\s*\[\]\s*\}\s*:\s*\{\}\)/
+    );
+    expect(serverEntry).not.toContain("? [] : null");
+  });
 });

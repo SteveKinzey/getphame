@@ -1,6 +1,17 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { chromium } from "playwright-core";
 
+function messageContainsHost(message, expectedHostname) {
+  const urls = message.match(/https?:\/\/[^\s)"'`]+/g) ?? [];
+  return urls.some(candidate => {
+    try {
+      return new URL(candidate).hostname === expectedHostname;
+    } catch {
+      return false;
+    }
+  });
+}
+
 const sitemapPath =
   process.env.ROUTE_AUDIT_SITEMAP_PATH ?? "/tmp/getphame-production-routes.txt";
 const outputPath =
@@ -121,7 +132,7 @@ for (const url of routes) {
 
   const externalCspWarnings = consoleErrors.filter(
     message =>
-      message.includes("static.cloudflareinsights.com") &&
+      messageContainsHost(message, "static.cloudflareinsights.com") &&
       message.includes("Content Security Policy")
   );
   const renderingErrors = consoleErrors.filter(
