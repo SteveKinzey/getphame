@@ -39,8 +39,6 @@ vi.mock("./db", () => ({
   getUserByOpenId: vi.fn(async () => undefined),
 }));
 
-const originalFetch = globalThis.fetch;
-
 describe("operational email relay failover, slack alerts, and outage durations", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -61,7 +59,7 @@ describe("operational email relay failover, slack alerts, and outage durations",
     });
 
     // Mock global fetch for Slack webhook testing
-    globalThis.fetch = mocks.fetchMock as any;
+    vi.stubGlobal("fetch", mocks.fetchMock);
     mocks.fetchMock.mockResolvedValue({ ok: true, status: 200 } as any);
 
     const { resetRelayHealthState } = await import("./relayHealth");
@@ -69,7 +67,7 @@ describe("operational email relay failover, slack alerts, and outage durations",
   });
 
   afterEach(() => {
-    globalThis.fetch = originalFetch;
+    vi.unstubAllGlobals();
   });
 
   it("reports healthy when primary SMTP succeeds and skips Slack alert", async () => {
