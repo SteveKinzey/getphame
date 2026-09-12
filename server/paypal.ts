@@ -227,7 +227,7 @@ export function registerPayPalRoutes(app: Express) {
       const accessToken = await getAccessToken();
 
       const captureRes = await fetch(
-        `${PAYPAL_API_BASE}/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`,
+        `${PAYPAL_API_BASE}/v2/checkout/orders/${encodeURIComponent(orderId).replace(/\./g, "%2E")}/capture`,
         {
           method: "POST",
           headers: {
