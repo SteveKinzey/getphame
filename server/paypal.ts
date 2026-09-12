@@ -36,8 +36,6 @@ const PAYPAL_API_BASE =
   process.env.PAYPAL_MODE === "sandbox"
     ? "https://api-m.sandbox.paypal.com"
     : "https://api-m.paypal.com";
-const PAYPAL_ORDER_ID_PATTERN = /^[A-Z0-9]+$/;
-
 function getPayPalCredentials() {
   // Support multiple naming conventions for the credentials
   const clientId =
@@ -45,14 +43,6 @@ function getPayPalCredentials() {
   const secret =
     process.env.PAYPAL_SECRET ?? process.env.PAYPAL_CLIENT_SECRET ?? "";
   return { clientId, secret, configured: !!(clientId && secret) };
-}
-
-function isValidPayPalOrderId(orderId: string) {
-  return (
-    orderId.length > 0 &&
-    orderId.length <= 64 &&
-    PAYPAL_ORDER_ID_PATTERN.test(orderId)
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -225,12 +215,12 @@ export function registerPayPalRoutes(app: Express) {
       return res.status(401).json({ error: "Not authenticated." });
     }
 
-    const { orderId } = req.body as { orderId?: string };
+    const orderId =
+      typeof (req.body as { orderId?: unknown })?.orderId === "string"
+        ? (req.body as { orderId: string }).orderId
+        : undefined;
     if (!orderId) {
       return res.status(400).json({ error: "orderId is required." });
-    }
-    if (!isValidPayPalOrderId(orderId)) {
-      return res.status(400).json({ error: "Invalid orderId." });
     }
 
     try {
