@@ -24,26 +24,37 @@ export function ThemeProvider({
   defaultTheme = "light",
   switchable = false,
 }: ThemeProviderProps) {
-  const [themePreference, setThemePreferenceState] = useState<ThemePreference>(() => {
-    if (switchable) {
-      const stored = localStorage.getItem("theme");
-      return stored === "light" || stored === "dark" || stored === "system"
-        ? stored
-        : defaultTheme;
+  const [themePreference, setThemePreferenceState] = useState<ThemePreference>(
+    () => {
+      if (switchable) {
+        const stored = localStorage.getItem("theme");
+        return stored === "light" || stored === "dark" || stored === "system"
+          ? stored
+          : defaultTheme;
+      }
+      return defaultTheme;
     }
-    return defaultTheme;
-  });
+  );
   const [systemTheme, setSystemTheme] = useState<Theme>(() =>
-    typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(prefers-color-scheme: dark)").matches
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light"
   );
-  const theme: Theme = themePreference === "system" ? systemTheme : themePreference;
+  const theme: Theme =
+    themePreference === "system" ? systemTheme : themePreference;
 
   useEffect(() => {
-    if (!switchable || themePreference !== "system" || typeof window.matchMedia !== "function") return;
+    if (
+      !switchable ||
+      themePreference !== "system" ||
+      typeof window.matchMedia !== "function"
+    )
+      return;
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const syncSystemTheme = () => setSystemTheme(mediaQuery.matches ? "dark" : "light");
+    const syncSystemTheme = () =>
+      setSystemTheme(mediaQuery.matches ? "dark" : "light");
     syncSystemTheme();
     if (typeof mediaQuery.addEventListener === "function") {
       mediaQuery.addEventListener("change", syncSystemTheme);
@@ -79,7 +90,15 @@ export function ThemeProvider({
     : undefined;
 
   return (
-    <ThemeContext.Provider value={{ theme, themePreference, toggleTheme, setThemePreference, switchable }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        themePreference,
+        toggleTheme,
+        setThemePreference,
+        switchable,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

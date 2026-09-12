@@ -8,7 +8,7 @@ const read = (relativePath: string) =>
 
 function directive(source: string, name: string) {
   const match = source.match(
-    new RegExp(`${name}:\\s*\\[([\\s\\S]*?)\\]\\s*(?=,|\\n)`),
+    new RegExp(`${name}:\\s*\\[([\\s\\S]*?)\\]\\s*(?=,|\\n)`)
   );
   if (!match) throw new Error(`Missing CSP ${name} directive`);
   return match[1];
@@ -16,12 +16,12 @@ function directive(source: string, name: string) {
 
 describe("production Turnstile Content Security Policy", () => {
   it("parses directive arrays with or without a trailing comma", () => {
-    expect(directive('frameSrc: ["https://example.com"],\n', "frameSrc")).toContain(
-      '"https://example.com"',
-    );
-    expect(directive('frameSrc: ["https://example.com"]\n', "frameSrc")).toContain(
-      '"https://example.com"',
-    );
+    expect(
+      directive('frameSrc: ["https://example.com"],\n', "frameSrc")
+    ).toContain('"https://example.com"');
+    expect(
+      directive('frameSrc: ["https://example.com"]\n', "frameSrc")
+    ).toContain('"https://example.com"');
   });
 
   it("allows the official challenge and static preview document origins without broadening either directive", () => {

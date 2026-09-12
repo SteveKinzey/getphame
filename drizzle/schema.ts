@@ -369,6 +369,7 @@ export const emailRelayOutages = pgTable(
     id: serial("id").primaryKey(),
     startedAt: bigint("started_at", { mode: "number" }).notNull(),
     resolvedAt: bigint("resolved_at", { mode: "number" }),
+    lastAlertAt: bigint("last_alert_at", { mode: "number" }),
     cause: varchar("cause", { length: 300 }).notNull(),
     triggerSource: varchar("trigger_source", { length: 32 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -399,8 +400,12 @@ export const emailRelayDiagnostics = pgTable(
     durationMs: integer("duration_ms").notNull(),
     alertType: varchar("alert_type", { length: 16 }),
     slackAlertSent: boolean("slack_alert_sent").notNull().default(false),
-    emailFallbackAttempted: boolean("email_fallback_attempted").notNull().default(false),
-    emailFallbackDelivered: boolean("email_fallback_delivered").notNull().default(false),
+    emailFallbackAttempted: boolean("email_fallback_attempted")
+      .notNull()
+      .default(false),
+    emailFallbackDelivered: boolean("email_fallback_delivered")
+      .notNull()
+      .default(false),
     diagnostic: varchar("diagnostic", { length: 300 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
@@ -408,7 +413,129 @@ export const emailRelayDiagnostics = pgTable(
 );
 
 export type EmailRelayDiagnostic = typeof emailRelayDiagnostics.$inferSelect;
-export type InsertEmailRelayDiagnostic = typeof emailRelayDiagnostics.$inferInsert;
+export type InsertEmailRelayDiagnostic =
+  typeof emailRelayDiagnostics.$inferInsert;
+
+/**
+ * Rolling, privacy-safe integration health observations. These retain only
+ * aggregate statuses and measured durations so administrators can see a
+ * 24-hour latency trend without persisting credentials, endpoints, payloads,
+ * customer data, or provider error bodies.
+ */
+export const integrationHealthSamples = pgTable(
+  "integration_health_samples",
+  {
+    id: serial("id").primaryKey(),
+    checkedAt: bigint("checkedAt", { mode: "number" }).notNull(),
+    durationMs: integer("durationMs").notNull(),
+    overallStatus: varchar("overallStatus", { length: 20 }).notNull(),
+    databaseStatus: varchar("databaseStatus", { length: 20 }).notNull(),
+    databaseLatencyMs: integer("databaseLatencyMs"),
+    heartbeatStatus: varchar("heartbeatStatus", { length: 20 }).notNull(),
+    heartbeatLatencyMs: integer("heartbeatLatencyMs"),
+    stripeStatus: varchar("stripeStatus", { length: 20 }).notNull(),
+    stripeLatencyMs: integer("stripeLatencyMs"),
+    emailRelayStatus: varchar("emailRelayStatus", { length: 20 }).notNull(),
+    emailRelayLatencyMs: integer("emailRelayLatencyMs"),
+    sourcesStatus: varchar("sourcesStatus", { length: 20 }).notNull(),
+    sourcesLatencyMs: integer("sourcesLatencyMs"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  table => [index("integration_health_samples_checked_idx").on(table.checkedAt)]
+);
+
+export type IntegrationHealthSample =
+  typeof integrationHealthSamples.$inferSelect;
+export type InsertIntegrationHealthSample =
+  typeof integrationHealthSamples.$inferInsert;
+
+/**
+ * One administrator-managed alert destination for the shared Get Phame
+ * operational health monitor. The destination is AES-GCM encrypted at rest;
+ * list and mutation APIs expose only provider, enabled state, and settings.
+ */
+export const integrationHealthAlertConfigs = pgTable(
+  "integration_health_alert_configs",
+  {
+    id: serial("id").primaryKey(),
+    scopeKey: varchar("scopeKey", { length: 32 }).notNull().unique(),
+    enabled: boolean("enabled").notNull().default(false),
+    provider: varchar("provider", { length: 16 }).notNull(),
+    encryptedWebhookUrl: text("encryptedWebhookUrl").notNull(),
+    latencyThresholdMs: integer("latencyThresholdMs").notNull().default(2500),
+    alertOnFailure: boolean("alertOnFailure").notNull().default(true),
+    alertOnHighLatency: boolean("alertOnHighLatency").notNull().default(true),
+    updatedByUserId: integer("updatedByUserId").notNull(),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  }
+);
+
+export type IntegrationHealthAlertConfig =
+  typeof integrationHealthAlertConfigs.$inferSelect;
+export type InsertIntegrationHealthAlertConfig =
+  typeof integrationHealthAlertConfigs.$inferInsert;
+
+/**
+ * Bounded audit history for health alert attempts. It records aggregate event
+ * category and delivery result only, never an alert destination or provider
+ * response body.
+ */
+export const integrationHealthAlertDeliveries = pgTable(
+  "integration_health_alert_deliveries",
+  {
+    id: serial("id").primaryKey(),
+    configId: integer("configId").notNull(),
+    eventKey: varchar("eventKey", { length: 96 }).notNull(),
+    category: varchar("category", { length: 16 }).notNull(),
+    component: varchar("component", { length: 32 }).notNull(),
+    componentStatus: varchar("componentStatus", { length: 20 }).notNull(),
+    delivered: boolean("delivered").notNull().default(false),
+    httpStatus: integer("httpStatus"),
+    failureCode: varchar("failureCode", { length: 48 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("integration_health_alert_deliveries_event_idx").on(
+      table.configId,
+      table.eventKey,
+      table.createdAt
+    ),
+  ]
+);
+
+export type IntegrationHealthAlertDelivery =
+  typeof integrationHealthAlertDeliveries.$inferSelect;
+export type InsertIntegrationHealthAlertDelivery =
+  typeof integrationHealthAlertDeliveries.$inferInsert;
+
+/** Managed scheduler state for the project-owned integration health heartbeat. */
+export const integrationHealthSchedulers = pgTable(
+  "integration_health_schedulers",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("scheduleKey", { length: 64 }).notNull().unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 128 })
+      .notNull()
+      .unique(),
+    cronExpression: varchar("cronExpression", { length: 64 }).notNull(),
+    lastRunAt: bigint("lastRunAt", { mode: "number" }),
+    lastRunStatus: varchar("lastRunStatus", { length: 24 }),
+    lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("integration_health_schedulers_task_idx").on(
+      table.scheduleCronTaskUid
+    ),
+  ]
+);
+
+export type IntegrationHealthScheduler =
+  typeof integrationHealthSchedulers.$inferSelect;
+export type InsertIntegrationHealthScheduler =
+  typeof integrationHealthSchedulers.$inferInsert;
 
 /**
  * Sanitized production-route audit outcomes triggered by administrators. The
@@ -505,15 +632,24 @@ export const auditRetentionPolicyChanges = pgTable(
     id: serial("id").primaryKey(),
     policyKey: varchar("policy_key", { length: 32 }).notNull(),
     changedByUserId: integer("changed_by_user_id").notNull(),
-    previousRouteAuditRetentionDays: integer("previous_route_audit_retention_days").notNull(),
-    previousRendererErrorRetentionDays: integer("previous_renderer_error_retention_days").notNull(),
+    previousRouteAuditRetentionDays: integer(
+      "previous_route_audit_retention_days"
+    ).notNull(),
+    previousRendererErrorRetentionDays: integer(
+      "previous_renderer_error_retention_days"
+    ).notNull(),
     routeAuditRetentionDays: integer("route_audit_retention_days").notNull(),
-    rendererErrorRetentionDays: integer("renderer_error_retention_days").notNull(),
+    rendererErrorRetentionDays: integer(
+      "renderer_error_retention_days"
+    ).notNull(),
     changedAt: bigint("changed_at", { mode: "number" }).notNull(),
   },
   table => [
     index("audit_retention_policy_changes_changed_idx").on(table.changedAt),
-    index("audit_retention_policy_changes_actor_idx").on(table.changedByUserId, table.changedAt),
+    index("audit_retention_policy_changes_actor_idx").on(
+      table.changedByUserId,
+      table.changedAt
+    ),
   ]
 );
 
@@ -522,13 +658,24 @@ export const releaseHistoryExportSchedules = pgTable(
   "release_history_export_schedules",
   {
     id: serial("id").primaryKey(),
-    scheduleKey: varchar("schedule_key", { length: 32 }).notNull().default("global").unique(),
-    scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }).unique(),
-    cronExpression: varchar("cron_expression", { length: 64 }).notNull().default("0 0 9 * * 1"),
+    scheduleKey: varchar("schedule_key", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    scheduleCronTaskUid: varchar("schedule_cron_task_uid", {
+      length: 65,
+    }).unique(),
+    cronExpression: varchar("cron_expression", { length: 64 })
+      .notNull()
+      .default("0 0 9 * * 1"),
     enabled: boolean("enabled").notNull().default(false),
-    statusFilter: varchar("status_filter", { length: 16 }).notNull().default("all"),
+    statusFilter: varchar("status_filter", { length: 16 })
+      .notNull()
+      .default("all"),
     sortBy: varchar("sort_by", { length: 32 }).notNull().default("recordedAt"),
-    sortDirection: varchar("sort_direction", { length: 8 }).notNull().default("desc"),
+    sortDirection: varchar("sort_direction", { length: 8 })
+      .notNull()
+      .default("desc"),
     selectedColumns: text("selected_columns").notNull(),
     lastRunAt: bigint("last_run_at", { mode: "number" }),
     lastRunStatus: varchar("last_run_status", { length: 20 }),
@@ -537,7 +684,11 @@ export const releaseHistoryExportSchedules = pgTable(
     createdAt: bigint("created_at", { mode: "number" }).notNull(),
     updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
   },
-  table => [index("release_history_export_schedule_task_idx").on(table.scheduleCronTaskUid)]
+  table => [
+    index("release_history_export_schedule_task_idx").on(
+      table.scheduleCronTaskUid
+    ),
+  ]
 );
 
 /** Bounded metadata for completed scheduled exports. CSV content and identities are never stored here. */
@@ -556,10 +707,132 @@ export const releaseHistoryExportRuns = pgTable(
     errorCode: varchar("error_code", { length: 64 }),
   },
   table => [
-    index("release_history_export_runs_schedule_idx").on(table.scheduleId, table.generatedAt),
+    index("release_history_export_runs_schedule_idx").on(
+      table.scheduleId,
+      table.generatedAt
+    ),
     index("release_history_export_runs_generated_idx").on(table.generatedAt),
   ]
 );
+
+/**
+ * Global monthly diagnostics schedule. The enabled flag is intentionally stored
+ * even though this first pass has no UI so a future administrator control can
+ * pause or resume the managed Heartbeat without changing the runtime contract.
+ */
+export const monthlyDiagnosticExportSchedules = pgTable(
+  "monthly_diagnostic_export_schedules",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("schedule_key", { length: 32 })
+      .notNull()
+      .default("global"),
+    scheduleCronTaskUid: varchar("schedule_cron_task_uid", {
+      length: 65,
+    }).unique(),
+    enabled: boolean("enabled").notNull().default(true),
+    cronExpression: varchar("cron_expression", { length: 64 })
+      .notNull()
+      .default("0 10 8 1 * *"),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("monthly_diagnostic_export_schedule_key_unique").on(
+      table.scheduleKey
+    ),
+    index("monthly_diagnostic_export_schedule_task_idx").on(
+      table.scheduleCronTaskUid
+    ),
+  ]
+);
+
+export type MonthlyDiagnosticExportSchedule =
+  typeof monthlyDiagnosticExportSchedules.$inferSelect;
+export type InsertMonthlyDiagnosticExportSchedule =
+  typeof monthlyDiagnosticExportSchedules.$inferInsert;
+
+/** Metadata-only scheduled or custom-period snapshots. CSV bytes, report text, and addresses are excluded. */
+export const monthlyDiagnosticExportRuns = pgTable(
+  "monthly_diagnostic_export_runs",
+  {
+    id: serial("id").primaryKey(),
+    scheduleId: integer("schedule_id").notNull(),
+    reportMonthKey: varchar("report_month_key", { length: 32 }).notNull(),
+    /** Idempotency key: one scheduled run/month or one admin run/UTC hour. */
+    snapshotKey: varchar("snapshot_key", { length: 96 }).notNull(),
+    snapshotGeneratedAt: bigint("snapshot_generated_at", {
+      mode: "number",
+    }).notNull(),
+    status: varchar("status", { length: 24 }).notNull().default("preparing"),
+    savedContactsTotal: integer("saved_contacts_total").notNull().default(0),
+    explicitConsentTotal: integer("explicit_consent_total")
+      .notNull()
+      .default(0),
+    withoutExplicitConsentTotal: integer("without_explicit_consent_total")
+      .notNull()
+      .default(0),
+    optedOutTotal: integer("opted_out_total").notNull().default(0),
+    authTotalMatching: integer("auth_total_matching").notNull().default(0),
+    authExportedRows: integer("auth_exported_rows").notNull().default(0),
+    authTruncated: boolean("auth_truncated").notNull().default(false),
+    consentFilename: varchar("consent_filename", { length: 160 }),
+    authFilename: varchar("auth_filename", { length: 160 }),
+    errorCode: varchar("error_code", { length: 64 }),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    completedAt: bigint("completed_at", { mode: "number" }),
+  },
+  table => [
+    uniqueIndex("monthly_diagnostic_export_run_snapshot_unique").on(
+      table.scheduleId,
+      table.snapshotKey
+    ),
+    index("monthly_diagnostic_export_run_status_idx").on(
+      table.status,
+      table.createdAt
+    ),
+  ]
+);
+
+export type MonthlyDiagnosticExportRun =
+  typeof monthlyDiagnosticExportRuns.$inferSelect;
+export type InsertMonthlyDiagnosticExportRun =
+  typeof monthlyDiagnosticExportRuns.$inferInsert;
+
+/** Per-administrator at-most-once delivery state; recipient addresses are never stored. */
+export const monthlyDiagnosticExportDeliveries = pgTable(
+  "monthly_diagnostic_export_deliveries",
+  {
+    id: serial("id").primaryKey(),
+    runId: integer("run_id").notNull(),
+    recipientUserId: integer("recipient_user_id").notNull(),
+    state: varchar("state", { length: 24 }).notNull().default("pending"),
+    attemptCount: integer("attempt_count").notNull().default(0),
+    attemptedAt: bigint("attempted_at", { mode: "number" }),
+    sentAt: bigint("sent_at", { mode: "number" }),
+    errorCode: varchar("error_code", { length: 64 }),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("monthly_diagnostic_export_delivery_recipient_unique").on(
+      table.runId,
+      table.recipientUserId
+    ),
+    index("monthly_diagnostic_export_delivery_state_idx").on(
+      table.runId,
+      table.state
+    ),
+    index("monthly_diagnostic_export_delivery_recipient_idx").on(
+      table.recipientUserId
+    ),
+  ]
+);
+
+export type MonthlyDiagnosticExportDelivery =
+  typeof monthlyDiagnosticExportDeliveries.$inferSelect;
+export type InsertMonthlyDiagnosticExportDelivery =
+  typeof monthlyDiagnosticExportDeliveries.$inferInsert;
 
 /** Global acknowledgement of one sanitized repeat-renderer signature until newer evidence arrives. */
 export const rendererFailureAlertAcknowledgements = pgTable(
@@ -571,11 +844,15 @@ export const rendererFailureAlertAcknowledgements = pgTable(
     viewportMode: varchar("viewport_mode", { length: 16 }).notNull(),
     darkMode: boolean("dark_mode").notNull().default(false),
     errorCode: varchar("error_code", { length: 64 }).notNull(),
-    acknowledgedLatestOccurredAt: bigint("acknowledged_latest_occurred_at", { mode: "number" }).notNull(),
+    acknowledgedLatestOccurredAt: bigint("acknowledged_latest_occurred_at", {
+      mode: "number",
+    }).notNull(),
     acknowledgedByUserId: integer("acknowledged_by_user_id").notNull(),
     acknowledgedAt: bigint("acknowledged_at", { mode: "number" }).notNull(),
   },
-  table => [index("renderer_failure_alert_acknowledged_idx").on(table.acknowledgedAt)]
+  table => [
+    index("renderer_failure_alert_acknowledged_idx").on(table.acknowledgedAt),
+  ]
 );
 
 /**
@@ -844,6 +1121,9 @@ export const businessProfiles = pgTable("business_profiles", {
   reviewLink: text("reviewLink").notNull(),
   tier: tierEnum("tier").default("free").notNull(),
   planExpiresAt: bigint("planExpiresAt", { mode: "number" }), // Unix ms — null for lifetime, set for monthly/annual
+  lifecycleLocale: varchar("lifecycleLocale", { length: 16 })
+    .default("en")
+    .notNull(),
   monthlyCount: integer("monthlyCount").default(0).notNull(),
   monthlyResetDate: varchar("monthlyResetDate", { length: 7 }).notNull(), // "YYYY-MM"
   // Stripe customer ID — stored for creating checkout sessions and portal links
@@ -879,7 +1159,9 @@ export const businessProfiles = pgTable("business_profiles", {
   inactiveEmailSentAt: bigint("inactiveEmailSentAt", { mode: "number" }),
   // Physical location and derived IANA timezone are used for safe local-time delivery.
   physicalAddress: varchar("physicalAddress", { length: 500 }),
-  normalizedPhysicalAddress: varchar("normalizedPhysicalAddress", { length: 500 }),
+  normalizedPhysicalAddress: varchar("normalizedPhysicalAddress", {
+    length: 500,
+  }),
   businessTimeZone: varchar("businessTimeZone", { length: 100 }),
   // Business-local quiet period; default is 8:00 PM through 8:00 AM.
   quietHoursStartMinutes: integer("quietHoursStartMinutes")
@@ -908,35 +1190,105 @@ export const businessProfiles = pgTable("business_profiles", {
 export type BusinessProfile = typeof businessProfiles.$inferSelect;
 export type InsertBusinessProfile = typeof businessProfiles.$inferInsert;
 
+/**
+ * Global administrator-owned maximum batch sizes for the adaptive bulk-send
+ * workflow. These values can only narrow a provider's runtime allowance.
+ */
+export const adaptiveSendBurstPolicies = pgTable(
+  "adaptive_send_burst_policies",
+  {
+    id: serial("id").primaryKey(),
+    policyKey: varchar("policyKey", { length: 32 }).notNull(),
+    freeBurstCap: integer("freeBurstCap").notNull().default(10),
+    proBurstCap: integer("proBurstCap").notNull().default(25),
+    annualBurstCap: integer("annualBurstCap").notNull().default(50),
+    lifetimeBurstCap: integer("lifetimeBurstCap").notNull().default(100),
+    updatedByUserId: integer("updatedByUserId"),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("adaptive_send_burst_policy_key_unique").on(table.policyKey),
+  ]
+);
+
+export type AdaptiveSendBurstPolicy =
+  typeof adaptiveSendBurstPolicies.$inferSelect;
+export type InsertAdaptiveSendBurstPolicy =
+  typeof adaptiveSendBurstPolicies.$inferInsert;
+
+/**
+ * Immutable administrator audit history for adaptive burst-cap changes. The
+ * actor is referenced by ID so changing an account's name does not rewrite
+ * historical responsibility, and no customer or delivery data is retained.
+ */
+export const adaptiveSendBurstPolicyChanges = pgTable(
+  "adaptive_send_burst_policy_changes",
+  {
+    id: serial("id").primaryKey(),
+    policyKey: varchar("policyKey", { length: 32 }).notNull(),
+    changedByUserId: integer("changedByUserId").notNull(),
+    previousFreeBurstCap: integer("previousFreeBurstCap").notNull(),
+    previousProBurstCap: integer("previousProBurstCap").notNull(),
+    previousAnnualBurstCap: integer("previousAnnualBurstCap").notNull(),
+    previousLifetimeBurstCap: integer("previousLifetimeBurstCap").notNull(),
+    freeBurstCap: integer("freeBurstCap").notNull(),
+    proBurstCap: integer("proBurstCap").notNull(),
+    annualBurstCap: integer("annualBurstCap").notNull(),
+    lifetimeBurstCap: integer("lifetimeBurstCap").notNull(),
+    changedAt: bigint("changedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    index("adaptive_send_burst_policy_changes_changed_idx").on(
+      table.policyKey,
+      table.changedAt
+    ),
+    index("adaptive_send_burst_policy_changes_actor_idx").on(
+      table.changedByUserId,
+      table.changedAt
+    ),
+  ]
+);
+
+export type AdaptiveSendBurstPolicyChange =
+  typeof adaptiveSendBurstPolicyChanges.$inferSelect;
+export type InsertAdaptiveSendBurstPolicyChange =
+  typeof adaptiveSendBurstPolicyChanges.$inferInsert;
+
 /** Each review request sent by a business owner to their customer */
-export const customerRequests = pgTable("customer_requests", {
-  id: serial("id").primaryKey(),
-  userId: integer("userId").notNull(),
-  customerName: varchar("customerName", { length: 255 }).notNull(),
-  customerEmail: varchar("customerEmail", { length: 320 }),
-  customerPhone: varchar("customerPhone", { length: 30 }),
-  method: methodEnum("method").notNull(),
-  status: requestStatusEnum("status").default("sent").notNull(),
-  respondedAt: bigint("respondedAt", { mode: "number" }), // Unix ms when customer left a review (null = not yet)
-  // Null while delivery is held in the quiet-hours queue; populated only after SMTP accepts it.
-  sentAt: timestamp("sentAt"),
-  followUpAt: timestamp("followUpAt"),
-  platformId: integer("platformId"), // FK to review_platforms.id — which platform was linked in this request
-  sourceConnectionId: integer("sourceConnectionId"),
-  sourceEventId: varchar("sourceEventId", { length: 191 }),
-  preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
-  templateRevisionId: integer("templateRevisionId"),
-  englishTemplateRevisionId: integer("englishTemplateRevisionId"),
-  emailSubject: varchar("emailSubject", { length: 500 }), // Subject line of the sent email
-  emailBody: text("emailBody"), // HTML body of the sent email (stored for client detail view)
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-}, table => [
-  uniqueIndex("customer_requests_source_event_unique").on(
-    table.userId,
-    table.sourceConnectionId,
-    table.sourceEventId,
-  ),
-]);
+export const customerRequests = pgTable(
+  "customer_requests",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull(),
+    customerName: varchar("customerName", { length: 255 }).notNull(),
+    customerEmail: varchar("customerEmail", { length: 320 }),
+    customerPhone: varchar("customerPhone", { length: 30 }),
+    method: methodEnum("method").notNull(),
+    status: requestStatusEnum("status").default("sent").notNull(),
+    respondedAt: bigint("respondedAt", { mode: "number" }), // Unix ms when customer left a review (null = not yet)
+    // Null while delivery is held in the quiet-hours queue; populated only after SMTP accepts it.
+    sentAt: timestamp("sentAt"),
+    followUpAt: timestamp("followUpAt"),
+    platformId: integer("platformId"), // FK to review_platforms.id — which platform was linked in this request
+    sourceConnectionId: integer("sourceConnectionId"),
+    sourceEventId: varchar("sourceEventId", { length: 191 }),
+    preferredLocale: varchar("preferredLocale", { length: 16 })
+      .default("en")
+      .notNull(),
+    templateRevisionId: integer("templateRevisionId"),
+    englishTemplateRevisionId: integer("englishTemplateRevisionId"),
+    emailSubject: varchar("emailSubject", { length: 500 }), // Subject line of the sent email
+    emailBody: text("emailBody"), // HTML body of the sent email (stored for client detail view)
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  table => [
+    uniqueIndex("customer_requests_source_event_unique").on(
+      table.userId,
+      table.sourceConnectionId,
+      table.sourceEventId
+    ),
+  ]
+);
 export type CustomerRequest = typeof customerRequests.$inferSelect;
 export type InsertCustomerRequest = typeof customerRequests.$inferInsert;
 
@@ -959,7 +1311,9 @@ export const quietHoursQueuedSends = pgTable(
     templateId: integer("templateId"),
     scheduleFollowUps: integer("scheduleFollowUps").default(0).notNull(),
     scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(),
-    status: quietHoursQueuedSendStatusEnum("status").default("pending").notNull(),
+    status: quietHoursQueuedSendStatusEnum("status")
+      .default("pending")
+      .notNull(),
     attemptCount: integer("attemptCount").default(0).notNull(),
     lastError: varchar("lastError", { length: 1000 }),
     claimedAt: bigint("claimedAt", { mode: "number" }),
@@ -979,22 +1333,128 @@ export type InsertQuietHoursQueuedSend =
 
 /**
  * Tracks active Stripe subscriptions.
- * We store only the Stripe IDs — all other data (amount, status, period)
- * is fetched from Stripe API on demand or updated via webhooks.
+ * Canonical status and access boundaries are refreshed from Stripe during
+ * every lifecycle event; no amount or raw provider payload is stored.
  */
-export const stripeSubscriptions = pgTable("stripe_subscriptions", {
-  id: serial("id").primaryKey(),
-  userId: integer("userId").notNull().unique(), // one active sub per user
-  stripeSubscriptionId: varchar("stripeSubscriptionId", {
-    length: 64,
-  }).notNull(),
-  status: varchar("status", { length: 32 }).notNull(), // active, canceled, past_due, etc.
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
+export const stripeSubscriptions = pgTable(
+  "stripe_subscriptions",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull().unique(), // one active sub per user
+    stripeSubscriptionId: varchar("stripeSubscriptionId", {
+      length: 64,
+    }).notNull(),
+    plan: varchar("plan", { length: 16 }).notNull().default("monthly"),
+    status: varchar("status", { length: 32 }).notNull(), // active, canceled, past_due, etc.
+    trialEndsAt: bigint("trialEndsAt", { mode: "number" }),
+    currentPeriodEndsAt: bigint("currentPeriodEndsAt", { mode: "number" }),
+    cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").notNull().default(false),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  table => [
+    uniqueIndex("stripe_subscriptions_stripe_id_unique").on(
+      table.stripeSubscriptionId
+    ),
+  ]
+);
 
 export type StripeSubscription = typeof stripeSubscriptions.$inferSelect;
 export type InsertStripeSubscription = typeof stripeSubscriptions.$inferInsert;
+
+/** Privacy-minimized idempotency ledger for verified Stripe lifecycle events. */
+export const stripeWebhookEvents = pgTable(
+  "stripe_webhook_events",
+  {
+    id: serial("id").primaryKey(),
+    stripeEventId: varchar("stripeEventId", { length: 191 }).notNull(),
+    eventType: varchar("eventType", { length: 80 }).notNull(),
+    objectId: varchar("objectId", { length: 191 }).notNull(),
+    status: varchar("status", { length: 20 }).notNull(),
+    claimExpiresAt: bigint("claimExpiresAt", { mode: "number" }),
+    errorCode: varchar("errorCode", { length: 64 }),
+    receivedAt: bigint("receivedAt", { mode: "number" }).notNull(),
+    processedAt: bigint("processedAt", { mode: "number" }),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("stripe_webhook_events_event_id_unique").on(
+      table.stripeEventId
+    ),
+    index("stripe_webhook_events_claim_idx").on(
+      table.status,
+      table.claimExpiresAt
+    ),
+  ]
+);
+
+export type StripeWebhookEvent = typeof stripeWebhookEvents.$inferSelect;
+export type InsertStripeWebhookEvent = typeof stripeWebhookEvents.$inferInsert;
+
+/** At-most-once outbox for transactional subscription lifecycle notices. */
+export const stripeLifecycleEmails = pgTable(
+  "stripe_lifecycle_emails",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").notNull(),
+    stripeSubscriptionId: varchar("stripeSubscriptionId", {
+      length: 64,
+    }).notNull(),
+    stripeInvoiceId: varchar("stripeInvoiceId", { length: 191 }),
+    sequenceKey: varchar("sequenceKey", { length: 255 }).notNull(),
+    kind: varchar("kind", { length: 32 }).notNull(),
+    locale: varchar("locale", { length: 16 }).notNull().default("en"),
+    state: varchar("state", { length: 20 }).notNull().default("pending"),
+    scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(),
+    attemptedAt: bigint("attemptedAt", { mode: "number" }),
+    sentAt: bigint("sentAt", { mode: "number" }),
+    provider: varchar("provider", { length: 32 }),
+    providerMessageId: varchar("providerMessageId", { length: 191 }),
+    errorCode: varchar("errorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  },
+  table => [
+    uniqueIndex("stripe_lifecycle_emails_sequence_unique").on(
+      table.stripeSubscriptionId,
+      table.sequenceKey
+    ),
+    index("stripe_lifecycle_emails_due_idx").on(table.state, table.scheduledAt),
+    index("stripe_lifecycle_emails_user_idx").on(table.userId),
+  ]
+);
+
+export type StripeLifecycleEmail = typeof stripeLifecycleEmails.$inferSelect;
+export type InsertStripeLifecycleEmail =
+  typeof stripeLifecycleEmails.$inferInsert;
+
+/** Durable owned registration and overlap guard for lifecycle processing. */
+export const stripeLifecycleSchedulers = pgTable(
+  "stripe_lifecycle_schedulers",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("scheduleKey", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", {
+      length: 65,
+    }).unique(),
+    cronExpression: varchar("cronExpression", { length: 64 })
+      .notNull()
+      .default("0 */5 * * * *"),
+    lastRunAt: bigint("lastRunAt", { mode: "number" }),
+    lastRunStatus: varchar("lastRunStatus", { length: 20 }),
+    lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" }).notNull(),
+    updatedAt: bigint("updatedAt", { mode: "number" }).notNull(),
+  }
+);
+
+export type StripeLifecycleScheduler =
+  typeof stripeLifecycleSchedulers.$inferSelect;
+export type InsertStripeLifecycleScheduler =
+  typeof stripeLifecycleSchedulers.$inferInsert;
 
 /**
  * Administrator-issued paid-access grants for registered or future users.
@@ -1112,7 +1572,9 @@ export const savedContacts = pgTable("saved_contacts", {
   privacyPolicyUrl: text("privacyPolicyUrl"),
   sourceFormId: varchar("sourceFormId", { length: 191 }),
   sourceSubmissionId: varchar("sourceSubmissionId", { length: 191 }),
-  preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
+  preferredLocale: varchar("preferredLocale", { length: 16 })
+    .default("en")
+    .notNull(),
   // Opt-out / unsubscribe tracking
   optedOut: integer("optedOut").default(0).notNull(), // 1 = unsubscribed, suppress future sends
   optedOutAt: bigint("optedOutAt", { mode: "number" }), // Unix ms when opted out
@@ -1175,16 +1637,17 @@ export const emailTemplateRevisions = pgTable(
       table.userId,
       table.familyPublicId,
       table.locale,
-      table.version,
+      table.version
     ),
     index("email_template_revisions_template_status_idx").on(
       table.templateId,
-      table.status,
+      table.status
     ),
-  ],
+  ]
 );
 export type EmailTemplateRevision = typeof emailTemplateRevisions.$inferSelect;
-export type InsertEmailTemplateRevision = typeof emailTemplateRevisions.$inferInsert;
+export type InsertEmailTemplateRevision =
+  typeof emailTemplateRevisions.$inferInsert;
 
 /** Follow-up reminders — scheduled follow-ups with immutable timing snapshots for reporting */
 export const followUpReminders = pgTable("follow_up_reminders", {
@@ -1298,12 +1761,16 @@ export const smtpTestEmailAttempts = pgTable(
     attemptedAt: bigint("attempted_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("smtp_test_email_attempts_user_time_idx").on(table.userId, table.attemptedAt),
+    index("smtp_test_email_attempts_user_time_idx").on(
+      table.userId,
+      table.attemptedAt
+    ),
     index("smtp_test_email_attempts_time_idx").on(table.attemptedAt),
   ]
 );
 export type SmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferSelect;
-export type InsertSmtpTestEmailAttempt = typeof smtpTestEmailAttempts.$inferInsert;
+export type InsertSmtpTestEmailAttempt =
+  typeof smtpTestEmailAttempts.$inferInsert;
 
 /**
  * Privacy-minimized, tenant-owned evidence of profile and preference downloads.
@@ -1314,16 +1781,23 @@ export const profilePreferenceExportHistory = pgTable(
   "profile_preference_export_history",
   {
     id: serial("id").primaryKey(),
-    userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
     format: varchar("format", { length: 8 }).notNull(),
     exportedAt: bigint("exported_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("profile_preference_export_history_user_time_idx").on(table.userId, table.exportedAt),
+    index("profile_preference_export_history_user_time_idx").on(
+      table.userId,
+      table.exportedAt
+    ),
   ]
 );
-export type ProfilePreferenceExportHistory = typeof profilePreferenceExportHistory.$inferSelect;
-export type InsertProfilePreferenceExportHistory = typeof profilePreferenceExportHistory.$inferInsert;
+export type ProfilePreferenceExportHistory =
+  typeof profilePreferenceExportHistory.$inferSelect;
+export type InsertProfilePreferenceExportHistory =
+  typeof profilePreferenceExportHistory.$inferInsert;
 
 /**
  * The user-selected, tenant-owned delivery channel for review outreach. Platform
@@ -1335,8 +1809,10 @@ export const outboundMailPreferences = pgTable("outbound_mail_preferences", {
   selectedChannel: outboundMailChannelEnum("selected_channel").notNull(),
   updatedAt: bigint("updated_at", { mode: "number" }).notNull(),
 });
-export type OutboundMailPreference = typeof outboundMailPreferences.$inferSelect;
-export type InsertOutboundMailPreference = typeof outboundMailPreferences.$inferInsert;
+export type OutboundMailPreference =
+  typeof outboundMailPreferences.$inferSelect;
+export type InsertOutboundMailPreference =
+  typeof outboundMailPreferences.$inferInsert;
 
 /**
  * Durable snapshots of administrator-initiated SMTP removals. Identity fields
@@ -1381,13 +1857,21 @@ export const adminUserLifecycleAuditLogs = pgTable(
     occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("admin_user_lifecycle_target_time_idx").on(table.targetUserId, table.occurredAt),
-    index("admin_user_lifecycle_actor_time_idx").on(table.actorUserId, table.occurredAt),
+    index("admin_user_lifecycle_target_time_idx").on(
+      table.targetUserId,
+      table.occurredAt
+    ),
+    index("admin_user_lifecycle_actor_time_idx").on(
+      table.actorUserId,
+      table.occurredAt
+    ),
   ]
 );
 
-export type AdminUserLifecycleAuditLog = typeof adminUserLifecycleAuditLogs.$inferSelect;
-export type InsertAdminUserLifecycleAuditLog = typeof adminUserLifecycleAuditLogs.$inferInsert;
+export type AdminUserLifecycleAuditLog =
+  typeof adminUserLifecycleAuditLogs.$inferSelect;
+export type InsertAdminUserLifecycleAuditLog =
+  typeof adminUserLifecycleAuditLogs.$inferInsert;
 
 /**
  * Retention-bounded records for messages sent through the administrator-only
@@ -1413,13 +1897,18 @@ export const adminPlatformEmailMessages = pgTable(
     expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
   },
   table => [
-    index("admin_platform_email_recipient_time_idx").on(table.recipientUserId, table.createdAt),
+    index("admin_platform_email_recipient_time_idx").on(
+      table.recipientUserId,
+      table.createdAt
+    ),
     index("admin_platform_email_expiry_idx").on(table.expiresAt),
   ]
 );
 
-export type AdminPlatformEmailMessage = typeof adminPlatformEmailMessages.$inferSelect;
-export type InsertAdminPlatformEmailMessage = typeof adminPlatformEmailMessages.$inferInsert;
+export type AdminPlatformEmailMessage =
+  typeof adminPlatformEmailMessages.$inferSelect;
+export type InsertAdminPlatformEmailMessage =
+  typeof adminPlatformEmailMessages.$inferInsert;
 
 /**
  * Tracks email open and click events for review request emails.
@@ -1851,7 +2340,9 @@ export const sourceConnections = pgTable(
     sendDelayMinutes: integer("sendDelayMinutes").notNull().default(0),
     templateId: integer("templateId"),
     platformId: integer("platformId"),
-    preferredLocale: varchar("preferredLocale", { length: 16 }).default("en").notNull(),
+    preferredLocale: varchar("preferredLocale", { length: 16 })
+      .default("en")
+      .notNull(),
     dryRunCompletedAt: bigint("dryRunCompletedAt", { mode: "number" }),
     pausedAt: bigint("pausedAt", { mode: "number" }),
     pauseReason: varchar("pauseReason", { length: 255 }),
@@ -1901,7 +2392,9 @@ export const contactConsentEvidence = pgTable(
     userId: integer("userId").notNull(),
     contactId: integer("contactId"),
     sourceConnectionId: integer("sourceConnectionId"),
-    sourceSubmissionId: varchar("sourceSubmissionId", { length: 191 }).notNull(),
+    sourceSubmissionId: varchar("sourceSubmissionId", {
+      length: 191,
+    }).notNull(),
     purpose: varchar("purpose", { length: 32 }).notNull(),
     channel: varchar("channel", { length: 16 }).notNull(),
     basis: varchar("basis", { length: 32 }).notNull(),
@@ -1920,13 +2413,17 @@ export const contactConsentEvidence = pgTable(
     uniqueIndex("contact_consent_evidence_source_unique").on(
       table.userId,
       table.sourceSubmissionId,
-      table.purpose,
+      table.purpose
     ),
-    index("contact_consent_evidence_contact_idx").on(table.userId, table.contactId),
-  ],
+    index("contact_consent_evidence_contact_idx").on(
+      table.userId,
+      table.contactId
+    ),
+  ]
 );
 export type ContactConsentEvidence = typeof contactConsentEvidence.$inferSelect;
-export type InsertContactConsentEvidence = typeof contactConsentEvidence.$inferInsert;
+export type InsertContactConsentEvidence =
+  typeof contactConsentEvidence.$inferInsert;
 
 /** Idempotency and audit ledger for source events that may create review outreach. */
 export const sourceAutomationEvents = pgTable(
@@ -1939,11 +2436,15 @@ export const sourceAutomationEvents = pgTable(
     apiKeyId: integer("apiKeyId").notNull(),
     sourceEventId: varchar("sourceEventId", { length: 191 }).notNull(),
     requestHash: varchar("requestHash", { length: 64 }).notNull(),
-    eventType: varchar("eventType", { length: 32 }).notNull().default("review_request"),
+    eventType: varchar("eventType", { length: 32 })
+      .notNull()
+      .default("review_request"),
     contactId: integer("contactId"),
     templateId: integer("templateId"),
     platformId: integer("platformId"),
-    preferredLocale: varchar("preferredLocale", { length: 16 }).notNull().default("en"),
+    preferredLocale: varchar("preferredLocale", { length: 16 })
+      .notNull()
+      .default("en"),
     customerRequestId: integer("customerRequestId"),
     status: varchar("status", { length: 24 }).notNull(),
     errorCode: varchar("errorCode", { length: 64 }),
@@ -1960,38 +2461,49 @@ export const sourceAutomationEvents = pgTable(
     uniqueIndex("source_automation_events_source_event_unique").on(
       table.userId,
       table.sourceConnectionId,
-      table.sourceEventId,
+      table.sourceEventId
     ),
     index("source_automation_events_status_idx").on(table.userId, table.status),
-    index("source_automation_events_due_idx").on(table.status, table.scheduledAt),
-  ],
+    index("source_automation_events_due_idx").on(
+      table.status,
+      table.scheduledAt
+    ),
+  ]
 );
 export type SourceAutomationEvent = typeof sourceAutomationEvents.$inferSelect;
-export type InsertSourceAutomationEvent = typeof sourceAutomationEvents.$inferInsert;
+export type InsertSourceAutomationEvent =
+  typeof sourceAutomationEvents.$inferInsert;
 
 /** Durable registration for the source-automation recurring job. */
-export const sourceAutomationSchedulers = pgTable("source_automation_schedulers", {
-  id: serial("id").primaryKey(),
-  scheduleKey: varchar("scheduleKey", { length: 32 })
-    .notNull()
-    .default("global")
-    .unique(),
-  scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).unique(),
-  cronExpression: varchar("cronExpression", { length: 64 })
-    .notNull()
-    .default("0 */5 * * * *"),
-  lastRunAt: bigint("lastRunAt", { mode: "number" }),
-  lastRunStatus: varchar("lastRunStatus", { length: 20 }),
-  lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
-  createdAt: bigint("createdAt", { mode: "number" })
-    .notNull()
-    .$defaultFn(() => Date.now()),
-  updatedAt: bigint("updatedAt", { mode: "number" })
-    .notNull()
-    .$defaultFn(() => Date.now()),
-});
-export type SourceAutomationScheduler = typeof sourceAutomationSchedulers.$inferSelect;
-export type InsertSourceAutomationScheduler = typeof sourceAutomationSchedulers.$inferInsert;
+export const sourceAutomationSchedulers = pgTable(
+  "source_automation_schedulers",
+  {
+    id: serial("id").primaryKey(),
+    scheduleKey: varchar("scheduleKey", { length: 32 })
+      .notNull()
+      .default("global")
+      .unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", {
+      length: 65,
+    }).unique(),
+    cronExpression: varchar("cronExpression", { length: 64 })
+      .notNull()
+      .default("0 */5 * * * *"),
+    lastRunAt: bigint("lastRunAt", { mode: "number" }),
+    lastRunStatus: varchar("lastRunStatus", { length: 20 }),
+    lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+    createdAt: bigint("createdAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+    updatedAt: bigint("updatedAt", { mode: "number" })
+      .notNull()
+      .$defaultFn(() => Date.now()),
+  }
+);
+export type SourceAutomationScheduler =
+  typeof sourceAutomationSchedulers.$inferSelect;
+export type InsertSourceAutomationScheduler =
+  typeof sourceAutomationSchedulers.$inferInsert;
 
 /**
  * Short-lived device-style pairing requests used by the WordPress connector.
@@ -2135,7 +2647,9 @@ export const disposableDomainSchedulers = pgTable(
       .notNull()
       .default("global")
       .unique(),
-    scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).unique(),
+    scheduleCronTaskUid: varchar("scheduleCronTaskUid", {
+      length: 65,
+    }).unique(),
     cronExpression: varchar("cronExpression", { length: 64 })
       .notNull()
       .default("0 0 9,10 * * *"),
@@ -2152,9 +2666,12 @@ export const disposableDomainSchedulers = pgTable(
       .notNull()
       .$defaultFn(() => Date.now()),
   },
-  table => [index("disposable_domain_scheduler_task_idx").on(table.scheduleCronTaskUid)]
+  table => [
+    index("disposable_domain_scheduler_task_idx").on(table.scheduleCronTaskUid),
+  ]
 );
-export type DisposableDomainScheduler = typeof disposableDomainSchedulers.$inferSelect;
+export type DisposableDomainScheduler =
+  typeof disposableDomainSchedulers.$inferSelect;
 export type InsertDisposableDomainScheduler =
   typeof disposableDomainSchedulers.$inferInsert;
 
@@ -2170,7 +2687,9 @@ export const disposableDomainAccountReviews = pgTable(
     userId: integer("userId").notNull().unique(),
     domain: varchar("domain", { length: 253 }).notNull(),
     confidenceScore: integer("confidenceScore").notNull(),
-    status: disposableDomainReviewStatusEnum("status").notNull().default("pending"),
+    status: disposableDomainReviewStatusEnum("status")
+      .notNull()
+      .default("pending"),
     detectedAt: bigint("detectedAt", { mode: "number" }).notNull(),
     lastDetectedAt: bigint("lastDetectedAt", { mode: "number" }).notNull(),
     resolvedAt: bigint("resolvedAt", { mode: "number" }),
@@ -3076,7 +3595,9 @@ export const releaseParityRecords = pgTable(
   {
     id: serial("id").primaryKey(),
     checkpointId: varchar("checkpoint_id", { length: 64 }).notNull(),
-    protectedMainCommit: varchar("protected_main_commit", { length: 64 }).notNull(),
+    protectedMainCommit: varchar("protected_main_commit", {
+      length: 64,
+    }).notNull(),
     protectedMainTree: varchar("protected_main_tree", { length: 64 }).notNull(),
     managedTree: varchar("managed_tree", { length: 64 }).notNull(),
     parityStatus: varchar("parity_status", { length: 16 }).notNull(),

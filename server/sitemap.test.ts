@@ -24,7 +24,9 @@ describe("/sitemap.xml", () => {
     const app = buildTestApp();
     const res = await request(app).get("/sitemap.xml");
     expect(res.text).toContain('<?xml version="1.0" encoding="UTF-8"?>');
-    expect(res.text).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
+    expect(res.text).toContain(
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    );
     expect(res.text).toContain("</urlset>");
   });
 
@@ -37,13 +39,17 @@ describe("/sitemap.xml", () => {
   it("includes privacy-policy URL", async () => {
     const app = buildTestApp();
     const res = await request(app).get("/sitemap.xml");
-    expect(res.text).toContain("<loc>https://getphame.app/privacy-policy</loc>");
+    expect(res.text).toContain(
+      "<loc>https://getphame.app/privacy-policy</loc>"
+    );
   });
 
   it("includes terms-of-service URL", async () => {
     const app = buildTestApp();
     const res = await request(app).get("/sitemap.xml");
-    expect(res.text).toContain("<loc>https://getphame.app/terms-of-service</loc>");
+    expect(res.text).toContain(
+      "<loc>https://getphame.app/terms-of-service</loc>"
+    );
   });
 
   it("includes lastmod, changefreq, and priority for each URL", async () => {

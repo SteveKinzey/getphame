@@ -1,8 +1,14 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const workspaceManifest = readFileSync(new URL("../pnpm-workspace.yaml", import.meta.url), "utf8");
-const lockfile = readFileSync(new URL("../pnpm-lock.yaml", import.meta.url), "utf8");
+const workspaceManifest = readFileSync(
+  new URL("../pnpm-workspace.yaml", import.meta.url),
+  "utf8"
+);
+const lockfile = readFileSync(
+  new URL("../pnpm-lock.yaml", import.meta.url),
+  "utf8"
+);
 
 describe("nanoid dependency security", () => {
   it("replaces the vulnerable 3.3.17 transitive resolution with nanoid 3.3.18", () => {

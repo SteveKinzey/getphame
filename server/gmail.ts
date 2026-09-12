@@ -32,7 +32,10 @@ export function getGmailRedirectUri(origin: string): string {
 
 // ── Auth URL ──────────────────────────────────────────────────────────────────
 
-export function getGmailAuthUrl(redirectUri: string, statePayload: string): string {
+export function getGmailAuthUrl(
+  redirectUri: string,
+  statePayload: string
+): string {
   const oauth2 = makeOAuth2Client(redirectUri);
   return oauth2.generateAuthUrl({
     access_type: "offline",
@@ -103,7 +106,9 @@ export async function exchangeGmailCode(
 
 // ── Get a valid (possibly refreshed) access token ────────────────────────────
 
-export async function getValidAccessToken(userId: number): Promise<string | null> {
+export async function getValidAccessToken(
+  userId: number
+): Promise<string | null> {
   const db = await getDb();
   if (!db) return null;
 
@@ -117,7 +122,9 @@ export async function getValidAccessToken(userId: number): Promise<string | null
   const row = rows[0];
 
   const bufferMs = 5 * 60 * 1000; // refresh 5 min before expiry
-  const isExpired = row.expiresAt ? row.expiresAt - bufferMs < Date.now() : false;
+  const isExpired = row.expiresAt
+    ? row.expiresAt - bufferMs < Date.now()
+    : false;
 
   if (!isExpired) return row.accessToken;
 
@@ -155,7 +162,9 @@ export async function sendViaGmailOAuth(params: {
 }): Promise<void> {
   const accessToken = await getValidAccessToken(params.userId);
   if (!accessToken) {
-    throw new Error("No valid Gmail OAuth token found. Please reconnect Gmail.");
+    throw new Error(
+      "No valid Gmail OAuth token found. Please reconnect Gmail."
+    );
   }
 
   const oauth2 = makeOAuth2Client("");
@@ -207,7 +216,10 @@ export async function getGmailStatus(userId: number): Promise<{
   if (!db) return { connected: false, email: null };
 
   const rows = await db
-    .select({ gmailEmail: gmailTokens.gmailEmail, refreshToken: gmailTokens.refreshToken })
+    .select({
+      gmailEmail: gmailTokens.gmailEmail,
+      refreshToken: gmailTokens.refreshToken,
+    })
     .from(gmailTokens)
     .where(eq(gmailTokens.userId, userId))
     .limit(1);

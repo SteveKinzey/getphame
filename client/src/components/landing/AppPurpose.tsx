@@ -1,4 +1,10 @@
-import { ArrowRight, Building2, MailCheck, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  MailCheck,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const workflow = [
@@ -28,7 +34,9 @@ export default function AppPurpose() {
               id="about-getphame-title"
               className="font-display text-3xl font-extrabold leading-tight text-[#0a1628] md:text-4xl"
             >
-              {t("landing.purpose.title", { defaultValue: "What Get Phame does" })}
+              {t("landing.purpose.title", {
+                defaultValue: "What Get Phame does",
+              })}
             </h2>
 
             <p className="mt-5 max-w-3xl text-base font-medium leading-7 text-slate-700 md:text-lg">
@@ -54,7 +62,10 @@ export default function AppPurpose() {
                     />
                   </div>
                   <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#806000]">
-                    {t("landing.purpose.stepLabel", { defaultValue: "Step {{number}}", number: index + 1 })}
+                    {t("landing.purpose.stepLabel", {
+                      defaultValue: "Step {{number}}",
+                      number: index + 1,
+                    })}
                   </p>
                   <p className="mt-1 text-sm font-bold leading-5 text-[#0a1628]">
                     {t(`landing.purpose.steps.${key}`, {
@@ -79,10 +90,17 @@ export default function AppPurpose() {
               <ShieldCheck size={24} aria-hidden="true" />
             </div>
             <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-primary">
-              {t("landing.purpose.googleEyebrow", { defaultValue: "Google sign-in disclosure" })}
+              {t("landing.purpose.googleEyebrow", {
+                defaultValue: "Google sign-in disclosure",
+              })}
             </p>
-            <h3 id="google-sign-in-use-title" className="mt-2 font-display text-2xl font-extrabold text-white md:text-3xl">
-              {t("landing.purpose.googleTitle", { defaultValue: "How Google sign-in is used" })}
+            <h3
+              id="google-sign-in-use-title"
+              className="mt-2 font-display text-2xl font-extrabold text-white md:text-3xl"
+            >
+              {t("landing.purpose.googleTitle", {
+                defaultValue: "How Google sign-in is used",
+              })}
             </h3>
             <p className="mt-5 text-base font-medium leading-7 text-slate-200">
               {t("landing.purpose.googleDescription", {
@@ -100,7 +118,9 @@ export default function AppPurpose() {
               href="/privacy-policy"
               className="mt-7 inline-flex items-center gap-2 rounded-xl border border-primary/45 bg-primary/10 px-5 py-3 text-sm font-extrabold text-primary transition-colors duration-200 hover:bg-primary/15"
             >
-              {t("landing.purpose.privacyLink", { defaultValue: "Read our Privacy Policy" })}
+              {t("landing.purpose.privacyLink", {
+                defaultValue: "Read our Privacy Policy",
+              })}
               <ArrowRight size={16} aria-hidden="true" />
             </a>
           </aside>

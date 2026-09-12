@@ -49,7 +49,7 @@ describe("contact conversational search", () => {
     const result = await interpretContactSearchQuery({
       query,
       locale: "en",
-      invoke: async (request) => {
+      invoke: async request => {
         requestBody = JSON.stringify(request);
         throw new Error("model unavailable");
       },
@@ -62,17 +62,25 @@ describe("contact conversational search", () => {
   });
 
   it("parses the documented safe fallback examples without accidental text filters", () => {
-    expect(parseContactSearchFallback("Stripe contacts with recorded consent who have never been contacted")).toMatchObject({
+    expect(
+      parseContactSearchFallback(
+        "Stripe contacts with recorded consent who have never been contacted"
+      )
+    ).toMatchObject({
       text: null,
       source: "stripe",
       sentState: "never",
       consent: "recorded",
     });
-    expect(parseContactSearchFallback("Contacts who have never received a request")).toMatchObject({
+    expect(
+      parseContactSearchFallback("Contacts who have never received a request")
+    ).toMatchObject({
       text: null,
       sentState: "never",
     });
-    expect(parseContactSearchFallback("Customers not contacted in 90 days")).toMatchObject({
+    expect(
+      parseContactSearchFallback("Customers not contacted in 90 days")
+    ).toMatchObject({
       text: null,
       sentState: "dormant",
       dormantDays: 90,
@@ -80,32 +88,47 @@ describe("contact conversational search", () => {
   });
 
   it("applies source, consent, send-state, and tenant-provided record filters together", () => {
-    const filters = parseContactSearchFallback("Stripe contacts with recorded consent who have never been contacted");
-    const matches = filterContactsByNaturalQuery([
-      contact({ id: 1 }),
-      contact({ id: 2, source: "manual" }),
-      contact({ id: 3, consentBasis: null, consentCapturedAt: null }),
-      contact({ id: 4, totalSent: 2, lastSentAt: Date.UTC(2026, 0, 4) }),
-    ], filters, Date.UTC(2026, 6, 28));
+    const filters = parseContactSearchFallback(
+      "Stripe contacts with recorded consent who have never been contacted"
+    );
+    const matches = filterContactsByNaturalQuery(
+      [
+        contact({ id: 1 }),
+        contact({ id: 2, source: "manual" }),
+        contact({ id: 3, consentBasis: null, consentCapturedAt: null }),
+        contact({ id: 4, totalSent: 2, lastSentAt: Date.UTC(2026, 0, 4) }),
+      ],
+      filters,
+      Date.UTC(2026, 6, 28)
+    );
 
-    expect(matches.map((item) => item.id)).toEqual([1]);
+    expect(matches.map(item => item.id)).toEqual([1]);
   });
 
   it("returns only the safe result projection and caps a broad match", async () => {
     const projected = toContactSearchResult(contact());
-    expect(projected).toMatchObject({ id: 1, name: "Ada Lovelace", email: "ada@example.com" });
+    expect(projected).toMatchObject({
+      id: 1,
+      name: "Ada Lovelace",
+      email: "ada@example.com",
+    });
     expect(projected).not.toHaveProperty("userId");
     expect(projected).not.toHaveProperty("externalId");
     expect(projected).not.toHaveProperty("importedViaApiKeyId");
     expect(projected).not.toHaveProperty("consentSource");
     expect(projected).not.toHaveProperty("updatedAt");
 
-    const contacts = Array.from({ length: CONTACT_SEARCH_RESULT_LIMIT + 5 }, (_, index) => contact({ id: index + 1 }));
+    const contacts = Array.from(
+      { length: CONTACT_SEARCH_RESULT_LIMIT + 5 },
+      (_, index) => contact({ id: index + 1 })
+    );
     const result = await runNaturalContactSearch({
       query: "active contacts",
       locale: "en",
       contacts,
-      invoke: async () => { throw new Error("model unavailable"); },
+      invoke: async () => {
+        throw new Error("model unavailable");
+      },
       now: new Date("2026-07-28T00:00:00.000Z"),
     });
 

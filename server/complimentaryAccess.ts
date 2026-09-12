@@ -18,7 +18,8 @@ export const COMPLIMENTARY_ACCESS_LIMITS = {
   year: 5,
 } as const;
 
-export type ComplimentaryAccessDurationUnit = keyof typeof COMPLIMENTARY_ACCESS_LIMITS;
+export type ComplimentaryAccessDurationUnit =
+  keyof typeof COMPLIMENTARY_ACCESS_LIMITS;
 export type ComplimentaryAccessStatus = "active" | "expired" | "revoked";
 
 export type ComplimentaryAccessSnapshot = {
@@ -36,7 +37,9 @@ export type ComplimentaryAccessSnapshot = {
 };
 
 export class ComplimentaryAccessConflictError extends Error {
-  constructor(message = "An active complimentary-access grant already exists for this email address.") {
+  constructor(
+    message = "An active complimentary-access grant already exists for this email address."
+  ) {
     super(message);
     this.name = "ComplimentaryAccessConflictError";
   }
@@ -62,10 +65,16 @@ export function complimentaryEmailFingerprint(email: string): string {
 export function calculateComplimentaryExpiry(
   startsAt: number,
   durationValue: number,
-  durationUnit: ComplimentaryAccessDurationUnit,
+  durationUnit: ComplimentaryAccessDurationUnit
 ): number {
-  if (!Number.isInteger(durationValue) || durationValue < 1 || durationValue > COMPLIMENTARY_ACCESS_LIMITS[durationUnit]) {
-    throw new Error(`Duration must be between 1 and ${COMPLIMENTARY_ACCESS_LIMITS[durationUnit]} ${durationUnit}(s).`);
+  if (
+    !Number.isInteger(durationValue) ||
+    durationValue < 1 ||
+    durationValue > COMPLIMENTARY_ACCESS_LIMITS[durationUnit]
+  ) {
+    throw new Error(
+      `Duration must be between 1 and ${COMPLIMENTARY_ACCESS_LIMITS[durationUnit]} ${durationUnit}(s).`
+    );
   }
 
   if (durationUnit === "day") {
@@ -80,21 +89,26 @@ export function calculateComplimentaryExpiry(
   } else {
     result.setUTCFullYear(result.getUTCFullYear() + durationValue);
   }
-  const finalDay = new Date(Date.UTC(result.getUTCFullYear(), result.getUTCMonth() + 1, 0)).getUTCDate();
+  const finalDay = new Date(
+    Date.UTC(result.getUTCFullYear(), result.getUTCMonth() + 1, 0)
+  ).getUTCDate();
   result.setUTCDate(Math.min(originalDay, finalDay));
   return result.getTime();
 }
 
 export function getComplimentaryAccessStatus(
   grant: Pick<ComplimentaryAccessGrant, "expiresAt" | "revokedAt">,
-  now = Date.now(),
+  now = Date.now()
 ): ComplimentaryAccessStatus {
   if (grant.revokedAt != null) return "revoked";
   if (grant.expiresAt <= now) return "expired";
   return "active";
 }
 
-function toSnapshot(grant: ComplimentaryAccessGrant, now = Date.now()): ComplimentaryAccessSnapshot {
+function toSnapshot(
+  grant: ComplimentaryAccessGrant,
+  now = Date.now()
+): ComplimentaryAccessSnapshot {
   return {
     id: grant.id,
     emailMasked: grant.emailMasked,
@@ -121,28 +135,34 @@ export async function findActiveComplimentaryAccess({
 }): Promise<{ grantId: number; expiresAt: number } | null> {
   const db = await requireDb();
   const fingerprint = email ? complimentaryEmailFingerprint(email) : null;
-  const identityCondition = userId && fingerprint
-    ? or(
-      eq(complimentaryAccessGrants.userId, userId),
-      eq(complimentaryAccessGrants.emailFingerprint, fingerprint),
-    )
-    : userId
-      ? eq(complimentaryAccessGrants.userId, userId)
-      : fingerprint
-        ? eq(complimentaryAccessGrants.emailFingerprint, fingerprint)
-        : null;
+  const identityCondition =
+    userId && fingerprint
+      ? or(
+          eq(complimentaryAccessGrants.userId, userId),
+          eq(complimentaryAccessGrants.emailFingerprint, fingerprint)
+        )
+      : userId
+        ? eq(complimentaryAccessGrants.userId, userId)
+        : fingerprint
+          ? eq(complimentaryAccessGrants.emailFingerprint, fingerprint)
+          : null;
 
   if (!identityCondition) return null;
 
   const [grant] = await db
-    .select({ id: complimentaryAccessGrants.id, expiresAt: complimentaryAccessGrants.expiresAt })
+    .select({
+      id: complimentaryAccessGrants.id,
+      expiresAt: complimentaryAccessGrants.expiresAt,
+    })
     .from(complimentaryAccessGrants)
-    .where(and(
-      identityCondition,
-      isNull(complimentaryAccessGrants.revokedAt),
-      lte(complimentaryAccessGrants.startsAt, now),
-      gt(complimentaryAccessGrants.expiresAt, now),
-    ))
+    .where(
+      and(
+        identityCondition,
+        isNull(complimentaryAccessGrants.revokedAt),
+        lte(complimentaryAccessGrants.startsAt, now),
+        gt(complimentaryAccessGrants.expiresAt, now)
+      )
+    )
     .orderBy(desc(complimentaryAccessGrants.expiresAt))
     .limit(1);
 
@@ -167,7 +187,11 @@ export async function createComplimentaryAccessGrant({
   const db = await requireDb();
   const normalizedEmail = normalizeDiagnosticEmail(email);
   const emailFingerprint = complimentaryEmailFingerprint(normalizedEmail);
-  const expiresAt = calculateComplimentaryExpiry(now, durationValue, durationUnit);
+  const expiresAt = calculateComplimentaryExpiry(
+    now,
+    durationValue,
+    durationUnit
+  );
   const [account] = await db
     .select({ id: users.id })
     .from(users)
@@ -195,14 +219,20 @@ export async function createComplimentaryAccessGrant({
     revokedByUserId: null,
   };
 
-  const [createdId] = await db.insert(complimentaryAccessGrants).values(values).$returningId();
+  const [createdId] = await db
+    .insert(complimentaryAccessGrants)
+    .values(values)
+    .$returningId();
   const [created] = await db
     .select()
     .from(complimentaryAccessGrants)
     .where(eq(complimentaryAccessGrants.id, createdId.id))
     .limit(1);
 
-  if (!created) throw new Error("Complimentary-access grant could not be reloaded after creation.");
+  if (!created)
+    throw new Error(
+      "Complimentary-access grant could not be reloaded after creation."
+    );
   return toSnapshot(created, now);
 }
 
@@ -219,10 +249,15 @@ export async function listComplimentaryAccessGrants({
   const rows = await db
     .select()
     .from(complimentaryAccessGrants)
-    .orderBy(desc(complimentaryAccessGrants.createdAt), desc(complimentaryAccessGrants.id))
+    .orderBy(
+      desc(complimentaryAccessGrants.createdAt),
+      desc(complimentaryAccessGrants.id)
+    )
     .limit(Math.min(Math.max(limit, 1), 200));
-  const snapshots = rows.map((row) => toSnapshot(row, now));
-  return status && status !== "all" ? snapshots.filter((grant) => grant.status === status) : snapshots;
+  const snapshots = rows.map(row => toSnapshot(row, now));
+  return status && status !== "all"
+    ? snapshots.filter(grant => grant.status === status)
+    : snapshots;
 }
 
 export async function lookupComplimentaryAccessByEmail({
@@ -236,10 +271,18 @@ export async function lookupComplimentaryAccessByEmail({
   const rows = await db
     .select()
     .from(complimentaryAccessGrants)
-    .where(eq(complimentaryAccessGrants.emailFingerprint, complimentaryEmailFingerprint(email)))
-    .orderBy(desc(complimentaryAccessGrants.createdAt), desc(complimentaryAccessGrants.id))
+    .where(
+      eq(
+        complimentaryAccessGrants.emailFingerprint,
+        complimentaryEmailFingerprint(email)
+      )
+    )
+    .orderBy(
+      desc(complimentaryAccessGrants.createdAt),
+      desc(complimentaryAccessGrants.id)
+    )
     .limit(50);
-  return rows.map((row) => toSnapshot(row, now));
+  return rows.map(row => toSnapshot(row, now));
 }
 
 export async function revokeComplimentaryAccessGrant({
@@ -263,10 +306,12 @@ export async function revokeComplimentaryAccessGrant({
     await db
       .update(complimentaryAccessGrants)
       .set({ revokedAt: now, revokedByUserId, updatedAt: new Date() })
-      .where(and(
-        eq(complimentaryAccessGrants.id, grantId),
-        isNull(complimentaryAccessGrants.revokedAt),
-      ));
+      .where(
+        and(
+          eq(complimentaryAccessGrants.id, grantId),
+          isNull(complimentaryAccessGrants.revokedAt)
+        )
+      );
   }
 
   const [updated] = await db

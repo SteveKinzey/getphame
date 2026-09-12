@@ -12,14 +12,19 @@ export async function disposableDomainHandler(req: Request, res: Response) {
   let taskUid: string | undefined;
   try {
     const user = await sdk.authenticateRequest(req);
-    if (!user.isCron || !user.taskUid) return res.status(403).json({ error: "cron-only" });
+    if (!user.isCron || !user.taskUid)
+      return res.status(403).json({ error: "cron-only" });
     taskUid = user.taskUid;
     const scheduler = await getDisposableDomainSchedulerByTaskUid(taskUid);
     if (!scheduler) return res.json({ ok: true, skipped: "orphan" });
 
     const schedule = getPacificScheduleDecision();
     if (!schedule.shouldRun) {
-      return res.json({ ok: true, skipped: "outside-pacific-2am-window", localHour: schedule.localHour });
+      return res.json({
+        ok: true,
+        skipped: "outside-pacific-2am-window",
+        localHour: schedule.localHour,
+      });
     }
     const claimed = await claimDisposableDomainSchedulerRun(taskUid);
     if (!claimed) return res.json({ ok: true, skipped: "recent-run-exists" });
@@ -40,7 +45,10 @@ export async function disposableDomainHandler(req: Request, res: Response) {
         errorCode: "DISPOSABLE_DOMAIN_SYNC_FAILED",
       }).catch(() => undefined);
     }
-    console.error("[DisposableDomains] Scheduled callback failed:", error instanceof Error ? error.name : "unknown");
+    console.error(
+      "[DisposableDomains] Scheduled callback failed:",
+      error instanceof Error ? error.name : "unknown"
+    );
     return res.status(500).json({
       error: "DISPOSABLE_DOMAIN_SYNC_FAILED",
       context: { url: req.originalUrl, taskUid: taskUid ?? null },

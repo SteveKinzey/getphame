@@ -3,7 +3,10 @@ import { RECENT_STEP_UP_MS } from "./policy";
 
 export const RECOVERY_DRILL_OVERRIDE_MS = 4 * 60 * 60 * 1000;
 export const RECOVERY_DRILL_ACTION_KEY = "recovery.drill.start";
-export const RECOVERY_DRILL_APPROVER_PERMISSIONS = ["recovery.drill.view", "recovery.drill.approve"] as const;
+export const RECOVERY_DRILL_APPROVER_PERMISSIONS = [
+  "recovery.drill.view",
+  "recovery.drill.approve",
+] as const;
 export const RECOVERY_EVIDENCE_TYPES = [
   "preflight",
   "containment",
@@ -17,7 +20,14 @@ export const RECOVERY_EVIDENCE_TYPES = [
   "stop_condition",
   "after_action",
 ] as const;
-export const RECOVERY_EVIDENCE_OUTCOMES = ["passed", "failed", "blocked", "observed", "contained", "rolled_back"] as const;
+export const RECOVERY_EVIDENCE_OUTCOMES = [
+  "passed",
+  "failed",
+  "blocked",
+  "observed",
+  "contained",
+  "rolled_back",
+] as const;
 export const REQUIRED_COMPLETION_EVIDENCE = [
   "containment",
   "revoked_session_denial",
@@ -29,10 +39,27 @@ export const REQUIRED_COMPLETION_EVIDENCE = [
 ] as const;
 
 export type RecoveryEvidenceType = (typeof RECOVERY_EVIDENCE_TYPES)[number];
-export type RecoveryEvidenceOutcome = (typeof RECOVERY_EVIDENCE_OUTCOMES)[number];
-export type RecoveryDrillStatus = "draft" | "ready" | "in_progress" | "paused" | "completed" | "aborted";
-export type RecoveryDrillActorRole = "recovery_custodian" | "independent_approver" | "observer" | "platform_owner" | "none";
-export type RecoveryRuntimeReason = "enabled" | "mode_disabled" | "host_missing" | "host_not_allowed" | "production_host_blocked";
+export type RecoveryEvidenceOutcome =
+  (typeof RECOVERY_EVIDENCE_OUTCOMES)[number];
+export type RecoveryDrillStatus =
+  | "draft"
+  | "ready"
+  | "in_progress"
+  | "paused"
+  | "completed"
+  | "aborted";
+export type RecoveryDrillActorRole =
+  | "recovery_custodian"
+  | "independent_approver"
+  | "observer"
+  | "platform_owner"
+  | "none";
+export type RecoveryRuntimeReason =
+  | "enabled"
+  | "mode_disabled"
+  | "host_missing"
+  | "host_not_allowed"
+  | "production_host_blocked";
 
 export class RecoveryDrillError extends Error {
   constructor(
@@ -44,7 +71,7 @@ export class RecoveryDrillError extends Error {
       | "INVALID_INPUT"
       | "NOT_FOUND"
       | "CONFLICT",
-    message: string,
+    message: string
   ) {
     super(message);
     this.name = "RecoveryDrillError";
@@ -58,7 +85,9 @@ const productionHosts = new Set([
   "revrocket-j5ynazte.manus.space",
 ]);
 
-const transitions: Readonly<Record<RecoveryDrillStatus, ReadonlySet<RecoveryDrillStatus>>> = {
+const transitions: Readonly<
+  Record<RecoveryDrillStatus, ReadonlySet<RecoveryDrillStatus>>
+> = {
   draft: new Set<RecoveryDrillStatus>(["ready", "aborted"]),
   ready: new Set<RecoveryDrillStatus>(["in_progress", "aborted"]),
   in_progress: new Set<RecoveryDrillStatus>(["paused", "completed", "aborted"]),
@@ -68,46 +97,79 @@ const transitions: Readonly<Record<RecoveryDrillStatus, ReadonlySet<RecoveryDril
 };
 
 function normalizeHost(rawHost: string | undefined): string {
-  return (rawHost ?? "").split(",")[0]?.trim().toLowerCase().replace(/:\d+$/, "") ?? "";
-}
-
-export function evaluateRecoveryRuntime(input: { mode?: string; allowedHosts?: string; requestHost?: string }) {
-  const host = normalizeHost(input.requestHost);
-  if (input.mode?.trim().toLowerCase() !== "staging") return { enabled: false, reason: "mode_disabled" as const, host };
-  if (!host) return { enabled: false, reason: "host_missing" as const, host };
-  if (productionHosts.has(host)) return { enabled: false, reason: "production_host_blocked" as const, host };
-  const allowedHosts = new Set((input.allowedHosts ?? "").split(",").map(normalizeHost).filter(Boolean));
-  if (!allowedHosts.has(host)) return { enabled: false, reason: "host_not_allowed" as const, host };
-  return { enabled: true, reason: "enabled" as const, host };
-}
-
-export function hasRecentPasskeyA2(session: SecuritySessionContext | null, now = Date.now()): boolean {
-  return Boolean(
-    session
-    && session.method === "passkey"
-    && session.assurance === "a2"
-    && session.recentAuthenticationAt !== null
-    && session.recentAuthenticationAt <= now
-    && now - session.recentAuthenticationAt <= RECENT_STEP_UP_MS,
+  return (
+    (rawHost ?? "").split(",")[0]?.trim().toLowerCase().replace(/:\d+$/, "") ??
+    ""
   );
 }
 
-export function assertRecentPasskeyA2(session: SecuritySessionContext | null, now = Date.now()): void {
+export function evaluateRecoveryRuntime(input: {
+  mode?: string;
+  allowedHosts?: string;
+  requestHost?: string;
+}) {
+  const host = normalizeHost(input.requestHost);
+  if (input.mode?.trim().toLowerCase() !== "staging")
+    return { enabled: false, reason: "mode_disabled" as const, host };
+  if (!host) return { enabled: false, reason: "host_missing" as const, host };
+  if (productionHosts.has(host))
+    return { enabled: false, reason: "production_host_blocked" as const, host };
+  const allowedHosts = new Set(
+    (input.allowedHosts ?? "").split(",").map(normalizeHost).filter(Boolean)
+  );
+  if (!allowedHosts.has(host))
+    return { enabled: false, reason: "host_not_allowed" as const, host };
+  return { enabled: true, reason: "enabled" as const, host };
+}
+
+export function hasRecentPasskeyA2(
+  session: SecuritySessionContext | null,
+  now = Date.now()
+): boolean {
+  return Boolean(
+    session &&
+      session.method === "passkey" &&
+      session.assurance === "a2" &&
+      session.recentAuthenticationAt !== null &&
+      session.recentAuthenticationAt <= now &&
+      now - session.recentAuthenticationAt <= RECENT_STEP_UP_MS
+  );
+}
+
+export function assertRecentPasskeyA2(
+  session: SecuritySessionContext | null,
+  now = Date.now()
+): void {
   if (!hasRecentPasskeyA2(session, now)) {
-    throw new RecoveryDrillError("A2_REQUIRED", "A recent passkey sign-in is required for this recovery action");
+    throw new RecoveryDrillError(
+      "A2_REQUIRED",
+      "A recent passkey sign-in is required for this recovery action"
+    );
   }
 }
 
-export function assertSeparatedRecoveryRoles(custodianUserId: number, approverUserId: number): void {
+export function assertSeparatedRecoveryRoles(
+  custodianUserId: number,
+  approverUserId: number
+): void {
   if (custodianUserId === approverUserId) {
-    throw new RecoveryDrillError("INVALID_INPUT", "Recovery custodian and independent approver must be different users");
+    throw new RecoveryDrillError(
+      "INVALID_INPUT",
+      "Recovery custodian and independent approver must be different users"
+    );
   }
 }
 
-export function assertRecoveryTransition(from: RecoveryDrillStatus | string, to: RecoveryDrillStatus): void {
+export function assertRecoveryTransition(
+  from: RecoveryDrillStatus | string,
+  to: RecoveryDrillStatus
+): void {
   const allowedTransitions = transitions[from as RecoveryDrillStatus];
   if (!allowedTransitions || !allowedTransitions.has(to)) {
-    throw new RecoveryDrillError("INVALID_STATE", `Recovery drill cannot transition from ${from} to ${to}`);
+    throw new RecoveryDrillError(
+      "INVALID_STATE",
+      `Recovery drill cannot transition from ${from} to ${to}`
+    );
   }
 }
 
@@ -119,11 +181,18 @@ const prohibitedEvidencePatterns = [
   /\b[A-Fa-f0-9]{64,}\b/,
 ];
 
-export function assertRedactedEvidenceText(value: string, fieldName: string): string {
+export function assertRedactedEvidenceText(
+  value: string,
+  fieldName: string
+): string {
   const normalized = value.trim();
-  if (!normalized) throw new RecoveryDrillError("INVALID_INPUT", `${fieldName} is required`);
+  if (!normalized)
+    throw new RecoveryDrillError("INVALID_INPUT", `${fieldName} is required`);
   if (prohibitedEvidencePatterns.some(pattern => pattern.test(normalized))) {
-    throw new RecoveryDrillError("INVALID_INPUT", `${fieldName} may contain a secret or personal identifier`);
+    throw new RecoveryDrillError(
+      "INVALID_INPUT",
+      `${fieldName} may contain a secret or personal identifier`
+    );
   }
   return normalized;
 }

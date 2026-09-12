@@ -89,7 +89,10 @@ export async function sendAccountDeletionEmail(
     return { sent: true };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error("[AccountDeletion] Failed to send confirmation email:", message);
+    console.error(
+      "[AccountDeletion] Failed to send confirmation email:",
+      message
+    );
     return { sent: false, error: message };
   }
 }

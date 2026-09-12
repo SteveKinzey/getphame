@@ -12,19 +12,19 @@ Authentication accepts either `Authorization: Bearer gp_live_…` or `X-Get-Pham
 
 ## API-Key Contract
 
-| Concern | Contract |
-|---|---|
-| Secret storage | Show the raw key once; store only its SHA-256 hash and a non-secret display prefix |
-| Ownership | Every key belongs to exactly one signed-in Get Phame account |
-| Scopes | `contacts:write` and `review_requests:send`; new keys default to import-only |
-| Existing keys | Migration grants both legacy capabilities so existing integrations do not break |
-| Rotation | Create a replacement key, then revoke the old key; never reveal an existing raw secret |
-| Revocation | Immediate soft revocation with owner-scoped authorization |
-| Expiry | Optional earlier UTC expiry plus mandatory expiry after 12 months without a successful API request |
-| Inactivity warnings | Show in-app warnings at 30 days and 7 days before the inactivity date; keep expired keys visible for audit context and rotation |
-| Usage metadata | Update last-successful-use time and successful-use count only after a completed side effect or valid idempotent replay; never store the raw key or authorization header |
-| Rate limit | 60 authenticated requests per key per rolling minute, enforced by key identity rather than a raw-key fragment |
-| Abuse protection | Persist privacy-hashed key, account, trusted-proxy IP, and recipient velocity windows; temporarily suspend broad-limit offenders for 24 hours |
+| Concern             | Contract                                                                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Secret storage      | Show the raw key once; store only its SHA-256 hash and a non-secret display prefix                                                                                      |
+| Ownership           | Every key belongs to exactly one signed-in Get Phame account                                                                                                            |
+| Scopes              | `contacts:write` and `review_requests:send`; new keys default to import-only                                                                                            |
+| Existing keys       | Migration grants both legacy capabilities so existing integrations do not break                                                                                         |
+| Rotation            | Create a replacement key, then revoke the old key; never reveal an existing raw secret                                                                                  |
+| Revocation          | Immediate soft revocation with owner-scoped authorization                                                                                                               |
+| Expiry              | Optional earlier UTC expiry plus mandatory expiry after 12 months without a successful API request                                                                      |
+| Inactivity warnings | Show in-app warnings at 30 days and 7 days before the inactivity date; keep expired keys visible for audit context and rotation                                         |
+| Usage metadata      | Update last-successful-use time and successful-use count only after a completed side effect or valid idempotent replay; never store the raw key or authorization header |
+| Rate limit          | 60 authenticated requests per key per rolling minute, enforced by key identity rather than a raw-key fragment                                                           |
+| Abuse protection    | Persist privacy-hashed key, account, trusted-proxy IP, and recipient velocity windows; temporarily suspend broad-limit offenders for 24 hours                           |
 
 ## Contact Import Request
 
@@ -78,21 +78,35 @@ Limits are applied to successful and rejected attempts so repeated abusive retri
 
 ## Error Contract
 
-| HTTP status | Stable code | Meaning |
-|---:|---|---|
-| 400 | `INVALID_REQUEST` | Required or bounded fields failed validation |
-| 401 | `INVALID_API_KEY` | The key is missing, unknown, revoked, or expired |
-| 401 | `API_KEY_INACTIVE` | The key expired after 12 months without a successful request |
-| 403 | `INSUFFICIENT_SCOPE` | The authenticated key lacks the endpoint scope |
-| 409 | `IDEMPOTENCY_CONFLICT` | An idempotency key was reused with a different payload |
-| 422 | `CONSENT_REQUIRED` | The canonical import endpoint lacks affirmative consent attestation |
-| 429 | `RATE_LIMITED` | The per-key request limit was exceeded |
-| 429 | `API_KEY_SUSPENDED` | The key is inside an active abuse-protection suspension window |
-| 429 | `ABUSE_PROTECTION` | A key, account, IP, or recipient velocity safeguard blocked the request |
-| 500 | `INTERNAL_ERROR` | A safe, retryable server error occurred |
+| HTTP status | Stable code            | Meaning                                                                 |
+| ----------: | ---------------------- | ----------------------------------------------------------------------- |
+|         400 | `INVALID_REQUEST`      | Required or bounded fields failed validation                            |
+|         401 | `INVALID_API_KEY`      | The key is missing, unknown, revoked, or expired                        |
+|         401 | `API_KEY_INACTIVE`     | The key expired after 12 months without a successful request            |
+|         403 | `INSUFFICIENT_SCOPE`   | The authenticated key lacks the endpoint scope                          |
+|         409 | `IDEMPOTENCY_CONFLICT` | An idempotency key was reused with a different payload                  |
+|         422 | `CONSENT_REQUIRED`     | The canonical import endpoint lacks affirmative consent attestation     |
+|         429 | `RATE_LIMITED`         | The per-key request limit was exceeded                                  |
+|         429 | `API_KEY_SUSPENDED`    | The key is inside an active abuse-protection suspension window          |
+|         429 | `ABUSE_PROTECTION`     | A key, account, IP, or recipient velocity safeguard blocked the request |
+|         500 | `INTERNAL_ERROR`       | A safe, retryable server error occurred                                 |
 
 Responses never expose database errors, stack traces, credentials, hashes, or account existence beyond what the authenticated key already establishes.
 
 ## Form-Builder Mapping
 
 WS Form, Gravity Forms, Fluent Forms, Elementor Forms, and generic webhook tools all call the same endpoint and payload. Product-specific guides differ only in where the webhook URL, header, and JSON field mappings are entered. The documentation must use placeholders for secrets and must never render an account’s raw key into copyable examples after its one-time creation screen is dismissed.
+
+## Supported Form and Automation Paths
+
+| Platform            | Connection pattern                                                                                                            | Stable idempotency value            | Key handling                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| Zapier              | Webhooks by Zapier POST or Custom Request directly to the v1 endpoint. Map every JSON field explicitly.                       | Original source event ID            | Zapier protected connection or header configuration.                                          |
+| Make                | HTTP > Make a request (v4), POST with an `application/json` data structure. Treat non-2xx responses as errors.                | Original source event ID            | Make protected credential store.                                                              |
+| Jotform             | Native Jotform Webhooks to a trusted HTTPS bridge, then the bridge posts normalized JSON to the v1 endpoint.                  | `submissionID`                      | The bridge only; Jotform's native webhook setup does not document protected outbound headers. |
+| Elementor Pro Forms | A reviewed server-side WordPress form action or bridge forwards the submission after validation.                              | Persisted server-side submission ID | WordPress server configuration only.                                                          |
+| Gravity Forms       | Webhooks Add-On feed using POST, JSON, selected fields, and protected headers.                                                | Namespaced `{entry_id}`             | Webhook feed header configuration or a server-side filter.                                    |
+| WS Form             | Submitted-only Webhook Action using JSON, Header Mapping, and SSL verification.                                               | Namespaced `#submit_id`             | Header Mapping or a server-side filter.                                                       |
+| Contact Form 7      | A reviewed WordPress plugin or mu-plugin uses `wpcf7_before_send_mail`, validates sanitized data, and posts JSON server-side. | Persisted server-generated key      | WordPress server configuration only.                                                          |
+
+Do not put a Get Phame key in browser JavaScript, a public webhook URL, a query string, or a form field. Each bridge must validate its expected form identifier and affirmative consent before forwarding; all retries must reuse the same stable idempotency value. Contact import remains import-only: it does not queue or send review outreach.

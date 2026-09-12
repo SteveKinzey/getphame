@@ -8,11 +8,16 @@ describe("EmailRelayStatusCard UI component", () => {
   });
 
   it("includes an administrator Slack test action and a bounded sanitized diagnostics view", () => {
-    const source = fs.readFileSync(new URL("./EmailRelayStatusCard.tsx", import.meta.url), "utf8");
+    const source = fs.readFileSync(
+      new URL("./EmailRelayStatusCard.tsx", import.meta.url),
+      "utf8"
+    );
     expect(source).toContain("testRelaySlackWebhook");
     expect(source).toContain("admin.emailRelay.slackTest");
     expect(source).toContain("admin.emailRelay.diagnosticsTitle");
     expect(source).toContain("recentDiagnostics.map");
     expect(source).toContain("admin.emailRelay.sanitizedDiagnostic");
+    expect(source).toContain("exportRelayOutageCsv");
+    expect(source).toContain("admin.emailRelay.exportOutages");
   });
 });

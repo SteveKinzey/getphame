@@ -1,10 +1,44 @@
 // Phame — Dashboard / Analytics Screen
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, ShieldCheck, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw, Share2, Moon, Sun, Pencil, Building2, Link2, Mail } from "lucide-react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  BarChart2,
+  Send,
+  TrendingUp,
+  ShieldCheck,
+  Star,
+  Loader2,
+  Calendar,
+  Zap,
+  CheckCircle2,
+  Circle,
+  CheckSquare,
+  Square,
+  X,
+  Search,
+  Eye,
+  MousePointerClick,
+  RotateCcw,
+  Share2,
+  Moon,
+  Sun,
+  Pencil,
+  Building2,
+  Link2,
+  Mail,
+} from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
 import { lazy, useCallback, useMemo, useRef, useEffect, useState } from "react";
@@ -15,11 +49,25 @@ import ClientDetailSheet from "@/components/ClientDetailSheet";
 import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 import RecentActivityCard from "@/components/dashboard/RecentActivityCard";
 import MailServerHealthBadge from "@/components/dashboard/MailServerHealthBadge";
-import { DashboardApiErrorFeedbackBoundary, DashboardLoadingState, useDashboardApiErrorToast, useRecoverableDashboardQueryError } from "@/components/dashboard/DashboardFeedbackExperience";
+import {
+  DashboardApiErrorFeedbackBoundary,
+  DashboardLoadingState,
+  useDashboardApiErrorToast,
+  useRecoverableDashboardQueryError,
+} from "@/components/dashboard/DashboardFeedbackExperience";
 import { useTheme } from "@/contexts/ThemeContext";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"));
+const ActivityTrendCard = lazy(
+  () => import("@/components/dashboard/ActivityTrendCard")
+);
 
 function formatDate(date: Date): string {
   try {
@@ -68,21 +116,74 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
   const [, navigate] = useLocation();
   const fixtureQueriesEnabled = testRecoveryMode !== "mutation";
   const fixtureQueryRetry = testRecoveryMode === "query" ? false : undefined;
-  const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
-  const statsQuery = trpc.requests.stats.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
-  const consentStatsQuery = trpc.contacts.consentStats.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
-  const requestsQuery = trpc.requests.list.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
-  const profileQuery = trpc.profile.get.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
-  const emailPerfQuery = trpc.tracking.overallStats.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
-  const smtpStatusQuery = trpc.smtp.status.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
-  const bulkSenderStatusQuery = trpc.bulkSender.status.useQuery(undefined, { enabled: fixtureQueriesEnabled, retry: fixtureQueryRetry });
-  const { data: stats, isLoading, isError: statsIsError, refetch: refetchStats } = statsQuery;
-  const { data: consentStats, isError: consentStatsIsError, refetch: refetchConsentStats } = consentStatsQuery;
-  const { data: allRequests, isLoading: listLoading, isError: requestsIsError, refetch: refetchRequests } = requestsQuery;
-  const { data: profile, isError: profileIsError, refetch: refetchProfile } = profileQuery;
-  const { data: emailPerf, isError: emailPerfIsError, refetch: refetchEmailPerf } = emailPerfQuery;
-  const { data: smtpStatus, isError: smtpStatusIsError, refetch: refetchSmtpStatus } = smtpStatusQuery;
-  const { data: bulkSenderStatus, isError: bulkSenderStatusIsError, refetch: refetchBulkSenderStatus } = bulkSenderStatusQuery;
+  const [selectedRequestId, setSelectedRequestId] = useState<number | null>(
+    null
+  );
+  const statsQuery = trpc.requests.stats.useQuery(undefined, {
+    enabled: fixtureQueriesEnabled,
+    retry: fixtureQueryRetry,
+  });
+  const consentStatsQuery = trpc.contacts.consentStats.useQuery(undefined, {
+    enabled: fixtureQueriesEnabled,
+    retry: fixtureQueryRetry,
+  });
+  const requestsQuery = trpc.requests.list.useQuery(undefined, {
+    enabled: fixtureQueriesEnabled,
+    retry: fixtureQueryRetry,
+  });
+  const profileQuery = trpc.profile.get.useQuery(undefined, {
+    enabled: fixtureQueriesEnabled,
+    retry: fixtureQueryRetry,
+  });
+  const emailPerfQuery = trpc.tracking.overallStats.useQuery(undefined, {
+    enabled: fixtureQueriesEnabled,
+    retry: fixtureQueryRetry,
+  });
+  const smtpStatusQuery = trpc.smtp.status.useQuery(undefined, {
+    enabled: fixtureQueriesEnabled,
+    retry: fixtureQueryRetry,
+  });
+  const bulkSenderStatusQuery = trpc.bulkSender.status.useQuery(undefined, {
+    enabled: fixtureQueriesEnabled,
+    retry: fixtureQueryRetry,
+  });
+  const {
+    data: stats,
+    isLoading,
+    isError: statsIsError,
+    refetch: refetchStats,
+  } = statsQuery;
+  const {
+    data: consentStats,
+    isError: consentStatsIsError,
+    refetch: refetchConsentStats,
+  } = consentStatsQuery;
+  const {
+    data: allRequests,
+    isLoading: listLoading,
+    isError: requestsIsError,
+    refetch: refetchRequests,
+  } = requestsQuery;
+  const {
+    data: profile,
+    isError: profileIsError,
+    refetch: refetchProfile,
+  } = profileQuery;
+  const {
+    data: emailPerf,
+    isError: emailPerfIsError,
+    refetch: refetchEmailPerf,
+  } = emailPerfQuery;
+  const {
+    data: smtpStatus,
+    isError: smtpStatusIsError,
+    refetch: refetchSmtpStatus,
+  } = smtpStatusQuery;
+  const {
+    data: bulkSenderStatus,
+    isError: bulkSenderStatusIsError,
+    refetch: refetchBulkSenderStatus,
+  } = bulkSenderStatusQuery;
   const utils = trpc.useUtils();
   const [profileLinkCopied, setProfileLinkCopied] = useState(false);
   const [profileEditorOpen, setProfileEditorOpen] = useState(false);
@@ -124,7 +225,10 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
     smtpStatusIsError ||
     bulkSenderStatusIsError;
 
-  useRecoverableDashboardQueryError(hasRecoverableDashboardQueryError, retryDashboardData);
+  useRecoverableDashboardQueryError(
+    hasRecoverableDashboardQueryError,
+    retryDashboardData
+  );
 
   const handleShareProfile = async () => {
     const profileLink = profile?.reviewLink;
@@ -162,18 +266,28 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
     onSuccess: async () => {
       await utils.profile.get.invalidate();
       setProfileEditorOpen(false);
-      toast.success(t("dashboard.profileEditor.saved", { defaultValue: "Profile updated." }));
+      toast.success(
+        t("dashboard.profileEditor.saved", { defaultValue: "Profile updated." })
+      );
     },
     onError: showDashboardMutationError,
   });
 
   const handleDashboardProfileSave = () => {
     if (!businessName.trim()) {
-      toast.error(t("dashboard.profileEditor.businessNameRequired", { defaultValue: "Enter your business name." }));
+      toast.error(
+        t("dashboard.profileEditor.businessNameRequired", {
+          defaultValue: "Enter your business name.",
+        })
+      );
       return;
     }
     if (!reviewLink.trim()) {
-      toast.error(t("dashboard.profileEditor.reviewLinkRequired", { defaultValue: "Enter your review link." }));
+      toast.error(
+        t("dashboard.profileEditor.reviewLinkRequired", {
+          defaultValue: "Enter your review link.",
+        })
+      );
       return;
     }
     updateDashboardProfile.mutate({
@@ -188,7 +302,12 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
   // Undo toast state for single-row mark in the activity feed
   const [feedUndoId, setFeedUndoId] = useState<number | null>(null);
   const feedUndoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => () => { if (feedUndoTimerRef.current) clearTimeout(feedUndoTimerRef.current); }, []);
+  useEffect(
+    () => () => {
+      if (feedUndoTimerRef.current) clearTimeout(feedUndoTimerRef.current);
+    },
+    []
+  );
 
   const startFeedUndoTimer = (cb: () => void, ms = 4000) => {
     if (feedUndoTimerRef.current) clearTimeout(feedUndoTimerRef.current);
@@ -209,7 +328,10 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
 
   // Undo mutation for single-row feed mark — separate instance
   const feedUndoMutation = trpc.requests.markResponded.useMutation({
-    onSuccess: () => { utils.requests.list.invalidate(); setFeedUndoId(null); },
+    onSuccess: () => {
+      utils.requests.list.invalidate();
+      setFeedUndoId(null);
+    },
     onError: () => {
       setFeedUndoId(null);
       showDashboardApiError();
@@ -220,27 +342,32 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
   const [selected, setSelected] = useState<Set<number>>(new Set());
 
   const toggleSelect = (id: number) => {
-    setSelected((prev) => {
+    setSelected(prev => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
 
-  const allSelected = (allRequests?.length ?? 0) > 0 && allRequests!.every((r) => selected.has(r.id));
+  const allSelected =
+    (allRequests?.length ?? 0) > 0 &&
+    allRequests!.every(r => selected.has(r.id));
 
   const toggleSelectAll = () => {
     if (!allRequests) return;
     if (allSelected) {
       setSelected(new Set());
     } else {
-      setSelected(new Set(allRequests.map((r) => r.id)));
+      setSelected(new Set(allRequests.map(r => r.id)));
     }
   };
 
   // Search + status filter state
   const [activitySearch, setActivitySearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "reviewed">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "pending" | "reviewed"
+  >("all");
 
   // Bulk restart campaign mutation
   const [bulkRestartConfirmOpen, setBulkRestartConfirmOpen] = useState(false);
@@ -249,7 +376,9 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
       utils.requests.list.invalidate();
       utils.requests.stats.invalidate();
       if (errors.length > 0) {
-        toast.warning(`Restarted ${sent} campaign(s). ${errors.length} failed.`);
+        toast.warning(
+          `Restarted ${sent} campaign(s). ${errors.length} failed.`
+        );
       } else {
         toast.success(`Restarted ${sent} campaign(s) successfully.`);
       }
@@ -259,33 +388,42 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
   });
 
   // Bulk mark-as-responded mutation with optimistic update
-  const bulkMarkRespondedMutation = trpc.requests.bulkMarkResponded.useMutation({
-    onMutate: async ({ ids, responded }) => {
-      await utils.requests.list.cancel();
-      const prev = utils.requests.list.getData();
-      utils.requests.list.setData(undefined, (old) =>
-        old?.map((r) => ids.includes(r.id) ? { ...r, respondedAt: responded ? Date.now() : null } : r)
-      );
-      return { prev };
-    },
-    onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) utils.requests.list.setData(undefined, ctx.prev);
-      showDashboardApiError();
-    },
-    onSuccess: (result) => {
-      utils.requests.list.invalidate();
-      utils.requests.stats.invalidate();
-      toast.success(`${result.updated} request${result.updated !== 1 ? "s" : ""} updated.`);
-      setSelected(new Set());
-    },
-  });
+  const bulkMarkRespondedMutation = trpc.requests.bulkMarkResponded.useMutation(
+    {
+      onMutate: async ({ ids, responded }) => {
+        await utils.requests.list.cancel();
+        const prev = utils.requests.list.getData();
+        utils.requests.list.setData(undefined, old =>
+          old?.map(r =>
+            ids.includes(r.id)
+              ? { ...r, respondedAt: responded ? Date.now() : null }
+              : r
+          )
+        );
+        return { prev };
+      },
+      onError: (_err, _vars, ctx) => {
+        if (ctx?.prev) utils.requests.list.setData(undefined, ctx.prev);
+        showDashboardApiError();
+      },
+      onSuccess: result => {
+        utils.requests.list.invalidate();
+        utils.requests.stats.invalidate();
+        toast.success(
+          `${result.updated} request${result.updated !== 1 ? "s" : ""} updated.`
+        );
+        setSelected(new Set());
+      },
+    }
+  );
 
   // Filtered requests for activity feed
   const filteredRequests = useMemo(() => {
     if (!allRequests) return [];
-    return allRequests.filter((r) => {
+    return allRequests.filter(r => {
       const q = activitySearch.toLowerCase();
-      const matchesSearch = !q ||
+      const matchesSearch =
+        !q ||
         r.customerName.toLowerCase().includes(q) ||
         (r.customerEmail ?? "").toLowerCase().includes(q);
       const matchesStatus =
@@ -297,35 +435,40 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
   }, [allRequests, activitySearch, statusFilter]);
 
   // Keep Select All in sync with filtered list
-  const allFilteredSelected = filteredRequests.length > 0 && filteredRequests.every((r) => selected.has(r.id));
+  const allFilteredSelected =
+    filteredRequests.length > 0 &&
+    filteredRequests.every(r => selected.has(r.id));
 
   const toggleSelectAllFiltered = () => {
     if (allFilteredSelected) {
-      setSelected((prev) => {
+      setSelected(prev => {
         const next = new Set(prev);
-        filteredRequests.forEach((r) => next.delete(r.id));
+        filteredRequests.forEach(r => next.delete(r.id));
         return next;
       });
     } else {
-      setSelected((prev) => {
+      setSelected(prev => {
         const next = new Set(prev);
-        filteredRequests.forEach((r) => next.add(r.id));
+        filteredRequests.forEach(r => next.add(r.id));
         return next;
       });
     }
   };
 
-
-
   // Fetch open/click tracking stats for all loaded requests
-  const requestIds = useMemo(() => allRequests?.map((r) => r.id) ?? [], [allRequests]);
+  const requestIds = useMemo(
+    () => allRequests?.map(r => r.id) ?? [],
+    [allRequests]
+  );
   const { data: trackingStats } = trpc.tracking.requestStats.useQuery(
     { requestIds },
     { enabled: fixtureQueriesEnabled && requestIds.length > 0 }
   );
   const trackingMap = useMemo(() => {
     const m = new Map<number, { opens: number; clicks: number }>();
-    trackingStats?.forEach((s) => m.set(s.requestId, { opens: s.opens, clicks: s.clicks }));
+    trackingStats?.forEach(s =>
+      m.set(s.requestId, { opens: s.opens, clicks: s.clicks })
+    );
     return m;
   }, [trackingStats]);
 
@@ -336,7 +479,7 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
     for (let i = 6; i >= 0; i--) {
       const day = startOfDay(subDays(new Date(), i));
       const nextDay = startOfDay(subDays(new Date(), i - 1));
-      const count = allRequests.filter((r) => {
+      const count = allRequests.filter(r => {
         if (!r.sentAt) return false;
         const sent = new Date(r.sentAt).getTime();
         return sent >= day.getTime() && sent < nextDay.getTime();
@@ -346,14 +489,19 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
     return days;
   }, [allRequests]);
 
-  const maxCount = useMemo(() => Math.max(...weeklyData.map((d) => d.count), 1), [weeklyData]);
+  const maxCount = useMemo(
+    () => Math.max(...weeklyData.map(d => d.count), 1),
+    [weeklyData]
+  );
 
   // Velocity: requests in last 7 days vs prior 7 days
   const velocity = useMemo(() => {
     if (!allRequests) return null;
     const now = Date.now();
-    const last7 = allRequests.filter((r) => r.sentAt && new Date(r.sentAt).getTime() > now - 7 * 86400000).length;
-    const prior7 = allRequests.filter((r) => {
+    const last7 = allRequests.filter(
+      r => r.sentAt && new Date(r.sentAt).getTime() > now - 7 * 86400000
+    ).length;
+    const prior7 = allRequests.filter(r => {
       if (!r.sentAt) return false;
       const t = new Date(r.sentAt).getTime();
       return t > now - 14 * 86400000 && t <= now - 7 * 86400000;
@@ -369,15 +517,19 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
         className="min-h-screen p-6"
         style={{ background: "var(--background)" }}
       >
-        <h1 className="rr-text-navy text-xl font-black">Dashboard recovery fixture</h1>
+        <h1 className="rr-text-navy text-xl font-black">
+          Dashboard recovery fixture
+        </h1>
         {testRecoveryMode === "mutation" ? (
           <button
             type="button"
             data-testid="dashboard-page-mutation-error-trigger"
-            onClick={() => updateDashboardProfile.mutate({
-              businessName: "Recovery test business",
-              reviewLink: "https://example.com/reviews",
-            })}
+            onClick={() =>
+              updateDashboardProfile.mutate({
+                businessName: "Recovery test business",
+                reviewLink: "https://example.com/reviews",
+              })
+            }
             className="mt-4 rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold"
           >
             Simulate dashboard update failure
@@ -392,16 +544,20 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
   }
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "var(--background)" }}>
+    <div
+      className="min-h-screen pb-40"
+      style={{ background: "var(--background)" }}
+    >
       {/* Navy Header */}
-      <div className="px-5 pt-14 md:pt-6 pb-8" style={{ background: "var(--navy)" }}>
+      <div
+        className="px-5 pt-14 md:pt-6 pb-8"
+        style={{ background: "var(--navy)" }}
+      >
         <div className="flex items-center justify-between gap-2 mb-1">
           <div className="flex items-center gap-2">
             <BarChart2 size={16} className="rr-text-gold" />
-            <span
-              className="text-xs font-bold tracking-widest uppercase rr-text-gold"
-            >
-              {t('dashboard.header.label')}
+            <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
+              {t("dashboard.header.label")}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -410,24 +566,48 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
               data-testid="dashboard-edit-profile"
               onClick={openProfileEditor}
               disabled={!profile}
-              aria-label={t("dashboard.profileEditor.button", { defaultValue: "Edit profile" })}
-              title={t("dashboard.profileEditor.button", { defaultValue: "Edit profile" })}
+              aria-label={t("dashboard.profileEditor.button", {
+                defaultValue: "Edit profile",
+              })}
+              title={t("dashboard.profileEditor.button", {
+                defaultValue: "Edit profile",
+              })}
               className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-white/20 px-2.5 text-xs font-bold text-white transition-all hover:bg-white/10 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
             >
               <Pencil size={14} className="rr-text-gold" aria-hidden="true" />
-              <span className="hidden lg:inline">{t("dashboard.profileEditor.button", { defaultValue: "Edit profile" })}</span>
+              <span className="hidden lg:inline">
+                {t("dashboard.profileEditor.button", {
+                  defaultValue: "Edit profile",
+                })}
+              </span>
             </button>
             {switchable && toggleTheme && (
               <button
                 type="button"
                 data-testid="dashboard-theme-toggle"
                 onClick={toggleTheme}
-                aria-label={theme === "dark" ? t("theme.switchToLight", { defaultValue: "Switch to light mode" }) : t("theme.switchToDark", { defaultValue: "Switch to dark mode" })}
-                title={theme === "dark" ? t("theme.light", { defaultValue: "Light mode" }) : t("theme.dark", { defaultValue: "Dark mode" })}
+                aria-label={
+                  theme === "dark"
+                    ? t("theme.switchToLight", {
+                        defaultValue: "Switch to light mode",
+                      })
+                    : t("theme.switchToDark", {
+                        defaultValue: "Switch to dark mode",
+                      })
+                }
+                title={
+                  theme === "dark"
+                    ? t("theme.light", { defaultValue: "Light mode" })
+                    : t("theme.dark", { defaultValue: "Dark mode" })
+                }
                 aria-pressed={theme === "dark"}
                 className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-xl border border-white/20 text-white transition-all hover:bg-white/10 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
               >
-                {theme === "dark" ? <Sun size={14} className="rr-text-gold" aria-hidden="true" /> : <Moon size={14} className="rr-text-gold" aria-hidden="true" />}
+                {theme === "dark" ? (
+                  <Sun size={14} className="rr-text-gold" aria-hidden="true" />
+                ) : (
+                  <Moon size={14} className="rr-text-gold" aria-hidden="true" />
+                )}
               </button>
             )}
             <button
@@ -437,381 +617,573 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
               disabled={!profile?.reviewLink}
               aria-label={
                 profile?.reviewLink
-                  ? t("dashboard.shareProfile.button", { defaultValue: "Share Profile" })
+                  ? t("dashboard.shareProfile.button", {
+                      defaultValue: "Share Profile",
+                    })
                   : t("dashboard.shareProfile.unavailable", {
-                      defaultValue: "Add your profile link in Settings to share it.",
+                      defaultValue:
+                        "Add your profile link in Settings to share it.",
                     })
               }
               title={
                 profile?.reviewLink
-                  ? t("dashboard.shareProfile.button", { defaultValue: "Share Profile" })
+                  ? t("dashboard.shareProfile.button", {
+                      defaultValue: "Share Profile",
+                    })
                   : t("dashboard.shareProfile.unavailable", {
-                      defaultValue: "Add your profile link in Settings to share it.",
+                      defaultValue:
+                        "Add your profile link in Settings to share it.",
                     })
               }
               className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-white/20 px-2.5 text-xs font-bold text-white transition-all hover:bg-white/10 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
             >
               {profileLinkCopied ? (
-                <CheckCircle2 size={14} className="rr-text-gold" aria-hidden="true" />
+                <CheckCircle2
+                  size={14}
+                  className="rr-text-gold"
+                  aria-hidden="true"
+                />
               ) : (
                 <Share2 size={14} className="rr-text-gold" aria-hidden="true" />
               )}
               <span className="hidden sm:inline">
                 {profileLinkCopied
-                  ? t("dashboard.shareProfile.copied", { defaultValue: "Copied" })
-                  : t("dashboard.shareProfile.button", { defaultValue: "Share Profile" })}
+                  ? t("dashboard.shareProfile.copied", {
+                      defaultValue: "Copied",
+                    })
+                  : t("dashboard.shareProfile.button", {
+                      defaultValue: "Share Profile",
+                    })}
               </span>
             </button>
             <LanguageFlyout />
           </div>
         </div>
-        <h1
-          className="text-2xl mb-6 text-white rr-fw-black"
-        >
-          {t('dashboard.header.title')}
+        <h1 className="text-2xl mb-6 text-white rr-fw-black">
+          {t("dashboard.header.title")}
         </h1>
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: t('dashboard.stats.thisMonth'), value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
-            { label: t('dashboard.stats.allTime'), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
-            { label: t('dashboard.stats.last7Days'), value: velocity?.last7 ?? 0, icon: <Star size={14} /> },
-            { label: t('dashboard.stats.consented', 'Consented'), value: consentStats?.consented ?? 0, icon: <ShieldCheck size={14} />, subtitle: consentStats ? `of ${consentStats.total}` : undefined, href: '/contacts?consent=consented' },
-          ].map((s) => {
+            {
+              label: t("dashboard.stats.thisMonth"),
+              value: stats?.thisMonth ?? 0,
+              icon: <Send size={14} />,
+            },
+            {
+              label: t("dashboard.stats.allTime"),
+              value: stats?.total ?? 0,
+              icon: <TrendingUp size={14} />,
+            },
+            {
+              label: t("dashboard.stats.last7Days"),
+              value: velocity?.last7 ?? 0,
+              icon: <Star size={14} />,
+            },
+            {
+              label: t("dashboard.stats.consented", "Consented"),
+              value: consentStats?.consented ?? 0,
+              icon: <ShieldCheck size={14} />,
+              subtitle: consentStats ? `of ${consentStats.total}` : undefined,
+              href: "/contacts?consent=consented",
+            },
+          ].map(s => {
             const inner = (
               <>
-                <div className="flex items-center justify-center gap-1 mb-1 rr-text-gold">{s.icon}</div>
-                <div className="text-2xl font-black text-white">
-                  {isLoading ? <div className="h-7 w-10 mx-auto rounded-md animate-pulse" style={{ background: "oklch(1 0 0 / 0.15)" }} /> : s.value}
+                <div className="flex items-center justify-center gap-1 mb-1 rr-text-gold">
+                  {s.icon}
                 </div>
-                <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{s.label}</div>
+                <div className="text-2xl font-black text-white">
+                  {isLoading ? (
+                    <div
+                      className="h-7 w-10 mx-auto rounded-md animate-pulse"
+                      style={{ background: "oklch(1 0 0 / 0.15)" }}
+                    />
+                  ) : (
+                    s.value
+                  )}
+                </div>
+                <div
+                  className="text-xs"
+                  style={{ color: "var(--text-on-dark-secondary)" }}
+                >
+                  {s.label}
+                </div>
                 {(s as any).subtitle && (
-                  <div className="text-xs mt-0.5" style={{ color: "var(--text-on-dark-secondary)", opacity: 0.7 }}>{(s as any).subtitle}</div>
+                  <div
+                    className="text-xs mt-0.5"
+                    style={{
+                      color: "var(--text-on-dark-secondary)",
+                      opacity: 0.7,
+                    }}
+                  >
+                    {(s as any).subtitle}
+                  </div>
                 )}
               </>
             );
             return (s as any).href ? (
-              <a key={s.label} href={(s as any).href} title="View consented contacts"
-                className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid block hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none">
+              <a
+                key={s.label}
+                href={(s as any).href}
+                title="View consented contacts"
+                className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid block hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none"
+              >
                 {inner}
               </a>
             ) : (
-              <div key={s.label} className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid">{inner}</div>
+              <div
+                key={s.label}
+                className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid"
+              >
+                {inner}
+              </div>
             );
           })}
         </div>
-        <MailServerHealthBadge smtp={smtpStatus} bulk={bulkSenderStatus} translate={t} />
+        <MailServerHealthBadge
+          smtp={smtpStatus}
+          bulk={bulkSenderStatus}
+          translate={t}
+        />
       </div>
 
       <div className="dashboard-content px-4 py-4 lg:px-8 lg:py-6">
-      <div className="max-w-4xl mx-auto flex flex-col gap-4">
-        {/* ── Analytics Card: deferred Chart.js module and data query ─────── */}
-        <DeferredDashboardSection loadingLabel="Loading analytics" minHeightClassName="min-h-[324px]">
-          <ActivityTrendCard total={stats?.total ?? 0} velocity={velocity} />
-        </DeferredDashboardSection>
+        <div className="max-w-4xl mx-auto flex flex-col gap-4">
+          {/* ── Analytics Card: deferred Chart.js module and data query ─────── */}
+          <DeferredDashboardSection
+            loadingLabel="Loading analytics"
+            minHeightClassName="min-h-[324px]"
+          >
+            <ActivityTrendCard total={stats?.total ?? 0} velocity={velocity} />
+          </DeferredDashboardSection>
 
-
-        {/* Email Performance Card */}
-        {emailPerf && emailPerf.totalSent > 0 && (
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <h3
-              className="text-sm font-black mb-3 rr-text-navy"
-            >
-              {t('dashboard.emailPerformance.title')}
-            </h3>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="text-center">
-                <p className="text-xs mb-1 rr-text-navy-muted">{t('dashboard.emailPerformance.sent')}</p>
-                <p className="text-xl font-black rr-text-navy">
-                  {emailPerf.totalSent}
-                </p>
+          {/* Email Performance Card */}
+          {emailPerf && emailPerf.totalSent > 0 && (
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <h3 className="text-sm font-black mb-3 rr-text-navy">
+                {t("dashboard.emailPerformance.title")}
+              </h3>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="text-center">
+                  <p className="text-xs mb-1 rr-text-navy-muted">
+                    {t("dashboard.emailPerformance.sent")}
+                  </p>
+                  <p className="text-xl font-black rr-text-navy">
+                    {emailPerf.totalSent}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs mb-1 rr-text-navy-muted">
+                    {t("dashboard.emailPerformance.openRate")}
+                  </p>
+                  <p
+                    className="text-xl font-black"
+                    style={{
+                      color: "oklch(0.55 0.20 145)",
+                      fontFamily: "'Poppins', sans-serif",
+                    }}
+                  >
+                    {emailPerf.openRate}%
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs mb-1 rr-text-navy-muted">
+                    {t("dashboard.emailPerformance.clickRate")}
+                  </p>
+                  <p
+                    className="text-xl font-black"
+                    style={{
+                      color: "oklch(0.75 0.18 80)",
+                      fontFamily: "'Poppins', sans-serif",
+                    }}
+                  >
+                    {emailPerf.clickRate}%
+                  </p>
+                </div>
               </div>
-              <div className="text-center">
-                <p className="text-xs mb-1 rr-text-navy-muted">{t('dashboard.emailPerformance.openRate')}</p>
-                <p className="text-xl font-black" style={{ color: "oklch(0.55 0.20 145)", fontFamily: "'Poppins', sans-serif" }}>
-                  {emailPerf.openRate}%
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs mb-1 rr-text-navy-muted">{t('dashboard.emailPerformance.clickRate')}</p>
-                <p className="text-xl font-black" style={{ color: "oklch(0.75 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
-                  {emailPerf.clickRate}%
-                </p>
-              </div>
-            </div>
-            <div className="mt-3 pt-3 flex gap-4" style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}>
-              <div className="flex items-center gap-1.5">
-                <Eye size={13} style={{ color: "oklch(0.55 0.20 145)" }} />
-                <span className="text-xs rr-text-navy-muted">
-                  {t('dashboard.emailPerformance.uniqueOpens', { count: emailPerf.uniqueOpens })}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <MousePointerClick size={13} style={{ color: "oklch(0.75 0.18 80)" }} />
-                <span className="text-xs rr-text-navy-muted">
-                  {t('dashboard.emailPerformance.uniqueClicks', { count: emailPerf.uniqueClicks })}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Recent Activity Summary Card */}
-        {(allRequests?.length ?? 0) > 0 && (
-          <RecentActivityCard
-            requests={allRequests ?? []}
-            trackingMap={trackingMap}
-            isLoading={listLoading}
-            onSelectRequest={setSelectedRequestId}
-          />
-        )}
-
-        {/* Activity Feed */}
-        <div id="activity-feed" className="bg-white rounded-2xl p-4 shadow-sm">
-          {/* Header row */}
-          <div className="flex items-center justify-between mb-3">
-@@ {/* Search + status filter */}
-          {/* Feed undo toast — 4-second window, shown after marking a row as reviewed */}
-          {feedUndoId !== null && (
-            <div
-              className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
-              style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
-            >
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={13} />
-                {t("dashboard.activityFeed.markAsReviewed", { defaultValue: "Marked as reviewed" })}
-              </span>
-              <button
-                onClick={() => {
-                  if (feedUndoTimerRef.current) clearTimeout(feedUndoTimerRef.current);
-                  const id = feedUndoId;
-                  setFeedUndoId(null);
-                  feedUndoMutation.mutate({ id, responded: false });
-                }}
-                className="text-xs font-black underline underline-offset-2 shrink-0"
-                style={{ color: "oklch(0.25 0.10 145)" }}
+              <div
+                className="mt-3 pt-3 flex gap-4"
+                style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}
               >
-                {t("common.undo", { defaultValue: "Undo" })}
-              </button>
+                <div className="flex items-center gap-1.5">
+                  <Eye size={13} style={{ color: "oklch(0.55 0.20 145)" }} />
+                  <span className="text-xs rr-text-navy-muted">
+                    {t("dashboard.emailPerformance.uniqueOpens", {
+                      count: emailPerf.uniqueOpens,
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <MousePointerClick
+                    size={13}
+                    style={{ color: "oklch(0.75 0.18 80)" }}
+                  />
+                  <span className="text-xs rr-text-navy-muted">
+                    {t("dashboard.emailPerformance.uniqueClicks", {
+                      count: emailPerf.uniqueClicks,
+                    })}
+                  </span>
+                </div>
+              </div>
             </div>
           )}
-            <h3
-              className="text-sm font-black rr-text-navy"
-            >
-              {t('dashboard.activityFeed.title')}
-              {(allRequests?.length ?? 0) > 0 && (
-                <span className="ml-1.5 text-xs font-normal rr-text-navy-muted">
-                  {filteredRequests.length !== allRequests!.length
-                    ? `${filteredRequests.length} of ${allRequests!.length}`
-                    : allRequests!.length}
-                </span>
-              )}
-            </h3>
-            {(allRequests?.length ?? 0) > 0 && (
-              <button
-                onClick={toggleSelectAllFiltered}
-                className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-bold transition-colors"
-                style={{
-                  background: allFilteredSelected ? "oklch(0.22 0.09 260)" : "oklch(0.96 0.01 260)",
-                  color: allFilteredSelected ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
-                }}
-              >
-                {allFilteredSelected ? <CheckSquare size={13} /> : <Square size={13} />}
-                {allFilteredSelected ? t('dashboard.activityFeed.deselectAll') : t('dashboard.activityFeed.selectAll')}
-              </button>
-            )}
-          </div>
 
-          {/* Search + status filter */}
+          {/* Recent Activity Summary Card */}
           {(allRequests?.length ?? 0) > 0 && (
-            <div className="flex flex-col gap-2 mb-3">
-              <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none rr-text-navy-faint" />
-                <Input
-                  value={activitySearch}
-                  onChange={(e) => setActivitySearch(e.target.value)}
-                  placeholder={t('dashboard.activityFeed.searchPlaceholder')}
-                  className="pl-8 pr-8 text-sm h-9 bg-gray-50 border-gray-200"
-                />
-                {activitySearch && (
-                  <button
-                    onClick={() => setActivitySearch("")}
-                    aria-label={t('dashboard.activityFeed.clearSearchAriaLabel')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={14} aria-hidden="true" />
-                  </button>
-                )}
-              </div>
-              <div className="flex items-center gap-1.5">
-                {(["all", "pending", "reviewed"] as const).map((opt) => {
-                  const labels = { all: t('dashboard.activityFeed.filterAll'), pending: t('dashboard.activityFeed.filterPending'), reviewed: t('dashboard.activityFeed.filterReviewed') };
-                  const active = statusFilter === opt;
-                  return (
-                    <button
-                      key={opt}
-                      onClick={() => setStatusFilter(opt)}
-                      className="px-3 py-1 rounded-full text-xs font-bold transition-colors"
-                      style={{
-                        background: active
-                          ? opt === "reviewed" ? "oklch(0.88 0.10 80)" : opt === "pending" ? "oklch(0.96 0.04 145)" : "oklch(0.22 0.09 260)"
-                          : "oklch(0.96 0.01 260)",
-                        color: active
-                          ? opt === "reviewed" ? "oklch(0.35 0.12 80)" : opt === "pending" ? "oklch(0.45 0.12 145)" : "oklch(0.80 0.18 80)"
-                          : "oklch(0.45 0.05 260)",
-                      }}
-                    >
-                      {labels[opt]}
-                    </button>
-                  );
-                })}
-                {(activitySearch || statusFilter !== "all") && (
-                  <button
-                    onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
-                    className="ml-auto text-xs px-2 py-1 rounded-lg rr-text-navy-muted"
-                  >
-                    {t('dashboard.activityFeed.clearFilters')}
-                  </button>
-                )}
-              </div>
-            </div>
+            <RecentActivityCard
+              requests={allRequests ?? []}
+              trackingMap={trackingMap}
+              isLoading={listLoading}
+              onSelectRequest={setSelectedRequestId}
+            />
           )}
 
-          {(isLoading || listLoading) ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="animate-spin rr-text-navy" />
-            </div>
-          ) : !allRequests || allRequests.length === 0 ? (
-            <div className="flex flex-col items-center py-8 gap-3">
-              <Send size={32} style={{ color: "oklch(0.80 0.03 260)" }} />
-              <p className="text-sm text-center rr-text-navy-muted">
-                {t('dashboard.activityFeed.noRequestsYet')}
-              </p>
-            </div>
-          ) : filteredRequests.length === 0 ? (
-            <div className="flex flex-col items-center py-6 gap-2">
-              <Search size={28} style={{ color: "oklch(0.80 0.03 260)" }} />
-              <p className="text-sm rr-text-navy-muted">{t('dashboard.activityFeed.noMatchingRequests')}</p>
-              <button
-                onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
-                className="text-xs font-bold px-3 py-1.5 rounded-lg mt-1 rr-bg-surface" style={{ color: "oklch(0.45 0.05 260)" }}
-              >
-                {t('dashboard.activityFeed.clearFiltersButton')}
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-0">
-              {filteredRequests.map((req, idx) => (
+          {/* Activity Feed */}
+          <div
+            id="activity-feed"
+            className="bg-white rounded-2xl p-4 shadow-sm"
+          >
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-3">
+              @@ {/* Search + status filter */}
+              {/* Feed undo toast — 4-second window, shown after marking a row as reviewed */}
+              {feedUndoId !== null && (
                 <div
-                  key={req.id}
-                  className="flex items-center justify-between py-3 animate-fade-up"
+                  className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
                   style={{
-                    animationDelay: `${Math.min(idx * 40, 400)}ms`,
-                    borderBottom: idx < filteredRequests.length - 1 ? "1px solid oklch(0.94 0.01 260)" : "none",
-                    background: selected.has(req.id) ? "oklch(0.97 0.02 260)" : "transparent",
-                    borderRadius: selected.has(req.id) ? "8px" : undefined,
-                    paddingLeft: selected.has(req.id) ? "6px" : undefined,
-                    paddingRight: selected.has(req.id) ? "6px" : undefined,
-                    marginLeft: selected.has(req.id) ? "-6px" : undefined,
-                    marginRight: selected.has(req.id) ? "-6px" : undefined,
+                    background: "oklch(0.92 0.10 145)",
+                    color: "oklch(0.30 0.12 145)",
                   }}
                 >
-                  <div className="flex items-center gap-3">
-                    {/* Checkbox */}
-                    <button
-                      onClick={() => toggleSelect(req.id)}
-                      aria-label={selected.has(req.id) ? `Deselect ${req.customerName}` : `Select ${req.customerName}`}
-                      aria-pressed={selected.has(req.id)}
-                      className="shrink-0 text-gray-300 hover:text-gray-500 transition-colors"
-                      style={{ color: selected.has(req.id) ? "oklch(0.45 0.12 280)" : undefined }}
-                    >
-                      {selected.has(req.id) ? <CheckSquare size={16} aria-hidden="true" /> : <Square size={16} aria-hidden="true" />}
-                    </button>
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0 rr-bg-navy rr-text-gold"
-                    >
-                      {req.customerName[0].toUpperCase()}
-                    </div>
-                    <button
-                      onClick={() => setSelectedRequestId(req.id)}
-                      className="text-left hover:opacity-80 transition-opacity"
-                    >
-                      <p className="text-sm font-bold rr-text-navy underline decoration-dotted underline-offset-2">
-                        {req.customerName}
-                      </p>
-                      <p className="text-xs rr-text-navy-muted">
-                        {req.customerEmail}
-                      </p>
-                    </button>
-                  </div>
-                  <div className="text-right shrink-0 ml-2 flex flex-col items-end gap-1">
-                    <button
-                      onClick={() => markRespondedMutation.mutate({ id: req.id, responded: !req.respondedAt })}
-                      className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-bold transition-colors"
-                      title={req.respondedAt ? t('dashboard.activityFeed.markAsNotReviewed') : t('dashboard.activityFeed.markAsReviewed')}
-                      style={req.respondedAt ? {
-                        background: "oklch(0.88 0.10 80)",
-                        color: "oklch(0.35 0.12 80)",
-                      } : {
-                        background: "oklch(0.96 0.04 145)",
-                        color: "oklch(0.45 0.12 145)",
-                      }}
-                    >
-                      {req.respondedAt
-                        ? <><CheckCircle2 size={11} className="mr-0.5" /> {t('dashboard.activityFeed.statusReviewed')}</>
-                        : <><Circle size={11} className="mr-0.5" /> {t('dashboard.activityFeed.statusSent')}</>
-                      }
-                    </button>
-                    <p className="text-xs rr-text-navy-faint">
-                      {req.sentAt
-                        ? formatDate(new Date(req.sentAt))
-                        : t("quietHours.queuedForDelivery", "Queued for delivery")}
-                    </p>
-                    {/* Open / click badges */}
-                    {trackingMap.has(req.id) && (
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        {(trackingMap.get(req.id)!.opens > 0) && (
-                          <span
-                            className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
-                            style={{ background: "oklch(0.93 0.04 260)", color: "oklch(0.40 0.08 260)" }}
-                            title={t('dashboard.activityFeed.emailOpenedTooltip')}
-                          >
-                            <Eye size={10} />
-                            {trackingMap.get(req.id)!.opens}
-                          </span>
-                        )}
-                        {(trackingMap.get(req.id)!.clicks > 0) && (
-                          <span
-                            className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
-                            style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
-                            title={t('dashboard.activityFeed.reviewLinkClickedTooltip')}
-                          >
-                            <MousePointerClick size={10} />
-                            {trackingMap.get(req.id)!.clicks}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle2 size={13} />
+                    {t("dashboard.activityFeed.markAsReviewed", {
+                      defaultValue: "Marked as reviewed",
+                    })}
+                  </span>
+                  <button
+                    onClick={() => {
+                      if (feedUndoTimerRef.current)
+                        clearTimeout(feedUndoTimerRef.current);
+                      const id = feedUndoId;
+                      setFeedUndoId(null);
+                      feedUndoMutation.mutate({ id, responded: false });
+                    }}
+                    className="text-xs font-black underline underline-offset-2 shrink-0"
+                    style={{ color: "oklch(0.25 0.10 145)" }}
+                  >
+                    {t("common.undo", { defaultValue: "Undo" })}
+                  </button>
                 </div>
-              ))}
+              )}
+              <h3 className="text-sm font-black rr-text-navy">
+                {t("dashboard.activityFeed.title")}
+                {(allRequests?.length ?? 0) > 0 && (
+                  <span className="ml-1.5 text-xs font-normal rr-text-navy-muted">
+                    {filteredRequests.length !== allRequests!.length
+                      ? `${filteredRequests.length} of ${allRequests!.length}`
+                      : allRequests!.length}
+                  </span>
+                )}
+              </h3>
+              {(allRequests?.length ?? 0) > 0 && (
+                <button
+                  onClick={toggleSelectAllFiltered}
+                  className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-bold transition-colors"
+                  style={{
+                    background: allFilteredSelected
+                      ? "oklch(0.22 0.09 260)"
+                      : "oklch(0.96 0.01 260)",
+                    color: allFilteredSelected
+                      ? "oklch(0.80 0.18 80)"
+                      : "oklch(0.45 0.05 260)",
+                  }}
+                >
+                  {allFilteredSelected ? (
+                    <CheckSquare size={13} />
+                  ) : (
+                    <Square size={13} />
+                  )}
+                  {allFilteredSelected
+                    ? t("dashboard.activityFeed.deselectAll")
+                    : t("dashboard.activityFeed.selectAll")}
+                </button>
+              )}
             </div>
-          )}
+
+            {/* Search + status filter */}
+            {(allRequests?.length ?? 0) > 0 && (
+              <div className="flex flex-col gap-2 mb-3">
+                <div className="relative">
+                  <Search
+                    size={14}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none rr-text-navy-faint"
+                  />
+                  <Input
+                    value={activitySearch}
+                    onChange={e => setActivitySearch(e.target.value)}
+                    placeholder={t("dashboard.activityFeed.searchPlaceholder")}
+                    className="pl-8 pr-8 text-sm h-9 bg-gray-50 border-gray-200"
+                  />
+                  {activitySearch && (
+                    <button
+                      onClick={() => setActivitySearch("")}
+                      aria-label={t(
+                        "dashboard.activityFeed.clearSearchAriaLabel"
+                      )}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {(["all", "pending", "reviewed"] as const).map(opt => {
+                    const labels = {
+                      all: t("dashboard.activityFeed.filterAll"),
+                      pending: t("dashboard.activityFeed.filterPending"),
+                      reviewed: t("dashboard.activityFeed.filterReviewed"),
+                    };
+                    const active = statusFilter === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => setStatusFilter(opt)}
+                        className="px-3 py-1 rounded-full text-xs font-bold transition-colors"
+                        style={{
+                          background: active
+                            ? opt === "reviewed"
+                              ? "oklch(0.88 0.10 80)"
+                              : opt === "pending"
+                                ? "oklch(0.96 0.04 145)"
+                                : "oklch(0.22 0.09 260)"
+                            : "oklch(0.96 0.01 260)",
+                          color: active
+                            ? opt === "reviewed"
+                              ? "oklch(0.35 0.12 80)"
+                              : opt === "pending"
+                                ? "oklch(0.45 0.12 145)"
+                                : "oklch(0.80 0.18 80)"
+                            : "oklch(0.45 0.05 260)",
+                        }}
+                      >
+                        {labels[opt]}
+                      </button>
+                    );
+                  })}
+                  {(activitySearch || statusFilter !== "all") && (
+                    <button
+                      onClick={() => {
+                        setActivitySearch("");
+                        setStatusFilter("all");
+                      }}
+                      className="ml-auto text-xs px-2 py-1 rounded-lg rr-text-navy-muted"
+                    >
+                      {t("dashboard.activityFeed.clearFilters")}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {isLoading || listLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="animate-spin rr-text-navy" />
+              </div>
+            ) : !allRequests || allRequests.length === 0 ? (
+              <div className="flex flex-col items-center py-8 gap-3">
+                <Send size={32} style={{ color: "oklch(0.80 0.03 260)" }} />
+                <p className="text-sm text-center rr-text-navy-muted">
+                  {t("dashboard.activityFeed.noRequestsYet")}
+                </p>
+              </div>
+            ) : filteredRequests.length === 0 ? (
+              <div className="flex flex-col items-center py-6 gap-2">
+                <Search size={28} style={{ color: "oklch(0.80 0.03 260)" }} />
+                <p className="text-sm rr-text-navy-muted">
+                  {t("dashboard.activityFeed.noMatchingRequests")}
+                </p>
+                <button
+                  onClick={() => {
+                    setActivitySearch("");
+                    setStatusFilter("all");
+                  }}
+                  className="text-xs font-bold px-3 py-1.5 rounded-lg mt-1 rr-bg-surface"
+                  style={{ color: "oklch(0.45 0.05 260)" }}
+                >
+                  {t("dashboard.activityFeed.clearFiltersButton")}
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-0">
+                {filteredRequests.map((req, idx) => (
+                  <div
+                    key={req.id}
+                    className="flex items-center justify-between py-3 animate-fade-up"
+                    style={{
+                      animationDelay: `${Math.min(idx * 40, 400)}ms`,
+                      borderBottom:
+                        idx < filteredRequests.length - 1
+                          ? "1px solid oklch(0.94 0.01 260)"
+                          : "none",
+                      background: selected.has(req.id)
+                        ? "oklch(0.97 0.02 260)"
+                        : "transparent",
+                      borderRadius: selected.has(req.id) ? "8px" : undefined,
+                      paddingLeft: selected.has(req.id) ? "6px" : undefined,
+                      paddingRight: selected.has(req.id) ? "6px" : undefined,
+                      marginLeft: selected.has(req.id) ? "-6px" : undefined,
+                      marginRight: selected.has(req.id) ? "-6px" : undefined,
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* Checkbox */}
+                      <button
+                        onClick={() => toggleSelect(req.id)}
+                        aria-label={
+                          selected.has(req.id)
+                            ? `Deselect ${req.customerName}`
+                            : `Select ${req.customerName}`
+                        }
+                        aria-pressed={selected.has(req.id)}
+                        className="shrink-0 text-gray-300 hover:text-gray-500 transition-colors"
+                        style={{
+                          color: selected.has(req.id)
+                            ? "oklch(0.45 0.12 280)"
+                            : undefined,
+                        }}
+                      >
+                        {selected.has(req.id) ? (
+                          <CheckSquare size={16} aria-hidden="true" />
+                        ) : (
+                          <Square size={16} aria-hidden="true" />
+                        )}
+                      </button>
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0 rr-bg-navy rr-text-gold">
+                        {req.customerName[0].toUpperCase()}
+                      </div>
+                      <button
+                        onClick={() => setSelectedRequestId(req.id)}
+                        className="text-left hover:opacity-80 transition-opacity"
+                      >
+                        <p className="text-sm font-bold rr-text-navy underline decoration-dotted underline-offset-2">
+                          {req.customerName}
+                        </p>
+                        <p className="text-xs rr-text-navy-muted">
+                          {req.customerEmail}
+                        </p>
+                      </button>
+                    </div>
+                    <div className="text-right shrink-0 ml-2 flex flex-col items-end gap-1">
+                      <button
+                        onClick={() =>
+                          markRespondedMutation.mutate({
+                            id: req.id,
+                            responded: !req.respondedAt,
+                          })
+                        }
+                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-bold transition-colors"
+                        title={
+                          req.respondedAt
+                            ? t("dashboard.activityFeed.markAsNotReviewed")
+                            : t("dashboard.activityFeed.markAsReviewed")
+                        }
+                        style={
+                          req.respondedAt
+                            ? {
+                                background: "oklch(0.88 0.10 80)",
+                                color: "oklch(0.35 0.12 80)",
+                              }
+                            : {
+                                background: "oklch(0.96 0.04 145)",
+                                color: "oklch(0.45 0.12 145)",
+                              }
+                        }
+                      >
+                        {req.respondedAt ? (
+                          <>
+                            <CheckCircle2 size={11} className="mr-0.5" />{" "}
+                            {t("dashboard.activityFeed.statusReviewed")}
+                          </>
+                        ) : (
+                          <>
+                            <Circle size={11} className="mr-0.5" />{" "}
+                            {t("dashboard.activityFeed.statusSent")}
+                          </>
+                        )}
+                      </button>
+                      <p className="text-xs rr-text-navy-faint">
+                        {req.sentAt
+                          ? formatDate(new Date(req.sentAt))
+                          : t(
+                              "quietHours.queuedForDelivery",
+                              "Queued for delivery"
+                            )}
+                      </p>
+                      {/* Open / click badges */}
+                      {trackingMap.has(req.id) && (
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          {trackingMap.get(req.id)!.opens > 0 && (
+                            <span
+                              className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                              style={{
+                                background: "oklch(0.93 0.04 260)",
+                                color: "oklch(0.40 0.08 260)",
+                              }}
+                              title={t(
+                                "dashboard.activityFeed.emailOpenedTooltip"
+                              )}
+                            >
+                              <Eye size={10} />
+                              {trackingMap.get(req.id)!.opens}
+                            </span>
+                          )}
+                          {trackingMap.get(req.id)!.clicks > 0 && (
+                            <span
+                              className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                              style={{
+                                background: "oklch(0.92 0.08 80)",
+                                color: "oklch(0.40 0.12 80)",
+                              }}
+                              title={t(
+                                "dashboard.activityFeed.reviewLinkClickedTooltip"
+                              )}
+                            >
+                              <MousePointerClick size={10} />
+                              {trackingMap.get(req.id)!.clicks}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>{/* end max-width wrapper */}
-      </div>{/* end outer padding */}
+        {/* end max-width wrapper */}
+      </div>
+      {/* end outer padding */}
 
       {/* Sticky bulk action bar */}
       {selected.size > 0 && (
         <div
-          className="fixed bottom-28 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl rr-bg-navy" style={{ minWidth: "280px" }}
+          className="fixed bottom-28 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl rr-bg-navy"
+          style={{ minWidth: "280px" }}
         >
           <span className="text-xs font-bold flex-1 rr-text-gold">
-            {t('dashboard.bulkActions.selectedCount', { count: selected.size })}
+            {t("dashboard.bulkActions.selectedCount", { count: selected.size })}
           </span>
           <button
-            onClick={() => bulkMarkRespondedMutation.mutate({ ids: Array.from(selected), responded: true })}
+            onClick={() =>
+              bulkMarkRespondedMutation.mutate({
+                ids: Array.from(selected),
+                responded: true,
+              })
+            }
             disabled={bulkMarkRespondedMutation.isPending}
             className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors rr-bg-gold rr-text-navy"
           >
@@ -820,16 +1192,24 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
             ) : (
               <CheckCircle2 size={12} />
             )}
-            {t('dashboard.bulkActions.markReviewed')}
+            {t("dashboard.bulkActions.markReviewed")}
           </button>
           <button
-            onClick={() => bulkMarkRespondedMutation.mutate({ ids: Array.from(selected), responded: false })}
+            onClick={() =>
+              bulkMarkRespondedMutation.mutate({
+                ids: Array.from(selected),
+                responded: false,
+              })
+            }
             disabled={bulkMarkRespondedMutation.isPending}
             className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors"
-            style={{ background: "oklch(0.32 0.07 260)", color: "rgba(255,255,255,0.8)" }}
+            style={{
+              background: "oklch(0.32 0.07 260)",
+              color: "rgba(255,255,255,0.8)",
+            }}
           >
             <Circle size={12} />
-            {t('dashboard.bulkActions.markSent')}
+            {t("dashboard.bulkActions.markSent")}
           </button>
           <button
             onClick={() => {
@@ -845,14 +1225,21 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
             }}
             disabled={bulkRestartMutation.isPending}
             className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors"
-            style={{ background: "oklch(0.38 0.10 30)", color: "rgba(255,255,255,0.9)" }}
+            style={{
+              background: "oklch(0.38 0.10 30)",
+              color: "rgba(255,255,255,0.9)",
+            }}
           >
-            {bulkRestartMutation.isPending ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />}
+            {bulkRestartMutation.isPending ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <RotateCcw size={12} />
+            )}
             Restart
           </button>
           <button
             onClick={() => setSelected(new Set())}
-            aria-label={t('dashboard.activityFeed.clearSelectionAriaLabel')}
+            aria-label={t("dashboard.activityFeed.clearSelectionAriaLabel")}
             className="p-1.5 rounded-lg transition-colors"
             style={{ color: "var(--text-on-dark-secondary)" }}
           >
@@ -862,35 +1249,44 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
       )}
 
       {/* Bulk Restart Campaign confirmation modal */}
-      {bulkRestartConfirmOpen && (() => {
-        const nonResponded = Array.from(selected).filter(id => {
-          const req = allRequests?.find(r => r.id === id);
-          return req && !req.respondedAt;
-        });
-        return (
-          <AlertDialog open={bulkRestartConfirmOpen} onOpenChange={setBulkRestartConfirmOpen}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Restart {nonResponded.length} campaign{nonResponded.length !== 1 ? 's' : ''}?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This cancels pending reminders and resends the original email to each selected client who has not yet responded. The campaign clock resets for each.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => {
-                    setBulkRestartConfirmOpen(false);
-                    bulkRestartMutation.mutate({ ids: nonResponded });
-                  }}
-                >
-                  Yes, restart {nonResponded.length}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        );
-      })()}
+      {bulkRestartConfirmOpen &&
+        (() => {
+          const nonResponded = Array.from(selected).filter(id => {
+            const req = allRequests?.find(r => r.id === id);
+            return req && !req.respondedAt;
+          });
+          return (
+            <AlertDialog
+              open={bulkRestartConfirmOpen}
+              onOpenChange={setBulkRestartConfirmOpen}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Restart {nonResponded.length} campaign
+                    {nonResponded.length !== 1 ? "s" : ""}?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This cancels pending reminders and resends the original
+                    email to each selected client who has not yet responded. The
+                    campaign clock resets for each.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      setBulkRestartConfirmOpen(false);
+                      bulkRestartMutation.mutate({ ids: nonResponded });
+                    }}
+                  >
+                    Yes, restart {nonResponded.length}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          );
+        })()}
 
       {/* Client detail sheet — opens when tapping a client name */}
       <ClientDetailSheet
@@ -902,39 +1298,150 @@ function DashboardPageContent({ testRecoveryMode }: DashboardPageProps = {}) {
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Building2 size={18} className="rr-text-gold" aria-hidden="true" />
-              {t("dashboard.profileEditor.title", { defaultValue: "Edit business profile" })}
+              <Building2
+                size={18}
+                className="rr-text-gold"
+                aria-hidden="true"
+              />
+              {t("dashboard.profileEditor.title", {
+                defaultValue: "Edit business profile",
+              })}
             </DialogTitle>
-            <DialogDescription>{t("dashboard.profileEditor.description", { defaultValue: "Update the business details used in your review requests and public profile." })}</DialogDescription>
+            <DialogDescription>
+              {t("dashboard.profileEditor.description", {
+                defaultValue:
+                  "Update the business details used in your review requests and public profile.",
+              })}
+            </DialogDescription>
           </DialogHeader>
-          <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); handleDashboardProfileSave(); }}>
+          <form
+            className="space-y-4"
+            onSubmit={event => {
+              event.preventDefault();
+              handleDashboardProfileSave();
+            }}
+          >
             <div className="space-y-2">
-              <label htmlFor="dashboard-profile-business-name" className="text-sm font-bold text-foreground">{t("dashboard.profileEditor.businessName", { defaultValue: "Business name" })} *</label>
-              <Input id="dashboard-profile-business-name" name="dashboard-profile-business-name" autoComplete="organization" value={businessName} onChange={(event) => setBusinessName(event.target.value)} className="rr-form-field" />
+              <label
+                htmlFor="dashboard-profile-business-name"
+                className="text-sm font-bold text-foreground"
+              >
+                {t("dashboard.profileEditor.businessName", {
+                  defaultValue: "Business name",
+                })}{" "}
+                *
+              </label>
+              <Input
+                id="dashboard-profile-business-name"
+                name="dashboard-profile-business-name"
+                autoComplete="organization"
+                value={businessName}
+                onChange={event => setBusinessName(event.target.value)}
+                className="rr-form-field"
+              />
             </div>
             <div className="space-y-2">
-              <label htmlFor="dashboard-profile-review-link" className="flex items-center gap-1 text-sm font-bold text-foreground"><Link2 size={14} aria-hidden="true" />{t("dashboard.profileEditor.reviewLink", { defaultValue: "Review link" })} *</label>
-              <Input id="dashboard-profile-review-link" name="dashboard-profile-review-link" type="url" autoComplete="url" value={reviewLink} onChange={(event) => setReviewLink(event.target.value)} className="rr-form-field" />
+              <label
+                htmlFor="dashboard-profile-review-link"
+                className="flex items-center gap-1 text-sm font-bold text-foreground"
+              >
+                <Link2 size={14} aria-hidden="true" />
+                {t("dashboard.profileEditor.reviewLink", {
+                  defaultValue: "Review link",
+                })}{" "}
+                *
+              </label>
+              <Input
+                id="dashboard-profile-review-link"
+                name="dashboard-profile-review-link"
+                type="url"
+                autoComplete="url"
+                value={reviewLink}
+                onChange={event => setReviewLink(event.target.value)}
+                className="rr-form-field"
+              />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="dashboard-profile-from-name" className="text-sm font-bold text-foreground">{t("dashboard.profileEditor.fromName", { defaultValue: "Sender name" })}</label>
-                <Input id="dashboard-profile-from-name" name="dashboard-profile-from-name" autoComplete="organization" value={fromName} onChange={(event) => setFromName(event.target.value)} className="rr-form-field" />
+                <label
+                  htmlFor="dashboard-profile-from-name"
+                  className="text-sm font-bold text-foreground"
+                >
+                  {t("dashboard.profileEditor.fromName", {
+                    defaultValue: "Sender name",
+                  })}
+                </label>
+                <Input
+                  id="dashboard-profile-from-name"
+                  name="dashboard-profile-from-name"
+                  autoComplete="organization"
+                  value={fromName}
+                  onChange={event => setFromName(event.target.value)}
+                  className="rr-form-field"
+                />
               </div>
               <div className="space-y-2">
-                <label htmlFor="dashboard-profile-reply-to" className="flex items-center gap-1 text-sm font-bold text-foreground"><Mail size={14} aria-hidden="true" />{t("dashboard.profileEditor.replyTo", { defaultValue: "Reply-to email" })}</label>
-                <Input id="dashboard-profile-reply-to" name="dashboard-profile-reply-to" type="email" autoComplete="email" value={replyTo} onChange={(event) => setReplyTo(event.target.value)} className="rr-form-field" />
+                <label
+                  htmlFor="dashboard-profile-reply-to"
+                  className="flex items-center gap-1 text-sm font-bold text-foreground"
+                >
+                  <Mail size={14} aria-hidden="true" />
+                  {t("dashboard.profileEditor.replyTo", {
+                    defaultValue: "Reply-to email",
+                  })}
+                </label>
+                <Input
+                  id="dashboard-profile-reply-to"
+                  name="dashboard-profile-reply-to"
+                  type="email"
+                  autoComplete="email"
+                  value={replyTo}
+                  onChange={event => setReplyTo(event.target.value)}
+                  className="rr-form-field"
+                />
               </div>
             </div>
             <div className="space-y-2">
-              <label htmlFor="dashboard-profile-consent-label" className="text-sm font-bold text-foreground">{t("dashboard.profileEditor.consentLabelName", { defaultValue: "Consent-label business name" })}</label>
-              <Input id="dashboard-profile-consent-label" name="dashboard-profile-consent-label" autoComplete="organization" value={consentLabelName} onChange={(event) => setConsentLabelName(event.target.value)} className="rr-form-field" />
+              <label
+                htmlFor="dashboard-profile-consent-label"
+                className="text-sm font-bold text-foreground"
+              >
+                {t("dashboard.profileEditor.consentLabelName", {
+                  defaultValue: "Consent-label business name",
+                })}
+              </label>
+              <Input
+                id="dashboard-profile-consent-label"
+                name="dashboard-profile-consent-label"
+                autoComplete="organization"
+                value={consentLabelName}
+                onChange={event => setConsentLabelName(event.target.value)}
+                className="rr-form-field"
+              />
             </div>
             <DialogFooter>
-              <button type="button" onClick={() => setProfileEditorOpen(false)} className="rounded-lg border border-border px-4 py-2 text-sm font-bold transition-colors hover:bg-muted">{t("common.cancel", { defaultValue: "Cancel" })}</button>
-              <button type="submit" disabled={updateDashboardProfile.isPending} className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 active:scale-[0.97] disabled:opacity-50">
-                {updateDashboardProfile.isPending && <Loader2 size={15} className="animate-spin" aria-hidden="true" />}
-                {t("dashboard.profileEditor.save", { defaultValue: "Save profile" })}
+              <button
+                type="button"
+                onClick={() => setProfileEditorOpen(false)}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-bold transition-colors hover:bg-muted"
+              >
+                {t("common.cancel", { defaultValue: "Cancel" })}
+              </button>
+              <button
+                type="submit"
+                disabled={updateDashboardProfile.isPending}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 active:scale-[0.97] disabled:opacity-50"
+              >
+                {updateDashboardProfile.isPending && (
+                  <Loader2
+                    size={15}
+                    className="animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                {t("dashboard.profileEditor.save", {
+                  defaultValue: "Save profile",
+                })}
               </button>
             </DialogFooter>
           </form>

@@ -32,14 +32,17 @@ import { USD_PRICE_CENTS } from "@shared/pricing";
 // Config
 // ---------------------------------------------------------------------------
 
-const PAYPAL_API_BASE = process.env.PAYPAL_MODE === "sandbox"
-  ? "https://api-m.sandbox.paypal.com"
-  : "https://api-m.paypal.com";
+const PAYPAL_API_BASE =
+  process.env.PAYPAL_MODE === "sandbox"
+    ? "https://api-m.sandbox.paypal.com"
+    : "https://api-m.paypal.com";
 
 function getPayPalCredentials() {
   // Support multiple naming conventions for the credentials
-  const clientId = process.env.PAYPAL_CLIENT_ID ?? process.env.VITE_PAYPAL_CLIENT_ID ?? "";
-  const secret = process.env.PAYPAL_SECRET ?? process.env.PAYPAL_CLIENT_SECRET ?? "";
+  const clientId =
+    process.env.PAYPAL_CLIENT_ID ?? process.env.VITE_PAYPAL_CLIENT_ID ?? "";
+  const secret =
+    process.env.PAYPAL_SECRET ?? process.env.PAYPAL_CLIENT_SECRET ?? "";
   return { clientId, secret, configured: !!(clientId && secret) };
 }
 
@@ -71,9 +74,18 @@ async function getAccessToken(): Promise<string> {
 
 // Plan pricing (must match Stripe pricing)
 const PLAN_PRICES: Record<string, { amount: string; description: string }> = {
-  monthly: { amount: (USD_PRICE_CENTS.monthly / 100).toFixed(2), description: "Get Phame Pro — Monthly" },
-  annual: { amount: (USD_PRICE_CENTS.annual / 100).toFixed(2), description: "Get Phame Pro — Annual" },
-  lifetime: { amount: (USD_PRICE_CENTS.lifetime / 100).toFixed(2), description: "Get Phame Pro — Lifetime" },
+  monthly: {
+    amount: (USD_PRICE_CENTS.monthly / 100).toFixed(2),
+    description: "Get Phame Pro — Monthly",
+  },
+  annual: {
+    amount: (USD_PRICE_CENTS.annual / 100).toFixed(2),
+    description: "Get Phame Pro — Annual",
+  },
+  lifetime: {
+    amount: (USD_PRICE_CENTS.lifetime / 100).toFixed(2),
+    description: "Get Phame Pro — Lifetime",
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -162,7 +174,9 @@ export function registerPayPalRoutes(app: Express) {
       if (!orderRes.ok) {
         const text = await orderRes.text();
         console.error("[PayPal] Create order failed:", text);
-        return res.status(500).json({ error: "Failed to create PayPal order." });
+        return res
+          .status(500)
+          .json({ error: "Failed to create PayPal order." });
       }
 
       const order = (await orderRes.json()) as {
@@ -170,7 +184,7 @@ export function registerPayPalRoutes(app: Express) {
         links: Array<{ rel: string; href: string }>;
       };
 
-      const approvalLink = order.links.find((l) => l.rel === "approve");
+      const approvalLink = order.links.find(l => l.rel === "approve");
 
       return res.json({
         orderId: order.id,
@@ -224,7 +238,9 @@ export function registerPayPalRoutes(app: Express) {
       if (!captureRes.ok) {
         const text = await captureRes.text();
         console.error("[PayPal] Capture failed:", text);
-        return res.status(500).json({ error: "Failed to capture PayPal payment." });
+        return res
+          .status(500)
+          .json({ error: "Failed to capture PayPal payment." });
       }
 
       const captureData = (await captureRes.json()) as {
@@ -239,7 +255,9 @@ export function registerPayPalRoutes(app: Express) {
       };
 
       if (captureData.status !== "COMPLETED") {
-        return res.status(400).json({ error: `Payment not completed. Status: ${captureData.status}` });
+        return res.status(400).json({
+          error: `Payment not completed. Status: ${captureData.status}`,
+        });
       }
 
       // Extract metadata from custom_id
@@ -255,7 +273,8 @@ export function registerPayPalRoutes(app: Express) {
 
       const userId = metadata.user_id || user.id;
       const plan = metadata.plan as "monthly" | "annual" | "lifetime";
-      const captureId = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.id ?? orderId;
+      const captureId =
+        captureData.purchase_units?.[0]?.payments?.captures?.[0]?.id ?? orderId;
 
       // Upgrade user — same logic as Stripe webhook
       const db = await getDb();
@@ -281,21 +300,23 @@ export function registerPayPalRoutes(app: Express) {
         .where(eq(businessProfiles.userId, userId));
 
       // Store a subscription record (same table as Stripe for unified status queries)
-        await db
-          .insert(stripeSubscriptions)
-          .values({
-            userId,
+      await db
+        .insert(stripeSubscriptions)
+        .values({
+          userId,
+          stripeSubscriptionId: `paypal_${captureId}`,
+          status: newTier === "lifetime" ? "lifetime" : "active",
+        })
+        .onDuplicateKeyUpdate({
+          set: {
             stripeSubscriptionId: `paypal_${captureId}`,
             status: newTier === "lifetime" ? "lifetime" : "active",
-          })
-          .onDuplicateKeyUpdate({
-            set: {
-              stripeSubscriptionId: `paypal_${captureId}`,
-              status: newTier === "lifetime" ? "lifetime" : "active",
-            },
-          });
+          },
+        });
 
-      console.log(`[PayPal] User ${userId} upgraded to ${newTier} (plan: ${plan}, capture: ${captureId})`);
+      console.log(
+        `[PayPal] User ${userId} upgraded to ${newTier} (plan: ${plan}, capture: ${captureId})`
+      );
 
       // Referral reward (same as Stripe)
       if ((newTier as string) !== "free") {
@@ -303,7 +324,9 @@ export function registerPayPalRoutes(app: Express) {
           const referral = await getUnrewardedReferral(userId);
           if (referral) {
             await rewardReferrer(referral.id, referral.referrerUserId);
-            console.log(`[Referral] Rewarded user ${referral.referrerUserId} +30 days for referring user ${userId} (PayPal)`);
+            console.log(
+              `[Referral] Rewarded user ${referral.referrerUserId} +30 days for referring user ${userId} (PayPal)`
+            );
           }
         } catch (refErr) {
           console.warn("[Referral] Reward failed (non-fatal):", refErr);
@@ -321,7 +344,10 @@ export function registerPayPalRoutes(app: Express) {
             toName: metadata.name || user.name || null,
             tier: newTier,
           }).catch((err: unknown) => {
-            console.warn("[PayPal] Upgrade receipt email failed (non-fatal):", err);
+            console.warn(
+              "[PayPal] Upgrade receipt email failed (non-fatal):",
+              err
+            );
           });
         }
       }
@@ -393,11 +419,16 @@ export function registerPayPalRoutes(app: Express) {
                   .update(businessProfiles)
                   .set({ tier: newTier })
                   .where(eq(businessProfiles.userId, metadata.user_id));
-                console.log(`[PayPal Webhook] Upgraded user ${metadata.user_id} to ${newTier}`);
+                console.log(
+                  `[PayPal Webhook] Upgraded user ${metadata.user_id} to ${newTier}`
+                );
               }
             }
           } catch (parseErr) {
-            console.warn("[PayPal Webhook] Could not parse custom_id:", parseErr);
+            console.warn(
+              "[PayPal Webhook] Could not parse custom_id:",
+              parseErr
+            );
           }
         }
       }

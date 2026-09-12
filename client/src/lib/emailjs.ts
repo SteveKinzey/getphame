@@ -9,7 +9,7 @@
 //   {{review_link}}   — your Google review URL
 //   {{message}}       — the full pre-built message body
 
-import emailjs from '@emailjs/browser';
+import emailjs from "@emailjs/browser";
 
 export interface EmailCredentials {
   serviceId: string;
@@ -36,19 +36,30 @@ export interface SendResult {
  * Initialises the SDK with the user's public key before every call so
  * credentials picked up from Settings are always fresh.
  */
-export async function sendReviewEmail(params: SendEmailParams): Promise<SendResult> {
-  const { customerName, customerEmail, businessName, reviewLink, serviceId, templateId, publicKey } = params;
+export async function sendReviewEmail(
+  params: SendEmailParams
+): Promise<SendResult> {
+  const {
+    customerName,
+    customerEmail,
+    businessName,
+    reviewLink,
+    serviceId,
+    templateId,
+    publicKey,
+  } = params;
 
   // Guard: all three credentials must be present
   if (!serviceId?.trim() || !templateId?.trim() || !publicKey?.trim()) {
     return {
       success: false,
-      error: 'EmailJS is not configured. Open Settings → Email Integration and add your credentials.',
+      error:
+        "EmailJS is not configured. Open Settings → Email Integration and add your credentials.",
     };
   }
 
   if (!customerEmail?.trim()) {
-    return { success: false, error: 'Customer email address is required.' };
+    return { success: false, error: "Customer email address is required." };
   }
 
   try {
@@ -60,21 +71,32 @@ export async function sendReviewEmail(params: SendEmailParams): Promise<SendResu
       to_email: customerEmail.trim(),
       business_name: businessName.trim(),
       review_link: reviewLink.trim(),
-      message: buildReviewMessage(customerName.trim(), businessName.trim(), reviewLink.trim()),
+      message: buildReviewMessage(
+        customerName.trim(),
+        businessName.trim(),
+        reviewLink.trim()
+      ),
     };
 
-    const response = await emailjs.send(serviceId.trim(), templateId.trim(), templateParams);
+    const response = await emailjs.send(
+      serviceId.trim(),
+      templateId.trim(),
+      templateParams
+    );
 
     if (response.status === 200) {
       return { success: true };
     }
-    return { success: false, error: `EmailJS returned status ${response.status}: ${response.text}` };
+    return {
+      success: false,
+      error: `EmailJS returned status ${response.status}: ${response.text}`,
+    };
   } catch (err: any) {
     // EmailJS SDK throws an object with { status, text } on API errors
     const message =
       err?.text ||
       err?.message ||
-      (typeof err === 'string' ? err : 'Unknown error while sending email.');
+      (typeof err === "string" ? err : "Unknown error while sending email.");
     return { success: false, error: message };
   }
 }
@@ -92,40 +114,53 @@ export async function sendTestEmail(params: {
 }): Promise<SendResult> {
   const { ownerEmail, businessName, credentials } = params;
 
-  if (!credentials.serviceId?.trim() || !credentials.templateId?.trim() || !credentials.publicKey?.trim()) {
+  if (
+    !credentials.serviceId?.trim() ||
+    !credentials.templateId?.trim() ||
+    !credentials.publicKey?.trim()
+  ) {
     return {
       success: false,
-      error: 'Please fill in all three EmailJS fields before sending a test.',
+      error: "Please fill in all three EmailJS fields before sending a test.",
     };
   }
 
   if (!ownerEmail?.trim()) {
-    return { success: false, error: 'Enter your email address to receive the test.' };
+    return {
+      success: false,
+      error: "Enter your email address to receive the test.",
+    };
   }
 
   try {
     emailjs.init({ publicKey: credentials.publicKey.trim() });
 
     const templateParams = {
-      to_name: 'Business Owner',
+      to_name: "Business Owner",
       to_email: ownerEmail.trim(),
       business_name: businessName.trim(),
-      review_link: 'https://example.com/review-link-test',
+      review_link: "https://example.com/review-link-test",
       message: `This is a test email from Get Phame. Your EmailJS integration is working correctly! 🚀 When you send a real review request, your customers will receive a message like this with your actual Google Review link.`,
     };
 
     const response = await emailjs.send(
       credentials.serviceId.trim(),
       credentials.templateId.trim(),
-      templateParams,
+      templateParams
     );
 
     if (response.status === 200) {
       return { success: true };
     }
-    return { success: false, error: `EmailJS returned status ${response.status}: ${response.text}` };
+    return {
+      success: false,
+      error: `EmailJS returned status ${response.status}: ${response.text}`,
+    };
   } catch (err: any) {
-    const message = err?.text || err?.message || (typeof err === 'string' ? err : 'Unknown error.');
+    const message =
+      err?.text ||
+      err?.message ||
+      (typeof err === "string" ? err : "Unknown error.");
     return { success: false, error: message };
   }
 }
@@ -135,7 +170,7 @@ export async function sendTestEmail(params: {
 export function buildReviewMessage(
   customerName: string,
   businessName: string,
-  reviewLink: string,
+  reviewLink: string
 ): string {
   return (
     `Hi ${customerName}! Thank you for choosing ${businessName}. ` +
@@ -144,11 +179,13 @@ export function buildReviewMessage(
   );
 }
 
-export function isEmailjsConfigured(profile: {
-  emailjsServiceId?: string;
-  emailjsTemplateId?: string;
-  emailjsPublicKey?: string;
-} | null): boolean {
+export function isEmailjsConfigured(
+  profile: {
+    emailjsServiceId?: string;
+    emailjsTemplateId?: string;
+    emailjsPublicKey?: string;
+  } | null
+): boolean {
   if (!profile) return false;
   return !!(
     profile.emailjsServiceId?.trim() &&
@@ -172,6 +209,6 @@ export async function sendReviewSMS(params: {
   const { customerName, customerPhone, businessName, reviewLink } = params;
   const message = buildReviewMessage(customerName, businessName, reviewLink);
   console.log(`[Get Phame SMS Demo] To: ${customerPhone}\nMessage: ${message}`);
-  await new Promise((r) => setTimeout(r, 800));
+  await new Promise(r => setTimeout(r, 800));
   return { success: true };
 }

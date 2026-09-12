@@ -7,11 +7,15 @@
  * Sends sendReEngagementEmail() and marks reEngagementSentAt.
  */
 import { getDb } from "./db";
-import { churnSurveys, stripeSubscriptions, users, businessProfiles } from "../drizzle/schema";
+import {
+  churnSurveys,
+  stripeSubscriptions,
+  users,
+  businessProfiles,
+} from "../drizzle/schema";
 import { and, isNull, lte, gte, eq, ne } from "drizzle-orm";
 import { sendReEngagementEmail } from "./smtp";
 import crypto from "crypto";
-
 
 const HOUR_MS = 60 * 60 * 1000;
 const THREE_DAYS_MS = 3 * 24 * HOUR_MS;
@@ -51,7 +55,9 @@ export async function runReEngagementCheck(): Promise<void> {
     return;
   }
 
-  console.log(`[ReEngagement] ${eligible.length} candidate(s) in the 3-day window.`);
+  console.log(
+    `[ReEngagement] ${eligible.length} candidate(s) in the 3-day window.`
+  );
 
   for (const survey of eligible) {
     try {
@@ -82,7 +88,9 @@ export async function runReEngagementCheck(): Promise<void> {
             .limit(1);
           if (activeSub.length > 0) {
             // Already resubscribed — mark as sent to prevent future checks, skip email
-            console.log(`[ReEngagement] userId=${survey.userId} already resubscribed — skipping.`);
+            console.log(
+              `[ReEngagement] userId=${survey.userId} already resubscribed — skipping.`
+            );
             await db
               .update(churnSurveys)
               .set({ reEngagementSentAt: now })
@@ -95,7 +103,9 @@ export async function runReEngagementCheck(): Promise<void> {
       // Need an email address to send to
       const emailTarget = toEmail ?? null;
       if (!emailTarget) {
-        console.log(`[ReEngagement] survey id=${survey.id} has no email — skipping.`);
+        console.log(
+          `[ReEngagement] survey id=${survey.id} has no email — skipping.`
+        );
         await db
           .update(churnSurveys)
           .set({ reEngagementSentAt: now })
@@ -132,7 +142,9 @@ export async function runReEngagementCheck(): Promise<void> {
         .set({ reEngagementSentAt: now })
         .where(eq(churnSurveys.id, survey.id));
 
-      console.log(`[ReEngagement] Sent to ${emailTarget} (survey id=${survey.id}).`);
+      console.log(
+        `[ReEngagement] Sent to ${emailTarget} (survey id=${survey.id}).`
+      );
     } catch (err) {
       console.error(`[ReEngagement] Failed for survey id=${survey.id}:`, err);
     }
@@ -141,10 +153,12 @@ export async function runReEngagementCheck(): Promise<void> {
 
 export function startReEngagementScheduler(): void {
   console.log("[ReEngagement] Scheduler started — checking every hour.");
-  // Run immediately on start, then every hour
-  runReEngagementCheck().catch(err =>
-    console.error("[ReEngagement] Initial check failed:", err)
-  );
+  // Defer initial check by 30 seconds to prioritize server readiness on cold start, then run periodically
+  setTimeout(() => {
+    runReEngagementCheck().catch(err =>
+      console.error("[ReEngagement] Initial check failed:", err)
+    );
+  }, 30_000);
   setInterval(() => {
     runReEngagementCheck().catch(err =>
       console.error("[ReEngagement] Hourly check failed:", err)

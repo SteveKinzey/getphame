@@ -19,14 +19,14 @@ export function startSmtpHealthCheckScheduler(): void {
 
   // Initial check after 60s — give server and DB time to fully start
   setTimeout(() => {
-    runSmtpHealthChecks().catch((err) =>
+    runSmtpHealthChecks().catch(err =>
       console.error("[SmtpHealthCheck] Initial check failed:", err)
     );
   }, 60_000);
 
   // Repeat every 24 hours
   setInterval(() => {
-    runSmtpHealthChecks().catch((err) =>
+    runSmtpHealthChecks().catch(err =>
       console.error("[SmtpHealthCheck] Scheduled check failed:", err)
     );
   }, CHECK_INTERVAL_MS);

@@ -9,8 +9,62 @@ import {
   type PwaAnalyticsRow,
 } from "./pwaAnalytics";
 
+function toFormattedSourcePattern(snippet: string): RegExp {
+  const escape = (value: string) =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let pattern = "";
+
+  for (let index = 0; index < snippet.length; ) {
+    const character = snippet[index];
+    if (character === '"' || character === "'") {
+      let closingIndex = index + 1;
+      while (closingIndex < snippet.length) {
+        if (
+          snippet[closingIndex] === character &&
+          snippet[closingIndex - 1] !== "\\"
+        )
+          break;
+        closingIndex += 1;
+      }
+      if (closingIndex < snippet.length) {
+        pattern += `["']${escape(snippet.slice(index + 1, closingIndex))}["']`;
+        index = closingIndex + 1;
+        continue;
+      }
+    }
+
+    if (/\s/.test(character)) {
+      while (index < snippet.length && /\s/.test(snippet[index])) index += 1;
+      pattern += "\\s*";
+      continue;
+    }
+
+    pattern += escape(character);
+    if ("().,=:?{}[]<>".includes(character)) pattern += "\\s*";
+    index += 1;
+  }
+
+  return new RegExp(pattern);
+}
+
+function expectFormattedSource(source: string) {
+  return {
+    toContain(snippet: string) {
+      expect(source).toMatch(toFormattedSourcePattern(snippet));
+    },
+    not: {
+      toContain(snippet: string) {
+        expect(source).not.toMatch(toFormattedSourcePattern(snippet));
+      },
+    },
+  };
+}
+
 function projectFile(relativePath: string): string {
-  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+  return readFileSync(
+    fileURLToPath(new URL(relativePath, import.meta.url)),
+    "utf8"
+  );
 }
 
 describe("privacy-light PWA analytics", () => {
@@ -40,7 +94,11 @@ describe("privacy-light PWA analytics", () => {
 
   it("reports aggregate funnel counts and rates without raw visitor records", () => {
     const now = Date.UTC(2026, 6, 15);
-    const row = (event: (typeof PWA_EVENT_NAMES)[number], daysAgo: number, platform: string): PwaAnalyticsRow => ({
+    const row = (
+      event: (typeof PWA_EVENT_NAMES)[number],
+      daysAgo: number,
+      platform: string
+    ): PwaAnalyticsRow => ({
       page: toPwaEventPage(event),
       utmMedium: platform,
       createdAt: new Date(now - daysAgo * 24 * 60 * 60 * 1000),
@@ -54,7 +112,11 @@ describe("privacy-light PWA analytics", () => {
       row("share_completed", 3, "ios"),
       row("share_copied", 40, "unknown"),
       row("share_cancelled", 3, "ios"),
-      { page: "/customers/private", utmMedium: "ios", createdAt: new Date(now) },
+      {
+        page: "/customers/private",
+        utmMedium: "ios",
+        createdAt: new Date(now),
+      },
     ];
 
     const summary = summarizePwaEvents(rows, now);
@@ -79,42 +141,56 @@ describe("Get Phame install and sharing contracts", () => {
     const prompt = projectFile("../client/src/components/PWAInstallPrompt.tsx");
     const home = projectFile("../client/src/pages/Home.tsx");
     const shareHelper = projectFile("../client/src/lib/pwaShare.ts");
-    expect(prompt).toContain('const CANONICAL_URL = "https://getphame.app/"');
-    expect(prompt).toContain("navigator.share(shareData)");
-    expect(prompt).toContain("navigator.clipboard.writeText(CANONICAL_URL)");
-    expect(prompt).toContain('error.name === "AbortError"');
-    expect(prompt).toContain('aria-live="polite"');
-    expect(prompt).toContain('record("share_completed")');
-    expect(prompt).toContain('record("share_copied")');
-    expect(home).toContain("shareGetPhame()");
-    expect(home).toContain('event: "share_completed"');
-    expect(home).toContain('event: "share_copied"');
-    expect(home).toContain('event: "share_cancelled"');
-    expect(home).toContain('role="status" aria-live="polite"');
-    expect(shareHelper).toContain("navigator.share(await getLocalizedGetPhameShareData())");
-    expect(shareHelper).toContain("navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url");
-    expect(shareHelper).toContain('error.name === "AbortError"');
+    expectFormattedSource(prompt).toContain(
+      'const CANONICAL_URL = "https://getphame.app/"'
+    );
+    expectFormattedSource(prompt).toContain("navigator.share(shareData)");
+    expectFormattedSource(prompt).toContain(
+      "navigator.clipboard.writeText(CANONICAL_URL)"
+    );
+    expectFormattedSource(prompt).toContain('error.name === "AbortError"');
+    expectFormattedSource(prompt).toContain('aria-live="polite"');
+    expectFormattedSource(prompt).toContain('record("share_completed")');
+    expectFormattedSource(prompt).toContain('record("share_copied")');
+    expectFormattedSource(home).toContain("shareGetPhame()");
+    expectFormattedSource(home).toContain('event: "share_completed"');
+    expectFormattedSource(home).toContain('event: "share_copied"');
+    expectFormattedSource(home).toContain('event: "share_cancelled"');
+    expectFormattedSource(home).toContain('role="status" aria-live="polite"');
+    expectFormattedSource(shareHelper).toContain(
+      "navigator.share(await getLocalizedGetPhameShareData())"
+    );
+    expectFormattedSource(shareHelper).toContain(
+      "navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url"
+    );
+    expectFormattedSource(shareHelper).toContain('error.name === "AbortError"');
   });
 
   it("keeps install attention motion non-obstructive and disabled for reduced motion", () => {
     const prompt = projectFile("../client/src/components/PWAInstallPrompt.tsx");
     const styles = projectFile("../client/src/index.css");
-    expect(prompt).toContain("pwa-install-attention");
-    expect(styles).toContain(".pwa-install-attention");
-    expect(styles).toContain("transform: translateY(-2px)");
-    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
-    expect(styles).toContain("animation: none !important");
+    expectFormattedSource(prompt).toContain("pwa-install-attention");
+    expectFormattedSource(styles).toContain(".pwa-install-attention");
+    expectFormattedSource(styles).toContain("transform: translateY(-2px)");
+    expectFormattedSource(styles).toContain(
+      "@media (prefers-reduced-motion: reduce)"
+    );
+    expectFormattedSource(styles).toContain("animation: none !important");
   });
 
   it("makes the onboarding completion step a localized install-and-share conversion surface", () => {
     const guide = projectFile("../client/src/components/OnboardingGuide.tsx");
-    expect(guide).toContain('onboardingGuide.allSet.iosInstall');
-    expect(guide).toContain('onboardingGuide.allSet.androidInstall');
-    expect(guide).toContain("navigator.share(shareData)");
-    expect(guide).toContain('navigator.clipboard.writeText(url)');
-    expect(guide).toContain('event: "share_cancelled"');
-    expect(guide).toContain('event: "share_copied"');
-    expect(guide).toContain('aria-live="polite"');
+    expectFormattedSource(guide).toContain("onboardingGuide.allSet.iosInstall");
+    expectFormattedSource(guide).toContain(
+      "onboardingGuide.allSet.androidInstall"
+    );
+    expectFormattedSource(guide).toContain("navigator.share(shareData)");
+    expectFormattedSource(guide).toContain(
+      "navigator.clipboard.writeText(url)"
+    );
+    expectFormattedSource(guide).toContain('event: "share_cancelled"');
+    expectFormattedSource(guide).toContain('event: "share_copied"');
+    expectFormattedSource(guide).toContain('aria-live="polite"');
 
     const requiredKeys = [
       "installTitle",
@@ -129,11 +205,16 @@ describe("Get Phame install and sharing contracts", () => {
     ];
 
     for (const locale of ["en", "zh-CN", "es", "fr", "th", "zh-TW"]) {
-      const messages = JSON.parse(projectFile(`../client/public/locales/${locale}/translation.json`));
+      const messages = JSON.parse(
+        projectFile(`../client/public/locales/${locale}/translation.json`)
+      );
       const allSet = messages.onboardingGuide.allSet;
       expect(allSet).toBeTypeOf("object");
       for (const key of requiredKeys) {
-        expect(allSet[key], `${locale} is missing onboardingGuide.allSet.${key}`).toBeTypeOf("string");
+        expect(
+          allSet[key],
+          `${locale} is missing onboardingGuide.allSet.${key}`
+        ).toBeTypeOf("string");
         expect(allSet[key].trim()).not.toBe("");
       }
     }

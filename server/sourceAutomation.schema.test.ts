@@ -15,11 +15,15 @@ describe("source automation schema contracts", () => {
     expect(customerRequests.sourceEventId.name).toBe("sourceEventId");
     expect(customerRequests.preferredLocale.name).toBe("preferredLocale");
     expect(customerRequests.templateRevisionId.name).toBe("templateRevisionId");
-    expect(customerRequests.englishTemplateRevisionId.name).toBe("englishTemplateRevisionId");
+    expect(customerRequests.englishTemplateRevisionId.name).toBe(
+      "englishTemplateRevisionId"
+    );
 
     expect(emailTemplates.familyPublicId.name).toBe("familyPublicId");
     expect(emailTemplates.activeRevisionId.name).toBe("activeRevisionId");
-    expect(emailTemplateRevisions.englishRevisionId.name).toBe("englishRevisionId");
+    expect(emailTemplateRevisions.englishRevisionId.name).toBe(
+      "englishRevisionId"
+    );
   });
 
   it("exposes the automation safeguards and durable event ledgers used by the processor", () => {
@@ -29,9 +33,13 @@ describe("source automation schema contracts", () => {
     expect(sourceConnections.dryRunCompletedAt.name).toBe("dryRunCompletedAt");
     expect(sourceConnections.lastAutomationAt.name).toBe("lastAutomationAt");
 
-    expect(contactConsentEvidence.sourceSubmissionId.name).toBe("sourceSubmissionId");
+    expect(contactConsentEvidence.sourceSubmissionId.name).toBe(
+      "sourceSubmissionId"
+    );
     expect(sourceAutomationEvents.sourceEventId.name).toBe("sourceEventId");
     expect(sourceAutomationEvents.claimExpiresAt.name).toBe("claimExpiresAt");
-    expect(sourceAutomationSchedulers.scheduleCronTaskUid.name).toBe("scheduleCronTaskUid");
+    expect(sourceAutomationSchedulers.scheduleCronTaskUid.name).toBe(
+      "scheduleCronTaskUid"
+    );
   });
 });

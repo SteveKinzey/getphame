@@ -27,7 +27,9 @@ type UpdateSafetyContextValue = {
   getCriticalActivityCount: () => number;
 };
 
-const UpdateSafetyContext = createContext<UpdateSafetyContextValue | null>(null);
+const UpdateSafetyContext = createContext<UpdateSafetyContextValue | null>(
+  null
+);
 
 /**
  * Coordinates page-local unsaved-work signals with the global React Query
@@ -36,7 +38,9 @@ const UpdateSafetyContext = createContext<UpdateSafetyContextValue | null>(null)
  */
 export function UpdateSafetyProvider({ children }: { children: ReactNode }) {
   const sourcesRef = useRef(new Map<string, UpdateDirtySource>());
-  const criticalActivitiesRef = useRef(new Map<string, UpdateCriticalActivity>());
+  const criticalActivitiesRef = useRef(
+    new Map<string, UpdateCriticalActivity>()
+  );
   const pendingMutationCount = useIsMutating();
 
   const registerDirtySource = useCallback((source: UpdateDirtySource) => {
@@ -60,14 +64,18 @@ export function UpdateSafetyProvider({ children }: { children: ReactNode }) {
     return dirtyCount;
   }, []);
 
-  const registerCriticalActivity = useCallback((activity: UpdateCriticalActivity) => {
-    criticalActivitiesRef.current.set(activity.id, activity);
+  const registerCriticalActivity = useCallback(
+    (activity: UpdateCriticalActivity) => {
+      criticalActivitiesRef.current.set(activity.id, activity);
 
-    return () => {
-      const current = criticalActivitiesRef.current.get(activity.id);
-      if (current === activity) criticalActivitiesRef.current.delete(activity.id);
-    };
-  }, []);
+      return () => {
+        const current = criticalActivitiesRef.current.get(activity.id);
+        if (current === activity)
+          criticalActivitiesRef.current.delete(activity.id);
+      };
+    },
+    []
+  );
 
   const getCriticalActivityCount = useCallback(() => {
     let activeCount = 0;
@@ -117,10 +125,7 @@ export function useUpdateSafety() {
  * Register a lightweight boolean dirty signal without copying form values into
  * shared state. Call this in every high-risk editable surface.
  */
-export function useUpdateDirtySource(
-  id: string,
-  isDirty: boolean
-): void {
+export function useUpdateDirtySource(id: string, isDirty: boolean): void {
   const { registerDirtySource } = useUpdateSafety();
   const isDirtyRef = useRef(isDirty);
 
@@ -140,10 +145,7 @@ export function useUpdateDirtySource(
  * Register a non-React-Query operation that must never be interrupted by a
  * deliberate PWA reload, such as a raw authentication or payment request.
  */
-export function useUpdateCriticalActivity(
-  id: string,
-  isActive: boolean
-): void {
+export function useUpdateCriticalActivity(id: string, isActive: boolean): void {
   const { registerCriticalActivity } = useUpdateSafety();
   const isActiveRef = useRef(isActive);
 

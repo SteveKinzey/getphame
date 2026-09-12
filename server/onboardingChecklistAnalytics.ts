@@ -11,7 +11,8 @@ export const ONBOARDING_CHECKLIST_EVENT_NAMES = [
   "checklist_completed",
 ] as const;
 
-export type OnboardingChecklistEventName = (typeof ONBOARDING_CHECKLIST_EVENT_NAMES)[number];
+export type OnboardingChecklistEventName =
+  (typeof ONBOARDING_CHECKLIST_EVENT_NAMES)[number];
 
 export const ONBOARDING_CHECKLIST_EVENT_SOURCE = "onboarding_checklist";
 const ONBOARDING_CHECKLIST_EVENT_PREFIX = "/onboarding-checklist/";
@@ -25,20 +26,30 @@ export interface OnboardingChecklistEventRow {
   createdAt: Date;
 }
 
-export function toOnboardingChecklistEventPage(event: OnboardingChecklistEventName): string {
+export function toOnboardingChecklistEventPage(
+  event: OnboardingChecklistEventName
+): string {
   return `${ONBOARDING_CHECKLIST_EVENT_PREFIX}${event.replaceAll("_", "-")}`;
 }
 
-export function fromOnboardingChecklistEventPage(page: string): OnboardingChecklistEventName | null {
+export function fromOnboardingChecklistEventPage(
+  page: string
+): OnboardingChecklistEventName | null {
   if (!page.startsWith(ONBOARDING_CHECKLIST_EVENT_PREFIX)) return null;
-  const event = page.slice(ONBOARDING_CHECKLIST_EVENT_PREFIX.length).replaceAll("-", "_");
-  return ONBOARDING_CHECKLIST_EVENT_NAMES.includes(event as OnboardingChecklistEventName)
+  const event = page
+    .slice(ONBOARDING_CHECKLIST_EVENT_PREFIX.length)
+    .replaceAll("-", "_");
+  return ONBOARDING_CHECKLIST_EVENT_NAMES.includes(
+    event as OnboardingChecklistEventName
+  )
     ? (event as OnboardingChecklistEventName)
     : null;
 }
 
 function emptyCounts(): EventCounts {
-  return Object.fromEntries(ONBOARDING_CHECKLIST_EVENT_NAMES.map((event) => [event, 0])) as EventCounts;
+  return Object.fromEntries(
+    ONBOARDING_CHECKLIST_EVENT_NAMES.map(event => [event, 0])
+  ) as EventCounts;
 }
 
 function uniqueEventCounts(rows: OnboardingChecklistEventRow[]): EventCounts {
@@ -51,29 +62,50 @@ function uniqueEventCounts(rows: OnboardingChecklistEventRow[]): EventCounts {
     users.add(row.userId);
     seen.set(event, users);
   }
-  for (const event of ONBOARDING_CHECKLIST_EVENT_NAMES) counts[event] = seen.get(event)?.size ?? 0;
+  for (const event of ONBOARDING_CHECKLIST_EVENT_NAMES)
+    counts[event] = seen.get(event)?.size ?? 0;
   return counts;
 }
 
 function percent(numerator: number, denominator: number): number {
-  return denominator > 0 ? Math.round((numerator / denominator) * 1000) / 10 : 0;
+  return denominator > 0
+    ? Math.round((numerator / denominator) * 1000) / 10
+    : 0;
 }
 
 function summarizeStep(counts: EventCounts, step: ChecklistStep) {
   const shown = counts[`${step}_step_viewed` as OnboardingChecklistEventName];
-  const actioned = counts[`${step}_step_actioned` as OnboardingChecklistEventName];
-  return { shown, actioned, dropOff: Math.max(shown - actioned, 0), continuationRate: percent(actioned, shown) };
+  const actioned =
+    counts[`${step}_step_actioned` as OnboardingChecklistEventName];
+  return {
+    shown,
+    actioned,
+    dropOff: Math.max(shown - actioned, 0),
+    continuationRate: percent(actioned, shown),
+  };
 }
 
 /** Returns aggregate, unique-account metrics only; no raw activity data leaves the server. */
-export function summarizeOnboardingChecklistEvents(rows: OnboardingChecklistEventRow[], now = Date.now()) {
+export function summarizeOnboardingChecklistEvents(
+  rows: OnboardingChecklistEventRow[],
+  now = Date.now()
+) {
   const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
   const allTime = uniqueEventCounts(rows);
-  const last30Days = uniqueEventCounts(rows.filter((row) => row.createdAt.getTime() >= thirtyDaysAgo));
+  const last30Days = uniqueEventCounts(
+    rows.filter(row => row.createdAt.getTime() >= thirtyDaysAgo)
+  );
   return {
     allTime,
     last30Days,
-    steps: Object.fromEntries(STEPS.map((step) => [step, summarizeStep(allTime, step)])) as Record<ChecklistStep, ReturnType<typeof summarizeStep>>,
-    rates: { completion: percent(allTime.checklist_completed, allTime.checklist_viewed) },
+    steps: Object.fromEntries(
+      STEPS.map(step => [step, summarizeStep(allTime, step)])
+    ) as Record<ChecklistStep, ReturnType<typeof summarizeStep>>,
+    rates: {
+      completion: percent(
+        allTime.checklist_completed,
+        allTime.checklist_viewed
+      ),
+    },
   };
 }

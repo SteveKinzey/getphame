@@ -2,10 +2,10 @@
 
 ## Supported Versions
 
-| Version | Supported |
-|---------|-----------|
-| Latest (main branch) | ✅ Active security patches |
-| Any previous tagged release | ❌ No longer supported |
+| Version                     | Supported                  |
+| --------------------------- | -------------------------- |
+| Latest (main branch)        | ✅ Active security patches |
+| Any previous tagged release | ❌ No longer supported     |
 
 ## Automated Security Controls
 
@@ -20,12 +20,12 @@ Current status: `pnpm audit --prod` reports **zero known vulnerabilities** (last
 
 ## CVE Response SLA
 
-| Severity | Scope | Target Patch Time |
-|----------|-------|-------------------|
-| Critical / High | Production dependencies | Within 48 hours of advisory |
-| Moderate | Production dependencies | Within 7 days |
-| Any | Dev-only tools (never shipped) | Next monthly review cycle |
-| Low | Any | Next monthly review cycle |
+| Severity        | Scope                          | Target Patch Time           |
+| --------------- | ------------------------------ | --------------------------- |
+| Critical / High | Production dependencies        | Within 48 hours of advisory |
+| Moderate        | Production dependencies        | Within 7 days               |
+| Any             | Dev-only tools (never shipped) | Next monthly review cycle   |
+| Low             | Any                            | Next monthly review cycle   |
 
 ## Reporting a Vulnerability
 
@@ -40,12 +40,14 @@ Use the [Report a vulnerability](https://github.com/SteveKinzey/getphame/securit
 **security@getphame.app**
 
 Include:
+
 - A description of the vulnerability
 - Steps to reproduce
 - Your assessment of impact
 - Any suggested fix (optional)
 
 We will:
+
 - Acknowledge your report within **24 hours**
 - Provide a status update within **72 hours**
 - Patch critical/high issues within **48 hours** of confirmation
@@ -54,12 +56,14 @@ We will:
 ## Scope
 
 **In scope:**
+
 - getphame.app and all subdomains
 - The GetPhame web application and API
 - Authentication flows (Google OAuth, Apple Sign In, magic links)
 - Data handling and storage
 
 **Out of scope:**
+
 - Denial of service attacks
 - Social engineering
 - Physical security

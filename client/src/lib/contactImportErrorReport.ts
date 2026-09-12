@@ -1,4 +1,7 @@
-import type { ContactImportIssue, ContactImportIssueReason } from "@shared/contactImportDiagnostics";
+import type {
+  ContactImportIssue,
+  ContactImportIssueReason,
+} from "@shared/contactImportDiagnostics";
 
 export type ContactImportErrorReportLabels = {
   rowNumber: string;
@@ -14,7 +17,9 @@ function csvCell(value: string): string {
 function sortIssues(issues: ContactImportIssue[]): ContactImportIssue[] {
   return [...issues].sort((left, right) => {
     const rowDifference = (left.rowNumber ?? 0) - (right.rowNumber ?? 0);
-    return rowDifference === 0 ? left.reason.localeCompare(right.reason) : rowDifference;
+    return rowDifference === 0
+      ? left.reason.localeCompare(right.reason)
+      : rowDifference;
   });
 }
 
@@ -28,14 +33,14 @@ export function buildContactImportErrorReportFilename(): string {
  */
 export function serializeContactImportErrorReport(
   issues: ContactImportIssue[],
-  labels: ContactImportErrorReportLabels,
+  labels: ContactImportErrorReportLabels
 ): string {
-  const rows = sortIssues(issues).map((issue) => [
+  const rows = sortIssues(issues).map(issue => [
     issue.rowNumber?.toString() ?? labels.unavailableRow,
     labels.reasonLabels[issue.reason],
   ]);
 
   return [[labels.rowNumber, labels.reason], ...rows]
-    .map((row) => row.map(csvCell).join(","))
+    .map(row => row.map(csvCell).join(","))
     .join("\n");
 }

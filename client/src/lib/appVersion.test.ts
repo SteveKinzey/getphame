@@ -32,7 +32,9 @@ class MemoryStorage {
 
 describe("appVersion", () => {
   it("validates bounded, non-empty version payloads", () => {
-    expect(isValidDeploymentVersionPayload({ version: " build-28 " })).toBe(true);
+    expect(isValidDeploymentVersionPayload({ version: " build-28 " })).toBe(
+      true
+    );
     expect(isValidDeploymentVersionPayload({ version: "" })).toBe(false);
     expect(isValidDeploymentVersionPayload({ version: 28 })).toBe(false);
     expect(isValidDeploymentVersionPayload({})).toBe(false);
@@ -40,9 +42,11 @@ describe("appVersion", () => {
   });
 
   it("fetches the platform version with an uncached timestamped request", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ version: "build-28" }), { status: 200 })
-    ) as unknown as typeof fetch;
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ version: "build-28" }), { status: 200 })
+      ) as unknown as typeof fetch;
 
     await expect(
       fetchDeploymentVersion({ fetchImpl, now: () => 1_725_000_000_000 })
@@ -66,7 +70,10 @@ describe("appVersion", () => {
           })
       ) as unknown as typeof fetch;
 
-      const request = fetchDeploymentVersion({ fetchImpl, now: () => 1_785_588_893_259 });
+      const request = fetchDeploymentVersion({
+        fetchImpl,
+        now: () => 1_785_588_893_259,
+      });
       await vi.advanceTimersByTimeAsync(DEPLOYMENT_VERSION_REQUEST_TIMEOUT_MS);
 
       await expect(request).resolves.toBeNull();
@@ -82,7 +89,9 @@ describe("appVersion", () => {
   it("treats invalid, unavailable, and malformed deployment responses as silent no-results", async () => {
     const unavailable = vi
       .fn()
-      .mockResolvedValue(new Response("unavailable", { status: 503 })) as unknown as typeof fetch;
+      .mockResolvedValue(
+        new Response("unavailable", { status: 503 })
+      ) as unknown as typeof fetch;
     const malformed = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ release: "build-28" }),
@@ -94,9 +103,15 @@ describe("appVersion", () => {
       },
     }) as unknown as typeof fetch;
 
-    await expect(fetchDeploymentVersion({ fetchImpl: unavailable })).resolves.toBeNull();
-    await expect(fetchDeploymentVersion({ fetchImpl: malformed })).resolves.toBeNull();
-    await expect(fetchDeploymentVersion({ fetchImpl: invalidJson })).resolves.toBeNull();
+    await expect(
+      fetchDeploymentVersion({ fetchImpl: unavailable })
+    ).resolves.toBeNull();
+    await expect(
+      fetchDeploymentVersion({ fetchImpl: malformed })
+    ).resolves.toBeNull();
+    await expect(
+      fetchDeploymentVersion({ fetchImpl: invalidJson })
+    ).resolves.toBeNull();
   });
 
   it("detects only a real change from an established baseline", () => {
@@ -109,7 +124,9 @@ describe("appVersion", () => {
     const storage = new MemoryStorage();
     const version = "build-28";
 
-    expect(reloadGuardStorageKey(version)).toBe("getphame:update-reload:build-28");
+    expect(reloadGuardStorageKey(version)).toBe(
+      "getphame:update-reload:build-28"
+    );
     expect(hasReloadGuard(storage, version)).toBe(false);
     expect(setReloadGuard(storage, version, 1_725_000_000_000)).toBe(true);
     expect(setReloadTarget(storage, version)).toBe(true);

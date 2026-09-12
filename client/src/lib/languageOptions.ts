@@ -17,6 +17,8 @@ export const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
   { code: "zh-TW", label: "TW", native: "繁體中文", flag: "🇹🇼" },
 ];
 
-export function isSupportedLanguage(value: string | undefined): value is SupportedLang {
-  return LANGUAGE_OPTIONS.some((language) => language.code === value);
+export function isSupportedLanguage(
+  value: string | undefined
+): value is SupportedLang {
+  return LANGUAGE_OPTIONS.some(language => language.code === value);
 }

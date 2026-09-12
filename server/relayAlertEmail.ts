@@ -13,7 +13,11 @@ export type RelayAlertEmailFallbackInput = {
 export type RelayAlertEmailFallbackResult = {
   attempted: boolean;
   delivered: boolean;
-  reason: "delivered" | "owner_email_unavailable" | "email_transport_unavailable" | "delivery_failed";
+  reason:
+    | "delivered"
+    | "owner_email_unavailable"
+    | "email_transport_unavailable"
+    | "delivery_failed";
 };
 
 function escapeHtml(value: string): string {
@@ -27,14 +31,16 @@ function escapeHtml(value: string): string {
 
 function fallbackCopy(input: RelayAlertEmailFallbackInput) {
   const timestamp = new Date(input.checkedAt).toISOString();
-  const eventCopy = input.event === "failure"
-    ? "The Slack incident webhook did not confirm delivery after an operational email relay failure."
-    : input.event === "recovery"
-      ? "The Slack recovery webhook did not confirm delivery after the primary operational email relay recovered."
-      : "The Slack webhook test did not confirm delivery.";
-  const durationCopy = input.durationMinutes == null
-    ? "Not applicable"
-    : `${input.durationMinutes} minute(s)`;
+  const eventCopy =
+    input.event === "failure"
+      ? "The Slack incident webhook did not confirm delivery after an operational email relay failure."
+      : input.event === "recovery"
+        ? "The Slack recovery webhook did not confirm delivery after the primary operational email relay recovered."
+        : "The Slack webhook test did not confirm delivery.";
+  const durationCopy =
+    input.durationMinutes == null
+      ? "Not applicable"
+      : `${input.durationMinutes} minute(s)`;
 
   return {
     subject: `Get Phame: ${input.event === "failure" ? "Slack fallback for email relay failover" : input.event === "recovery" ? "Slack fallback for email relay recovery" : "Slack webhook test fallback"}`,
@@ -61,23 +67,35 @@ export async function sendRelayAlertEmailFallback(
 ): Promise<RelayAlertEmailFallbackResult> {
   const ownerOpenId = ENV.ownerOpenId.trim();
   if (!ownerOpenId) {
-    return { attempted: false, delivered: false, reason: "owner_email_unavailable" };
+    return {
+      attempted: false,
+      delivered: false,
+      reason: "owner_email_unavailable",
+    };
   }
 
   const owner = await getUserByOpenId(ownerOpenId).catch(() => undefined);
   const recipient = owner?.email?.trim().toLowerCase();
   if (!recipient) {
-    return { attempted: false, delivered: false, reason: "owner_email_unavailable" };
+    return {
+      attempted: false,
+      delivered: false,
+      reason: "owner_email_unavailable",
+    };
   }
 
   const hasPrimary = Boolean(
     process.env.SYSTEM_SMTP_HOST?.trim() &&
-    process.env.SYSTEM_SMTP_USER?.trim() &&
-    process.env.SYSTEM_SMTP_PASS?.trim()
+      process.env.SYSTEM_SMTP_USER?.trim() &&
+      process.env.SYSTEM_SMTP_PASS?.trim()
   );
   const hasSendGrid = Boolean(process.env.SENDGRID_API_KEY?.trim());
   if (!hasPrimary && !hasSendGrid) {
-    return { attempted: false, delivered: false, reason: "email_transport_unavailable" };
+    return {
+      attempted: false,
+      delivered: false,
+      reason: "email_transport_unavailable",
+    };
   }
 
   const copy = fallbackCopy(input);

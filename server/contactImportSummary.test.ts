@@ -16,9 +16,24 @@ describe("summarizeContactImportIssues", () => {
     expect(result).toEqual({
       totalRejected: 4,
       reasons: [
-        { reason: "missing_email", count: 1, rowNumbers: [2], hasMoreRows: false },
-        { reason: "invalid_email", count: 1, rowNumbers: [4], hasMoreRows: false },
-        { reason: "duplicate_email", count: 2, rowNumbers: [9, 11], hasMoreRows: false },
+        {
+          reason: "missing_email",
+          count: 1,
+          rowNumbers: [2],
+          hasMoreRows: false,
+        },
+        {
+          reason: "invalid_email",
+          count: 1,
+          rowNumbers: [4],
+          hasMoreRows: false,
+        },
+        {
+          reason: "duplicate_email",
+          count: 2,
+          rowNumbers: [9, 11],
+          hasMoreRows: false,
+        },
       ],
       reportIssues: [
         { reason: "missing_email", rowNumber: 2 },
@@ -35,14 +50,17 @@ describe("summarizeContactImportIssues", () => {
       Array.from({ length: MAX_IMPORT_ERROR_ROW_NUMBERS + 2 }, (_, index) => ({
         reason: "duplicate_email" as const,
         rowNumber: index + 2,
-      })),
+      }))
     );
 
     expect(result.totalRejected).toBe(MAX_IMPORT_ERROR_ROW_NUMBERS + 2);
     expect(result.reasons[0]).toMatchObject({
       reason: "duplicate_email",
       count: MAX_IMPORT_ERROR_ROW_NUMBERS + 2,
-      rowNumbers: Array.from({ length: MAX_IMPORT_ERROR_ROW_NUMBERS }, (_, index) => index + 2),
+      rowNumbers: Array.from(
+        { length: MAX_IMPORT_ERROR_ROW_NUMBERS },
+        (_, index) => index + 2
+      ),
       hasMoreRows: true,
     });
     expect(result.reportIssues).toHaveLength(MAX_IMPORT_ERROR_ROW_NUMBERS + 2);

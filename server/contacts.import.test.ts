@@ -52,7 +52,11 @@ describe("importContacts", () => {
       },
     });
     expect(db.values).toHaveBeenCalledWith([
-      expect.objectContaining({ userId: 42, name: "New", email: "new@example.com" }),
+      expect.objectContaining({
+        userId: 42,
+        name: "New",
+        email: "new@example.com",
+      }),
     ]);
     expect(JSON.stringify(result.errorSummary)).not.toContain("@");
   });

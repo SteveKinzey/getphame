@@ -14,10 +14,15 @@ describe("managed storage download URLs", () => {
 
   it("returns a validated HTTP URL and preserves the normalized object key", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ url: "https://storage.example/object.json?signature=test" }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }),
+      new Response(
+        JSON.stringify({
+          url: "https://storage.example/object.json?signature=test",
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      )
     );
     vi.stubGlobal("fetch", fetchMock);
     const { storageGet } = await import("./storage");
@@ -33,29 +38,42 @@ describe("managed storage download URLs", () => {
       expect.objectContaining({
         method: "GET",
         headers: { Authorization: "Bearer managed-test-key" },
-      }),
+      })
     );
   });
 
   it("rejects non-success responses instead of parsing them as download URLs", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
-      new Response("upstream unavailable", { status: 503, statusText: "Service Unavailable" }),
-    ));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response("upstream unavailable", {
+          status: 503,
+          statusText: "Service Unavailable",
+        })
+      )
+    );
     const { storageGet } = await import("./storage");
 
     await expect(storageGet("asset.json")).rejects.toThrow(
-      "Storage download URL request failed (503 Service Unavailable): upstream unavailable",
+      "Storage download URL request failed (503 Service Unavailable): upstream unavailable"
     );
   });
 
   it.each([
     ["invalid JSON", new Response("not-json", { status: 200 })],
     ["a missing URL", new Response(JSON.stringify({}), { status: 200 })],
-    ["an unsupported URL protocol", new Response(JSON.stringify({ url: "javascript:alert(1)" }), { status: 200 })],
+    [
+      "an unsupported URL protocol",
+      new Response(JSON.stringify({ url: "javascript:alert(1)" }), {
+        status: 200,
+      }),
+    ],
   ])("rejects %s from the storage proxy", async (_label, response) => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
     const { storageGet } = await import("./storage");
 
-    await expect(storageGet("asset.json")).rejects.toThrow(/Storage download URL/);
+    await expect(storageGet("asset.json")).rejects.toThrow(
+      /Storage download URL/
+    );
   });
 });

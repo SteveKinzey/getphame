@@ -18,7 +18,8 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("./developerApiKeys", () => ({
-  authenticateDeveloperApiKeyWithStatus: mocks.authenticateDeveloperApiKeyWithStatus,
+  authenticateDeveloperApiKeyWithStatus:
+    mocks.authenticateDeveloperApiKeyWithStatus,
   developerApiKeyHasScope: mocks.developerApiKeyHasScope,
   recordDeveloperApiKeySuccessfulUse: mocks.recordDeveloperApiKeySuccessfulUse,
 }));
@@ -29,9 +30,12 @@ vi.mock("./developerApiImports", () => ({
   logDeveloperApiImport: mocks.logDeveloperApiImport,
   saveDeveloperApiIdempotency: mocks.saveDeveloperApiIdempotency,
 }));
-vi.mock("./developerApiAbuse", () => ({ checkDeveloperApiAbuse: mocks.checkDeveloperApiAbuse }));
+vi.mock("./developerApiAbuse", () => ({
+  checkDeveloperApiAbuse: mocks.checkDeveloperApiAbuse,
+}));
 vi.mock("./sourceConnections", () => ({
-  resolveSourceConnectionForPrincipal: mocks.resolveSourceConnectionForPrincipal,
+  resolveSourceConnectionForPrincipal:
+    mocks.resolveSourceConnectionForPrincipal,
 }));
 vi.mock("./contacts", () => ({ upsertApiContact: mocks.upsertApiContact }));
 vi.mock("./webhookHelpers", () => ({ fireWebhooks: mocks.fireWebhooks }));
@@ -71,10 +75,19 @@ function permittedPayload() {
 describe("public import source attribution", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.authenticateDeveloperApiKeyWithStatus.mockResolvedValue({ kind: "ok", principal });
+    mocks.authenticateDeveloperApiKeyWithStatus.mockResolvedValue({
+      kind: "ok",
+      principal,
+    });
     mocks.developerApiKeyHasScope.mockReturnValue(true);
-    mocks.checkDeveloperApiRateLimit.mockResolvedValue({ allowed: true, remaining: 59 });
-    mocks.getDeveloperApiIdempotency.mockResolvedValue({ kind: "new", keyHash: "idem-hash" });
+    mocks.checkDeveloperApiRateLimit.mockResolvedValue({
+      allowed: true,
+      remaining: 59,
+    });
+    mocks.getDeveloperApiIdempotency.mockResolvedValue({
+      kind: "new",
+      keyHash: "idem-hash",
+    });
     mocks.hashDeveloperApiRequest.mockReturnValue("request-hash");
     mocks.checkDeveloperApiAbuse.mockResolvedValue({ allowed: true });
     mocks.upsertApiContact.mockResolvedValue({ id: 77, created: true });
@@ -100,11 +113,13 @@ describe("public import source attribution", () => {
       userId: principal.userId,
       apiKeyId: principal.apiKeyId,
     });
-    expect(mocks.logDeveloperApiImport).toHaveBeenCalledWith(expect.objectContaining({
-      principal,
-      status: "rejected",
-      errorCode: "SOURCE_CONNECTION_FORBIDDEN",
-    }));
+    expect(mocks.logDeveloperApiImport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        principal,
+        status: "rejected",
+        errorCode: "SOURCE_CONNECTION_FORBIDDEN",
+      })
+    );
     expect(mocks.upsertApiContact).not.toHaveBeenCalled();
   });
 
@@ -131,19 +146,25 @@ describe("public import source attribution", () => {
       created: true,
       deduplicated: false,
     });
-    expect(mocks.getDeveloperApiIdempotency).toHaveBeenCalledWith(expect.objectContaining({
-      principal,
-      idempotencyKey: "order-123",
-      requestHash: "request-hash",
-    }));
-    expect(mocks.logDeveloperApiImport).toHaveBeenCalledWith(expect.objectContaining({
-      principal,
-      sourceConnectionId: 42,
-      status: "success",
-      sourceApp: "zapier",
-      contactId: 77,
-      created: true,
-    }));
-    expect(mocks.recordDeveloperApiKeySuccessfulUse).toHaveBeenCalledWith(principal);
+    expect(mocks.getDeveloperApiIdempotency).toHaveBeenCalledWith(
+      expect.objectContaining({
+        principal,
+        idempotencyKey: "order-123",
+        requestHash: "request-hash",
+      })
+    );
+    expect(mocks.logDeveloperApiImport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        principal,
+        sourceConnectionId: 42,
+        status: "success",
+        sourceApp: "zapier",
+        contactId: 77,
+        created: true,
+      })
+    );
+    expect(mocks.recordDeveloperApiKeySuccessfulUse).toHaveBeenCalledWith(
+      principal
+    );
   });
 });

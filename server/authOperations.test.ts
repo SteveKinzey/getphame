@@ -13,7 +13,8 @@ vi.mock("./db", () => ({
   createAuthDiagnosticEvent: mocks.createAuthDiagnosticEvent,
   createAuthHealthCheck: mocks.createAuthHealthCheck,
   getDb: mocks.getDb,
-  getLatestAuthDiagnosticByTokenFingerprint: mocks.getLatestAuthDiagnosticByTokenFingerprint,
+  getLatestAuthDiagnosticByTokenFingerprint:
+    mocks.getLatestAuthDiagnosticByTokenFingerprint,
   pruneAuthOperationsData: mocks.pruneAuthOperationsData,
 }));
 
@@ -47,13 +48,15 @@ describe("authentication operations", () => {
   afterEach(() => vi.unstubAllEnvs());
 
   it("masks recipients, produces deterministic fingerprints, and redacts secrets", () => {
-    expect(maskDiagnosticEmail("  Steve.Builder@Example.com ")).toBe("st******@ex***.com");
+    expect(maskDiagnosticEmail("  Steve.Builder@Example.com ")).toBe(
+      "st******@ex***.com"
+    );
     expect(fingerprintAuthValue("email:steve.builder@example.com")).toBe(
-      fingerprintAuthValue("email:steve.builder@example.com"),
+      fingerprintAuthValue("email:steve.builder@example.com")
     );
 
     const detail = redactAuthDiagnosticDetail(
-      "Delivery failed for steve@example.com?token=abcdef123456 and bearer very-secret-token",
+      "Delivery failed for steve@example.com?token=abcdef123456 and bearer very-secret-token"
     );
     expect(detail).not.toContain("steve@example.com");
     expect(detail).not.toContain("abcdef123456");
@@ -87,7 +90,10 @@ describe("authentication operations", () => {
     mocks.getDb.mockResolvedValue(database);
     mocks.testSmtpConnection.mockResolvedValue({ ok: true });
     mocks.createAuthHealthCheck.mockResolvedValue({ id: 7 });
-    mocks.pruneAuthOperationsData.mockResolvedValue({ eventsDeleted: 0, healthChecksDeleted: 0 });
+    mocks.pruneAuthOperationsData.mockResolvedValue({
+      eventsDeleted: 0,
+      healthChecksDeleted: 0,
+    });
 
     const result = await runAuthHealthCheck({
       triggerSource: "scheduled",
@@ -108,8 +114,12 @@ describe("authentication operations", () => {
     });
     expect(database.select).toHaveBeenCalledTimes(2);
     expect(mocks.testSmtpConnection).toHaveBeenCalledTimes(1);
-    expect(mocks.createAuthHealthCheck).toHaveBeenCalledWith(expect.objectContaining({ overallStatus: "ok" }));
-    expect(mocks.pruneAuthOperationsData).toHaveBeenCalledWith(1_700_000_000_000);
+    expect(mocks.createAuthHealthCheck).toHaveBeenCalledWith(
+      expect.objectContaining({ overallStatus: "ok" })
+    );
+    expect(mocks.pruneAuthOperationsData).toHaveBeenCalledWith(
+      1_700_000_000_000
+    );
   });
 
   it("records a deterministic failure without sending email when configuration and DB are unavailable", async () => {

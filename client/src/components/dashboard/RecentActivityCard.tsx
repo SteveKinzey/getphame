@@ -2,7 +2,16 @@
 // Sits above the full activity feed on the dashboard for quick at-a-glance status.
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Clock, CheckCircle2, Circle, Eye, MousePointerClick, Zap, CheckCheck, Check } from "lucide-react";
+import {
+  Clock,
+  CheckCircle2,
+  Circle,
+  Eye,
+  MousePointerClick,
+  Zap,
+  CheckCheck,
+  Check,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { format, isToday, isYesterday } from "date-fns";
 import { trpc } from "@/lib/trpc";
@@ -29,7 +38,9 @@ interface RecentActivityCardProps {
   onRefresh?: () => void;
 }
 
-function formatRelative(value: string | Date | number | null | undefined): string {
+function formatRelative(
+  value: string | Date | number | null | undefined
+): string {
   if (!value) return "";
   const d = new Date(value as string | number | Date);
   if (isNaN(d.getTime())) return "";
@@ -136,9 +147,7 @@ export default function RecentActivityCard({
   });
 
   const handleMarkAllReviewed = () => {
-    const unreviewedIds = recent
-      .filter((r) => !r.respondedAt)
-      .map((r) => r.id);
+    const unreviewedIds = recent.filter(r => !r.respondedAt).map(r => r.id);
     if (unreviewedIds.length === 0) return;
     setMarkingAll(true);
     bulkMark.mutate({ ids: unreviewedIds, responded: true });
@@ -177,7 +186,7 @@ export default function RecentActivityCard({
   // Count how many have opens or clicks in last 5
   const engagedCount = useMemo(
     () =>
-      recent.filter((r) => {
+      recent.filter(r => {
         const tr = trackingMap.get(r.id);
         return tr && (tr.opens > 0 || tr.clicks > 0);
       }).length,
@@ -191,14 +200,19 @@ export default function RecentActivityCard({
         <div className="flex items-center gap-2">
           <Zap size={14} style={{ color: "oklch(0.80 0.18 80)" }} />
           <h3 className="text-sm font-black rr-text-navy">
-            {t("dashboard.recentActivity.title", { defaultValue: "Recent Activity" })}
+            {t("dashboard.recentActivity.title", {
+              defaultValue: "Recent Activity",
+            })}
           </h3>
         </div>
         <div className="flex items-center gap-2">
           {!isLoading && engagedCount > 0 && (
             <span
               className="text-xs font-bold px-2 py-0.5 rounded-full"
-              style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
+              style={{
+                background: "oklch(0.92 0.08 80)",
+                color: "oklch(0.40 0.12 80)",
+              }}
             >
               {t("dashboard.recentActivity.engagedBadge", {
                 defaultValue: "{{count}} engaged",
@@ -206,7 +220,7 @@ export default function RecentActivityCard({
               })}
             </span>
           )}
-          {!isLoading && recent.some((r) => !r.respondedAt) && (
+          {!isLoading && recent.some(r => !r.respondedAt) && (
             <button
               onClick={handleMarkAllReviewed}
               disabled={markingAll}
@@ -215,12 +229,14 @@ export default function RecentActivityCard({
                 background: "oklch(0.88 0.10 80)",
                 color: "oklch(0.35 0.12 80)",
               }}
-              onMouseEnter={(e) => {
+              onMouseEnter={e => {
                 if (!markingAll)
-                  (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.82 0.14 80)";
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "oklch(0.82 0.14 80)";
               }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "oklch(0.88 0.10 80)";
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLButtonElement).style.background =
+                  "oklch(0.88 0.10 80)";
               }}
               title={t("dashboard.recentActivity.markAllReviewed", {
                 defaultValue: "Mark all as reviewed",
@@ -228,18 +244,28 @@ export default function RecentActivityCard({
             >
               <CheckCheck size={11} />
               {markingAll
-                ? t("dashboard.recentActivity.markingAll", { defaultValue: "Marking…" })
-                : t("dashboard.recentActivity.markAllShort", { defaultValue: "Mark all" })}
+                ? t("dashboard.recentActivity.markingAll", {
+                    defaultValue: "Marking…",
+                  })
+                : t("dashboard.recentActivity.markAllShort", {
+                    defaultValue: "Mark all",
+                  })}
             </button>
           )}
           <a
             href="#activity-feed"
             className="text-xs font-bold transition-colors"
             style={{ color: "oklch(0.55 0.12 260)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.80 0.18 80)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.55 0.12 260)")}
+            onMouseEnter={e =>
+              (e.currentTarget.style.color = "oklch(0.80 0.18 80)")
+            }
+            onMouseLeave={e =>
+              (e.currentTarget.style.color = "oklch(0.55 0.12 260)")
+            }
           >
-            {t("dashboard.recentActivity.viewAll", { defaultValue: "View all →" })}
+            {t("dashboard.recentActivity.viewAll", {
+              defaultValue: "View all →",
+            })}
           </a>
         </div>
       </div>
@@ -248,7 +274,10 @@ export default function RecentActivityCard({
       {bulkUndoIds.length > 0 && (
         <div
           className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
-          style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
+          style={{
+            background: "oklch(0.92 0.10 145)",
+            color: "oklch(0.30 0.12 145)",
+          }}
         >
           <span className="flex items-center gap-1.5">
             <CheckCheck size={13} />
@@ -271,11 +300,16 @@ export default function RecentActivityCard({
       {undoId !== null && (
         <div
           className="flex items-center justify-between gap-3 mb-3 px-3 py-2 rounded-lg text-xs font-bold animate-toast-in"
-          style={{ background: "oklch(0.92 0.10 145)", color: "oklch(0.30 0.12 145)" }}
+          style={{
+            background: "oklch(0.92 0.10 145)",
+            color: "oklch(0.30 0.12 145)",
+          }}
         >
           <span className="flex items-center gap-1.5">
             <CheckCircle2 size={13} />
-            {t("dashboard.recentActivity.markReviewed", { defaultValue: "Mark as reviewed" })}
+            {t("dashboard.recentActivity.markReviewed", {
+              defaultValue: "Mark as reviewed",
+            })}
           </span>
           <button
             onClick={() => handleUndo(undoId)}
@@ -290,7 +324,7 @@ export default function RecentActivityCard({
       {/* Loading skeletons */}
       {isLoading && (
         <div className="flex flex-col divide-y divide-gray-50">
-          {[0, 1, 2, 3, 4].map((i) => (
+          {[0, 1, 2, 3, 4].map(i => (
             <SkeletonRow key={i} />
           ))}
         </div>
@@ -319,9 +353,17 @@ export default function RecentActivityCard({
             const isMarkingThis = markingId === req.id;
 
             return (
-              <button
+              <div
                 key={req.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelectRequest(req.id)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelectRequest(req.id);
+                  }
+                }}
                 className="flex items-center gap-3 py-2.5 text-left rounded-lg px-2 -mx-2 transition-all duration-150 cursor-pointer group"
                 style={{
                   borderBottom:
@@ -329,23 +371,24 @@ export default function RecentActivityCard({
                       ? "1px solid oklch(0.96 0.005 260)"
                       : "none",
                 }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background =
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.background =
                     "oklch(0.975 0.008 260)";
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow =
+                  (e.currentTarget as HTMLElement).style.boxShadow =
                     "0 1px 4px oklch(0.22 0.09 260 / 0.06)";
                 }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "";
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = "";
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.background = "";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "";
                 }}
-                onMouseDown={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background =
+                onMouseDown={e => {
+                  (e.currentTarget as HTMLElement).style.background =
                     "oklch(0.96 0.015 260)";
-                  (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.99)";
+                  (e.currentTarget as HTMLElement).style.transform =
+                    "scale(0.99)";
                 }}
-                onMouseUp={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.transform = "";
+                onMouseUp={e => {
+                  (e.currentTarget as HTMLElement).style.transform = "";
                 }}
               >
                 {/* Avatar */}
@@ -371,7 +414,7 @@ export default function RecentActivityCard({
                         - Touch devices: always visible */}
                     {!isReviewed && (
                       <button
-                        onClick={(e) => handleMarkSingle(e, req.id)}
+                        onClick={e => handleMarkSingle(e, req.id)}
                         disabled={isMarkingThis}
                         className={[
                           "flex items-center justify-center w-6 h-6 rounded-full",
@@ -384,16 +427,21 @@ export default function RecentActivityCard({
                           background: "oklch(0.92 0.10 145)",
                           color: "oklch(0.35 0.14 145)",
                         }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.background =
-                            "oklch(0.82 0.16 145)";
-                          (e.currentTarget as HTMLButtonElement).style.transform =
-                            "scale(1.1)";
+                        onMouseEnter={e => {
+                          (
+                            e.currentTarget as HTMLButtonElement
+                          ).style.background = "oklch(0.82 0.16 145)";
+                          (
+                            e.currentTarget as HTMLButtonElement
+                          ).style.transform = "scale(1.1)";
                         }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.background =
-                            "oklch(0.92 0.10 145)";
-                          (e.currentTarget as HTMLButtonElement).style.transform = "";
+                        onMouseLeave={e => {
+                          (
+                            e.currentTarget as HTMLButtonElement
+                          ).style.background = "oklch(0.92 0.10 145)";
+                          (
+                            e.currentTarget as HTMLButtonElement
+                          ).style.transform = "";
                         }}
                         title={t("dashboard.recentActivity.markReviewed", {
                           defaultValue: "Mark as reviewed",
@@ -464,9 +512,12 @@ export default function RecentActivityCard({
                           background: "oklch(0.92 0.08 80)",
                           color: "oklch(0.40 0.12 80)",
                         }}
-                        title={t("dashboard.activityFeed.reviewLinkClickedTooltip", {
-                          defaultValue: "Review link clicked",
-                        })}
+                        title={t(
+                          "dashboard.activityFeed.reviewLinkClickedTooltip",
+                          {
+                            defaultValue: "Review link clicked",
+                          }
+                        )}
                       >
                         <MousePointerClick size={9} />
                         {tracking!.clicks}
@@ -479,7 +530,7 @@ export default function RecentActivityCard({
                     {formatRelative(req.sentAt)}
                   </p>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

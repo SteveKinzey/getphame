@@ -2885,6 +2885,40 @@
         "step4": "使用 Header Mapping 設定 Authorization 與 Idempotency-Key。選擇表單送出識別符作為 idempotency 值。",
         "step5": "保持 SSL Verify 啟用，儲存該動作，並提交一筆允許的測試紀錄。",
         "summary": "使用 Webhook 動作搭配 JSON 欄位、自訂與標頭對應。"
+      },
+      "zapier": {
+        "summary": "透過 Webhooks by Zapier 明確對應合規觸發條件與 JSON 請求。",
+        "step1": "選擇產生合規客戶記錄的觸發條件，然後新增 Webhooks by Zapier 作為下一步動作。",
+        "step2": "選擇 POST 或 Custom Request，將 URL 設定為 v1 聯絡人端點，Payload Type 設定為 JSON。",
+        "step3": "僅對應下方列出的欄位，在受保護請求標頭中新增 Authorization，切勿將 Data 留空。",
+        "step4": "將原始事件 ID 原樣對應至 externalId 與 Idempotency-Key，確保重試屬於安全重播。",
+        "step5": "使用合規記錄進行測試，並在「最近 API 匯入」中確認遮罩處理後的匯入結果。"
+      },
+      "make": {
+        "summary": "使用 Make HTTP v4 元件配合 JSON 資料結構及受保護的 API 金鑰憑證庫。",
+        "step1": "選擇產生合規客戶記錄的觸發模組，然後新增 HTTP > Make a request (v4)。",
+        "step2": "將 Method 設為 POST，URL 設為 v1 聯絡人端點，Body content type 設為 application/json。",
+        "step3": "選擇 Data structure 進行 JSON 對應，並在 Make 受保護憑證庫中設定 Get Phame 金鑰。",
+        "step4": "將穩定的來源事件 ID 對應至 externalId 與 Idempotency-Key，重試時切勿產生新值。",
+        "step5": "開啟非 2xx 回應的錯誤處理，然後執行一次合規情境測試。"
+      },
+      "jotform": {
+        "summary": "將 Jotform 原生 Webhook 用作觸發條件，透過保管 API 金鑰的伺服器端橋接器轉發。",
+        "step1": "在 Jotform Settings > Integrations 中新增 Webhooks，指向您控制的 HTTPS 橋接器 URL。",
+        "step2": "在橋接器中驗證目標表單與明確知情同意，然後解析 rawRequest 請求內容。",
+        "step3": "僅將正規化欄位從橋接器轉發至 v1 聯絡人端點，並附帶受保護的請求標頭。",
+        "step4": "在所有重試中重複使用 Jotform submissionID 作為 externalId 與 Idempotency-Key。",
+        "step5": "在持久化接收後立即向 Jotform 回覆確認，並端對端測試一筆合規提交記錄。",
+        "caution": "Jotform 原生 Webhook 設定未提供受保護請求標頭控制。請將 Get Phame API 金鑰僅保存在伺服器端橋接器中，切勿填入 Jotform 表單或 URL。"
+      },
+      "contactForm7": {
+        "summary": "使用簡易 WordPress 擴充整合，因為 Contact Form 7 本身不包含原生通用外發 Webhook 動作。",
+        "step1": "在 Contact Form 7 中新增必選同意核取方塊，文字需與實際聯繫管道一致。",
+        "step2": "在經過審查的 WordPress 外掛程式或 mu-plugin 中使用 wpcf7_before_send_mail 鉤子讀取淨化後的資料。",
+        "step3": "在伺服器端驗證表單來源與知情同意，然後將對應好的 JSON 發送至 v1 聯絡人端點。",
+        "step4": "在發起重試前產生並持久化冪等鍵，避免重試導致重複建立聯絡人。",
+        "step5": "將 API 金鑰存放在伺服器設定中，並在「最近 API 匯入」中確認一筆合規測試提交。",
+        "caution": "切勿使用瀏覽器 DOM 事件或前端表單程式碼進行此類對接，這會暴露 API 金鑰且無法作為權威的合規匯入邊界。"
       }
     },
     "imports": {
@@ -3052,6 +3086,14 @@
           "3": "將 JSON 與下方標頭一起送至 Get Phame 端點。",
           "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
           "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
+        },
+        "jotform": {
+          "1": "在 Jotform 中新增 Webhooks，並將表單提交傳送至受您控制的受信伺服器端橋接器。",
+          "2": "切勿將 Get Phame API 金鑰存放在 Jotform、公開 URL 或瀏覽器指令碼中。",
+          "3": "在橋接器中驗證預期表單與明確授權，然後解析 rawRequest 資料包。",
+          "4": "將正規化 JSON 轉發至 Get Phame，並附帶下方顯示的受保護請求標頭。",
+          "5": "在每次重試中重複使用 Jotform submissionID 作為 externalId 與 Idempotency-Key。",
+          "6": "提交一筆合規測試記錄，然後在此處重新整理健全狀態。"
         }
       },
       "automation": {
@@ -3145,6 +3187,28 @@
       "failurePrivacy": "未建立或洩露任何憑證。請從 WordPress 儀表板重新開始。",
       "expiredPrivacy": "請在 WordPress 中重新建立連線。Get Phame 不會接收您的 WordPress 管理員憑證。",
       "privacy": "此請求將於 15 分鐘後到期。Get Phame 不會接收您的 WordPress 管理員憑證。"
+    },
+    "connector": {
+      "eyebrow": "WordPress 整合",
+      "title": "安裝 Get Phame WordPress 連接器",
+      "description": "下載以同意為優先的連接器，在 WordPress 中安裝，然後從您自己的控制面板核准連線。表單提交會保留在本機，直到管理員審查並核准。",
+      "download": "下載 WordPress 連接器",
+      "downloading": "正在準備下載…",
+      "downloadStarted": "WordPress 連接器下載已開始。"
+    },
+    "simulator": {
+      "eyebrow": "上線前檢查",
+      "title": "驗證 Webhook 承載資料",
+      "description": "在啟用 Zapier、Make、Jotform 或表單建立工具的 Webhook 前，檢查聯絡人與同意資料結構。此模擬器不會使用 API 金鑰、建立聯絡人、寫入帳戶或傳送請求。",
+      "verify": "驗證承載資料",
+      "verifying": "正在驗證…",
+      "payloadLabel": "Webhook JSON 承載資料",
+      "help": "請使用不含真實客戶資料的代表性承載資料。範例使用預留位置資料，不會產生任何傳送動作。",
+      "validToast": "承載資料結構有效。未傳送任何內容。",
+      "invalidJson": "請先輸入有效的 JSON，再執行模擬器。",
+      "validTitle": "承載資料已可進行實際上線前檢查。",
+      "validDetail": "已提供必要的聯絡人資訊和明確的電子郵件同意證據。未建立或傳送任何內容。",
+      "invalidTitle": "承載資料需要修改後才能上線。"
     }
   },
   "promotionLink": {
@@ -3311,6 +3375,50 @@
       "warming": "正在預熱",
       "building": "正在建立信譽",
       "established": "穩定連線"
+    },
+    "selectionTitle": "目前傳送容量",
+    "selectionGaugeLabel": "目前預估可傳送數量",
+    "selectionAdvice": "依目前容量，已選取的 {{selected}} 位聯絡人中最多可立即傳送 {{ready}} 位。",
+    "selectionOverCapacity": "另有 {{count}} 位可能需要等候下一個容量時段。",
+    "selectionEstimate": "這是目前預估。確認前容量可能變動，伺服器限制仍然有效。",
+    "selectionBurstCap": "您的方案每次批量操作最多允許 {{count}} 個請求。",
+    "adminCaps": {
+      "eyebrow": "管理員控制",
+      "title": "批量傳送突發上限",
+      "description": "設定每個方案一次批量操作可發起的最大請求數。服務商預熱、每小時、每日和帳戶安全限制仍然優先適用。",
+      "requests": "請求/操作",
+      "range": "請選擇 {{min}} 到 {{max}} 之間的整數。",
+      "loadError": "無法載入目前上限。請重新整理後再試一次。",
+      "protected": "此全域設定無法提高服務商或帳戶的安全限制。",
+      "saved": "批量傳送上限已儲存。",
+      "saving": "正在儲存…",
+      "save": "儲存上限",
+      "usage": "已設定上限使用率",
+      "usageLabel": "相對於方案最高值的已設定批量傳送上限",
+      "nearMaximumBadge": "批次傳送上限為 {{cap}}/{{max}}。請檢查設定。",
+      "nearMaximumDescription": "此單次操作上限接近平台最大值。供應商預熱以及每小時或每日安全限制仍然適用。",
+      "nearMaximumAction": "檢查上限",
+      "nearMaximumActionLabel": "檢查批次傳送上限設定：已設定 {{cap}} / {{max}} 個請求",
+      "remainingBurstValue": "已設定 {{configured}} / {{maximum}} 個請求；剩餘 {{remaining}} 個批次傳送名額。",
+      "remainingBurstTooltip": "在此層級達到 {{maximum}} 個請求的上限前，還可以設定 {{remaining}} 個批次傳送名額。",
+      "remainingBurstInvalid": "請輸入允許範圍內的整數上限，以查看剩餘的批次傳送名額。",
+      "auditTitle": "傳送批次上限稽核記錄",
+      "auditDescription": "最近六次儲存的變更會記錄管理員及各方案修改的確切數值。",
+      "auditRetry": "重試",
+      "auditLoading": "正在載入變更記錄…",
+      "auditError": "無法載入上限變更記錄。",
+      "auditEmpty": "尚未記錄傳送批次上限的變更。",
+      "quickEditEyebrow": "傳送安全",
+      "quickEditTitle": "快速編輯傳送批次上限",
+      "quickEditDescription": "更新單次大量操作可發起的最大評論請求數。服務商和帳戶上限仍然適用。",
+      "quickEditFullSettings": "完整設定",
+      "quickEditLoading": "正在載入目前上限…",
+      "quickEditUnavailable": "上限控制項正在更新。您目前的上限仍然有效。",
+      "quickEditInput": "{{tier}} 傳送批次上限",
+      "quickEditRange": "整數上限範圍為 {{min}} 到 {{max}}。",
+      "quickEditSave": "套用上限",
+      "quickEditSaved": "傳送批次上限已更新。",
+      "quickEditError": "無法更新傳送批次上限。請重試。"
     }
   },
   "developerEnrollment": {
@@ -4263,7 +4371,157 @@
       "alertDelivered": "Slack 已送達",
       "alertFallbackDelivered": "備援電子郵件已送達",
       "alertNotSent": "未確認警示投遞",
-      "sanitizedDiagnostic": "已去識別化診斷"
+      "sanitizedDiagnostic": "已去識別化診斷",
+      "alertCooldown": "告警冷卻時間：{{minutes}} 分鐘（已啟用瞬態抖動抑制）",
+      "exportOutages": "匯出故障 CSV",
+      "exportPreparing": "正在準備 CSV 快照…",
+      "exportFailure": "無法產生故障匯出：{{message}}",
+      "exportDownloaded": "已下載 {{count}} 筆去識別化故障紀錄。",
+      "exportDialogTitle": "運作郵件轉發故障日誌",
+      "exportDialogDescription": "用於可靠性稽核的受限、伺服端去識別化 CSV 快照。敏感憑證與診斷細節已被永久排除。",
+      "exportSummary": "快照包含已記錄的 {{total}} 次故障中的 {{count}} 次。",
+      "exportTruncated": "僅顯示最新的 1,000 筆紀錄。",
+      "exportEmpty": "尚未記錄任何轉發故障。",
+      "exportStarted": "開始時間",
+      "exportStatus": "狀態",
+      "exportDuration": "持續時間",
+      "exportCause": "去識別化原因",
+      "exportCancel": "關閉",
+      "exportDownload": "下載 CSV"
+    }
+  },
+  "trialBanner": {
+    "title": "您的 Get Phame 試用期正在進行中",
+    "daysRemaining": "距離付費方案開始還有 {{count}} 天。",
+    "checkout": "選擇付費方案",
+    "openingCheckout": "正在開啟結帳頁面…",
+    "checkoutOpened": "安全結帳頁面已在新分頁中開啟。",
+    "dismiss": "關閉試用提醒"
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "診斷快照",
+    "description": "留空將使用上一個完整 UTC 月，或選擇最長 366 天的範圍。",
+    "startDate": "開始日期（UTC）",
+    "endDate": "結束日期（UTC）",
+    "completeRange": "請同時選擇開始與結束日期，或將兩者都留空。",
+    "invalidRange": "結束日期必須等於或晚於開始日期。",
+    "generating": "正在產生快照…",
+    "generate": "立即產生快照",
+    "presetLabel": "UTC 日期預設",
+    "last7Days": "過去 7 天",
+    "last30Days": "過去 30 天"
+  },
+  "adminProcedureRecovery": {
+    "title": "管理員控制項正在更新。",
+    "description": "此管理員控制項正在更新。您現有的設定不會變更；請稍後重新整理再試一次。"
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "帳單資料完整性",
+    "loading": "正在檢查訂閱記錄…",
+    "healthyTitle": "企業資料與 Stripe 記錄完全相符",
+    "attentionTitle": "訂閱記錄需要複核",
+    "unavailable": "無法完成本地記錄比對，請重新整理後重試。",
+    "summary": "已檢查 {{profiles}} 筆企業資料與 {{subscriptions}} 筆本地訂閱記錄。未發送任何 Stripe API 請求。",
+    "refresh": "重新整理",
+    "issues": "檢測到記錄不一致",
+    "checkedAt": "上次檢查時間：{{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "付費資料未關聯有效訂閱記錄",
+      "active_subscription_on_free_profile": "有效訂閱關聯到了免費資料",
+      "plan_tier_mismatch": "有效訂閱方案與資料等級不相符",
+      "subscription_without_business_profile": "存在沒有對應企業資料的訂閱記錄",
+      "duplicate_subscription_records": "同一使用者存在多筆訂閱記錄"
+    }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "正常",
+      "degraded": "需要注意",
+      "unavailable": "無法使用",
+      "notConfigured": "未設定"
+    },
+    "card": {
+      "latency": "延遲",
+      "notMeasured": "未測量",
+      "latencyValue": "{{value}} 毫秒",
+      "reauthenticate": "安全重新認證"
+    },
+    "back": "返回管理中心",
+    "eyebrow": "即時營運",
+    "title": "整合健康狀態",
+    "subtitle": "對資料庫和已連線傳送服務執行有界唯讀檢查。此頁面開啟時每 15 秒重新整理一次。",
+    "refresh": "立即重新整理",
+    "summary": {
+      "healthy": "所有已設定服務都正常回應。",
+      "degraded": "至少一項已設定服務需要注意。請查看下方受影響的卡片。",
+      "unavailable": "至少一項必要服務無法使用。解決底層連線問題後請重試。",
+      "title": "目前系統狀態",
+      "checked": "檢查時間 {{time}} · {{duration}} 毫秒"
+    },
+    "loadError": {
+      "title": "健康資料無法使用",
+      "body": "不會根據缺少的資料推斷狀態。請使用「立即重新整理」重新執行有界檢查。"
+    },
+    "cards": {
+      "label": "整合健康檢查",
+      "database": "資料庫連線",
+      "heartbeat": "背景心跳",
+      "stripe": "Stripe API 介面",
+      "emailRelay": "電子郵件中繼",
+      "sources": "傳入來源",
+      "sourcesFooter": "{{healthy}} 正常 · {{attention}} 需注意"
+    },
+    "dashboard": {
+      "eyebrow": "即時診斷",
+      "title": "資料庫連線",
+      "checking": "正在檢查唯讀連線探針…",
+      "unavailable": "連線狀態無法使用。不會根據缺少的資料推斷正常狀態。",
+      "loading": "正在檢查…",
+      "healthy": "正常 · {{latency}} 毫秒",
+      "review": "查看健康狀態"
+    },
+    "dashboardCardTitle": "整合健康狀態",
+    "dashboardCardBody": "即時檢查資料庫、排程器、Stripe、電子郵件中繼和來源",
+    "sparkline": {
+      "empty": "排程健康檢查執行後將顯示 24 小時歷史趨勢。",
+      "title": "延遲 · 最近 24 小時",
+      "max": "峰值 {{value}} 毫秒",
+      "label": "{{title}} 延遲歷史，峰值 {{value}} 毫秒。"
+    },
+    "alerts": {
+      "title": "維運警報 Webhook",
+      "description": "當受監控服務不可用或延遲超過閾值時，向 Slack 或 Discord 發送受控警報。Webhook 網址在儲存時均經加密，且不再向前端回顯。",
+      "active": "已啟用",
+      "inactive": "未啟用",
+      "provider": "警報接收平台",
+      "latencyThreshold": "高延遲閾值（毫秒）",
+      "webhookUrl": "傳入 Webhook 網址",
+      "webhookPlaceholderSaved": "已安全儲存 — 僅在需要變更時輸入新網址",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "請使用所選平台官方提供的傳入 Webhook 網址。切勿使用瀏覽器自動化腳本或附加憑證。",
+      "conditions": "警報觸發條件",
+      "enable": "啟用此警報接收目標",
+      "failure": "服務不可用或憑證遭拒",
+      "highLatency": "實測延遲達到設定閾值",
+      "save": "儲存警報設定",
+      "saving": "正在儲存…",
+      "saved": "健康警報設定已儲存。",
+      "test": "發送測試警報",
+      "testing": "正在測試…",
+      "testSuccess": "測試警報已成功送達。",
+      "remove": "移除接收目標",
+      "removed": "警報接收目標已移除。",
+      "invalidThreshold": "請選擇 100 至 60,000 毫秒之間的延遲閾值。",
+      "providerSlack": "Slack 傳入 Webhook",
+      "providerDiscord": "Discord 傳入 Webhook"
+    },
+    "reauth": {
+      "title": "Stripe 授權需要處理",
+      "description": "Get Phame 不會在瀏覽器端暴露帳務憑證。請透過受保護的付款設定更新託管的 Stripe 配置，隨後在此重新發起憑證檢測。",
+      "notice": "此對話方塊中不會顯示任何金鑰、端點、客戶或帳單記錄。",
+      "close": "關閉",
+      "recheck": "重新檢測安全連線",
+      "openSettings": "開啟付款設定"
     }
   }
 }

@@ -11,18 +11,18 @@ This release ships the **main-application foundation for source-bound, consent-e
 
 The broader program also includes AI-assisted onboarding templates, regional and category-aware platform recommendations, WordPress/WooCommerce automation controls, and expanded role-specific manuals. This release adds **additive schema foundations** for several of those capabilities, but it does not represent them as activated customer features. The status table below is authoritative.
 
-| Capability | Release status | Boundary |
-|---|---|---|
-| Source-bound review-request event API | Implemented | Requires `contacts:write` and `review_requests:send`, a bound source ID, active automation, and an unpaused source |
-| Immutable review-outreach consent evidence | Implemented | Purpose is `review_outreach`; channel is `email`; exact text, version, timestamp, source, and privacy-policy URL are required |
-| Idempotent import, suppression, dry run, immediate delivery, and delayed delivery | Implemented | Stable `sourceSubmissionId` is the replay anchor; payload changes under the same ID are rejected |
-| Managed delayed-event processor | Implemented | Project-owned task UID, five-minute reconciliation, bounded batches, overlap suppression, sanitized failures |
-| Localized setup and source-operations interface | Implemented | English, Spanish, French, Italian, Thai, Simplified Chinese, and Traditional Chinese |
-| Approved localized template-revision resolution | Foundation implemented | Non-English delivery requires an approved localized revision with its English counterpart; AI generation is not activated |
-| AI-generated onboarding drafts | Staged roadmap | No live generation or approval workflow is included in this release |
-| Regional/category platform recommendation UI | Staged roadmap | Recommendation helper and schema metadata are foundations, not an activated customer workflow |
-| WordPress/WooCommerce automatic submission | Staged roadmap | The main application endpoint is ready; connector-side opt-in, queue, tests, and package release remain separate work |
-| Expanded role-specific manuals and verified screenshots | Staged roadmap | Current setup guidance is updated; the complete manual expansion remains a separate release gate |
+| Capability                                                                        | Release status         | Boundary                                                                                                                      |
+| --------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Source-bound review-request event API                                             | Implemented            | Requires `contacts:write` and `review_requests:send`, a bound source ID, active automation, and an unpaused source            |
+| Immutable review-outreach consent evidence                                        | Implemented            | Purpose is `review_outreach`; channel is `email`; exact text, version, timestamp, source, and privacy-policy URL are required |
+| Idempotent import, suppression, dry run, immediate delivery, and delayed delivery | Implemented            | Stable `sourceSubmissionId` is the replay anchor; payload changes under the same ID are rejected                              |
+| Managed delayed-event processor                                                   | Implemented            | Project-owned task UID, five-minute reconciliation, bounded batches, overlap suppression, sanitized failures                  |
+| Localized setup and source-operations interface                                   | Implemented            | English, Spanish, French, Italian, Thai, Simplified Chinese, and Traditional Chinese                                          |
+| Approved localized template-revision resolution                                   | Foundation implemented | Non-English delivery requires an approved localized revision with its English counterpart; AI generation is not activated     |
+| AI-generated onboarding drafts                                                    | Staged roadmap         | No live generation or approval workflow is included in this release                                                           |
+| Regional/category platform recommendation UI                                      | Staged roadmap         | Recommendation helper and schema metadata are foundations, not an activated customer workflow                                 |
+| WordPress/WooCommerce automatic submission                                        | Staged roadmap         | The main application endpoint is ready; connector-side opt-in, queue, tests, and package release remain separate work         |
+| Expanded role-specific manuals and verified screenshots                           | Staged roadmap         | Current setup guidance is updated; the complete manual expansion remains a separate release gate                              |
 
 ## 2. Non-negotiable controls
 
@@ -44,9 +44,9 @@ These examples are operational defaults, not legal advice. United States commerc
 
 The specific review-request routes are:
 
-| Operation | Primary route | Accepted alias |
-|---|---|---|
-| Submit event | `POST /api/v1/source-events/review-request` | `POST /api/v1/source-events` |
+| Operation            | Primary route                                        | Accepted alias                        |
+| -------------------- | ---------------------------------------------------- | ------------------------------------- |
+| Submit event         | `POST /api/v1/source-events/review-request`          | `POST /api/v1/source-events`          |
 | Read-only validation | `POST /api/v1/source-events/review-request/validate` | `POST /api/v1/source-events/validate` |
 
 Every request uses `Content-Type: application/json`, `Authorization: Bearer <server-side-key>`, and `X-Get-Phame-Source: <bound-source-public-id>`. The API key must have both `contacts:write` and `review_requests:send`. The source ID must resolve to the same tenant and key. A browser page must never contain the bearer key.[1]
@@ -90,17 +90,17 @@ This distinction prevents a superficial in-app form submission from authorizing 
 
 ### 3.3 Event outcomes
 
-| Outcome | HTTP behavior | Meaning |
-|---|---|---|
-| `dry_run` | `200` | Contact and consent evidence were accepted; delivery readiness passed; no request or email was created |
-| `scheduled` | `202` | The source event is durable and will be processed after its configured delay or retry time |
-| `sent` or quiet-hours queue status | `200` | Shared delivery created the authoritative request and either sent or queued it |
-| `suppressed` | `202` | The contact is opted out; no request or email was created |
-| idempotent replay | `200`, or `409` for a terminal failed event | The original event result is returned without creating another request |
-| idempotency conflict | `409` | The same source submission ID was reused with a different payload hash |
-| automation disabled or paused | `409` | The source kill switch blocks processing |
-| authentication, scope, or source binding failure | `401` or `403` | The credential or source relationship is invalid |
-| temporary quota, adaptive limit, or delivery failure | `202` or `429` | A bounded retry is scheduled or the caller receives `Retry-After` |
+| Outcome                                              | HTTP behavior                               | Meaning                                                                                                |
+| ---------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `dry_run`                                            | `200`                                       | Contact and consent evidence were accepted; delivery readiness passed; no request or email was created |
+| `scheduled`                                          | `202`                                       | The source event is durable and will be processed after its configured delay or retry time             |
+| `sent` or quiet-hours queue status                   | `200`                                       | Shared delivery created the authoritative request and either sent or queued it                         |
+| `suppressed`                                         | `202`                                       | The contact is opted out; no request or email was created                                              |
+| idempotent replay                                    | `200`, or `409` for a terminal failed event | The original event result is returned without creating another request                                 |
+| idempotency conflict                                 | `409`                                       | The same source submission ID was reused with a different payload hash                                 |
+| automation disabled or paused                        | `409`                                       | The source kill switch blocks processing                                                               |
+| authentication, scope, or source binding failure     | `401` or `403`                              | The credential or source relationship is invalid                                                       |
+| temporary quota, adaptive limit, or delivery failure | `202` or `429`                              | A bounded retry is scheduled or the caller receives `Retry-After`                                      |
 
 All public errors use stable envelopes and bounded codes. Runtime responses do not expose authorization headers, API-key material, raw provider payloads, stack traces, recipient addresses, or thrown error text.[1] [6]
 
@@ -118,16 +118,16 @@ Delayed events are processed through a managed Heartbeat callback at `/api/sched
 
 Each run claims at most 25 due events. Before delivery, the processor re-reads the source state, stops disabled or paused sources, re-checks contact suppression, honors dry-run state, and calls the same shared delivery service used by immediate events. Recoverable failures use bounded retries with stable error codes. The callback accepts only authenticated cron requests from the persisted task UID, deduplicates overlapping four-minute run windows, records generic run status, and returns only `SOURCE_AUTOMATION_PROCESSING_FAILED` for unhandled failures.[6] [7]
 
-| Operator control | Implemented behavior |
-|---|---|
-| Remote kill switch | Disable automation or pause the source in Get Phame |
-| Dry-run gate | Live mode is rejected until durable dry-run completion evidence exists |
-| Configuration invalidation | Delivery-critical changes clear dry-run evidence and restore dry-run mode |
-| Delay | Per-source value is bounded from 0 to 43,200 minutes |
-| Retry | Durable event status, attempt count, next due time, and stable error code |
-| Overlap control | Scheduler run claim prevents concurrent processing windows |
-| Secret safety | Callback and processor logs omit raw exception details and provider data |
-| Suppression | Opt-out is checked on initial submission and again immediately before delayed delivery |
+| Operator control           | Implemented behavior                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------------- |
+| Remote kill switch         | Disable automation or pause the source in Get Phame                                    |
+| Dry-run gate               | Live mode is rejected until durable dry-run completion evidence exists                 |
+| Configuration invalidation | Delivery-critical changes clear dry-run evidence and restore dry-run mode              |
+| Delay                      | Per-source value is bounded from 0 to 43,200 minutes                                   |
+| Retry                      | Durable event status, attempt count, next due time, and stable error code              |
+| Overlap control            | Scheduler run claim prevents concurrent processing windows                             |
+| Secret safety              | Callback and processor logs omit raw exception details and provider data               |
+| Suppression                | Opt-out is checked on initial submission and again immediately before delayed delivery |
 
 ## 6. Source setup and health interface
 
@@ -139,12 +139,12 @@ All new source setup and automation copy is present in the seven maintained loca
 
 ## 7. Additive migrations
 
-| Revision | Purpose | Destructive statements |
-|---|---|---|
-| `0047_parallel_spectrum.sql` | Adds consent evidence, source automation events, immutable template revisions, explicit locale fields, source automation settings, and additive profile/platform metadata | None |
-| `0048_clean_baron_zemo.sql` | Adds the customer-request source-event uniqueness constraint | None |
-| `0049_curvy_the_santerians.sql` | Adds persisted source-automation scheduler ownership and run state | None |
-| `0050_bouncy_la_nuit.sql` | Adds durable `dryRunCompletedAt` evidence to source connections | None |
+| Revision                        | Purpose                                                                                                                                                                   | Destructive statements |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `0047_parallel_spectrum.sql`    | Adds consent evidence, source automation events, immutable template revisions, explicit locale fields, source automation settings, and additive profile/platform metadata | None                   |
+| `0048_clean_baron_zemo.sql`     | Adds the customer-request source-event uniqueness constraint                                                                                                              | None                   |
+| `0049_curvy_the_santerians.sql` | Adds persisted source-automation scheduler ownership and run state                                                                                                        | None                   |
+| `0050_bouncy_la_nuit.sql`       | Adds durable `dryRunCompletedAt` evidence to source connections                                                                                                           | None                   |
 
 The current release does not drop or rename existing tables or columns. Existing templates retain their mutable compatibility fields. The new immutable revision table and English-counterpart references are available to the shared delivery validator, but AI generation and complete template-family management remain staged.[8] [9] [10]
 
@@ -169,13 +169,13 @@ Rollback is operational first. Disable automation or pause every affected source
 
 The following work remains outside this release and must not be presented as active until its own implementation and release gates pass:
 
-| Follow-on | Required completion evidence |
-|---|---|
-| AI onboarding templates | Structured model output, prompt-injection fixtures, variable allowlist, deterministic fallback, English counterpart, preview/edit/regenerate/skip, explicit approval, rate and timeout limits |
-| Template-family management | Legacy backfill, immutable revisions for every edit, transactional activation, complete request/reminder/queue snapshots, administrator controls |
-| Regional platform recommendations | Evidence-backed catalog, localized rationale, owner confirmation of country/region/category, URL validation, Yelp instruction-only treatment, editable destination selection |
-| WordPress/WooCommerce automation | Explicit local opt-in, stable order event ID, dry run, local and remote kill switches, bounded retry queue, PHPUnit/WordPress capability and nonce tests, redacted logs, signed package |
-| Manuals and screenshots | Role-exclusive user/admin topics in seven locales, verified redacted media, alt text, checksum/version metadata, synchronized in-app and PDF export |
+| Follow-on                         | Required completion evidence                                                                                                                                                                  |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AI onboarding templates           | Structured model output, prompt-injection fixtures, variable allowlist, deterministic fallback, English counterpart, preview/edit/regenerate/skip, explicit approval, rate and timeout limits |
+| Template-family management        | Legacy backfill, immutable revisions for every edit, transactional activation, complete request/reminder/queue snapshots, administrator controls                                              |
+| Regional platform recommendations | Evidence-backed catalog, localized rationale, owner confirmation of country/region/category, URL validation, Yelp instruction-only treatment, editable destination selection                  |
+| WordPress/WooCommerce automation  | Explicit local opt-in, stable order event ID, dry run, local and remote kill switches, bounded retry queue, PHPUnit/WordPress capability and nonce tests, redacted logs, signed package       |
+| Manuals and screenshots           | Role-exclusive user/admin topics in seven locales, verified redacted media, alt text, checksum/version metadata, synchronized in-app and PDF export                                           |
 
 ## References
 

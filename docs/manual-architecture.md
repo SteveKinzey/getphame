@@ -4,10 +4,10 @@
 
 Get Phame exposes one authenticated route: `/manual`. The route does not accept a role, manual type, or impersonation query parameter. It reads the authenticated role from `useAuth()` and renders exactly one document.
 
-| Authenticated role | Visible document | Navigation label | Hidden document |
-|---|---|---|---|
-| `user` | User Manual | User Manual | Admin Manual |
-| `admin` | Admin Manual | Admin Manual | Separate User Manual view |
+| Authenticated role | Visible document | Navigation label | Hidden document           |
+| ------------------ | ---------------- | ---------------- | ------------------------- |
+| `user`             | User Manual      | User Manual      | Admin Manual              |
+| `admin`            | Admin Manual     | Admin Manual     | Separate User Manual view |
 
 The Admin Manual is a content superset, not a second selectable manual. It composes the same shared user sections with additional administrator-only sections. The page contains no role switcher, tabs, links, or URL state that could expose the other document identity.
 

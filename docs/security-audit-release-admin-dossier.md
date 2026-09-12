@@ -6,11 +6,11 @@ The verified Security Audit History evidence will remain inside Get Phame’s ex
 
 ## Access contract
 
-| Request context | Page behavior | Evidence API behavior | Report files |
-| --- | --- | --- | --- |
-| Unauthenticated | Public landing experience only; the protected dossier is not rendered | Returns `FORBIDDEN`; no dossier payload | None exposed |
-| Authenticated non-admin | Redirects away from the administrator page and shows no evidence | Returns `FORBIDDEN`; no dossier payload | None exposed |
-| Authenticated administrator | Renders the internal verification dossier | Returns a sanitized, static verification payload | No public file link; the protected in-app record is the source of truth |
+| Request context             | Page behavior                                                         | Evidence API behavior                            | Report files                                                            |
+| --------------------------- | --------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------- |
+| Unauthenticated             | Public landing experience only; the protected dossier is not rendered | Returns `FORBIDDEN`; no dossier payload          | None exposed                                                            |
+| Authenticated non-admin     | Redirects away from the administrator page and shows no evidence      | Returns `FORBIDDEN`; no dossier payload          | None exposed                                                            |
+| Authenticated administrator | Renders the internal verification dossier                             | Returns a sanitized, static verification payload | No public file link; the protected in-app record is the source of truth |
 
 The client-side role check is a usability layer only. The server-side administrator procedure is the authorization boundary.
 

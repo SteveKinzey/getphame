@@ -30,7 +30,9 @@ export const signupRiskReviewRouter = router({
     .query(({ input }) => getSignupRiskReview(reviewInput.parse(input ?? {}))),
   disposableDomainQueue: adminProcedure
     .input(disposableReviewInput.optional())
-    .query(({ input }) => getDisposableDomainReviewQueue(disposableReviewInput.parse(input ?? {}))),
+    .query(({ input }) =>
+      getDisposableDomainReviewQueue(disposableReviewInput.parse(input ?? {}))
+    ),
   resolveDisposableDomainReview: adminProcedure
     .input(resolveDisposableReviewInput)
     .mutation(async ({ ctx, input }) => {
@@ -42,6 +44,7 @@ export const signupRiskReviewRouter = router({
       });
       return { ok: true };
     }),
-  syncDisposableDomainCatalog: adminProcedure
-    .mutation(() => runDisposableDomainManualSync()),
+  syncDisposableDomainCatalog: adminProcedure.mutation(() =>
+    runDisposableDomainManualSync()
+  ),
 });

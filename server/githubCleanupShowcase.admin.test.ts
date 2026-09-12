@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
 }));
 
-vi.mock("./db", async (importOriginal) => ({
+vi.mock("./db", async importOriginal => ({
   ...(await importOriginal<typeof import("./db")>()),
   getDb: mocks.getDb,
 }));
@@ -46,7 +46,9 @@ describe("admin GitHub cleanup showcase", () => {
 
   it("rejects non-admin accounts", async () => {
     const caller = appRouter.createCaller(context("user"));
-    await expect(caller.githubCleanupShowcase.dashboard()).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      caller.githubCleanupShowcase.dashboard()
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
   it("returns the verified showcase snapshot to administrators", async () => {
@@ -60,8 +62,12 @@ describe("admin GitHub cleanup showcase", () => {
       openPullRequests: 0,
       namedBranches: 2,
     });
-    expect(result.workstreams.map((item) => item.priority)).toEqual([1, 2, 3, 4]);
-    expect(result.divergence).toMatchObject({ commitsAhead: 27, commitsBehindMain: 96, branchOnlyFiles: 20 });
+    expect(result.workstreams.map(item => item.priority)).toEqual([1, 2, 3, 4]);
+    expect(result.divergence).toMatchObject({
+      commitsAhead: 27,
+      commitsBehindMain: 96,
+      branchOnlyFiles: 20,
+    });
     expect(JSON.stringify(result)).not.toContain("/manus-storage/");
     expect(result.script.scenes).toHaveLength(8);
   });

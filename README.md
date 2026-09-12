@@ -1,4 +1,5 @@
-#  Get Phame — Get More Reviews on Autopilot
+# Get Phame — Get More Reviews on Autopilot
+
 [![Quality Gate](https://github.com/SteveKinzey/getphame/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/SteveKinzey/getphame/actions/workflows/quality.yml?query=branch%3Amain)
 
 ** Get Phame** helps local businesses collect more Google, Yelp, and TripAdvisor reviews by sending personalized review-request emails directly from your own email account. Customers receive a message that appears to come from you — not a bulk mailer — which means higher open rates and more genuine reviews.
@@ -7,7 +8,7 @@
 
 ---
 
-## What  Get Phame Does
+## What Get Phame Does
 
 Phame connects to your existing email account (Gmail, Outlook, Yahoo, or any business email) and sends personalized review-request emails to your customers. You control the message, the timing, and the review platform you direct customers to. The app tracks who opened the email and who clicked the review link, and automatically sends up to two follow-up reminders to customers who haven't responded yet.
 
@@ -23,14 +24,14 @@ Go to [getphame.app](https://getphame.app) and tap **Get Started Free**. Sign in
 
 Go to **Settings → Email Connection** and enter your SMTP credentials. Get Phame sends emails from your own address, so customers see your name in the "From" field.
 
-| Provider | What you need |
-|---|---|
-| Gmail | Enable 2-Step Verification, then generate an [App Password](https://myaccount.google.com/apppasswords) |
-| Outlook / Microsoft 365 | Generate an App Password in your Microsoft account security settings |
-| Yahoo | Enable 2-Step Verification, then generate an App Password |
-| Zoho Mail | Enable SMTP access in Zoho Mail settings (Settings → Mail Accounts → SMTP) |
-| iCloud | Generate an App-Specific Password at [appleid.apple.com](https://appleid.apple.com) |
-| Business / cPanel | Use the SMTP host, port, and password from your hosting control panel |
+| Provider                | What you need                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| Gmail                   | Enable 2-Step Verification, then generate an [App Password](https://myaccount.google.com/apppasswords) |
+| Outlook / Microsoft 365 | Generate an App Password in your Microsoft account security settings                                   |
+| Yahoo                   | Enable 2-Step Verification, then generate an App Password                                              |
+| Zoho Mail               | Enable SMTP access in Zoho Mail settings (Settings → Mail Accounts → SMTP)                             |
+| iCloud                  | Generate an App-Specific Password at [appleid.apple.com](https://appleid.apple.com)                    |
+| Business / cPanel       | Use the SMTP host, port, and password from your hosting control panel                                  |
 
 After saving, tap **Send Test Email** to confirm the connection is working.
 
@@ -82,12 +83,12 @@ The **Dashboard** shows your recent send activity, open rates, click rates, and 
 
 ## Plans & Pricing
 
-| Plan | Price | Requests |
-|---|---|---|
-| Free | $0 | 10 review requests (total) | Then 5 per 30 days, thereafter.
-| Pro Monthly | $29 / month | Unlimited |
-| Pro Annual | $290 / year | Unlimited (save $58) |
-| Lifetime | $349 once | Unlimited, forever |
+| Plan        | Price       | Requests                   |
+| ----------- | ----------- | -------------------------- | ------------------------------- |
+| Free        | $0          | 10 review requests (total) | Then 5 per 30 days, thereafter. |
+| Pro Monthly | $29 / month | Unlimited                  |
+| Pro Annual  | $290 / year | Unlimited (save $58)       |
+| Lifetime    | $349 once   | Unlimited, forever         |
 
 Upgrade at any time from **Settings → Upgrade Plan**. Stripe handles all payments securely.
 
@@ -126,7 +127,7 @@ The plugin hooks into WooCommerce order status changes (`Processing` and `Comple
 **Install it in two steps:**
 
 1. Download the plugin from the [Get Phame Connector GitHub repo](https://github.com/SteveKinzey/get-phame-connector) or install it directly from within the Get Phame app during onboarding.
-2. Go to **WP Admin → Settings →  Get Phame**, paste your API key (generated in **Phame → Settings → API Keys**), and click **Test Connection**.
+2. Go to **WP Admin → Settings → Get Phame**, paste your API key (generated in **Phame → Settings → API Keys**), and click **Test Connection**.
 
 The plugin is available as a free download and works on any WordPress site running WooCommerce 7.0+ and PHP 8.0+.
 

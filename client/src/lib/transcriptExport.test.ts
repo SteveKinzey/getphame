@@ -22,7 +22,10 @@ const metadata: TranscriptExportMetadata = {
 };
 
 const cues = [
-  { startTime: 0, text: "Great service does not always become a public review." },
+  {
+    startTime: 0,
+    text: "Great service does not always become a public review.",
+  },
   { startTime: 65.5, text: "A second line with a deterministic timestamp." },
 ];
 
@@ -32,18 +35,22 @@ describe("transcript export", () => {
     expect(formatTranscriptTimestamp(65.5)).toBe("1:05");
     expect(formatTranscriptTimestamp(3661)).toBe("1:01:01");
     expect(buildTranscriptFilename("pt-BR", "text")).toBe(
-      "get-phame-walkthrough-transcript-pt-br.txt",
+      "get-phame-walkthrough-transcript-pt-br.txt"
     );
     expect(buildTranscriptFilename("../../", "pdf")).toBe(
-      "get-phame-walkthrough-transcript-en.pdf",
+      "get-phame-walkthrough-transcript-en.pdf"
     );
 
     const document = buildTranscriptDocument(cues, metadata);
     expect(document).toContain("GET PHAME");
     expect(document).toContain("Language: English");
     expect(document).toContain("Source: https://getphame.app");
-    expect(document).toContain("[0:00] Great service does not always become a public review.");
-    expect(document).toContain("[1:05] A second line with a deterministic timestamp.");
+    expect(document).toContain(
+      "[0:00] Great service does not always become a public review."
+    );
+    expect(document).toContain(
+      "[1:05] A second line with a deterministic timestamp."
+    );
 
     const textBlob = createTranscriptTextBlob(cues, metadata);
     expect(textBlob.type).toBe("text/plain;charset=utf-8");
@@ -53,24 +60,33 @@ describe("transcript export", () => {
   });
 
   it("normalizes unsupported punctuation and generates a valid PDF blob", async () => {
-    expect(normalizePdfText("“Hello”—wait…" )).toBe('"Hello"-wait...');
+    expect(normalizePdfText("“Hello”—wait…")).toBe('"Hello"-wait...');
     const pdfBlob = await createTranscriptPdfBlob(cues, metadata);
-    const prefix = new TextDecoder().decode((await pdfBlob.arrayBuffer()).slice(0, 5));
+    const prefix = new TextDecoder().decode(
+      (await pdfBlob.arrayBuffer()).slice(0, 5)
+    );
     expect(pdfBlob.type).toBe("application/pdf");
     expect(prefix).toBe("%PDF-");
   });
 
   it("selects bounded Unicode font subsets only for Chinese and Thai PDF metadata", () => {
-    expect(detectTranscriptPdfUnicodeFont(["平台導覽轉錄文字", "語言"])).toMatchObject({
+    expect(
+      detectTranscriptPdfUnicodeFont(["平台導覽轉錄文字", "語言"])
+    ).toMatchObject({
       family: "NotoSansTranscriptCjk",
       url: "/api/assets/transcript-font/cjk",
     });
-    expect(detectTranscriptPdfUnicodeFont(["บทถอดเสียงวิดีโอแนะนำแพลตฟอร์ม", "ภาษา"]))
-      .toMatchObject({
-        family: "NotoSansTranscriptThai",
-        url: "/api/assets/transcript-font/thai",
-      });
-    expect(detectTranscriptPdfUnicodeFont(["Platform walkthrough transcript", "Language"]))
-      .toBeNull();
+    expect(
+      detectTranscriptPdfUnicodeFont(["บทถอดเสียงวิดีโอแนะนำแพลตฟอร์ม", "ภาษา"])
+    ).toMatchObject({
+      family: "NotoSansTranscriptThai",
+      url: "/api/assets/transcript-font/thai",
+    });
+    expect(
+      detectTranscriptPdfUnicodeFont([
+        "Platform walkthrough transcript",
+        "Language",
+      ])
+    ).toBeNull();
   });
 });

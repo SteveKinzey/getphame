@@ -29,12 +29,16 @@ const UUID = "123e4567-e89b-12d3-a456-426614174000";
 const TOKEN_SECRET = "a".repeat(43);
 const OAUTH_TOKEN = `oa.${UUID}.${TOKEN_SECRET}`;
 
-function requestWith({ cookie, bearer }: { cookie?: string; bearer?: string } = {}): Request {
+function requestWith({
+  cookie,
+  bearer,
+}: { cookie?: string; bearer?: string } = {}): Request {
   return {
     cookies: cookie ? { [COOKIE_NAME]: cookie } : {},
     ip: "127.0.0.1",
     get(name: string) {
-      if (name.toLowerCase() === "authorization" && bearer) return `Bearer ${bearer}`;
+      if (name.toLowerCase() === "authorization" && bearer)
+        return `Bearer ${bearer}`;
       if (name.toLowerCase() === "user-agent") return "GetPhame-Test/1.0";
       return undefined;
     },
@@ -105,32 +109,45 @@ describe("revocable interactive sessions", () => {
     expect(isSecuritySessionToken(result.token)).toBe(true);
     expect(result.maxAge).toBe(30 * 24 * 60 * 60 * 1000);
     expect(result.maxAge).toBe(SECURITY_SESSION_LIFETIME_MS);
-    expect(values).toHaveBeenCalledWith(expect.objectContaining({
-      userId: user.id,
-      authMethod: "oauth",
-      assurance: "a1",
-      tokenHash: hashSecurityValue(result.token),
-    }));
+    expect(values).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: user.id,
+        authMethod: "oauth",
+        assurance: "a1",
+        tokenHash: hashSecurityValue(result.token),
+      })
+    );
     expect(values.mock.calls[0][0].tokenHash).not.toBe(result.token);
-    expect(cookie).toHaveBeenCalledWith(COOKIE_NAME, result.token, expect.objectContaining({
-      httpOnly: true,
-      maxAge: SECURITY_SESSION_LIFETIME_MS,
-    }));
+    expect(cookie).toHaveBeenCalledWith(
+      COOKIE_NAME,
+      result.token,
+      expect.objectContaining({
+        httpOnly: true,
+        maxAge: SECURITY_SESSION_LIFETIME_MS,
+      })
+    );
   });
 
   it("authenticates the same opaque format from a mobile Bearer header", async () => {
     mocks.getDb.mockResolvedValue({
-      select: vi.fn()
+      select: vi
+        .fn()
         .mockImplementationOnce(() => selectChain([validSession()]))
         .mockImplementationOnce(() => selectChain([user])),
       update: vi.fn(),
     });
 
-    const result = await authenticateSecuritySession(requestWith({ bearer: OAUTH_TOKEN }));
+    const result = await authenticateSecuritySession(
+      requestWith({ bearer: OAUTH_TOKEN })
+    );
 
     expect(result).toEqual({
       user,
-      securitySession: expect.objectContaining({ id: UUID, method: "oauth", assurance: "a1" }),
+      securitySession: expect.objectContaining({
+        id: UUID,
+        method: "oauth",
+        assurance: "a1",
+      }),
     });
   });
 
@@ -139,33 +156,49 @@ describe("revocable interactive sessions", () => {
       select: vi.fn(() => selectChain([])),
     });
 
-    await expect(authenticateSecuritySession(requestWith({ cookie: OAUTH_TOKEN }))).resolves.toBeNull();
+    await expect(
+      authenticateSecuritySession(requestWith({ cookie: OAUTH_TOKEN }))
+    ).resolves.toBeNull();
   });
 
   it("revokes a session that exceeds the seven-day idle window", async () => {
     const update = updateChain();
     mocks.getDb.mockResolvedValue({
-      select: vi.fn(() => selectChain([validSession({
-        lastSeenAt: Date.now() - (8 * 24 * 60 * 60 * 1000),
-      })])),
+      select: vi.fn(() =>
+        selectChain([
+          validSession({
+            lastSeenAt: Date.now() - 8 * 24 * 60 * 60 * 1000,
+          }),
+        ])
+      ),
       update: vi.fn(() => ({ set: update.set })),
     });
 
-    const result = await authenticateSecuritySession(requestWith({ cookie: OAUTH_TOKEN }));
+    const result = await authenticateSecuritySession(
+      requestWith({ cookie: OAUTH_TOKEN })
+    );
 
     expect(result).toBeNull();
-    expect(update.set).toHaveBeenCalledWith(expect.objectContaining({ revocationReason: "idle_timeout" }));
+    expect(update.set).toHaveBeenCalledWith(
+      expect.objectContaining({ revocationReason: "idle_timeout" })
+    );
   });
 
   it("revokes the exact backing session during logout", async () => {
     const update = updateChain();
-    mocks.getDb.mockResolvedValue({ update: vi.fn(() => ({ set: update.set })) });
+    mocks.getDb.mockResolvedValue({
+      update: vi.fn(() => ({ set: update.set })),
+    });
 
-    await expect(revokeSecuritySessionFromRequest(
-      requestWith({ cookie: OAUTH_TOKEN }),
-      "user_logout",
-    )).resolves.toBe(true);
-    expect(update.set).toHaveBeenCalledWith(expect.objectContaining({ revocationReason: "user_logout" }));
+    await expect(
+      revokeSecuritySessionFromRequest(
+        requestWith({ cookie: OAUTH_TOKEN }),
+        "user_logout"
+      )
+    ).resolves.toBe(true);
+    expect(update.set).toHaveBeenCalledWith(
+      expect.objectContaining({ revocationReason: "user_logout" })
+    );
     expect(update.where).toHaveBeenCalledOnce();
   });
 });

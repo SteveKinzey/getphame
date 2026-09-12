@@ -43,6 +43,9 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm check:router-contracts
 
+      - name: Lint database schema and migration parity
+        run: pnpm lint:schema-migrations
+
       - name: Run tests
         run: pnpm test
 

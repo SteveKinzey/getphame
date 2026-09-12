@@ -13,15 +13,8 @@ import { registerAppleAuthRoutes } from "../appleAuth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { stripe } from "../stripe";
-import { getDb, getUserByOpenId } from "../db";
+import { getDb } from "../db";
 import { ENV } from "./env";
-import {
-  businessProfiles,
-  stripeSubscriptions,
-  users,
-} from "../../drizzle/schema";
-import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { reminderHeartbeatHandler } from "../scheduledReminders";
 import { quietHoursHeartbeatHandler } from "../quietHoursHeartbeat";
@@ -35,11 +28,6 @@ import { registerSitemapRoutes } from "../sitemap";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
-import {
-  sendUpgradeReceiptEmail,
-  sendChurnRecoveryEmail,
-  sendPaymentFailedEmail,
-} from "../smtp";
 import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
 import { authHealthHandler } from "../authHealthRoutes";
@@ -56,7 +44,6 @@ import {
 } from "../disposableDomainHeartbeat";
 import { reconcileRelayHealthHeartbeat } from "../relayHealthHeartbeat";
 import { releaseHistoryExportScheduleHandler } from "../releaseHistoryExportScheduleRoutes";
-import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
 import { registerTranscriptFontRoutes } from "../transcriptFontRoutes";
@@ -67,6 +54,22 @@ import {
   registerAgentDiscoveryLinkHeaders,
   registerAgentDiscoveryRoutes,
 } from "../agentDiscovery";
+import { stripeWebhookHandler } from "../stripeLifecycle";
+import { stripeLifecycleHeartbeatHandler } from "../stripeLifecycleProcessor";
+import {
+  STRIPE_LIFECYCLE_CALLBACK_PATH,
+  reconcileStripeLifecycleHeartbeat,
+} from "../stripeLifecycleHeartbeat";
+import { monthlyDiagnosticsScheduleHandler } from "../monthlyDiagnosticsScheduleRoutes";
+import {
+  MONTHLY_DIAGNOSTICS_CALLBACK_PATH,
+  reconcileMonthlyDiagnosticsHeartbeat,
+} from "../monthlyDiagnosticsSchedule";
+import { integrationHealthHandler } from "../integrationHealthRoutes";
+import {
+  INTEGRATION_HEALTH_CALLBACK_PATH,
+  reconcileIntegrationHealthHeartbeat,
+} from "../integrationHealthHeartbeat";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -99,324 +102,7 @@ async function startServer() {
   app.post(
     "/api/stripe/webhook",
     express.raw({ type: "application/json" }),
-    async (req, res) => {
-      const sig = req.headers["stripe-signature"] as string;
-      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
-
-      let event;
-      try {
-        event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-      } catch (err: any) {
-        console.error(
-          "[Stripe Webhook] Signature verification failed:",
-          err.message
-        );
-        return res.status(400).send(`Webhook Error: ${err.message}`);
-      }
-
-      // Test event passthrough — required for Stripe webhook verification
-      if (event.id.startsWith("evt_test_")) {
-        console.log(
-          "[Stripe Webhook] Test event detected, returning verification response"
-        );
-        return res.json({ verified: true });
-      }
-
-      console.log(`[Stripe Webhook] Event: ${event.type} (${event.id})`);
-
-      try {
-        const db = await getDb();
-        if (!db) throw new Error("Database not available");
-
-        if (event.type === "checkout.session.completed") {
-          const session = event.data.object as any;
-          const userId = parseInt(
-            session.metadata?.user_id ?? session.client_reference_id ?? "0",
-            10
-          );
-          const customerId = session.customer as string;
-          const subscriptionId = session.subscription as string | null;
-          const plan = (session.metadata?.plan ?? "monthly") as
-            | "monthly"
-            | "annual"
-            | "lifetime";
-          const mode = session.mode as string; // "subscription" | "payment"
-
-          // Map plan to tier
-          const tierMap: Record<string, "pro" | "annual" | "lifetime"> = {
-            monthly: "pro",
-            annual: "annual",
-            lifetime: "lifetime",
-          };
-          const newTier = tierMap[plan] ?? "pro";
-
-          // Lifetime = no expiry; monthly/annual expire based on billing cycle
-          const planExpiresAt = newTier === "lifetime" ? null : undefined;
-
-          if (userId && customerId) {
-            // Save Stripe customer ID and upgrade tier
-            await db
-              .update(businessProfiles)
-              .set({
-                stripeCustomerId: customerId,
-                tier: newTier,
-                ...(planExpiresAt !== undefined ? { planExpiresAt } : {}),
-              })
-              .where(eq(businessProfiles.userId, userId));
-
-            // Upsert subscription record for recurring plans
-            if (subscriptionId && mode === "subscription") {
-              await db
-                .insert(stripeSubscriptions)
-                .values({
-                  userId,
-                  stripeSubscriptionId: subscriptionId,
-                  status: "active",
-                })
-                .onDuplicateKeyUpdate({
-                  set: {
-                    stripeSubscriptionId: subscriptionId,
-                    status: "active",
-                  },
-                });
-            }
-
-            // For Lifetime (one-time payment), store a sentinel subscription record
-            // so the subscription.deleted webhook doesn't accidentally downgrade them
-            if (mode === "payment" && newTier === "lifetime") {
-              const paymentIntentId = session.payment_intent as string | null;
-              if (paymentIntentId) {
-                await db
-                  .insert(stripeSubscriptions)
-                  .values({
-                    userId,
-                    stripeSubscriptionId: `lifetime_${paymentIntentId}`,
-                    status: "lifetime",
-                  })
-                  .onDuplicateKeyUpdate({ set: { status: "lifetime" } });
-              }
-            }
-
-            console.log(
-              `[Stripe Webhook] User ${userId} upgraded to ${newTier} (plan: ${plan}, mode: ${mode})`
-            );
-
-            // Check for referral reward — if this user was referred, reward the referrer with 1 free month
-            // Only reward for monthly/annual/lifetime plans (not free), and only once per referred user
-            if ((newTier as string) !== "free") {
-              try {
-                const referral = await getUnrewardedReferral(userId);
-                if (referral) {
-                  await rewardReferrer(referral.id, referral.referrerUserId);
-                  console.log(
-                    `[Referral] Rewarded user ${referral.referrerUserId} +30 days for referring user ${userId}`
-                  );
-                }
-              } catch (refErr) {
-                console.warn("[Referral] Reward failed (non-fatal):", refErr);
-              }
-            }
-
-            // Send upgrade receipt email (fire-and-forget)
-            const customerEmail = session.metadata?.customer_email as
-              | string
-              | undefined;
-            const customerName = session.metadata?.customer_name as
-              | string
-              | undefined;
-            if (customerEmail) {
-              const ownerUser = await getUserByOpenId(ENV.ownerOpenId);
-              if (ownerUser) {
-                sendUpgradeReceiptEmail({
-                  ownerUserId: ownerUser.id,
-                  toEmail: customerEmail,
-                  toName: customerName ?? null,
-                  tier: newTier,
-                }).catch((err: unknown) => {
-                  console.warn(
-                    "[Stripe Webhook] Upgrade receipt email failed (non-fatal):",
-                    err
-                  );
-                });
-              }
-            }
-          }
-        }
-
-        if (
-          event.type === "customer.subscription.deleted" ||
-          event.type === "customer.subscription.updated"
-        ) {
-          const sub = event.data.object as any;
-          const subscriptionId = sub.id as string;
-          const status = sub.status as string;
-
-          // Find the user by subscription ID
-          const rows = await db
-            .select()
-            .from(stripeSubscriptions)
-            .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId))
-            .limit(1);
-
-          if (rows.length > 0) {
-            const userId = rows[0].userId;
-            const existingStatus = rows[0].status;
-
-            // Never downgrade a Lifetime user — their sentinel record has status="lifetime"
-            if (existingStatus === "lifetime") {
-              console.log(
-                `[Stripe Webhook] Skipping downgrade for Lifetime user ${userId}`
-              );
-            } else {
-              await db
-                .update(stripeSubscriptions)
-                .set({ status })
-                .where(
-                  eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId)
-                );
-
-              // Downgrade to free if subscription is canceled or unpaid
-              if (
-                ["canceled", "unpaid", "incomplete_expired"].includes(status)
-              ) {
-                // Double-check current tier — don't downgrade a Lifetime user
-                const [profile] = await db
-                  .select({ tier: businessProfiles.tier })
-                  .from(businessProfiles)
-                  .where(eq(businessProfiles.userId, userId))
-                  .limit(1);
-
-                if (profile && profile.tier !== "lifetime") {
-                  await db
-                    .update(businessProfiles)
-                    .set({ tier: "free" })
-                    .where(eq(businessProfiles.userId, userId));
-                  console.log(
-                    `[Stripe Webhook] User ${userId} downgraded to Free (status: ${status})`
-                  );
-                  // Fire churn recovery email on cancellation (fire-and-forget)
-                  if (status === "canceled") {
-                    const ownerUser = await getUserByOpenId(ENV.ownerOpenId);
-                    if (ownerUser) {
-                      const [churningUser] = await db
-                        .select({ email: users.email, name: users.name })
-                        .from(users)
-                        .where(eq(users.id, userId))
-                        .limit(1);
-                      if (churningUser?.email) {
-                        sendChurnRecoveryEmail({
-                          ownerUserId: ownerUser.id,
-                          toEmail: churningUser.email,
-                          toName: churningUser.name ?? null,
-                        }).catch((err: unknown) => {
-                          console.warn(
-                            "[Stripe Webhook] Churn recovery email failed (non-fatal):",
-                            err
-                          );
-                        });
-                      }
-                    }
-                  }
-                } else {
-                  console.log(
-                    `[Stripe Webhook] Skipping downgrade — user ${userId} is on Lifetime tier`
-                  );
-                }
-              }
-            }
-          }
-        }
-        // Handle subscription renewal — keep user active and extend planExpiresAt
-        if (event.type === "invoice.payment_succeeded") {
-          const invoice = event.data.object as any;
-          const subscriptionId = invoice.subscription as string | null;
-          const billingReason = invoice.billing_reason as string | null;
-          // Only process renewal invoices (not the initial checkout.session.completed)
-          if (subscriptionId && billingReason === "subscription_cycle") {
-            const rows = await db
-              .select()
-              .from(stripeSubscriptions)
-              .where(
-                eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId)
-              )
-              .limit(1);
-            if (rows.length > 0) {
-              const userId = rows[0].userId;
-              const existingStatus = rows[0].status;
-              if (existingStatus !== "lifetime") {
-                // Determine renewal period from invoice lines
-                const periodEnd = invoice.lines?.data?.[0]?.period?.end as
-                  | number
-                  | undefined;
-                const planExpiresAt = periodEnd ? periodEnd * 1000 : null;
-                await db
-                  .update(businessProfiles)
-                  .set({ planExpiresAt })
-                  .where(eq(businessProfiles.userId, userId));
-                await db
-                  .update(stripeSubscriptions)
-                  .set({ status: "active" })
-                  .where(
-                    eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId)
-                  );
-                console.log(
-                  `[Stripe Webhook] Subscription renewed for user ${userId} — planExpiresAt: ${planExpiresAt}`
-                );
-              }
-            }
-          }
-        }
-        // Handle failed payment — send recovery email nudging user to update card
-        if (event.type === "invoice.payment_failed") {
-          const invoice = event.data.object as any;
-          const subscriptionId = invoice.subscription as string | null;
-          const attemptCount = (invoice.attempt_count as number) ?? 1;
-          if (subscriptionId) {
-            const rows = await db
-              .select()
-              .from(stripeSubscriptions)
-              .where(
-                eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId)
-              )
-              .limit(1);
-            if (rows.length > 0) {
-              const userId = rows[0].userId;
-              const existingStatus = rows[0].status;
-              if (existingStatus !== "lifetime") {
-                const ownerUser = await getUserByOpenId(ENV.ownerOpenId);
-                if (ownerUser) {
-                  const [failedUser] = await db
-                    .select({ email: users.email, name: users.name })
-                    .from(users)
-                    .where(eq(users.id, userId))
-                    .limit(1);
-                  if (failedUser?.email) {
-                    sendPaymentFailedEmail({
-                      ownerUserId: ownerUser.id,
-                      toEmail: failedUser.email,
-                      toName: failedUser.name ?? null,
-                      attemptCount,
-                    }).catch((err: unknown) => {
-                      console.warn(
-                        "[Stripe Webhook] Payment failed email error (non-fatal):",
-                        err
-                      );
-                    });
-                    console.log(
-                      `[Stripe Webhook] Payment failed for user ${userId} (attempt ${attemptCount})`
-                    );
-                  }
-                }
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.error("[Stripe Webhook] Processing error:", err);
-      }
-
-      res.json({ received: true });
-    }
+    stripeWebhookHandler
   );
 
   // Redirect only the known www hostname. Never derive the redirect target or
@@ -541,13 +227,25 @@ async function startServer() {
   registerKoalendarRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
-  app.post("/api/scheduled/relay-heartbeat", (await import("../relayHealthRoutes")).relayHeartbeatHandler);
+  app.post(
+    "/api/scheduled/relay-heartbeat",
+    (await import("../relayHealthRoutes")).relayHeartbeatHandler
+  );
   app.post(SOURCE_HEALTH_CALLBACK_PATH, sourceHealthHandler);
   app.post(DISPOSABLE_DOMAIN_CALLBACK_PATH, disposableDomainHandler);
-  app.post("/api/scheduled/release-history-export", releaseHistoryExportScheduleHandler);
+  app.post(
+    "/api/scheduled/release-history-export",
+    releaseHistoryExportScheduleHandler
+  );
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
   app.post("/api/scheduled/process-quiet-hours", quietHoursHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
+  app.post(STRIPE_LIFECYCLE_CALLBACK_PATH, stripeLifecycleHeartbeatHandler);
+  app.post(
+    MONTHLY_DIAGNOSTICS_CALLBACK_PATH,
+    monthlyDiagnosticsScheduleHandler
+  );
+  app.post(INTEGRATION_HEALTH_CALLBACK_PATH, integrationHealthHandler);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
   // Note: Mainland China (CN) is excluded from zh-TW detection since YouTube is blocked there.
@@ -569,7 +267,8 @@ async function startServer() {
         return res.json({ lang: "en" });
       }
       const response = await fetch(
-        `http://ip-api.com/json/${ip}?fields=countryCode`
+        `http://ip-api.com/json/${ip}?fields=countryCode`,
+        { signal: AbortSignal.timeout(3_000) }
       );
       const data = (await response.json()) as { countryCode?: string };
       const country = data.countryCode ?? "";
@@ -714,36 +413,70 @@ async function startServer() {
   }
 
   const preferredPort = parseInt(process.env.PORT || "3000");
-  const port = await findAvailablePort(preferredPort);
+  const port =
+    process.env.NODE_ENV === "production"
+      ? preferredPort
+      : await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, () => {
+  server.listen(port, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${port}/`);
     if (ENV.isProduction) {
-      void reconcileSourceHealthHeartbeat()
-        .then(result =>
-          console.log(`[SourceHealth] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[SourceHealth] Heartbeat reconciliation failed.")
-        );
-      void reconcileDisposableDomainHeartbeat()
-        .then(result =>
-          console.log(`[DisposableDomains] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[DisposableDomains] Heartbeat reconciliation failed.")
-        );
-      void reconcileRelayHealthHeartbeat()
-        .then(result =>
-          console.log(`[RelayHealth] Heartbeat ${result.status}.`)
-        )
-        .catch(() =>
-          console.error("[RelayHealth] Heartbeat reconciliation failed.")
-        );
+      // Defer heartbeat reconciliations by 30 seconds so cold-start readiness
+      // probe passes immediately without competing for database or network I/O
+      setTimeout(() => {
+        void reconcileSourceHealthHeartbeat()
+          .then(result =>
+            console.log(`[SourceHealth] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error("[SourceHealth] Heartbeat reconciliation failed.")
+          );
+        void reconcileDisposableDomainHeartbeat()
+          .then(result =>
+            console.log(`[DisposableDomains] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error(
+              "[DisposableDomains] Heartbeat reconciliation failed."
+            )
+          );
+        void reconcileRelayHealthHeartbeat()
+          .then(result =>
+            console.log(`[RelayHealth] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error("[RelayHealth] Heartbeat reconciliation failed.")
+          );
+        void reconcileStripeLifecycleHeartbeat()
+          .then(result =>
+            console.log(`[StripeLifecycle] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error("[StripeLifecycle] Heartbeat reconciliation failed.")
+          );
+        void reconcileMonthlyDiagnosticsHeartbeat()
+          .then(result =>
+            console.log(`[MonthlyDiagnostics] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error(
+              "[MonthlyDiagnostics] Heartbeat reconciliation failed."
+            )
+          );
+        void reconcileIntegrationHealthHeartbeat()
+          .then(result =>
+            console.log(`[IntegrationHealth] Heartbeat ${result.status}.`)
+          )
+          .catch(() =>
+            console.error(
+              "[IntegrationHealth] Heartbeat reconciliation failed."
+            )
+          );
+      }, 30_000);
     }
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();

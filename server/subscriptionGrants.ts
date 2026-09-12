@@ -3,7 +3,11 @@ import { businessProfiles, users } from "../drizzle/schema";
 import { calculateComplimentaryExpiry } from "./complimentaryAccess";
 import { getDb } from "./db";
 
-export const ADMIN_SUBSCRIPTION_PLANS = ["monthly", "annual", "lifetime"] as const;
+export const ADMIN_SUBSCRIPTION_PLANS = [
+  "monthly",
+  "annual",
+  "lifetime",
+] as const;
 export type AdminSubscriptionPlan = (typeof ADMIN_SUBSCRIPTION_PLANS)[number];
 
 export type SubscriptionGrant = {
@@ -13,7 +17,7 @@ export type SubscriptionGrant = {
 
 export function resolveSubscriptionGrant(
   plan: AdminSubscriptionPlan,
-  startsAt = Date.now(),
+  startsAt = Date.now()
 ): SubscriptionGrant {
   if (plan === "lifetime") {
     return { tier: "lifetime", planExpiresAt: null };
@@ -24,7 +28,7 @@ export function resolveSubscriptionGrant(
     planExpiresAt: calculateComplimentaryExpiry(
       startsAt,
       1,
-      plan === "annual" ? "year" : "month",
+      plan === "annual" ? "year" : "month"
     ),
   };
 }
@@ -32,13 +36,17 @@ export function resolveSubscriptionGrant(
 export async function grantSubscriptionByEmail(
   rawEmail: string,
   plan: AdminSubscriptionPlan,
-  now = Date.now(),
+  now = Date.now()
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database is unavailable.");
 
   const email = rawEmail.trim().toLowerCase();
-  const [account] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  const [account] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
   if (!account) return null;
 
   const [profile] = await db
@@ -51,9 +59,10 @@ export async function grantSubscriptionByEmail(
     throw new Error("This account already has lifetime access.");
   }
 
-  const startsAt = profile?.planExpiresAt != null && profile.planExpiresAt > now
-    ? profile.planExpiresAt
-    : now;
+  const startsAt =
+    profile?.planExpiresAt != null && profile.planExpiresAt > now
+      ? profile.planExpiresAt
+      : now;
   const grant = resolveSubscriptionGrant(plan, startsAt);
 
   if (profile) {
@@ -86,7 +95,11 @@ export async function revokeSubscriptionByEmail(rawEmail: string) {
   if (!db) throw new Error("Database is unavailable.");
 
   const email = rawEmail.trim().toLowerCase();
-  const [account] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  const [account] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
   if (!account) return null;
 
   const [profile] = await db

@@ -27,11 +27,11 @@ The desired local root is:
 
 The desktop folder binding did not expose this path to the managed Linux workspace, so the cleanup was completed locally with guarded commands and user-confirmed output. A dry-run-first normalizer remains included as `normalize-getphame-path.sh` for repeatable use. It handles three cases safely:
 
-| Detected state | Result |
-|---|---|
-| `/Users/skinzey/code/getphame` is already the Git root | No change. |
+| Detected state                                          | Result                                                                                                       |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `/Users/skinzey/code/getphame` is already the Git root  | No change.                                                                                                   |
 | The Git root is `/Users/skinzey/code/getphame/getphame` | The outer folder is renamed to a timestamped backup, and the inner Git root is promoted to the desired path. |
-| The structure is ambiguous | The script stops without changing anything. |
+| The structure is ambiguous                              | The script stops without changing anything.                                                                  |
 
 The script never deletes the old wrapper. Any outer-folder files remain in a timestamped sibling backup for manual review.
 

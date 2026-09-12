@@ -67,7 +67,12 @@ type Template = {
   createdAt: Date;
 };
 
-type FormData = { name: string; subject: string; body: string; isDefault: boolean };
+type FormData = {
+  name: string;
+  subject: string;
+  body: string;
+  isDefault: boolean;
+};
 
 // ── Shortcode definitions ─────────────────────────────────────────────────────
 
@@ -129,17 +134,25 @@ export default function EmailTemplates() {
 
   const utils = trpc.useUtils();
 
-  const { data: templates = [], isLoading } = trpc.templates.list.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { data: templates = [], isLoading } = trpc.templates.list.useQuery(
+    undefined,
+    {
+      enabled: isAuthenticated,
+    }
+  );
 
-  const { data: templateTrackingStats = [] } = trpc.tracking.templateStats.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
+  const { data: templateTrackingStats = [] } =
+    trpc.tracking.templateStats.useQuery(undefined, {
+      enabled: isAuthenticated,
+    });
   const templateStatsMap = new Map(
-    (templateTrackingStats as Array<{ templateId: number; opens: number; clicks: number }>).map(
-      (s) => [s.templateId, { opens: s.opens, clicks: s.clicks }]
-    )
+    (
+      templateTrackingStats as Array<{
+        templateId: number;
+        opens: number;
+        clicks: number;
+      }>
+    ).map(s => [s.templateId, { opens: s.opens, clicks: s.clicks }])
   );
 
   const topTemplateId: number | null = (() => {
@@ -152,9 +165,17 @@ export default function EmailTemplates() {
     return best ? best.id : null;
   })();
 
-  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
-  const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(undefined, { enabled: isAuthenticated });
-  const defaultPlatform = (platforms as Array<{ isDefault: number; platform: string; url: string }>).find((p) => p.isDefault) ??
+  const { data: profile } = trpc.profile.get.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+  const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(
+    undefined,
+    { enabled: isAuthenticated }
+  );
+  const defaultPlatform =
+    (
+      platforms as Array<{ isDefault: number; platform: string; url: string }>
+    ).find(p => p.isDefault) ??
     (platforms as Array<{ platform: string; url: string }>)[0];
 
   const createMutation = trpc.templates.create.useMutation({
@@ -165,7 +186,7 @@ export default function EmailTemplates() {
       setForm(emptyForm);
       toast.success("Template saved!");
     },
-    onError: (e) => toast.error(e.message),
+    onError: e => toast.error(e.message),
   });
 
   const updateMutation = trpc.templates.update.useMutation({
@@ -177,7 +198,7 @@ export default function EmailTemplates() {
       setForm(emptyForm);
       toast.success("Template updated!");
     },
-    onError: (e) => toast.error(e.message),
+    onError: e => toast.error(e.message),
   });
 
   const deleteMutation = trpc.templates.delete.useMutation({
@@ -187,15 +208,16 @@ export default function EmailTemplates() {
       setDeleteTarget(null);
       toast.success("Template deleted.");
     },
-    onError: (e) => toast.error(e.message),
+    onError: e => toast.error(e.message),
   });
 
-  const hasUnsavedTemplateChanges = dialogOpen && (
-    form.name !== (editTemplate?.name ?? emptyForm.name)
-    || form.subject !== (editTemplate?.subject ?? emptyForm.subject)
-    || form.body !== (editTemplate?.body ?? emptyForm.body)
-    || form.isDefault !== Boolean(editTemplate?.isDefault ?? emptyForm.isDefault)
-  );
+  const hasUnsavedTemplateChanges =
+    dialogOpen &&
+    (form.name !== (editTemplate?.name ?? emptyForm.name) ||
+      form.subject !== (editTemplate?.subject ?? emptyForm.subject) ||
+      form.body !== (editTemplate?.body ?? emptyForm.body) ||
+      form.isDefault !==
+        Boolean(editTemplate?.isDefault ?? emptyForm.isDefault));
   useUpdateDirtySource("email-templates-editor", hasUnsavedTemplateChanges);
 
   if (authLoading) return null;
@@ -243,13 +265,13 @@ export default function EmailTemplates() {
   function insertShortcode(code: string) {
     const el = bodyRef.current;
     if (!el) {
-      setForm((f) => ({ ...f, body: f.body + code }));
+      setForm(f => ({ ...f, body: f.body + code }));
       return;
     }
     const start = el.selectionStart ?? el.value.length;
     const end = el.selectionEnd ?? el.value.length;
     const newBody = el.value.slice(0, start) + code + el.value.slice(end);
-    setForm((f) => ({ ...f, body: newBody }));
+    setForm(f => ({ ...f, body: newBody }));
     // Restore cursor after the inserted code
     requestAnimationFrame(() => {
       el.focus();
@@ -265,12 +287,16 @@ export default function EmailTemplates() {
   const samplePhame = getReviewPlatformValue(
     defaultPlatform,
     sampleBusiness,
-    "https://g.page/r/your-review-link",
+    "https://g.page/r/your-review-link"
   );
   const samplePlatformLinks = buildSafePlatformLinks(
-    platforms as Array<{ label?: string | null; platform: string; url: string }>,
+    platforms as Array<{
+      label?: string | null;
+      platform: string;
+      url: string;
+    }>,
     sampleBusiness,
-    samplePhame,
+    samplePhame
   ).replace(/^- /gm, "• ");
 
   function applyPreview(text: string) {
@@ -284,7 +310,7 @@ export default function EmailTemplates() {
   const previewSubject = applyPreview(form.subject);
   const previewBody = applyPreview(form.body);
 
-  const typedTemplates = (templates as unknown as Template[]).map((t) => ({
+  const typedTemplates = (templates as unknown as Template[]).map(t => ({
     ...t,
     isDefault: Boolean(t.isDefault),
   }));
@@ -304,11 +330,15 @@ export default function EmailTemplates() {
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            <h1
+              className="text-2xl font-black text-white"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
               Email Templates
             </h1>
             <p className="text-base font-bold mt-1 text-white">
-              {typedTemplates.length} template{typedTemplates.length !== 1 ? "s" : ""} saved
+              {typedTemplates.length} template
+              {typedTemplates.length !== 1 ? "s" : ""} saved
             </p>
           </div>
           <Button
@@ -322,21 +352,26 @@ export default function EmailTemplates() {
       </div>
 
       <div className="px-4 pt-4 space-y-3">
-
         {/* ── Shortcode Reference Card ── */}
         <div
           className="rounded-2xl p-4 border"
-          style={{ background: "oklch(0.97 0.02 260)", borderColor: "oklch(0.88 0.04 260)" }}
+          style={{
+            background: "oklch(0.97 0.02 260)",
+            borderColor: "oklch(0.88 0.04 260)",
+          }}
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Info size={15} style={{ color: "oklch(0.40 0.08 260)" }} />
-              <p className="text-sm font-bold" style={{ color: "oklch(0.20 0.06 260)" }}>
+              <p
+                className="text-sm font-bold"
+                style={{ color: "oklch(0.20 0.06 260)" }}
+              >
                 Available Shortcodes
               </p>
             </div>
             <button
-              onClick={() => setShortcodeGuideOpen((v) => !v)}
+              onClick={() => setShortcodeGuideOpen(v => !v)}
               className="text-xs font-semibold"
               style={{ color: "oklch(0.30 0.08 260)", fontWeight: "bold" }}
             >
@@ -345,7 +380,7 @@ export default function EmailTemplates() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {SHORTCODES.map((sc) => (
+            {SHORTCODES.map(sc => (
               <span
                 key={sc.code}
                 className="text-xs font-mono font-bold px-2.5 py-1 rounded-full"
@@ -358,11 +393,14 @@ export default function EmailTemplates() {
 
           {shortcodeGuideOpen && (
             <div className="mt-3 space-y-2">
-              {SHORTCODES.map((sc) => (
+              {SHORTCODES.map(sc => (
                 <div
                   key={sc.code}
                   className="flex items-start gap-3 rounded-xl p-3"
-                  style={{ background: "white", border: `1px solid ${sc.color}` }}
+                  style={{
+                    background: "white",
+                    border: `1px solid ${sc.color}`,
+                  }}
                 >
                   <span
                     className="text-xs font-mono font-bold px-2 py-0.5 rounded-full shrink-0 mt-0.5"
@@ -371,9 +409,15 @@ export default function EmailTemplates() {
                     {sc.code}
                   </span>
                   <div>
-                    <p className="text-xs font-bold text-gray-800">{sc.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{sc.description}</p>
-                    <p className="text-xs mt-1 font-mono text-gray-400">e.g. {sc.example}</p>
+                    <p className="text-xs font-bold text-gray-800">
+                      {sc.label}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {sc.description}
+                    </p>
+                    <p className="text-xs mt-1 font-mono text-gray-400">
+                      e.g. {sc.example}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -383,14 +427,18 @@ export default function EmailTemplates() {
 
         {/* ── Template List ── */}
         {isLoading ? (
-          <div className="text-center py-12 text-gray-400">Loading templates…</div>
+          <div className="text-center py-12 text-gray-400">
+            Loading templates…
+          </div>
         ) : typedTemplates.length === 0 ? (
           <div className="text-center py-16">
             <FileText size={40} className="mx-auto mb-3 text-gray-300" />
-            <p className="text-gray-500 font-medium">No templates yet — create your first one above.</p>
+            <p className="text-gray-500 font-medium">
+              No templates yet — create your first one above.
+            </p>
           </div>
         ) : (
-          typedTemplates.map((tpl) => {
+          typedTemplates.map(tpl => {
             const stats = templateStatsMap.get(tpl.id);
             return (
               <div
@@ -406,7 +454,10 @@ export default function EmailTemplates() {
                       {tpl.isDefault && (
                         <span
                           className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: "oklch(0.96 0.12 80)", color: "oklch(0.45 0.18 80)" }}
+                          style={{
+                            background: "oklch(0.96 0.12 80)",
+                            color: "oklch(0.45 0.18 80)",
+                          }}
                         >
                           <Star size={10} fill="currentColor" /> Default
                         </span>
@@ -415,7 +466,10 @@ export default function EmailTemplates() {
                       {topTemplateId === tpl.id && (
                         <span
                           className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: "oklch(0.92 0.15 145)", color: "oklch(0.30 0.10 145)" }}
+                          style={{
+                            background: "oklch(0.92 0.15 145)",
+                            color: "oklch(0.30 0.10 145)",
+                          }}
                         >
                           🏆 Best performer
                         </span>
@@ -424,14 +478,20 @@ export default function EmailTemplates() {
                       {(tpl.usageCount ?? 0) > 0 ? (
                         <span
                           className="text-xs px-2 py-0.5 rounded-full font-medium"
-                          style={{ background: "oklch(0.95 0.02 260)", color: "oklch(0.45 0.05 260)" }}
+                          style={{
+                            background: "oklch(0.95 0.02 260)",
+                            color: "oklch(0.45 0.05 260)",
+                          }}
                         >
                           Used {tpl.usageCount}×
                         </span>
                       ) : (
                         <span
                           className="text-xs px-2 py-0.5 rounded-full font-medium"
-                          style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.60 0.03 260)" }}
+                          style={{
+                            background: "oklch(0.96 0.01 260)",
+                            color: "oklch(0.60 0.03 260)",
+                          }}
                         >
                           Not used yet
                         </span>
@@ -440,7 +500,10 @@ export default function EmailTemplates() {
                       {stats && stats.opens > 0 && (
                         <span
                           className="flex items-center gap-0.5 text-xs px-2 py-0.5 rounded-full font-medium"
-                          style={{ background: "oklch(0.93 0.04 260)", color: "oklch(0.40 0.08 260)" }}
+                          style={{
+                            background: "oklch(0.93 0.04 260)",
+                            color: "oklch(0.40 0.08 260)",
+                          }}
                         >
                           <Eye size={10} /> {stats.opens} opens
                         </span>
@@ -448,7 +511,10 @@ export default function EmailTemplates() {
                       {stats && stats.clicks > 0 && (
                         <span
                           className="flex items-center gap-0.5 text-xs px-2 py-0.5 rounded-full font-medium"
-                          style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
+                          style={{
+                            background: "oklch(0.92 0.08 80)",
+                            color: "oklch(0.40 0.12 80)",
+                          }}
                         >
                           <MousePointerClick size={10} /> {stats.clicks} clicks
                         </span>
@@ -456,7 +522,9 @@ export default function EmailTemplates() {
                     </div>
 
                     {/* Subject line */}
-                    <p className="text-sm text-gray-600 truncate">{tpl.subject}</p>
+                    <p className="text-sm text-gray-600 truncate">
+                      {tpl.subject}
+                    </p>
 
                     {/* Body preview */}
                     <p className="text-xs text-gray-400 mt-1 line-clamp-2 whitespace-pre-line">
@@ -465,17 +533,23 @@ export default function EmailTemplates() {
 
                     {/* Shortcode chips used in this template */}
                     <div className="flex flex-wrap gap-1 mt-2">
-                      {SHORTCODES.filter((sc) => tpl.body.includes(sc.code) || tpl.subject.includes(sc.code)).map(
-                        (sc) => (
-                          <span
-                            key={sc.code}
-                            className="text-xs font-mono px-1.5 py-0.5 rounded"
-                            style={{ background: sc.color, color: sc.textColor, fontSize: "10px" }}
-                          >
-                            {sc.code}
-                          </span>
-                        )
-                      )}
+                      {SHORTCODES.filter(
+                        sc =>
+                          tpl.body.includes(sc.code) ||
+                          tpl.subject.includes(sc.code)
+                      ).map(sc => (
+                        <span
+                          key={sc.code}
+                          className="text-xs font-mono px-1.5 py-0.5 rounded"
+                          style={{
+                            background: sc.color,
+                            color: sc.textColor,
+                            fontSize: "10px",
+                          }}
+                        >
+                          {sc.code}
+                        </span>
+                      ))}
                     </div>
                   </div>
 
@@ -508,7 +582,7 @@ export default function EmailTemplates() {
       {/* ── Create / Edit Dialog ── */}
       <Dialog
         open={dialogOpen}
-        onOpenChange={(o) => {
+        onOpenChange={o => {
           if (!o) {
             setDialogOpen(false);
             setEditTemplate(null);
@@ -524,11 +598,15 @@ export default function EmailTemplates() {
               </DialogTitle>
               <button
                 type="button"
-                onClick={() => setShowLivePreview((v) => !v)}
+                onClick={() => setShowLivePreview(v => !v)}
                 className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-bold transition-colors"
                 style={{
-                  background: showLivePreview ? "oklch(0.22 0.09 260)" : "oklch(0.96 0.01 260)",
-                  color: showLivePreview ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
+                  background: showLivePreview
+                    ? "oklch(0.22 0.09 260)"
+                    : "oklch(0.96 0.01 260)",
+                  color: showLivePreview
+                    ? "oklch(0.80 0.18 80)"
+                    : "oklch(0.45 0.05 260)",
                 }}
               >
                 {showLivePreview ? <EyeOff size={13} /> : <Eye size={13} />}
@@ -537,15 +615,19 @@ export default function EmailTemplates() {
             </div>
           </DialogHeader>
 
-          <div className={`grid gap-5 ${showLivePreview ? "md:grid-cols-2" : "grid-cols-1"}`}>
+          <div
+            className={`grid gap-5 ${showLivePreview ? "md:grid-cols-2" : "grid-cols-1"}`}
+          >
             {/* ── Left: Editor ── */}
             <div className="space-y-4">
               {/* Template Name */}
               <div>
-                <Label className="font-bold text-gray-700">Template Name *</Label>
+                <Label className="font-bold text-gray-700">
+                  Template Name *
+                </Label>
                 <Input
                   value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
                   placeholder='e.g. "Quick Favor" or "Post-Purchase Follow-up"'
                   className="mt-1"
                 />
@@ -553,10 +635,12 @@ export default function EmailTemplates() {
 
               {/* Subject */}
               <div>
-                <Label className="font-bold text-gray-700">Subject Line *</Label>
+                <Label className="font-bold text-gray-700">
+                  Subject Line *
+                </Label>
                 <Input
                   value={form.subject}
-                  onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                  onChange={e => setForm({ ...form, subject: e.target.value })}
                   placeholder="e.g. Quick favor, {{businessName}}?"
                   className="mt-1"
                 />
@@ -565,13 +649,17 @@ export default function EmailTemplates() {
               {/* Body */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <Label className="font-bold text-gray-700">Email Body *</Label>
-                  <span className="text-xs text-gray-400">Click a shortcode to insert it at your cursor</span>
+                  <Label className="font-bold text-gray-700">
+                    Email Body *
+                  </Label>
+                  <span className="text-xs text-gray-400">
+                    Click a shortcode to insert it at your cursor
+                  </span>
                 </div>
 
                 {/* Shortcode insertion buttons */}
                 <div className="flex flex-wrap gap-1.5 mb-2">
-                  {SHORTCODES.map((sc) => (
+                  {SHORTCODES.map(sc => (
                     <button
                       key={sc.code}
                       type="button"
@@ -588,7 +676,7 @@ export default function EmailTemplates() {
                 <Textarea
                   ref={bodyRef}
                   value={form.body}
-                  onChange={(e) => setForm({ ...form, body: e.target.value })}
+                  onChange={e => setForm({ ...form, body: e.target.value })}
                   rows={showLivePreview ? 12 : 16}
                   className="font-mono text-sm"
                   placeholder="Write your email body here. Use the shortcode buttons above to insert dynamic values."
@@ -597,12 +685,16 @@ export default function EmailTemplates() {
                 {/* CAN-SPAM reminder */}
                 <div
                   className="mt-2 rounded-lg px-3 py-2 text-xs flex items-start gap-2"
-                  style={{ background: "oklch(0.96 0.04 30)", color: "oklch(0.40 0.10 30)" }}
+                  style={{
+                    background: "oklch(0.96 0.04 30)",
+                    color: "oklch(0.40 0.10 30)",
+                  }}
                 >
                   <CheckCircle2 size={13} className="shrink-0 mt-0.5" />
                   <span>
-                    <strong>CAN-SPAM tip:</strong> Include an unsubscribe line, e.g.{" "}
-                    <em>reply with "unsubscribe"</em>. This is already included in the starter templates.
+                    <strong>CAN-SPAM tip:</strong> Include an unsubscribe line,
+                    e.g. <em>reply with "unsubscribe"</em>. This is already
+                    included in the starter templates.
                   </span>
                 </div>
               </div>
@@ -613,7 +705,9 @@ export default function EmailTemplates() {
                   type="checkbox"
                   id="isDefault"
                   checked={form.isDefault}
-                  onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
+                  onChange={e =>
+                    setForm({ ...form, isDefault: e.target.checked })
+                  }
                   className="w-4 h-4 accent-yellow-500"
                 />
                 <Label htmlFor="isDefault" className="cursor-pointer text-sm">
@@ -626,22 +720,33 @@ export default function EmailTemplates() {
             {showLivePreview && (
               <div className="flex flex-col gap-3">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: "oklch(0.45 0.05 260)" }}>
+                  <p
+                    className="text-xs font-bold uppercase tracking-wide mb-1"
+                    style={{ color: "oklch(0.45 0.05 260)" }}
+                  >
                     Live Preview
                   </p>
                   <p className="text-xs text-gray-400">
-                    Showing with sample data: <strong>{sampleCustomer}</strong> · <strong>{sampleBusiness}</strong>
+                    Showing with sample data: <strong>{sampleCustomer}</strong>{" "}
+                    · <strong>{sampleBusiness}</strong>
                   </p>
                 </div>
 
                 {/* Subject preview */}
                 <div
                   className="rounded-xl p-3 border"
-                  style={{ background: "oklch(0.98 0.01 260)", borderColor: "oklch(0.90 0.02 260)" }}
+                  style={{
+                    background: "oklch(0.98 0.01 260)",
+                    borderColor: "oklch(0.90 0.02 260)",
+                  }}
                 >
-                  <p className="text-xs font-bold mb-1 text-gray-500 uppercase tracking-wide">Subject</p>
+                  <p className="text-xs font-bold mb-1 text-gray-500 uppercase tracking-wide">
+                    Subject
+                  </p>
                   <p className="text-sm font-semibold text-gray-800">
-                    {previewSubject || <span className="opacity-40 italic">No subject yet</span>}
+                    {previewSubject || (
+                      <span className="opacity-40 italic">No subject yet</span>
+                    )}
                   </p>
                 </div>
 
@@ -657,23 +762,35 @@ export default function EmailTemplates() {
                   >
                     <div
                       className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black"
-                      style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                      style={{
+                        background: "oklch(0.22 0.09 260)",
+                        color: "oklch(0.80 0.18 80)",
+                      }}
                     >
                       {sampleBusiness[0]?.toUpperCase() ?? "B"}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-gray-800">{sampleBusiness}</p>
-                      <p className="text-xs text-gray-500">To: {sampleCustomer}</p>
+                      <p className="text-xs font-bold text-gray-800">
+                        {sampleBusiness}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        To: {sampleCustomer}
+                      </p>
                     </div>
                   </div>
                   {/* Body */}
-                  <div className="p-4 overflow-y-auto bg-white" style={{ maxHeight: "320px" }}>
+                  <div
+                    className="p-4 overflow-y-auto bg-white"
+                    style={{ maxHeight: "320px" }}
+                  >
                     <pre
                       className="text-sm whitespace-pre-wrap font-sans leading-relaxed"
                       style={{ color: "oklch(0.25 0.03 260)" }}
                     >
                       {previewBody || (
-                        <span className="opacity-40 italic">Start typing your email body…</span>
+                        <span className="opacity-40 italic">
+                          Start typing your email body…
+                        </span>
                       )}
                     </pre>
                   </div>
@@ -697,7 +814,11 @@ export default function EmailTemplates() {
               disabled={isSaving}
               className="rr-bg-navy text-white font-bold"
             >
-              {isSaving ? "Saving…" : editTemplate ? "Update Template" : "Save Template"}
+              {isSaving
+                ? "Saving…"
+                : editTemplate
+                  ? "Update Template"
+                  : "Save Template"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -706,7 +827,7 @@ export default function EmailTemplates() {
       {/* ── Delete Confirm ── */}
       <AlertDialog
         open={!!deleteTarget}
-        onOpenChange={(o) => {
+        onOpenChange={o => {
           if (!o) setDeleteTarget(null);
         }}
       >
@@ -714,13 +835,16 @@ export default function EmailTemplates() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete template?</AlertDialogTitle>
             <AlertDialogDescription>
-              "{deleteTarget?.name}" will be permanently deleted. This cannot be undone.
+              "{deleteTarget?.name}" will be permanently deleted. This cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deleteTarget && deleteMutation.mutate({ id: deleteTarget.id })}
+              onClick={() =>
+                deleteTarget && deleteMutation.mutate({ id: deleteTarget.id })
+              }
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               Delete

@@ -9,9 +9,18 @@
  * completed or dismissed onboarding. Dismissible at any time via the Skip button.
  */
 
-import { createContext, useState, useEffect, useCallback, useContext } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import { useTranslation } from "react-i18next";
-import { dismissAndNavigateToSend, getOnboardingFlow } from "@/lib/onboardingFlow";
+import {
+  dismissAndNavigateToSend,
+  getOnboardingFlow,
+} from "@/lib/onboardingFlow";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -33,7 +42,11 @@ import {
   CircleHelp,
 } from "lucide-react";
 import LandingBrandLink from "@/components/LandingBrandLink";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useUpdateDirtySource } from "@/contexts/UpdateSafetyContext";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -68,7 +81,10 @@ const PLATFORM_PLACEHOLDERS: Record<string, string> = {
   other: "https://your-review-page.com",
 };
 
-const KNOWN_HOSTS: Record<string, { host: string; port: number; secure: number }> = {
+const KNOWN_HOSTS: Record<
+  string,
+  { host: string; port: number; secure: number }
+> = {
   "gmail.com": { host: "smtp.gmail.com", port: 587, secure: 0 },
   "googlemail.com": { host: "smtp.gmail.com", port: 587, secure: 0 },
   "outlook.com": { host: "smtp-mail.outlook.com", port: 587, secure: 0 },
@@ -87,7 +103,11 @@ const KNOWN_HOSTS: Record<string, { host: string; port: number; secure: number }
 // Preset SMTP configurations for one-tap selection in the advanced panel
 const SMTP_PRESETS = [
   { label: "Google Workspace", host: "smtp.gmail.com", port: 587 },
-  { label: "Outlook / Microsoft 365", host: "smtp-mail.outlook.com", port: 587 },
+  {
+    label: "Outlook / Microsoft 365",
+    host: "smtp-mail.outlook.com",
+    port: 587,
+  },
   { label: "Zoho Mail", host: "smtp.zoho.com", port: 587 },
   { label: "Yahoo Mail", host: "smtp.mail.yahoo.com", port: 587 },
 ] as const;
@@ -96,7 +116,7 @@ const SMTP_PRESETS = [
 
 function detectHost(email: string) {
   const domain = email.split("@")[1]?.toLowerCase();
-  return domain ? KNOWN_HOSTS[domain] ?? null : null;
+  return domain ? (KNOWN_HOSTS[domain] ?? null) : null;
 }
 
 /** Returns the app-password hint key based on email domain OR manually-entered host */
@@ -105,14 +125,26 @@ function getHintKey(email: string, host?: string): string | null {
   if (host === "smtp.gmail.com" && domain && !KNOWN_HOSTS[domain]) {
     return "step1Email.hints.googleWorkspaceHint";
   }
-  if (host === "smtp.zoho.com" && domain && domain !== "zoho.com" && domain !== "zohomail.com") {
+  if (
+    host === "smtp.zoho.com" &&
+    domain &&
+    domain !== "zoho.com" &&
+    domain !== "zohomail.com"
+  ) {
     return "step1Email.hints.zohoHostHint";
   }
   if (!domain) return null;
-  if (domain === "gmail.com" || domain === "googlemail.com") return "step1Email.hints.gmailAppPassword";
-  if (domain === "outlook.com" || domain === "hotmail.com" || domain === "live.com") return "step1Email.hints.outlookAppPassword";
+  if (domain === "gmail.com" || domain === "googlemail.com")
+    return "step1Email.hints.gmailAppPassword";
+  if (
+    domain === "outlook.com" ||
+    domain === "hotmail.com" ||
+    domain === "live.com"
+  )
+    return "step1Email.hints.outlookAppPassword";
   if (domain === "yahoo.com") return "step1Email.hints.yahooAppPassword";
-  if (domain === "zoho.com" || domain === "zohomail.com") return "step1Email.hints.zohoSmtpAccess";
+  if (domain === "zoho.com" || domain === "zohomail.com")
+    return "step1Email.hints.zohoSmtpAccess";
   return null;
 }
 
@@ -131,7 +163,11 @@ function OnboardingHelpTip({ label, text }: { label: string; text: string }) {
           <CircleHelp size={14} aria-hidden="true" />
         </button>
       </TooltipTrigger>
-      <TooltipContent side="top" sideOffset={8} className="onboarding-tip-fade max-w-[19rem] rounded-xl border border-[#D4A017]/45 px-3 py-2 text-left text-xs leading-relaxed shadow-xl">
+      <TooltipContent
+        side="top"
+        sideOffset={8}
+        className="onboarding-tip-fade max-w-[19rem] rounded-xl border border-[#D4A017]/45 px-3 py-2 text-left text-xs leading-relaxed shadow-xl"
+      >
         {text}
       </TooltipContent>
     </Tooltip>
@@ -146,13 +182,15 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
   const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
   const [apiTermsAccepted, setApiTermsAccepted] = useState(false);
-  const [apiAcceptableUseAccepted, setApiAcceptableUseAccepted] = useState(false);
+  const [apiAcceptableUseAccepted, setApiAcceptableUseAccepted] =
+    useState(false);
   useUpdateDirtySource(
     "onboarding-connector",
-    apiTermsAccepted || apiAcceptableUseAccepted || revealedSecret !== null,
+    apiTermsAccepted || apiAcceptableUseAccepted || revealedSecret !== null
   );
   const { data: apiKeyList } = trpc.apiKey.list.useQuery();
-  const { data: enrollment, isLoading: enrollmentLoading } = trpc.apiKey.enrollment.useQuery();
+  const { data: enrollment, isLoading: enrollmentLoading } =
+    trpc.apiKey.enrollment.useQuery();
   const downloadConnector = trpc.connector.download.useMutation({
     onSuccess: ({ url, fileName }) => {
       const link = document.createElement("a");
@@ -163,17 +201,23 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      toast.success(t("step4Connector.step1.downloadStarted", "Plugin download started."));
+      toast.success(
+        t("step4Connector.step1.downloadStarted", "Plugin download started.")
+      );
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
   const generateKey = trpc.apiKey.generate.useMutation({
-    onSuccess: async (data) => {
+    onSuccess: async data => {
       setRevealedSecret(data.rawKey);
       await utils.apiKey.list.invalidate();
-      toast.success(t("developerIntegrations.keys.created", { defaultValue: "API key created. Copy it before closing this step." }));
+      toast.success(
+        t("developerIntegrations.keys.created", {
+          defaultValue: "API key created. Copy it before closing this step.",
+        })
+      );
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
   const acceptApiTerms = trpc.apiKey.acceptTerms.useMutation({
     onSuccess: async () => {
@@ -181,7 +225,7 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
       setApiTermsAccepted(false);
       setApiAcceptableUseAccepted(false);
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
 
   // Use the first available key or prompt to generate one
@@ -189,27 +233,45 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
 
   function handleCopy() {
     if (!revealedSecret) return;
-    navigator.clipboard.writeText(revealedSecret)
+    navigator.clipboard
+      .writeText(revealedSecret)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       })
-      .catch(() => toast.error(t("developerIntegrations.copyFailed", { defaultValue: "Could not copy automatically. Select and copy the value manually." })));
+      .catch(() =>
+        toast.error(
+          t("developerIntegrations.copyFailed", {
+            defaultValue:
+              "Could not copy automatically. Select and copy the value manually.",
+          })
+        )
+      );
   }
 
   async function handleGenerateConnectorKey() {
     if (!enrollment?.termsAccepted) {
       if (!apiTermsAccepted || !apiAcceptableUseAccepted) {
-        toast.error(t("developerEnrollment.terms.requiredForKey", { defaultValue: "Accept the API Terms before creating a key." }));
+        toast.error(
+          t("developerEnrollment.terms.requiredForKey", {
+            defaultValue: "Accept the API Terms before creating a key.",
+          })
+        );
         return;
       }
       try {
-        await acceptApiTerms.mutateAsync({ termsAccepted: true, acceptableUseAccepted: true });
+        await acceptApiTerms.mutateAsync({
+          termsAccepted: true,
+          acceptableUseAccepted: true,
+        });
       } catch {
         return;
       }
     }
-    generateKey.mutate({ label: "WordPress Connector", scopes: ["contacts:write"] });
+    generateKey.mutate({
+      label: "WordPress Connector",
+      scopes: ["contacts:write"],
+    });
   }
 
   return (
@@ -217,18 +279,27 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
       {/* Intro */}
       <div
         className="flex items-start gap-3 px-4 py-4 rounded-2xl"
-        style={{ background: "oklch(0.18 0.06 80 / 0.3)", border: "1px solid oklch(0.35 0.12 80 / 0.4)" }}
+        style={{
+          background: "oklch(0.18 0.06 80 / 0.3)",
+          border: "1px solid oklch(0.35 0.12 80 / 0.4)",
+        }}
       >
         <Plug2 size={20} className="rr-text-gold shrink-0 mt-0.5" />
         <div>
           <p className="text-base font-black text-white mb-1">
-            {t("step4Connector.intro.heading", "Using WordPress + WooCommerce?")}
+            {t(
+              "step4Connector.intro.heading",
+              "Using WordPress + WooCommerce?"
+            )}
           </p>
-          <p className="text-sm font-bold" style={{ color: "oklch(0.95 0.02 260)" }}>
-              {t(
-                "step4Connector.intro.body",
-                "Install the Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
-              )}
+          <p
+            className="text-sm font-bold"
+            style={{ color: "oklch(0.95 0.02 260)" }}
+          >
+            {t(
+              "step4Connector.intro.body",
+              "Install the Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
+            )}
           </p>
         </div>
       </div>
@@ -239,7 +310,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
         <div className="flex gap-3">
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-black shrink-0"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+            style={{
+              background: "oklch(0.80 0.18 80)",
+              color: "oklch(0.15 0.05 260)",
+            }}
           >
             1
           </div>
@@ -247,7 +321,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
             <p className="text-base font-black text-white mb-1">
               {t("step4Connector.step1.title", "Download the plugin")}
             </p>
-            <p className="text-sm font-bold mb-2" style={{ color: "oklch(0.92 0.02 260)" }}>
+            <p
+              className="text-sm font-bold mb-2"
+              style={{ color: "oklch(0.92 0.02 260)" }}
+            >
               {t(
                 "step4Connector.step1.body",
                 "Download the private Get Phame Connector .zip file and upload it to your WordPress site."
@@ -259,14 +336,28 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
               disabled={downloadConnector.isPending}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95"
               style={{
-                background: downloadConnector.isPending ? "oklch(0.35 0.05 260)" : "oklch(0.80 0.18 80)",
-                color: downloadConnector.isPending ? "oklch(0.60 0.03 260)" : "oklch(0.15 0.05 260)",
+                background: downloadConnector.isPending
+                  ? "oklch(0.35 0.05 260)"
+                  : "oklch(0.80 0.18 80)",
+                color: downloadConnector.isPending
+                  ? "oklch(0.60 0.03 260)"
+                  : "oklch(0.15 0.05 260)",
               }}
             >
-              {downloadConnector.isPending ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+              {downloadConnector.isPending ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Download size={14} />
+              )}
               {downloadConnector.isPending
-                ? t("step4Connector.step1.downloadingBtn", "Preparing download…")
-                : t("step4Connector.step1.downloadBtn", "Download Plugin (.zip)")}
+                ? t(
+                    "step4Connector.step1.downloadingBtn",
+                    "Preparing download…"
+                  )
+                : t(
+                    "step4Connector.step1.downloadBtn",
+                    "Download Plugin (.zip)"
+                  )}
             </button>
           </div>
         </div>
@@ -275,15 +366,24 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
         <div className="flex gap-3">
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-black shrink-0"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+            style={{
+              background: "oklch(0.80 0.18 80)",
+              color: "oklch(0.15 0.05 260)",
+            }}
           >
             2
           </div>
           <div className="flex-1">
             <p className="text-base font-black text-white mb-1">
-              {t("step4Connector.step2.title", "Install & activate in WordPress")}
+              {t(
+                "step4Connector.step2.title",
+                "Install & activate in WordPress"
+              )}
             </p>
-            <p className="text-sm font-bold" style={{ color: "oklch(0.92 0.02 260)" }}>
+            <p
+              className="text-sm font-bold"
+              style={{ color: "oklch(0.92 0.02 260)" }}
+            >
               {t(
                 "step4Connector.step2.body",
                 "In your WordPress admin, go to Plugins → Add New → Upload Plugin, select the .zip file, then click Install Now and Activate."
@@ -306,7 +406,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
         <div className="flex gap-3">
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-black shrink-0"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+            style={{
+              background: "oklch(0.80 0.18 80)",
+              color: "oklch(0.15 0.05 260)",
+            }}
           >
             3
           </div>
@@ -314,7 +417,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
             <p className="text-base font-black text-white mb-1">
               {t("step4Connector.step3.title", "Paste your API key")}
             </p>
-            <p className="text-sm font-bold mb-2" style={{ color: "oklch(0.92 0.02 260)" }}>
+            <p
+              className="text-sm font-bold mb-2"
+              style={{ color: "oklch(0.92 0.02 260)" }}
+            >
               {t(
                 "step4Connector.step3.body",
                 "In WordPress, go to Settings → Get Phame and paste your API key below. Then click Test Connection."
@@ -323,16 +429,29 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
             {revealedSecret || firstKey ? (
               <div
                 className="flex items-center gap-2 px-3 py-2 rounded-xl"
-                style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
+                style={{
+                  background: "oklch(0.18 0.06 260)",
+                  border: "1px solid oklch(0.32 0.06 260)",
+                }}
               >
-                <code className="text-sm font-black flex-1 text-white truncate" style={{ fontFamily: "monospace" }}>
+                <code
+                  className="text-sm font-black flex-1 text-white truncate"
+                  style={{ fontFamily: "monospace" }}
+                >
                   {revealedSecret ?? firstKey?.keyHint}
                 </code>
                 {revealedSecret ? (
                   <button
                     onClick={handleCopy}
                     className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
-                    style={{ background: copied ? "oklch(0.55 0.18 145)" : "oklch(0.28 0.08 260)", color: copied ? "oklch(0.15 0.05 260)" : "oklch(0.75 0.04 260)" }}
+                    style={{
+                      background: copied
+                        ? "oklch(0.55 0.18 145)"
+                        : "oklch(0.28 0.08 260)",
+                      color: copied
+                        ? "oklch(0.15 0.05 260)"
+                        : "oklch(0.75 0.04 260)",
+                    }}
                   >
                     {copied
                       ? t("referralRewards.copied", { defaultValue: "Copied!" })
@@ -342,34 +461,114 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
                   <a
                     href="/developer-integrations"
                     className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
-                    style={{ background: "oklch(0.28 0.08 260)", color: "oklch(0.75 0.04 260)" }}
+                    style={{
+                      background: "oklch(0.28 0.08 260)",
+                      color: "oklch(0.75 0.04 260)",
+                    }}
                   >
-                    {t("developerIntegrations.open", { defaultValue: "Open developer workspace" })}
+                    {t("developerIntegrations.open", {
+                      defaultValue: "Open developer workspace",
+                    })}
                   </a>
                 )}
               </div>
             ) : (
               <div className="space-y-3">
                 {!enrollmentLoading && !enrollment?.termsAccepted && (
-                  <div className="space-y-2 rounded-xl p-3" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.38 0.06 260)" }}>
-                    <p className="text-xs font-black text-white">{t("developerEnrollment.terms.onboardingTitle", { defaultValue: "Accept the API rules to create your import key" })}</p>
-                    <label className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5" style={{ color: "oklch(0.92 0.02 260)" }}>
-                      <input type="checkbox" checked={apiTermsAccepted} onChange={(event) => setApiTermsAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]"  name="rr-components-onboarding-wizard-api-terms-accepted-357" />
-                      <span>{t("developerEnrollment.terms.termsLabel", { defaultValue: "I accept the API Terms in the Get Phame Terms of Service." })} <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline rr-text-gold">{t("developerEnrollment.terms.readTerms", { defaultValue: "Read Terms" })}</a></span>
+                  <div
+                    className="space-y-2 rounded-xl p-3"
+                    style={{
+                      background: "oklch(0.18 0.06 260)",
+                      border: "1px solid oklch(0.38 0.06 260)",
+                    }}
+                  >
+                    <p className="text-xs font-black text-white">
+                      {t("developerEnrollment.terms.onboardingTitle", {
+                        defaultValue:
+                          "Accept the API rules to create your import key",
+                      })}
+                    </p>
+                    <label
+                      className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5"
+                      style={{ color: "oklch(0.92 0.02 260)" }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={apiTermsAccepted}
+                        onChange={event =>
+                          setApiTermsAccepted(event.target.checked)
+                        }
+                        className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]"
+                        name="rr-components-onboarding-wizard-api-terms-accepted-357"
+                      />
+                      <span>
+                        {t("developerEnrollment.terms.termsLabel", {
+                          defaultValue:
+                            "I accept the API Terms in the Get Phame Terms of Service.",
+                        })}{" "}
+                        <a
+                          href="/terms-of-service"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline rr-text-gold"
+                        >
+                          {t("developerEnrollment.terms.readTerms", {
+                            defaultValue: "Read Terms",
+                          })}
+                        </a>
+                      </span>
                     </label>
-                    <label className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5" style={{ color: "oklch(0.92 0.02 260)" }}>
-                      <input type="checkbox" checked={apiAcceptableUseAccepted} onChange={(event) => setApiAcceptableUseAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]"  name="rr-components-onboarding-wizard-api-acceptable-use-accepted-361" />
-                      <span>{t("developerEnrollment.terms.aupLabel", { defaultValue: "I accept the Acceptable Use Policy: no spam, purchased or scraped lists, browser-exposed keys, rate-limit bypassing, or deceptive automation." })} <a href="/compliance" target="_blank" rel="noopener noreferrer" className="underline rr-text-gold">{t("developerEnrollment.terms.readGuide", { defaultValue: "Read Compliance Guide" })}</a></span>
+                    <label
+                      className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5"
+                      style={{ color: "oklch(0.92 0.02 260)" }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={apiAcceptableUseAccepted}
+                        onChange={event =>
+                          setApiAcceptableUseAccepted(event.target.checked)
+                        }
+                        className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]"
+                        name="rr-components-onboarding-wizard-api-acceptable-use-accepted-361"
+                      />
+                      <span>
+                        {t("developerEnrollment.terms.aupLabel", {
+                          defaultValue:
+                            "I accept the Acceptable Use Policy: no spam, purchased or scraped lists, browser-exposed keys, rate-limit bypassing, or deceptive automation.",
+                        })}{" "}
+                        <a
+                          href="/compliance"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline rr-text-gold"
+                        >
+                          {t("developerEnrollment.terms.readGuide", {
+                            defaultValue: "Read Compliance Guide",
+                          })}
+                        </a>
+                      </span>
                     </label>
                   </div>
                 )}
                 <button
                   onClick={handleGenerateConnectorKey}
-                  disabled={generateKey.isPending || acceptApiTerms.isPending || enrollmentLoading}
+                  disabled={
+                    generateKey.isPending ||
+                    acceptApiTerms.isPending ||
+                    enrollmentLoading
+                  }
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
-                  style={{ background: "oklch(0.26 0.07 260)", color: "oklch(0.75 0.04 260)", border: "1px solid oklch(0.38 0.06 260)" }}
+                  style={{
+                    background: "oklch(0.26 0.07 260)",
+                    color: "oklch(0.75 0.04 260)",
+                    border: "1px solid oklch(0.38 0.06 260)",
+                  }}
                 >
-                  {generateKey.isPending || acceptApiTerms.isPending ? <Loader2 size={13} className="animate-spin" /> : <Plug2 size={13} />}
+                  {generateKey.isPending || acceptApiTerms.isPending ? (
+                    <Loader2 size={13} className="animate-spin" />
+                  ) : (
+                    <Plug2 size={13} />
+                  )}
                   {t("step4Connector.step3.generateKeyBtn", "Generate API Key")}
                 </button>
               </div>
@@ -383,15 +582,22 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
         <button
           onClick={onDismiss}
           className="w-full py-3.5 rounded-2xl font-bold text-sm transition-transform active:scale-95"
-          style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+          style={{
+            background: "oklch(0.80 0.18 80)",
+            color: "oklch(0.15 0.05 260)",
+          }}
         >
           {t("step4Connector.doneBtn", "All done — go to Phame ✓")}
         </button>
         <button
           onClick={onDismiss}
-          className="w-full text-center text-sm font-bold py-1" style={{ color: "oklch(0.85 0.03 260)" }}
+          className="w-full text-center text-sm font-bold py-1"
+          style={{ color: "oklch(0.85 0.03 260)" }}
         >
-          {t("step4Connector.skipBtn", "I don't use WordPress — skip this step")}
+          {t(
+            "step4Connector.skipBtn",
+            "I don't use WordPress — skip this step"
+          )}
         </button>
       </div>
     </div>
@@ -400,7 +606,15 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
 
 // ── Step indicator ─────────────────────────────────────────────────────────────
 
-function StepDot({ step, current, done }: { step: number; current: number; done: boolean }) {
+function StepDot({
+  step,
+  current,
+  done,
+}: {
+  step: number;
+  current: number;
+  done: boolean;
+}) {
   const isActive = step === current;
   return (
     <div className="flex items-center gap-2">
@@ -410,9 +624,10 @@ function StepDot({ step, current, done }: { step: number; current: number; done:
           background: done
             ? "oklch(0.55 0.18 145)"
             : isActive
-            ? "oklch(0.80 0.18 80)"
-            : "oklch(0.30 0.05 260)",
-          color: done || isActive ? "oklch(0.15 0.05 260)" : "oklch(0.60 0.03 260)",
+              ? "oklch(0.80 0.18 80)"
+              : "oklch(0.30 0.05 260)",
+          color:
+            done || isActive ? "oklch(0.15 0.05 260)" : "oklch(0.60 0.03 260)",
         }}
       >
         {done ? <CheckCircle2 size={16} /> : step}
@@ -435,12 +650,15 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testingCredentials, setTestingCredentials] = useState(false);
-  const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null);
+  const [testResult, setTestResult] = useState<{
+    ok: boolean;
+    error?: string;
+  } | null>(null);
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
   useUpdateDirtySource(
     "onboarding-smtp",
-    Boolean(email || password || host || fromName || replyTo),
+    Boolean(email || password || host || fromName || replyTo)
   );
 
   const testCredentials = trpc.smtp.testCredentials.useMutation();
@@ -455,7 +673,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       );
       setTimeout(onDone, 1000);
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
 
   // Auto-detect host when email changes
@@ -470,7 +688,9 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   const hintKey = getHintKey(email, host);
   const hint = hintKey ? t(hintKey) : null;
   const passwordValidation = passwordTouched
-    ? password.trim().length > 0 ? "valid" : "invalid"
+    ? password.trim().length > 0
+      ? "valid"
+      : "invalid"
     : "idle";
   const detectedAuto = !!detectHost(email);
   // Show Google Workspace disclosure when auto-detect fails and user has a custom domain
@@ -498,7 +718,10 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       });
       setTestResult(result);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : t("step1Email.toast.connectionTestFailed");
+      const message =
+        err instanceof Error
+          ? err.message
+          : t("step1Email.toast.connectionTestFailed");
       setTestResult({ ok: false, error: message });
     } finally {
       setTestingCredentials(false);
@@ -529,21 +752,37 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+        <label
+          className="block text-xs font-bold mb-1"
+          style={{ color: "oklch(0.70 0.04 260)" }}
+        >
           {t("step1Email.emailAddressLabel")}
         </label>
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           placeholder={t("step1Email.emailAddressPlaceholder")}
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-         name="rr-components-onboarding-wizard-email-531"  autoComplete="email"/>
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white"
+          style={{
+            background: "oklch(0.18 0.06 260)",
+            border: "1px solid oklch(0.32 0.06 260)",
+          }}
+          name="rr-components-onboarding-wizard-email-531"
+          autoComplete="email"
+        />
       </div>
 
       <div>
-        <label htmlFor="onboarding-smtp-password" className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          <span>{t("step1Email.passwordLabel")} {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}</span>
+        <label
+          htmlFor="onboarding-smtp-password"
+          className="flex items-center gap-1 text-xs font-bold mb-1"
+          style={{ color: "oklch(0.70 0.04 260)" }}
+        >
+          <span>
+            {t("step1Email.passwordLabel")}{" "}
+            {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}
+          </span>
           <OnboardingHelpTip
             label={t("onboardingWizard.tooltips.smtpPassword.label")}
             text={t("onboardingWizard.tooltips.smtpPassword.text")}
@@ -554,28 +793,79 @@ function Step1Email({ onDone }: { onDone: () => void }) {
             id="onboarding-smtp-password"
             type={showPass ? "text" : "password"}
             value={password}
-            onChange={(e) => { setPassword(e.target.value); setPasswordTouched(true); }}
+            onChange={e => {
+              setPassword(e.target.value);
+              setPasswordTouched(true);
+            }}
             onBlur={() => setPasswordTouched(true)}
-            placeholder={hint ? t("step1Email.appPasswordPlaceholder") : t("step1Email.emailPasswordPlaceholder")}
+            placeholder={
+              hint
+                ? t("step1Email.appPasswordPlaceholder")
+                : t("step1Email.emailPasswordPlaceholder")
+            }
             autoComplete="current-password"
             aria-invalid={passwordValidation === "invalid"}
-            aria-describedby={passwordValidation === "idle" ? undefined : "onboarding-smtp-password-feedback"}
-            className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: passwordValidation === "invalid" ? "2px solid oklch(0.62 0.20 27)" : passwordValidation === "valid" ? "2px solid oklch(0.56 0.14 145)" : "1px solid oklch(0.32 0.06 260)" }}
-           name="rr-components-onboarding-wizard-password-549" />
+            aria-describedby={
+              passwordValidation === "idle"
+                ? undefined
+                : "onboarding-smtp-password-feedback"
+            }
+            className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none text-white"
+            style={{
+              background: "oklch(0.18 0.06 260)",
+              border:
+                passwordValidation === "invalid"
+                  ? "2px solid oklch(0.62 0.20 27)"
+                  : passwordValidation === "valid"
+                    ? "2px solid oklch(0.56 0.14 145)"
+                    : "1px solid oklch(0.32 0.06 260)",
+            }}
+            name="rr-components-onboarding-wizard-password-549"
+          />
           <button
             type="button"
             onClick={() => setShowPass(!showPass)}
-            aria-label={showPass ? t("common.hide", { defaultValue: "Hide password" }) : t("common.show", { defaultValue: "Show password" })}
+            aria-label={
+              showPass
+                ? t("common.hide", { defaultValue: "Hide password" })
+                : t("common.show", { defaultValue: "Show password" })
+            }
             aria-pressed={showPass}
             className="absolute right-3 top-1/2 -translate-y-1/2 rr-text-navy-muted"
           >
             {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
-        {passwordValidation !== "idle" && <p id="onboarding-smtp-password-feedback" role="status" aria-live="polite" className="mt-1 text-xs font-semibold" style={{ color: passwordValidation === "valid" ? "oklch(0.72 0.14 145)" : "oklch(0.72 0.17 27)" }}>{t(passwordValidation === "valid" ? "smtp.credentialReady" : "smtp.credentialRequired", { defaultValue: passwordValidation === "valid" ? "Password entered. Test before saving." : "Password is required." })}</p>}
+        {passwordValidation !== "idle" && (
+          <p
+            id="onboarding-smtp-password-feedback"
+            role="status"
+            aria-live="polite"
+            className="mt-1 text-xs font-semibold"
+            style={{
+              color:
+                passwordValidation === "valid"
+                  ? "oklch(0.72 0.14 145)"
+                  : "oklch(0.72 0.17 27)",
+            }}
+          >
+            {t(
+              passwordValidation === "valid"
+                ? "smtp.credentialReady"
+                : "smtp.credentialRequired",
+              {
+                defaultValue:
+                  passwordValidation === "valid"
+                    ? "Password entered. Test before saving."
+                    : "Password is required.",
+              }
+            )}
+          </p>
+        )}
         {hint && (
           <div
-            className="flex items-start gap-2 mt-2 px-3 py-2 rounded-lg rr-text-gold" style={{ background: "oklch(0.22 0.08 80)" }}
+            className="flex items-start gap-2 mt-2 px-3 py-2 rounded-lg rr-text-gold"
+            style={{ background: "oklch(0.22 0.08 80)" }}
           >
             <AlertCircle size={14} className="shrink-0 mt-0.5" />
             <p className="text-xs">{hint}</p>
@@ -585,39 +875,72 @@ function Step1Email({ onDone }: { onDone: () => void }) {
 
       {/* From Name — promoted to main form */}
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step1Email.fromNameLabel")} <span className="rr-text-navy-muted rr-fw-normal">({t("settings.fromNameHint", "shown as sender")})</span>
+        <label
+          className="block text-xs font-bold mb-1"
+          style={{ color: "oklch(0.70 0.04 260)" }}
+        >
+          {t("step1Email.fromNameLabel")}{" "}
+          <span className="rr-text-navy-muted rr-fw-normal">
+            ({t("settings.fromNameHint", "shown as sender")})
+          </span>
         </label>
         <input
           type="text"
           value={fromName}
-          onChange={(e) => setFromName(e.target.value)}
+          onChange={e => setFromName(e.target.value)}
           placeholder={t("step1Email.fromNamePlaceholder")}
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-         name="rr-components-onboarding-wizard-from-name-579" />
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white"
+          style={{
+            background: "oklch(0.18 0.06 260)",
+            border: "1px solid oklch(0.32 0.06 260)",
+          }}
+          name="rr-components-onboarding-wizard-from-name-579"
+        />
         <p className="text-xs mt-1 rr-text-navy-muted">
-          {t("settings.fromNameDescription", "Customers will see this as the sender name in their inbox.")}
+          {t(
+            "settings.fromNameDescription",
+            "Customers will see this as the sender name in their inbox."
+          )}
         </p>
       </div>
       {/* Reply-To — optional */}
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step1Email.replyToEmailLabel")} <span className="rr-text-navy-muted rr-fw-normal">({t("settings.optional", "optional")})</span>
+        <label
+          className="block text-xs font-bold mb-1"
+          style={{ color: "oklch(0.70 0.04 260)" }}
+        >
+          {t("step1Email.replyToEmailLabel")}{" "}
+          <span className="rr-text-navy-muted rr-fw-normal">
+            ({t("settings.optional", "optional")})
+          </span>
         </label>
         <input
           type="email"
           value={replyTo}
-          onChange={(e) => setReplyTo(e.target.value)}
+          onChange={e => setReplyTo(e.target.value)}
           placeholder={t("step1Email.replyToEmailPlaceholder")}
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-         name="rr-components-onboarding-wizard-reply-to-595"  autoComplete="email"/>
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white"
+          style={{
+            background: "oklch(0.18 0.06 260)",
+            border: "1px solid oklch(0.32 0.06 260)",
+          }}
+          name="rr-components-onboarding-wizard-reply-to-595"
+          autoComplete="email"
+        />
         <p className="text-xs mt-1 rr-text-navy-muted">
-          {t("settings.replyToDescription", "Where customer replies will go. Leave blank to use your sending address.")}
+          {t(
+            "settings.replyToDescription",
+            "Where customer replies will go. Leave blank to use your sending address."
+          )}
         </p>
       </div>
       {detectedAuto && (
         <p className="text-xs rr-text-green">
-          ✓ {t("settings.smtpAutoDetected", { domain: email.split("@")[1], defaultValue: `SMTP settings auto-detected for ${email.split("@")[1]}` })}
+          ✓{" "}
+          {t("settings.smtpAutoDetected", {
+            domain: email.split("@")[1],
+            defaultValue: `SMTP settings auto-detected for ${email.split("@")[1]}`,
+          })}
         </p>
       )}
 
@@ -625,24 +948,47 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       {showWorkspaceDisclosure && (
         <div
           className="flex items-start gap-2 px-3 py-3 rounded-xl"
-          style={{ background: "oklch(0.18 0.08 250)", border: "1px solid oklch(0.35 0.10 250)" }}
+          style={{
+            background: "oklch(0.18 0.08 250)",
+            border: "1px solid oklch(0.35 0.10 250)",
+          }}
         >
-          <AlertCircle size={14} className="shrink-0 mt-0.5" style={{ color: "oklch(0.85 0.12 250)" }} />
+          <AlertCircle
+            size={14}
+            className="shrink-0 mt-0.5"
+            style={{ color: "oklch(0.85 0.12 250)" }}
+          />
           <div className="flex flex-col gap-1.5">
-            <p className="text-xs font-bold" style={{ color: "oklch(0.85 0.08 250)" }}>
-              {t("settings.googleWorkspaceTitle", "Using Google Workspace or a custom domain?")}
+            <p
+              className="text-xs font-bold"
+              style={{ color: "oklch(0.85 0.08 250)" }}
+            >
+              {t(
+                "settings.googleWorkspaceTitle",
+                "Using Google Workspace or a custom domain?"
+              )}
             </p>
             <p className="text-xs" style={{ color: "oklch(0.70 0.05 250)" }}>
-              {t("settings.googleWorkspaceDescription", "We couldn't auto-detect your SMTP settings. Select your email provider below or enter settings manually.")}
+              {t(
+                "settings.googleWorkspaceDescription",
+                "We couldn't auto-detect your SMTP settings. Select your email provider below or enter settings manually."
+              )}
             </p>
             <div className="flex flex-wrap gap-2 mt-1">
-              {SMTP_PRESETS.map((preset) => (
+              {SMTP_PRESETS.map(preset => (
                 <button
                   key={preset.host}
                   type="button"
-                  onClick={() => { setHost(preset.host); setPort(preset.port); setShowAdvanced(true); }}
+                  onClick={() => {
+                    setHost(preset.host);
+                    setPort(preset.port);
+                    setShowAdvanced(true);
+                  }}
                   className="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
-                  style={{ background: "oklch(0.28 0.10 250)", color: "oklch(0.85 0.08 250)" }}
+                  style={{
+                    background: "oklch(0.28 0.10 250)",
+                    color: "oklch(0.85 0.08 250)",
+                  }}
                 >
                   {preset.label}
                 </button>
@@ -658,7 +1004,9 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           className="text-xs text-left"
           style={{ color: "oklch(0.82 0.02 260)" }}
         >
-          {showAdvanced ? t("step1Email.hideAdvancedSettings") : t("step1Email.showAdvancedSettings")}
+          {showAdvanced
+            ? t("step1Email.hideAdvancedSettings")
+            : t("step1Email.showAdvancedSettings")}
         </button>
       )}
 
@@ -667,16 +1015,28 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           {/* Preset quick-fill buttons in advanced panel */}
           {!detectedAuto && (
             <div className="flex flex-wrap gap-2">
-              {SMTP_PRESETS.map((preset) => (
+              {SMTP_PRESETS.map(preset => (
                 <button
                   key={preset.host}
                   type="button"
-                  onClick={() => { setHost(preset.host); setPort(preset.port); }}
+                  onClick={() => {
+                    setHost(preset.host);
+                    setPort(preset.port);
+                  }}
                   className="px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors"
                   style={{
-                    background: host === preset.host ? "oklch(0.80 0.18 80)" : "oklch(0.22 0.06 260)",
-                    color: host === preset.host ? "oklch(0.15 0.05 260)" : "oklch(0.70 0.04 260)",
-                    borderColor: host === preset.host ? "oklch(0.80 0.18 80)" : "oklch(0.35 0.06 260)",
+                    background:
+                      host === preset.host
+                        ? "oklch(0.80 0.18 80)"
+                        : "oklch(0.22 0.06 260)",
+                    color:
+                      host === preset.host
+                        ? "oklch(0.15 0.05 260)"
+                        : "oklch(0.70 0.04 260)",
+                    borderColor:
+                      host === preset.host
+                        ? "oklch(0.80 0.18 80)"
+                        : "oklch(0.35 0.06 260)",
                   }}
                 >
                   {preset.label}
@@ -686,27 +1046,43 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           )}
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+              <label
+                className="block text-xs font-bold mb-1"
+                style={{ color: "oklch(0.70 0.04 260)" }}
+              >
                 {t("step1Email.smtpHostLabel")}
               </label>
               <input
                 type="text"
                 value={host}
-                onChange={(e) => setHost(e.target.value)}
+                onChange={e => setHost(e.target.value)}
                 placeholder={`smtp.${email.split("@")[1] ?? "yourdomain.com"}`}
-                className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-               name="rr-components-onboarding-wizard-host-680" />
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white"
+                style={{
+                  background: "oklch(0.18 0.06 260)",
+                  border: "1px solid oklch(0.32 0.06 260)",
+                }}
+                name="rr-components-onboarding-wizard-host-680"
+              />
             </div>
             <div className="w-24">
-              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+              <label
+                className="block text-xs font-bold mb-1"
+                style={{ color: "oklch(0.70 0.04 260)" }}
+              >
                 {t("step1Email.smtpPortLabel")}
               </label>
               <input
                 type="number"
                 value={port}
-                onChange={(e) => setPort(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-               name="rr-components-onboarding-wizard-port-692" />
+                onChange={e => setPort(Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white"
+                style={{
+                  background: "oklch(0.18 0.06 260)",
+                  border: "1px solid oklch(0.32 0.06 260)",
+                }}
+                name="rr-components-onboarding-wizard-port-692"
+              />
             </div>
           </div>
         </div>
@@ -717,13 +1093,21 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         <div
           className="flex items-start gap-2 px-3 py-2.5 rounded-xl text-xs"
           style={{
-            background: testResult.ok ? "oklch(0.18 0.06 145)" : "oklch(0.18 0.06 30)",
+            background: testResult.ok
+              ? "oklch(0.18 0.06 145)"
+              : "oklch(0.18 0.06 30)",
             border: `1px solid ${testResult.ok ? "oklch(0.40 0.12 145)" : "oklch(0.40 0.12 30)"}`,
-            color: testResult.ok ? "oklch(0.75 0.15 145)" : "oklch(0.75 0.15 30)",
+            color: testResult.ok
+              ? "oklch(0.75 0.15 145)"
+              : "oklch(0.75 0.15 30)",
           }}
         >
           <span className="shrink-0 mt-0.5">{testResult.ok ? "✓" : "✗"}</span>
-            <span>{testResult.ok ? t("step1Email.testSuccessful") : (testResult.error ?? t("step1Email.testFailed", { error: "" }))}</span>
+          <span>
+            {testResult.ok
+              ? t("step1Email.testSuccessful")
+              : (testResult.error ?? t("step1Email.testFailed", { error: "" }))}
+          </span>
         </div>
       )}
 
@@ -742,13 +1126,19 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-sm transition-transform active:scale-95"
           style={{
             background: "oklch(0.22 0.09 260)",
-            color: testingCredentials || !email || !password ? "oklch(0.45 0.05 260)" : "oklch(0.70 0.04 260)",
+            color:
+              testingCredentials || !email || !password
+                ? "oklch(0.45 0.05 260)"
+                : "oklch(0.70 0.04 260)",
             border: "1px solid oklch(0.35 0.06 260)",
             fontFamily: "'Poppins', sans-serif",
           }}
         >
           {testingCredentials ? (
-            <><Loader2 size={14} className="animate-spin" />{t("step1Email.testingButton")}</>
+            <>
+              <Loader2 size={14} className="animate-spin" />
+              {t("step1Email.testingButton")}
+            </>
           ) : (
             <>{t("step1Email.testCredentialsButton")}</>
           )}
@@ -772,9 +1162,15 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           }}
         >
           {testing || connectSmtp.isPending ? (
-            <><Loader2 size={16} className="animate-spin" />{t("step1Email.connectingButton")}</>
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              {t("step1Email.connectingButton")}
+            </>
           ) : (
-            <><Mail size={16} />{t("step1Email.connectEmailButton")}</>
+            <>
+              <Mail size={16} />
+              {t("step1Email.connectEmailButton")}
+            </>
           )}
         </button>
       </div>
@@ -791,7 +1187,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
   const [url, setUrl] = useState("");
   useUpdateDirtySource(
     "onboarding-review-platform",
-    platform !== "google" || Boolean(url.trim()),
+    platform !== "google" || Boolean(url.trim())
   );
 
   const addPlatform = trpc.reviewPlatforms.add.useMutation({
@@ -801,7 +1197,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
       toast.success(t("step2Platform.toast.platformAdded"));
       setTimeout(onDone, 800);
     },
-    onError: (err) => toast.error(err.message),
+    onError: err => toast.error(err.message),
   });
 
   function handleAdd() {
@@ -810,7 +1206,14 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
       return;
     }
     addPlatform.mutate({
-      platform: platform as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "apple" | "other",
+      platform: platform as
+        | "google"
+        | "yelp"
+        | "tripadvisor"
+        | "bing"
+        | "facebook"
+        | "apple"
+        | "other",
       url: url.trim(),
     });
   }
@@ -818,7 +1221,10 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+        <label
+          className="flex items-center gap-1 text-xs font-bold mb-1"
+          style={{ color: "oklch(0.70 0.04 260)" }}
+        >
           <span>{t("step2Platform.reviewPlatformLabel")}</span>
           <OnboardingHelpTip
             label={t("onboardingWizard.tooltips.reviewPlatform.label")}
@@ -827,10 +1233,18 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
         </label>
         <select
           value={platform}
-          onChange={(e) => { setPlatform(e.target.value); setUrl(""); }}
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-         name="rr-components-onboarding-wizard-platform-816">
-          {PLATFORM_OPTIONS.map((p) => (
+          onChange={e => {
+            setPlatform(e.target.value);
+            setUrl("");
+          }}
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none text-white"
+          style={{
+            background: "oklch(0.18 0.06 260)",
+            border: "1px solid oklch(0.32 0.06 260)",
+          }}
+          name="rr-components-onboarding-wizard-platform-816"
+        >
+          {PLATFORM_OPTIONS.map(p => (
             <option key={p.value} value={p.value}>
               {p.label}
             </option>
@@ -839,7 +1253,10 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
-        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+        <label
+          className="flex items-center gap-1 text-xs font-bold mb-1"
+          style={{ color: "oklch(0.70 0.04 260)" }}
+        >
           <span>{t("step2Platform.reviewPageUrlLabel")}</span>
           <OnboardingHelpTip
             label={t("onboardingWizard.tooltips.reviewUrl.label")}
@@ -849,10 +1266,15 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
         <input
           type="url"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={e => setUrl(e.target.value)}
           placeholder={PLATFORM_PLACEHOLDERS[platform]}
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
-         name="rr-components-onboarding-wizard-url-837" />
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white"
+          style={{
+            background: "oklch(0.18 0.06 260)",
+            border: "1px solid oklch(0.32 0.06 260)",
+          }}
+          name="rr-components-onboarding-wizard-url-837"
+        />
         <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.03 260)" }}>
           {t("step2Platform.reviewPageUrlHint")}
         </p>
@@ -935,7 +1357,8 @@ function Step3Send({
       </div>
       <button
         onClick={handleGoSend}
-        className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full rr-bg-gold" style={{ color: "oklch(0.15 0.05 260)" }}
+        className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full rr-bg-gold"
+        style={{ color: "oklch(0.15 0.05 260)" }}
       >
         <Star size={18} />
         {t("step3Send.sendFirstRequestButton")}
@@ -947,7 +1370,10 @@ function Step3Send({
           className="text-sm font-bold px-4 py-2 rounded-xl transition-transform active:scale-95"
           style={{ color: "oklch(0.85 0.12 250)" }}
         >
-          {t("step3Send.optionalConnectorButton", "Set up WordPress connector instead (optional)")}
+          {t(
+            "step3Send.optionalConnectorButton",
+            "Set up WordPress connector instead (optional)"
+          )}
         </button>
       )}
     </div>
@@ -958,19 +1384,25 @@ function Step3Send({
 
 export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   const { t } = useTranslation();
-  const { data: status, isLoading } = trpc.onboarding.status.useQuery(undefined, {
-    refetchInterval: 3000, // poll so steps auto-advance when completed elsewhere
-  });
+  const { data: status, isLoading } = trpc.onboarding.status.useQuery(
+    undefined,
+    {
+      refetchInterval: 3000, // poll so steps auto-advance when completed elsewhere
+    }
+  );
   const trpcUtilsWizard = trpc.useUtils();
-  const acknowledgeConsentMutation = trpc.onboarding.acknowledgeConsent.useMutation({
-    onSuccess: () => trpcUtilsWizard.onboarding.status.invalidate(),
-  });
+  const acknowledgeConsentMutation =
+    trpc.onboarding.acknowledgeConsent.useMutation({
+      onSuccess: () => trpcUtilsWizard.onboarding.status.invalidate(),
+    });
 
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
   const { data: notificationPrefs } = trpc.notificationPrefs.get.useQuery();
   const updateNotificationPrefs = trpc.notificationPrefs.update.useMutation();
   const [tipsHidden, setTipsHidden] = useState(
-    () => typeof window !== "undefined" && window.localStorage.getItem(TOUR_SKIP_STORAGE_KEY) === "1",
+    () =>
+      typeof window !== "undefined" &&
+      window.localStorage.getItem(TOUR_SKIP_STORAGE_KEY) === "1"
   );
 
   useEffect(() => {
@@ -985,47 +1417,78 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     if (tipsEnabled) window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
     else window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
     setTipsHidden(!tipsEnabled);
-    window.dispatchEvent(new CustomEvent(ONBOARDING_TIPS_CHANGE_EVENT, { detail: { tipsEnabled } }));
+    window.dispatchEvent(
+      new CustomEvent(ONBOARDING_TIPS_CHANGE_EVENT, { detail: { tipsEnabled } })
+    );
   }, []);
 
   useEffect(() => {
     const handleTourPreferenceChange = (event: Event) => {
-      const { tipsEnabled } = (event as CustomEvent<{ tipsEnabled?: unknown }>).detail ?? {};
+      const { tipsEnabled } =
+        (event as CustomEvent<{ tipsEnabled?: unknown }>).detail ?? {};
       if (typeof tipsEnabled !== "boolean") return;
       if (tipsEnabled) window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
       else window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
       setTipsHidden(!tipsEnabled);
     };
-    window.addEventListener(ONBOARDING_TIPS_CHANGE_EVENT, handleTourPreferenceChange);
-    return () => window.removeEventListener(ONBOARDING_TIPS_CHANGE_EVENT, handleTourPreferenceChange);
+    window.addEventListener(
+      ONBOARDING_TIPS_CHANGE_EVENT,
+      handleTourPreferenceChange
+    );
+    return () =>
+      window.removeEventListener(
+        ONBOARDING_TIPS_CHANGE_EVENT,
+        handleTourPreferenceChange
+      );
   }, []);
 
   const skipTour = useCallback(() => {
     applyTourPreference(false);
-    updateNotificationPrefs.mutate({ onboardingTipsEnabled: false }, {
-      onError: () => {
-        applyTourPreference(true);
-        toast.error(t("onboardingWizard.tour.saveError", "We couldn't save your onboarding tips preference."));
-      },
-    });
+    updateNotificationPrefs.mutate(
+      { onboardingTipsEnabled: false },
+      {
+        onError: () => {
+          applyTourPreference(true);
+          toast.error(
+            t(
+              "onboardingWizard.tour.saveError",
+              "We couldn't save your onboarding tips preference."
+            )
+          );
+        },
+      }
+    );
     toast.success(t("onboardingWizard.tour.skipSuccess"));
   }, [applyTourPreference, t, updateNotificationPrefs]);
 
   const showTour = useCallback(() => {
     applyTourPreference(true);
-    updateNotificationPrefs.mutate({ onboardingTipsEnabled: true }, {
-      onError: () => {
-        applyTourPreference(false);
-        toast.error(t("onboardingWizard.tour.saveError", "We couldn't save your onboarding tips preference."));
-      },
-    });
+    updateNotificationPrefs.mutate(
+      { onboardingTipsEnabled: true },
+      {
+        onError: () => {
+          applyTourPreference(false);
+          toast.error(
+            t(
+              "onboardingWizard.tour.saveError",
+              "We couldn't save your onboarding tips preference."
+            )
+          );
+        },
+      }
+    );
   }, [applyTourPreference, t, updateNotificationPrefs]);
 
   const handleDismiss = useCallback(() => {
     onDismiss();
     dismissMutation.mutate(undefined, {
       onError: () => {
-        toast.error(t("onboardingWizard.dismissError", "Setup was closed, but we couldn't save that preference. You can resume it later from Settings."));
+        toast.error(
+          t(
+            "onboardingWizard.dismissError",
+            "Setup was closed, but we couldn't save that preference. You can resume it later from Settings."
+          )
+        );
       },
     });
   }, [dismissMutation, onDismiss, t]);
@@ -1043,35 +1506,59 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   // Auto-advance viewStep when server confirms a step is done
   const currentStep = viewStep ?? minStep;
   const steps = [
-    { id: 1, label: t("onboardingWizard.steps.connectEmail"), icon: Mail, done: !!status?.smtpConnected },
-    { id: 2, label: t("onboardingWizard.steps.reviewPlatform"), icon: Globe, done: !!status?.hasPlatform },
-    { id: 3, label: t("onboardingWizard.steps.sendRequest"), icon: Star, done: !!status?.hasSentRequest },
+    {
+      id: 1,
+      label: t("onboardingWizard.steps.connectEmail"),
+      icon: Mail,
+      done: !!status?.smtpConnected,
+    },
+    {
+      id: 2,
+      label: t("onboardingWizard.steps.reviewPlatform"),
+      icon: Globe,
+      done: !!status?.hasPlatform,
+    },
+    {
+      id: 3,
+      label: t("onboardingWizard.steps.sendRequest"),
+      icon: Star,
+      done: !!status?.hasSentRequest,
+    },
     ...(canAccessConnector
-      ? [{ id: 4, label: t("onboardingWizard.steps.wpConnector", "WP Plugin"), icon: Plug2, done: false }]
+      ? [
+          {
+            id: 4,
+            label: t("onboardingWizard.steps.wpConnector", "WP Plugin"),
+            icon: Plug2,
+            done: false,
+          },
+        ]
       : []),
   ];
   const remainingTipCount = tipsHidden
     ? 0
     : steps.reduce((total, step) => {
-      if (step.id < currentStep || step.done) return total;
-      const tipsForStep = step.id === 1 || step.id === 2 ? 2 : step.id === 3 ? 1 : 0;
-      return total + tipsForStep;
-    }, 0);
+        if (step.id < currentStep || step.done) return total;
+        const tipsForStep =
+          step.id === 1 || step.id === 2 ? 2 : step.id === 3 ? 1 : 0;
+        return total + tipsForStep;
+      }, 0);
   function handleStepDone() {
     // Auto-advance to next step when server confirms completion
-    setViewStep((prev) => Math.min((prev ?? minStep) + 1, maxStep));
+    setViewStep(prev => Math.min((prev ?? minStep) + 1, maxStep));
   }
   function handleNext() {
-    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, maxStep));
+    setViewStep(prev => Math.min((prev ?? currentStep) + 1, maxStep));
   }
   function handlePrev() {
-    setViewStep((prev) => Math.max((prev ?? currentStep) - 1, 1));
+    setViewStep(prev => Math.max((prev ?? currentStep) - 1, 1));
   }
 
   // Consent pre-step: show if user has never acknowledged the consent requirement
   const [consentAcknowledged, setConsentAcknowledged] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
-  const showConsentStep = !status?.consentAcknowledgedAt && !consentAcknowledged;
+  const showConsentStep =
+    !status?.consentAcknowledgedAt && !consentAcknowledged;
 
   if (isLoading) return null;
 
@@ -1080,14 +1567,26 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     return (
       <div
         className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
-        style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
+        style={{
+          background: "rgba(0,0,0,0.85)",
+          backdropFilter: "blur(4px)",
+          paddingBottom: "calc(5rem + env(safe-area-inset-bottom))",
+          paddingTop: "1rem",
+        }}
         role="dialog"
         aria-modal="true"
-        aria-label={t("onboarding.consentStepTitle", "Add a consent checkbox to your forms")}
+        aria-label={t(
+          "onboarding.consentStepTitle",
+          "Add a consent checkbox to your forms"
+        )}
       >
         <div
           className="w-full max-w-md rounded-3xl flex flex-col"
-          style={{ background: "oklch(0.14 0.05 260)", maxHeight: "calc(100dvh - 7rem)", overflow: "hidden" }}
+          style={{
+            background: "oklch(0.14 0.05 260)",
+            maxHeight: "calc(100dvh - 7rem)",
+            overflow: "hidden",
+          }}
         >
           {/* Header */}
           <div className="px-6 pt-6 pb-4 rr-bg-navy">
@@ -1113,10 +1612,16 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
           <div className="px-6 py-6 overflow-y-auto flex-1">
             <div className="mb-5">
               <h2 className="text-lg font-black mb-1 text-white">
-                {t("onboarding.consentStepTitle", "Add a consent checkbox to your forms")}
+                {t(
+                  "onboarding.consentStepTitle",
+                  "Add a consent checkbox to your forms"
+                )}
               </h2>
               <p className="text-sm" style={{ color: "oklch(0.82 0.02 260)" }}>
-                {t("onboarding.consentStepDesc", "Before collecting contacts or sending review requests, your forms must include a consent checkbox. This is required by CAN-SPAM, TCPA, and GDPR.")}
+                {t(
+                  "onboarding.consentStepDesc",
+                  "Before collecting contacts or sending review requests, your forms must include a consent checkbox. This is required by CAN-SPAM, TCPA, and GDPR."
+                )}
               </p>
             </div>
             {/* PDF Download */}
@@ -1126,18 +1631,28 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               className="flex items-center gap-3 rounded-2xl px-4 py-3 mb-5 text-sm font-bold transition-transform active:scale-95 rr-bg-gold rr-text-navy w-full justify-center"
             >
               <Download size={16} />
-              {t("onboarding.consentStepAction", "Download Consent Guide (PDF)")}
+              {t(
+                "onboarding.consentStepAction",
+                "Download Consent Guide (PDF)"
+              )}
             </a>
             {/* Acknowledgment checkbox */}
             <label className="flex items-start gap-3 rounded-2xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={consentChecked}
-                onChange={(e) => setConsentChecked(e.target.checked)}
+                onChange={e => setConsentChecked(e.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 accent-[oklch(0.80_0.18_80)]"
-               name="rr-components-onboarding-wizard-consent-checked-1121" />
-              <span className="text-sm leading-snug" style={{ color: "oklch(0.90 0.05 80)" }}>
-                {t("onboarding.consentStepAck", "I have added (or will add) a consent checkbox to my customer-facing forms")}
+                name="rr-components-onboarding-wizard-consent-checked-1121"
+              />
+              <span
+                className="text-sm leading-snug"
+                style={{ color: "oklch(0.90 0.05 80)" }}
+              >
+                {t(
+                  "onboarding.consentStepAck",
+                  "I have added (or will add) a consent checkbox to my customer-facing forms"
+                )}
               </span>
             </label>
             {/* Continue button */}
@@ -1150,7 +1665,10 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 });
               }}
               className="mt-5 w-full flex items-center justify-center gap-2 rounded-2xl px-4 py-3 font-black text-sm transition-transform active:scale-95 rr-bg-navy disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ color: "oklch(0.80 0.18 80)", border: "1px solid oklch(0.35 0.06 260)" }}
+              style={{
+                color: "oklch(0.80 0.18 80)",
+                border: "1px solid oklch(0.35 0.06 260)",
+              }}
             >
               {acknowledgeConsentMutation.isPending ? (
                 <Loader2 size={16} className="animate-spin" />
@@ -1167,188 +1685,228 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
 
   return (
     <OnboardingTourContext.Provider value={{ tipsHidden }}>
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
-      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
-      role="dialog"
-      aria-modal="true"
-      aria-label={t("onboardingWizard.header.title")}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) handleDismiss();
-      }}
-    >
       <div
-        className="w-full max-w-md rounded-3xl flex flex-col"
-        style={{ background: "oklch(0.14 0.05 260)", maxHeight: "calc(100dvh - 7rem)", overflow: "hidden" }}
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
+        style={{
+          background: "rgba(0,0,0,0.75)",
+          backdropFilter: "blur(4px)",
+          paddingBottom: "calc(5rem + env(safe-area-inset-bottom))",
+          paddingTop: "1rem",
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("onboardingWizard.header.title")}
+        onClick={event => {
+          if (event.target === event.currentTarget) handleDismiss();
+        }}
       >
-        {/* Header */}
         <div
-          className="px-6 pt-6 pb-4 rr-bg-navy"
+          className="w-full max-w-md rounded-3xl flex flex-col"
+          style={{
+            background: "oklch(0.14 0.05 260)",
+            maxHeight: "calc(100dvh - 7rem)",
+            overflow: "hidden",
+          }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Star size={18} className="rr-text-gold" />
-              <span
-                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
-              >
-                {t("onboardingWizard.header.title")}
-              </span>
+          {/* Header */}
+          <div className="px-6 pt-6 pb-4 rr-bg-navy">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Star size={18} className="rr-text-gold" />
+                <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
+                  {t("onboardingWizard.header.title")}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={tipsHidden ? showTour : skipTour}
+                  className="rounded-lg px-2 py-1 text-xs font-bold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                  style={{ color: "var(--text-on-dark-secondary)" }}
+                  title={
+                    tipsHidden
+                      ? t("onboardingWizard.tour.showTooltip")
+                      : t("onboardingWizard.tour.skipTooltip")
+                  }
+                >
+                  {tipsHidden
+                    ? t("onboardingWizard.tour.show")
+                    : t("onboardingWizard.tour.skip")}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDismiss}
+                  className="p-2 rounded-xl transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                  style={{ color: "var(--text-on-dark-primary)" }}
+                  title={t("onboardingWizard.header.skipSetupTooltip")}
+                  aria-label={t("onboardingWizard.header.skipSetupTooltip")}
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={tipsHidden ? showTour : skipTour}
-                className="rounded-lg px-2 py-1 text-xs font-bold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
-                style={{ color: "var(--text-on-dark-secondary)" }}
-                title={tipsHidden ? t("onboardingWizard.tour.showTooltip") : t("onboardingWizard.tour.skipTooltip")}
-              >
-                {tipsHidden ? t("onboardingWizard.tour.show") : t("onboardingWizard.tour.skip")}
-              </button>
-              <button
-                type="button"
-                onClick={handleDismiss}
-                className="p-2 rounded-xl transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
-                style={{ color: "var(--text-on-dark-primary)" }}
-                title={t("onboardingWizard.header.skipSetupTooltip")}
-                aria-label={t("onboardingWizard.header.skipSetupTooltip")}
-              >
-                <X size={18} />
-              </button>
+
+            {/* Tappable step bar */}
+            <div className="flex gap-2 mt-1">
+              {steps.map(step => {
+                const isActive = step.id === currentStep;
+                const isDone = step.done;
+                return (
+                  <button
+                    key={step.id}
+                    onClick={() => setViewStep(step.id)}
+                    className="flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-xl transition-all active:scale-95"
+                    style={{
+                      background: isActive
+                        ? "oklch(0.80 0.18 80 / 0.15)"
+                        : "transparent",
+                      border: isActive
+                        ? "1px solid oklch(0.80 0.18 80 / 0.4)"
+                        : "1px solid transparent",
+                    }}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black"
+                      style={{
+                        background: isDone
+                          ? "oklch(0.55 0.18 145)"
+                          : isActive
+                            ? "oklch(0.80 0.18 80)"
+                            : "oklch(0.30 0.05 260)",
+                        color:
+                          isDone || isActive
+                            ? "oklch(0.15 0.05 260)"
+                            : "oklch(0.55 0.03 260)",
+                      }}
+                    >
+                      {isDone ? <CheckCircle2 size={14} /> : step.id}
+                    </div>
+                    <span
+                      className="text-xs font-bold leading-tight text-center"
+                      style={{
+                        color: isDone
+                          ? "oklch(0.55 0.18 145)"
+                          : isActive
+                            ? "white"
+                            : "oklch(0.45 0.03 260)",
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
+                    >
+                      {step.label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
+            {!tipsHidden && remainingTipCount > 0 && (
+              <p
+                className="mt-3 text-xs font-semibold"
+                style={{ color: "oklch(0.83 0.10 80)" }}
+                aria-live="polite"
+              >
+                {t("onboardingWizard.tour.tipsRemaining", {
+                  count: remainingTipCount,
+                  defaultValue:
+                    remainingTipCount === 1
+                      ? "1 tip remains in this setup"
+                      : `${remainingTipCount} tips remain in this setup`,
+                })}
+              </p>
+            )}
           </div>
 
-          {/* Tappable step bar */}
-          <div className="flex gap-2 mt-1">
-            {steps.map((step) => {
-              const isActive = step.id === currentStep;
-              const isDone = step.done;
-              return (
+          {/* Step content */}
+          <div
+            key={currentStep}
+            className="onboarding-step-fade px-6 py-6 overflow-y-auto flex-1"
+          >
+            {/* Step title */}
+            <div className="mb-5">
+              <h2 className="text-lg font-black mb-1 text-white">
+                {currentStep === 1 &&
+                  t("onboardingWizard.stepContent.step1.title")}
+                {currentStep === 2 &&
+                  t("onboardingWizard.stepContent.step2.title")}
+                {currentStep === 3 &&
+                  t("onboardingWizard.stepContent.step3.title")}
+                {currentStep === 4 &&
+                  t(
+                    "onboardingWizard.stepContent.step4.title",
+                    "Connect WordPress"
+                  )}
+              </h2>
+              <p className="text-sm" style={{ color: "oklch(0.82 0.02 260)" }}>
+                {currentStep === 1 &&
+                  t("onboardingWizard.stepContent.step1.description")}
+                {currentStep === 2 &&
+                  t("onboardingWizard.stepContent.step2.description")}
+                {currentStep === 3 &&
+                  t("onboardingWizard.stepContent.step3.description")}
+                {currentStep === 4 &&
+                  t(
+                    "onboardingWizard.stepContent.step4.description",
+                    "Install the connector plugin on your WordPress site to auto-sync customers."
+                  )}
+              </p>
+            </div>
+
+            {currentStep === 1 && <Step1Email onDone={handleStepDone} />}
+            {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
+            {currentStep === 3 && (
+              <Step3Send
+                onDismiss={handleDismiss}
+                onOpenConnector={
+                  canAccessConnector ? () => setViewStep(4) : undefined
+                }
+              />
+            )}
+            {currentStep === 4 && canAccessConnector && (
+              <Step4Connector onDismiss={handleDismiss} />
+            )}
+
+            {/* Prev / Next navigation */}
+            <div className="flex items-center gap-3 mt-6">
+              {currentStep > 1 && (
                 <button
-                  key={step.id}
-                  onClick={() => setViewStep(step.id)}
-                  className="flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-xl transition-all active:scale-95"
+                  onClick={handlePrev}
+                  className="flex items-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95 rr-bg-navy"
                   style={{
-                    background: isActive
-                      ? "oklch(0.80 0.18 80 / 0.15)"
-                      : "transparent",
-                    border: isActive
-                      ? "1px solid oklch(0.80 0.18 80 / 0.4)"
-                      : "1px solid transparent",
+                    color: "oklch(0.70 0.04 260)",
+                    border: "1px solid oklch(0.35 0.06 260)",
                   }}
                 >
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black"
-                    style={{
-                      background: isDone
-                        ? "oklch(0.55 0.18 145)"
-                        : isActive
-                        ? "oklch(0.80 0.18 80)"
-                        : "oklch(0.30 0.05 260)",
-                      color: isDone || isActive ? "oklch(0.15 0.05 260)" : "oklch(0.55 0.03 260)",
-                    }}
-                  >
-                    {isDone ? <CheckCircle2 size={14} /> : step.id}
-                  </div>
-                  <span
-                    className="text-xs font-bold leading-tight text-center"
-                    style={{
-                      color: isDone
-                        ? "oklch(0.55 0.18 145)"
-                        : isActive
-                        ? "white"
-                        : "oklch(0.45 0.03 260)",
-                      fontFamily: "'Poppins', sans-serif",
-                    }}
-                  >
-                    {step.label}
-                  </span>
+                  <ChevronLeft size={16} />
+                  {t("onboardingWizard.navigation.previous")}
                 </button>
-              );
-            })}
-          </div>
-          {!tipsHidden && remainingTipCount > 0 && (
-            <p className="mt-3 text-xs font-semibold" style={{ color: "oklch(0.83 0.10 80)" }} aria-live="polite">
-              {t("onboardingWizard.tour.tipsRemaining", {
-                count: remainingTipCount,
-                defaultValue: remainingTipCount === 1
-                  ? "1 tip remains in this setup"
-                  : `${remainingTipCount} tips remain in this setup`,
-              })}
-            </p>
-          )}
-        </div>
-
-        {/* Step content */}
-        <div key={currentStep} className="onboarding-step-fade px-6 py-6 overflow-y-auto flex-1">
-          {/* Step title */}
-          <div className="mb-5">
-            <h2
-              className="text-lg font-black mb-1 text-white"
+              )}
+              {currentStep < maxStep && currentStep !== 3 && (
+                <button
+                  onClick={handleNext}
+                  className="flex-1 flex items-center justify-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
+                  style={{
+                    background: "oklch(0.26 0.07 260)",
+                    color: "oklch(0.75 0.04 260)",
+                    border: "1px solid oklch(0.38 0.06 260)",
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
+                >
+                  {t("onboardingWizard.navigation.nextStep")}
+                  <ChevronRight size={16} />
+                </button>
+              )}
+            </div>
+            {/* Skip link */}
+            <button
+              type="button"
+              onClick={handleDismiss}
+              className="w-full text-center text-xs mt-3 rounded-lg py-2 font-semibold transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+              style={{ color: "oklch(0.78 0.03 260)" }}
             >
-              {currentStep === 1 && t("onboardingWizard.stepContent.step1.title")}
-              {currentStep === 2 && t("onboardingWizard.stepContent.step2.title")}
-              {currentStep === 3 && t("onboardingWizard.stepContent.step3.title")}
-              {currentStep === 4 && t("onboardingWizard.stepContent.step4.title", "Connect WordPress")}
-            </h2>
-            <p className="text-sm" style={{ color: "oklch(0.82 0.02 260)" }}>
-              {currentStep === 1 && t("onboardingWizard.stepContent.step1.description")}
-              {currentStep === 2 && t("onboardingWizard.stepContent.step2.description")}
-              {currentStep === 3 && t("onboardingWizard.stepContent.step3.description")}
-              {currentStep === 4 && t("onboardingWizard.stepContent.step4.description", "Install the connector plugin on your WordPress site to auto-sync customers.")}
-            </p>
+              {t("onboardingWizard.navigation.skipSetupLater")}
+            </button>
           </div>
-
-          {currentStep === 1 && <Step1Email onDone={handleStepDone} />}
-          {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
-          {currentStep === 3 && (
-            <Step3Send
-              onDismiss={handleDismiss}
-              onOpenConnector={canAccessConnector ? () => setViewStep(4) : undefined}
-            />
-          )}
-          {currentStep === 4 && canAccessConnector && (
-            <Step4Connector onDismiss={handleDismiss} />
-          )}
-
-          {/* Prev / Next navigation */}
-          <div className="flex items-center gap-3 mt-6">
-            {currentStep > 1 && (
-              <button
-                onClick={handlePrev}
-                className="flex items-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95 rr-bg-navy" style={{ color: "oklch(0.70 0.04 260)", border: "1px solid oklch(0.35 0.06 260)" }}
-              >
-                <ChevronLeft size={16} />
-                {t("onboardingWizard.navigation.previous")}
-              </button>
-            )}
-            {currentStep < maxStep && currentStep !== 3 && (
-              <button
-                onClick={handleNext}
-                className="flex-1 flex items-center justify-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
-                style={{
-                  background: "oklch(0.26 0.07 260)",
-                  color: "oklch(0.75 0.04 260)",
-                  border: "1px solid oklch(0.38 0.06 260)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                {t("onboardingWizard.navigation.nextStep")}
-                <ChevronRight size={16} />
-              </button>
-            )}
-          </div>
-          {/* Skip link */}
-          <button
-            type="button"
-            onClick={handleDismiss}
-            className="w-full text-center text-xs mt-3 rounded-lg py-2 font-semibold transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
-            style={{ color: "oklch(0.78 0.03 260)" }}
-          >
-            {t("onboardingWizard.navigation.skipSetupLater")}
-          </button>
         </div>
       </div>
-    </div>
     </OnboardingTourContext.Provider>
   );
 }

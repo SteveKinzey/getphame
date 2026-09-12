@@ -16,9 +16,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
     >
       <Navbar />
       {/* pt-20 to clear the fixed Navbar */}
-      <main className="flex-1 pt-20">
-        {children}
-      </main>
+      <main className="flex-1 pt-20">{children}</main>
       <Footer />
     </div>
   );

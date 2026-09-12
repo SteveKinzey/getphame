@@ -10,9 +10,18 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { label: t("landing.navbar.howItWorks", { defaultValue: "How It Works" }), href: "#how-it-works" },
-    { label: t("landing.navbar.product", { defaultValue: "Product" }), href: "#product" },
-    { label: t("landing.navbar.pricing", { defaultValue: "Pricing" }), href: "#pricing" },
+    {
+      label: t("landing.navbar.howItWorks", { defaultValue: "How It Works" }),
+      href: "#how-it-works",
+    },
+    {
+      label: t("landing.navbar.product", { defaultValue: "Product" }),
+      href: "#product",
+    },
+    {
+      label: t("landing.navbar.pricing", { defaultValue: "Pricing" }),
+      href: "#pricing",
+    },
     { label: t("landing.navbar.faq", { defaultValue: "FAQ" }), href: "#faq" },
   ];
 
@@ -25,8 +34,9 @@ export default function Navbar() {
   // Both the anonymous root and authenticated-safe /landing alias render this page.
   // Keep section links on the landing document instead of sending signed-in users
   // back through the authenticated root dashboard.
-  const isLandingPage = typeof window !== "undefined"
-    && ["/", "/landing"].includes(window.location.pathname);
+  const isLandingPage =
+    typeof window !== "undefined" &&
+    ["/", "/landing"].includes(window.location.pathname);
 
   return (
     <header
@@ -38,7 +48,11 @@ export default function Navbar() {
     >
       <nav className="container flex items-center justify-between gap-4 h-16 md:h-[4.5rem]">
         {/* Logo — prominent brand mark */}
-        <a href="/landing" className="flex shrink-0 items-center gap-2.5 group" aria-label="View the Get Phame landing page">
+        <a
+          href="/landing"
+          className="flex shrink-0 items-center gap-2.5 group"
+          aria-label="View the Get Phame landing page"
+        >
           <BrandLockup
             iconClassName="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105"
             textClassName="text-xl md:text-[1.4rem]"
@@ -47,7 +61,7 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-5 xl:gap-8">
-          {navLinks.map((link) => (
+          {navLinks.map(link => (
             <a
               key={link.href}
               href={isLandingPage ? link.href : `/landing${link.href}`}
@@ -71,7 +85,9 @@ export default function Navbar() {
             href="/onboarding"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_15px_oklch(0.78_0.15_75/0.2)]"
           >
-            {t("landing.navbar.getStartedFree", { defaultValue: "Get Started Free" })}
+            {t("landing.navbar.getStartedFree", {
+              defaultValue: "Get Started Free",
+            })}
           </a>
         </div>
 
@@ -81,7 +97,9 @@ export default function Navbar() {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="p-2 text-white"
-            aria-label={t("landing.navbar.toggleMenu", { defaultValue: "Toggle menu" })}
+            aria-label={t("landing.navbar.toggleMenu", {
+              defaultValue: "Toggle menu",
+            })}
           >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -92,7 +110,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden bg-[oklch(0.12_0.03_250/0.98)] backdrop-blur-xl border-t border-[#1e3050]">
           <div className="container py-4 flex flex-col gap-3">
-            {navLinks.map((link) => (
+            {navLinks.map(link => (
               <a
                 key={link.href}
                 href={isLandingPage ? link.href : `/landing${link.href}`}
@@ -103,17 +121,16 @@ export default function Navbar() {
               </a>
             ))}
             <hr className="border-[#1e3050] my-2" />
-            <a
-              href="/login"
-              className="text-lg font-bold text-white py-2.5"
-            >
+            <a href="/login" className="text-lg font-bold text-white py-2.5">
               {t("landing.navbar.signIn", { defaultValue: "Sign In" })}
             </a>
             <a
               href="/onboarding"
               className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-primary text-primary-foreground font-semibold text-base rounded-xl mt-2"
             >
-              {t("landing.navbar.getStartedFree", { defaultValue: "Get Started Free" })}
+              {t("landing.navbar.getStartedFree", {
+                defaultValue: "Get Started Free",
+              })}
             </a>
           </div>
         </div>

@@ -6,16 +6,16 @@ This release integrates the self-service WordPress account-pairing flow from pul
 
 ## Local Validation
 
-| Gate | Result | Evidence |
-|---|---|---|
-| Focused pairing regressions | Passed | 2 files; 12 tests passed, including generic endpoint failures and bounded-map pruning |
-| Full Vitest suite | Passed | 133 files passed; 786 tests passed; 6 skipped |
-| Strict TypeScript | Passed | The initial candidate passed after increasing the validation heap from 2 GB to 3 GB; the PR 42 replacement candidate passed on its first 3 GB run. |
-| Production dependency audit | Passed | `pnpm audit --prod` reported no known vulnerabilities |
-| Production build | Passed | Client and server production bundles completed |
-| Whitespace review | Passed | `git diff --check` returned no findings |
-| Added-line credential scan | Passed | No private-key, live Stripe key, GitHub token, Google key, database URL, or Stripe secret assignment pattern was found |
-| Integration parity | Passed | All nine PR 40 application and migration files matched the isolated merge of the feature branch into current protected `main` |
+| Gate                            | Result | Evidence                                                                                                                                                                              |
+| ------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Focused pairing regressions     | Passed | 2 files; 12 tests passed, including generic endpoint failures and bounded-map pruning                                                                                                 |
+| Full Vitest suite               | Passed | 133 files passed; 786 tests passed; 6 skipped                                                                                                                                         |
+| Strict TypeScript               | Passed | The initial candidate passed after increasing the validation heap from 2 GB to 3 GB; the PR 42 replacement candidate passed on its first 3 GB run.                                    |
+| Production dependency audit     | Passed | `pnpm audit --prod` reported no known vulnerabilities                                                                                                                                 |
+| Production build                | Passed | Client and server production bundles completed                                                                                                                                        |
+| Whitespace review               | Passed | `git diff --check` returned no findings                                                                                                                                               |
+| Added-line credential scan      | Passed | No private-key, live Stripe key, GitHub token, Google key, database URL, or Stripe secret assignment pattern was found                                                                |
+| Integration parity              | Passed | All nine PR 40 application and migration files matched the isolated merge of the feature branch into current protected `main`                                                         |
 | Local public endpoint fail-safe | Passed | Unknown pairing IDs, wrong secrets, and malformed or missing secrets return the same generic `404 NOT_FOUND`; responses use `Cache-Control: no-store` and expose no credential fields |
 
 ## Database

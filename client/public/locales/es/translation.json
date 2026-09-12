@@ -3378,6 +3378,40 @@
         "step4": "Use Header Mapping para Authorization y Idempotency-Key. Seleccione el identificador de envío del formulario para el valor de idempotency.",
         "step5": "Mantenga SSL Verify habilitado, guarde la acción y envíe un registro de prueba permitido.",
         "summary": "Use la acción Webhook con mapeos JSON de campos, personalizados y de encabezado."
+      },
+      "zapier": {
+        "summary": "Asocie un activador permitido en Webhooks by Zapier con una solicitud JSON explícita.",
+        "step1": "Elija el activador que produce un cliente permitido y luego agregue Webhooks by Zapier como siguiente acción.",
+        "step2": "Elija POST o Custom Request, defina la URL en el endpoint v1 de contactos y el tipo de contenido como JSON.",
+        "step3": "Asocie únicamente los campos indicados abajo. Añada Authorization en encabezados protegidos y nunca deje Data en blanco.",
+        "step4": "Asocie el ID de evento de origen sin modificar a externalId e Idempotency-Key para que los reintentos sean seguros.",
+        "step5": "Pruebe con un registro permitido y confirme el resultado enmascarado en Importaciones recientes de la API."
+      },
+      "make": {
+        "summary": "Use Make HTTP v4 con una estructura de datos JSON y credenciales protegidas de clave API.",
+        "step1": "Elija el módulo activador que genera un cliente permitido y agregue HTTP > Make a request (v4).",
+        "step2": "Establezca el método en POST, la URL en el endpoint v1 de contactos y el tipo de cuerpo en application/json.",
+        "step3": "Seleccione Data structure para la asignación JSON y configure la clave de Get Phame en el almacén de credenciales de Make.",
+        "step4": "Asigne el ID de evento estable del origen a externalId e Idempotency-Key. No genere un valor nuevo en cada reintento.",
+        "step5": "Active el control de errores para respuestas que no sean 2xx y ejecute una prueba de escenario permitida."
+      },
+      "jotform": {
+        "summary": "Use el webhook nativo de Jotform como activador y reenvíelo mediante un puente del lado del servidor que guarde la clave API.",
+        "step1": "En Configuración de Jotform > Integraciones, agregue Webhooks apuntando a una URL HTTPS de puente que usted controle.",
+        "step2": "En el puente, valide el formulario esperado y el consentimiento afirmativo, y luego procese la carga rawRequest.",
+        "step3": "Envíe solo los campos normalizados al endpoint v1 de contactos con los encabezados protegidos.",
+        "step4": "Reutilice el submissionID de Jotform como externalId e Idempotency-Key en todos los reintentos.",
+        "step5": "Confirme la recepción a Jotform de inmediato tras la aceptación duradera y pruebe un envío permitido de extremo a extremo.",
+        "caution": "La configuración nativa de webhooks de Jotform no documenta encabezados de solicitud protegidos. Guarde la clave de Get Phame exclusivamente en el puente del lado del servidor, nunca en Jotform ni en la URL."
+      },
+      "contactForm7": {
+        "summary": "Use una pequeña integración de WordPress ya que Contact Form 7 no ofrece una acción nativa de webhook genérico saliente.",
+        "step1": "Agregue una casilla de verificación obligatoria de aceptación en Contact Form 7 con un texto de consentimiento que coincida con sus canales reales.",
+        "step2": "Utilice el hook documentado wpcf7_before_send_mail en un plugin o mu-plugin de WordPress revisado para leer datos saneados.",
+        "step3": "Valide la identidad del formulario y el consentimiento en el servidor antes de enviar el JSON normalizado al endpoint v1 de contactos.",
+        "step4": "Genere y guarde una clave de idempotencia antes de reintentar para que los reintentos no dupliquen contactos.",
+        "step5": "Mantenga la clave API en la configuración del servidor y confirme un envío permitido en Importaciones recientes de la API.",
+        "caution": "No use eventos DOM del navegador ni el código del formulario para esta conexión. Exponen la clave API y no constituyen un límite de consentimiento seguro."
       }
     },
     "imports": {
@@ -3545,6 +3579,14 @@
           "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
           "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
           "5": "Envíe un registro permitido y luego actualice el estado aquí."
+        },
+        "jotform": {
+          "1": "Agregue Webhooks en Jotform y envíe los envíos a un puente seguro del lado del servidor que usted controle.",
+          "2": "No coloque una clave API de Get Phame en Jotform, en una URL pública ni en un script del navegador.",
+          "3": "Valide el formulario esperado y el consentimiento explícito en el puente antes de procesar rawRequest.",
+          "4": "Reenvíe el JSON normalizado a Get Phame con los encabezados protegidos que se muestran a continuación.",
+          "5": "Reutilice el submissionID de Jotform en externalId e Idempotency-Key en cada reintento.",
+          "6": "Envíe un registro de prueba permitido y luego actualice el estado aquí."
         }
       },
       "automation": {
@@ -3638,6 +3680,28 @@
       "failurePrivacy": "No se crearon ni expusieron credenciales. Comienza de nuevo desde tu panel de WordPress.",
       "expiredPrivacy": "Inicia una nueva conexión en WordPress. Get Phame nunca recibe tus credenciales de administrador de WordPress.",
       "privacy": "Esta solicitud expira en 15 minutos. Get Phame nunca recibe tus credenciales de administrador de WordPress."
+    },
+    "connector": {
+      "eyebrow": "Integración de WordPress",
+      "title": "Instala el conector de WordPress de Get Phame",
+      "description": "Descarga el conector centrado en el consentimiento, instálalo en WordPress y aprueba la conexión desde tu propio panel. Los envíos de formularios permanecen locales hasta que un administrador los revise y apruebe.",
+      "download": "Descargar el conector de WordPress",
+      "downloading": "Preparando descarga…",
+      "downloadStarted": "La descarga del conector de WordPress ha comenzado."
+    },
+    "simulator": {
+      "eyebrow": "Comprobación previa",
+      "title": "Verificar una carga útil de webhook",
+      "description": "Comprueba la estructura del contacto y el consentimiento antes de activar un webhook de Zapier, Make, Jotform o tu creador de formularios. Este simulador no usa una clave API, no crea contactos, no escribe en tu cuenta ni envía solicitudes.",
+      "verify": "Verificar carga útil",
+      "verifying": "Verificando…",
+      "payloadLabel": "Carga útil JSON del webhook",
+      "help": "Usa una carga útil representativa que no pertenezca a un cliente. El ejemplo utiliza datos de marcador de posición y no produce entregas.",
+      "validToast": "La carga útil es estructuralmente válida. No se envió nada.",
+      "invalidJson": "Introduce JSON válido antes de ejecutar el simulador.",
+      "validTitle": "La carga útil está lista para una comprobación previa en vivo.",
+      "validDetail": "Están presentes los datos obligatorios del contacto y el consentimiento explícito por correo. No se creó ni se envió nada.",
+      "invalidTitle": "La carga útil necesita cambios antes de activarla."
     }
   },
   "landing": {
@@ -3800,6 +3864,50 @@
       "warming": "Preparándose",
       "building": "Generando reputación",
       "established": "Establecida"
+    },
+    "selectionTitle": "Capacidad de envío actual",
+    "selectionGaugeLabel": "Envíos estimados disponibles ahora",
+    "selectionAdvice": "Según la capacidad actual, hasta {{ready}} de {{selected}} contactos seleccionados pueden enviarse ahora.",
+    "selectionOverCapacity": "{{count}} puede tener que esperar a la siguiente ventana de capacidad.",
+    "selectionEstimate": "Esta es una estimación actual. La capacidad puede cambiar antes de confirmar; los límites del servidor siguen aplicándose.",
+    "selectionBurstCap": "Tu plan permite hasta {{count}} solicitudes por acción masiva.",
+    "adminCaps": {
+      "eyebrow": "Control de administrador",
+      "title": "Límites de ráfaga de envíos masivos",
+      "description": "Define el máximo de solicitudes que una acción masiva puede iniciar por plan. El calentamiento del proveedor y los límites horario, diario y de cuenta siguen prevaleciendo.",
+      "requests": "solicitudes/acción",
+      "range": "Elige números enteros de {{min}} a {{max}}.",
+      "loadError": "No se pudieron cargar los límites actuales. Actualiza e inténtalo de nuevo.",
+      "protected": "Esta configuración global no puede aumentar un límite de seguridad del proveedor o de la cuenta.",
+      "saved": "Límites de envío masivo guardados.",
+      "saving": "Guardando…",
+      "save": "Guardar límites",
+      "usage": "Uso del límite configurado",
+      "usageLabel": "Límite de ráfaga configurado con respecto al máximo del nivel",
+      "nearMaximumBadge": "El límite de envíos en bloque es {{cap}}/{{max}}. Revise la configuración.",
+      "nearMaximumDescription": "Este límite por acción está cerca del máximo de la plataforma. El calentamiento del proveedor y los límites de seguridad por hora o día siguen aplicándose.",
+      "nearMaximumAction": "Revisar límites",
+      "nearMaximumActionLabel": "Revisar límite de envíos en bloque: {{cap}} de {{max}} solicitudes configuradas",
+      "remainingBurstValue": "{{configured}} de {{maximum}} solicitudes configuradas; quedan {{remaining}} envíos en bloque.",
+      "remainingBurstTooltip": "Aún se pueden configurar {{remaining}} envíos en bloque antes de que este nivel alcance el máximo de {{maximum}} solicitudes.",
+      "remainingBurstInvalid": "Ingrese un límite de número entero dentro del rango permitido para ver los envíos en bloque restantes.",
+      "auditTitle": "Historial de auditoría de límites por envío",
+      "auditDescription": "Los últimos seis cambios guardados registran al administrador y los valores exactos modificados por nivel.",
+      "auditRetry": "Reintentar",
+      "auditLoading": "Cargando historial de cambios…",
+      "auditError": "No se pudo cargar el historial de cambios de límites.",
+      "auditEmpty": "Aún no se han registrado cambios de límites por envío.",
+      "quickEditEyebrow": "Seguridad de envíos",
+      "quickEditTitle": "Edición rápida de límites por envío",
+      "quickEditDescription": "Actualiza el máximo de solicitudes de reseña que una acción masiva puede iniciar. Los límites del proveedor y de la cuenta siguen aplicándose.",
+      "quickEditFullSettings": "Configuración completa",
+      "quickEditLoading": "Cargando límites actuales…",
+      "quickEditUnavailable": "Los controles de límites se están actualizando. Tus límites actuales siguen activos.",
+      "quickEditInput": "Límite por envío de {{tier}}",
+      "quickEditRange": "Límites enteros de {{min}} a {{max}}.",
+      "quickEditSave": "Aplicar límites",
+      "quickEditSaved": "Límites por envío actualizados.",
+      "quickEditError": "No se pudieron actualizar los límites por envío. Inténtalo de nuevo."
     }
   },
   "developerEnrollment": {
@@ -4752,7 +4860,159 @@
       "alertDelivered": "Slack entregado",
       "alertFallbackDelivered": "Correo alternativo entregado",
       "alertNotSent": "No se confirmó la entrega de alerta",
-      "sanitizedDiagnostic": "Diagnóstico depurado"
+      "sanitizedDiagnostic": "Diagnóstico depurado",
+      "alertCooldown": "Tiempo de espera de alertas: {{minutes}} minutos (supresión de fluctuaciones transitorias activada)",
+      "exportOutages": "Exportar CSV de interrupciones",
+      "exportPreparing": "Preparando instantánea CSV…",
+      "exportFailure": "No se pudo generar la exportación de interrupciones: {{message}}",
+      "exportDownloaded": "Se descargaron {{count}} registros saneados de interrupción.",
+      "exportDialogTitle": "Registro de interrupciones del relé operativo",
+      "exportDialogDescription": "Instantánea CSV delimitada y saneada en el servidor para auditorías de confiabilidad. Se excluyen permanentemente credenciales y detalles sensibles.",
+      "exportSummary": "La instantánea contiene {{count}} de {{total}} interrupciones registradas.",
+      "exportTruncated": "Mostrando los últimos 1000 registros.",
+      "exportEmpty": "Aún no se han registrado interrupciones del relé.",
+      "exportStarted": "Inicio",
+      "exportStatus": "Estado",
+      "exportDuration": "Duración",
+      "exportCause": "Causa saneada",
+      "exportCancel": "Cerrar",
+      "exportDownload": "Descargar CSV"
+    }
+  },
+  "trialBanner": {
+    "title": "Tu prueba de Get Phame está activa",
+    "daysRemaining_one": "Queda {{count}} día antes de que comience tu plan de pago.",
+    "daysRemaining_other": "Quedan {{count}} días antes de que comience tu plan de pago.",
+    "checkout": "Elige tu plan de pago",
+    "openingCheckout": "Abriendo el pago…",
+    "checkoutOpened": "El pago seguro se abrió en una pestaña nueva.",
+    "dismiss": "Descartar recordatorio de prueba",
+    "daysRemaining": "Quedan {{count}} días antes de que comience tu plan de pago."
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "Instantánea de diagnósticos",
+    "description": "Deja las fechas vacías para el mes UTC anterior completo o elige hasta 366 días.",
+    "startDate": "Fecha de inicio (UTC)",
+    "endDate": "Fecha de finalización (UTC)",
+    "completeRange": "Elige una fecha de inicio y una de finalización, o deja ambas vacías.",
+    "invalidRange": "La fecha de finalización debe ser igual o posterior a la fecha de inicio.",
+    "generating": "Generando instantánea…",
+    "generate": "Generar instantánea ahora",
+    "presetLabel": "Períodos predefinidos en UTC",
+    "last7Days": "Últimos 7 días",
+    "last30Days": "Últimos 30 días"
+  },
+  "adminProcedureRecovery": {
+    "title": "Los controles de administrador se están actualizando.",
+    "description": "Este control administrativo se está actualizando. La configuración actual no ha cambiado; actualiza la página en un momento para volver a intentarlo."
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "Integridad de datos de facturación",
+    "loading": "Comprobando registros de suscripción…",
+    "healthyTitle": "Los perfiles de negocio y los registros de Stripe coinciden",
+    "attentionTitle": "Los registros de suscripción requieren revisión",
+    "unavailable": "No se pudo completar la comparación local de registros. Actualice para intentarlo de nuevo.",
+    "summary": "{{profiles}} perfiles y {{subscriptions}} registros locales de suscripción comprobados. No se realiza ninguna solicitud a la API de Stripe.",
+    "refresh": "Actualizar",
+    "issues": "Discrepancias detectadas en los registros",
+    "checkedAt": "Última comprobación: {{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "Perfil de pago sin registro de suscripción activa",
+      "active_subscription_on_free_profile": "Suscripción activa asociada a un perfil gratuito",
+      "plan_tier_mismatch": "El plan de la suscripción activa no coincide con el nivel del perfil",
+      "subscription_without_business_profile": "Existe un registro de suscripción sin perfil de negocio asociado",
+      "duplicate_subscription_records": "Se encontraron múltiples registros de suscripción para el mismo usuario"
+    }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "Correcto",
+      "degraded": "Requiere atención",
+      "unavailable": "No disponible",
+      "notConfigured": "Sin configurar"
+    },
+    "card": {
+      "latency": "Latencia",
+      "notMeasured": "No medida",
+      "latencyValue": "{{value}} milisegundos",
+      "reauthenticate": "Volver a autenticar de forma segura"
+    },
+    "back": "Volver a administración",
+    "eyebrow": "Operaciones en directo",
+    "title": "Estado de integraciones",
+    "subtitle": "Comprobaciones limitadas y de solo lectura de la base de datos y los servicios de entrega conectados. Se actualiza cada 15 segundos mientras esta página está abierta.",
+    "refresh": "Actualizar ahora",
+    "summary": {
+      "healthy": "Todos los servicios configurados responden normalmente.",
+      "degraded": "Al menos un servicio configurado requiere atención. Revise la tarjeta afectada a continuación.",
+      "unavailable": "Al menos un servicio necesario no está disponible. Vuelva a intentarlo después de resolver el problema de conexión.",
+      "title": "Estado actual del sistema",
+      "checked": "Comprobado {{time}} · {{duration}} ms"
+    },
+    "loadError": {
+      "title": "Los datos de estado no están disponibles",
+      "body": "No se infiere ningún estado a partir de datos ausentes. Use Actualizar ahora para repetir las comprobaciones limitadas."
+    },
+    "cards": {
+      "label": "Comprobaciones de estado de integraciones",
+      "database": "Conexión de base de datos",
+      "heartbeat": "Heartbeats en segundo plano",
+      "stripe": "API de Stripe",
+      "emailRelay": "Relay de correo",
+      "sources": "Fuentes entrantes",
+      "sourcesFooter": "{{healthy}} correctas · {{attention}} requieren atención"
+    },
+    "dashboard": {
+      "eyebrow": "Diagnóstico en directo",
+      "title": "Conexión de base de datos",
+      "checking": "Comprobando la sonda de conexión de solo lectura…",
+      "unavailable": "El estado de conexión no está disponible. No se infiere un estado correcto a partir de datos ausentes.",
+      "loading": "Comprobando…",
+      "healthy": "Correcto · {{latency}} ms",
+      "review": "Revisar estado"
+    },
+    "dashboardCardTitle": "Estado de integraciones",
+    "dashboardCardBody": "Comprobaciones en directo de base de datos, planificador, Stripe, relay de correo y fuentes",
+    "sparkline": {
+      "empty": "El historial de 24 horas aparecerá tras las comprobaciones programadas.",
+      "title": "Latencia · últimas 24 horas",
+      "max": "Pico {{value}} ms",
+      "label": "Historial de latencia de {{title}}. Pico de {{value}} milisegundos."
+    },
+    "alerts": {
+      "title": "Webhooks de alerta operativa",
+      "description": "Envía una alerta operativa acotada a Slack o Discord cuando un servicio no esté disponible o supere el umbral de latencia. Las URL de webhook se cifran en reposo y no se vuelven a mostrar.",
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "provider": "Destino de la alerta",
+      "latencyThreshold": "Umbral de latencia alta (ms)",
+      "webhookUrl": "URL de webhook entrante",
+      "webhookPlaceholderSaved": "Guardada de forma segura: escribe un reemplazo solo para cambiarla",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "Usa la URL oficial de webhook entrante del proveedor seleccionado. No uses automatización de navegador ni agregues credenciales.",
+      "conditions": "Condiciones de alerta",
+      "enable": "Habilitar este destino de alerta",
+      "failure": "Servicio no disponible o credenciales rechazadas",
+      "highLatency": "La latencia medida alcanza el umbral",
+      "save": "Guardar ajustes de alerta",
+      "saving": "Guardando…",
+      "saved": "Ajustes de alertas de salud guardados.",
+      "test": "Enviar alerta de prueba",
+      "testing": "Probando…",
+      "testSuccess": "Alerta de prueba entregada.",
+      "remove": "Eliminar destino",
+      "removed": "Destino de alertas eliminado.",
+      "invalidThreshold": "Elige un umbral de latencia entre 100 y 60.000 ms.",
+      "providerSlack": "Webhook entrante de Slack",
+      "providerDiscord": "Webhook entrante de Discord"
+    },
+    "reauth": {
+      "title": "La autorización de Stripe requiere atención",
+      "description": "Get Phame no expone credenciales de facturación en el navegador. Actualiza la configuración administrada de Stripe en los controles seguros de pago y vuelve a verificar aquí.",
+      "notice": "En este cuadro de diálogo no se muestra ningún secreto, extremo, cliente ni registro de facturación.",
+      "close": "Cerrar",
+      "recheck": "Volver a verificar conexión segura",
+      "openSettings": "Abrir ajustes de pago"
     }
   }
 }

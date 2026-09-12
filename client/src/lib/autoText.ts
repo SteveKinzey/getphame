@@ -35,7 +35,10 @@ function decodeEntities(value: string) {
     quot: '"',
   };
 
-  return value.replace(/&(amp|apos|gt|lt|nbsp|quot);/g, (_, entity: string) => entities[entity] ?? _);
+  return value.replace(
+    /&(amp|apos|gt|lt|nbsp|quot);/g,
+    (_, entity: string) => entities[entity] ?? _
+  );
 }
 
 function getActiveLocale(): SupportedLang {
@@ -49,13 +52,18 @@ export function getStaticLocalizationSupplementUrl(locale: SupportedLang) {
   return STATIC_COPY_SUPPLEMENT_URLS[locale];
 }
 
-function mergeStaticCopySupplement(supplement: StaticCopySupplement, locale: SupportedLang) {
+function mergeStaticCopySupplement(
+  supplement: StaticCopySupplement,
+  locale: SupportedLang
+) {
   if (!Array.isArray(supplement.manifest) || !supplement.translations) {
     throw new Error("Static localization supplement is malformed.");
   }
 
   if (supplement.locale && supplement.locale !== locale) {
-    throw new Error(`Static localization supplement locale mismatch: expected ${locale}.`);
+    throw new Error(
+      `Static localization supplement locale mismatch: expected ${locale}.`
+    );
   }
 
   for (const entry of supplement.manifest) {
@@ -64,7 +72,7 @@ function mergeStaticCopySupplement(supplement: StaticCopySupplement, locale: Sup
     sourceToKey.set(decodeEntities(entry.source), entry.key);
   }
 
-  Object.assign(translationCatalogs[locale] ??= {}, supplement.translations);
+  Object.assign((translationCatalogs[locale] ??= {}), supplement.translations);
 }
 
 /**
@@ -73,7 +81,9 @@ function mergeStaticCopySupplement(supplement: StaticCopySupplement, locale: Sup
  * A per-locale promise cache prevents duplicate fetches while allowing a
  * language switch to preload its own copy before the UI changes language.
  */
-export function loadStaticLocalizationSupplement(requestedLocale?: SupportedLang) {
+export function loadStaticLocalizationSupplement(
+  requestedLocale?: SupportedLang
+) {
   const locale = requestedLocale ?? getActiveLocale();
   if (locale === "en") return Promise.resolve();
 
@@ -84,13 +94,22 @@ export function loadStaticLocalizationSupplement(requestedLocale?: SupportedLang
   if (!url) return Promise.resolve();
 
   const ready = fetch(url)
-    .then(async (response) => {
-      if (!response.ok) throw new Error(`Static localization supplement request failed (${response.status}).`);
-      mergeStaticCopySupplement(await response.json() as StaticCopySupplement, locale);
+    .then(async response => {
+      if (!response.ok)
+        throw new Error(
+          `Static localization supplement request failed (${response.status}).`
+        );
+      mergeStaticCopySupplement(
+        (await response.json()) as StaticCopySupplement,
+        locale
+      );
     })
-    .catch((error) => {
+    .catch(error => {
       loadedStaticCopyLocales.delete(locale);
-      console.error(`[i18n] ${locale} static-copy supplement unavailable; using English static-copy fallback.`, error);
+      console.error(
+        `[i18n] ${locale} static-copy supplement unavailable; using English static-copy fallback.`,
+        error
+      );
     });
 
   loadedStaticCopyLocales.set(locale, ready);
@@ -105,21 +124,25 @@ function interpolate(value: string, variables?: Interpolation) {
   });
 }
 
-const ENGLISH_MONTH_PATTERN = /\b(January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+(\d{1,2}),?)?\s+(\d{4})\b/g;
+const ENGLISH_MONTH_PATTERN =
+  /\b(January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+(\d{1,2}),?)?\s+(\d{4})\b/g;
 
 function localizeEmbeddedDates(value: string, locale: string) {
   if (locale === "en") return value;
 
-  return value.replace(ENGLISH_MONTH_PATTERN, (source, month: string, day: string | undefined, year: string) => {
-    const parsed = new Date(`${month} ${day ?? "1"}, ${year}`);
-    if (Number.isNaN(parsed.getTime())) return source;
+  return value.replace(
+    ENGLISH_MONTH_PATTERN,
+    (source, month: string, day: string | undefined, year: string) => {
+      const parsed = new Date(`${month} ${day ?? "1"}, ${year}`);
+      if (Number.isNaN(parsed.getTime())) return source;
 
-    return new Intl.DateTimeFormat(locale, {
-      year: "numeric",
-      month: "long",
-      ...(day ? { day: "numeric" } : {}),
-    }).format(parsed);
-  });
+      return new Intl.DateTimeFormat(locale, {
+        year: "numeric",
+        month: "long",
+        ...(day ? { day: "numeric" } : {}),
+      }).format(parsed);
+    }
+  );
 }
 
 /**
@@ -129,11 +152,15 @@ function localizeEmbeddedDates(value: string, locale: string) {
 export function at(source: string, variables?: Interpolation) {
   const key = sourceToKey.get(source);
   const locale = getActiveLocale();
-  const localized = locale !== "en" && key
-    ? translationCatalogs[locale]?.[key] ?? source
-    : source;
+  const localized =
+    locale !== "en" && key
+      ? (translationCatalogs[locale]?.[key] ?? source)
+      : source;
 
-  return localizeEmbeddedDates(interpolate(decodeEntities(localized), variables), locale);
+  return localizeEmbeddedDates(
+    interpolate(decodeEntities(localized), variables),
+    locale
+  );
 }
 
 /** Returns a localized value only when the source was included in the audited manifest. */

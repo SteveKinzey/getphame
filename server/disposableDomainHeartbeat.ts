@@ -12,10 +12,13 @@ import {
   saveDisposableDomainSchedulerTaskUid,
 } from "./disposableDomains";
 
-export const DISPOSABLE_DOMAIN_HEARTBEAT_NAME = "get-phame-disposable-domains-v1";
-export const DISPOSABLE_DOMAIN_CALLBACK_PATH = "/api/scheduled/disposable-domains";
+export const DISPOSABLE_DOMAIN_HEARTBEAT_NAME =
+  "get-phame-disposable-domains-v1";
+export const DISPOSABLE_DOMAIN_CALLBACK_PATH =
+  "/api/scheduled/disposable-domains";
 
-const DESCRIPTION = "Synchronize approved disposable-email domains at 2:00 AM Pacific time.";
+const DESCRIPTION =
+  "Synchronize approved disposable-email domains at 2:00 AM Pacific time.";
 
 type Deps = {
   list: typeof listHeartbeatJobs;
@@ -44,15 +47,30 @@ function desiredUpdate(): HeartbeatJobUpdate {
   };
 }
 
-function findOwnedJob(jobs: HeartbeatJobInfo[], taskUid: string | null | undefined) {
+function findOwnedJob(
+  jobs: HeartbeatJobInfo[],
+  taskUid: string | null | undefined
+) {
   const persisted = taskUid
-    ? jobs.find(job => job.taskUid === taskUid && job.name === DISPOSABLE_DOMAIN_HEARTBEAT_NAME)
+    ? jobs.find(
+        job =>
+          job.taskUid === taskUid &&
+          job.name === DISPOSABLE_DOMAIN_HEARTBEAT_NAME
+      )
     : undefined;
-  return persisted ?? jobs.find(job => job.name === DISPOSABLE_DOMAIN_HEARTBEAT_NAME) ?? null;
+  return (
+    persisted ??
+    jobs.find(job => job.name === DISPOSABLE_DOMAIN_HEARTBEAT_NAME) ??
+    null
+  );
 }
 
-export async function reconcileDisposableDomainHeartbeat(options?: { enabled?: boolean; deps?: Deps }) {
-  if (!(options?.enabled ?? ENV.isProduction)) return { status: "skipped" as const };
+export async function reconcileDisposableDomainHeartbeat(options?: {
+  enabled?: boolean;
+  deps?: Deps;
+}) {
+  if (!(options?.enabled ?? ENV.isProduction))
+    return { status: "skipped" as const };
   const deps = options?.deps ?? defaultDeps;
   const scheduler = await deps.getScheduler();
   const jobs = await deps.list("", { page: 1, pageSize: 100 });
@@ -63,14 +81,17 @@ export async function reconcileDisposableDomainHeartbeat(options?: { enabled?: b
     return { status: "reconciled" as const };
   }
   try {
-    const created = await deps.create({
-      name: DISPOSABLE_DOMAIN_HEARTBEAT_NAME,
-      cron: DISPOSABLE_DOMAIN_CRON,
-      path: DISPOSABLE_DOMAIN_CALLBACK_PATH,
-      method: "POST",
-      payload: {},
-      description: DESCRIPTION,
-    }, "");
+    const created = await deps.create(
+      {
+        name: DISPOSABLE_DOMAIN_HEARTBEAT_NAME,
+        cron: DISPOSABLE_DOMAIN_CRON,
+        path: DISPOSABLE_DOMAIN_CALLBACK_PATH,
+        method: "POST",
+        payload: {},
+        description: DESCRIPTION,
+      },
+      ""
+    );
     await deps.saveTaskUid(created.taskUid);
     return { status: "created" as const };
   } catch (error) {

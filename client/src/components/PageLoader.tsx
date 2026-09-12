@@ -9,7 +9,7 @@ export default function PageLoader() {
   const [dot, setDot] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setDot((d) => (d + 1) % 3), 400);
+    const t = setInterval(() => setDot(d => (d + 1) % 3), 400);
     return () => clearInterval(t);
   }, []);
 
@@ -52,7 +52,7 @@ export default function PageLoader() {
 
       {/* Animated dots */}
       <div className="flex items-center gap-1.5">
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <div
             key={i}
             className="rounded-full transition-all duration-300"
@@ -67,7 +67,6 @@ export default function PageLoader() {
           />
         ))}
       </div>
-
     </div>
   );
 }

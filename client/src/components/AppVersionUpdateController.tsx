@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
@@ -44,7 +39,9 @@ export function AppVersionProvider({ children }: { children: ReactNode }) {
 export function useAppVersionUpdate() {
   const context = useContext(AppVersionContext);
   if (!context) {
-    throw new Error("useAppVersionUpdate must be used inside AppVersionProvider");
+    throw new Error(
+      "useAppVersionUpdate must be used inside AppVersionProvider"
+    );
   }
   return context;
 }
@@ -80,7 +77,11 @@ function updateStatusMessage(
   return "";
 }
 
-function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) {
+function AppVersionUpdateNotice({
+  update,
+}: {
+  update: AppVersionContextValue;
+}) {
   const { t } = useTranslation();
   const {
     availableVersion,
@@ -104,7 +105,11 @@ function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) 
           >
             <div className="flex items-start gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl rr-bg-gold">
-                <RefreshCw size={17} className="rr-text-navy" aria-hidden="true" />
+                <RefreshCw
+                  size={17}
+                  className="rr-text-navy"
+                  aria-hidden="true"
+                />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-black rr-text-navy">
@@ -122,7 +127,9 @@ function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) 
                     onClick={requestUpdate}
                     className="rounded-lg px-3 py-2 text-xs font-black transition-[transform,opacity] duration-150 active:scale-[0.97] rr-bg-navy rr-text-gold"
                   >
-                    {t("versionUpdate.updateNow", { defaultValue: "Update now" })}
+                    {t("versionUpdate.updateNow", {
+                      defaultValue: "Update now",
+                    })}
                   </button>
                   <button
                     type="button"
@@ -190,12 +197,18 @@ function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) 
     if (!statusMessage) return;
 
     if (state === "failed") {
-      toast.error(statusMessage, { id: UPDATE_STATUS_TOAST_ID, duration: 8_000 });
+      toast.error(statusMessage, {
+        id: UPDATE_STATUS_TOAST_ID,
+        duration: 8_000,
+      });
       return;
     }
 
     if (state === "blocked") {
-      toast.warning(statusMessage, { id: UPDATE_STATUS_TOAST_ID, duration: 6_000 });
+      toast.warning(statusMessage, {
+        id: UPDATE_STATUS_TOAST_ID,
+        duration: 6_000,
+      });
       return;
     }
 
@@ -204,7 +217,10 @@ function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) 
       return;
     }
 
-    toast.message(statusMessage, { id: UPDATE_STATUS_TOAST_ID, duration: 4_000 });
+    toast.message(statusMessage, {
+      id: UPDATE_STATUS_TOAST_ID,
+      duration: 4_000,
+    });
   }, [state, statusMessage]);
 
   return (
@@ -221,7 +237,11 @@ function AppVersionUpdateNotice({ update }: { update: AppVersionContextValue }) 
         <AlertDialogContent className="max-w-md rounded-2xl">
           <AlertDialogHeader>
             <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl rr-bg-gold">
-              <AlertTriangle size={20} className="rr-text-navy" aria-hidden="true" />
+              <AlertTriangle
+                size={20}
+                className="rr-text-navy"
+                aria-hidden="true"
+              />
             </div>
             <AlertDialogTitle className="rr-text-navy">
               {t("versionUpdate.discardTitle", {

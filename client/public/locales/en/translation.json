@@ -3437,6 +3437,14 @@
           "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
           "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
           "5": "Send one permitted record, then refresh health here."
+        },
+        "jotform": {
+          "1": "Add Jotform Webhooks and send form submissions to a server-side bridge you control.",
+          "2": "Do not place a Get Phame API key in Jotform, a public URL, or a browser script.",
+          "3": "Validate the expected form and affirmative consent in the bridge, then parse rawRequest.",
+          "4": "Forward the normalized JSON to Get Phame with the protected headers shown below.",
+          "5": "Reuse Jotform submissionID for externalId and Idempotency-Key on every retry.",
+          "6": "Submit one permitted record, then refresh health here."
         }
       },
       "automation": {
@@ -3586,7 +3594,41 @@
       "check5": "A successful import appears with a masked email in Recent API imports.",
       "check6": "The imported contact is not emailed automatically.",
       "title": "Form-builder setup guides",
-      "description": "Choose your builder for endpoint, authorization, field mapping, consent, and testing instructions."
+      "description": "Choose your builder for endpoint, authorization, field mapping, consent, and testing instructions.",
+      "zapier": {
+        "summary": "Map one eligible trigger into Webhooks by Zapier with an explicit JSON request.",
+        "step1": "Choose the trigger that creates an eligible customer record, then add Webhooks by Zapier as the next action.",
+        "step2": "Choose POST or Custom Request, set the URL to the v1 contact endpoint, and set Payload Type to JSON.",
+        "step3": "Map only the fields below. Add Authorization in protected headers and never leave the Data section blank.",
+        "step4": "Map the source event ID unchanged into externalId and Idempotency-Key so a retry remains a safe replay.",
+        "step5": "Test with one permitted record, then verify its masked result in Recent API imports."
+      },
+      "make": {
+        "summary": "Use Make HTTP v4 with a JSON data structure and a protected API-key credential.",
+        "step1": "Choose the trigger module that produces an eligible customer record, then add HTTP > Make a request (v4).",
+        "step2": "Set Method to POST, URL to the v1 contact endpoint, and Body content type to application/json.",
+        "step3": "Choose Data structure for JSON mapping and configure the Get Phame key in Make’s protected credential store.",
+        "step4": "Map the stable source event ID into externalId and Idempotency-Key. Do not generate a new value on retry.",
+        "step5": "Enable error handling for non-2xx responses, then run one permitted scenario test."
+      },
+      "jotform": {
+        "summary": "Use the native Jotform webhook as a trigger and forward it through a server-side bridge that holds the API key.",
+        "step1": "In Jotform Settings > Integrations, add Webhooks and point it to an HTTPS bridge URL you control.",
+        "step2": "In the bridge, validate the expected form and affirmative consent, then parse Jotform’s rawRequest payload.",
+        "step3": "Send only the normalized fields below from the bridge to the v1 contact endpoint with protected headers.",
+        "step4": "Reuse Jotform submissionID as externalId and Idempotency-Key for every downstream retry.",
+        "step5": "Acknowledge Jotform promptly after durable acceptance, then test one permitted submission end to end.",
+        "caution": "Jotform’s native webhook setup does not document protected request headers. Keep the Get Phame API key exclusively in the server-side bridge, never in the Jotform form or webhook URL."
+      },
+      "contactForm7": {
+        "summary": "Use a small WordPress-side integration because Contact Form 7 has no native generic outbound webhook action.",
+        "step1": "Add a required Contact Form 7 acceptance checkbox with consent wording that matches your actual outreach channels.",
+        "step2": "Use the documented wpcf7_before_send_mail hook in a reviewed WordPress plugin or mu-plugin to read sanitized submission data.",
+        "step3": "Validate the form identity and consent server-side, then post only the mapped JSON fields to the v1 contact endpoint.",
+        "step4": "Generate and persist one idempotency key before retrying so retries never create duplicate contact work.",
+        "step5": "Keep the API key in server configuration and verify one permitted submission in Recent API imports.",
+        "caution": "Do not use browser DOM events or form markup for this connection. They expose the API key and are not an authoritative consent-to-import boundary."
+      }
     },
     "copyFailed": "Could not copy automatically. Select and copy the value manually.",
     "contract": {
@@ -3694,6 +3736,28 @@
       "failurePrivacy": "No credentials were created or exposed. Start again from your WordPress dashboard.",
       "expiredPrivacy": "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials.",
       "privacy": "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."
+    },
+    "connector": {
+      "eyebrow": "WordPress integration",
+      "title": "Install the Get Phame WordPress Connector",
+      "description": "Download the consent-first Connector, install it in WordPress, and approve the connection from your own dashboard. Form submissions stay local until an administrator reviews and approves them.",
+      "download": "Download WordPress Connector",
+      "downloading": "Preparing download…",
+      "downloadStarted": "WordPress Connector download started."
+    },
+    "simulator": {
+      "eyebrow": "Preflight check",
+      "title": "Verify a webhook payload",
+      "description": "Check the contact and consent shape before activating a Zapier, Make, Jotform, or form-builder webhook. This simulator never uses an API key, creates a contact, writes to your account, or sends a request.",
+      "verify": "Verify payload",
+      "verifying": "Verifying…",
+      "payloadLabel": "Webhook JSON payload",
+      "help": "Use a representative, non-customer payload. The example uses placeholder data and has no delivery side effects.",
+      "validToast": "Payload is structurally valid. Nothing was sent.",
+      "invalidJson": "Enter valid JSON before running the simulator.",
+      "validTitle": "Payload is ready for a live preflight.",
+      "validDetail": "Required contact and explicit email consent evidence are present. Nothing was created or sent.",
+      "invalidTitle": "Payload needs changes before go-live."
     }
   },
   "helpAssistant": {
@@ -3746,6 +3810,50 @@
       "warming": "Warming up",
       "building": "Building reputation",
       "established": "Established"
+    },
+    "selectionTitle": "Current send capacity",
+    "selectionGaugeLabel": "Estimated sends available now",
+    "selectionAdvice": "Based on current capacity, up to {{ready}} of {{selected}} selected contacts can send now.",
+    "selectionOverCapacity": "{{count}} may wait for the next capacity window.",
+    "selectionEstimate": "This is a current estimate. Capacity can change before confirmation; server limits still apply.",
+    "selectionBurstCap": "Your plan allows up to {{count}} requests per bulk action.",
+    "adminCaps": {
+      "eyebrow": "Administrator control",
+      "title": "Bulk-send burst caps",
+      "description": "Sets the maximum requests one bulk action may initiate by plan. Provider warm-up, hourly, daily, and account safety limits still win.",
+      "requests": "requests/action",
+      "range": "Choose whole numbers from {{min}} to {{max}}.",
+      "loadError": "Current caps could not be loaded. Refresh and try again.",
+      "protected": "This global setting cannot raise a provider or account safety limit.",
+      "saved": "Bulk-send caps saved.",
+      "saving": "Saving…",
+      "save": "Save caps",
+      "usage": "Configured cap usage",
+      "usageLabel": "Configured burst cap relative to the tier maximum",
+      "nearMaximumBadge": "Burst cap at {{cap}}/{{max}}. Review the configuration.",
+      "nearMaximumDescription": "This per-action burst cap is near the platform maximum. Provider warm-up and hourly or daily safety limits still apply.",
+      "nearMaximumAction": "Review caps",
+      "nearMaximumActionLabel": "Review burst cap setting: {{cap}} of {{max}} requests configured",
+      "remainingBurstValue": "{{configured}} of {{maximum}} requests configured; {{remaining}} burst sends remaining.",
+      "remainingBurstTooltip": "{{remaining}} burst sends can still be configured before this tier reaches the {{maximum}}-request maximum.",
+      "remainingBurstInvalid": "Enter a whole-number cap within the allowed range to view remaining burst sends.",
+      "auditTitle": "Burst-cap audit trail",
+      "auditDescription": "The last six saved changes record the administrator and the exact tier values changed.",
+      "auditRetry": "Retry",
+      "auditLoading": "Loading change history…",
+      "auditError": "The cap change history could not be loaded.",
+      "auditEmpty": "No burst-cap changes have been recorded yet.",
+      "quickEditEyebrow": "Sending safety",
+      "quickEditTitle": "Quick-edit burst caps",
+      "quickEditDescription": "Update the maximum review requests a single bulk action may initiate. Provider and account limits still apply.",
+      "quickEditFullSettings": "Full settings",
+      "quickEditLoading": "Loading current caps…",
+      "quickEditUnavailable": "Burst-cap controls are updating. Your existing limits remain active.",
+      "quickEditInput": "{{tier}} burst cap",
+      "quickEditRange": "Whole-number limits from {{min}} to {{max}}.",
+      "quickEditSave": "Apply caps",
+      "quickEditSaved": "Burst caps updated.",
+      "quickEditError": "The burst caps could not be updated. Try again."
     }
   },
   "developerEnrollment": {
@@ -4701,7 +4809,159 @@
       "alertDelivered": "Slack delivered",
       "alertFallbackDelivered": "Email fallback delivered",
       "alertNotSent": "No alert delivery confirmed",
-      "sanitizedDiagnostic": "Sanitized diagnostic"
+      "sanitizedDiagnostic": "Sanitized diagnostic",
+      "alertCooldown": "Alert cooldown: {{minutes}} minutes (transient flap suppression enabled)",
+      "exportOutages": "Export outage CSV",
+      "exportPreparing": "Preparing CSV snapshot…",
+      "exportFailure": "Outage export could not be generated: {{message}}",
+      "exportDownloaded": "Downloaded {{count}} sanitized outage records.",
+      "exportDialogTitle": "Operational Relay Outage Log",
+      "exportDialogDescription": "Bounded, server-sanitized CSV snapshot of primary relay outages for reliability audits. Sensitive diagnostic values and credentials are permanently excluded.",
+      "exportSummary": "Snapshot contains {{count}} of {{total}} recorded outages.",
+      "exportTruncated": "Displaying the latest 1,000 records.",
+      "exportEmpty": "No relay outages have been recorded yet.",
+      "exportStarted": "Started",
+      "exportStatus": "Status",
+      "exportDuration": "Duration",
+      "exportCause": "Sanitized cause",
+      "exportCancel": "Close",
+      "exportDownload": "Download CSV"
+    }
+  },
+  "trialBanner": {
+    "title": "Your Get Phame trial is active",
+    "daysRemaining_one": "{{count}} day remains before your paid plan begins.",
+    "daysRemaining_other": "{{count}} days remain before your paid plan begins.",
+    "checkout": "Choose your paid plan",
+    "openingCheckout": "Opening checkout…",
+    "checkoutOpened": "Secure checkout opened in a new tab.",
+    "dismiss": "Dismiss trial reminder",
+    "daysRemaining": "{{count}} days remain before your paid plan begins."
+  },
+  "adminDiagnosticsSnapshot": {
+    "title": "Diagnostics snapshot",
+    "description": "Leave dates blank for the completed previous UTC month, or choose up to 366 days.",
+    "startDate": "Start date (UTC)",
+    "endDate": "End date (UTC)",
+    "completeRange": "Choose both a start and end date, or leave both blank.",
+    "invalidRange": "The end date must be on or after the start date.",
+    "generating": "Generating snapshot…",
+    "generate": "Generate Snapshot Now",
+    "presetLabel": "UTC date presets",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days"
+  },
+  "adminProcedureRecovery": {
+    "title": "Administrator controls are updating.",
+    "description": "This administrator control is updating. Your existing settings are unchanged; refresh in a moment to try again."
+  },
+  "adminSubscriptionHealth": {
+    "eyebrow": "Billing data integrity",
+    "loading": "Checking subscription records…",
+    "healthyTitle": "Business profiles and Stripe records match",
+    "attentionTitle": "Subscription records need review",
+    "unavailable": "The local record comparison could not be completed. Refresh to try again.",
+    "summary": "{{profiles}} profiles and {{subscriptions}} local subscription records checked. No Stripe API request is made.",
+    "refresh": "Refresh",
+    "issues": "Detected record mismatches",
+    "checkedAt": "Last checked {{time}}",
+    "issue": {
+      "paid_profile_without_active_subscription": "Paid profile with no active subscription record",
+      "active_subscription_on_free_profile": "Active subscription attached to a free profile",
+      "plan_tier_mismatch": "Active subscription plan does not match profile tier",
+      "subscription_without_business_profile": "Subscription record exists without an associated business profile",
+      "duplicate_subscription_records": "Multiple subscription records found for the same user"
+    }
+  },
+  "integrationHealth": {
+    "status": {
+      "healthy": "Healthy",
+      "degraded": "Needs attention",
+      "unavailable": "Unavailable",
+      "notConfigured": "Not configured"
+    },
+    "card": {
+      "latency": "Latency",
+      "notMeasured": "Not measured",
+      "latencyValue": "{{value}} ms",
+      "reauthenticate": "Re-authenticate securely"
+    },
+    "back": "Back to administration",
+    "eyebrow": "Live operations",
+    "title": "Integration health",
+    "subtitle": "Bounded, read-only checks for the database and connected delivery services. Refreshes every 15 seconds while this page is open.",
+    "refresh": "Refresh now",
+    "summary": {
+      "healthy": "All configured services are responding normally.",
+      "degraded": "At least one configured service needs attention. Review the affected card below.",
+      "unavailable": "At least one required service is unavailable. Retry after resolving the underlying connection issue.",
+      "title": "Current system status",
+      "checked": "Checked {{time}} · {{duration}} ms"
+    },
+    "loadError": {
+      "title": "Health data is unavailable",
+      "body": "No status is inferred from missing data. Use Refresh now to retry the bounded checks."
+    },
+    "cards": {
+      "label": "Integration health checks",
+      "database": "Database connection",
+      "heartbeat": "Background heartbeats",
+      "stripe": "Stripe API",
+      "emailRelay": "Email relay",
+      "sources": "Inbound sources",
+      "sourcesFooter": "{{healthy}} healthy · {{attention}} attention"
+    },
+    "dashboard": {
+      "eyebrow": "Live diagnostics",
+      "title": "Database connection",
+      "checking": "Checking the read-only connection probe…",
+      "unavailable": "Connection status is unavailable. No healthy state is inferred from missing data.",
+      "loading": "Checking…",
+      "healthy": "Healthy · {{latency}} ms",
+      "review": "Review health"
+    },
+    "dashboardCardTitle": "Integration health",
+    "dashboardCardBody": "Live database, scheduler, Stripe, email relay, and source checks",
+    "sparkline": {
+      "empty": "24-hour history will appear after scheduled checks run.",
+      "title": "Latency · last 24 hours",
+      "max": "Peak {{value}} ms",
+      "label": "{{title}} latency history. Peak {{value}} milliseconds."
+    },
+    "alerts": {
+      "title": "Operational alert webhooks",
+      "description": "Send a bounded operational alert to Slack or Discord when a checked service is unavailable or exceeds your latency threshold. Webhook URLs are encrypted at rest and never shown again.",
+      "active": "Active",
+      "inactive": "Not active",
+      "provider": "Alert destination",
+      "latencyThreshold": "High-latency threshold (ms)",
+      "webhookUrl": "Incoming webhook URL",
+      "webhookPlaceholderSaved": "Saved securely — enter a replacement only to change it",
+      "webhookPlaceholder": "https://…",
+      "webhookHelp": "Use the official incoming-webhook URL for the selected provider. Do not use browser automation or append credentials.",
+      "conditions": "Alert conditions",
+      "enable": "Enable this alert destination",
+      "failure": "Service unavailable or credentials rejected",
+      "highLatency": "Measured latency reaches the threshold",
+      "save": "Save alert settings",
+      "saving": "Saving…",
+      "saved": "Health alert settings saved.",
+      "test": "Send test alert",
+      "testing": "Testing…",
+      "testSuccess": "Test alert delivered.",
+      "remove": "Remove destination",
+      "removed": "Health alert destination removed.",
+      "invalidThreshold": "Choose a latency threshold between 100 and 60,000 ms.",
+      "providerSlack": "Slack incoming webhook",
+      "providerDiscord": "Discord incoming webhook"
+    },
+    "reauth": {
+      "title": "Stripe authorization needs attention",
+      "description": "Get Phame does not expose billing credentials in the browser. Update the managed Stripe payment configuration through the secure payment controls, then run a fresh credential check here.",
+      "notice": "No secret, endpoint, customer, or billing record is shown in this dialog.",
+      "close": "Close",
+      "recheck": "Recheck secure connection",
+      "openSettings": "Open payment settings"
     }
   }
 }

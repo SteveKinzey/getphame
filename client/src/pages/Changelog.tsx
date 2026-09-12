@@ -2,7 +2,18 @@
 // Design: Navy header, white content area, gold accent for version badges
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Star, Shield, Zap, Users, BarChart2, Mail, TrendingUp, Globe, RotateCcw } from "lucide-react";
+import {
+  ArrowLeft,
+  Star,
+  Shield,
+  Zap,
+  Users,
+  BarChart2,
+  Mail,
+  TrendingUp,
+  Globe,
+  RotateCcw,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 type Label = "new" | "improved" | "fix";
@@ -200,10 +211,25 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
   },
 ];
 
-const LABEL_STYLES: Record<Label, { bg: string; color: string; textKey: string }> = {
-  new: { bg: "oklch(0.92 0.06 260)", color: "oklch(0.35 0.12 260)", textKey: "changelog.labelNew" },
-  improved: { bg: "oklch(0.92 0.06 80)", color: "oklch(0.45 0.12 80)", textKey: "changelog.labelImproved" },
-  fix: { bg: "oklch(0.92 0.04 145)", color: "oklch(0.40 0.12 145)", textKey: "changelog.labelFix" },
+const LABEL_STYLES: Record<
+  Label,
+  { bg: string; color: string; textKey: string }
+> = {
+  new: {
+    bg: "oklch(0.92 0.06 260)",
+    color: "oklch(0.35 0.12 260)",
+    textKey: "changelog.labelNew",
+  },
+  improved: {
+    bg: "oklch(0.92 0.06 80)",
+    color: "oklch(0.45 0.12 80)",
+    textKey: "changelog.labelImproved",
+  },
+  fix: {
+    bg: "oklch(0.92 0.04 145)",
+    color: "oklch(0.40 0.12 145)",
+    textKey: "changelog.labelFix",
+  },
 };
 
 type FilterTab = "all" | Label;
@@ -221,32 +247,36 @@ export default function ChangelogPage() {
   ];
 
   // Flatten all entries across releases for filtering
-  const allEntries = CHANGELOG.flatMap((r) => r.entries);
-  const filteredEntries = activeFilter === "all" ? allEntries : allEntries.filter((e) => e.label === activeFilter);
+  const allEntries = CHANGELOG.flatMap(r => r.entries);
+  const filteredEntries =
+    activeFilter === "all"
+      ? allEntries
+      : allEntries.filter(e => e.label === activeFilter);
 
   // Group filtered entries back by version for display
-  const filteredReleases = CHANGELOG.map((release) => ({
+  const filteredReleases = CHANGELOG.map(release => ({
     ...release,
     entries: release.entries.filter(
-      (e) => activeFilter === "all" || e.label === activeFilter
+      e => activeFilter === "all" || e.label === activeFilter
     ),
-  })).filter((r) => r.entries.length > 0);
+  })).filter(r => r.entries.length > 0);
 
   const totalCount = filteredEntries.length;
 
   return (
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Navy header */}
-      <div
-        className="relative px-5 pt-14 pb-6 rr-bg-navy"
-      >
+      <div className="relative px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/")}
           aria-label={t("changelog.backAriaLabel", "Back to Home")}
           className="flex items-center gap-2 mb-4 transition-opacity active:opacity-70 rr-text-gold"
         >
           <ArrowLeft size={16} aria-hidden="true" />
-          <span className="text-sm font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          <span
+            className="text-sm font-bold"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
             {t("header.back")}
           </span>
         </button>
@@ -257,24 +287,30 @@ export default function ChangelogPage() {
           aria-label={t("changelog.homeAriaLabel", "Go to Home")}
         >
           <Star size={16} className="rr-text-gold" aria-hidden="true" />
-          <span
-            className="text-base font-bold tracking-widest uppercase rr-text-gold"
-          >
+          <span className="text-base font-bold tracking-widest uppercase rr-text-gold">
             Get Phame
           </span>
         </button>
-        <h1
-          className="text-2xl leading-tight text-white rr-fw-black"
-        >
+        <h1 className="text-2xl leading-tight text-white rr-fw-black">
           {t("changelog.title", "What's New")}
         </h1>
         <p className="text-base mt-1 text-white font-bold">
-          {t("changelog.subtitle", "Every update, improvement, and fix — in one place.")}
+          {t(
+            "changelog.subtitle",
+            "Every update, improvement, and fix — in one place."
+          )}
         </p>
 
         {/* Filter tabs */}
-        <div className="flex items-center gap-2 mt-5 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label={t("changelog.filterAriaLabel", "Filter changelog by category")}>
-          {FILTER_TABS.map((tab) => {
+        <div
+          className="flex items-center gap-2 mt-5 overflow-x-auto pb-1 scrollbar-hide"
+          role="tablist"
+          aria-label={t(
+            "changelog.filterAriaLabel",
+            "Filter changelog by category"
+          )}
+        >
+          {FILTER_TABS.map(tab => {
             const isActive = activeFilter === tab.id;
             return (
               <button
@@ -284,18 +320,20 @@ export default function ChangelogPage() {
                 onClick={() => setActiveFilter(tab.id)}
                 className="flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-black transition-all duration-150 active:scale-95"
                 style={{
-                  background: isActive ? "oklch(0.80 0.18 80)" : "oklch(0.35 0.08 260)",
-                  color: isActive ? "oklch(0.15 0.05 260)" : "oklch(0.85 0.02 260)",
+                  background: isActive
+                    ? "oklch(0.80 0.18 80)"
+                    : "oklch(0.35 0.08 260)",
+                  color: isActive
+                    ? "oklch(0.15 0.05 260)"
+                    : "oklch(0.85 0.02 260)",
                   fontFamily: "'Poppins', sans-serif",
                   border: "none",
                 }}
               >
                 {t(tab.labelKey)}
                 {tab.id !== "all" && (
-                  <span
-                    className="ml-1.5 text-sm font-black ml-1.5 opacity-80 rr-fw-normal"
-                  >
-                    {allEntries.filter((e) => e.label === tab.id).length}
+                  <span className="ml-1.5 text-sm font-black ml-1.5 opacity-80 rr-fw-normal">
+                    {allEntries.filter(e => e.label === tab.id).length}
                   </span>
                 )}
               </button>
@@ -307,8 +345,13 @@ export default function ChangelogPage() {
       {/* Result count */}
       <div className="px-4 pt-4 pb-1">
         <p className="text-base font-bold rr-text-navy-mid">
-          {totalCount} {totalCount === 1 ? t("changelog.update", "update") : t("changelog.updates", "updates")}
-          {activeFilter !== "all" ? ` ${t("changelog.matching", "matching")} "${t(LABEL_STYLES[activeFilter as Label]?.textKey)}"` : ` ${t("changelog.total", "total")}`}
+          {totalCount}{" "}
+          {totalCount === 1
+            ? t("changelog.update", "update")
+            : t("changelog.updates", "updates")}
+          {activeFilter !== "all"
+            ? ` ${t("changelog.matching", "matching")} "${t(LABEL_STYLES[activeFilter as Label]?.textKey)}"`
+            : ` ${t("changelog.total", "total")}`}
         </p>
       </div>
 
@@ -316,21 +359,19 @@ export default function ChangelogPage() {
       <div className="px-4 pt-2 flex flex-col gap-8">
         {filteredReleases.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-lg font-black rr-text-navy-mid">{t("changelog.noUpdates", "No updates in this category yet.")}</p>
+            <p className="text-lg font-black rr-text-navy-mid">
+              {t("changelog.noUpdates", "No updates in this category yet.")}
+            </p>
           </div>
         ) : (
-          filteredReleases.map((release) => (
+          filteredReleases.map(release => (
             <div key={release.version}>
               {/* Version header */}
               <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="px-3 py-1 rounded-full text-sm font-black rr-bg-navy rr-text-gold"
-                >
+                <div className="px-3 py-1 rounded-full text-sm font-black rr-bg-navy rr-text-gold">
                   v{release.version}
                 </div>
-                <span
-                  className="text-base font-bold rr-text-navy-mid"
-                >
+                <span className="text-base font-bold rr-text-navy-mid">
                   {release.date}
                 </span>
                 <div
@@ -346,11 +387,15 @@ export default function ChangelogPage() {
                   return (
                     <div
                       key={i}
-                      className="rounded-2xl p-4 flex gap-3 bg-white" style={{ boxShadow: "0 1px 4px oklch(0.22 0.09 260 / 0.08)" }}
+                      className="rounded-2xl p-4 flex gap-3 bg-white"
+                      style={{
+                        boxShadow: "0 1px 4px oklch(0.22 0.09 260 / 0.08)",
+                      }}
                     >
                       {/* Icon */}
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 rr-text-navy" style={{ background: "oklch(0.96 0.02 260)" }}
+                        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 rr-text-navy"
+                        style={{ background: "oklch(0.96 0.02 260)" }}
                         aria-hidden="true"
                       >
                         {entry.icon}
@@ -358,10 +403,11 @@ export default function ChangelogPage() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span
-                            className="text-base font-black leading-tight rr-text-navy"
-                          >
-                            {t(entry.titleKey, entry.titleKey.split(".").pop() ?? "")}
+                          <span className="text-base font-black leading-tight rr-text-navy">
+                            {t(
+                              entry.titleKey,
+                              entry.titleKey.split(".").pop() ?? ""
+                            )}
                           </span>
                           <span
                             className="text-sm font-black px-2 py-0.5 rounded-full"
@@ -371,9 +417,13 @@ export default function ChangelogPage() {
                           </span>
                         </div>
                         <p
-                          className="text-sm font-bold leading-relaxed" style={{ color: "oklch(0.20 0.04 260)" }}
+                          className="text-sm font-bold leading-relaxed"
+                          style={{ color: "oklch(0.20 0.04 260)" }}
                         >
-                          {t(entry.descriptionKey, entry.descriptionKey.split(".").pop() ?? "")}
+                          {t(
+                            entry.descriptionKey,
+                            entry.descriptionKey.split(".").pop() ?? ""
+                          )}
                         </p>
                       </div>
                     </div>

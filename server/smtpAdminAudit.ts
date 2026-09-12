@@ -21,12 +21,22 @@ export type SmtpAuditCsvEntry = {
   smtpUser: string;
 };
 
-export function buildSmtpAuditWhere(filters: SmtpAuditFilters): SQL | undefined {
+export function buildSmtpAuditWhere(
+  filters: SmtpAuditFilters
+): SQL | undefined {
   const clauses = [
-    filters.dateFrom === undefined ? undefined : gte(smtpAdminAuditLogs.occurredAt, filters.dateFrom),
-    filters.dateTo === undefined ? undefined : lte(smtpAdminAuditLogs.occurredAt, filters.dateTo),
-    filters.adminId === undefined ? undefined : eq(smtpAdminAuditLogs.actorUserId, filters.adminId),
-    filters.outcome === "all" ? undefined : eq(smtpAdminAuditLogs.outcome, filters.outcome),
+    filters.dateFrom === undefined
+      ? undefined
+      : gte(smtpAdminAuditLogs.occurredAt, filters.dateFrom),
+    filters.dateTo === undefined
+      ? undefined
+      : lte(smtpAdminAuditLogs.occurredAt, filters.dateTo),
+    filters.adminId === undefined
+      ? undefined
+      : eq(smtpAdminAuditLogs.actorUserId, filters.adminId),
+    filters.outcome === "all"
+      ? undefined
+      : eq(smtpAdminAuditLogs.outcome, filters.outcome),
   ].filter((clause): clause is SQL => clause !== undefined);
 
   return clauses.length ? and(...clauses) : undefined;
@@ -49,7 +59,7 @@ export function buildSmtpAuditCsv(entries: SmtpAuditCsvEntry[]): string {
     "Action",
     "Outcome",
   ];
-  const rows = entries.map((entry) => [
+  const rows = entries.map(entry => [
     new Date(entry.occurredAt).toISOString(),
     entry.actorName,
     entry.actorEmail,
@@ -60,7 +70,7 @@ export function buildSmtpAuditCsv(entries: SmtpAuditCsvEntry[]): string {
     entry.outcome,
   ]);
 
-  return `\uFEFF${[header, ...rows].map((row) => row.map(escapeCsvCell).join(",")).join("\r\n")}`;
+  return `\uFEFF${[header, ...rows].map(row => row.map(escapeCsvCell).join(",")).join("\r\n")}`;
 }
 
 export function buildSmtpAuditCsvFilename(now = new Date()): string {

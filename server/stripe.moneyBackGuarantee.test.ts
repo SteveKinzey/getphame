@@ -59,7 +59,10 @@ describe("Stripe seven-day money-back guarantee", () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_guarantee";
     setOwnedSubscription();
     setCharge();
-    mockSubscriptionCancel.mockResolvedValue({ id: "sub_owner", status: "canceled" });
+    mockSubscriptionCancel.mockResolvedValue({
+      id: "sub_owner",
+      status: "canceled",
+    });
     mockSubscriptionUpdate.mockResolvedValue({
       id: "sub_owner",
       customer: "cus_owner",
@@ -83,7 +86,12 @@ describe("Stripe seven-day money-back guarantee", () => {
       now: PURCHASED_AT_MS + SEVEN_DAYS_MS + 1,
     });
 
-    expect(atDeadline).toMatchObject({ eligible: true, reason: "eligible", amount: 2900, currency: "usd" });
+    expect(atDeadline).toMatchObject({
+      eligible: true,
+      reason: "eligible",
+      amount: 2900,
+      currency: "usd",
+    });
     expect(afterDeadline).toMatchObject({ eligible: false, reason: "expired" });
   });
 
@@ -91,19 +99,23 @@ describe("Stripe seven-day money-back guarantee", () => {
     const { getMoneyBackGuaranteeStatus } = await import("./stripe");
     setOwnedSubscription({ customer: "cus_someone_else" });
 
-    await expect(getMoneyBackGuaranteeStatus({
-      stripeCustomerId: "cus_owner",
-      stripeSubscriptionId: "sub_owner",
-      now: PURCHASED_AT_MS,
-    })).rejects.toThrow(/does not belong/i);
+    await expect(
+      getMoneyBackGuaranteeStatus({
+        stripeCustomerId: "cus_owner",
+        stripeSubscriptionId: "sub_owner",
+        now: PURCHASED_AT_MS,
+      })
+    ).rejects.toThrow(/does not belong/i);
 
     setOwnedSubscription();
     setCharge({ customer: "cus_someone_else" });
-    await expect(getMoneyBackGuaranteeStatus({
-      stripeCustomerId: "cus_owner",
-      stripeSubscriptionId: "sub_owner",
-      now: PURCHASED_AT_MS,
-    })).rejects.toThrow(/payment does not belong/i);
+    await expect(
+      getMoneyBackGuaranteeStatus({
+        stripeCustomerId: "cus_owner",
+        stripeSubscriptionId: "sub_owner",
+        now: PURCHASED_AT_MS,
+      })
+    ).rejects.toThrow(/payment does not belong/i);
   });
 
   it("excludes lifetime purchases without calling Stripe subscription APIs", async () => {
@@ -139,10 +151,18 @@ describe("Stripe seven-day money-back guarantee", () => {
 
     expect(order).toEqual(["refund", "cancel"]);
     expect(mockRefundCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ charge: "ch_owner", reason: "requested_by_customer" }),
-      { idempotencyKey: "getphame-guarantee-sub_owner-ch_owner" },
+      expect.objectContaining({
+        charge: "ch_owner",
+        reason: "requested_by_customer",
+      }),
+      { idempotencyKey: "getphame-guarantee-sub_owner-ch_owner" }
     );
-    expect(result).toMatchObject({ refunded: true, alreadyRefunded: false, canceled: true, amount: 2900 });
+    expect(result).toMatchObject({
+      refunded: true,
+      alreadyRefunded: false,
+      canceled: true,
+      amount: 2900,
+    });
   });
 
   it("does not create a duplicate refund and still finishes cancellation when Stripe shows the charge fully refunded", async () => {
@@ -166,8 +186,12 @@ describe("Stripe seven-day money-back guarantee", () => {
     const result = await cancelSubscriptionRenewal("cus_owner", "sub_owner");
 
     expect(mockRefundCreate).not.toHaveBeenCalled();
-    expect(mockSubscriptionUpdate).toHaveBeenCalledWith("sub_owner", { cancel_at_period_end: true });
+    expect(mockSubscriptionUpdate).toHaveBeenCalledWith("sub_owner", {
+      cancel_at_period_end: true,
+    });
     expect(result.canceledAtPeriodEnd).toBe(true);
-    expect(result.currentPeriodEnd).toBe(PURCHASED_AT_MS + 30 * 24 * 60 * 60 * 1000);
+    expect(result.currentPeriodEnd).toBe(
+      PURCHASED_AT_MS + 30 * 24 * 60 * 60 * 1000
+    );
   });
 });

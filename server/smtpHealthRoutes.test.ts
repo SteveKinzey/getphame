@@ -9,7 +9,9 @@ const mocks = vi.hoisted(() => ({
   runSmtpHealthChecks: vi.fn(),
 }));
 
-vi.mock("./_core/sdk", () => ({ sdk: { authenticateRequest: mocks.authenticateRequest } }));
+vi.mock("./_core/sdk", () => ({
+  sdk: { authenticateRequest: mocks.authenticateRequest },
+}));
 vi.mock("./smtp", () => ({ runSmtpHealthChecks: mocks.runSmtpHealthChecks }));
 vi.mock("./systemHealth", () => ({
   createSmtpHealthSnapshot: mocks.createSmtpHealthSnapshot,
@@ -32,7 +34,10 @@ describe("scheduled SMTP fleet health callback", () => {
   });
 
   it("rejects normal user sessions", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: false, taskUid: null });
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: false,
+      taskUid: null,
+    });
     const response = await request(buildApp()).post("/internal/smtp-health");
 
     expect(response.status).toBe(403);
@@ -41,7 +46,10 @@ describe("scheduled SMTP fleet health callback", () => {
   });
 
   it("deduplicates platform retries for the same task identity", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "smtp-task-1" });
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "smtp-task-1",
+    });
     mocks.getRecentSmtpSnapshotForTask.mockResolvedValue({
       totalAccounts: 4,
       healthyAccounts: 3,
@@ -62,7 +70,10 @@ describe("scheduled SMTP fleet health callback", () => {
   });
 
   it("persists only privacy-safe fleet aggregates", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "smtp-task-2" });
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "smtp-task-2",
+    });
     mocks.runSmtpHealthChecks.mockResolvedValue({
       totalAccounts: 8,
       healthyAccounts: 8,
@@ -73,7 +84,11 @@ describe("scheduled SMTP fleet health callback", () => {
     const response = await request(buildApp()).post("/internal/smtp-health");
 
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject({ ok: true, totalAccounts: 8, healthyAccounts: 8 });
+    expect(response.body).toMatchObject({
+      ok: true,
+      totalAccounts: 8,
+      healthyAccounts: 8,
+    });
     expect(mocks.createSmtpHealthSnapshot).toHaveBeenCalledWith({
       triggerSource: "scheduled",
       scheduleCronTaskUid: "smtp-task-2",
@@ -86,8 +101,13 @@ describe("scheduled SMTP fleet health callback", () => {
   });
 
   it("returns a generic error without leaking provider credentials or diagnostics", async () => {
-    mocks.authenticateRequest.mockResolvedValue({ isCron: true, taskUid: "smtp-task-3" });
-    mocks.runSmtpHealthChecks.mockRejectedValue(new Error("smtp password secret-value"));
+    mocks.authenticateRequest.mockResolvedValue({
+      isCron: true,
+      taskUid: "smtp-task-3",
+    });
+    mocks.runSmtpHealthChecks.mockRejectedValue(
+      new Error("smtp password secret-value")
+    );
     const response = await request(buildApp()).post("/internal/smtp-health");
 
     expect(response.status).toBe(500);

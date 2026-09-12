@@ -1,8 +1,13 @@
 import type { PersonalMailDeliveryState } from "@/lib/mailDeliveryStatus";
 
-export type MailDeliveryNoticeState = PersonalMailDeliveryState | "legacy_blocked";
+export type MailDeliveryNoticeState =
+  | PersonalMailDeliveryState
+  | "legacy_blocked";
 
-const messages: Record<MailDeliveryNoticeState, { tone: "success" | "warning" | "neutral"; text: string }> = {
+const messages: Record<
+  MailDeliveryNoticeState,
+  { tone: "success" | "warning" | "neutral"; text: string }
+> = {
   active: {
     tone: "success",
     text: "Active for customer review requests",
@@ -40,7 +45,11 @@ export function MailDeliveryStateNotice({
 }) {
   const message = messages[state];
   return (
-    <p className="mt-1 text-xs font-semibold" data-mail-delivery-state={state} style={{ color: colors[message.tone] }}>
+    <p
+      className="mt-1 text-xs font-semibold"
+      data-mail-delivery-state={state}
+      style={{ color: colors[message.tone] }}
+    >
       {translate ? translate(message.text) : message.text}
     </p>
   );

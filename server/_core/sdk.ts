@@ -39,7 +39,9 @@ export type AuthenticatedUser = User & {
   isCron?: boolean;
 };
 
-function buildCronUser(userInfo: GetUserInfoWithJwtResponse): AuthenticatedUser {
+function buildCronUser(
+  userInfo: GetUserInfoWithJwtResponse
+): AuthenticatedUser {
   const now = new Date();
   return {
     id: -1,
@@ -291,7 +293,8 @@ class SDKServer {
 
     if (session.openId.startsWith(CRON_OPEN_ID_PREFIX)) {
       const userInfo = await this.getUserInfoWithJwt(sessionCookie ?? "");
-      if (!userInfo.taskUid) throw ForbiddenError("Cron session missing task_uid");
+      if (!userInfo.taskUid)
+        throw ForbiddenError("Cron session missing task_uid");
       return buildCronUser(userInfo);
     }
 

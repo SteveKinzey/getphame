@@ -45,10 +45,12 @@ describe("relay health heartbeat reconciliation", () => {
   it("repairs the existing named heartbeat without duplication", async () => {
     const deps = {
       list: vi.fn().mockResolvedValue({
-        jobs: [{
-          taskUid: "relay-cron-2",
-          name: RELAY_HEALTH_HEARTBEAT_NAME,
-        }],
+        jobs: [
+          {
+            taskUid: "relay-cron-2",
+            name: RELAY_HEALTH_HEARTBEAT_NAME,
+          },
+        ],
       }),
       create: vi.fn(),
       update: vi.fn().mockResolvedValue({}),

@@ -34,19 +34,29 @@ describe("passkey security invariants", () => {
   });
 
   it("rejects a browser origin that does not match the request host", () => {
-    expect(() => resolveWebauthnEnvironment(request({ origin: "https://attacker.example" })))
-      .toThrow("Passkey origin does not match");
+    expect(() =>
+      resolveWebauthnEnvironment(
+        request({ origin: "https://attacker.example" })
+      )
+    ).toThrow("Passkey origin does not match");
   });
 
   it("rejects insecure non-local production origins", () => {
     process.env.NODE_ENV = "production";
-    expect(() => resolveWebauthnEnvironment(request({ protocol: "http", host: "app.getphame.app" })))
-      .toThrow("Passkeys require a secure HTTPS origin");
+    expect(() =>
+      resolveWebauthnEnvironment(
+        request({ protocol: "http", host: "app.getphame.app" })
+      )
+    ).toThrow("Passkeys require a secure HTTPS origin");
   });
 
   it("allows localhost HTTP only outside production", () => {
     process.env.NODE_ENV = "development";
-    expect(resolveWebauthnEnvironment(request({ protocol: "http", host: "localhost" })).rpID).toBe("localhost");
+    expect(
+      resolveWebauthnEnvironment(
+        request({ protocol: "http", host: "localhost" })
+      ).rpID
+    ).toBe("localhost");
   });
 
   it("recognizes only the opaque passkey session token format", () => {

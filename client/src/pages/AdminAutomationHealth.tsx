@@ -306,7 +306,8 @@ export default function AdminAutomationHealth() {
                       max={toDate}
                       onChange={event => setFromDate(event.target.value)}
                       className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-                     name="rr-pages-admin-automation-health-from-date-303" />
+                      name="rr-pages-admin-automation-health-from-date-303"
+                    />
                   </label>
                   <label className="text-sm font-bold rr-text-navy">
                     {t("automationHealth.filters.to", { defaultValue: "To" })}
@@ -317,7 +318,8 @@ export default function AdminAutomationHealth() {
                       max={toInputDate(now)}
                       onChange={event => setToDate(event.target.value)}
                       className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-                     name="rr-pages-admin-automation-health-to-date-313" />
+                      name="rr-pages-admin-automation-health-to-date-313"
+                    />
                   </label>
                 </div>
               )}
@@ -336,7 +338,8 @@ export default function AdminAutomationHealth() {
                 value={kind}
                 onChange={event => setKind(event.target.value as KindFilter)}
                 className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-               name="rr-pages-admin-automation-health-kind-335">
+                name="rr-pages-admin-automation-health-kind-335"
+              >
                 <option value="all">
                   {t("automationHealth.filters.allEvents", {
                     defaultValue: "All events",
@@ -363,7 +366,8 @@ export default function AdminAutomationHealth() {
                   setResult(event.target.value as ResultFilter)
                 }
                 className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-               name="rr-pages-admin-automation-health-result-360">
+                name="rr-pages-admin-automation-health-result-360"
+              >
                 <option value="all">
                   {t("automationHealth.filters.allResults", {
                     defaultValue: "All results",

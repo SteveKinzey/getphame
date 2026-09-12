@@ -12,7 +12,7 @@ export default function LandingBrandLink({
   return (
     <a
       href="/landing"
-      onClick={(event) => {
+      onClick={event => {
         event.preventDefault();
         window.location.assign("/landing");
       }}

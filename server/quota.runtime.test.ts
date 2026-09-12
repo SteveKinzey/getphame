@@ -26,34 +26,35 @@ const mocks = vi.hoisted(() => ({
   getAdaptiveSendStatus: vi.fn(),
 }));
 
-vi.mock("./quotaEnforcement", async (importOriginal) => ({
+vi.mock("./quotaEnforcement", async importOriginal => ({
   ...(await importOriginal<typeof import("./quotaEnforcement")>()),
   evaluateFreeQuotaAccess: mocks.evaluateFreeQuotaAccess,
 }));
 
-vi.mock("./db", async (importOriginal) => ({
+vi.mock("./db", async importOriginal => ({
   ...(await importOriginal<typeof import("./db")>()),
   getBusinessProfile: mocks.getBusinessProfile,
   getUserByApiKey: mocks.getUserByApiKey,
   getDb: mocks.getDb,
 }));
 
-vi.mock("./developerApiKeys", async (importOriginal) => ({
+vi.mock("./developerApiKeys", async importOriginal => ({
   ...(await importOriginal<typeof import("./developerApiKeys")>()),
-  authenticateDeveloperApiKeyWithStatus: mocks.authenticateDeveloperApiKeyWithStatus,
+  authenticateDeveloperApiKeyWithStatus:
+    mocks.authenticateDeveloperApiKeyWithStatus,
 }));
 
-vi.mock("./developerApiAbuse", async (importOriginal) => ({
+vi.mock("./developerApiAbuse", async importOriginal => ({
   ...(await importOriginal<typeof import("./developerApiAbuse")>()),
   checkDeveloperApiAbuse: mocks.checkDeveloperApiAbuse,
 }));
 
-vi.mock("./developerApiImports", async (importOriginal) => ({
+vi.mock("./developerApiImports", async importOriginal => ({
   ...(await importOriginal<typeof import("./developerApiImports")>()),
   checkDeveloperApiRateLimit: mocks.checkDeveloperApiRateLimit,
 }));
 
-vi.mock("./adaptiveSendLimits", async (importOriginal) => ({
+vi.mock("./adaptiveSendLimits", async importOriginal => ({
   ...(await importOriginal<typeof import("./adaptiveSendLimits")>()),
   getAdaptiveSendStatus: mocks.getAdaptiveSendStatus,
 }));
@@ -82,8 +83,16 @@ function context(): TrpcContext {
 describe("runtime Free-plan quota parity", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.evaluateFreeQuotaAccess.mockResolvedValue({ allowed: false, quota, isAdmin: false });
-    mocks.getBusinessProfile.mockResolvedValue({ tier: "free", monthlyCount: 0, monthlyResetDate: "2026-07" });
+    mocks.evaluateFreeQuotaAccess.mockResolvedValue({
+      allowed: false,
+      quota,
+      isAdmin: false,
+    });
+    mocks.getBusinessProfile.mockResolvedValue({
+      tier: "free",
+      monthlyCount: 0,
+      monthlyResetDate: "2026-07",
+    });
     mocks.getUserByApiKey.mockResolvedValue(42);
     mocks.authenticateDeveloperApiKeyWithStatus.mockResolvedValue({
       kind: "ok",
@@ -116,11 +125,13 @@ describe("runtime Free-plan quota parity", () => {
     const caller = appRouter.createCaller(context());
     const expected = formatFreeQuotaBlockedMessage(quota, FREE_LIMIT_ERR_MSG);
 
-    await expect(caller.requests.send({
-      customerName: "Blocked Customer",
-      customerEmail: "blocked@example.com",
-      method: "email",
-    })).rejects.toMatchObject({ code: "FORBIDDEN", message: expected });
+    await expect(
+      caller.requests.send({
+        customerName: "Blocked Customer",
+        customerEmail: "blocked@example.com",
+        method: "email",
+      })
+    ).rejects.toMatchObject({ code: "FORBIDDEN", message: expected });
   });
 
   it("returns HTTP 429 with the same message from the public API send boundary", async () => {
@@ -132,7 +143,10 @@ describe("runtime Free-plan quota parity", () => {
     const response = await request(app)
       .post("/api/public/send")
       .set("Authorization", "Bearer rl_quota_runtime_unique_key")
-      .send({ customerName: "Blocked Customer", customerEmail: "blocked@example.com" });
+      .send({
+        customerName: "Blocked Customer",
+        customerEmail: "blocked@example.com",
+      });
 
     expect(response.status).toBe(429);
     expect(response.body).toEqual({ error: expected });

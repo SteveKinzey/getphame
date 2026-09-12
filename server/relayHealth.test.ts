@@ -34,6 +34,11 @@ vi.mock("./relayAlertEmail", () => ({
   sendRelayAlertEmailFallback: mocks.emailFallbackMock,
 }));
 
+vi.mock("./db", () => ({
+  getDb: vi.fn(async () => null),
+  getUserByOpenId: vi.fn(async () => undefined),
+}));
+
 const originalFetch = globalThis.fetch;
 
 describe("operational email relay failover, slack alerts, and outage durations", () => {
@@ -49,7 +54,11 @@ describe("operational email relay failover, slack alerts, and outage durations",
     mocks.verifyMock.mockReset();
     mocks.sendMailMock.mockReset();
     mocks.sendMock.mockReset();
-    mocks.emailFallbackMock.mockResolvedValue({ attempted: false, delivered: false, reason: "owner_email_unavailable" });
+    mocks.emailFallbackMock.mockResolvedValue({
+      attempted: false,
+      delivered: false,
+      reason: "owner_email_unavailable",
+    });
 
     // Mock global fetch for Slack webhook testing
     globalThis.fetch = mocks.fetchMock as any;
@@ -69,7 +78,8 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_PASS = "re_secret";
     process.env.SYSTEM_SMTP_PORT = "587";
     process.env.SENDGRID_API_KEY = "SG.mock_key";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/TEST/123";
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/TEST/123";
 
     mocks.verifyMock.mockResolvedValueOnce(true);
 
@@ -90,11 +100,16 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_PASS = "re_secret";
     process.env.SYSTEM_SMTP_PORT = "587";
     process.env.SENDGRID_API_KEY = "SG.mock_key";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/FAIL/456";
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/FAIL/456";
 
-    mocks.verifyMock.mockRejectedValueOnce(new Error("Connection timeout to SMTP port 587"));
+    mocks.verifyMock.mockRejectedValueOnce(
+      new Error("Connection timeout to SMTP port 587")
+    );
 
-    const { runRelayHeartbeatCheck, getCurrentRelaySummary } = await import("./relayHealth");
+    const { runRelayHeartbeatCheck, getCurrentRelaySummary } = await import(
+      "./relayHealth"
+    );
     const result = await runRelayHeartbeatCheck();
 
     expect(result.status).toBe("failover");
@@ -119,46 +134,68 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_PASS = "re_secret";
     process.env.SYSTEM_SMTP_PORT = "587";
     process.env.SENDGRID_API_KEY = "SG.mock_key";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/FALLBACK/456";
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/FALLBACK/456";
 
-    mocks.verifyMock.mockRejectedValueOnce(new Error("Connection refused for owner@getphame.app password=not-for-logs"));
+    mocks.verifyMock.mockRejectedValueOnce(
+      new Error(
+        "Connection refused for owner@getphame.app password=not-for-logs"
+      )
+    );
     mocks.fetchMock.mockResolvedValueOnce({ ok: false, status: 503 } as any);
-    mocks.emailFallbackMock.mockResolvedValueOnce({ attempted: true, delivered: true, reason: "delivered" });
+    mocks.emailFallbackMock.mockResolvedValueOnce({
+      attempted: true,
+      delivered: true,
+      reason: "delivered",
+    });
 
-    const { runRelayHeartbeatCheck, getCurrentRelaySummary } = await import("./relayHealth");
+    const { runRelayHeartbeatCheck, getCurrentRelaySummary } = await import(
+      "./relayHealth"
+    );
     const result = await runRelayHeartbeatCheck();
 
     expect(result.slackAlertSent).toBe(false);
     expect(result.emailFallbackAttempted).toBe(true);
     expect(result.emailFallbackDelivered).toBe(true);
-    expect(mocks.emailFallbackMock).toHaveBeenCalledWith(expect.objectContaining({
-      event: "failure",
-      diagnostic: expect.not.stringContaining("owner@getphame.app"),
-    }));
+    expect(mocks.emailFallbackMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: "failure",
+        diagnostic: expect.not.stringContaining("owner@getphame.app"),
+      })
+    );
 
     const summary = await getCurrentRelaySummary();
     expect(summary.recentDiagnostics[0]).toMatchObject({
       source: "scheduled_heartbeat",
       emailFallbackDelivered: true,
     });
-    expect(summary.recentDiagnostics[0].diagnostic).not.toContain("owner@getphame.app");
-    expect(summary.recentDiagnostics[0].diagnostic).not.toContain("not-for-logs");
+    expect(summary.recentDiagnostics[0].diagnostic).not.toContain(
+      "owner@getphame.app"
+    );
+    expect(summary.recentDiagnostics[0].diagnostic).not.toContain(
+      "not-for-logs"
+    );
   });
 
   it("sends an administrator-requested Slack test without changing relay failover state", async () => {
     process.env.SYSTEM_SMTP_HOST = "smtp.resend.com";
     process.env.SYSTEM_SMTP_USER = "resend";
     process.env.SYSTEM_SMTP_PASS = "re_secret";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/TEST/456";
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/TEST/456";
 
-    const { sendRelaySlackTestAlert, getCurrentRelaySummary } = await import("./relayHealth");
+    const { sendRelaySlackTestAlert, getCurrentRelaySummary } = await import(
+      "./relayHealth"
+    );
     const result = await sendRelaySlackTestAlert();
 
     expect(result.slackConfigured).toBe(true);
     expect(result.slackDelivered).toBe(true);
     expect(result.emailFallbackAttempted).toBe(false);
     expect(mocks.fetchMock).toHaveBeenCalledTimes(1);
-    expect(JSON.parse(mocks.fetchMock.mock.calls[0][1].body).attachments[0].title).toContain("Slack Test");
+    expect(
+      JSON.parse(mocks.fetchMock.mock.calls[0][1].body).attachments[0].title
+    ).toContain("Slack Test");
     expect((await getCurrentRelaySummary()).activeFailoverIncident).toBe(false);
   });
 
@@ -166,9 +203,12 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_HOST = "smtp.resend.com";
     process.env.SYSTEM_SMTP_USER = "resend";
     process.env.SYSTEM_SMTP_PASS = "re_secret";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/TEST/FAIL";
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/TEST/FAIL";
     mocks.fetchMock.mockResolvedValueOnce({ ok: false, status: 503 } as any);
-    mocks.emailFallbackMock.mockRejectedValueOnce(new Error("Unexpected fallback import failure"));
+    mocks.emailFallbackMock.mockRejectedValueOnce(
+      new Error("Unexpected fallback import failure")
+    );
 
     const { sendRelaySlackTestAlert } = await import("./relayHealth");
     await expect(sendRelaySlackTestAlert()).resolves.toMatchObject({
@@ -184,11 +224,16 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_PASS = "re_secret";
     process.env.SYSTEM_SMTP_PORT = "587";
     process.env.SENDGRID_API_KEY = "SG.mock_key";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/RECOVER/789";
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/RECOVER/789";
 
     // 1. Failure check
-    mocks.verifyMock.mockRejectedValueOnce(new Error("Temporary primary rejection"));
-    const { runRelayHeartbeatCheck, getCurrentRelaySummary } = await import("./relayHealth");
+    mocks.verifyMock.mockRejectedValueOnce(
+      new Error("Temporary primary rejection")
+    );
+    const { runRelayHeartbeatCheck, getCurrentRelaySummary } = await import(
+      "./relayHealth"
+    );
     await runRelayHeartbeatCheck();
     expect(mocks.fetchMock).toHaveBeenCalledTimes(1);
 
@@ -202,9 +247,13 @@ describe("operational email relay failover, slack alerts, and outage durations",
     expect(mocks.fetchMock).toHaveBeenCalledTimes(2);
 
     const [recoverUrl, recoverOptions] = mocks.fetchMock.mock.calls[1];
-    expect(recoverUrl).toBe("https://hooks.slack.com/services/MOCK/RECOVER/789");
+    expect(recoverUrl).toBe(
+      "https://hooks.slack.com/services/MOCK/RECOVER/789"
+    );
     const recoverPayload = JSON.parse(recoverOptions.body);
-    expect(recoverPayload.attachments[0].title).toContain("Primary Relay Recovered");
+    expect(recoverPayload.attachments[0].title).toContain(
+      "Primary Relay Recovered"
+    );
 
     const summary = await getCurrentRelaySummary();
     expect(summary.outageHistory.length).toBeGreaterThan(0);
@@ -218,9 +267,14 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_PASS = "re_secret";
     process.env.SYSTEM_SMTP_PORT = "587";
     process.env.SENDGRID_API_KEY = "SG.mock_key";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/RUNTIME/000";
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/RUNTIME/000";
 
-    mocks.sendMailMock.mockRejectedValueOnce(new Error("Network connection lost for customer@example.com via https://smtp.example.test/trace?token=secret-value password=correct-horse-battery-staple"));
+    mocks.sendMailMock.mockRejectedValueOnce(
+      new Error(
+        "Network connection lost for customer@example.com via https://smtp.example.test/trace?token=secret-value password=correct-horse-battery-staple"
+      )
+    );
     mocks.sendMock.mockResolvedValueOnce([{ statusCode: 202 }, {}]);
 
     const { sendSystemEmail } = await import("./sendgrid");
@@ -237,8 +291,12 @@ describe("operational email relay failover, slack alerts, and outage durations",
     expect(mocks.fetchMock).toHaveBeenCalledTimes(1);
     const [, callOptions] = mocks.fetchMock.mock.calls[0];
     const payload = JSON.parse(callOptions.body);
-    expect(payload.attachments[0].title).toContain("Outbound Email Failed Over to SendGrid");
-    const slackError = payload.attachments[0].fields.find((field: { title: string }) => field.title === "Error")?.value;
+    expect(payload.attachments[0].title).toContain(
+      "Outbound Email Failed Over to SendGrid"
+    );
+    const slackError = payload.attachments[0].fields.find(
+      (field: { title: string }) => field.title === "Error"
+    )?.value;
     expect(slackError).not.toContain("customer@example.com");
     expect(slackError).not.toContain("smtp.example.test");
     expect(slackError).not.toContain("correct-horse-battery-staple");
@@ -255,21 +313,34 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_PASS = "re_secret";
     process.env.SYSTEM_SMTP_PORT = "587";
     process.env.SENDGRID_API_KEY = "SG.mock_key";
-    process.env.SLACK_ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/MOCK/RUNTIME-FALLBACK/000";
-    mocks.sendMailMock.mockRejectedValueOnce(new Error("Network connection lost for customer@example.com"));
+    process.env.SLACK_ALERT_WEBHOOK_URL =
+      "https://hooks.slack.com/services/MOCK/RUNTIME-FALLBACK/000";
+    mocks.sendMailMock.mockRejectedValueOnce(
+      new Error("Network connection lost for customer@example.com")
+    );
     mocks.sendMock.mockResolvedValueOnce([{ statusCode: 202 }, {}]);
     mocks.fetchMock.mockResolvedValueOnce({ ok: false, status: 503 } as any);
-    mocks.emailFallbackMock.mockResolvedValueOnce({ attempted: true, delivered: true, reason: "delivered" });
+    mocks.emailFallbackMock.mockResolvedValueOnce({
+      attempted: true,
+      delivered: true,
+      reason: "delivered",
+    });
 
     const { sendSystemEmail } = await import("./sendgrid");
-    await sendSystemEmail({ to: "recipient@example.com", subject: "Runtime fallback test", html: "<p>Hello</p>" });
+    await sendSystemEmail({
+      to: "recipient@example.com",
+      subject: "Runtime fallback test",
+      html: "<p>Hello</p>",
+    });
 
-    expect(mocks.emailFallbackMock).toHaveBeenCalledWith(expect.objectContaining({
-      event: "failure",
-      source: "outbound_send",
-      activeRelay: "sendgrid",
-      diagnostic: expect.not.stringContaining("customer@example.com"),
-    }));
+    expect(mocks.emailFallbackMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: "failure",
+        source: "outbound_send",
+        activeRelay: "sendgrid",
+        diagnostic: expect.not.stringContaining("customer@example.com"),
+      })
+    );
   });
 
   it("redacts email addresses, URLs, credential values, and bearer tokens from diagnostics", async () => {
@@ -289,7 +360,8 @@ describe("operational email relay failover, slack alerts, and outage durations",
   });
 
   it("caps in-memory outage history when the database is unavailable", async () => {
-    const { startRelayOutage, resolveActiveRelayOutage, getOutageHistory } = await import("./relayHealth");
+    const { startRelayOutage, resolveActiveRelayOutage, getOutageHistory } =
+      await import("./relayHealth");
 
     for (let index = 0; index < 25; index += 1) {
       const startedAt = Date.now() + index;
@@ -307,14 +379,67 @@ describe("operational email relay failover, slack alerts, and outage durations",
     process.env.SYSTEM_SMTP_PASS = "re_secret";
     mocks.verifyMock.mockResolvedValue(true);
 
-    const { runRelayHeartbeatCheck, getRecentHeartbeatDiagnostics } = await import("./relayHealth");
+    const { runRelayHeartbeatCheck, getRecentHeartbeatDiagnostics } =
+      await import("./relayHealth");
     for (let index = 0; index < 12; index += 1) {
       await runRelayHeartbeatCheck({ source: "admin_manual" });
     }
 
     const diagnostics = await getRecentHeartbeatDiagnostics();
     expect(diagnostics).toHaveLength(10);
-    expect(diagnostics.every(item => item.source === "admin_manual")).toBe(true);
-    expect(diagnostics.every(item => item.diagnostic === "Primary SYSTEM_SMTP transport verification succeeded.")).toBe(true);
+    expect(diagnostics.every(item => item.source === "admin_manual")).toBe(
+      true
+    );
+    expect(
+      diagnostics.every(
+        item =>
+          item.diagnostic ===
+          "Primary SYSTEM_SMTP transport verification succeeded."
+      )
+    ).toBe(true);
+  });
+
+  it("enforces the default 30-minute alert cooldown to suppress transient network flapping", async () => {
+    const {
+      getRelayAlertCooldownMinutes,
+      getRelayAlertCooldownMs,
+      reserveRelayAlert,
+    } = await import("./relayHealth");
+    const now = Date.now();
+    expect(getRelayAlertCooldownMinutes()).toBe(30);
+    expect(getRelayAlertCooldownMs()).toBe(30 * 60_000);
+
+    const first = await reserveRelayAlert("outage-1", now);
+    expect(first.permitted).toBe(true);
+
+    const flap = await reserveRelayAlert("outage-1", now + 5 * 60_000);
+    expect(flap.permitted).toBe(false);
+    expect(flap.retryAt).toBe(now + 30 * 60_000);
+
+    const afterCooldown = await reserveRelayAlert(
+      "outage-1",
+      now + 31 * 60_000
+    );
+    expect(afterCooldown.permitted).toBe(true);
+  });
+
+  it("prevents concurrent callers from acquiring duplicate alert reservations", async () => {
+    const { reserveRelayAlert } = await import("./relayHealth");
+    const now = Date.now();
+
+    // Simulate 5 simultaneous requests attempting to alert on the same outage
+    const results = await Promise.all([
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+      reserveRelayAlert("concurrent-outage", now),
+    ]);
+
+    const permittedCount = results.filter(r => r.permitted).length;
+    const suppressedCount = results.filter(r => !r.permitted).length;
+
+    expect(permittedCount).toBe(1);
+    expect(suppressedCount).toBe(4);
   });
 });

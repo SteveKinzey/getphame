@@ -5,10 +5,14 @@ import {
   ACCOUNT_HARD_DAILY_SEND_CEILING,
   ACCOUNT_HARD_HOURLY_SEND_CEILING,
   ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD,
+  ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD,
+  ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
   ADAPTIVE_SEND_WARNING_THRESHOLD,
   buildAdaptiveSendPolicy,
   getAdaptiveSendRecommendedAction,
+  getAdaptiveSendVelocityAdvice,
   getAdaptiveSendWarningLevel,
+  shouldReviewAdaptiveSendBurstCap,
   type AdaptiveSendChannelDescriptor,
 } from "../shared/adaptiveSendLimits";
 import {
@@ -171,6 +175,18 @@ describe("adaptive send policy", () => {
     expect(getAdaptiveSendWarningLevel(0.2, 0)).toBe("blocked");
   });
 
+  it("flags only burst-cap configuration at or above the 90% review threshold", () => {
+    const threshold =
+      ADAPTIVE_SEND_MAXIMUM_BURST_CAP *
+      ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD;
+
+    expect(threshold).toBe(180);
+    expect(shouldReviewAdaptiveSendBurstCap(179)).toBe(false);
+    expect(shouldReviewAdaptiveSendBurstCap(180)).toBe(true);
+    expect(shouldReviewAdaptiveSendBurstCap(200)).toBe(true);
+    expect(shouldReviewAdaptiveSendBurstCap(null)).toBe(false);
+  });
+
   it("suggests paid Bulk Sender paths without allowing an upgrade to bypass safety", () => {
     expect(getAdaptiveSendRecommendedAction(channel())).toBe("upgrade_plan");
     expect(getAdaptiveSendRecommendedAction(channel({ tier: "pro" }))).toBe(
@@ -238,6 +254,38 @@ describe("adaptive limit errors", () => {
   });
 });
 
+describe("adaptive send velocity advice", () => {
+  it("derives a non-mutating, bounded estimate from the current capacity snapshot", () => {
+    const current = status({ remaining: 7 });
+
+    expect(getAdaptiveSendVelocityAdvice(4, current.remaining)).toEqual({
+      requestedCount: 4,
+      currentRemaining: 7,
+      estimatedSendCount: 4,
+      estimatedOverCapacityCount: 0,
+      maxBurstCap: null,
+      isEstimate: true,
+    });
+    expect(getAdaptiveSendVelocityAdvice(10, current.remaining)).toEqual({
+      requestedCount: 10,
+      currentRemaining: 7,
+      estimatedSendCount: 7,
+      estimatedOverCapacityCount: 3,
+      maxBurstCap: null,
+      isEstimate: true,
+    });
+    expect(getAdaptiveSendVelocityAdvice(-2, -1)).toEqual({
+      requestedCount: 0,
+      currentRemaining: 0,
+      estimatedSendCount: 0,
+      estimatedOverCapacityCount: 0,
+      maxBurstCap: null,
+      isEstimate: true,
+    });
+    expect(current.remaining).toBe(7);
+  });
+});
+
 describe("adaptive sending production contracts", () => {
   const read = (relativePath: string) =>
     readFileSync(join(PROJECT_ROOT, relativePath), "utf8");
@@ -286,8 +334,12 @@ describe("adaptive sending production contracts", () => {
     expect(settings).toContain(
       "<AdaptiveSendLimitStatus status={adaptiveSendStatus}"
     );
-    expect(contacts).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");
-    expect(woo).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");
+    expect(component).toContain("requestedCount?: number");
+    expect(component).toContain("getAdaptiveSendVelocityAdvice");
+    expect(component).toContain('role="progressbar"');
+    expect(component).toContain("server limits still apply");
+    expect(contacts).toContain("requestedCount={selectedCount}");
+    expect(woo).toContain("requestedCount={selectedIds.size}");
   });
 
   it("keeps every adaptive sending string complete in all seven maintained locales", () => {

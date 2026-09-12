@@ -33,7 +33,9 @@ describe("static copy routes", () => {
   it("exposes only the six approved immutable locale catalogs from managed storage", () => {
     for (const locale of ["es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
       const source = getStaticCopySource(locale);
-      expect(source?.storageKey).toMatch(/^static-copy\/2026-07-28-pr-review-reconciliation\/getphame-static-copy-/);
+      expect(source?.storageKey).toMatch(
+        /^static-copy\/2026-07-28-pr-review-reconciliation\/getphame-static-copy-/
+      );
       expect(source?.storageKey).toMatch(/\.json$/);
     }
     expect(getStaticCopySource("en")).toBeNull();
@@ -50,7 +52,7 @@ describe("static copy routes", () => {
       new Response(JSON.stringify(payload), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }),
+      })
     );
     vi.stubGlobal("fetch", fetchMock);
 
@@ -61,8 +63,12 @@ describe("static copy routes", () => {
 
     expect(firstResponse.status).toBe(200);
     expect(firstResponse.headers["content-type"]).toContain("application/json");
-    expect(firstResponse.headers["cache-control"]).toBe("public, max-age=31536000, immutable");
-    expect(firstResponse.headers["content-disposition"]).toContain("getphame-static-copy-es.json");
+    expect(firstResponse.headers["cache-control"]).toBe(
+      "public, max-age=31536000, immutable"
+    );
+    expect(firstResponse.headers["content-disposition"]).toContain(
+      "getphame-static-copy-es.json"
+    );
     expect(firstResponse.body).toEqual(payload);
     expect(secondResponse.body).toEqual(payload);
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -78,7 +84,9 @@ describe("static copy routes", () => {
     const response = await request(app).get("/api/assets/static-copy/en");
 
     expect(response.status).toBe(404);
-    expect(response.body).toEqual({ error: "Static localization catalog not found" });
+    expect(response.body).toEqual({
+      error: "Static localization catalog not found",
+    });
     expect(fetchMock).not.toHaveBeenCalled();
     expect(mocks.storageGet).not.toHaveBeenCalled();
   });

@@ -144,7 +144,8 @@ export function checkManualSearchEventRateLimit(userId: number): void {
   if (entry.count >= MAX_MANUAL_SEARCH_EVENTS_PER_WINDOW) {
     throw new TRPCError({
       code: "TOO_MANY_REQUESTS",
-      message: "Too many Manual search analytics events. Please try again later.",
+      message:
+        "Too many Manual search analytics events. Please try again later.",
     });
   }
 
@@ -158,7 +159,8 @@ export function checkManualSearchEventRateLimit(userId: number): void {
 export function getRemainingQuota(userId: number): number {
   const now = Date.now();
   const entry = sendWindows.get(userId);
-  if (!entry || now - entry.windowStart >= WINDOW_MS) return MAX_SENDS_PER_WINDOW;
+  if (!entry || now - entry.windowStart >= WINDOW_MS)
+    return MAX_SENDS_PER_WINDOW;
   return Math.max(0, MAX_SENDS_PER_WINDOW - entry.count);
 }
 
@@ -175,12 +177,16 @@ setInterval(() => {
       onboardingEventWindows.delete(userId);
     }
   }
-  for (const [userId, entry] of Array.from(onboardingInsightWindows.entries())) {
+  for (const [userId, entry] of Array.from(
+    onboardingInsightWindows.entries()
+  )) {
     if (now - entry.windowStart >= WINDOW_MS) {
       onboardingInsightWindows.delete(userId);
     }
   }
-  for (const [userId, entry] of Array.from(manualSearchEventWindows.entries())) {
+  for (const [userId, entry] of Array.from(
+    manualSearchEventWindows.entries()
+  )) {
     if (now - entry.windowStart >= WINDOW_MS) {
       manualSearchEventWindows.delete(userId);
     }

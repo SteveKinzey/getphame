@@ -27,7 +27,9 @@ function asEvent(value: string): PwaUpdateTelemetryEvent | null {
 }
 
 function percent(numerator: number, denominator: number): number {
-  return denominator > 0 ? Math.round((numerator / denominator) * 1000) / 10 : 0;
+  return denominator > 0
+    ? Math.round((numerator / denominator) * 1000) / 10
+    : 0;
 }
 
 export function getPwaUpdateTelemetryDay(now = new Date()): string {

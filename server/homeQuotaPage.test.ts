@@ -4,19 +4,34 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { FreeQuotaSummary } from "../shared/quota";
 
 let profileFixture: {
-  tier: "free";
+  tier: "free" | "pro" | "annual" | "lifetime";
   businessName: string;
   reviewLink: string;
   reviewGoal: number;
   planExpiresAt: null;
   freeQuota: FreeQuotaSummary;
 };
+let userRole: "user" | "admin" = "user";
+let adaptiveSendBurstCapsFixture: {
+  free: number;
+  pro: number;
+  annual: number;
+  lifetime: number;
+} | null = null;
 
-const query = (data: unknown, extras: Record<string, unknown> = {}) => ({ data, ...extras });
+const query = (data: unknown, extras: Record<string, unknown> = {}) => ({
+  data,
+  ...extras,
+});
 
 vi.mock("@/_core/hooks/useAuth", () => ({
   useAuth: () => ({
-    user: { id: 701, name: "Quota Tester", email: "quota@example.test", role: "user" },
+    user: {
+      id: 701,
+      name: "Quota Tester",
+      email: "quota@example.test",
+      role: userRole,
+    },
     isAuthenticated: true,
   }),
 }));
@@ -27,47 +42,95 @@ vi.mock("@/lib/trpc", () => ({
       get: { useQuery: () => query(profileFixture) },
       setGoal: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
     },
-    smtp: {
-      status: { useQuery: () => query({ connected: true, lastHealthStatus: "pass" }) },
-      pausedAutomationQueue: { useQuery: () => query({ paused: false, total: 0, items: [] }) },
-      test: { useMutation: () => ({ mutate: vi.fn(), isPending: false, data: null }) },
+    stripe: {
+      subscriptionStatus: {
+        useQuery: () => query({ status: "none", currentPeriodEnd: null }),
+      },
+      createCheckout: {
+        useMutation: () => ({ mutate: vi.fn(), isPending: false }),
+      },
     },
-    bulkSender: { status: { useQuery: () => query({ connected: false, selectedForOutreach: false }) } },
-    requests: { stats: { useQuery: () => query({ thisMonth: 0, total: 0, recent: [] }) } },
+    smtp: {
+      status: {
+        useQuery: () => query({ connected: true, lastHealthStatus: "pass" }),
+      },
+      pausedAutomationQueue: {
+        useQuery: () => query({ paused: false, total: 0, items: [] }),
+      },
+      test: {
+        useMutation: () => ({ mutate: vi.fn(), isPending: false, data: null }),
+      },
+    },
+    bulkSender: {
+      status: {
+        useQuery: () => query({ connected: false, selectedForOutreach: false }),
+      },
+    },
+    requests: {
+      stats: { useQuery: () => query({ thisMonth: 0, total: 0, recent: [] }) },
+    },
     onboarding: {
       status: {
-        useQuery: () => query({
-          smtpConnected: true,
-          hasPlatform: true,
-          hasContacts: true,
-          hasSentRequest: true,
-        }),
+        useQuery: () =>
+          query({
+            smtpConnected: true,
+            hasPlatform: true,
+            hasContacts: true,
+            hasSentRequest: true,
+          }),
       },
     },
     referral: {
-      getCode: { useQuery: () => query({ shareUrl: "https://getphame.app/r/quota-test" }) },
+      getCode: {
+        useQuery: () =>
+          query({ shareUrl: "https://getphame.app/r/quota-test" }),
+      },
       getStats: {
-        useQuery: () => query({ totalReferrals: 0, convertedReferrals: 0, monthsEarned: 0 }, { isLoading: false }),
+        useQuery: () =>
+          query(
+            { totalReferrals: 0, convertedReferrals: 0, monthsEarned: 0 },
+            { isLoading: false }
+          ),
       },
     },
     tracking: {
       overallStats: {
-        useQuery: () => query({ uniqueOpens: 0, uniqueClicks: 0, totalSent: 0 }, { isLoading: false }),
+        useQuery: () =>
+          query(
+            { uniqueOpens: 0, uniqueClicks: 0, totalSent: 0 },
+            { isLoading: false }
+          ),
       },
     },
     analytics: {
-      trackPwaEvent: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
+      trackPwaEvent: {
+        useMutation: () => ({ mutate: vi.fn(), isPending: false }),
+      },
     },
-    useUtils: () => ({ profile: { get: { invalidate: vi.fn() } }, smtp: { status: { invalidate: vi.fn() }, pausedAutomationQueue: { invalidate: vi.fn() } } }),
+    admin: {
+      getAdaptiveSendBurstCaps: {
+        useQuery: () => query(adaptiveSendBurstCapsFixture),
+      },
+    },
+    useUtils: () => ({
+      profile: { get: { invalidate: vi.fn() } },
+      smtp: {
+        status: { invalidate: vi.fn() },
+        pausedAutomationQueue: { invalidate: vi.fn() },
+      },
+    }),
   },
 }));
 
 vi.mock("wouter", () => ({ useLocation: () => ["/", vi.fn()] }));
 vi.mock("@/components/OnboardingGuide", () => ({ default: () => null }));
 vi.mock("@/components/LanguageFlyout", () => ({
-  default: () => React.createElement("div", { "data-testid": "language-flyout" }),
+  default: () =>
+    React.createElement("div", { "data-testid": "language-flyout" }),
 }));
-vi.mock("@/hooks/useAnalytics", () => ({ useAnalytics: () => ({ track: vi.fn() }) }));
+vi.mock("@/hooks/useAnalytics", () => ({
+  useAnalytics: () => ({ track: vi.fn() }),
+}));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -84,12 +147,19 @@ describe("Home dashboard Free quota page wiring", () => {
   beforeAll(async () => {
     Object.defineProperty(globalThis, "localStorage", {
       configurable: true,
-      value: { getItem: vi.fn(() => null), setItem: vi.fn(), removeItem: vi.fn(), clear: vi.fn() },
+      value: {
+        getItem: vi.fn(() => null),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+      },
     });
     HomePage = (await import("../client/src/pages/Home")).default;
   });
 
   beforeEach(() => {
+    userRole = "user";
+    adaptiveSendBurstCapsFixture = null;
     profileFixture = {
       tier: "free",
       businessName: "Quota Test Business",
@@ -114,9 +184,11 @@ describe("Home dashboard Free quota page wiring", () => {
     const html = renderHome();
 
     expect(html).toContain('data-testid="home-header-layout"');
-    expect(html).toContain('flex flex-col items-stretch gap-3 mb-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2');
+    expect(html).toContain(
+      "flex flex-col items-stretch gap-3 mb-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2"
+    );
     expect(html).toContain('data-testid="home-header-actions"');
-    expect(html).toContain('justify-end gap-2 flex-wrap sm:flex-nowrap');
+    expect(html).toContain("justify-end gap-2 flex-wrap sm:flex-nowrap");
 
     const brandIndex = html.indexOf('aria-label="Get Phame"');
     const actionsIndex = html.indexOf('data-testid="home-header-actions"');
@@ -131,7 +203,9 @@ describe("Home dashboard Free quota page wiring", () => {
     const html = renderHome();
     expect(html).toContain('data-phase="initial"');
     expect(html).toContain('data-blocked="false"');
-    expect(html).toContain("Free plan: 10 initial requests, then 5 every rolling 30 days");
+    expect(html).toContain(
+      "Free plan: 10 initial requests, then 5 every rolling 30 days"
+    );
     expect(html).toContain("10/10");
   });
 
@@ -169,5 +243,36 @@ describe("Home dashboard Free quota page wiring", () => {
     expect(html).toContain("Free plan: 5 requests every rolling 30 days");
     expect(html).toContain("Next request available");
     expect(html).toContain("0/5");
+  });
+
+  it("shows an administrator-only review badge at 90% of the active tier burst cap", () => {
+    userRole = "admin";
+    profileFixture = { ...profileFixture, tier: "pro" };
+    adaptiveSendBurstCapsFixture = {
+      free: 10,
+      pro: 180,
+      annual: 50,
+      lifetime: 100,
+    };
+
+    const html = renderHome();
+
+    expect(html).toContain('data-testid="admin-burst-cap-review-badge"');
+    expect(html).toContain("Burst cap at {{cap}}/{{max}}");
+    expect(html).toContain("Review caps");
+  });
+
+  it("does not show a burst-cap review badge below the threshold or to regular users", () => {
+    adaptiveSendBurstCapsFixture = {
+      free: 179,
+      pro: 25,
+      annual: 50,
+      lifetime: 100,
+    };
+
+    expect(renderHome()).not.toContain("admin-burst-cap-review-badge");
+
+    userRole = "admin";
+    expect(renderHome()).not.toContain("admin-burst-cap-review-badge");
   });
 });

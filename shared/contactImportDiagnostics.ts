@@ -4,7 +4,8 @@ export const CONTACT_IMPORT_ISSUE_REASONS = [
   "duplicate_email",
 ] as const;
 
-export type ContactImportIssueReason = (typeof CONTACT_IMPORT_ISSUE_REASONS)[number];
+export type ContactImportIssueReason =
+  (typeof CONTACT_IMPORT_ISSUE_REASONS)[number];
 
 /** Intentionally contains no customer values or other PII. */
 export type ContactImportIssue = {
@@ -32,10 +33,10 @@ export const MAX_IMPORT_ERROR_ROW_NUMBERS = 10;
  * a customer to repair the source CSV without leaking contact data elsewhere.
  */
 export function summarizeContactImportIssues(
-  issues: ContactImportIssue[],
+  issues: ContactImportIssue[]
 ): ContactImportErrorSummary {
   const buckets = new Map<ContactImportIssueReason, number[]>();
-  CONTACT_IMPORT_ISSUE_REASONS.forEach((reason) => buckets.set(reason, []));
+  CONTACT_IMPORT_ISSUE_REASONS.forEach(reason => buckets.set(reason, []));
 
   for (const issue of issues) {
     const rows = buckets.get(issue.reason);
@@ -46,27 +47,33 @@ export function summarizeContactImportIssues(
   }
 
   const counts = new Map<ContactImportIssueReason, number>();
-  CONTACT_IMPORT_ISSUE_REASONS.forEach((reason) => counts.set(reason, 0));
+  CONTACT_IMPORT_ISSUE_REASONS.forEach(reason => counts.set(reason, 0));
   for (const issue of issues) {
     counts.set(issue.reason, (counts.get(issue.reason) ?? 0) + 1);
   }
 
   return {
     totalRejected: issues.length,
-    reasons: CONTACT_IMPORT_ISSUE_REASONS.flatMap((reason) => {
+    reasons: CONTACT_IMPORT_ISSUE_REASONS.flatMap(reason => {
       const count = counts.get(reason) ?? 0;
       if (count === 0) return [];
-      const uniqueRows = Array.from(new Set(buckets.get(reason) ?? [])).sort((a, b) => a - b);
-      return [{
-        reason,
-        count,
-        rowNumbers: uniqueRows.slice(0, MAX_IMPORT_ERROR_ROW_NUMBERS),
-        hasMoreRows: uniqueRows.length > MAX_IMPORT_ERROR_ROW_NUMBERS,
-      }];
+      const uniqueRows = Array.from(new Set(buckets.get(reason) ?? [])).sort(
+        (a, b) => a - b
+      );
+      return [
+        {
+          reason,
+          count,
+          rowNumbers: uniqueRows.slice(0, MAX_IMPORT_ERROR_ROW_NUMBERS),
+          hasMoreRows: uniqueRows.length > MAX_IMPORT_ERROR_ROW_NUMBERS,
+        },
+      ];
     }),
     reportIssues: [...issues].sort((left, right) => {
       const rowDifference = (left.rowNumber ?? 0) - (right.rowNumber ?? 0);
-      return rowDifference === 0 ? left.reason.localeCompare(right.reason) : rowDifference;
+      return rowDifference === 0
+        ? left.reason.localeCompare(right.reason)
+        : rowDifference;
     }),
   };
 }

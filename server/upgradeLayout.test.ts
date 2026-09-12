@@ -62,7 +62,9 @@ describe("upgrade pricing layout", () => {
       "USD_PRICES.monthly * 24 - USD_PRICES.lifetime"
     );
     expect(source).toContain("formatUsd(USD_ANNUAL_SAVINGS, locale)");
-    expect(source).toContain("formatUsd(USD_LIFETIME_SAVINGS_BY_YEAR_TWO, locale)");
+    expect(source).toContain(
+      "formatUsd(USD_LIFETIME_SAVINGS_BY_YEAR_TWO, locale)"
+    );
     expect(source).toContain('data-testid="pricing-savings-calculator"');
     expect(source).toContain('t("pricingGrid.annualSave"');
     expect(source).toContain('t("pricingGrid.lifetimeSave"');
@@ -115,10 +117,17 @@ describe("upgrade pricing layout", () => {
         );
       }
       const guidance = resource.pricingGrid.guidance as Record<string, string>;
-      const fallbackGuidance = fallbackResources[locale]?.pricingGrid.guidance as Record<string, string>;
+      const fallbackGuidance = fallbackResources[locale]?.pricingGrid
+        .guidance as Record<string, string>;
       for (const key of reviewedGuidanceKeys) {
-        expect(guidance?.[key], `${locale}.pricingGrid.guidance.${key}`).toBeTypeOf("string");
-        expect(guidance?.[key]?.trim(), `${locale}.pricingGrid.guidance.${key}`).not.toBe("");
+        expect(
+          guidance?.[key],
+          `${locale}.pricingGrid.guidance.${key}`
+        ).toBeTypeOf("string");
+        expect(
+          guidance?.[key]?.trim(),
+          `${locale}.pricingGrid.guidance.${key}`
+        ).not.toBe("");
         expect(fallbackGuidance?.[key]).toBe(guidance[key]);
       }
       expect(resource.pricingGrid.previousPrice).toBeUndefined();

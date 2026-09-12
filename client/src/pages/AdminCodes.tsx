@@ -30,18 +30,22 @@ export default function AdminCodesPage() {
   const [maxUses, setMaxUses] = useState<string>("");
   const [customCode, setCustomCode] = useState("");
   const [expiryDays, setExpiryDays] = useState<string>("");
-  const [grantDurationUnit, setGrantDurationUnit] = useState<AccessCodeGrantUnit>("month");
+  const [grantDurationUnit, setGrantDurationUnit] =
+    useState<AccessCodeGrantUnit>("month");
   const [grantDurationValue, setGrantDurationValue] = useState<string>("1");
 
-  const { data: codes, isLoading: codesLoading, refetch } = trpc.accessCodes.list.useQuery(
-    undefined,
-    { enabled: user?.role === "admin" }
-  );
+  const {
+    data: codes,
+    isLoading: codesLoading,
+    refetch,
+  } = trpc.accessCodes.list.useQuery(undefined, {
+    enabled: user?.role === "admin",
+  });
 
-  const { data: preview, refetch: refreshPreview } = trpc.accessCodes.generatePreview.useQuery(
-    undefined,
-    { enabled: user?.role === "admin" }
-  );
+  const { data: preview, refetch: refreshPreview } =
+    trpc.accessCodes.generatePreview.useQuery(undefined, {
+      enabled: user?.role === "admin",
+    });
 
   const utils = trpc.useUtils();
 
@@ -57,7 +61,7 @@ export default function AdminCodesPage() {
       utils.accessCodes.list.invalidate();
       refreshPreview();
     },
-    onError: (err) => toast.error(err.message || "Failed to create code."),
+    onError: err => toast.error(err.message || "Failed to create code."),
   });
 
   const revokeCode = trpc.accessCodes.revoke.useMutation({
@@ -65,7 +69,7 @@ export default function AdminCodesPage() {
       toast.success("Code revoked.");
       utils.accessCodes.list.invalidate();
     },
-    onError: (err) => toast.error(err.message || "Failed to revoke code."),
+    onError: err => toast.error(err.message || "Failed to revoke code."),
   });
 
   const activateCode = trpc.accessCodes.activate.useMutation({
@@ -73,7 +77,7 @@ export default function AdminCodesPage() {
       toast.success("Code re-activated.");
       utils.accessCodes.list.invalidate();
     },
-    onError: (err) => toast.error(err.message || "Failed to activate code."),
+    onError: err => toast.error(err.message || "Failed to activate code."),
   });
 
   function handleCreate() {
@@ -81,15 +85,23 @@ export default function AdminCodesPage() {
     const parsedExpiry = expiryDays.trim()
       ? Date.now() + parseInt(expiryDays, 10) * 24 * 60 * 60 * 1000
       : null;
-    const parsedGrantDuration = grantDurationUnit === "lifetime"
-      ? null
-      : parseInt(grantDurationValue, 10);
+    const parsedGrantDuration =
+      grantDurationUnit === "lifetime"
+        ? null
+        : parseInt(grantDurationValue, 10);
     const durationLimit = grantDurationUnit === "day" ? 365 : 24;
-    if (grantDurationUnit !== "lifetime" && (!Number.isInteger(parsedGrantDuration) || parsedGrantDuration! < 1 || parsedGrantDuration! > durationLimit)) {
-      toast.error(t("accessCode.durationError", {
-        defaultValue: "Enter a duration between 1 and {{limit}}.",
-        limit: durationLimit,
-      }));
+    if (
+      grantDurationUnit !== "lifetime" &&
+      (!Number.isInteger(parsedGrantDuration) ||
+        parsedGrantDuration! < 1 ||
+        parsedGrantDuration! > durationLimit)
+    ) {
+      toast.error(
+        t("accessCode.durationError", {
+          defaultValue: "Enter a duration between 1 and {{limit}}.",
+          limit: durationLimit,
+        })
+      );
       return;
     }
     createCode.mutate({
@@ -118,8 +130,14 @@ export default function AdminCodesPage() {
   if (!user || user.role !== "admin") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6 rr-bg-navy">
-        <p className="text-white text-xl font-black mb-4">Admin access required.</p>
-        <button onClick={() => navigate("/")} className="text-base font-bold" style={{ color: "white" }}>
+        <p className="text-white text-xl font-black mb-4">
+          Admin access required.
+        </p>
+        <button
+          onClick={() => navigate("/")}
+          className="text-base font-bold"
+          style={{ color: "white" }}
+        >
           Go home
         </button>
       </div>
@@ -140,19 +158,13 @@ export default function AdminCodesPage() {
         </button>
         <div className="flex items-center gap-2 mb-1">
           <Ticket size={16} className="rr-text-gold" />
-          <span
-            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
-          >
+          <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
             Admin
           </span>
         </div>
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1
-              className="text-2xl font-black text-white"
-            >
-              Access Codes
-            </h1>
+            <h1 className="text-2xl font-black text-white">Access Codes</h1>
             <p className="text-base font-bold mt-1 text-white/90">
               Create and manage beta / promo codes that grant free Pro access.
             </p>
@@ -160,13 +172,21 @@ export default function AdminCodesPage() {
           <div className="shrink-0 flex flex-col gap-2 mt-1">
             <button
               onClick={() => navigate("/admin/revenue-controls")}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-text-gold" style={{ background: "oklch(0.30 0.07 260)", border: "1px solid rgba(255,255,255,0.12)" }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-text-gold"
+              style={{
+                background: "oklch(0.30 0.07 260)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
             >
               Revenue controls
             </button>
             <button
               onClick={() => navigate("/admin/smtp-stats")}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-text-gold" style={{ background: "oklch(0.30 0.07 260)", border: "1px solid rgba(255,255,255,0.12)" }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-text-gold"
+              style={{
+                background: "oklch(0.30 0.07 260)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
             >
               SMTP Stats
             </button>
@@ -177,24 +197,23 @@ export default function AdminCodesPage() {
       <div className="px-4 flex flex-col gap-4">
         {/* Create Code Card */}
         <div className="rounded-2xl p-5 rr-bg-navy-mid">
-          <h2
-            className="text-sm font-black mb-4 text-white"
-          >
+          <h2 className="text-sm font-black mb-4 text-white">
             Create New Code
           </h2>
 
           {/* Auto-generated preview */}
           {preview && (
             <div className="flex items-center gap-2 mb-4">
-              <span
-                className="flex-1 px-3 py-2 rounded-xl text-sm font-mono tracking-wider text-center rr-bg-navy rr-text-gold"
-              >
+              <span className="flex-1 px-3 py-2 rounded-xl text-sm font-mono tracking-wider text-center rr-bg-navy rr-text-gold">
                 {preview.code}
               </span>
               <button
                 onClick={() => refreshPreview()}
                 className="p-2 rounded-xl"
-                style={{ background: "oklch(0.22 0.09 260)", color: "var(--text-on-dark-secondary)" }}
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  color: "var(--text-on-dark-secondary)",
+                }}
                 title="Generate new random code"
               >
                 <RefreshCw size={14} />
@@ -211,10 +230,12 @@ export default function AdminCodesPage() {
               <input
                 type="text"
                 value={customCode}
-                onChange={(e) => setCustomCode(e.target.value.toUpperCase())}
+                onChange={e => setCustomCode(e.target.value.toUpperCase())}
                 placeholder="e.g. LAUNCH2026"
-                className="w-full px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-               name="rr-pages-admin-codes-custom-code-211" />
+                className="w-full px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none rr-bg-navy text-white"
+                style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                name="rr-pages-admin-codes-custom-code-211"
+              />
             </div>
 
             {/* Internal note */}
@@ -225,10 +246,12 @@ export default function AdminCodesPage() {
               <input
                 type="text"
                 value={note}
-                onChange={(e) => setNote(e.target.value)}
+                onChange={e => setNote(e.target.value)}
                 placeholder="e.g. Beta cohort — Jan 2026"
-                className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-               name="rr-pages-admin-codes-note-225" />
+                className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white"
+                style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                name="rr-pages-admin-codes-note-225"
+              />
             </div>
 
             <div className="flex gap-3">
@@ -241,10 +264,12 @@ export default function AdminCodesPage() {
                   type="number"
                   min={1}
                   value={maxUses}
-                  onChange={(e) => setMaxUses(e.target.value)}
+                  onChange={e => setMaxUses(e.target.value)}
                   placeholder="∞"
-                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-                 name="rr-pages-admin-codes-max-uses-240" />
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white"
+                  style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                  name="rr-pages-admin-codes-max-uses-240"
+                />
               </div>
 
               {/* Expiry days */}
@@ -256,28 +281,47 @@ export default function AdminCodesPage() {
                   type="number"
                   min={1}
                   value={expiryDays}
-                  onChange={(e) => setExpiryDays(e.target.value)}
+                  onChange={e => setExpiryDays(e.target.value)}
                   placeholder="never"
-                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-                 name="rr-pages-admin-codes-expiry-days-255" />
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white"
+                  style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                  name="rr-pages-admin-codes-expiry-days-255"
+                />
               </div>
             </div>
 
             <div>
               <label className="text-sm font-bold mb-1 block text-white/80">
-                {t("accessCode.grantDurationLabel", { defaultValue: "Access granted after redemption" })}
+                {t("accessCode.grantDurationLabel", {
+                  defaultValue: "Access granted after redemption",
+                })}
               </label>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <select
                   value={grantDurationUnit}
-                  onChange={(event) => setGrantDurationUnit(event.target.value as AccessCodeGrantUnit)}
+                  onChange={event =>
+                    setGrantDurationUnit(
+                      event.target.value as AccessCodeGrantUnit
+                    )
+                  }
                   className="w-full rounded-xl px-4 py-3 text-sm font-bold outline-none rr-bg-navy text-white"
                   style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-                  aria-label={t("accessCode.grantUnitLabel", { defaultValue: "Grant duration unit" })}
-                 name="rr-pages-admin-codes-grant-duration-unit-271">
-                  <option value="day">{t("accessCode.units.day", { defaultValue: "Days" })}</option>
-                  <option value="month">{t("accessCode.units.month", { defaultValue: "Months" })}</option>
-                  <option value="lifetime">{t("accessCode.units.lifetime", { defaultValue: "Lifetime" })}</option>
+                  aria-label={t("accessCode.grantUnitLabel", {
+                    defaultValue: "Grant duration unit",
+                  })}
+                  name="rr-pages-admin-codes-grant-duration-unit-271"
+                >
+                  <option value="day">
+                    {t("accessCode.units.day", { defaultValue: "Days" })}
+                  </option>
+                  <option value="month">
+                    {t("accessCode.units.month", { defaultValue: "Months" })}
+                  </option>
+                  <option value="lifetime">
+                    {t("accessCode.units.lifetime", {
+                      defaultValue: "Lifetime",
+                    })}
+                  </option>
                 </select>
                 {grantDurationUnit !== "lifetime" && (
                   <input
@@ -285,18 +329,26 @@ export default function AdminCodesPage() {
                     min={1}
                     max={grantDurationUnit === "day" ? 365 : 24}
                     value={grantDurationValue}
-                    onChange={(event) => setGrantDurationValue(event.target.value)}
+                    onChange={event =>
+                      setGrantDurationValue(event.target.value)
+                    }
                     className="w-full rounded-xl px-4 py-3 text-sm outline-none rr-bg-navy text-white"
                     style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-                    aria-label={t("accessCode.grantValueLabel", { defaultValue: "Grant duration value" })}
-                   name="rr-pages-admin-codes-grant-duration-value-283" />
+                    aria-label={t("accessCode.grantValueLabel", {
+                      defaultValue: "Grant duration value",
+                    })}
+                    name="rr-pages-admin-codes-grant-duration-value-283"
+                  />
                 )}
               </div>
               <p className="mt-1.5 text-xs font-semibold text-white/55">
                 {grantDurationUnit === "lifetime"
-                  ? t("accessCode.lifetimeHelper", { defaultValue: "The code grants permanent paid access." })
+                  ? t("accessCode.lifetimeHelper", {
+                      defaultValue: "The code grants permanent paid access.",
+                    })
                   : t("accessCode.durationHelper", {
-                      defaultValue: "The access period starts when the customer redeems the code.",
+                      defaultValue:
+                        "The access period starts when the customer redeems the code.",
                     })}
               </p>
             </div>
@@ -306,7 +358,11 @@ export default function AdminCodesPage() {
               disabled={createCode.isPending}
               className="w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 disabled:opacity-60 rr-bg-gold rr-text-navy"
             >
-              {createCode.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+              {createCode.isPending ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Plus size={16} />
+              )}
               {createCode.isPending ? "Creating..." : "Create Code"}
             </button>
           </div>
@@ -315,9 +371,7 @@ export default function AdminCodesPage() {
         {/* Existing Codes List */}
         <div className="rounded-2xl overflow-hidden rr-bg-navy-mid">
           <div className="px-5 py-4 flex items-center justify-between">
-            <h2
-              className="text-sm font-black text-white"
-            >
+            <h2 className="text-sm font-black text-white">
               All Codes ({codes?.length ?? 0})
             </h2>
             <button
@@ -331,7 +385,11 @@ export default function AdminCodesPage() {
 
           {codesLoading ? (
             <div className="flex justify-center py-8">
-              <Loader2 size={24} className="animate-spin" style={{ color: "var(--text-on-dark-disabled)" }} />
+              <Loader2
+                size={24}
+                className="animate-spin"
+                style={{ color: "var(--text-on-dark-disabled)" }}
+              />
             </div>
           ) : !codes || codes.length === 0 ? (
             <div className="px-5 pb-6 text-center">
@@ -340,9 +398,14 @@ export default function AdminCodesPage() {
               </p>
             </div>
           ) : (
-            <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-              {codes.map((c) => {
-                const isExpired = c.expiresAt ? c.expiresAt < Date.now() : false;
+            <div
+              className="divide-y"
+              style={{ borderColor: "rgba(255,255,255,0.08)" }}
+            >
+              {codes.map(c => {
+                const isExpired = c.expiresAt
+                  ? c.expiresAt < Date.now()
+                  : false;
                 const isFull = c.maxUses !== null && c.usedCount >= c.maxUses;
                 const isActive = c.active === 1 && !isExpired && !isFull;
 
@@ -354,7 +417,11 @@ export default function AdminCodesPage() {
                         <div className="flex items-center gap-2 mb-1">
                           <span
                             className="font-mono text-sm font-bold tracking-wider"
-                            style={{ color: isActive ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-disabled)" }}
+                            style={{
+                              color: isActive
+                                ? "oklch(0.80 0.18 80)"
+                                : "var(--text-on-dark-disabled)",
+                            }}
                           >
                             {c.code}
                           </span>
@@ -372,10 +439,18 @@ export default function AdminCodesPage() {
                               background: isActive
                                 ? "oklch(0.35 0.12 145)"
                                 : "oklch(0.35 0.08 20)",
-                              color: isActive ? "oklch(0.80 0.22 145)" : "oklch(0.75 0.12 20)",
+                              color: isActive
+                                ? "oklch(0.80 0.22 145)"
+                                : "oklch(0.75 0.12 20)",
                             }}
                           >
-                            {isExpired ? "Expired" : isFull ? "Used up" : c.active ? "Active" : "Revoked"}
+                            {isExpired
+                              ? "Expired"
+                              : isFull
+                                ? "Used up"
+                                : c.active
+                                  ? "Active"
+                                  : "Revoked"}
                           </span>
                         </div>
 
@@ -391,25 +466,36 @@ export default function AdminCodesPage() {
                           <span>
                             {c.usedCount} used
                             {c.maxUses !== null ? ` / ${c.maxUses}` : " / "}
-                            {c.maxUses === null && <Infinity size={10} className="inline ml-0.5" />}
+                            {c.maxUses === null && (
+                              <Infinity size={10} className="inline ml-0.5" />
+                            )}
                           </span>
                           {c.expiresAt && (
                             <span>
-                              Expires {new Date(c.expiresAt).toLocaleDateString()}
+                              Expires{" "}
+                              {new Date(c.expiresAt).toLocaleDateString()}
                             </span>
                           )}
                           <span className="rr-text-gold">
                             {c.grantDurationUnit === "lifetime"
-                              ? t("accessCode.grantLifetime", { defaultValue: "Grants lifetime access" })
+                              ? t("accessCode.grantLifetime", {
+                                  defaultValue: "Grants lifetime access",
+                                })
                               : c.grantDurationUnit && c.grantDurationValue
                                 ? t("accessCode.grantDuration", {
                                     defaultValue: "Grants {{value}} {{unit}}",
                                     value: c.grantDurationValue,
-                                    unit: t(`accessCode.units.${c.grantDurationUnit}`),
+                                    unit: t(
+                                      `accessCode.units.${c.grantDurationUnit}`
+                                    ),
                                   })
-                                : t("accessCode.grantLegacy", { defaultValue: "Legacy unlimited Pro access" })}
+                                : t("accessCode.grantLegacy", {
+                                    defaultValue: "Legacy unlimited Pro access",
+                                  })}
                           </span>
-                          <span>Created {new Date(c.createdAt).toLocaleDateString()}</span>
+                          <span>
+                            Created {new Date(c.createdAt).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
 
@@ -420,7 +506,10 @@ export default function AdminCodesPage() {
                             onClick={() => revokeCode.mutate({ id: c.id })}
                             disabled={revokeCode.isPending}
                             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold"
-                            style={{ background: "oklch(0.35 0.08 20)", color: "oklch(0.75 0.12 20)" }}
+                            style={{
+                              background: "oklch(0.35 0.08 20)",
+                              color: "oklch(0.75 0.12 20)",
+                            }}
                           >
                             <Ban size={12} />
                             Revoke
@@ -430,7 +519,10 @@ export default function AdminCodesPage() {
                             onClick={() => activateCode.mutate({ id: c.id })}
                             disabled={activateCode.isPending}
                             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold"
-                            style={{ background: "oklch(0.35 0.12 145)", color: "oklch(0.80 0.22 145)" }}
+                            style={{
+                              background: "oklch(0.35 0.12 145)",
+                              color: "oklch(0.80 0.22 145)",
+                            }}
                           >
                             <CheckCircle2 size={12} />
                             Activate

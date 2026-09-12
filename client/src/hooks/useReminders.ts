@@ -2,16 +2,16 @@
 // Checks for pending 3-day follow-up reminders and processes them
 // Only active for Pro tier users
 
-import { useEffect, useCallback } from 'react';
-import { useApp } from '@/contexts/AppContext';
-import { buildReviewMessage } from '@/lib/emailjs';
-import { toast } from 'sonner';
+import { useEffect, useCallback } from "react";
+import { useApp } from "@/contexts/AppContext";
+import { buildReviewMessage } from "@/lib/emailjs";
+import { toast } from "sonner";
 
 export function useReminders() {
   const { profile, pendingReminders, markReminderSent } = useApp();
 
   const processReminders = useCallback(async () => {
-    if (profile?.tier !== 'pro') return;
+    if (profile?.tier !== "pro") return;
     if (pendingReminders.length === 0) return;
 
     for (const reminder of pendingReminders) {
@@ -25,18 +25,18 @@ export function useReminders() {
         // In production: call email/SMS API here
         // For demo: log and mark as sent
         console.log(`[Get Phame] Sending reminder to ${reminder.customerName}`);
-        console.log('Message:', message);
+        console.log("Message:", message);
 
         // Simulate sending
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 500));
 
         markReminderSent(reminder.id);
 
         toast.success(`Reminder sent to ${reminder.customerName}!`, {
-          description: 'Automatic 3-day follow-up reminder delivered.',
+          description: "Automatic 3-day follow-up reminder delivered.",
         });
       } catch (err) {
-        console.error('Failed to send reminder:', err);
+        console.error("Failed to send reminder:", err);
       }
     }
   }, [profile, pendingReminders, markReminderSent]);

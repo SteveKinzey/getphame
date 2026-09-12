@@ -36,7 +36,9 @@ export class RouteAuditError extends Error {
 }
 
 /** Browser-backed audits run only in an explicitly provisioned Chromium runtime. */
-export function isProductionRouteAuditEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+export function isProductionRouteAuditEnabled(
+  env: NodeJS.ProcessEnv = process.env
+): boolean {
   return env.ROUTE_AUDIT_ENABLED === "true";
 }
 
@@ -92,10 +94,13 @@ export async function runProductionRouteAudit(): Promise<ProductionRouteAuditRes
   }
 
   const startedAt = Date.now();
-  const sitemapResponse = await fetch(`${CANONICAL_PRODUCTION_ORIGIN}/sitemap.xml`, {
-    headers: { accept: "application/xml,text/xml;q=0.9,*/*;q=0.1" },
-    signal: AbortSignal.timeout(NAVIGATION_TIMEOUT_MS),
-  }).catch(() => {
+  const sitemapResponse = await fetch(
+    `${CANONICAL_PRODUCTION_ORIGIN}/sitemap.xml`,
+    {
+      headers: { accept: "application/xml,text/xml;q=0.9,*/*;q=0.1" },
+      signal: AbortSignal.timeout(NAVIGATION_TIMEOUT_MS),
+    }
+  ).catch(() => {
     throw new RouteAuditError("sitemap_unavailable");
   });
 
@@ -103,12 +108,17 @@ export async function runProductionRouteAudit(): Promise<ProductionRouteAuditRes
   const routes = extractProductionAuditRoutes(await sitemapResponse.text());
   if (!routes.length) throw new RouteAuditError("sitemap_empty");
 
-  const executablePath = process.env.ROUTE_AUDIT_CHROMIUM_PATH || "/usr/bin/chromium";
+  const executablePath =
+    process.env.ROUTE_AUDIT_CHROMIUM_PATH || "/usr/bin/chromium";
   const browser = await chromium
     .launch({
       headless: true,
       executablePath,
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+      ],
     })
     .catch(() => {
       throw new RouteAuditError("browser_unavailable");
@@ -117,7 +127,9 @@ export async function runProductionRouteAudit(): Promise<ProductionRouteAuditRes
   try {
     const findings: RouteAuditFinding[] = [];
     for (const url of routes) {
-      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      const page = await browser.newPage({
+        viewport: { width: 1440, height: 900 },
+      });
       let consoleErrorCount = 0;
       let pageErrorCount = 0;
       let status: number | null = null;
@@ -131,7 +143,10 @@ export async function runProductionRouteAudit(): Promise<ProductionRouteAuditRes
       };
 
       page.on("console", message => {
-        if (message.type() === "error" && !isExternalAnalyticsCspWarning(message.text())) {
+        if (
+          message.type() === "error" &&
+          !isExternalAnalyticsCspWarning(message.text())
+        ) {
           consoleErrorCount += 1;
         }
       });
@@ -150,10 +165,13 @@ export async function runProductionRouteAudit(): Promise<ProductionRouteAuditRes
           });
           status = response?.status() ?? null;
           await page
-            .waitForFunction(() => {
-              const root = document.querySelector("#root");
-              return Boolean(root && root.children.length > 0);
-            }, { timeout: 10_000 })
+            .waitForFunction(
+              () => {
+                const root = document.querySelector("#root");
+                return Boolean(root && root.children.length > 0);
+              },
+              { timeout: 10_000 }
+            )
             .catch(() => undefined);
           await page.waitForTimeout(400);
           if (consoleErrorCount === 0 && pageErrorCount === 0) break;
@@ -167,7 +185,8 @@ export async function runProductionRouteAudit(): Promise<ProductionRouteAuditRes
         try {
           rendered = await page.evaluate(() => ({
             hasRoot: Boolean(document.querySelector("#root")),
-            rootChildCount: document.querySelector("#root")?.children.length ?? 0,
+            rootChildCount:
+              document.querySelector("#root")?.children.length ?? 0,
             textLength: document.body.innerText.trim().length,
             title: document.title.slice(0, 160),
           }));

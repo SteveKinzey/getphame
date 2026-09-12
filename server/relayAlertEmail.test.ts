@@ -40,16 +40,23 @@ describe("relay alert email fallback", () => {
       activeRelay: "sendgrid",
       checkedAt: 1_789_000_000_000,
       source: "scheduled_heartbeat",
-      diagnostic: "SMTP verification failed: [redacted-email] password: [redacted]",
+      diagnostic:
+        "SMTP verification failed: [redacted-email] password: [redacted]",
     });
 
-    expect(result).toEqual({ attempted: true, delivered: true, reason: "delivered" });
+    expect(result).toEqual({
+      attempted: true,
+      delivered: true,
+      reason: "delivered",
+    });
     expect(mocks.getUserByOpenId).toHaveBeenCalledWith("owner-open-id");
-    expect(mocks.sendSystemEmail).toHaveBeenCalledWith(expect.objectContaining({
-      to: "owner@example.test",
-      subject: expect.stringContaining("Slack fallback"),
-      text: expect.stringContaining("[redacted-email]"),
-    }));
+    expect(mocks.sendSystemEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: "owner@example.test",
+        subject: expect.stringContaining("Slack fallback"),
+        text: expect.stringContaining("[redacted-email]"),
+      })
+    );
     const html = mocks.sendSystemEmail.mock.calls[0][0].html;
     expect(html).not.toContain("redacted-test-secret");
     expect(html).not.toContain("https://hooks.slack.com");
@@ -66,7 +73,11 @@ describe("relay alert email fallback", () => {
       diagnostic: "Manual test did not confirm Slack delivery.",
     });
 
-    expect(result).toEqual({ attempted: false, delivered: false, reason: "owner_email_unavailable" });
+    expect(result).toEqual({
+      attempted: false,
+      delivered: false,
+      reason: "owner_email_unavailable",
+    });
     expect(mocks.sendSystemEmail).not.toHaveBeenCalled();
   });
 });

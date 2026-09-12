@@ -39,7 +39,16 @@ const GOLD = "#f0a500";
 
 /** Shared branded email wrapper — navy header, white body, gold CTA, CAN-SPAM footer */
 export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
-  const { customerName, businessName, reviewUrl, isYelpInstruction, bodyHtml, productName, unsubscribeUrl, showPoweredBy } = opts;
+  const {
+    customerName,
+    businessName,
+    reviewUrl,
+    isYelpInstruction,
+    bodyHtml,
+    productName,
+    unsubscribeUrl,
+    showPoweredBy,
+  } = opts;
 
   const defaultBody = productName
     ? `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">
@@ -78,17 +87,24 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
 
   // Build preferences URL from unsubscribeUrl domain (e.g. https://getphame.app/preferences)
   const preferencesUrl = unsubscribeUrl
-    ? (() => { try { const u = new URL(unsubscribeUrl); return `${u.origin}/preferences`; } catch { return null; } })()
+    ? (() => {
+        try {
+          const u = new URL(unsubscribeUrl);
+          return `${u.origin}/preferences`;
+        } catch {
+          return null;
+        }
+      })()
     : null;
   const footerText = unsubscribeUrl
     ? `You received this email because you are a customer of ${businessName}.<br/>
-       <a href="${unsubscribeUrl}" style="color:#aaa;text-decoration:underline;">Unsubscribe</a>${preferencesUrl ? ` &nbsp;&middot;&nbsp; <a href="${preferencesUrl}" style="color:#aaa;text-decoration:underline;">Manage preferences</a>` : ''} &nbsp;&middot;&nbsp; to stop receiving these emails.`
+       <a href="${unsubscribeUrl}" style="color:#aaa;text-decoration:underline;">Unsubscribe</a>${preferencesUrl ? ` &nbsp;&middot;&nbsp; <a href="${preferencesUrl}" style="color:#aaa;text-decoration:underline;">Manage preferences</a>` : ""} &nbsp;&middot;&nbsp; to stop receiving these emails.`
     : `You received this email because you are a customer of ${businessName}.<br/>
        To stop receiving these emails, reply with &quot;unsubscribe&quot;.`;
 
   const poweredByLine = showPoweredBy
     ? `<br/><br/><a href="https://getphame.app/upgrade?utm_source=powered_by_footer&utm_medium=email&utm_campaign=free_tier" style="color:#bbb;text-decoration:none;font-size:10px;">Powered by <strong>Phame</strong> &mdash; <span style="text-decoration:underline;">Remove branding &rarr;</span></a>`
-    : '';
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -145,17 +161,37 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
 
 /** Convenience: build the plain-text fallback for the same email */
 export function buildReviewRequestText(opts: ReviewEmailOptions): string {
-  const { customerName, businessName, reviewUrl, productName, unsubscribeUrl, showPoweredBy } = opts;
+  const {
+    customerName,
+    businessName,
+    reviewUrl,
+    productName,
+    unsubscribeUrl,
+    showPoweredBy,
+  } = opts;
   const context = productName
     ? `Thank you for your recent purchase of ${productName}. We hope you love it!`
     : `Thank you for choosing ${businessName}. We hope you had a great experience!`;
   const preferencesUrlText = unsubscribeUrl
-    ? (() => { try { const u = new URL(unsubscribeUrl); return `${u.origin}/preferences`; } catch { return null; } })()
+    ? (() => {
+        try {
+          const u = new URL(unsubscribeUrl);
+          return `${u.origin}/preferences`;
+        } catch {
+          return null;
+        }
+      })()
     : null;
   const unsubLine = unsubscribeUrl
-    ? `To unsubscribe: ${unsubscribeUrl}${preferencesUrlText ? `
-Manage preferences: ${preferencesUrlText}` : ''}`
+    ? `To unsubscribe: ${unsubscribeUrl}${
+        preferencesUrlText
+          ? `
+Manage preferences: ${preferencesUrlText}`
+          : ""
+      }`
     : `To unsubscribe, reply with "unsubscribe".`;
-  const poweredBy = showPoweredBy ? '\n\nPowered by Get Phame — https://getphame.app' : '';
+  const poweredBy = showPoweredBy
+    ? "\n\nPowered by Get Phame — https://getphame.app"
+    : "";
   return `Hi ${customerName}!\n\n${context}\n\nCould you take 30 seconds to leave us a quick review?\n\n${reviewUrl}\n\nThank you so much!\nThe ${businessName} team\n\n---\nYou received this email because you are a customer of ${businessName}. ${unsubLine}${poweredBy}`;
 }

@@ -38,15 +38,18 @@ export function containsDirectYelpLink(value: string): boolean {
 
 export function replaceDirectYelpLinksWithInstruction(
   value: string,
-  businessName: string,
+  businessName: string
 ): string {
-  return value.replace(yelpDirectLinkPattern(), buildYelpSearchInstruction(businessName));
+  return value.replace(
+    yelpDirectLinkPattern(),
+    buildYelpSearchInstruction(businessName)
+  );
 }
 
 export function getReviewPlatformValue(
   platform: ReviewPlatformDraftValue | null | undefined,
   businessName: string,
-  fallbackReviewUrl = "",
+  fallbackReviewUrl = ""
 ): string {
   if (!platform) return fallbackReviewUrl;
   return platform.platform === "yelp"
@@ -57,15 +60,20 @@ export function getReviewPlatformValue(
 export function buildSafePlatformLinks(
   platforms: ReviewPlatformDraftValue[],
   businessName: string,
-  fallbackReviewValue = "",
+  fallbackReviewValue = ""
 ): string {
   if (platforms.length === 0) {
-    return fallbackReviewValue ? `- Leave a review: ${fallbackReviewValue}` : "";
+    return fallbackReviewValue
+      ? `- Leave a review: ${fallbackReviewValue}`
+      : "";
   }
 
   return platforms
-    .map((platform) => {
-      const label = platform.label || PLATFORM_LABELS[platform.platform] || platform.platform;
+    .map(platform => {
+      const label =
+        platform.label ||
+        PLATFORM_LABELS[platform.platform] ||
+        platform.platform;
       const value = getReviewPlatformValue(platform, businessName);
       return `- ${label}: ${value}`;
     })
@@ -74,7 +82,7 @@ export function buildSafePlatformLinks(
 
 export function renderReviewRequestDraft(
   value: string,
-  context: ReviewRequestDraftContext,
+  context: ReviewRequestDraftContext
 ): string {
   const rendered = value
     .replace(/\{\{customer_name\}\}/g, context.customerName)

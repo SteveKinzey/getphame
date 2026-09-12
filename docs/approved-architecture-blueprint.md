@@ -3,20 +3,24 @@
 ## Phase 2: Global Definitions
 
 ### Visual Style
+
 - **Sub-genre**: Modern SaaS brand commercial — cinematic realism with motion graphics overlay
 - **Rendering + Line**: Live action B-roll with clean vector UI animation overlays; no raw screen recordings
 - **Color + Lighting**: Navy/dark blue (#0F1F4B) and gold (#C9A84C) brand palette; warm practical lighting on people; cool blue-green ambient glow on tech scenes
 - **Detail density**: Clean, minimal UI elements; real-world environments slightly blurred in background
 
 ### Recurring Elements
+
 - **Business Owner**: Male, early 40s, dark navy/blue casual business shirt, dark hair, friendly face. Represents the GetPhame target customer — a local service business owner.
 - **GetPhame App UI**: Clean mobile/web interface in navy and gold. Review request email screen, Google review submission screen, dashboard with rising star count.
 
 ### Voice Profile
+
 - **Narrator**: Male, confident and warm, American English. Tone: like a trusted advisor, not a salesman. Pace: steady, clear. Voice: **Achird** (Friendly).
 - **Language**: English (en-US)
 
 ### BGM
+
 - **Source**: Separate (generated independently)
 - **Genre**: Upbeat modern corporate / tech-forward
 - **BPM**: 110 BPM (locked)
@@ -30,6 +34,7 @@
 ## Phase 3: Clip Plan
 
 ### Narration Budget Calculation (English, en-US)
+
 Rate = 2.1 words/sec, safety factor 0.85
 max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 
@@ -38,6 +43,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 1** — Hook: The Problem
+
 - narrative_purpose: establish
 - pacing: slow
 - duration: 8s
@@ -63,6 +69,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 2** — Problem Amplified: The Competitor
+
 - narrative_purpose: develop
 - pacing: moderate
 - duration: 6s
@@ -88,6 +95,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 3** — Solution Intro: GetPhame
+
 - narrative_purpose: transition
 - pacing: moderate
 - duration: 6s
@@ -113,6 +121,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 4** — Product Demo: Sending a Review Request
+
 - narrative_purpose: develop
 - pacing: moderate
 - duration: 8s
@@ -138,6 +147,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 5** — Customer Receives the Email
+
 - narrative_purpose: develop
 - pacing: moderate
 - duration: 6s
@@ -163,6 +173,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 6** — The 5-Star Moment
+
 - narrative_purpose: climax
 - pacing: moderate
 - duration: 6s
@@ -188,6 +199,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 7** — Results: Business Owner Reaction
+
 - narrative_purpose: resolve
 - pacing: slow
 - duration: 8s
@@ -213,6 +225,7 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 ---
 
 **CLIP 8** — CTA: Start Free Trial
+
 - narrative_purpose: resolve
 - pacing: slow
 - duration: 8s
@@ -239,16 +252,16 @@ max_words_per_second = 2.1 × 0.85 = ~1.79 words/sec
 
 ## BGM Emotional Arc Blueprint
 
-| Time Segment | Mood/Emotion | Arrangement State | Density & Brightness |
-|---|---|---|---|
-| [00:00–00:08] | Subdued, slightly tense | Sparse | Single piano, dark |
-| [00:08–00:14] | Tense, questioning | Sparse | Piano only, low register |
-| [00:14–00:20] | Uplifting shift | Moderate | Piano + synth pad, brighter |
-| [00:20–00:28] | Upbeat, energetic | Moderate-dense | Piano + synth + light percussion |
-| [00:28–00:34] | Warm, bright | Moderate | Piano + guitar pluck |
-| [00:34–00:40] | Peak energy, triumphant | Full | All instruments, bright |
-| [00:40–00:48] | Warm, resolved | Moderate | Piano + guitar, softer |
-| [00:48–00:56] | Resolution, aspirational | Sparse | Piano alone, gentle fade |
+| Time Segment  | Mood/Emotion             | Arrangement State | Density & Brightness             |
+| ------------- | ------------------------ | ----------------- | -------------------------------- |
+| [00:00–00:08] | Subdued, slightly tense  | Sparse            | Single piano, dark               |
+| [00:08–00:14] | Tense, questioning       | Sparse            | Piano only, low register         |
+| [00:14–00:20] | Uplifting shift          | Moderate          | Piano + synth pad, brighter      |
+| [00:20–00:28] | Upbeat, energetic        | Moderate-dense    | Piano + synth + light percussion |
+| [00:28–00:34] | Warm, bright             | Moderate          | Piano + guitar pluck             |
+| [00:34–00:40] | Peak energy, triumphant  | Full              | All instruments, bright          |
+| [00:40–00:48] | Warm, resolved           | Moderate          | Piano + guitar, softer           |
+| [00:48–00:56] | Resolution, aspirational | Sparse            | Piano alone, gentle fade         |
 
 **Total duration**: 56 seconds
 **BPM**: 110

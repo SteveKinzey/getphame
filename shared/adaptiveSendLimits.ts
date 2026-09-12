@@ -1,12 +1,106 @@
 export const ADAPTIVE_SEND_WARNING_THRESHOLD = 0.7;
 export const ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD = 0.85;
+export const ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD = 0.9;
 export const ACCOUNT_HARD_DAILY_SEND_CEILING = 2_000;
 export const ACCOUNT_HARD_HOURLY_SEND_CEILING = 300;
+export const ADAPTIVE_SEND_MINIMUM_BURST_CAP = 1;
+export const ADAPTIVE_SEND_MAXIMUM_BURST_CAP = 200;
+
+export type AdaptiveSendBurstCaps = {
+  free: number;
+  pro: number;
+  annual: number;
+  lifetime: number;
+};
+
+/**
+ * Platform-wide defaults for the number of review requests a bulk action may
+ * initiate. Provider and account windows remain the final delivery boundary.
+ */
+export const DEFAULT_ADAPTIVE_SEND_BURST_CAPS: Readonly<AdaptiveSendBurstCaps> =
+  {
+    free: 10,
+    pro: 25,
+    annual: 50,
+    lifetime: 100,
+  };
+
+function normalizeBurstCap(value: unknown, fallback: number): number {
+  if (!Number.isFinite(value) || !Number.isInteger(value)) return fallback;
+  return Math.min(
+    ADAPTIVE_SEND_MAXIMUM_BURST_CAP,
+    Math.max(ADAPTIVE_SEND_MINIMUM_BURST_CAP, Number(value))
+  );
+}
+
+/** Normalize persisted policy input before it is shown or enforced. */
+export function normalizeAdaptiveSendBurstCaps(
+  input: Partial<AdaptiveSendBurstCaps> | null | undefined
+): AdaptiveSendBurstCaps {
+  return {
+    free: normalizeBurstCap(input?.free, DEFAULT_ADAPTIVE_SEND_BURST_CAPS.free),
+    pro: normalizeBurstCap(input?.pro, DEFAULT_ADAPTIVE_SEND_BURST_CAPS.pro),
+    annual: normalizeBurstCap(
+      input?.annual,
+      DEFAULT_ADAPTIVE_SEND_BURST_CAPS.annual
+    ),
+    lifetime: normalizeBurstCap(
+      input?.lifetime,
+      DEFAULT_ADAPTIVE_SEND_BURST_CAPS.lifetime
+    ),
+  };
+}
+
+/** Resolve a supported plan tier without allowing an unknown tier to expand capacity. */
+export function getAdaptiveSendBurstCapForTier(
+  caps: AdaptiveSendBurstCaps,
+  tier: string | null | undefined
+): number {
+  if (tier === "pro") return caps.pro;
+  if (tier === "annual") return caps.annual;
+  if (tier === "lifetime") return caps.lifetime;
+  return caps.free;
+}
+
+/**
+ * Identify an administrator-controlled cap that is nearing the platform-wide
+ * maximum. This is a configuration review signal, not live send capacity.
+ */
+export function shouldReviewAdaptiveSendBurstCap(
+  configuredCap: number | null | undefined
+): boolean {
+  return (
+    typeof configuredCap === "number" &&
+    Number.isFinite(configuredCap) &&
+    configuredCap >=
+      ADAPTIVE_SEND_MAXIMUM_BURST_CAP * ADAPTIVE_SEND_BURST_CAP_REVIEW_THRESHOLD
+  );
+}
 
 export type AdaptiveSendChannelType = "personal" | "bulk";
-export type AdaptiveSendRampStage = "new" | "warming" | "building" | "established";
-export type AdaptiveSendWarningLevel = "normal" | "approaching" | "high" | "blocked";
-export type AdaptiveSendRecommendedAction = "upgrade_plan" | "connect_bulk_sender" | null;
+export type AdaptiveSendRampStage =
+  | "new"
+  | "warming"
+  | "building"
+  | "established";
+export type AdaptiveSendWarningLevel =
+  | "normal"
+  | "approaching"
+  | "high"
+  | "blocked";
+export type AdaptiveSendRecommendedAction =
+  | "upgrade_plan"
+  | "connect_bulk_sender"
+  | null;
+
+export type AdaptiveSendVelocityAdvice = {
+  requestedCount: number;
+  currentRemaining: number;
+  estimatedSendCount: number;
+  estimatedOverCapacityCount: number;
+  maxBurstCap: number | null;
+  isEstimate: true;
+};
 
 export type AdaptiveSendChannelDescriptor = {
   key: string;
@@ -63,7 +157,10 @@ function getRampStage(connectionAgeDays: number): AdaptiveSendRampStage {
   return "established";
 }
 
-function getRampMultiplier(type: AdaptiveSendChannelType, stage: AdaptiveSendRampStage): number {
+function getRampMultiplier(
+  type: AdaptiveSendChannelType,
+  stage: AdaptiveSendRampStage
+): number {
   if (type === "bulk") {
     if (stage === "new") return 0.1;
     if (stage === "warming") return 0.25;
@@ -78,13 +175,19 @@ function getRampMultiplier(type: AdaptiveSendChannelType, stage: AdaptiveSendRam
 
 export function buildAdaptiveSendPolicy(
   channel: AdaptiveSendChannelDescriptor,
-  now = Date.now(),
+  now = Date.now()
 ): AdaptiveSendPolicy {
-  const connectionAgeDays = Math.max(0, Math.floor((now - channel.connectedAt) / 86_400_000));
+  const connectionAgeDays = Math.max(
+    0,
+    Math.floor((now - channel.connectedAt) / 86_400_000)
+  );
   const rampStage = getRampStage(connectionAgeDays);
-  const base = channel.type === "bulk"
-    ? BULK_PROVIDER_LIMITS[channel.providerId] ?? BULK_PROVIDER_LIMITS.custom_smtp
-    : PERSONAL_PROVIDER_LIMITS[channel.providerId] ?? PERSONAL_PROVIDER_LIMITS.custom_smtp;
+  const base =
+    channel.type === "bulk"
+      ? (BULK_PROVIDER_LIMITS[channel.providerId] ??
+        BULK_PROVIDER_LIMITS.custom_smtp)
+      : (PERSONAL_PROVIDER_LIMITS[channel.providerId] ??
+        PERSONAL_PROVIDER_LIMITS.custom_smtp);
   const multiplier = getRampMultiplier(channel.type, rampStage);
   const minimumDaily = channel.type === "bulk" ? 50 : 10;
   const minimumHourly = channel.type === "bulk" ? 10 : 5;
@@ -94,26 +197,57 @@ export function buildAdaptiveSendPolicy(
     connectionAgeDays,
     hourlyLimit: Math.min(
       ACCOUNT_HARD_HOURLY_SEND_CEILING,
-      Math.max(minimumHourly, Math.floor(base.hourly * multiplier)),
+      Math.max(minimumHourly, Math.floor(base.hourly * multiplier))
     ),
     dailyLimit: Math.min(
       ACCOUNT_HARD_DAILY_SEND_CEILING,
-      Math.max(minimumDaily, Math.floor(base.daily * multiplier)),
+      Math.max(minimumDaily, Math.floor(base.daily * multiplier))
     ),
     hardHourlyCeiling: ACCOUNT_HARD_HOURLY_SEND_CEILING,
     hardDailyCeiling: ACCOUNT_HARD_DAILY_SEND_CEILING,
   };
 }
 
-export function getAdaptiveSendWarningLevel(utilization: number, remaining: number): AdaptiveSendWarningLevel {
+export function getAdaptiveSendWarningLevel(
+  utilization: number,
+  remaining: number
+): AdaptiveSendWarningLevel {
   if (remaining <= 0 || utilization >= 1) return "blocked";
   if (utilization >= ADAPTIVE_SEND_HIGH_WARNING_THRESHOLD) return "high";
   if (utilization >= ADAPTIVE_SEND_WARNING_THRESHOLD) return "approaching";
   return "normal";
 }
 
+export function getAdaptiveSendVelocityAdvice(
+  requestedCount: number,
+  remaining: number,
+  maxBurstCap?: number | null
+): AdaptiveSendVelocityAdvice {
+  const normalizedRequested = Math.max(0, Math.floor(requestedCount));
+  const normalizedCap =
+    maxBurstCap === undefined || maxBurstCap === null
+      ? null
+      : normalizeBurstCap(maxBurstCap, ADAPTIVE_SEND_MINIMUM_BURST_CAP);
+  const normalizedRemaining = Math.max(
+    0,
+    Math.floor(
+      normalizedCap === null ? remaining : Math.min(remaining, normalizedCap)
+    )
+  );
+  const estimatedSendCount = Math.min(normalizedRequested, normalizedRemaining);
+
+  return {
+    requestedCount: normalizedRequested,
+    currentRemaining: normalizedRemaining,
+    estimatedSendCount,
+    estimatedOverCapacityCount: normalizedRequested - estimatedSendCount,
+    maxBurstCap: normalizedCap,
+    isEstimate: true,
+  };
+}
+
 export function getAdaptiveSendRecommendedAction(
-  channel: AdaptiveSendChannelDescriptor,
+  channel: AdaptiveSendChannelDescriptor
 ): AdaptiveSendRecommendedAction {
   if (channel.type === "bulk") return null;
   return channel.tier === "free" ? "upgrade_plan" : "connect_bulk_sender";

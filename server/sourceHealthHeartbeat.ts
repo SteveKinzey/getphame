@@ -45,14 +45,28 @@ function desiredUpdate(): HeartbeatJobUpdate {
   };
 }
 
-function findOwnedJob(jobs: HeartbeatJobInfo[], persistedTaskUid: string | null | undefined) {
+function findOwnedJob(
+  jobs: HeartbeatJobInfo[],
+  persistedTaskUid: string | null | undefined
+) {
   const persisted = persistedTaskUid
-    ? jobs.find(job => job.taskUid === persistedTaskUid && job.name === SOURCE_HEALTH_HEARTBEAT_NAME)
+    ? jobs.find(
+        job =>
+          job.taskUid === persistedTaskUid &&
+          job.name === SOURCE_HEALTH_HEARTBEAT_NAME
+      )
     : undefined;
-  return persisted ?? jobs.find(job => job.name === SOURCE_HEALTH_HEARTBEAT_NAME) ?? null;
+  return (
+    persisted ??
+    jobs.find(job => job.name === SOURCE_HEALTH_HEARTBEAT_NAME) ??
+    null
+  );
 }
 
-async function adoptAndRepair(job: HeartbeatJobInfo, deps: SourceHealthHeartbeatDeps) {
+async function adoptAndRepair(
+  job: HeartbeatJobInfo,
+  deps: SourceHealthHeartbeatDeps
+) {
   await deps.update(job.taskUid, desiredUpdate(), "");
   await deps.saveTaskUid(job.taskUid);
   return { status: "reconciled" as const };
@@ -78,21 +92,27 @@ export async function reconcileSourceHealthHeartbeat(options?: {
   if (existing) return adoptAndRepair(existing, deps);
 
   try {
-    const created = await deps.create({
-      name: SOURCE_HEALTH_HEARTBEAT_NAME,
-      cron: SOURCE_HEALTH_CRON,
-      path: SOURCE_HEALTH_CALLBACK_PATH,
-      method: "POST",
-      payload: {},
-      description: SOURCE_HEALTH_HEARTBEAT_DESCRIPTION,
-    }, "");
+    const created = await deps.create(
+      {
+        name: SOURCE_HEALTH_HEARTBEAT_NAME,
+        cron: SOURCE_HEALTH_CRON,
+        path: SOURCE_HEALTH_CALLBACK_PATH,
+        method: "POST",
+        payload: {},
+        description: SOURCE_HEALTH_HEARTBEAT_DESCRIPTION,
+      },
+      ""
+    );
     await deps.saveTaskUid(created.taskUid);
     return { status: "created" as const };
   } catch (error) {
     // Concurrent cold starts may race after both list an empty job set. If the
     // provider rejects the duplicate name, adopt the now-visible owned job.
     const retryPage = await deps.list("", { page: 1, pageSize: 100 });
-    const racedJob = findOwnedJob(retryPage.jobs, scheduler?.scheduleCronTaskUid);
+    const racedJob = findOwnedJob(
+      retryPage.jobs,
+      scheduler?.scheduleCronTaskUid
+    );
     if (!racedJob) throw error;
     return adoptAndRepair(racedJob, deps);
   }

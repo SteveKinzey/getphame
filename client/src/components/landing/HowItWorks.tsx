@@ -8,28 +8,51 @@ export default function HowItWorks() {
   const steps = [
     {
       number: "1",
-      title: t("landing.howItWorks.setupSteps.step1.title", { defaultValue: "Connect your email" }),
-      description: t("landing.howItWorks.setupSteps.step1.description", { defaultValue: "Link Gmail, Outlook, or an SMTP email using guided connection steps. Credentials are encrypted with AES-256." }),
+      title: t("landing.howItWorks.setupSteps.step1.title", {
+        defaultValue: "Connect your email",
+      }),
+      description: t("landing.howItWorks.setupSteps.step1.description", {
+        defaultValue:
+          "Link Gmail, Outlook, or an SMTP email using guided connection steps. Credentials are encrypted with AES-256.",
+      }),
     },
     {
       number: "2",
-      title: t("landing.howItWorks.setupSteps.step2.title", { defaultValue: "Add your review link" }),
-      description: t("landing.howItWorks.setupSteps.step2.description", { defaultValue: "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime." }),
+      title: t("landing.howItWorks.setupSteps.step2.title", {
+        defaultValue: "Add your review link",
+      }),
+      description: t("landing.howItWorks.setupSteps.step2.description", {
+        defaultValue:
+          "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime.",
+      }),
     },
     {
       number: "3",
-      title: t("landing.howItWorks.setupSteps.step3.title", { defaultValue: "Import your customers" }),
-      description: t("landing.howItWorks.setupSteps.step3.description", { defaultValue: "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically." }),
+      title: t("landing.howItWorks.setupSteps.step3.title", {
+        defaultValue: "Import your customers",
+      }),
+      description: t("landing.howItWorks.setupSteps.step3.description", {
+        defaultValue:
+          "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically.",
+      }),
     },
     {
       number: "4",
-      title: t("landing.howItWorks.setupSteps.step4.title", { defaultValue: "Send & track results" }),
-      description: t("landing.howItWorks.setupSteps.step4.description", { defaultValue: "Send each customer a personal request, then review sent, open, and click activity in one place." }),
+      title: t("landing.howItWorks.setupSteps.step4.title", {
+        defaultValue: "Send & track results",
+      }),
+      description: t("landing.howItWorks.setupSteps.step4.description", {
+        defaultValue:
+          "Send each customer a personal request, then review sent, open, and click activity in one place.",
+      }),
     },
   ];
 
   return (
-    <section id="how-it-works" className="py-20 md:py-28 relative overflow-hidden">
+    <section
+      id="how-it-works"
+      className="py-20 md:py-28 relative overflow-hidden"
+    >
       <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-[#0a1628] to-[#0a1628]" />
 
       <div className="container relative z-10">
@@ -37,28 +60,43 @@ export default function HowItWorks() {
           {/* Left — sticky headline */}
           <FadeUp className="lg:col-span-2 lg:sticky lg:top-28">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              {t("landing.howItWorks.setupInSteps", { defaultValue: "Setup in 4 steps" })}
+              {t("landing.howItWorks.setupInSteps", {
+                defaultValue: "Setup in 4 steps",
+              })}
             </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              {t("landing.howItWorks.headline", { defaultValue: "From connection to your first review request" })}
+              {t("landing.howItWorks.headline", {
+                defaultValue: "From connection to your first review request",
+              })}
             </h2>
             <p className="text-lg text-slate-200 font-medium mb-8">
-              {t("landing.howItWorks.subtitle", { defaultValue: "No technical skills needed. No onboarding calls. Just connect, import, and send." })}
+              {t("landing.howItWorks.subtitle", {
+                defaultValue:
+                  "No technical skills needed. No onboarding calls. Just connect, import, and send.",
+              })}
             </p>
             <a
               href="/onboarding"
               className="inline-flex items-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.2)]"
             >
-              {t("landing.howItWorks.getStartedButton", { defaultValue: "Get Started Free" })}
+              {t("landing.howItWorks.getStartedButton", {
+                defaultValue: "Get Started Free",
+              })}
               <ArrowRight size={18} />
             </a>
             <p className="text-sm text-slate-300 font-medium mt-3">
-              {t("landing.howItWorks.setupTime", { defaultValue: "Guided setup, import, and sending" })}
+              {t("landing.howItWorks.setupTime", {
+                defaultValue: "Guided setup, import, and sending",
+              })}
             </p>
           </FadeUp>
 
           {/* Right — staggered steps */}
-          <StaggerChildren className="lg:col-span-3 space-y-4" staggerDelay={0.12} baseDelay={0.1}>
+          <StaggerChildren
+            className="lg:col-span-3 space-y-4"
+            staggerDelay={0.12}
+            baseDelay={0.1}
+          >
             {steps.map((step, i) => (
               <div
                 key={step.number}
@@ -69,11 +107,17 @@ export default function HowItWorks() {
                 )}
                 <div className="flex gap-5 items-start">
                   <div className="w-11 h-11 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center shrink-0 group-hover:bg-primary/25 transition-colors">
-                    <span className="font-display font-bold text-primary text-lg">{step.number}</span>
+                    <span className="font-display font-bold text-primary text-lg">
+                      {step.number}
+                    </span>
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-lg text-white mb-1.5">{step.title}</h3>
-                    <p className="text-slate-200 leading-relaxed font-medium">{step.description}</p>
+                    <h3 className="font-display font-bold text-lg text-white mb-1.5">
+                      {step.title}
+                    </h3>
+                    <p className="text-slate-200 leading-relaxed font-medium">
+                      {step.description}
+                    </p>
                   </div>
                 </div>
               </div>

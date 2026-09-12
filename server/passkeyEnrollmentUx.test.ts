@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-const source = (file: string) => readFileSync(path.resolve(process.cwd(), file), "utf8");
+const source = (file: string) =>
+  readFileSync(path.resolve(process.cwd(), file), "utf8");
 
 describe("guided passkey enrollment composition", () => {
   it("opens an accessible verification module and preserves unsupported-browser fallback", () => {
@@ -20,7 +21,9 @@ describe("guided passkey enrollment composition", () => {
   it("binds magic-link verification and resumes on the fixed authenticated Settings surface", () => {
     const emailAuth = source("server/auth-email.ts");
     const form = source("client/src/components/auth/MagicLinkForm.tsx");
-    const card = source("client/src/components/security/PasskeySecurityCard.tsx");
+    const card = source(
+      "client/src/components/security/PasskeySecurityCard.tsx"
+    );
     expect(form).toContain('intent?: "enroll_passkey"');
     expect(emailAuth).toContain("signPasskeyEnrollmentIntent");
     expect(emailAuth).toContain('"/settings?passkey_enroll=1"');
@@ -32,7 +35,9 @@ describe("guided passkey enrollment composition", () => {
   });
 
   it("preserves lifecycle controls and isolates provider recovery from generic auth errors", () => {
-    const card = source("client/src/components/security/PasskeySecurityCard.tsx");
+    const card = source(
+      "client/src/components/security/PasskeySecurityCard.tsx"
+    );
     const login = source("client/src/pages/Login.tsx");
     const bootstrap = source("client/src/main.tsx");
     expect(card).toContain("trpc.passkeys.rename.useMutation");

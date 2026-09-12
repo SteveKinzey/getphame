@@ -8,17 +8,17 @@ const mocks = vi.hoisted(() => ({
   storageGet: vi.fn(),
 }));
 
-vi.mock("./db", async (importOriginal) => ({
+vi.mock("./db", async importOriginal => ({
   ...(await importOriginal<typeof import("./db")>()),
   getDb: mocks.getDb,
 }));
 
-vi.mock("./storage", async (importOriginal) => ({
+vi.mock("./storage", async importOriginal => ({
   ...(await importOriginal<typeof import("./storage")>()),
   storageGet: mocks.storageGet,
 }));
 
-vi.mock("./complimentaryAccess", async (importOriginal) => ({
+vi.mock("./complimentaryAccess", async importOriginal => ({
   ...(await importOriginal<typeof import("./complimentaryAccess")>()),
   findActiveComplimentaryAccess: mocks.findActiveComplimentaryAccess,
 }));
@@ -57,37 +57,48 @@ describe("private connector download", () => {
     });
     mocks.findActiveComplimentaryAccess.mockResolvedValue(null);
     mocks.storageGet.mockResolvedValue({
-      key: "connectors/get-phame-connector.zip",
-      url: "https://signed.example.com/get-phame-connector.zip",
+      key: "connectors/get-phame-connector-2.2.0.zip",
+      url: "https://signed.example.com/get-phame-connector-2.2.0.zip",
     });
   });
 
   it("rejects free users before requesting a signed URL", async () => {
     mocks.findProfile.mockResolvedValue({ tier: "free", planExpiresAt: null });
 
-    await expect(appRouter.createCaller(context("user")).connector.download())
-      .rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(
+      appRouter.createCaller(context("user")).connector.download()
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
     expect(mocks.storageGet).not.toHaveBeenCalled();
   });
 
   it("allows administrators regardless of profile tier", async () => {
     mocks.findProfile.mockResolvedValue({ tier: "free", planExpiresAt: null });
 
-    await expect(appRouter.createCaller(context("admin")).connector.download())
-      .resolves.toEqual({
-        url: "https://signed.example.com/get-phame-connector.zip",
-        fileName: "get-phame-connector.zip",
-      });
+    await expect(
+      appRouter.createCaller(context("admin")).connector.download()
+    ).resolves.toEqual({
+      url: "https://signed.example.com/get-phame-connector-2.2.0.zip",
+      fileName: "get-phame-connector-2.2.0.zip",
+    });
   });
 
   it("allows active paid users and rejects expired subscriptions", async () => {
-    mocks.findProfile.mockResolvedValueOnce({ tier: "pro", planExpiresAt: Date.now() + 60_000 });
-    await expect(appRouter.createCaller(context("user")).connector.download()).resolves.toMatchObject({
-      fileName: "get-phame-connector.zip",
+    mocks.findProfile.mockResolvedValueOnce({
+      tier: "pro",
+      planExpiresAt: Date.now() + 60_000,
+    });
+    await expect(
+      appRouter.createCaller(context("user")).connector.download()
+    ).resolves.toMatchObject({
+      fileName: "get-phame-connector-2.2.0.zip",
     });
 
-    mocks.findProfile.mockResolvedValueOnce({ tier: "annual", planExpiresAt: Date.now() - 60_000 });
-    await expect(appRouter.createCaller(context("user")).connector.download())
-      .rejects.toMatchObject({ code: "FORBIDDEN" });
+    mocks.findProfile.mockResolvedValueOnce({
+      tier: "annual",
+      planExpiresAt: Date.now() - 60_000,
+    });
+    await expect(
+      appRouter.createCaller(context("user")).connector.download()
+    ).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });

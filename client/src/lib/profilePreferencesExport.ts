@@ -27,20 +27,32 @@ function neutralizeSpreadsheetFormula(value: string): string {
 }
 
 function escapeCsv(value: string): string {
-  const normalized = neutralizeSpreadsheetFormula(value).replace(/\r\n?/g, "\n");
-  return /[",\n]/.test(normalized) ? `"${normalized.replace(/"/g, '""')}"` : normalized;
+  const normalized = neutralizeSpreadsheetFormula(value).replace(
+    /\r\n?/g,
+    "\n"
+  );
+  return /[",\n]/.test(normalized)
+    ? `"${normalized.replace(/"/g, '""')}"`
+    : normalized;
 }
 
 function displayValue(value: string | boolean | null): string {
   return value === null ? "" : String(value);
 }
 
-export function buildProfilePreferencesExportFilename(format: ProfilePreferenceExportFormat, exportedAt: string): string {
-  const date = /^\d{4}-\d{2}-\d{2}T/.test(exportedAt) ? exportedAt.slice(0, 10) : "export";
+export function buildProfilePreferencesExportFilename(
+  format: ProfilePreferenceExportFormat,
+  exportedAt: string
+): string {
+  const date = /^\d{4}-\d{2}-\d{2}T/.test(exportedAt)
+    ? exportedAt.slice(0, 10)
+    : "export";
   return `get-phame-profile-preferences-${date}.${format}`;
 }
 
-export function buildProfilePreferencesExportReceiptFilename(exportedAt: number): string {
+export function buildProfilePreferencesExportReceiptFilename(
+  exportedAt: number
+): string {
   const date = Number.isFinite(exportedAt)
     ? new Date(exportedAt).toISOString().slice(0, 10)
     : "receipt";
@@ -48,7 +60,9 @@ export function buildProfilePreferencesExportReceiptFilename(exportedAt: number)
 }
 
 /** Metadata-only receipt: it never contains the user's export payload, credentials, or customer records. */
-export function serializeProfilePreferencesExportReceipt(receipt: ProfilePreferencesExportReceipt): string {
+export function serializeProfilePreferencesExportReceipt(
+  receipt: ProfilePreferencesExportReceipt
+): string {
   return [
     "GET PHAME",
     "Profile and preferences export receipt",
@@ -62,7 +76,9 @@ export function serializeProfilePreferencesExportReceipt(receipt: ProfilePrefere
   ].join("\n");
 }
 
-export function serializeProfilePreferencesCsv(payload: ProfilePreferencesExportPayload): string {
+export function serializeProfilePreferencesCsv(
+  payload: ProfilePreferencesExportPayload
+): string {
   const rows: Array<[string, string | boolean | null]> = [
     ["Exported at", payload.exportedAt],
     ["Account display name", payload.account.displayName],

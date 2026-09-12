@@ -1,6 +1,18 @@
 import { resolveMx } from "node:dns/promises";
 import { domainToASCII } from "node:url";
-import { and, asc, count, desc, eq, gte, isNotNull, isNull, lte, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  isNotNull,
+  isNull,
+  lte,
+  or,
+  sql,
+} from "drizzle-orm";
 import {
   disposableDomainAccountReviews,
   disposableDomainSchedulers,
@@ -45,9 +57,12 @@ export type DisposableDomainRecord = {
   sourceEvidenceJson: string;
 };
 
-type DomainFetcher = (source: (typeof DISPOSABLE_DOMAIN_SOURCES)[number]) => Promise<string>;
+type DomainFetcher = (
+  source: (typeof DISPOSABLE_DOMAIN_SOURCES)[number]
+) => Promise<string>;
 
-const DOMAIN_LINE_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i;
+const DOMAIN_LINE_PATTERN =
+  /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i;
 const SOURCE_FETCH_TIMEOUT_MS = 20_000;
 const DNS_TIMEOUT_MS = 3_000;
 const UPSERT_BATCH_SIZE = 1_000;
@@ -59,10 +74,15 @@ function nowMs() {
 export function normalizeDisposableDomain(value: string | null | undefined) {
   if (!value) return null;
   const withoutComment = value.trim().split(/\s+#/, 1)[0] ?? "";
-  const trimmed = withoutComment.trim().replace(/^@/, "").replace(/\.$/, "").toLowerCase();
+  const trimmed = withoutComment
+    .trim()
+    .replace(/^@/, "")
+    .replace(/\.$/, "")
+    .toLowerCase();
   if (!trimmed || trimmed.length > 253 || trimmed.includes("@")) return null;
   const ascii = domainToASCII(trimmed);
-  if (!ascii || ascii.length > 253 || !DOMAIN_LINE_PATTERN.test(ascii)) return null;
+  if (!ascii || ascii.length > 253 || !DOMAIN_LINE_PATTERN.test(ascii))
+    return null;
   return ascii;
 }
 
@@ -72,7 +92,9 @@ export function getEmailDomain(email: string | null | undefined) {
   return at <= 0 ? null : normalizeDisposableDomain(email.slice(at + 1));
 }
 
-export function aggregateDisposableDomainFeeds(feeds: DisposableDomainFeed[]): DisposableDomainRecord[] {
+export function aggregateDisposableDomainFeeds(
+  feeds: DisposableDomainFeed[]
+): DisposableDomainRecord[] {
   const sourcesByDomain = new Map<string, Set<DisposableDomainSourceKey>>();
   for (const feed of feeds) {
     for (const line of feed.body.split(/\r?\n/)) {
@@ -80,7 +102,8 @@ export function aggregateDisposableDomainFeeds(feeds: DisposableDomainFeed[]): D
       if (!candidate || candidate.startsWith("#")) continue;
       const domain = normalizeDisposableDomain(candidate);
       if (!domain) continue;
-      const sources = sourcesByDomain.get(domain) ?? new Set<DisposableDomainSourceKey>();
+      const sources =
+        sourcesByDomain.get(domain) ?? new Set<DisposableDomainSourceKey>();
       sources.add(feed.source);
       sourcesByDomain.set(domain, sources);
     }
@@ -88,13 +111,16 @@ export function aggregateDisposableDomainFeeds(feeds: DisposableDomainFeed[]): D
 
   return Array.from(sourcesByDomain.entries())
     .map(([domain, sourceSet]) => {
-      const sources = Array.from(sourceSet).sort() as DisposableDomainSourceKey[];
-      const individualConfidence = sources.map(source =>
-        DISPOSABLE_DOMAIN_SOURCES.find(candidate => candidate.key === source)?.confidence ?? 0
+      const sources = Array.from(
+        sourceSet
+      ).sort() as DisposableDomainSourceKey[];
+      const individualConfidence = sources.map(
+        source =>
+          DISPOSABLE_DOMAIN_SOURCES.find(candidate => candidate.key === source)
+            ?.confidence ?? 0
       );
-      const confidenceScore = sources.length > 1
-        ? 100
-        : Math.max(...individualConfidence, 0);
+      const confidenceScore =
+        sources.length > 1 ? 100 : Math.max(...individualConfidence, 0);
       return {
         domain,
         confidenceScore,
@@ -104,7 +130,9 @@ export function aggregateDisposableDomainFeeds(feeds: DisposableDomainFeed[]): D
     .sort((left, right) => left.domain.localeCompare(right.domain));
 }
 
-async function fetchPublicFeed(source: (typeof DISPOSABLE_DOMAIN_SOURCES)[number]) {
+async function fetchPublicFeed(
+  source: (typeof DISPOSABLE_DOMAIN_SOURCES)[number]
+) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), SOURCE_FETCH_TIMEOUT_MS);
   try {
@@ -113,22 +141,28 @@ async function fetchPublicFeed(source: (typeof DISPOSABLE_DOMAIN_SOURCES)[number
       redirect: "follow",
       signal: controller.signal,
     });
-    if (!response.ok) throw new Error(`feed_${source.key}_http_${response.status}`);
+    if (!response.ok)
+      throw new Error(`feed_${source.key}_http_${response.status}`);
     const body = await response.text();
-    if (!body.trim() || body.length > 5_000_000) throw new Error(`feed_${source.key}_invalid_body`);
+    if (!body.trim() || body.length > 5_000_000)
+      throw new Error(`feed_${source.key}_invalid_body`);
     return body;
   } finally {
     clearTimeout(timeout);
   }
 }
 
-export async function fetchApprovedDisposableDomainFeeds(fetcher: DomainFetcher = fetchPublicFeed) {
+export async function fetchApprovedDisposableDomainFeeds(
+  fetcher: DomainFetcher = fetchPublicFeed
+) {
   // The job changes catalog activity only after every approved feed succeeds.
   // That avoids a transient source outage silently unblocking known domains.
-  const bodies = await Promise.all(DISPOSABLE_DOMAIN_SOURCES.map(async source => ({
-    source: source.key,
-    body: await fetcher(source),
-  })));
+  const bodies = await Promise.all(
+    DISPOSABLE_DOMAIN_SOURCES.map(async source => ({
+      source: source.key,
+      body: await fetcher(source),
+    }))
+  );
   return bodies;
 }
 
@@ -138,12 +172,19 @@ async function checkMx(domain: string) {
     const records = await Promise.race([
       resolveMx(domain),
       new Promise<never>((_, reject) => {
-        timeout = setTimeout(() => reject(new Error("DNS_TIMEOUT")), DNS_TIMEOUT_MS);
+        timeout = setTimeout(
+          () => reject(new Error("DNS_TIMEOUT")),
+          DNS_TIMEOUT_MS
+        );
       }),
     ]);
-    return { mxExists: records.length > 0, dnsErrorCode: null as string | null };
+    return {
+      mxExists: records.length > 0,
+      dnsErrorCode: null as string | null,
+    };
   } catch (error) {
-    const code = error instanceof Error ? error.message.slice(0, 64) : "DNS_LOOKUP_FAILED";
+    const code =
+      error instanceof Error ? error.message.slice(0, 64) : "DNS_LOOKUP_FAILED";
     // MX is enrichment only. No DNS result changes block eligibility.
     return { mxExists: null as boolean | null, dnsErrorCode: code };
   } finally {
@@ -155,16 +196,23 @@ async function runBoundedMxEnrichment(now: number) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   const dueBefore = now - DISPOSABLE_DOMAIN_DNS_RECHECK_MS;
-  const candidates = await db.select({
-    id: disposableEmailDomains.id,
-    domain: disposableEmailDomains.domain,
-  }).from(disposableEmailDomains).where(and(
-    eq(disposableEmailDomains.active, true),
-    or(
-      isNull(disposableEmailDomains.lastDnsCheckedAt),
-      lte(disposableEmailDomains.lastDnsCheckedAt, dueBefore),
-    ),
-  )).orderBy(disposableEmailDomains.lastDnsCheckedAt).limit(DISPOSABLE_DOMAIN_DNS_BATCH_SIZE);
+  const candidates = await db
+    .select({
+      id: disposableEmailDomains.id,
+      domain: disposableEmailDomains.domain,
+    })
+    .from(disposableEmailDomains)
+    .where(
+      and(
+        eq(disposableEmailDomains.active, true),
+        or(
+          isNull(disposableEmailDomains.lastDnsCheckedAt),
+          lte(disposableEmailDomains.lastDnsCheckedAt, dueBefore)
+        )
+      )
+    )
+    .orderBy(disposableEmailDomains.lastDnsCheckedAt)
+    .limit(DISPOSABLE_DOMAIN_DNS_BATCH_SIZE);
 
   const workerCount = Math.min(8, candidates.length);
   let nextIndex = 0;
@@ -172,12 +220,15 @@ async function runBoundedMxEnrichment(now: number) {
     while (nextIndex < candidates.length) {
       const candidate = candidates[nextIndex++];
       const result = await checkMx(candidate.domain);
-      await db.update(disposableEmailDomains).set({
-        lastDnsCheckedAt: now,
-        mxExists: result.mxExists,
-        dnsErrorCode: result.dnsErrorCode,
-        updatedAt: now,
-      }).where(eq(disposableEmailDomains.id, candidate.id));
+      await db
+        .update(disposableEmailDomains)
+        .set({
+          lastDnsCheckedAt: now,
+          mxExists: result.mxExists,
+          dnsErrorCode: result.dnsErrorCode,
+          updatedAt: now,
+        })
+        .where(eq(disposableEmailDomains.id, candidate.id));
     }
   };
   await Promise.all(Array.from({ length: workerCount }, worker));
@@ -191,41 +242,52 @@ export async function syncDisposableEmailDomains(options?: {
   const now = options?.now ?? nowMs();
   const feeds = await fetchApprovedDisposableDomainFeeds(options?.fetcher);
   const records = aggregateDisposableDomainFeeds(feeds);
-  if (records.length === 0) throw new Error("No valid disposable domains received");
+  if (records.length === 0)
+    throw new Error("No valid disposable domains received");
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
 
   for (let index = 0; index < records.length; index += UPSERT_BATCH_SIZE) {
-    const batch = records.slice(index, index + UPSERT_BATCH_SIZE).map(record => ({
-      ...record,
-      active: true,
-      firstSeenAt: now,
-      lastSeenAt: now,
-      lastDnsCheckedAt: null,
-      mxExists: null,
-      dnsErrorCode: null,
-      createdAt: now,
-      updatedAt: now,
-    }));
-    await db.insert(disposableEmailDomains).values(batch).onDuplicateKeyUpdate({
-      set: {
-        sourceEvidenceJson: sql`VALUES(${disposableEmailDomains.sourceEvidenceJson})`,
-        confidenceScore: sql`VALUES(${disposableEmailDomains.confidenceScore})`,
+    const batch = records
+      .slice(index, index + UPSERT_BATCH_SIZE)
+      .map(record => ({
+        ...record,
         active: true,
+        firstSeenAt: now,
         lastSeenAt: now,
+        lastDnsCheckedAt: null,
+        mxExists: null,
+        dnsErrorCode: null,
+        createdAt: now,
         updatedAt: now,
-      },
-    });
+      }));
+    await db
+      .insert(disposableEmailDomains)
+      .values(batch)
+      .onDuplicateKeyUpdate({
+        set: {
+          sourceEvidenceJson: sql`VALUES(${disposableEmailDomains.sourceEvidenceJson})`,
+          confidenceScore: sql`VALUES(${disposableEmailDomains.confidenceScore})`,
+          active: true,
+          lastSeenAt: now,
+          updatedAt: now,
+        },
+      });
   }
 
   const staleBefore = now - DISPOSABLE_DOMAIN_STALE_MS;
-  await db.update(disposableEmailDomains).set({
-    active: false,
-    updatedAt: now,
-  }).where(and(
-    eq(disposableEmailDomains.active, true),
-    lte(disposableEmailDomains.lastSeenAt, staleBefore),
-  ));
+  await db
+    .update(disposableEmailDomains)
+    .set({
+      active: false,
+      updatedAt: now,
+    })
+    .where(
+      and(
+        eq(disposableEmailDomains.active, true),
+        lte(disposableEmailDomains.lastSeenAt, staleBefore)
+      )
+    );
 
   const mxChecked = await runBoundedMxEnrichment(now);
   const accountReviews = await reconcileDisposableDomainAccountReviews(now);
@@ -247,48 +309,70 @@ export async function reconcileDisposableDomainAccountReviews(now = nowMs()) {
   if (!db) throw new Error("Database unavailable");
   const scheduler = await getDisposableDomainScheduler();
   const reviewCursorUserId = scheduler?.reviewCursorUserId ?? 0;
-  const candidates = await db.select({
-    userId: users.id,
-    domain: disposableEmailDomains.domain,
-    confidenceScore: disposableEmailDomains.confidenceScore,
-  }).from(users).innerJoin(
-    disposableEmailDomains,
-    eq(
-      sql<string>`LOWER(SUBSTRING_INDEX(${users.email}, '@', -1))`,
-      disposableEmailDomains.domain,
-    ),
-  ).where(and(
-    isNotNull(users.email),
-    gte(users.id, reviewCursorUserId + 1),
-    eq(disposableEmailDomains.active, true),
-    gte(disposableEmailDomains.confidenceScore, DISPOSABLE_DOMAIN_BLOCK_THRESHOLD),
-  )).orderBy(asc(users.id)).limit(1_000);
+  const candidates = await db
+    .select({
+      userId: users.id,
+      domain: disposableEmailDomains.domain,
+      confidenceScore: disposableEmailDomains.confidenceScore,
+    })
+    .from(users)
+    .innerJoin(
+      disposableEmailDomains,
+      eq(
+        sql<string>`LOWER(SUBSTRING_INDEX(${users.email}, '@', -1))`,
+        disposableEmailDomains.domain
+      )
+    )
+    .where(
+      and(
+        isNotNull(users.email),
+        gte(users.id, reviewCursorUserId + 1),
+        eq(disposableEmailDomains.active, true),
+        gte(
+          disposableEmailDomains.confidenceScore,
+          DISPOSABLE_DOMAIN_BLOCK_THRESHOLD
+        )
+      )
+    )
+    .orderBy(asc(users.id))
+    .limit(1_000);
 
   for (const candidate of candidates) {
-    await db.insert(disposableDomainAccountReviews).values({
-      userId: candidate.userId,
-      domain: candidate.domain,
-      confidenceScore: candidate.confidenceScore,
-      status: "pending",
-      detectedAt: now,
-      lastDetectedAt: now,
-      createdAt: now,
-      updatedAt: now,
-    }).onDuplicateKeyUpdate({
-      set: {
+    await db
+      .insert(disposableDomainAccountReviews)
+      .values({
+        userId: candidate.userId,
         domain: candidate.domain,
         confidenceScore: candidate.confidenceScore,
+        status: "pending",
+        detectedAt: now,
         lastDetectedAt: now,
+        createdAt: now,
         updatedAt: now,
-      },
-    });
+      })
+      .onDuplicateKeyUpdate({
+        set: {
+          domain: candidate.domain,
+          confidenceScore: candidate.confidenceScore,
+          lastDetectedAt: now,
+          updatedAt: now,
+        },
+      });
   }
   if (scheduler?.scheduleCronTaskUid) {
     const nextCursor = candidates.at(-1)?.userId ?? 0;
-    await db.update(disposableDomainSchedulers).set({
-      reviewCursorUserId: nextCursor,
-      updatedAt: now,
-    }).where(eq(disposableDomainSchedulers.scheduleCronTaskUid, scheduler.scheduleCronTaskUid));
+    await db
+      .update(disposableDomainSchedulers)
+      .set({
+        reviewCursorUserId: nextCursor,
+        updatedAt: now,
+      })
+      .where(
+        eq(
+          disposableDomainSchedulers.scheduleCronTaskUid,
+          scheduler.scheduleCronTaskUid
+        )
+      );
   }
   return candidates.length;
 }
@@ -301,23 +385,33 @@ export async function getDisposableDomainReviewQueue(input?: {
   const limit = Math.min(Math.max(input?.limit ?? 50, 1), 100);
   const emptySummary = { total: 0, pending: 0, dismissed: 0, resolved: 0 };
   if (!db) return { reviews: [], summary: emptySummary };
-  const reviews = await db.select({
-    id: disposableDomainAccountReviews.id,
-    userId: disposableDomainAccountReviews.userId,
-    domain: disposableDomainAccountReviews.domain,
-    confidenceScore: disposableDomainAccountReviews.confidenceScore,
-    status: disposableDomainAccountReviews.status,
-    detectedAt: disposableDomainAccountReviews.detectedAt,
-    lastDetectedAt: disposableDomainAccountReviews.lastDetectedAt,
-    resolvedAt: disposableDomainAccountReviews.resolvedAt,
-    adminNote: disposableDomainAccountReviews.adminNote,
-  }).from(disposableDomainAccountReviews).where(
-    input?.status ? eq(disposableDomainAccountReviews.status, input.status) : undefined,
-  ).orderBy(desc(disposableDomainAccountReviews.lastDetectedAt)).limit(limit);
-  const summaryRows = await db.select({
-    status: disposableDomainAccountReviews.status,
-    total: count(),
-  }).from(disposableDomainAccountReviews).groupBy(disposableDomainAccountReviews.status);
+  const reviews = await db
+    .select({
+      id: disposableDomainAccountReviews.id,
+      userId: disposableDomainAccountReviews.userId,
+      domain: disposableDomainAccountReviews.domain,
+      confidenceScore: disposableDomainAccountReviews.confidenceScore,
+      status: disposableDomainAccountReviews.status,
+      detectedAt: disposableDomainAccountReviews.detectedAt,
+      lastDetectedAt: disposableDomainAccountReviews.lastDetectedAt,
+      resolvedAt: disposableDomainAccountReviews.resolvedAt,
+      adminNote: disposableDomainAccountReviews.adminNote,
+    })
+    .from(disposableDomainAccountReviews)
+    .where(
+      input?.status
+        ? eq(disposableDomainAccountReviews.status, input.status)
+        : undefined
+    )
+    .orderBy(desc(disposableDomainAccountReviews.lastDetectedAt))
+    .limit(limit);
+  const summaryRows = await db
+    .select({
+      status: disposableDomainAccountReviews.status,
+      total: count(),
+    })
+    .from(disposableDomainAccountReviews)
+    .groupBy(disposableDomainAccountReviews.status);
   const summary = { ...emptySummary };
   for (const row of summaryRows) {
     const status = row.status as "pending" | "dismissed" | "resolved";
@@ -337,27 +431,38 @@ export async function resolveDisposableDomainReview(input: {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   const now = input.now ?? nowMs();
-  await db.update(disposableDomainAccountReviews).set({
-    status: input.status,
-    adminNote: input.adminNote?.trim().slice(0, 500) || null,
-    resolvedAt: now,
-    resolvedByUserId: input.adminUserId,
-    updatedAt: now,
-  }).where(eq(disposableDomainAccountReviews.id, input.reviewId));
+  await db
+    .update(disposableDomainAccountReviews)
+    .set({
+      status: input.status,
+      adminNote: input.adminNote?.trim().slice(0, 500) || null,
+      resolvedAt: now,
+      resolvedByUserId: input.adminUserId,
+      updatedAt: now,
+    })
+    .where(eq(disposableDomainAccountReviews.id, input.reviewId));
 }
 
-export async function isHighConfidenceDisposableEmail(email: string | null | undefined) {
+export async function isHighConfidenceDisposableEmail(
+  email: string | null | undefined
+) {
   const domain = getEmailDomain(email);
   if (!domain) return false;
   const db = await getDb();
   if (!db) return false;
-  const [match] = await db.select({ id: disposableEmailDomains.id })
+  const [match] = await db
+    .select({ id: disposableEmailDomains.id })
     .from(disposableEmailDomains)
-    .where(and(
-      eq(disposableEmailDomains.domain, domain),
-      eq(disposableEmailDomains.active, true),
-      gte(disposableEmailDomains.confidenceScore, DISPOSABLE_DOMAIN_BLOCK_THRESHOLD),
-    ))
+    .where(
+      and(
+        eq(disposableEmailDomains.domain, domain),
+        eq(disposableEmailDomains.active, true),
+        gte(
+          disposableEmailDomains.confidenceScore,
+          DISPOSABLE_DOMAIN_BLOCK_THRESHOLD
+        )
+      )
+    )
     .limit(1);
   return Boolean(match);
 }
@@ -371,7 +476,8 @@ export function getPacificScheduleDecision(now = nowMs()) {
     hour: "2-digit",
     hourCycle: "h23",
   }).formatToParts(new Date(now));
-  const value = (type: Intl.DateTimeFormatPartTypes) => parts.find(part => part.type === type)?.value ?? "";
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find(part => part.type === type)?.value ?? "";
   const dateKey = `${value("year")}-${value("month")}-${value("day")}`;
   const hour = Number(value("hour"));
 
@@ -383,7 +489,9 @@ export function getPacificScheduleDecision(now = nowMs()) {
     hour: "2-digit",
     hourCycle: "h23",
   }).formatToParts(new Date(now - 60 * 60 * 1000));
-  const earlierHour = Number(oneHourEarlier.find(part => part.type === "hour")?.value ?? "-1");
+  const earlierHour = Number(
+    oneHourEarlier.find(part => part.type === "hour")?.value ?? "-1"
+  );
   const isSpringForwardMakeup = hour === 3 && earlierHour === 1;
   return {
     dateKey,
@@ -396,8 +504,12 @@ export function getPacificScheduleDecision(now = nowMs()) {
 export async function getDisposableDomainScheduler() {
   const db = await getDb();
   if (!db) return null;
-  const [row] = await db.select().from(disposableDomainSchedulers)
-    .where(eq(disposableDomainSchedulers.scheduleKey, DISPOSABLE_DOMAIN_SCHEDULE_KEY))
+  const [row] = await db
+    .select()
+    .from(disposableDomainSchedulers)
+    .where(
+      eq(disposableDomainSchedulers.scheduleKey, DISPOSABLE_DOMAIN_SCHEDULE_KEY)
+    )
     .limit(1);
   return row ?? null;
 }
@@ -405,46 +517,66 @@ export async function getDisposableDomainScheduler() {
 export async function getDisposableDomainSchedulerByTaskUid(taskUid: string) {
   const db = await getDb();
   if (!db) return null;
-  const [row] = await db.select().from(disposableDomainSchedulers)
+  const [row] = await db
+    .select()
+    .from(disposableDomainSchedulers)
     .where(eq(disposableDomainSchedulers.scheduleCronTaskUid, taskUid))
     .limit(1);
   return row ?? null;
 }
 
-export async function saveDisposableDomainSchedulerTaskUid(taskUid: string, now = nowMs()) {
+export async function saveDisposableDomainSchedulerTaskUid(
+  taskUid: string,
+  now = nowMs()
+) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db.insert(disposableDomainSchedulers).values({
-    scheduleKey: DISPOSABLE_DOMAIN_SCHEDULE_KEY,
-    scheduleCronTaskUid: taskUid,
-    cronExpression: DISPOSABLE_DOMAIN_CRON,
-    createdAt: now,
-    updatedAt: now,
-  }).onDuplicateKeyUpdate({
-    set: {
+  await db
+    .insert(disposableDomainSchedulers)
+    .values({
+      scheduleKey: DISPOSABLE_DOMAIN_SCHEDULE_KEY,
       scheduleCronTaskUid: taskUid,
       cronExpression: DISPOSABLE_DOMAIN_CRON,
+      createdAt: now,
       updatedAt: now,
-    },
-  });
+    })
+    .onDuplicateKeyUpdate({
+      set: {
+        scheduleCronTaskUid: taskUid,
+        cronExpression: DISPOSABLE_DOMAIN_CRON,
+        updatedAt: now,
+      },
+    });
 }
 
-export async function claimDisposableDomainSchedulerRun(taskUid: string, now = nowMs()) {
+export async function claimDisposableDomainSchedulerRun(
+  taskUid: string,
+  now = nowMs()
+) {
   const db = await getDb();
   if (!db) return false;
-  const result = await db.update(disposableDomainSchedulers).set({
-    lastRunAt: now,
-    lastRunStatus: "running",
-    lastRunErrorCode: null,
-    updatedAt: now,
-  }).where(and(
-    eq(disposableDomainSchedulers.scheduleCronTaskUid, taskUid),
-    or(
-      isNull(disposableDomainSchedulers.lastRunAt),
-      lte(disposableDomainSchedulers.lastRunAt, now - 120_000),
-    ),
-  ));
-  return Number((result as unknown as [{ affectedRows?: number }])[0]?.affectedRows ?? 0) === 1;
+  const result = await db
+    .update(disposableDomainSchedulers)
+    .set({
+      lastRunAt: now,
+      lastRunStatus: "running",
+      lastRunErrorCode: null,
+      updatedAt: now,
+    })
+    .where(
+      and(
+        eq(disposableDomainSchedulers.scheduleCronTaskUid, taskUid),
+        or(
+          isNull(disposableDomainSchedulers.lastRunAt),
+          lte(disposableDomainSchedulers.lastRunAt, now - 120_000)
+        )
+      )
+    );
+  return (
+    Number(
+      (result as unknown as [{ affectedRows?: number }])[0]?.affectedRows ?? 0
+    ) === 1
+  );
 }
 
 export async function recordDisposableDomainSchedulerRun(params: {
@@ -458,14 +590,19 @@ export async function recordDisposableDomainSchedulerRun(params: {
   const db = await getDb();
   if (!db) return;
   const now = params.now ?? nowMs();
-  await db.update(disposableDomainSchedulers).set({
-    lastRunDateKey: params.dateKey ?? null,
-    lastRunAt: now,
-    lastRunStatus: params.status,
-    lastRunErrorCode: params.errorCode ?? null,
-    lastRunSummaryJson: params.summary ? JSON.stringify(params.summary) : null,
-    updatedAt: now,
-  }).where(eq(disposableDomainSchedulers.scheduleCronTaskUid, params.taskUid));
+  await db
+    .update(disposableDomainSchedulers)
+    .set({
+      lastRunDateKey: params.dateKey ?? null,
+      lastRunAt: now,
+      lastRunStatus: params.status,
+      lastRunErrorCode: params.errorCode ?? null,
+      lastRunSummaryJson: params.summary
+        ? JSON.stringify(params.summary)
+        : null,
+      updatedAt: now,
+    })
+    .where(eq(disposableDomainSchedulers.scheduleCronTaskUid, params.taskUid));
 }
 
 /**
@@ -481,21 +618,42 @@ export async function runDisposableDomainManualSync(now = nowMs()) {
     return { status: "unavailable" as const };
   }
 
-  const claim = await db.update(disposableDomainSchedulers).set({
-    lastRunAt: now,
-    lastRunStatus: "running",
-    lastRunErrorCode: null,
-    updatedAt: now,
-  }).where(and(
-    eq(disposableDomainSchedulers.scheduleKey, DISPOSABLE_DOMAIN_SCHEDULE_KEY),
-    eq(disposableDomainSchedulers.scheduleCronTaskUid, scheduler.scheduleCronTaskUid),
-    or(
-      isNull(disposableDomainSchedulers.lastRunAt),
-      lte(disposableDomainSchedulers.lastRunAt, now - DISPOSABLE_DOMAIN_MANUAL_COOLDOWN_MS),
-    ),
-  ));
-  const claimed = Number((claim as unknown as [{ affectedRows?: number }])[0]?.affectedRows ?? 0) === 1;
-  if (!claimed) return { status: "cooldown" as const, retryAfterMs: DISPOSABLE_DOMAIN_MANUAL_COOLDOWN_MS };
+  const claim = await db
+    .update(disposableDomainSchedulers)
+    .set({
+      lastRunAt: now,
+      lastRunStatus: "running",
+      lastRunErrorCode: null,
+      updatedAt: now,
+    })
+    .where(
+      and(
+        eq(
+          disposableDomainSchedulers.scheduleKey,
+          DISPOSABLE_DOMAIN_SCHEDULE_KEY
+        ),
+        eq(
+          disposableDomainSchedulers.scheduleCronTaskUid,
+          scheduler.scheduleCronTaskUid
+        ),
+        or(
+          isNull(disposableDomainSchedulers.lastRunAt),
+          lte(
+            disposableDomainSchedulers.lastRunAt,
+            now - DISPOSABLE_DOMAIN_MANUAL_COOLDOWN_MS
+          )
+        )
+      )
+    );
+  const claimed =
+    Number(
+      (claim as unknown as [{ affectedRows?: number }])[0]?.affectedRows ?? 0
+    ) === 1;
+  if (!claimed)
+    return {
+      status: "cooldown" as const,
+      retryAfterMs: DISPOSABLE_DOMAIN_MANUAL_COOLDOWN_MS,
+    };
 
   try {
     const summary = await syncDisposableEmailDomains({ now });

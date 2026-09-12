@@ -29,7 +29,13 @@ export function getQueryRetryLimit(error: unknown): number {
   const { code, httpStatus } = (error as QueryErrorLike).data ?? {};
 
   if (code && TERMINAL_TRPC_CODES.has(code)) return 0;
-  if (httpStatus && httpStatus >= 400 && httpStatus < 500 && httpStatus !== 408 && httpStatus !== 429) {
+  if (
+    httpStatus &&
+    httpStatus >= 400 &&
+    httpStatus < 500 &&
+    httpStatus !== 408 &&
+    httpStatus !== 429
+  ) {
     return 0;
   }
 
@@ -44,7 +50,10 @@ export function getQueryRetryLimit(error: unknown): number {
   return isTransient ? TRANSIENT_QUERY_RETRY_LIMIT : DEFAULT_QUERY_RETRY_LIMIT;
 }
 
-export function shouldRetryQuery(failureCount: number, error: unknown): boolean {
+export function shouldRetryQuery(
+  failureCount: number,
+  error: unknown
+): boolean {
   return failureCount < getQueryRetryLimit(error);
 }
 

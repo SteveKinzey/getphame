@@ -6,9 +6,9 @@ import {
 
 describe("authentication return paths", () => {
   it("preserves a bounded same-origin application route", () => {
-    expect(
-      getSafeAuthReturnPath("/admin/email-preview?template=welcome")
-    ).toBe("/admin/email-preview?template=welcome");
+    expect(getSafeAuthReturnPath("/admin/email-preview?template=welcome")).toBe(
+      "/admin/email-preview?template=welcome"
+    );
   });
 
   it("rejects external and malformed redirect destinations", () => {

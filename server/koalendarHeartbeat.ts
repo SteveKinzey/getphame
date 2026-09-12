@@ -5,7 +5,8 @@ import { processDueKoalendarBookings } from "./koalendar";
 export async function koalendarHeartbeatHandler(req: Request, res: Response) {
   try {
     const user = await sdk.authenticateRequest(req);
-    if (!user.isCron || !user.taskUid) return res.status(403).json({ error: "cron-only" });
+    if (!user.isCron || !user.taskUid)
+      return res.status(403).json({ error: "cron-only" });
     const processed = await processDueKoalendarBookings(100);
     return res.json({ ok: true, taskUid: user.taskUid, processed });
   } catch (error) {

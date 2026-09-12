@@ -81,11 +81,29 @@ export function buildGithubCleanupShowcasePayload() {
     },
     workstreams: [
       { id: "mailjet", priority: 1, readiness: "portable", action: "port" },
-      { id: "helpAssistant", priority: 2, readiness: "specification", action: "issue" },
+      {
+        id: "helpAssistant",
+        priority: 2,
+        readiness: "specification",
+        action: "issue",
+      },
       { id: "sourcesWoo", priority: 3, readiness: "stale", action: "rework" },
-      { id: "wooEntitlement", priority: 4, readiness: "blocked", action: "rebuild" },
+      {
+        id: "wooEntitlement",
+        priority: 4,
+        readiness: "blocked",
+        action: "rebuild",
+      },
     ] as const,
-    safetyGates: ["dryRun", "refetch", "exactSha", "openPr", "preservation", "execute", "reaudit"] as const,
+    safetyGates: [
+      "dryRun",
+      "refetch",
+      "exactSha",
+      "openPr",
+      "preservation",
+      "execute",
+      "reaudit",
+    ] as const,
     script: {
       language: "en",
       estimatedRuntime: "5:20",

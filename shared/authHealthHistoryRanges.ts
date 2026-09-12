@@ -20,65 +20,84 @@ export type AuthHealthHistoryShortcutEvent = {
   target: EventTarget | null;
 };
 
-export function isEditableAuthHealthHistoryShortcutTarget(target: EventTarget | null) {
+export function isEditableAuthHealthHistoryShortcutTarget(
+  target: EventTarget | null
+) {
   const candidate = target as ShortcutTarget | null;
   if (!candidate) return false;
   const tagName = candidate.tagName?.toUpperCase();
-  if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT") return true;
+  if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT")
+    return true;
   if (candidate.isContentEditable) return true;
   return Boolean(candidate.closest?.('[contenteditable="true"]'));
 }
 
-export function shouldClearAuthHealthHistoryFiltersFromShortcut(event: AuthHealthHistoryShortcutEvent) {
-  return event.key.toLowerCase() === "c"
-    && event.altKey
-    && event.shiftKey
-    && !event.ctrlKey
-    && !event.metaKey
-    && !event.repeat
-    && !isEditableAuthHealthHistoryShortcutTarget(event.target);
+export function shouldClearAuthHealthHistoryFiltersFromShortcut(
+  event: AuthHealthHistoryShortcutEvent
+) {
+  return (
+    event.key.toLowerCase() === "c" &&
+    event.altKey &&
+    event.shiftKey &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.repeat &&
+    !isEditableAuthHealthHistoryShortcutTarget(event.target)
+  );
 }
 
 export function shouldUndoAuthHealthHistoryPresetReorderFromShortcut(
   event: AuthHealthHistoryShortcutEvent,
-  canUndo: boolean,
+  canUndo: boolean
 ) {
-  return canUndo
-    && event.key.toLowerCase() === "z"
-    && (event.ctrlKey || event.metaKey)
-    && !(event.ctrlKey && event.metaKey)
-    && !event.altKey
-    && !event.shiftKey
-    && !event.repeat
-    && !isEditableAuthHealthHistoryShortcutTarget(event.target);
+  return (
+    canUndo &&
+    event.key.toLowerCase() === "z" &&
+    (event.ctrlKey || event.metaKey) &&
+    !(event.ctrlKey && event.metaKey) &&
+    !event.altKey &&
+    !event.shiftKey &&
+    !event.repeat &&
+    !isEditableAuthHealthHistoryShortcutTarget(event.target)
+  );
 }
 
-export function getAuthHealthHistoryCsvColumnsStorageKey(userId: string | number) {
+export function getAuthHealthHistoryCsvColumnsStorageKey(
+  userId: string | number
+) {
   return `getphame:admin-auth-health-history-csv-columns:v${AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION}:${String(userId)}`;
 }
 
 export function reconcileAuthHealthHistoryCsvColumns(
   selectedColumns: readonly string[],
-  availableColumns: readonly string[],
+  availableColumns: readonly string[]
 ) {
   const selected = new Set(selectedColumns);
-  const reconciled = availableColumns.filter((column) => selected.has(column));
+  const reconciled = availableColumns.filter(column => selected.has(column));
   return reconciled.length > 0 ? reconciled : [...availableColumns];
 }
 
 export function parseStoredAuthHealthHistoryCsvColumns(
   rawValue: string | null,
-  availableColumns: readonly string[],
+  availableColumns: readonly string[]
 ) {
   if (!rawValue) return [...availableColumns];
   try {
-    const parsed = JSON.parse(rawValue) as { version?: unknown; columns?: unknown };
-    if (parsed.version !== AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION || !Array.isArray(parsed.columns)) {
+    const parsed = JSON.parse(rawValue) as {
+      version?: unknown;
+      columns?: unknown;
+    };
+    if (
+      parsed.version !== AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION ||
+      !Array.isArray(parsed.columns)
+    ) {
       return [...availableColumns];
     }
     return reconcileAuthHealthHistoryCsvColumns(
-      parsed.columns.filter((column): column is string => typeof column === "string"),
-      availableColumns,
+      parsed.columns.filter(
+        (column): column is string => typeof column === "string"
+      ),
+      availableColumns
     );
   } catch {
     return [...availableColumns];
@@ -87,17 +106,25 @@ export function parseStoredAuthHealthHistoryCsvColumns(
 
 export function serializeStoredAuthHealthHistoryCsvColumns(
   selectedColumns: readonly string[],
-  availableColumns: readonly string[],
+  availableColumns: readonly string[]
 ) {
   return JSON.stringify({
     version: AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION,
-    columns: reconcileAuthHealthHistoryCsvColumns(selectedColumns, availableColumns),
+    columns: reconcileAuthHealthHistoryCsvColumns(
+      selectedColumns,
+      availableColumns
+    ),
   });
 }
 
-export type AuthHealthHistoryRelativeDays = typeof AUTH_HEALTH_HISTORY_RELATIVE_DAYS[number];
+export type AuthHealthHistoryRelativeDays =
+  (typeof AUTH_HEALTH_HISTORY_RELATIVE_DAYS)[number];
 
-export type AuthHealthHistoryFilterChipKey = "status" | "triggerSource" | "from" | "to";
+export type AuthHealthHistoryFilterChipKey =
+  | "status"
+  | "triggerSource"
+  | "from"
+  | "to";
 
 export type AuthHealthHistoryFilterState = {
   status: "all" | "ok" | "fail";
@@ -107,11 +134,15 @@ export type AuthHealthHistoryFilterState = {
   page: number;
 };
 
-export function clearAuthHealthHistoryFilter(state: AuthHealthHistoryFilterState, key: AuthHealthHistoryFilterChipKey) {
+export function clearAuthHealthHistoryFilter(
+  state: AuthHealthHistoryFilterState,
+  key: AuthHealthHistoryFilterChipKey
+) {
   return {
     ...state,
-    status: key === "status" ? "all" as const : state.status,
-    triggerSource: key === "triggerSource" ? "all" as const : state.triggerSource,
+    status: key === "status" ? ("all" as const) : state.status,
+    triggerSource:
+      key === "triggerSource" ? ("all" as const) : state.triggerSource,
     from: key === "from" ? "" : state.from,
     to: key === "to" ? "" : state.to,
     page: 1,
@@ -119,7 +150,13 @@ export function clearAuthHealthHistoryFilter(state: AuthHealthHistoryFilterState
 }
 
 export function clearAllAuthHealthHistoryFilters() {
-  return { status: "all" as const, triggerSource: "all" as const, from: "", to: "", page: 1 };
+  return {
+    status: "all" as const,
+    triggerSource: "all" as const,
+    from: "",
+    to: "",
+    page: 1,
+  };
 }
 
 export function getActiveAuthHealthHistoryFilterChips(filters: {
@@ -128,9 +165,18 @@ export function getActiveAuthHealthHistoryFilterChips(filters: {
   from: string;
   to: string;
 }) {
-  const chips: Array<{ key: AuthHealthHistoryFilterChipKey; label: string }> = [];
-  if (filters.status !== "all") chips.push({ key: "status", label: `Status: ${filters.status === "ok" ? "Healthy" : "Failures"}` });
-  if (filters.triggerSource !== "all") chips.push({ key: "triggerSource", label: `Source: ${filters.triggerSource === "manual" ? "Administrator" : "Scheduled"}` });
+  const chips: Array<{ key: AuthHealthHistoryFilterChipKey; label: string }> =
+    [];
+  if (filters.status !== "all")
+    chips.push({
+      key: "status",
+      label: `Status: ${filters.status === "ok" ? "Healthy" : "Failures"}`,
+    });
+  if (filters.triggerSource !== "all")
+    chips.push({
+      key: "triggerSource",
+      label: `Source: ${filters.triggerSource === "manual" ? "Administrator" : "Scheduled"}`,
+    });
   if (filters.from) chips.push({ key: "from", label: `From: ${filters.from}` });
   if (filters.to) chips.push({ key: "to", label: `To: ${filters.to}` });
   return chips;
@@ -145,7 +191,7 @@ function toLocalDateInput(date: Date) {
 
 export function getRelativeAuthHealthHistoryDateInputs(
   days: AuthHealthHistoryRelativeDays,
-  now = new Date(),
+  now = new Date()
 ) {
   const to = new Date(now);
   const from = new Date(now);

@@ -14,7 +14,7 @@ describe("Get Phame platform email branding", () => {
     const html = renderGetPhameEmailHeader("Welcome aboard");
 
     expect(GET_PHAME_EMAIL_LOGO_URL).toBe(
-      "https://assets.getphame.app/getphame-email-logo.svg",
+      "https://assets.getphame.app/getphame-email-logo.svg"
     );
     expect(html).toContain(`src="${GET_PHAME_EMAIL_LOGO_URL}"`);
     expect(html).toContain('alt="Get Phame logo"');
@@ -40,18 +40,18 @@ describe("Get Phame platform email branding", () => {
 
     const retiredMagicAuthSource = readFileSync(
       join(projectRoot, "server", "magicAuth.ts"),
-      "utf8",
+      "utf8"
     );
     expect(retiredMagicAuthSource).toContain("@deprecated");
     expect(retiredMagicAuthSource).toContain(
-      'registerEmailAuthRoutes as registerMagicAuthRoutes',
+      "registerEmailAuthRoutes as registerMagicAuthRoutes"
     );
   });
 
   it("does not inject platform branding into customer review-request templates", () => {
     const customerTemplateSource = readFileSync(
       join(projectRoot, "server", "emailTemplates.ts"),
-      "utf8",
+      "utf8"
     );
 
     expect(customerTemplateSource).not.toContain("renderGetPhameEmailHeader");

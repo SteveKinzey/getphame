@@ -90,21 +90,23 @@ export default function SecuritySummary() {
         </FadeUp>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {securityItems.map(({ id, icon: Icon, title, description }, index) => (
-            <FadeUp key={id} delay={index * 0.08}>
-              <article className="h-full rounded-2xl border border-[#1e3050] bg-[#0f1d32] p-6 transition-all duration-300 hover:border-primary/25 hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.06)]">
-                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Icon size={22} aria-hidden="true" />
-                </div>
-                <h3 className="font-display text-lg font-bold leading-6 text-white">
-                  {title}
-                </h3>
-                <p className="mt-3 text-sm font-medium leading-6 text-slate-300">
-                  {description}
-                </p>
-              </article>
-            </FadeUp>
-          ))}
+          {securityItems.map(
+            ({ id, icon: Icon, title, description }, index) => (
+              <FadeUp key={id} delay={index * 0.08}>
+                <article className="h-full rounded-2xl border border-[#1e3050] bg-[#0f1d32] p-6 transition-all duration-300 hover:border-primary/25 hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.06)]">
+                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Icon size={22} aria-hidden="true" />
+                  </div>
+                  <h3 className="font-display text-lg font-bold leading-6 text-white">
+                    {title}
+                  </h3>
+                  <p className="mt-3 text-sm font-medium leading-6 text-slate-300">
+                    {description}
+                  </p>
+                </article>
+              </FadeUp>
+            )
+          )}
         </div>
 
         <FadeUp delay={0.22}>

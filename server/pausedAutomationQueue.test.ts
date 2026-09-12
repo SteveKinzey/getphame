@@ -2,16 +2,23 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const routerSource = readFileSync(resolve(process.cwd(), "server/routers.ts"), "utf8");
+const routerSource = readFileSync(
+  resolve(process.cwd(), "server/routers.ts"),
+  "utf8"
+);
 
 describe("smtp.pausedAutomationQueue", () => {
-  const start = routerSource.indexOf("pausedAutomationQueue: protectedProcedure");
+  const start = routerSource.indexOf(
+    "pausedAutomationQueue: protectedProcedure"
+  );
   const end = routerSource.indexOf("previewEmail: protectedProcedure", start);
   const source = routerSource.slice(start, end);
 
   it("fails closed to an empty queue while a usable tenant-owned delivery channel exists", () => {
     expect(source).toContain("resolveOutboundDeliveryChannel(ctx.user.id)");
-    expect(source).toContain("if (channel) return { paused: false as const, total: 0, items: [] as Array<never> }");
+    expect(source).toMatch(
+      /if\s*\(\s*channel\s*\)\s*return\s*\{\s*paused:\s*false\s+as\s+const,\s*total:\s*0,\s*items:\s*\[\]\s+as\s+Array<never>\s*\}/
+    );
   });
 
   it("counts only this tenant's pending quiet-hours sends and follow-up reminders", () => {

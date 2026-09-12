@@ -13,14 +13,19 @@ import {
   getAppPasswordHint,
 } from "./smtp";
 
-const PRIMARY_TEST_KEY = "smtp-primary-test-key-with-more-than-thirty-two-characters";
-const LEGACY_TEST_KEY = "legacy-session-test-key-with-more-than-thirty-two-characters";
+const PRIMARY_TEST_KEY =
+  "smtp-primary-test-key-with-more-than-thirty-two-characters";
+const LEGACY_TEST_KEY =
+  "legacy-session-test-key-with-more-than-thirty-two-characters";
 
 function encryptLegacyPassword(plaintext: string, secret: string): string {
   const key = createHash("sha256").update(secret).digest();
   const iv = randomBytes(16);
   const cipher = createCipheriv("aes-256-gcm", key, iv);
-  const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
+  const encrypted = Buffer.concat([
+    cipher.update(plaintext, "utf8"),
+    cipher.final(),
+  ]);
   return `${iv.toString("hex")}${cipher.getAuthTag().toString("hex")}${encrypted.toString("hex")}`;
 }
 
@@ -70,7 +75,9 @@ describe("encryptPassword / decryptPassword", () => {
 
   it("fails loudly when the dedicated encryption key is absent", () => {
     vi.stubEnv("SMTP_CREDENTIAL_ENCRYPTION_KEY", "");
-    expect(() => encryptPassword("must-not-use-a-fallback")).toThrow("SMTP_CREDENTIAL_ENCRYPTION_KEY");
+    expect(() => encryptPassword("must-not-use-a-fallback")).toThrow(
+      "SMTP_CREDENTIAL_ENCRYPTION_KEY"
+    );
   });
 });
 
@@ -84,32 +91,52 @@ describe("createTransporter TLS validation", () => {
   };
 
   it("validates SMTP certificates by default", () => {
-    const transporter = createTransporter(options) as unknown as { options: { tls: { rejectUnauthorized: boolean } } };
+    const transporter = createTransporter(options) as unknown as {
+      options: { tls: { rejectUnauthorized: boolean } };
+    };
     expect(transporter.options.tls.rejectUnauthorized).toBe(true);
   });
 
   it("allows insecure compatibility only through the explicit opt-out", () => {
     vi.stubEnv("ALLOW_INSECURE_SMTP_TLS", "true");
-    const transporter = createTransporter(options) as unknown as { options: { tls: { rejectUnauthorized: boolean } } };
+    const transporter = createTransporter(options) as unknown as {
+      options: { tls: { rejectUnauthorized: boolean } };
+    };
     expect(transporter.options.tls.rejectUnauthorized).toBe(false);
   });
 });
 
 describe("detectSmtpSettings", () => {
   it("detects Gmail settings", () => {
-    expect(detectSmtpSettings("user@gmail.com")).toEqual({ host: "smtp.gmail.com", port: 587, secure: 0 });
+    expect(detectSmtpSettings("user@gmail.com")).toEqual({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: 0,
+    });
   });
 
   it("detects Outlook settings", () => {
-    expect(detectSmtpSettings("user@outlook.com")).toEqual({ host: "smtp-mail.outlook.com", port: 587, secure: 0 });
+    expect(detectSmtpSettings("user@outlook.com")).toEqual({
+      host: "smtp-mail.outlook.com",
+      port: 587,
+      secure: 0,
+    });
   });
 
   it("detects Yahoo settings", () => {
-    expect(detectSmtpSettings("user@yahoo.com")).toEqual({ host: "smtp.mail.yahoo.com", port: 587, secure: 0 });
+    expect(detectSmtpSettings("user@yahoo.com")).toEqual({
+      host: "smtp.mail.yahoo.com",
+      port: 587,
+      secure: 0,
+    });
   });
 
   it("detects Zoho settings", () => {
-    expect(detectSmtpSettings("user@zoho.com")).toEqual({ host: "smtp.zoho.com", port: 587, secure: 0 });
+    expect(detectSmtpSettings("user@zoho.com")).toEqual({
+      host: "smtp.zoho.com",
+      port: 587,
+      secure: 0,
+    });
   });
 
   it("returns null for unknown domains", () => {
@@ -118,7 +145,11 @@ describe("detectSmtpSettings", () => {
   });
 
   it("handles uppercase email domains", () => {
-    expect(detectSmtpSettings("user@GMAIL.COM")).toEqual({ host: "smtp.gmail.com", port: 587, secure: 0 });
+    expect(detectSmtpSettings("user@GMAIL.COM")).toEqual({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: 0,
+    });
   });
 
   it("returns null for malformed emails", () => {
@@ -146,7 +177,9 @@ describe("getAppPasswordHint", () => {
   it("returns Zoho SMTP hints for its domains and host", () => {
     expect(getAppPasswordHint("user@zoho.com")).toContain("SMTP Access");
     expect(getAppPasswordHint("user@zohomail.com")).toContain("SMTP Access");
-    expect(getAppPasswordHint("user@custombiz.com", "smtp.zoho.com")).toContain("SMTP Access");
+    expect(getAppPasswordHint("user@custombiz.com", "smtp.zoho.com")).toContain(
+      "SMTP Access"
+    );
   });
 
   it("returns null for unknown providers", () => {

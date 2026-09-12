@@ -13,7 +13,7 @@ function isResourceRecord(value: unknown): value is ResourceRecord {
  */
 export function mergeLocaleFallback(
   generated: ResourceRecord,
-  maintained?: ResourceRecord,
+  maintained?: ResourceRecord
 ): ResourceRecord {
   const merged: ResourceRecord = { ...generated };
   if (!maintained) return merged;
@@ -29,7 +29,10 @@ export function mergeLocaleFallback(
     // The generated object reflects the current component contract. Prefer it
     // over an obsolete scalar so nested calls resolve instead of showing raw
     // identifiers; all ordinary maintained scalar values remain authoritative.
-    if (isResourceRecord(generatedValue) && !isResourceRecord(maintainedValue)) {
+    if (
+      isResourceRecord(generatedValue) &&
+      !isResourceRecord(maintainedValue)
+    ) {
       continue;
     }
 

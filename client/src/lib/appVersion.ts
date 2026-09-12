@@ -78,9 +78,7 @@ export function isNewDeploymentVersion(
   candidateVersion: string | null
 ): boolean {
   return Boolean(
-    baselineVersion &&
-      candidateVersion &&
-      baselineVersion !== candidateVersion
+    baselineVersion && candidateVersion && baselineVersion !== candidateVersion
   );
 }
 
@@ -146,9 +144,7 @@ export function setReloadTarget(
   }
 }
 
-export function clearReloadTarget(
-  storage: Pick<Storage, "removeItem">
-): void {
+export function clearReloadTarget(storage: Pick<Storage, "removeItem">): void {
   try {
     storage.removeItem(UPDATE_RELOAD_TARGET_STORAGE_KEY);
   } catch {

@@ -1,6 +1,6 @@
 import { trpc } from "@/lib/trpc";
 import i18n, { i18nReady } from "@/lib/i18n"; // Initialize i18next before app renders
-import { UNAUTHED_ERR_MSG } from '@shared/const';
+import { UNAUTHED_ERR_MSG } from "@shared/const";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
@@ -11,6 +11,11 @@ import { getLoginUrl } from "./const";
 import { apiFetch } from "./lib/apiFetch";
 import { queryRetryDelay, shouldRetryQuery } from "./lib/queryRetry";
 import { loadStaticLocalizationSupplement } from "./lib/autoText";
+import {
+  ADMIN_PROCEDURE_MISMATCH_MESSAGE,
+  ADMIN_PROCEDURE_MISMATCH_TOAST_ID,
+  isAdministrativeProcedureMismatch,
+} from "./lib/adminProcedureRecovery";
 import { isPasskeyEnrollmentRequiredError } from "./lib/passkeyEnrollment";
 import "./index.css";
 
@@ -52,6 +57,21 @@ queryClient.getQueryCache().subscribe(event => {
     // Intermediate failures remain in a fetching state while React Query retries.
     if (event.query.state.fetchStatus === "idle") {
       console.error("[API Query Error]", error);
+      if (isAdministrativeProcedureMismatch(error)) {
+        toast.warning(
+          i18n.t("adminProcedureRecovery.title", {
+            defaultValue: "Administrator controls are updating.",
+          }),
+          {
+            id: ADMIN_PROCEDURE_MISMATCH_TOAST_ID,
+            description: i18n.t("adminProcedureRecovery.description", {
+              defaultValue: ADMIN_PROCEDURE_MISMATCH_MESSAGE,
+            }),
+            duration: 8_000,
+          }
+        );
+        return;
+      }
       // Surface one concise, localized recovery message without exposing a raw
       // server error or creating a separate toast for every failed query.
       toast.error(
@@ -94,42 +114,57 @@ const trpcClient = trpc.createClient({
 // ── Service worker ────────────────────────────────────────────────────────────
 const SERVICE_WORKER_URL = "/sw-v28.js";
 
-function syncLanguageToServiceWorker(registration: ServiceWorkerRegistration, language: string) {
-  const worker = registration.active ?? registration.waiting ?? registration.installing;
+function syncLanguageToServiceWorker(
+  registration: ServiceWorkerRegistration,
+  language: string
+) {
+  const worker =
+    registration.active ?? registration.waiting ?? registration.installing;
   worker?.postMessage({ type: "SET_LANGUAGE", language });
 }
 
-function syncDocumentLanguage(language = i18n.resolvedLanguage ?? i18n.language ?? "en") {
+function syncDocumentLanguage(
+  language = i18n.resolvedLanguage ?? i18n.language ?? "en"
+) {
   document.documentElement.lang = language;
 }
 
 i18n.on("languageChanged", syncDocumentLanguage);
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register(SERVICE_WORKER_URL).then((registration) => {
-      const syncCurrentLanguage = (language = i18n.resolvedLanguage ?? i18n.language ?? "en") => {
-        syncLanguageToServiceWorker(registration, language);
-      };
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register(SERVICE_WORKER_URL)
+      .then(registration => {
+        const syncCurrentLanguage = (
+          language = i18n.resolvedLanguage ?? i18n.language ?? "en"
+        ) => {
+          syncLanguageToServiceWorker(registration, language);
+        };
 
-      syncCurrentLanguage();
-      i18n.on("languageChanged", syncCurrentLanguage);
-      navigator.serviceWorker.addEventListener("controllerchange", () => syncCurrentLanguage());
-    }).catch(console.error);
+        syncCurrentLanguage();
+        i18n.on("languageChanged", syncCurrentLanguage);
+        navigator.serviceWorker.addEventListener("controllerchange", () =>
+          syncCurrentLanguage()
+        );
+      })
+      .catch(console.error);
   });
 }
 
 // The initial locale is known only after i18n initializes. Await the matching
 // compact catalog before mount so legacy literals cannot briefly flash English.
-void i18nReady.then(() => {
-  syncDocumentLanguage();
-  return loadStaticLocalizationSupplement();
-}).finally(() => {
-  createRoot(document.getElementById("root")!).render(
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </trpc.Provider>,
-  );
-});
+void i18nReady
+  .then(() => {
+    syncDocumentLanguage();
+    return loadStaticLocalizationSupplement();
+  })
+  .finally(() => {
+    createRoot(document.getElementById("root")!).render(
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </trpc.Provider>
+    );
+  });

@@ -46,7 +46,7 @@ export default function FirstVisitWelcome() {
   const pwaState = useSyncExternalStore(
     subscribeToPwaInstall,
     getPwaInstallSnapshot,
-    getPwaInstallServerSnapshot,
+    getPwaInstallServerSnapshot
   );
   const open = pwaState.welcomeVisible;
   const pathname = window.location.pathname;
@@ -54,16 +54,19 @@ export default function FirstVisitWelcome() {
   const activeLanguage: SupportedLang = isSupportedLanguage(resolvedLanguage)
     ? resolvedLanguage
     : "en";
-  const activeOption = LANGUAGE_OPTIONS.find((language) => language.code === activeLanguage)
-    ?? LANGUAGE_OPTIONS[0];
+  const activeOption =
+    LANGUAGE_OPTIONS.find(language => language.code === activeLanguage) ??
+    LANGUAGE_OPTIONS[0];
 
   useEffect(() => {
-    if (!shouldShowFirstVisitWelcome({
-      pathname,
-      alreadySeen: hasSeenWelcome(),
-      installGuideVisible: pwaState.installGuideVisible,
-      upgradeVisible: pwaState.upgradeVisible,
-    })) {
+    if (
+      !shouldShowFirstVisitWelcome({
+        pathname,
+        alreadySeen: hasSeenWelcome(),
+        installGuideVisible: pwaState.installGuideVisible,
+        upgradeVisible: pwaState.upgradeVisible,
+      })
+    ) {
       if (open) updatePwaInstallSnapshot({ welcomeVisible: false });
       return;
     }
@@ -75,9 +78,12 @@ export default function FirstVisitWelcome() {
     return () => window.clearTimeout(timer);
   }, [open, pathname, pwaState.installGuideVisible, pwaState.upgradeVisible]);
 
-  useEffect(() => () => {
-    updatePwaInstallSnapshot({ welcomeVisible: false });
-  }, []);
+  useEffect(
+    () => () => {
+      updatePwaInstallSnapshot({ welcomeVisible: false });
+    },
+    []
+  );
 
   const dismiss = () => {
     rememberWelcome();
@@ -89,16 +95,22 @@ export default function FirstVisitWelcome() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(nextOpen) => {
-      if (!nextOpen) dismiss();
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={nextOpen => {
+        if (!nextOpen) dismiss();
+      }}
+    >
       <DialogContent
         data-testid="first-visit-welcome"
         showCloseButton={false}
         className="max-h-[calc(100dvh-1.5rem)] max-w-[calc(100%-1rem)] gap-0 overflow-y-auto rounded-3xl border-white/15 bg-navy p-0 text-white motion-reduce:animate-none sm:max-w-xl"
       >
         <div className="relative overflow-hidden px-5 pb-5 pt-6 sm:px-7 sm:pb-6 sm:pt-7">
-          <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-amber-300/15 blur-3xl" aria-hidden="true" />
+          <div
+            className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-amber-300/15 blur-3xl"
+            aria-hidden="true"
+          />
           <button
             type="button"
             onClick={dismiss}
@@ -108,14 +120,20 @@ export default function FirstVisitWelcome() {
             <X size={18} aria-hidden="true" />
           </button>
 
-          <div className="mb-5 flex items-center gap-2 pr-12" aria-label="GET PHAME" translate="no">
+          <div
+            className="mb-5 flex items-center gap-2 pr-12"
+            aria-label="GET PHAME"
+            translate="no"
+          >
             <img
               src="https://assets.getphame.app/getphame-logo.svg"
               alt=""
               className="h-9 w-9 rounded-xl"
-            aria-hidden="true"
+              aria-hidden="true"
             />
-            <span className="text-sm font-black tracking-[0.16em] text-white">GET <span className="rr-text-gold">PHAME</span></span>
+            <span className="text-sm font-black tracking-[0.16em] text-white">
+              GET <span className="rr-text-gold">PHAME</span>
+            </span>
           </div>
 
           <DialogHeader className="gap-3 text-left">
@@ -127,38 +145,66 @@ export default function FirstVisitWelcome() {
               {t("firstVisitWelcome.title")}
             </DialogTitle>
             <DialogDescription className="max-w-lg text-base font-semibold leading-relaxed text-white/80">
-              {t("firstVisitWelcome.description", { language: activeOption.native })}
+              {t("firstVisitWelcome.description", {
+                language: activeOption.native,
+              })}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="mt-5 grid gap-2.5" aria-label={t("firstVisitWelcome.featuresLabel")}>
-            <WelcomeFeature icon={<Mail size={18} aria-hidden="true" />} text={t("firstVisitWelcome.features.personalRequests")} />
-            <WelcomeFeature icon={<BellRing size={18} aria-hidden="true" />} text={t("firstVisitWelcome.features.followUps")} />
-            <WelcomeFeature icon={<BarChart3 size={18} aria-hidden="true" />} text={t("firstVisitWelcome.features.dashboard")} />
+          <div
+            className="mt-5 grid gap-2.5"
+            aria-label={t("firstVisitWelcome.featuresLabel")}
+          >
+            <WelcomeFeature
+              icon={<Mail size={18} aria-hidden="true" />}
+              text={t("firstVisitWelcome.features.personalRequests")}
+            />
+            <WelcomeFeature
+              icon={<BellRing size={18} aria-hidden="true" />}
+              text={t("firstVisitWelcome.features.followUps")}
+            />
+            <WelcomeFeature
+              icon={<BarChart3 size={18} aria-hidden="true" />}
+              text={t("firstVisitWelcome.features.dashboard")}
+            />
           </div>
 
           <div className="mt-5 rounded-2xl border border-white/15 bg-white/[0.07] p-4">
-            <label htmlFor="first-visit-language" className="mb-2 block text-sm font-black text-white">
+            <label
+              htmlFor="first-visit-language"
+              className="mb-2 block text-sm font-black text-white"
+            >
               {t("firstVisitWelcome.changeLanguage")}
             </label>
             <select
               id="first-visit-language"
               value={activeLanguage}
-              onChange={(event) => {
+              onChange={event => {
                 const nextLanguage = event.target.value;
-                if (isSupportedLanguage(nextLanguage)) handleLanguageChange(nextLanguage);
+                if (isSupportedLanguage(nextLanguage))
+                  handleLanguageChange(nextLanguage);
               }}
               aria-describedby="first-visit-language-status"
               className="min-h-12 w-full rounded-xl border border-white/20 bg-white px-3 py-2 text-base font-black text-slate-950 outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             >
-              {LANGUAGE_OPTIONS.map((language) => (
-                <option key={language.code} value={language.code} translate="no">
+              {LANGUAGE_OPTIONS.map(language => (
+                <option
+                  key={language.code}
+                  value={language.code}
+                  translate="no"
+                >
                   {language.flag} {language.native}
                 </option>
               ))}
             </select>
-            <p id="first-visit-language-status" className="mt-2 text-sm font-semibold text-white/70" aria-live="polite">
-              {t("firstVisitWelcome.selectedLanguage", { language: activeOption.native })}
+            <p
+              id="first-visit-language-status"
+              className="mt-2 text-sm font-semibold text-white/70"
+              aria-live="polite"
+            >
+              {t("firstVisitWelcome.selectedLanguage", {
+                language: activeOption.native,
+              })}
             </p>
           </div>
 
@@ -178,7 +224,13 @@ export default function FirstVisitWelcome() {
   );
 }
 
-function WelcomeFeature({ icon, text }: { icon: React.ReactNode; text: string }) {
+function WelcomeFeature({
+  icon,
+  text,
+}: {
+  icon: React.ReactNode;
+  text: string;
+}) {
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-white/[0.07] px-3.5 py-3 text-sm font-bold leading-snug text-white">
       <span className="flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-amber-200/10 rr-text-gold">

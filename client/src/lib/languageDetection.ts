@@ -1,4 +1,12 @@
-export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
+export const SUPPORTED_LANGS = [
+  "en",
+  "zh-CN",
+  "es",
+  "fr",
+  "it",
+  "th",
+  "zh-TW",
+] as const;
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 /** Map one browser locale tag to a maintained Get Phame locale. */
@@ -10,7 +18,8 @@ export function mapBrowserLocale(language: string): SupportedLang | null {
     normalized.startsWith("zh-cn") ||
     normalized.startsWith("zh-sg") ||
     normalized.includes("hans")
-  ) return "zh-CN";
+  )
+    return "zh-CN";
   if (normalized.startsWith("zh")) return "zh-TW";
   if (normalized.startsWith("fr")) return "fr";
   if (normalized.startsWith("it")) return "it";
@@ -20,7 +29,9 @@ export function mapBrowserLocale(language: string): SupportedLang | null {
 }
 
 /** Select the first maintained locale from the browser's ordered preferences. */
-export function detectBrowserLang(preferredLanguages?: readonly string[]): SupportedLang {
+export function detectBrowserLang(
+  preferredLanguages?: readonly string[]
+): SupportedLang {
   let browserPreferences: readonly string[] = preferredLanguages ?? [];
 
   if (preferredLanguages === undefined) {

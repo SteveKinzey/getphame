@@ -74,7 +74,10 @@ function normalizeMinute(value: number | null | undefined, fallback: number) {
     : fallback;
 }
 
-export function quietWindowDurationMinutes(startMinutes: number, endMinutes: number) {
+export function quietWindowDurationMinutes(
+  startMinutes: number,
+  endMinutes: number
+) {
   const duration = (endMinutes - startMinutes + 24 * 60) % (24 * 60);
   return duration === 0 ? 24 * 60 : duration;
 }
@@ -82,7 +85,9 @@ export function quietWindowDurationMinutes(startMinutes: number, endMinutes: num
 export async function resolveBusinessAddressTimeZone(physicalAddress: string) {
   const address = physicalAddress.trim();
   if (address.length < 8) {
-    throw new Error("Enter a complete physical business address to set local quiet hours.");
+    throw new Error(
+      "Enter a complete physical business address to set local quiet hours."
+    );
   }
 
   const geocode = await makeRequest<GeocodingResult>("/maps/api/geocode/json", {
@@ -90,16 +95,23 @@ export async function resolveBusinessAddressTimeZone(physicalAddress: string) {
   });
   const result = geocode.results?.[0];
   if (geocode.status !== "OK" || !result?.geometry?.location) {
-    throw new Error("We could not verify that business address. Please enter a complete street address.");
+    throw new Error(
+      "We could not verify that business address. Please enter a complete street address."
+    );
   }
 
   const { lat, lng } = result.geometry.location;
-  const timeZone = await makeRequest<TimeZoneResult>("/maps/api/timezone/json", {
-    location: `${lat},${lng}`,
-    timestamp: Math.floor(Date.now() / 1000),
-  });
+  const timeZone = await makeRequest<TimeZoneResult>(
+    "/maps/api/timezone/json",
+    {
+      location: `${lat},${lng}`,
+      timestamp: Math.floor(Date.now() / 1000),
+    }
+  );
   if (timeZone.status !== "OK" || !isValidTimeZone(timeZone.timeZoneId)) {
-    throw new Error("We could not determine the local timezone for that business address.");
+    throw new Error(
+      "We could not determine the local timezone for that business address."
+    );
   }
 
   return {
@@ -108,7 +120,9 @@ export async function resolveBusinessAddressTimeZone(physicalAddress: string) {
   };
 }
 
-export function resolveQuietHoursWindow(profile: BusinessProfile): QuietHoursWindow {
+export function resolveQuietHoursWindow(
+  profile: BusinessProfile
+): QuietHoursWindow {
   if (!isValidTimeZone(profile.businessTimeZone)) {
     throw new Error(
       "Add and verify your physical business address in Settings before sending review requests. Get Phame uses it to protect customers during local quiet hours."
@@ -123,10 +137,16 @@ export function resolveQuietHoursWindow(profile: BusinessProfile): QuietHoursWin
     profile.quietHoursEndMinutes,
     QUIET_HOURS_DEFAULT_END_MINUTES
   );
-  const requestedDuration = quietWindowDurationMinutes(configuredStart, configuredEnd);
+  const requestedDuration = quietWindowDurationMinutes(
+    configuredStart,
+    configuredEnd
+  );
   const hasApprovedShortening = profile.quietHoursShorteningApproved === 1;
 
-  if (!hasApprovedShortening && requestedDuration < QUIET_HOURS_MINIMUM_DURATION_MINUTES) {
+  if (
+    !hasApprovedShortening &&
+    requestedDuration < QUIET_HOURS_MINIMUM_DURATION_MINUTES
+  ) {
     return {
       startMinutes: QUIET_HOURS_DEFAULT_START_MINUTES,
       endMinutes: QUIET_HOURS_DEFAULT_END_MINUTES,
@@ -149,19 +169,29 @@ function localMinuteAt(timestampMs: number, timeZone: string) {
     hourCycle: "h23",
   }).formatToParts(new Date(timestampMs));
   const hour = Number(parts.find(part => part.type === "hour")?.value ?? "0");
-  const minute = Number(parts.find(part => part.type === "minute")?.value ?? "0");
+  const minute = Number(
+    parts.find(part => part.type === "minute")?.value ?? "0"
+  );
   return hour * 60 + minute;
 }
 
-export function isWithinQuietHours(timestampMs: number, window: QuietHoursWindow) {
+export function isWithinQuietHours(
+  timestampMs: number,
+  window: QuietHoursWindow
+) {
   const localMinute = localMinuteAt(timestampMs, window.timeZone);
   if (window.startMinutes < window.endMinutes) {
-    return localMinute >= window.startMinutes && localMinute < window.endMinutes;
+    return (
+      localMinute >= window.startMinutes && localMinute < window.endMinutes
+    );
   }
   return localMinute >= window.startMinutes || localMinute < window.endMinutes;
 }
 
-export function nextAllowedDeliveryAt(timestampMs: number, window: QuietHoursWindow) {
+export function nextAllowedDeliveryAt(
+  timestampMs: number,
+  window: QuietHoursWindow
+) {
   if (!isWithinQuietHours(timestampMs, window)) return timestampMs;
   for (let offsetMinutes = 1; offsetMinutes <= 26 * 60; offsetMinutes += 1) {
     const candidate = timestampMs + offsetMinutes * MINUTE_MS;
@@ -322,9 +352,13 @@ async function queueInputFromRow(
 
 function affectedRows(result: unknown) {
   if (Array.isArray(result)) {
-    return Number((result[0] as { affectedRows?: number } | undefined)?.affectedRows ?? 0);
+    return Number(
+      (result[0] as { affectedRows?: number } | undefined)?.affectedRows ?? 0
+    );
   }
-  return Number((result as { affectedRows?: number } | undefined)?.affectedRows ?? 0);
+  return Number(
+    (result as { affectedRows?: number } | undefined)?.affectedRows ?? 0
+  );
 }
 
 export async function processDueQuietHoursQueuedSends() {
@@ -384,7 +418,10 @@ export async function processDueQuietHoursQueuedSends() {
       if (!profile) {
         await db
           .update(quietHoursQueuedSends)
-          .set({ status: "failed", lastError: "Business profile no longer exists." })
+          .set({
+            status: "failed",
+            lastError: "Business profile no longer exists.",
+          })
           .where(eq(quietHoursQueuedSends.id, queued.id));
         summary.failed += 1;
         continue;
@@ -412,9 +449,8 @@ export async function processDueQuietHoursQueuedSends() {
       summary.sent += 1;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      const nextStatus = queued.attemptCount + 1 >= MAX_DELIVERY_ATTEMPTS
-        ? "failed"
-        : "pending";
+      const nextStatus =
+        queued.attemptCount + 1 >= MAX_DELIVERY_ATTEMPTS ? "failed" : "pending";
       await db
         .update(quietHoursQueuedSends)
         .set({
