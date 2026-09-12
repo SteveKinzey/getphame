@@ -297,7 +297,6 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
           ? primaryError.message
           : "Primary SMTP send failed";
       const safeError = sanitizeRelayDiagnostic(errorMessage);
-      const recipientDomainMatch = opts.to.match(/@([^>\s,]+)/);
       console.warn(
         "[SystemEmail] Primary SYSTEM_SMTP delivery failed; evaluating configured SendGrid failover",
         {
@@ -329,10 +328,6 @@ export async function sendSystemEmail(opts: SystemEmailOptions): Promise<void> {
             color: hasSendgrid ? "#f59e0b" : "#e11d48",
             fields: [
               { title: "Event", value: "Runtime Outbound Send Error" },
-              {
-                title: "Recipient Domain",
-                value: recipientDomainMatch?.[1] ?? "unknown",
-              },
               { title: "Error", value: safeError.slice(0, 150) },
               { title: "Timestamp", value: new Date(checkedAt).toUTCString() },
             ],
