@@ -470,6 +470,18 @@ describe("VideoDemo media contract", () => {
     expect(formatTranscriptTime(62.9)).toBe("1:02");
   });
 
+  it("strips inline WebVTT tags without leaving tag names in cue text", () => {
+    const cues = parseWebVttCues(`WEBVTT
+
+00:00:00.000 --> 00:00:04.000
+<i>Hello</i>
+<c.voice>world</c>
+`);
+
+    expect(cues).toHaveLength(1);
+    expect(cues[0]?.text).toBe("Hello world");
+  });
+
   it("ships a synchronized keyboard-accessible transcript with click-to-seek behavior", async () => {
     const source = await readFile(componentPath, "utf8");
 
