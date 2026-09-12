@@ -46,6 +46,9 @@ jobs:
       - name: Lint database schema and migration parity
         run: pnpm lint:schema-migrations
 
+      - name: Audit production dependencies
+        run: pnpm audit:prod
+
       - name: Run tests
         run: pnpm test
 

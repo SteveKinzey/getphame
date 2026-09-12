@@ -3935,7 +3935,14 @@
       "invalidJson": "Inserisci JSON valido prima di avviare il simulatore.",
       "validTitle": "Il payload è pronto per una verifica preliminare reale.",
       "validDetail": "Sono presenti i dati di contatto obbligatori e la prova del consenso e-mail esplicito. Non è stato creato né inviato nulla.",
-      "invalidTitle": "Il payload richiede modifiche prima della pubblicazione."
+      "invalidTitle": "Il payload richiede modifiche prima della pubblicazione.",
+      "presetsLabel": "Carica un esempio segnaposto",
+      "presetLoadedToast": "Payload segnaposto caricato. Non è stato inviato nulla.",
+      "presets": {
+        "zapier": "Esempio Zapier",
+        "make": "Esempio Make",
+        "jotform": "Esempio Jotform"
+      }
     }
   },
   "promotionLink": {

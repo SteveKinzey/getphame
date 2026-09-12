@@ -1,11 +1,10 @@
 import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
-
 import { storageGet, storagePut } from "../server/storage";
 
 const STORAGE_KEY = "connectors/get-phame-connector.zip";
-const VERSIONED_KEY = "connectors/get-phame-connector-2.2.0.zip";
+const VERSIONED_KEY = "connectors/get-phame-connector-2.3.0.zip";
 
 function sha256(data: Uint8Array): string {
   return createHash("sha256").update(data).digest("hex");
@@ -29,7 +28,6 @@ async function main(): Promise<void> {
 
   const releaseBytes = await readFile(absolutePath);
   const releaseHash = sha256(releaseBytes);
-
   const uploaded = await storagePut(
     STORAGE_KEY,
     releaseBytes,
@@ -56,6 +54,7 @@ async function main(): Promise<void> {
       `Connector verification download failed for versioned key with status ${versionedResponse.status}`
     );
   }
+
   const response = await fetch(signedDownload.url);
   if (!response.ok) {
     throw new Error(

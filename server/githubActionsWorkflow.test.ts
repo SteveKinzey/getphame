@@ -22,6 +22,8 @@ describe("GitHub Actions quality gate", () => {
           NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm check`);
     expect(workflow).toContain("pnpm test");
+    expect(workflow).toContain("Audit production dependencies");
+    expect(workflow).toContain("pnpm audit:prod");
     expect(workflow).toContain("pnpm build");
   });
 

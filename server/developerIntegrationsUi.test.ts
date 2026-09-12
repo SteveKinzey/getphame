@@ -166,10 +166,10 @@ describe("Developer Integrations workspace", () => {
       'defaultValue: "Download WordPress Connector"'
     );
     expectSourceContract(router).toContain(
-      'storageGet( "connectors/get-phame-connector-2.2.0.zip" )'
+      'storageGet( "connectors/get-phame-connector-2.3.0.zip" )'
     );
     expectSourceContract(router).toContain(
-      'fileName: "get-phame-connector-2.2.0.zip"'
+      'fileName: "get-phame-connector-2.3.0.zip"'
     );
   });
 
@@ -188,6 +188,17 @@ describe("Developer Integrations workspace", () => {
     );
     expectSourceContract(page).toContain('name="webhook-simulator-payload"');
     expectSourceContract(page).toContain("CONTACT_IMPORT_SIMULATOR_EXAMPLE");
+    expectSourceContract(page).toContain("CONTACT_IMPORT_SIMULATOR_PRESETS");
+    expectSourceContract(page).toContain('id: "zapier"');
+    expectSourceContract(page).toContain('id: "make"');
+    expectSourceContract(page).toContain('id: "jotform"');
+    expectSourceContract(page).toContain("loadSimulatorPreset(preset)");
+    expectSourceContract(page).toContain(
+      "data-testid={`webhook-simulator-preset-${preset.id}`}"
+    );
+    expectSourceContract(page).toContain(
+      'defaultValue: "Placeholder payload loaded. Nothing was sent."'
+    );
     expect(page).not.toContain("gp_live_");
     expectSourceContract(router).toContain(
       "simulateContactImport: protectedProcedure"

@@ -3326,7 +3326,14 @@
       "invalidJson": "请先输入有效的 JSON，再运行模拟器。",
       "validTitle": "负载已可进行实际上线前检查。",
       "validDetail": "已提供必需的联系人信息和明确的电子邮件同意证据。未创建或发送任何内容。",
-      "invalidTitle": "负载需要修改后才能上线。"
+      "invalidTitle": "负载需要修改后才能上线。",
+      "presetsLabel": "加载占位示例",
+      "presetLoadedToast": "已加载占位负载，未发送任何内容。",
+      "presets": {
+        "zapier": "Zapier 示例",
+        "make": "Make 示例",
+        "jotform": "Jotform 示例"
+      }
     }
   },
   "adaptiveSending": {

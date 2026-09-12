@@ -65,27 +65,76 @@ type SimulatorResult =
     }
   | { valid: false; issues: Array<{ field: string; message: string }> };
 
-const CONTACT_IMPORT_SIMULATOR_EXAMPLE = JSON.stringify(
-  {
-    name: "Example Customer",
-    email: "customer@example.com",
-    externalId: "form:submission:example-001",
-    sourceApp: "website-form",
-    consent: {
-      confirmed: true,
-      basis: "explicit_opt_in",
-      purpose: "review_outreach",
-      channel: "email",
-      capturedAt: "2026-09-11T20:00:00.000Z",
-      source: "Website form example, submission example-001",
-      text: "I agree that this business may email me one review request.",
-      version: "website-form-v1",
-      privacyPolicyUrl: "https://example.com/privacy",
+type SimulatorPreset = {
+  id: "zapier" | "make" | "jotform";
+  labelKey: string;
+  defaultLabel: string;
+  payload: string;
+};
+
+function createSimulatorPreset(
+  sourceApp: string,
+  externalId: string,
+  source: string
+) {
+  return JSON.stringify(
+    {
+      name: "Example Customer",
+      email: "customer@example.com",
+      externalId,
+      sourceApp,
+      consent: {
+        confirmed: true,
+        basis: "explicit_opt_in",
+        purpose: "review_outreach",
+        channel: "email",
+        capturedAt: "2026-09-11T20:00:00.000Z",
+        source,
+        text: "I agree that this business may email me one review request.",
+        version: "website-form-v1",
+        privacyPolicyUrl: "https://example.com/privacy",
+      },
     },
+    null,
+    2
+  );
+}
+
+const CONTACT_IMPORT_SIMULATOR_PRESETS: SimulatorPreset[] = [
+  {
+    id: "zapier",
+    labelKey: "developerIntegrations.simulator.presets.zapier",
+    defaultLabel: "Zapier sample",
+    payload: createSimulatorPreset(
+      "zapier",
+      "zapier:submission:example-001",
+      "Zapier example, submission example-001"
+    ),
   },
-  null,
-  2
-);
+  {
+    id: "make",
+    labelKey: "developerIntegrations.simulator.presets.make",
+    defaultLabel: "Make sample",
+    payload: createSimulatorPreset(
+      "make",
+      "make:bundle:example-001",
+      "Make example, bundle example-001"
+    ),
+  },
+  {
+    id: "jotform",
+    labelKey: "developerIntegrations.simulator.presets.jotform",
+    defaultLabel: "Jotform sample",
+    payload: createSimulatorPreset(
+      "jotform",
+      "jotform:submission:example-001",
+      "Jotform example, submission example-001"
+    ),
+  },
+];
+
+const CONTACT_IMPORT_SIMULATOR_EXAMPLE =
+  CONTACT_IMPORT_SIMULATOR_PRESETS[0].payload;
 
 export function classifyWordPressPairingFailure(
   error: unknown
@@ -387,6 +436,16 @@ export default function DeveloperIntegrationsPage() {
     }
   };
 
+  const loadSimulatorPreset = (preset: SimulatorPreset) => {
+    setSimulatorPayload(preset.payload);
+    setSimulatorResult(null);
+    toast.success(
+      t("developerIntegrations.simulator.presetLoadedToast", {
+        defaultValue: "Placeholder payload loaded. Nothing was sent.",
+      })
+    );
+  };
+
   const exportImports = () => {
     const rows = importQuery.data ?? [];
     if (rows.length === 0)
@@ -666,6 +725,29 @@ export default function DeveloperIntegrationsPage() {
                 "Use a representative, non-customer payload. The example uses placeholder data and has no delivery side effects.",
             })}
           </p>
+          <div className="mt-4" aria-labelledby="webhook-simulator-presets">
+            <p
+              id="webhook-simulator-presets"
+              className="text-xs font-black uppercase tracking-[0.12em] rr-text-navy"
+            >
+              {t("developerIntegrations.simulator.presetsLabel", {
+                defaultValue: "Load a placeholder sample",
+              })}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {CONTACT_IMPORT_SIMULATOR_PRESETS.map(preset => (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => loadSimulatorPreset(preset)}
+                  className="inline-flex min-h-11 items-center rounded-xl border border-amber-300 bg-white px-3 text-sm font-bold rr-text-navy transition hover:border-amber-500 hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-2 active:scale-[0.97]"
+                  data-testid={`webhook-simulator-preset-${preset.id}`}
+                >
+                  {t(preset.labelKey, { defaultValue: preset.defaultLabel })}
+                </button>
+              ))}
+            </div>
+          </div>
           {simulatorResult && (
             <div
               className={`mt-4 rounded-2xl border p-4 ${simulatorResult.valid ? "border-emerald-200 bg-emerald-50 text-emerald-950" : "border-rose-200 bg-rose-50 text-rose-950"}`}

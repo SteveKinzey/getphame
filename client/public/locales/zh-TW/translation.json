@@ -3208,7 +3208,14 @@
       "invalidJson": "請先輸入有效的 JSON，再執行模擬器。",
       "validTitle": "承載資料已可進行實際上線前檢查。",
       "validDetail": "已提供必要的聯絡人資訊和明確的電子郵件同意證據。未建立或傳送任何內容。",
-      "invalidTitle": "承載資料需要修改後才能上線。"
+      "invalidTitle": "承載資料需要修改後才能上線。",
+      "presetsLabel": "載入預留位置範例",
+      "presetLoadedToast": "已載入預留位置承載資料，未傳送任何內容。",
+      "presets": {
+        "zapier": "Zapier 範例",
+        "make": "Make 範例",
+        "jotform": "Jotform 範例"
+      }
     }
   },
   "promotionLink": {

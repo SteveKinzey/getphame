@@ -405,16 +405,25 @@ async function startServer() {
   // feature page for JavaScript-capable visitors.
   registerPublicFeaturePrerender(app);
 
-  // development mode uses Vite, production mode uses static files
-  if (process.env.NODE_ENV === "development") {
+  // When executing the compiled artifact in dist/, always run in production mode
+  // and serve static assets. Never allow Vite HMR to load outside tsx development.
+  const isCompiledBundle = import.meta.url.includes("/dist/");
+  if (isCompiledBundle) {
+    process.env.NODE_ENV = "production";
+  }
+
+  if (process.env.NODE_ENV === "development" && !isCompiledBundle) {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  const preferredPort = parseInt(process.env.PORT || "3000");
+  const hasConfiguredPort = Boolean(process.env.PORT);
+  const preferredPort = parseInt(process.env.PORT || "3000", 10);
   const port =
-    process.env.NODE_ENV === "production"
+    hasConfiguredPort ||
+    process.env.NODE_ENV === "production" ||
+    isCompiledBundle
       ? preferredPort
       : await findAvailablePort(preferredPort);
 

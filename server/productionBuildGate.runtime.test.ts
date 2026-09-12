@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 const root = resolve(import.meta.dirname, "..");
 
 describe("production dependency audit gate", () => {
-  it("keeps the production audit ahead of tests and compilation", () => {
+  it("keeps validation explicit while deployment build performs bundling only", () => {
     const packageJson = JSON.parse(
       readFileSync(resolve(root, "package.json"), "utf8")
     );
@@ -13,8 +13,11 @@ describe("production dependency audit gate", () => {
     expect(packageJson.scripts["audit:prod"]).toBe(
       "node scripts/audit-prod.mjs"
     );
-    expect(packageJson.scripts.build).toMatch(
-      /^pnpm audit:prod && pnpm test && vite build && esbuild /
+    expect(packageJson.scripts.build).toBe(
+      "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist"
+    );
+    expect(packageJson.scripts["validate:production"]).toBe(
+      "pnpm audit:prod && pnpm test && pnpm build"
     );
   });
 

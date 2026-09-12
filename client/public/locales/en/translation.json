@@ -3757,7 +3757,14 @@
       "invalidJson": "Enter valid JSON before running the simulator.",
       "validTitle": "Payload is ready for a live preflight.",
       "validDetail": "Required contact and explicit email consent evidence are present. Nothing was created or sent.",
-      "invalidTitle": "Payload needs changes before go-live."
+      "invalidTitle": "Payload needs changes before go-live.",
+      "presetsLabel": "Load a placeholder sample",
+      "presetLoadedToast": "Placeholder payload loaded. Nothing was sent.",
+      "presets": {
+        "zapier": "Zapier sample",
+        "make": "Make sample",
+        "jotform": "Jotform sample"
+      }
     }
   },
   "helpAssistant": {

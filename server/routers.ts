@@ -7607,9 +7607,9 @@ export const appRouter = router({
   connector: router({
     download: paidProcedure.mutation(async () => {
       const { url } = await storageGet(
-        "connectors/get-phame-connector-2.2.0.zip"
+        "connectors/get-phame-connector-2.3.0.zip"
       );
-      return { url, fileName: "get-phame-connector-2.2.0.zip" };
+      return { url, fileName: "get-phame-connector-2.3.0.zip" };
     }),
   }),
 

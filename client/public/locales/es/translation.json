@@ -3701,7 +3701,14 @@
       "invalidJson": "Introduce JSON válido antes de ejecutar el simulador.",
       "validTitle": "La carga útil está lista para una comprobación previa en vivo.",
       "validDetail": "Están presentes los datos obligatorios del contacto y el consentimiento explícito por correo. No se creó ni se envió nada.",
-      "invalidTitle": "La carga útil necesita cambios antes de activarla."
+      "invalidTitle": "La carga útil necesita cambios antes de activarla.",
+      "presetsLabel": "Cargar un ejemplo de marcador de posición",
+      "presetLoadedToast": "Se cargó un payload de marcador de posición. No se envió nada.",
+      "presets": {
+        "zapier": "Ejemplo de Zapier",
+        "make": "Ejemplo de Make",
+        "jotform": "Ejemplo de Jotform"
+      }
     }
   },
   "landing": {

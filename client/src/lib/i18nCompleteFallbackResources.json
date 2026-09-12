@@ -1634,7 +1634,14 @@
         "invalidJson": "Enter valid JSON before running the simulator.",
         "validTitle": "Payload is ready for a live preflight.",
         "validDetail": "Required contact and explicit email consent evidence are present. Nothing was created or sent.",
-        "invalidTitle": "Payload needs changes before go-live."
+        "invalidTitle": "Payload needs changes before go-live.",
+        "presetsLabel": "Load a placeholder sample",
+        "presetLoadedToast": "Placeholder payload loaded. Nothing was sent.",
+        "presets": {
+          "zapier": "Zapier sample",
+          "make": "Make sample",
+          "jotform": "Jotform sample"
+        }
       }
     },
     "manual": {
@@ -3947,7 +3954,14 @@
         "invalidJson": "Introduce JSON válido antes de ejecutar el simulador.",
         "validTitle": "La carga útil está lista para una comprobación previa en vivo.",
         "validDetail": "Están presentes los datos obligatorios del contacto y el consentimiento explícito por correo. No se creó ni se envió nada.",
-        "invalidTitle": "La carga útil necesita cambios antes de activarla."
+        "invalidTitle": "La carga útil necesita cambios antes de activarla.",
+        "presetsLabel": "Cargar un ejemplo de marcador de posición",
+        "presetLoadedToast": "Se cargó un payload de marcador de posición. No se envió nada.",
+        "presets": {
+          "zapier": "Ejemplo de Zapier",
+          "make": "Ejemplo de Make",
+          "jotform": "Ejemplo de Jotform"
+        }
       }
     },
     "manual": {
@@ -6411,7 +6425,14 @@
         "invalidJson": "Saisissez du JSON valide avant de lancer le simulateur.",
         "validTitle": "La charge utile est prête pour une vérification préalable réelle.",
         "validDetail": "Les informations de contact requises et la preuve de consentement explicite par e-mail sont présentes. Rien n’a été créé ni envoyé.",
-        "invalidTitle": "La charge utile doit être corrigée avant la mise en ligne."
+        "invalidTitle": "La charge utile doit être corrigée avant la mise en ligne.",
+        "presetsLabel": "Charger un exemple fictif",
+        "presetLoadedToast": "Charge utile fictive chargée. Rien n’a été envoyé.",
+        "presets": {
+          "zapier": "Exemple Zapier",
+          "make": "Exemple Make",
+          "jotform": "Exemple Jotform"
+        }
       }
     },
     "manual": {
@@ -8848,7 +8869,14 @@
         "invalidJson": "Inserisci JSON valido prima di avviare il simulatore.",
         "validTitle": "Il payload è pronto per una verifica preliminare reale.",
         "validDetail": "Sono presenti i dati di contatto obbligatori e la prova del consenso e-mail esplicito. Non è stato creato né inviato nulla.",
-        "invalidTitle": "Il payload richiede modifiche prima della pubblicazione."
+        "invalidTitle": "Il payload richiede modifiche prima della pubblicazione.",
+        "presetsLabel": "Carica un esempio segnaposto",
+        "presetLoadedToast": "Payload segnaposto caricato. Non è stato inviato nulla.",
+        "presets": {
+          "zapier": "Esempio Zapier",
+          "make": "Esempio Make",
+          "jotform": "Esempio Jotform"
+        }
       }
     },
     "manual": {
@@ -11160,7 +11188,14 @@
         "invalidJson": "ป้อน JSON ที่ถูกต้องก่อนเริ่มเครื่องมือจำลอง",
         "validTitle": "เพย์โหลดพร้อมสำหรับการตรวจสอบก่อนใช้งานจริง",
         "validDetail": "มีข้อมูลติดต่อที่จำเป็นและหลักฐานความยินยอมทางอีเมลอย่างชัดแจ้ง ไม่มีการสร้างหรือส่งข้อมูล",
-        "invalidTitle": "ต้องแก้ไขเพย์โหลดก่อนเปิดใช้งานจริง"
+        "invalidTitle": "ต้องแก้ไขเพย์โหลดก่อนเปิดใช้งานจริง",
+        "presetsLabel": "โหลดตัวอย่างข้อมูลแทนที่",
+        "presetLoadedToast": "โหลดข้อมูลตัวอย่างแล้ว ไม่มีการส่งข้อมูลใด ๆ",
+        "presets": {
+          "zapier": "ตัวอย่าง Zapier",
+          "make": "ตัวอย่าง Make",
+          "jotform": "ตัวอย่าง Jotform"
+        }
       }
     },
     "manual": {
@@ -13467,7 +13502,14 @@
         "invalidJson": "请先输入有效的 JSON，再运行模拟器。",
         "validTitle": "负载已可进行实际上线前检查。",
         "validDetail": "已提供必需的联系人信息和明确的电子邮件同意证据。未创建或发送任何内容。",
-        "invalidTitle": "负载需要修改后才能上线。"
+        "invalidTitle": "负载需要修改后才能上线。",
+        "presetsLabel": "加载占位示例",
+        "presetLoadedToast": "已加载占位负载，未发送任何内容。",
+        "presets": {
+          "zapier": "Zapier 示例",
+          "make": "Make 示例",
+          "jotform": "Jotform 示例"
+        }
       }
     },
     "manual": {
@@ -15768,7 +15810,14 @@
         "invalidJson": "請先輸入有效的 JSON，再執行模擬器。",
         "validTitle": "承載資料已可進行實際上線前檢查。",
         "validDetail": "已提供必要的聯絡人資訊和明確的電子郵件同意證據。未建立或傳送任何內容。",
-        "invalidTitle": "承載資料需要修改後才能上線。"
+        "invalidTitle": "承載資料需要修改後才能上線。",
+        "presetsLabel": "載入預留位置範例",
+        "presetLoadedToast": "已載入預留位置承載資料，未傳送任何內容。",
+        "presets": {
+          "zapier": "Zapier 範例",
+          "make": "Make 範例",
+          "jotform": "Jotform 範例"
+        }
       }
     },
     "manual": {
