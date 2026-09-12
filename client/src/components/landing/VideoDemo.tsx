@@ -121,7 +121,7 @@ export function parseWebVttCues(source: string): TranscriptCue[] {
       const text = lines
         .slice(timingIndex + 1)
         .join(" ")
-        .replace(/<[^>]*>/g, "")
+        .replace(/[<>]/g, "")
         .replace(/\s+/g, " ")
         .trim();
 

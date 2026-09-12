@@ -67,7 +67,9 @@ function sanitizeEmailPreviewHtml(html: string): string {
       }
       if (
         (name === "href" || name === "src") &&
-        value.startsWith("javascript:")
+        (value.startsWith("javascript:") ||
+          value.startsWith("data:") ||
+          value.startsWith("vbscript:"))
       ) {
         node.removeAttribute(attribute.name);
       }

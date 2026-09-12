@@ -2361,13 +2361,9 @@ export default function SavedContacts() {
                 const previewBody = resolveVars(
                   consentCustomBody || defaultBody
                 );
-                const previewBodyHtml = previewBody
+                const previewBodyParagraphs = previewBody
                   .split(/\n\n+/)
-                  .map(
-                    (p: string) =>
-                      `<p style="margin:0 0 12px">${p.replace(/\n/g, "<br>")}</p>`
-                  )
-                  .join("");
+                  .map((paragraph: string) => paragraph.split("\n"));
                 const isMobile = consentPreviewMode === "mobile";
                 return (
                   <div
@@ -2458,9 +2454,23 @@ export default function SavedContacts() {
                           A quick note from {biz}
                         </h3>
                         <p style={{ margin: "0 0 10px" }}>Hi {sampleName},</p>
-                        <div
-                          dangerouslySetInnerHTML={{ __html: previewBodyHtml }}
-                        />
+                        <div>
+                          {previewBodyParagraphs.map((lines, paragraphIndex) => (
+                            <p
+                              key={`preview-paragraph-${paragraphIndex}`}
+                              style={{ margin: "0 0 12px" }}
+                            >
+                              {lines.map((line, lineIndex) => (
+                                <span
+                                  key={`preview-line-${paragraphIndex}-${lineIndex}`}
+                                >
+                                  {lineIndex > 0 ? <br /> : null}
+                                  {line}
+                                </span>
+                              ))}
+                            </p>
+                          ))}
+                        </div>
                         <p
                           style={{
                             marginTop: "16px",
