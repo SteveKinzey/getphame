@@ -70,7 +70,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Download sanitized audit result
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: dependency-security-audit-${{ github.run_id }}-${{ github.run_attempt }}
           path: /tmp
